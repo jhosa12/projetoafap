@@ -1,29 +1,28 @@
 
-
-import {FormEvent,useState} from "react"
+import {FormEvent,useState,useContext} from "react"
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import Image from "next/image";
 import logo from "../../public/logoafap.png"
-import Dropdown from "./Dropdown";
+import {AuthContext} from "../contexts/AuthContext"
 export default function Home() {
-
-const [user,setName]= useState("")
-const [password,setSenha]= useState("")
-const [loading,setLoading]= useState(false)
-    function handleSignUp(event:FormEvent){
-        event.preventDefault();
-        if(user===""||password===""){
-            alert("Preencha todos os campos")
-            return;
+    const {sign} =useContext(AuthContext)
+    const [user,setName]= useState("")
+    const [password,setSenha]= useState("")
+    const [loading,setLoading]= useState(false)
+        function handleSignUp(event:FormEvent){
+            event.preventDefault();
+            if(user===""||password===""){
+                alert("Preencha todos os campos")
+                return;
+                }
+                setLoading(true)
+            let data ={
+                user:user,
+                password:password
             }
-            setLoading(true)
-        let data ={
-            user:user,
-            password:password
-        }
-        
-        setLoading(false)
-          }
+            sign(data)
+            setLoading(false)
+              }
     return(
         <div className=" flex h-[100vh] w-full items-center justify-center bg-[#898686]">
        
