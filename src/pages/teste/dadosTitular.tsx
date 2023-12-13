@@ -28,7 +28,7 @@ export function Item({name,date,updateFields}:UserFormProps){
         <div  className="flex justify-between gap-1 pl-2 pr-2 w-full h-[32px]">
           <input placeholder="Nome" required className="p-2 rounded-lg w-3/5 border-2" value={name} onChange={e=>updateFields({name:e.target.value})} type="text"></input>
           <InputMask mask={"99/99/9999"} placeholder="Data Nasc." className="p-2 rounded-lg w-1/5 border-2" value={date} onChange={e=>updateFields({date:e.target.value})} type="text"></InputMask>
-          <select placeholder="Sexo" className=" items-center justify-center pl-2 rounded-lg w-[74px] border-2">
+          <select className=" items-center justify-center pl-2 rounded-lg w-[74px] border-2">
             <option>Sexo</option>
             <option>M</option>
             <option>F</option>

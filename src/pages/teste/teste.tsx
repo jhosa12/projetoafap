@@ -18,7 +18,7 @@ export default function testeLayout() {
               <div  className="flex flex-row gap-1 pl-2 pr-2 w-full h-[32px]">
                 <input placeholder="Nome" className="p-2 rounded-lg w-3/5 border-2" type="text"></input>
                 <input placeholder="Data Nasc." className="p-2 rounded-lg w-1/5 border-2" type="text"></input>
-                <select placeholder="Sexo" className=" items-center justify-center pl-2 rounded-lg w-[74px] border-2">
+                <select className=" items-center justify-center pl-2 rounded-lg w-[74px] border-2">
                   <option>Sexo</option>
                   <option>M</option>
                   <option>F</option>
@@ -51,7 +51,7 @@ export default function testeLayout() {
              <div  className="flex flex-row pl-2 pr-2 gap-1 w-full h-[32px]">
                  <input placeholder="Nome" className="placeholder-slate-400 p-2 rounded-lg w-3/5 border-[1px] border-gray-400" type="text"></input>
                 <input placeholder="Data Nasc." className=" p-2 rounded-lg w-1/5 border-2" type="text"></input>
-                <select placeholder="Sexo" className=" items-center justify-center pl-2 rounded-lg w-[75px] border-2">
+                <select  className=" items-center justify-center pl-2 rounded-lg w-[75px] border-2">
                   <option>Sexo</option>
                   <option>M</option>
                   <option>F</option>
