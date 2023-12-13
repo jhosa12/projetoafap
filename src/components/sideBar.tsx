@@ -4,7 +4,7 @@ import { AiOutlineCaretUp, AiOutlineCaretDown } from "react-icons/ai"
 import { useState, useEffect, createContext } from "react"
 import Dropdownn from '../pages/Dropdownn'
 import Image from 'next/image'
-import logo from "../../public/logoafap.png"
+
 import { FaReadme } from "react-icons/fa";
 import { CgAdd } from "react-icons/cg";
 import { CgBriefcase } from "react-icons/cg";
