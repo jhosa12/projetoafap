@@ -7,7 +7,7 @@ type AuthContextData = {
     usuario:UserProps | undefined,
     isAuthenticated:boolean,
     sign: (credentials:SignInProps)=>Promise<void>,
-    signOut:()=>void;
+    signOut:()=>void,
 }
 
 type SignInProps={
