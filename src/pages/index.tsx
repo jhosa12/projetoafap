@@ -2,10 +2,9 @@
 
 import {FormEvent,useState} from "react"
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import {useContext} from "react"
-import {AuthContext} from "../contexts/AuthContext"
+
 export default function Home() {
- const {sign} =useContext(AuthContext)
+
 const [user,setName]= useState("")
 const [password,setSenha]= useState("")
 const [loading,setLoading]= useState(false)
@@ -20,7 +19,7 @@ const [loading,setLoading]= useState(false)
             user:user,
             password:password
         }
-        sign(data)
+        
         setLoading(false)
           }
     return(
