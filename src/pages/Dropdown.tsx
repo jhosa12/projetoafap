@@ -1,8 +1,7 @@
 import { useState,ReactNode } from "react"
 
 import {AiOutlineCaretUp,AiOutlineCaretDown} from "react-icons/ai"
-import { FaReadme } from "react-icons/fa";
-import { Facebook } from "lucide-react"
+
 interface IconsProps{
   id:number;
   icon:ReactNode

@@ -1,11 +1,9 @@
 
-import Image from "next/image";
+
 import {FormEvent,useState} from "react"
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import {useContext} from "react"
 import {AuthContext} from "../contexts/AuthContext"
-import {GetServerSideProps} from "next"
-import {canSSRGuest} from "../utils/canSSRGuest"
 export default function Home() {
  const {sign} =useContext(AuthContext)
 const [user,setName]= useState("")
@@ -53,10 +51,6 @@ const [loading,setLoading]= useState(false)
 </div>)
 }
 
-export const getServerSideProps:GetServerSideProps = canSSRGuest(async(ctx)=>{
-    return{
-        props:{}
-    }
-})
+
  
 
