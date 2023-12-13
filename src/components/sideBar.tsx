@@ -62,12 +62,7 @@ function SideBar() {
       >
       
         <div className="relative p-4 pb-2 flex flex-row justify-between items-center">
-          <Image
-            src={logo}
-            className={`overflow-hidden transition-all ${isOpen ? "w-40 h-14 ml-1" : "w-0"
-              }`}
-            alt=""
-          />
+         
           <button
             onClick={() => setIsOpen((prev) => !prev)}
             className="absolute rounded-lg hover:bg-[#4a4d4f] right-0 top-1"
