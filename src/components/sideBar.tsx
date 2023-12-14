@@ -44,15 +44,16 @@ function SideBar() {
   
     async function loadSubmenus() {
       
-      const response = await api.get("/me",{
-        data:{
-          id:"5d5067d2-c1be-4f1e-bbfe-6821892e7882"
-        }
+
+      const response = await api.post("/me",{
+        id:"3977b7d6-1f82-432e-9fa2-fb8ffe51471a"
       }); 
       setUser(
        [response.data]
       ); 
+      console.log(response.data)
     }
+   
     return (
       <aside
         className={`overflow-hidden transition-all  ${isOpen
