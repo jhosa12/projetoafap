@@ -47,6 +47,7 @@ export default function Home() {
     <button className={`flex items-center justify-center w-full max-w-md h-12 rounded-lg text-white font-bold bg-[#CA9629]`}>
         {!loading ? "Acessar" : (<AiOutlineLoading3Quarters size={25} className="animate-spin"/>)}
     </button>
+    <span>Login:admin - Senha:admin</span>
     </form>
 </div>
 </div>)
