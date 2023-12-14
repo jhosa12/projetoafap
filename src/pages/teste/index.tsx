@@ -1,8 +1,8 @@
 import SideBar from "@/components/sideBar"
 import { MdOutlineNotifications } from "react-icons/md";
-  import { MultiStep } from "./multiStep";
-import { Item } from "./dadosTitular";
-import { DadosPlano } from "./dadosPlano";
+  import { MultiStep } from "../../components/multiStep";
+import { Item } from "../../components/dadosTitular";
+import { DadosPlano } from "../../components/dadosPlano";
 import { FaCircleArrowRight } from "react-icons/fa6";
 import { FaCircleArrowLeft } from "react-icons/fa6";
 import {FormEvent, useState} from 'react'
