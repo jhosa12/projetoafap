@@ -46,7 +46,7 @@ function SideBar() {
       
       const response = await api.get("/me",{
         data:{
-          id:"80492dc6-338a-47d7-95d9-5053cbf7dceb"
+          id:"5d5067d2-c1be-4f1e-bbfe-6821892e7882"
         }
       }); 
       setUser(
