@@ -2,8 +2,7 @@
 import { FormWrapper } from "./organizador"
 import InputMask from 'react-input-mask'
 import TextField from '@mui/material/TextField';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
+
 import { useState } from "react";
 
 
@@ -78,19 +77,7 @@ export function Item({name,date,updateFields}:UserFormProps){
          label="BAIRRO" defaultValue="Small" size="small" variant="standard" value={name} onChange={e=>updateFields({name:e.target.value})} />
                   <TextField inputProps={{style: { color: 'white'}}} InputLabelProps={{style: { color: 'white'}}} 
          label="REFERÊNCIA" defaultValue="Small" size="small" variant="standard" value={name} onChange={e=>updateFields({name:e.target.value})} />
-         <Select
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
-          variant="standard"
-          label="Age"
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
-        </Select>
+         
         </div>
          <div  className="flex justify-between  pl-2 pr-2 gap-1 w-full h-[32px]">
          <TextField InputProps={{style: { borderColor: 'white'}}} inputProps={{style: { color: 'white'}}} InputLabelProps={{style: { color: 'white'}}} 
