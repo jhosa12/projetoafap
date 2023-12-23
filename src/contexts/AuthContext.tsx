@@ -50,7 +50,7 @@ async function sign({user,password}:SignInProps) {
        // Passar o token para as proximas paginas
        api.defaults.headers["Authorization"] =`Bearer ${token}`
        //redirecionar o user para /dashboard
-       Router.push("/teste")
+       Router.push("/testeside")
 
     }catch(err){
 console.log("Erro ao acessar", err)

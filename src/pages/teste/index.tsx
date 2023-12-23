@@ -1,12 +1,12 @@
 import SideBar from "@/components/sideBar"
 import { MdOutlineNotifications } from "react-icons/md";
-  import { MultiStep } from "../../components/multiStep";
+import { MultiStep } from "../../components/multiStep";
 import { Item } from "../../components/dadosTitular";
 import { DadosPlano } from "../../components/dadosPlano";
 import { FaCircleArrowRight } from "react-icons/fa6";
 import { FaCircleArrowLeft } from "react-icons/fa6";
 import {FormEvent, useState} from 'react'
-
+import { DadosDependentes } from "@/components/dadosDependentes";
 type FormData={
   name:string,
   date:string,
@@ -52,7 +52,7 @@ export default function testeLayout() {
   const {steps,currentStepIndex,step,next,back} =MultiStep([
     <Item {...data} updateFields={updateFields}/>,
     <DadosPlano {...data} updateFields={updateFields}/>,
-    <div>THREE</div>,
+    <DadosDependentes />,
   ])
   function onSubmit(e:FormEvent){
     e.preventDefault()
@@ -60,16 +60,16 @@ export default function testeLayout() {
 
   }
   return (
-    <div className="flex bg-slate-100">
-      <SideBar />
-      <div className="flex flex-col w-full">
+    <div className="flex w-full  absolute h-[100vh] bg-gray-600 bg-opacity-20">
+      {/*<SideBar />*/}
+      <div className="flex flex-col w-full  ">
         <div className=" shadow-sm flex flex-row justify-end items-center h-[70px]">
           <button className="rounded-lg mr-5 cursor-pointer hover:bg-slate-400"><MdOutlineNotifications size={25} /></button>
           <div className="bg-slate-300 mr-2 rounded-full w-[60px] h-[60px]"></div>
           <span className="flex flex-col mr-10 font-medium justify-center items-center">Henrique Freitas <span className="flex items-end text-[12px] font-sans">Consultor</span></span>
         </div>
-        <div className="pl-2 pr-2 flex flex-col items-center justify-center w-full h-full">
-        <div className="relative bg-white border-[1px] border-slate-300 p-2 shadow-lg rounded-lg">
+        <div className="pl-2 pr-2 flex flex-col items-center justify-center w-full h-full bg-opacity-50">
+        <div className="relative  bg-[#363640] border-[1px] border-slate-300 p-2 shadow-lg rounded-lg">
         <form onSubmit={onSubmit}>
           <div className="absolute top-2 right-2">
             {currentStepIndex + 1} / {steps.length}

@@ -11,7 +11,7 @@ type UserFormProps = UserData & {
 export function DadosPlano({name,date,updateFields}:UserFormProps){
     return(
         <FormWrapper title="Dados do Plano">
-              <div className="flex flex-col gap-4 p-4   rounded-lg  ">
+              <div className="flex flex-col gap-4 p-4 rounded-lg  ">
         <div  className="flex gap-2 justify-center h-[32px]">
           <input placeholder="Contrato" className="p-2 rounded-lg w-1/5 border-2" type="text"></input>
           <select  className=" items-center justify-center pl-2 rounded-lg w-[150px] border-2">

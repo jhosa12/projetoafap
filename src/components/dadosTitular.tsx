@@ -1,6 +1,16 @@
 
 import { FormWrapper } from "./organizador"
 import InputMask from 'react-input-mask'
+import TextField from '@mui/material/TextField';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import { useState } from "react";
+
+
+
+
+
+
 
 type UserData={
   name:string,
@@ -22,49 +32,85 @@ type UserFormProps=UserData & {
 }
 
 export function Item({name,date,updateFields}:UserFormProps){
+  const [inputType, setInputType] = useState('text');
     return(
         <FormWrapper title="Dados do Titular">
-        <div className="flex flex-col  gap-3 p-4   rounded-lg w-full h-full  ">
-        <div  className="flex justify-between gap-1 pl-2 pr-2 w-full h-[32px]">
-          <input placeholder="Nome" required className="p-2 rounded-lg w-3/5 border-2" value={name} onChange={e=>updateFields({name:e.target.value})} type="text"></input>
-          <InputMask mask={"99/99/9999"} placeholder="Data Nasc." className="p-2 rounded-lg w-1/5 border-2" value={date} onChange={e=>updateFields({date:e.target.value})} type="text"></InputMask>
-          <select className=" items-center justify-center pl-2 rounded-lg w-[74px] border-2">
-            <option>Sexo</option>
-            <option>M</option>
-            <option>F</option>
-          </select>
+         
+
+        <div className="flex flex-col   gap-9 p-4 rounded-lg w-full h-full bg-[#363640]">
+        <div  className="grid gap-2 grid-flow-col-dense pl-2 pr-2 w-full h-[30px] md:grid-cols-3 " >
+          <div className="col-span-2">
+          <label htmlFor="name" className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Nome</label>
+          <input className="w-full text-[14px] border-[1px] rounded-[9px] p-1 pl-3 bg-[#21222c] text-white " id="name" type="text"  />
+          </div>
+          <div className="col-span-1">
+          <label htmlFor="data" className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Data Nasc.</label>
+          <input id="data" type="date" className=" col-span-1 w-full text-[14px] border-[1px] rounded-[9px] p-1 pl-3 bg-[#21222c] text-white " />
+          </div>
+          <div className="col-span-1">
+          <label htmlFor="sexo" className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Sexo</label>
+          <select id="sexo" className=" w-full text-[14px] border-[1px] rounded-[9px] p-1 pl-3 bg-[#21222c] text-white ">
+          <option> </option>
+          <option>M</option>
+          <option>F</option>
+        </select>
+          </div>
         </div>
-        <div  className="flex justify-between  pl-2 pr-2 gap-1 w-full h-[32px]">
-          <InputMask mask={"99999-999"} placeholder="CEP" required className=" p-2 rounded-lg w-1/5 border-2" type="text"/>
-          <input placeholder="Endereço" required className=" p-2 rounded-lg w-3/5 border-2" type="text"/>
-          <input placeholder="Nº" className=" p-2 rounded-lg w-[75px] border-2" type="text"/>
-          
+        
+        <div>
+          <div className="" >
+          <label htmlFor="cep" className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">CEP</label>
+          <InputMask mask={"99999-999"} className="w-full border-[1px] rounded-[9px] p-1 pl-3 bg-[#21222c] text-white " id="cep" type="text"  />
+          </div>
+          <div>
+          <label htmlFor="endereco" className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Endereço</label>
+          <input id="endereco" type="text" className=" border-[1px] rounded-[9px] p-1 pl-3 bg-[#21222c] text-white " />
+          </div>
+          <div>
+          <label htmlFor="n" className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">N°</label>
+          <input id="n" type="text" className=" border-[1px] rounded-[9px] p-1 pl-3 bg-[#21222c] text-white " />
+          </div>
         </div>
+        
+        
          <div  className=" flex justify-between pl-2 pr-2 gap-1 w-full h-[32px]">
-           <input placeholder="Bairro" required className="p-2 rounded-lg w-3/6 border-2" type="text"></input>
-           <input placeholder="Referência" className="p-2 rounded-lg w-3/6 border-2" type="text"></input>
-          <select required className=" items-center justify-center pl-2 rounded-lg w-[150px] border-2">
-            <option></option>
-            <option>Cedro</option>
-            <option>Lavras</option>
-            <option>Amaniutuba</option>
-          </select>
-          <select required className="items-center justify-center rounded-lg w-[75px] border-2">
-          <option></option>
-            <option>CE</option>
-          </select>
+         <TextField  
+         label="BAIRRO" defaultValue="Small" size="small" variant="standard" value={name} onChange={e=>updateFields({name:e.target.value})} />
+                  <TextField inputProps={{style: { color: 'white'}}} InputLabelProps={{style: { color: 'white'}}} 
+         label="REFERÊNCIA" defaultValue="Small" size="small" variant="standard" value={name} onChange={e=>updateFields({name:e.target.value})} />
+         <Select
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          variant="standard"
+          label="Age"
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          <MenuItem value={10}>Ten</MenuItem>
+          <MenuItem value={20}>Twenty</MenuItem>
+          <MenuItem value={30}>Thirty</MenuItem>
+        </Select>
         </div>
          <div  className="flex justify-between  pl-2 pr-2 gap-1 w-full h-[32px]">
-           <input placeholder="Email" className=" p-2 rounded-lg w-2/3 border-2" type="email"></input>
-          <input placeholder="RG" className=" p-2 rounded-lg w-1/2 border-2" type="text"></input>
-          <InputMask mask={"999.999.999-99"} placeholder="CPF" className=" p-2 rounded-lg w-1/2 border-2" type="text"></InputMask>
+         <TextField InputProps={{style: { borderColor: 'white'}}} inputProps={{style: { color: 'white'}}} InputLabelProps={{style: { color: 'white'}}} 
+         label="EMAIL" defaultValue="Small" size="small" variant="standard" value={name} onChange={e=>updateFields({name:e.target.value})} />
+                 <TextField inputProps={{style: { color: 'white'}}} InputLabelProps={{style: { color: 'white'}}} 
+         label="RG" defaultValue="Small" size="small" variant="standard" value={name} onChange={e=>updateFields({name:e.target.value})} />
+                 <TextField inputProps={{style: { color: 'white'}}} InputLabelProps={{style: { color: 'white'}}} 
+         label="CPF" defaultValue="Small" size="small" variant="standard" value={name} onChange={e=>updateFields({name:e.target.value})} />
          
         </div>
        <div  className="flex justify-start  pl-2 pr-2 gap-1 w-full h-[32px]">
-           <InputMask mask={"(99) 9 9999-9999"} placeholder="Telefone 1"  className="placeholder-slate-400 p-2 rounded-lg w-1/4 border-[1px] border-gray-400" type="tel" ></InputMask>
-           <InputMask mask={"(99) 9 9999-9999"} placeholder="Telefone 1"  className="placeholder-slate-400 p-2 rounded-lg w-1/4 border-[1px] border-gray-400" type="tel" ></InputMask>
+       <TextField InputProps={{style: { borderColor: 'white'}}} inputProps={{style: { color: 'white'}}} InputLabelProps={{style: { color: 'white'}}} 
+         label="TELEFONE1" defaultValue="Small" size="small" variant="standard" value={name} onChange={e=>updateFields({name:e.target.value})} />
+                  <TextField InputProps={{style: { borderColor: 'white'}}} inputProps={{style: { color: 'white'}}} InputLabelProps={{style: { color: 'white'}}} 
+         label="TELEFONE2" defaultValue="Small" size="small" variant="standard" value={name} onChange={e=>updateFields({name:e.target.value})} />
         </div>
+        
+     
       </div>
+  
       </FormWrapper>
     )
 }

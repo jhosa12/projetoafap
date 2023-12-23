@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "axios": "^1.6.2",
     "lucide-react": "^0.294.0",
     "next": "14.0.4",
@@ -16,7 +18,9 @@
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^4.12.0",
-    "react-input-mask": "^2.0.4"
+    "react-input-mask": "^2.0.4",
+    "react-pro-sidebar": "^1.1.0-alpha.1",
+    "react-tabs": "^6.0.2"
   },
   "devDependencies": {
     "@types/node": "^20",
