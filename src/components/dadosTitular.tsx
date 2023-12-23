@@ -1,7 +1,7 @@
 
 import { FormWrapper } from "./organizador"
 import InputMask from 'react-input-mask'
-import TextField from '@mui/material/TextField';
+
 
 import { useState } from "react";
 
@@ -72,29 +72,9 @@ export function Item({name,date,updateFields}:UserFormProps){
         </div>
         
         
-         <div  className=" flex justify-between pl-2 pr-2 gap-1 w-full h-[32px]">
-         <TextField  
-         label="BAIRRO" defaultValue="Small" size="small" variant="standard" value={name} onChange={e=>updateFields({name:e.target.value})} />
-                  <TextField inputProps={{style: { color: 'white'}}} InputLabelProps={{style: { color: 'white'}}} 
-         label="REFERÊNCIA" defaultValue="Small" size="small" variant="standard" value={name} onChange={e=>updateFields({name:e.target.value})} />
-         
-        </div>
-         <div  className="flex justify-between  pl-2 pr-2 gap-1 w-full h-[32px]">
-         <TextField InputProps={{style: { borderColor: 'white'}}} inputProps={{style: { color: 'white'}}} InputLabelProps={{style: { color: 'white'}}} 
-         label="EMAIL" defaultValue="Small" size="small" variant="standard" value={name} onChange={e=>updateFields({name:e.target.value})} />
-                 <TextField inputProps={{style: { color: 'white'}}} InputLabelProps={{style: { color: 'white'}}} 
-         label="RG" defaultValue="Small" size="small" variant="standard" value={name} onChange={e=>updateFields({name:e.target.value})} />
-                 <TextField inputProps={{style: { color: 'white'}}} InputLabelProps={{style: { color: 'white'}}} 
-         label="CPF" defaultValue="Small" size="small" variant="standard" value={name} onChange={e=>updateFields({name:e.target.value})} />
-         
-        </div>
-       <div  className="flex justify-start  pl-2 pr-2 gap-1 w-full h-[32px]">
-       <TextField InputProps={{style: { borderColor: 'white'}}} inputProps={{style: { color: 'white'}}} InputLabelProps={{style: { color: 'white'}}} 
-         label="TELEFONE1" defaultValue="Small" size="small" variant="standard" value={name} onChange={e=>updateFields({name:e.target.value})} />
-                  <TextField InputProps={{style: { borderColor: 'white'}}} inputProps={{style: { color: 'white'}}} InputLabelProps={{style: { color: 'white'}}} 
-         label="TELEFONE2" defaultValue="Small" size="small" variant="standard" value={name} onChange={e=>updateFields({name:e.target.value})} />
-        </div>
         
+        
+      
      
       </div>
   
