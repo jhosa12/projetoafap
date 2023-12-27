@@ -36,9 +36,11 @@ export default function Home() {
         value={user}
         className="border border-black w-full max-w-md h-10 rounded p-2"
         onChange={(e)=>setName(e.target.value)}
+        required
     />
     <input
         type="password"
+        required
         placeholder="Senha"
         value={password}
         className="border border-black w-full max-w-md h-10 rounded p-2"

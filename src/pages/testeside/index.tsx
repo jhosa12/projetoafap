@@ -20,11 +20,11 @@ export default function SideBar(){
     return(
       <div className='flex flex-col h-[100vh] w-full'>
         <header>
-    <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
+    <nav className="border-gray-200 px-4 lg:px-6 py-2.5 bg-gray-800 " >
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
             <div className="flex items-center">
                 <Image onClick={()=>setIsOpen(!isOpen)} src={logo} className="cursor-pointer w-full mr-2 h-8 sm:h-11" alt="Flowbite Logo" />
-                <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">SYSAFAP</span>
+                <span className="self-center text-xl font-semibold  dark:text-[#e6ba55]">SISAFAP</span>
             </div>
             <div className="flex items-center gap-4">
     <Image className="w-10 h-10 rounded-full" src={fototeste} alt=""/>
