@@ -5,22 +5,24 @@ import Image from "next/image";
 import logo from "../../public/logoafap.png"
 import {AuthContext} from "../contexts/AuthContext"
 export default function Home() {
-    const {sign} =useContext(AuthContext)
+   
     const [user,setName]= useState("")
     const [password,setSenha]= useState("")
     const [loading,setLoading]= useState(false)
-        function handleSignUp(event:FormEvent){
+    const {sign} =useContext(AuthContext)
+        async function handleSignUp(event:FormEvent){
+            setLoading(true)
             event.preventDefault();
             if(user===""||password===""){
                 alert("Preencha todos os campos")
                 return;
                 }
-                setLoading(true)
+               
             let data ={
                 user:user,
                 password:password
             }
-            sign(data)
+           await sign(data)
             setLoading(false)
               }
     return(
@@ -46,7 +48,7 @@ export default function Home() {
         className="border border-black w-full max-w-md h-10 rounded p-2"
         onChange={(e)=>setSenha(e.target.value)}
     />
-    <button className={`flex items-center justify-center w-full max-w-md h-12 rounded-lg text-white font-bold bg-[#CA9629]`}>
+    <button type="submit" className={`flex items-center justify-center w-full max-w-md h-12 rounded-lg text-white font-bold bg-[#CA9629]`}>
         {!loading ? "Acessar" : (<AiOutlineLoading3Quarters size={25} className="animate-spin"/>)}
     </button>
     <span className="text-red-500 text-[20px]"> Login: admin - Senha: admin</span>
