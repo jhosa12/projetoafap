@@ -63,11 +63,7 @@ export default function testeLayout() {
     <div className="flex w-full  absolute h-[100vh] bg-gray-600 bg-opacity-20">
       {/*<SideBar />*/}
       <div className="flex flex-col w-full  ">
-        <div className=" shadow-sm flex flex-row justify-end items-center h-[70px]">
-          <button className="rounded-lg mr-5 cursor-pointer hover:bg-slate-400"><MdOutlineNotifications size={25} /></button>
-          <div className="bg-slate-300 mr-2 rounded-full w-[60px] h-[60px]"></div>
-          <span className="flex flex-col mr-10 font-medium justify-center items-center">Henrique Freitas <span className="flex items-end text-[12px] font-sans">Consultor</span></span>
-        </div>
+        
         <div className="pl-2 pr-2 flex flex-col items-center justify-center w-full h-full bg-opacity-50">
         <div className="relative  bg-[#363640] border-[1px] border-slate-300 p-2 shadow-lg rounded-lg">
         <form onSubmit={onSubmit}>

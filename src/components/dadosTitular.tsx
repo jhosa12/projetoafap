@@ -34,8 +34,6 @@ export function Item({name,date,updateFields}:UserFormProps){
   const [inputType, setInputType] = useState('text');
     return(
         <FormWrapper title="Dados do Titular">
-         
-
         <div className="flex flex-col   gap-9 p-4 rounded-lg w-full h-full bg-[#363640]">
         <div  className="grid gap-2 grid-flow-col-dense pl-2 pr-2 w-full h-[30px] md:grid-cols-3 " >
           <div className="col-span-2">
@@ -44,7 +42,7 @@ export function Item({name,date,updateFields}:UserFormProps){
           </div>
           <div className="col-span-1">
           <label htmlFor="data" className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Data Nasc.</label>
-          <input id="data" type="date" className=" col-span-1 w-full text-[14px] border-[1px] rounded-[9px] p-1 pl-3 bg-[#21222c] text-white " />
+          <input  id="data" type="date" className=" col-span-1 w-full text-[14px] border-[1px] rounded-[9px] p-1 pl-3 bg-[#21222c] text-white " />
           </div>
           <div className="col-span-1">
           <label htmlFor="sexo" className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Sexo</label>

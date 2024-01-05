@@ -14,34 +14,40 @@ import { FaCross } from "react-icons/fa";
 import { HiDocumentReport } from "react-icons/hi";
 import { useState } from 'react';
 import Image from 'next/image';
+import Adm from '../admcontrato/index'
 
 export default function SideBar(){
- const [isOpen,setIsOpen]= useState(true)
+ const [isOpen,setIsOpen]= useState(true )
     return(
-      <div className='flex flex-col h-[100vh] w-full'>
+      
+      <div className='flex flex-col w-full overflow-hidden'>
         <header>
-    <nav className="border-gray-200 px-4 lg:px-6 py-2.5 bg-gray-800 " >
+    <nav className="border-gray-200 px-4 lg:px-6 py-2.5 bg-[#101418] " >
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
             <div className="flex items-center">
                 <Image onClick={()=>setIsOpen(!isOpen)} src={logo} className="cursor-pointer w-full mr-2 h-8 sm:h-11" alt="Flowbite Logo" />
-                <span className="self-center text-xl font-semibold  dark:text-[#e6ba55]">SISAFAP</span>
+                <span className="self-center text-xl font-semibold  text-[#e6ba55]">SISAFAP</span>
             </div>
             <div className="flex items-center gap-4">
     <Image className="w-10 h-10 rounded-full" src={fototeste} alt=""/>
-    <div className  ="font-medium dark:text-white">
+    <div className  ="font-medium text-white">
         <div>Henrique Freitas</div>
-        <div className="text-sm text-gray-500 dark:text-gray-400">Técnico de TI</div>
+        <div className="text-sm  text-gray-400">Técnico de TI</div>
     </div>
 </div>
      
         </div>
     </nav>
+
+    
 </header>
-      
+   <div className=' flex flex-row bg-[#101418] w-full '> 
+  
+   <div className={`flex h-[100vh] overflow-y-${isOpen ? 'scroll' : 'hidden'}`}>
         <Sidebar  collapsed={!isOpen}  backgroundColor='#101418'  rootStyles={{
             [`.${sidebarClasses.container}`]: {
-              height:'100vh',
-            
+              height:'89%',
+              
             },
           }}>
     
@@ -54,7 +60,8 @@ export default function SideBar(){
         ":hover":{color:'#FFFFFF',backgroundColor:'#101418'}
       },
       subMenuContent:{
-        backgroundColor:'#101418'
+        backgroundColor:'#101418',
+        
       }
     }
   } >
@@ -72,8 +79,19 @@ export default function SideBar(){
        <MenuItem icon={<HiDocumentReport size={23}/>}>Relatório</MenuItem>
        </SubMenu>
     <MenuItem> Calendar </MenuItem>
+    <SubMenu icon={<FaCross size={25} />} label="Fúnebre">
+       <MenuItem icon={<MdNewLabel size={23}/>}>Solicitar Serviço</MenuItem> 
+       <MenuItem icon={<HiDocumentReport size={23}/>}>Relatório</MenuItem>
+       </SubMenu>
+       <SubMenu icon={<FaCross size={25} />} label="Fúnebre">
+       <MenuItem icon={<MdNewLabel size={23}/>}>Solicitar Serviço</MenuItem> 
+       <MenuItem icon={<HiDocumentReport size={23}/>}>Relatório</MenuItem>
+       </SubMenu>
   </Menu>
 </Sidebar>
+</div>
+<Adm/>
+</div>  
 </div>
     )
 }

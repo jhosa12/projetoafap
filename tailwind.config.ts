@@ -17,6 +17,7 @@ const config: Config = {
       }
     },
     fontFamily: {
+      'roboto': ['Roboto', 'sans-serif'],
       'body': [
     'Segoe UI Emoji', 
     'Apple Color Emoji', 
