@@ -20,7 +20,7 @@ export default function SideBar(){
  const [isOpen,setIsOpen]= useState(true )
     return(
       
-      <div className='flex flex-col w-full overflow-hidden'>
+      <div className='flex flex-col w-full overscroll-contain'>
         <header>
     <nav className="border-gray-200 px-4 lg:px-6 py-2.5 bg-[#101418] " >
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
@@ -43,7 +43,7 @@ export default function SideBar(){
 </header>
    <div className=' flex flex-row bg-[#101418] w-full '> 
   
-   <div className={`flex h-[100vh] overflow-y-${isOpen ? 'scroll' : 'hidden'}`}>
+   <div className={`flex h-[100vh] overscroll-y-${isOpen ? 'auto' : 'hidden'}`}>
         <Sidebar  collapsed={!isOpen}  backgroundColor='#101418'  rootStyles={{
             [`.${sidebarClasses.container}`]: {
               height:'89%',
