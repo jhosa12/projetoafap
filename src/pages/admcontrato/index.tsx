@@ -56,19 +56,34 @@ export default function AdmContrato(){
     </ul>
     <div >
      {dados && (<div className={`p-4  rounded-lg md:p-8 bg-gray-800 ${dados? "":''}`}>
-            <h2 className="mb-3 text-xl font-extrabold tracking-tight text-white">001-JOSÉ HENRIQUE BATISTA DE FREITAS</h2>
-            <p className="mb-3 text-gray-400">yee service experiences fast.</p>
-            <a href="#" className="inline-flex items-center font-medium  text-blue-500 hover:text-blue-700">
-                Learn more
-                <svg className=" w-2.5 h-2.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                </svg>
-            </a>
+            <h2 className="flex flex-row gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">001-JOSÉ HENRIQUE BATISTA DE FREITAS <span>PLANO:<span className="pl-3 text-[#c5942b]">GOLD PRIME 5</span></span></h2>
+          <div className="flex w-full flex-row gap-2">
+            <div className="flex flex-col  p-4  border  rounded-lg shadow bg-gray-800 border-gray-700">
+ 
+        <h5 className="mb-1 flex flex-row justify-between  gap-2 font-semibold tracking-tight  text-white">
+        <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">ENDEREÇO: </span>AGROVILA UBALDINHO</p>
+        <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">Nº: </span>22</p>
+        <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">BAIRRO: </span>UBALDINHO</p>
+        </h5>
+        <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
+            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">PONTO REF: </span>PROXIMO AO CENTRO</p>
+            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CIDADE: </span>VARZEA ALEGRE/CE</p>
+         </h5>
+    </div>
+    <div className="flex flex-col p-4  border  rounded-lg shadow bg-gray-800 border-gray-700">
+    <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
+            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CATEGORIA: </span>GOLD PRIME 5</p>
+            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">VALOR: </span>R$ 39,00</p>
+         </h5>
+ 
+
+</div>
+    </div>  
         </div>)}
         {historico && (<div className="p-4 rounded-lg md:p-8 bg-gray-800" id="services" role="tabpanel" aria-labelledby="services-tab">
            
 
-<div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+<div className="flex overflow-x-auto shadow-md sm:rounded-lg">
     <table className="w-full text-sm text-left rtl:text-right text-gray-400">
         <thead className="text-xs  uppercase  bg-gray-700 text-gray-400">
             <tr>
@@ -148,6 +163,13 @@ export default function AdmContrato(){
                 </td>
             </tr>
         </tbody>
+        <tfoot>
+            <tr className="font-semibold text-gray-900 dark:text-white">
+                <th scope="row" className="px-6 py-3 text-base">Total</th>
+                <td className="px-6 py-3">3</td>
+                <td className="px-6 py-3">21,000</td>
+            </tr>
+        </tfoot>
     </table>
 </div>
 
