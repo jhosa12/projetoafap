@@ -42,7 +42,7 @@ export default function AdmContrato(){
             </div>
 
 
-<div className="w-11/12   border  rounded-lg shadow bg-gray-800 border-gray-700">
+<div className="w-11/12  border  rounded-lg shadow bg-gray-800 border-gray-700">
     <ul className="flex flex-wrap text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
         <li className="me-2">
             <button  type="button" onClick={()=>{setDados(true),setDependentes(false),setHistorico(false)}}   className="inline-block p-4  rounded-ss-lg  bg-gray-800 hover:bg-gray-700 text-blue-500">Dados</button>
@@ -58,7 +58,9 @@ export default function AdmContrato(){
      {dados && (<div className={`p-4  rounded-lg md:p-8 bg-gray-800 ${dados? "":''}`}>
             <h2 className="flex flex-row gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">001-JOSÉ HENRIQUE BATISTA DE FREITAS <span>PLANO:<span className="pl-3 text-[#c5942b]">GOLD PRIME 5</span></span></h2>
           <div className="flex w-full flex-row gap-2">
+           
             <div className="flex flex-col  p-4  border  rounded-lg shadow bg-gray-800 border-gray-700">
+            <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO TITULAR</h2>
  
         <h5 className="mb-1 flex flex-row justify-between  gap-2 font-semibold tracking-tight  text-white">
         <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">ENDEREÇO: </span>AGROVILA UBALDINHO</p>
@@ -71,33 +73,41 @@ export default function AdmContrato(){
          </h5>
     </div>
     <div className="flex flex-col p-4  border  rounded-lg shadow bg-gray-800 border-gray-700">
+    <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO PLANO</h2>
     <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
             <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CATEGORIA: </span>GOLD PRIME 5</p>
             <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">VALOR: </span>R$ 39,00</p>
+         </h5>
+         <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
+            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">ADESÃO: </span>25/01/2024</p>
+            <p className="mb-1 font-normal text-red-600"><span className="text-white font-semibold">CARÊNCIA: </span>25/03/2024</p>
          </h5>
  
 
 </div>
     </div>  
         </div>)}
-        {historico && (<div className="p-4 rounded-lg md:p-8 bg-gray-800" id="services" role="tabpanel" aria-labelledby="services-tab">
+        {historico && (
            
-
-<div className="flex overflow-x-auto shadow-md sm:rounded-lg">
-    <table className="w-full text-sm text-left rtl:text-right text-gray-400">
-        <thead className="text-xs  uppercase  bg-gray-700 text-gray-400">
+<div className="flex  rounded-lg  overflow-y-auto w-full max-h-96  p-3   shadow-md sm:rounded-lg">
+    <table 
+     className="w-full text-sm text-left rtl:text-right overflow-y-auto   rounded-lg  text-gray-400 ">
+        <thead className=" w-full text-xs  uppercase bg-gray-700 text-gray-400">
             <tr>
-                <th scope="col" className="px-6 py-3">
-                    NUMERO DA PARCELA
+                <th scope="col" className=" px-6 py-3">
+                    NP
                 </th>
                 <th scope="col" className="px-6 py-3">
                     DATA VENC.
                 </th>
                 <th scope="col" className="px-6 py-3">
-                    DATA AGENDADA
+                    DATA AGEND.
+                </th>
+                <th scope="col" className="px-8 py-3">
+                    VALOR
                 </th>
                 <th scope="col" className="px-6 py-3">
-                    VALOR
+                    status
                 </th>
                 <th scope="col" className="px-6 py-3">
                     BAIXADA POR
@@ -105,6 +115,7 @@ export default function AdmContrato(){
                 <th scope="col" className="px-6 py-3">
                     AGENDADA POR
                 </th>
+                
                 <th scope="col" className="px-6 py-3">
                     <span className="sr-only">Edit</span>
                 </th>
@@ -113,16 +124,25 @@ export default function AdmContrato(){
         <tbody>
             <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
                 <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
-                    Apple MacBook Pro 17"
+                    1
                 </th>
                 <td className="px-6 py-4">
-                    Silver
+                    25/01/2024
                 </td>
                 <td className="px-6 py-4">
-                    Laptop
+                25/01/2024
                 </td>
                 <td className="px-6 py-4">
-                    $2999
+                R$ 39,00
+                </td>
+                <td className="px-6 py-4">
+                A
+                </td>
+                <td className="px-6 py-4">
+                
+                </td>
+                <td className="px-6 py-4">
+                
                 </td>
                 <td className="px-6 py-4 text-right">
                     <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
@@ -130,66 +150,336 @@ export default function AdmContrato(){
             </tr>
             <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
                 <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
-                    Microsoft Surface Pro
+                    2
                 </th>
                 <td className="px-6 py-4">
-                    White
+                    25/02/2024
                 </td>
                 <td className="px-6 py-4">
-                    Laptop PC
+                    25/02/2024
                 </td>
                 <td className="px-6 py-4">
-                    $1999
+                R$ 39,00
+                </td>
+                <td className="px-6 py-4">
+                A
+                </td>
+                <td className="px-6 py-4">
+                
+                </td>
+                <td className="px-6 py-4">
+                
                 </td>
                 <td className="px-6 py-4 text-right">
                     <a href="#" className="font-medium text-blue-500 hover:underline">Edit</a>
                 </td>
             </tr>
-            <tr className=" bg-gray-800 hover:bg-gray-600">
+            <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
                 <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
-                    Magic Mouse 2
+                    3
                 </th>
                 <td className="px-6 py-4">
-                    Black
+                    25/03/2024
                 </td>
                 <td className="px-6 py-4">
-                    Accessories
+                    25/03/2024
                 </td>
                 <td className="px-6 py-4">
-                    $99
+                R$ 39,00
+                </td>
+                <td className="px-6 py-4">
+                A
+                </td>
+                <td className="px-6 py-4">
+                
+                </td>
+                <td className="px-6 py-4">
+                
+                </td>
+                <td className="px-6 py-4 text-right">
+                    <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
+                </td>
+               
+            </tr>
+            <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
+                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                    4
+                </th>
+                <td className="px-6 py-4">
+                    25/04/2024
+                </td>
+                <td className="px-6 py-4">
+                    25/04/2024
+                </td>
+                <td className="px-6 py-4">
+                    R$ 39,00
+                </td>
+                <td className="px-6 py-4">
+                A
+                </td>
+                <td className="px-6 py-4">
+                
+                </td>
+                <td className="px-6 py-4">
+                
                 </td>
                 <td className="px-6 py-4 text-right">
                     <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
                 </td>
             </tr>
-        </tbody>
-        <tfoot>
-            <tr className="font-semibold text-gray-900 dark:text-white">
-                <th scope="row" className="px-6 py-3 text-base">Total</th>
-                <td className="px-6 py-3">3</td>
-                <td className="px-6 py-3">21,000</td>
+            <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
+                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                    5
+                </th>
+                <td className="px-6 py-4">
+                    25/05/2024
+                </td>
+                <td className="px-6 py-4">
+                    25/05/2024
+                </td>
+                <td className="px-6 py-4">
+                R$ 39,00
+                </td>
+                <td className="px-6 py-4">
+                A
+                </td>
+                <td className="px-6 py-4">
+                
+                </td>
+                <td className="px-6 py-4">
+                
+                </td>
+                <td className="px-6 py-4 text-right">
+                    <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
+                </td>
+               
             </tr>
-        </tfoot>
+            <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
+                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                    6
+                </th>
+                <td className="px-6 py-4">
+                    25/05/2024
+                </td>
+                <td className="px-6 py-4">
+                    25/05/2024
+                </td>
+                <td className="px-6 py-4">
+                R$ 39,00
+                </td>
+                <td className="px-6 py-4">
+                A
+                </td>
+                <td className="px-6 py-4">
+                
+                </td>
+                <td className="px-6 py-4">
+                
+                </td>
+                <td className="px-6 py-4 text-right">
+                    <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
+                </td>
+               
+            </tr>
+            <tr  className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
+                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                    7
+                </th>
+                <td className="px-6 py-4">
+                    25/05/2024
+                </td>
+                <td className="px-6 py-4">
+                    25/05/2024
+                </td>
+                <td className="px-6 py-4">
+                R$ 39,00
+                </td>
+                <td className="px-6 py-4">
+                
+                </td>
+                <td className="px-6 py-4">
+                
+                </td>
+                <td className="px-6 py-4 text-right">
+                    <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
+                </td>
+               
+            </tr>
+
+            <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
+                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                    8
+                </th>
+                <td className="px-6 py-4">
+                    25/05/2024
+                </td>
+                <td className="px-6 py-4">
+                    25/05/2024
+                </td>
+                <td className="px-6 py-4">
+                R$ 39,00
+                </td>
+                <td className="px-6 py-4">
+                
+                </td>
+                <td className="px-6 py-4">
+                
+                </td>
+                <td className="px-6 py-4 text-right">
+                    <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
+                </td>
+               
+            </tr>
+            <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
+                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                    8
+                </th>
+                <td className="px-6 py-4">
+                    25/05/2024
+                </td>
+                <td className="px-6 py-4">
+                    25/05/2024
+                </td>
+                <td className="px-6 py-4">
+                R$ 39,00
+                </td>
+                <td className="px-6 py-4">
+                
+                </td>
+                <td className="px-6 py-4">
+                
+                </td>
+                <td className="px-6 py-4 text-right">
+                    <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
+                </td>
+               
+            </tr>
+            
+        
+            
+        </tbody>
+    
     </table>
 </div>
 
-        </div>)}
-        {dependentes && (<div className=" p-4  rounded-lg md:p-8 bg-gray-800" id="statistics" role="tabpanel" aria-labelledby="statistics-tab">
-            <dl className="grid max-w-screen-xl grid-cols-2 gap-8 p-4 mx-auto  sm:grid-cols-3 xl:grid-cols-6 text-white sm:p-8">
-                <div className="flex flex-col">
-                    <dt className="mb-2 text-3xl font-extrabold">73M+</dt>
-                    <dd className="text-gray-400">Developers</dd>
-                </div>
-                <div className="flex flex-col">
-                    <dt className="mb-2 text-3xl font-extrabold">100M+</dt>
-                    <dd className="text-gray-400">Public repositories</dd>
-                </div>
-                <div className="flex flex-col">
-                    <dt className="mb-2 text-3xl font-extrabold">1000s</dt>
-                    <dd className="text-gray-400">Open source projects</dd>
-                </div>
-            </dl>
-        </div>)}
+        )}
+        {dependentes && (<div className="flex rounded-lg  overflow-y-auto w-full max-h-96  p-3   shadow-md sm:rounded-lg">
+    <table 
+     className="w-full text-sm text-left rtl:text-right overflow-y-auto   rounded-lg  text-gray-400 ">
+        <thead className=" w-full text-xs  uppercase bg-gray-700 text-gray-400">
+            <tr>
+                <th scope="col" className=" px-6 py-3">
+                    NOME
+                </th>
+                <th scope="col" className="px-6 py-3">
+                    ADESÃO
+                </th>
+                <th scope="col" className="px-6 py-3">
+                    CARÊNCIA
+                </th>
+                <th scope="col" className="px-8 py-3">
+                    NASC.
+                </th>
+                <th scope="col" className="px-6 py-3">
+                    PARENTESCO
+                </th> 
+                <th scope="col" className="px-6 py-3">
+                    <span className="sr-only">Edit</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
+                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                    MARCOS ANTONIO BATISTA DE FREITAS
+                </th>
+                <td className="px-6 py-4">
+                    25/01/2024
+                </td>
+                <td className="px-6 py-4">
+                25/01/2024
+                </td>
+                <td className="px-6 py-4">
+                25/01/2024
+                </td>
+                <td className="px-6 py-4">
+                IRMÃO
+                </td>
+              
+                
+                <td className="px-6 py-4 text-right">
+                    <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
+                </td>
+            </tr>
+            <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
+                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                    PEDRO DANIEL DA SILVA
+                </th>
+                <td className="px-6 py-4">
+                    25/02/2024
+                </td>
+                <td className="px-6 py-4">
+                    25/02/2024
+                </td>
+                <td className="px-6 py-4">
+                25/02/2024
+                </td>
+                <td className="px-6 py-4">
+                PRIMO
+                </td>
+                
+                <td className="px-6 py-4 text-right">
+                    <a href="#" className="font-medium text-blue-500 hover:underline">Edit</a>
+                </td>
+            </tr>
+            <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
+                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                    JOSE HENRIQUE BATISTA DE FREITAS
+                </th>
+                <td className="px-6 py-4">
+                    25/03/2024
+                </td>
+                <td className="px-6 py-4">
+                    25/03/2024
+                </td>
+                <td className="px-6 py-4">
+                25/03/2024
+                </td>
+                <td className="px-6 py-4">
+                SOBRINHO
+                </td>
+               
+                <td className="px-6 py-4 text-right">
+                    <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
+                </td>
+               
+            </tr>
+            <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
+                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                    MARIA DAS GRAÇAS
+                </th>
+                <td className="px-6 py-4">
+                    25/04/2024
+                </td>
+                <td className="px-6 py-4">
+                    25/04/2024
+                </td>
+                <td className="px-6 py-4">
+                25/04/2024
+                </td>
+                <td className="px-6 py-4">
+                AMIGA
+                </td>
+                
+                <td className="px-6 py-4 text-right">
+                    <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
+                </td>
+            </tr>
+        
+        </tbody>
+    
+    </table>
+</div>)}
     </div>
 </div>
 
