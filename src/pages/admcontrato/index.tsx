@@ -5,6 +5,8 @@ import {ModalBusca} from '../../components/modal'
 import Teste from '@/pages/teste/index';
 import { useState } from "react";
 import { ClassNames } from "@emotion/react";
+import { RiFileAddLine } from "react-icons/ri";
+
 type FormData={
     closeModal:boolean,
     nome:string
@@ -16,6 +18,7 @@ const INITIAL_DATA:FormData ={
 export default function AdmContrato(){
   const [textarea,setTextArea] = useState(true)
   const [modalbusca,setModalBusca] = useState(INITIAL_DATA)
+  const [modalplano,setModalPlano] = useState(false)
   const [dados,setDados] =useState(true)
   const [historico,setHistorico] = useState(false)
   const [dependentes,setDependentes] =useState(false)
@@ -31,14 +34,18 @@ export default function AdmContrato(){
     return(
         <>
         {modalbusca.closeModal && (<ModalBusca {...modalbusca} updateFields={updateFields}/>)}
-        <div className={`flex  flex-col w-full pl-4` }>
-            <div className="flex  flex-row justify-start gap-2 items-center w-full">
-            <button onClick={()=>updateFields({closeModal:!modalbusca.closeModal})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700 me-2 mb-2">
+        {modalplano && (<Teste/>)}
+        <div className="flex  flex-col w-full pl-4">
+            <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
+            <button onClick={()=>updateFields({closeModal:!modalbusca.closeModal})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
             <IoMdSearch size={20}/>
         Buscar Cliente
     </button>
                
-              
+    <button type="button" onClick={()=>setModalPlano(true)} className="text-white gap-1  focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-3 py-2.5 text-center inline-flex items-center bg-[#c5942b] hover:bg-[#c5942ba9] focus:ring-blue-800">
+    Add Plano
+    <RiFileAddLine size={20} />
+    </button>
             </div>
 
 
@@ -52,6 +59,9 @@ export default function AdmContrato(){
         </li>
         <li className="me-2">
             <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Dependentes</button>
+        </li>
+        <li className="me-2">
+            <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Óbitos</button>
         </li>
     </ul>
     <div >

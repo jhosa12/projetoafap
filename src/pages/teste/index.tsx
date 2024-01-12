@@ -60,14 +60,14 @@ export default function testeLayout() {
 
   }
   return (
-    <div className="flex w-full  absolute h-[100vh] bg-gray-600 bg-opacity-20">
-      {/*<SideBar />*/}
-      <div className="flex flex-col w-full  ">
+  
+    
+    <div  tabIndex={-1} aria-hidden="true" className=" overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
         
-        <div className="pl-2 pr-2 flex flex-col items-center justify-center w-full h-full bg-opacity-50">
-        <div className="relative  bg-[#363640] border-[1px] border-slate-300 p-2 shadow-lg rounded-lg">
+        <div className="pl-2 pr-2 flex flex-col items-center justify-center w-full h-full ">
+        <div className="relative  border  rounded-lg shadow bg-gray-800 border-gray-700 p-2">
         <form onSubmit={onSubmit}>
-          <div className="absolute top-2 right-2">
+          <div className="absolute font-bold text-white top-2 right-2">
             {currentStepIndex + 1} / {steps.length}
           </div>
           {step}
@@ -82,6 +82,6 @@ export default function testeLayout() {
         </div>
       </div>
 
-    </div>
+    
   );
 }

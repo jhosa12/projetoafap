@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { IoIosClose } from "react-icons/io";
 
 type UserData={
@@ -14,11 +14,13 @@ export function ModalBusca({nome,closeModal,updateFields}:UserFormProps){
     const [isOpen,setIsOpen] = useState(false)
     const [dropOpen,setDrop] = useState(false)
     const [criterio,setCriterio]=useState("Buscar Por")
+  
     return(
-   <div  className=" absolute w-screen h-[100vh] max-h-full">
-    <div className="flex justify-center p-2 w-screen h-2/3 ">
+        <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%)] max-h-full  ">
+  
+    <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-10 bg-white ">
       
-        <div className="flex flex-col w-7/12 h-full rounded-lg shadow bg-gray-700">
+        <div className="fixed flex flex-col  w-7/12 h-4/5 rounded-lg shadow bg-gray-700">
             <div className="flex w-full items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-600">
             <form className="flex w-3/4">
     <div className="flex w-full">
