@@ -12,7 +12,7 @@ export function MultiStep(steps:ReactElement[]){
 
     function back(){
         setCurrentStepIndex(i=>{
-            if(i<=0)return i
+            if(i<=0) return i
             return i-1
         })
     }
@@ -27,7 +27,8 @@ export function MultiStep(steps:ReactElement[]){
         steps,
         goTo, 
         next,
-        back
-    }
+        back,
+    
+    } 
 
 }

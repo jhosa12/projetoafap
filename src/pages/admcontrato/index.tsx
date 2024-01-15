@@ -3,38 +3,71 @@ import { IoMdSearch } from "react-icons/io";
 import 'react-tabs/style/react-tabs.css';
 import {ModalBusca} from '../../components/modal'
 import Teste from '@/pages/teste/index';
-import { useState } from "react";
-import { ClassNames } from "@emotion/react";
+import { useState,useContext } from "react";
 import { RiFileAddLine } from "react-icons/ri";
-
+import { useMyContext } from "@/pages/teste/index";
+import {AuthContext} from "../../contexts/AuthContext"
 type FormData={
-    closeModal:boolean,
-    nome:string
+    
+        name:string,
+        date:string,
+        sexo:string,
+        cep:string,
+        endereço:string,
+        numero:string,
+        bairro:string, 
+        referencia:string,
+        cidade:string,
+        uf:string,
+        email:string,
+        rg:string,
+        cpf:string,
+        closeModal:boolean,
+         nome:string
 }
 const INITIAL_DATA:FormData ={
+    name:'',
+    date:'',
+    sexo:'',
+    cep:'',
+    endereço:'',
+    numero:'',
+    bairro:'', 
+    referencia:'',
+    cidade:'',
+    uf:'',
+    email:'',
+    rg:'',
+    cpf:'',
     closeModal:false,
     nome:''
 }
+interface MyContext {
+    closePlano: boolean,
+    testeFields: ()=>void
+  }
 export default function AdmContrato(){
+    const {closePlano,testeFields} = useMyContext()
+    
+   
   const [textarea,setTextArea] = useState(true)
   const [modalbusca,setModalBusca] = useState(INITIAL_DATA)
   const [modalplano,setModalPlano] = useState(false)
   const [dados,setDados] =useState(true)
   const [historico,setHistorico] = useState(false)
   const [dependentes,setDependentes] =useState(false)
- 
- 
-
-  
+   
   function updateFields(fields:Partial<FormData>){
     setModalBusca(prev=>{
         return {...prev,...fields}
     })
+   
   }
     return(
         <>
+       
         {modalbusca.closeModal && (<ModalBusca {...modalbusca} updateFields={updateFields}/>)}
-        {modalplano && (<Teste/>)}
+        {closePlano && (<Teste/>)}
         <div className="flex  flex-col w-full pl-4">
             <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
             <button onClick={()=>updateFields({closeModal:!modalbusca.closeModal})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
@@ -42,7 +75,7 @@ export default function AdmContrato(){
         Buscar Cliente
     </button>
                
-    <button type="button" onClick={()=>setModalPlano(true)} className="text-white gap-1  focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-3 py-2.5 text-center inline-flex items-center bg-[#c5942b] hover:bg-[#c5942ba9] focus:ring-blue-800">
+    <button type="button"  className="text-white gap-1  focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-3 py-2.5 text-center inline-flex items-center bg-[#c5942b] hover:bg-[#c5942ba9] focus:ring-blue-800">
     Add Plano
     <RiFileAddLine size={20} />
     </button>
