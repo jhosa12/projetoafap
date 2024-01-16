@@ -74,7 +74,7 @@ export function AuthProvider({children}:{children:ReactNode}){
 async function sign({user,password}:SignInProps) {
     try{
         const response = await api.post('/session',{
-            user,
+            nome:user,
             password
         })
         const {id,token} = response.data
