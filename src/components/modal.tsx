@@ -1,19 +1,19 @@
-import { FormEvent, useEffect, useState } from "react"
+import { FormEvent, useEffect, useState,useContext} from "react"
+import { AuthContext } from "@/contexts/AuthContext";
 import { IoIosClose } from "react-icons/io";
 
 type UserData={
     closeModal:boolean,
     nome:string
-
 }
 type UserFormProps =UserData & {
     updateFields :(fields:Partial<UserData>)=>void
 }
-
-export function ModalBusca({nome,closeModal,updateFields}:UserFormProps){
+export function ModalBusca(){
     const [isOpen,setIsOpen] = useState(false)
     const [dropOpen,setDrop] = useState(false)
     const [criterio,setCriterio]=useState("Buscar Por")
+    const {data,closeModa} = useContext(AuthContext)
   function onSubmit(event:FormEvent){
     event.preventDefault()
   }
@@ -58,14 +58,14 @@ export function ModalBusca({nome,closeModal,updateFields}:UserFormProps){
         </div>
     </div>
 </form>
-                <button onClick={()=>updateFields({closeModal:false})} type="button" className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                <button  type="button" onClick={()=>closeModa({closeModalPlano:false})} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
                     <IoIosClose size={30}/>
                 </button>
             </div>
             <div className="flex flex-col overflow-y-auto mb-1 p-2 md:p-2">
                 <p className="text-gray-400 mb-2">Selecione o Contrato:</p>
                 <ul className="overflow-y-visible space-y-2 mb-2">
-                    <li onClick={()=>updateFields({closeModal:false})}>
+                    <li onClick={()=>closeModa({closeModalPlano:false})}>
                         <label  className="inline-flex items-center justify-between w-full p-2   rounded-lg cursor-pointer hover:text-gray-300 border-gray-500 peer-checked:text-blue-500 peer-checked:border-blue-600 text-white bg-gray-600 hover:bg-gray-500">                           
                             <div className="block">
                                 <div className="w-full text-base font-semibold"><span className="pr-2">001</span> JOSÉ HENRIQUE BATISTA DE FREITAS </div>
@@ -79,7 +79,7 @@ export function ModalBusca({nome,closeModal,updateFields}:UserFormProps){
                             <svg className="w-4 h-4 ms-3 rtl:rotate-180  text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
                         </label>
                     </li>
-                    <li onClick={()=>updateFields({closeModal:false})}>
+                    <li onClick={()=>closeModa({closeModalPlano:false})}>
                         <label  className="inline-flex items-center justify-between w-full p-2   rounded-lg cursor-pointer hover:text-gray-300 border-gray-500 peer-checked:text-blue-500 peer-checked:border-blue-600 text-white bg-gray-600 hover:bg-gray-500">                           
                         <div className="block">
                                 <div className="w-full text-base font-semibold"><span className="pr-2">001</span> JOSÉ HENRIQUE BATISTA DE FREITAS </div>
@@ -93,7 +93,7 @@ export function ModalBusca({nome,closeModal,updateFields}:UserFormProps){
                             <svg className="w-4 h-4 ms-3 rtl:rotate-180  text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
                         </label>
                     </li>
-                    <li onClick={()=>updateFields({closeModal:false})}>
+                    <li onClick={()=>closeModa({closeModalPlano:false})}>
                         <label  className="inline-flex items-center justify-between w-full p-2  rounded-lg cursor-pointer hover:text-gray-300 border-gray-500 peer-checked:text-blue-500 peer-checked:border-blue-600 text-white bg-gray-600 hover:bg-gray-500">                           
                         <div className="block">
                                 <div className="w-full text-base font-semibold"><span className="pr-2">001</span> JOSÉ HENRIQUE BATISTA DE FREITAS </div>
@@ -107,7 +107,7 @@ export function ModalBusca({nome,closeModal,updateFields}:UserFormProps){
                             <svg className="w-4 h-4 ms-3 rtl:rotate-180 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
                         </label>
                     </li>
-                    <li onClick={()=>updateFields({closeModal:false})}>
+                    <li onClick={()=>closeModa({closeModalPlano:false})}>
                         <label  className="inline-flex items-center justify-between w-full p-2 rounded-lg cursor-pointer hover:text-gray-300 border-gray-500 peer-checked:text-blue-500 peer-checked:border-blue-600 text-white bg-gray-600 hover:bg-gray-500">                           
                         <div className="block">
                                 <div className="w-full text-base font-semibold"><span className="pr-2">001</span> JOSÉ HENRIQUE BATISTA DE FREITAS </div>
@@ -121,7 +121,7 @@ export function ModalBusca({nome,closeModal,updateFields}:UserFormProps){
                             <svg className="w-4 h-4 ms-3 rtl:rotate-180 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
                         </label>
                     </li>
-                    <li onClick={()=>updateFields({closeModal:false})}>
+                    <li onClick={()=>closeModa({closeModalPlano:false})}>
                         <label  className="inline-flex items-center justify-between w-full p-2  rounded-lg cursor-pointer hover:text-gray-300 border-gray-500 peer-checked:text-blue-500 peer-checked:border-blue-600 text-white bg-gray-600 hover:bg-gray-500">                           
                         <div className="block">
                                 <div className="w-full text-base font-semibold"><span className="pr-2">001</span> JOSÉ HENRIQUE BATISTA DE FREITAS </div>

@@ -3,7 +3,6 @@ import {api} from "../services/apiClient"
 import {destroyCookie,setCookie,parseCookies} from "nookies"
 import Router from 'next/router';
 
-
 type DadosCadastro={
     name:string,
     date:string,
@@ -18,7 +17,8 @@ type DadosCadastro={
     email:string,
     rg:string,
     cpf:string,
-    closeModalPlano:boolean
+    closeModalPlano:boolean,
+    closeModalCadastro:boolean
 }
 
 const INITIAL_DATA:DadosCadastro ={
@@ -35,7 +35,8 @@ const INITIAL_DATA:DadosCadastro ={
     email:'',
     rg:'',
     cpf:'',
-    closeModalPlano:false
+    closeModalPlano:false,
+    closeModalCadastro:false
   }
 
 type AuthContextData = {
@@ -96,7 +97,7 @@ function closeModa(fields: Partial<DadosCadastro>){
    setData(prev=>{
      return{...prev,...fields}
     })
-    alert("Clicou!")
+    
 }
   return(
     <AuthContext.Provider value={{usuario,isAuthenticated,sign,signOut,data,closeModa}}>

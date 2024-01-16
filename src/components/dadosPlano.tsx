@@ -9,7 +9,7 @@ type UserData={
 type UserFormProps = UserData & {
   updateFields: (fields:Partial<UserData>)=>void
 }
-export function DadosPlano({name,date,updateFields}:UserFormProps){
+export function DadosPlano(){
     return(
         <FormWrapper title="DADOS DO PLANO">
               <div className="flex flex-col   gap-9 p-4 rounded-lg w-full h-full ">
