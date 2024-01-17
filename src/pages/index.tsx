@@ -6,19 +6,15 @@ import logo from "../../public/logoafap.png"
 import {AuthContext} from "../contexts/AuthContext"
 import { api } from "@/services/apiClient";
 export default function Home() {
-   useEffect(()=>{
-       teste()
-        
-   },[])
-   async function teste() {
-    const request =await api.get('/getuser')
-    console.log(request.data)
-   }
+ 
+
     const [user,setName]= useState("")
     const [password,setSenha]= useState("")
     const [loading,setLoading]= useState(false)
     const {sign} =useContext(AuthContext)
         async function handleSignUp(event:FormEvent){
+            const request =await api.get('/getuser')
+             console.log(request.data)
             setLoading(true)
             event.preventDefault();
             if(user===""||password===""){
