@@ -23,11 +23,11 @@ export function Item(){
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">NASCIMENTO</label>
-          <input type="date" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-sm dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.nasc} onChange={e=>closeModa({nasc:e.target.value})} type="date" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-sm dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label   className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">SEXO</label>
-            <select  className="block w-full pb-1 pt-1 pr-2 pl-2  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <select value={data.sexo} onChange={e=>closeModa({sexo:e.target.value})} className="block w-full pb-1 pt-1 pr-2 pl-2  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option   selected></option>
               <option   value="M">MASCULINO</option>
               <option   value="F">FEMININO</option>
@@ -36,27 +36,27 @@ export function Item(){
        
         <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">CEP</label>
-          <InputMask mask={'99999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <InputMask value={data.cep} onChange={e=>closeModa({cep:e.target.value})} mask={'99999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">ENDEREÇO</label>
-          <input autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.endereço} onChange={e=>closeModa({endereço:e.target.value})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">NUMERO</label>
-          <input autoComplete="off" type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.numero} onChange={e=>closeModa({numero:e.target.value})} autoComplete="off" type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">BAIRRO</label>
-          <input autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.bairro} onChange={e=>closeModa({bairro:e.target.value})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-2">
           <label  className="block mb-1 text-sm font-medium  text-white">PONTO REF</label>
-          <input autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50 dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.referencia} onChange={e=>closeModa({referencia:e.target.value})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50 dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">UF</label>
-            <select className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm   text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <select value={data.uf} onChange={e=>closeModa({uf:e.target.value})} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm   text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option selected></option>
               <option value="M">CE</option>
               <option value="F">TO</option>
@@ -64,7 +64,7 @@ export function Item(){
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">CIDADE</label>
-            <select className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <select value={data.cidade} onChange={e=>closeModa({cidade:e.target.value})} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option selected></option>
               <option value="M">CEDRO</option>
               <option value="F">LAVRAS DA MANGABEIRA</option>
@@ -72,39 +72,31 @@ export function Item(){
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">RG</label>
-          <input autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.rg} onChange={e=>closeModa({rg:e.target.value})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">CPF</label>
-          <input autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-          </div>
-          <div className="col-span-1">
-          <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">UF</label>
-            <select className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm   text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option selected></option>
-              <option value="M">CEDRO</option>
-              <option value="F">LAVRAS DA MANGABEIRA</option>
-            </select>
+          <InputMask mask={'999.999.999-99'}  value={data.cpf} onChange={e=>closeModa({cpf:e.target.value})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">NATURALIDADE</label>
-          <input autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.naturalidade} onChange={e=>closeModa({naturalidade:e.target.value})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">EMAIL</label>
-          <input autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.email} onChange={e=>closeModa({email:e.target.value})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">CELULAR1</label>
-          <InputMask mask={'99999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <InputMask value={data.celular1} onChange={e=>closeModa({celular1:e.target.value})} mask={'(99) 9 9999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">CELULAR2</label>
-          <InputMask mask={'99999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <InputMask value={data.celular2} onChange={e=>closeModa({celular2:e.target.value})} mask={'(99) 9 9999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">TELEFONE</label>
-          <InputMask mask={'99999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <InputMask value={data.telefone} onChange={e=>closeModa({telefone:e.target.value})} mask={'(99) 9 9999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
         
 

@@ -1,10 +1,11 @@
-import {  useState } from "react"
+import {  useContext, useState } from "react"
 import { FormWrapper } from "./organizador"
 import InputMask from 'react-input-mask'
 import { TiDeleteOutline } from "react-icons/ti";
 import { TiDelete } from "react-icons/ti";
 import { MdDeleteForever } from "react-icons/md";
 import { MdEditSquare } from "react-icons/md";
+import { AuthContext } from "@/contexts/AuthContext";
 
 interface UserProps{
     nome:string,
@@ -16,28 +17,30 @@ interface UserProps{
 
 export function DadosDependentes(){
 
-
+const {data,closeModa}= useContext(AuthContext)
 const [nome,setNome]= useState('')
 const [nasc,setNasc]= useState('')
 const [parentesco,setPar]= useState('')
 const [adesao,setAdesao]= useState('')
 const [carencia,setCarencia]= useState('')
-    const [arrayDependetes,setArray] =useState<UserProps[]>([])
+const [arrayDependetes,setArray] =useState<UserProps[]>([])
 
 
      function adicionar(){
         if(nome!==''){
-          const data = {
+          const dados = {
             nome,nasc,parentesco,adesao,carencia
         }   
-            setArray([...arrayDependetes,data])
+           // setArray([...arrayDependetes,dados])
+            closeModa({arraydep:[...data.arraydep,dados]})
             setNome("")
             setNasc("")
             setPar("")
             setAdesao("")
             setCarencia("")   
+           
         }
-        return
+        
             
         }
 
@@ -98,15 +101,15 @@ const [carencia,setCarencia]= useState('')
                           </tr>
                         </thead>
                         <tbody>
-                          {arrayDependetes.map((usuario, index) => (
+                          {data.arraydep.map((usuario, index) => (
                             <tr className=" border-b border-l bg-gray-800 border-gray-700  hover:bg-gray-600" key={index}>
                               <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">{usuario.nome}</th>
                               <td className="px-5 py-1">{usuario.nasc}</td>
                               <td className="px-5 py-1">{usuario.parentesco}</td>
                               <td className="px-5 py-1">
                                 <div className="flex gap-3">
-                                <button  className="flex justify-center items-center"  ><MdEditSquare color='yellow' size={22}/></button>
-                                <button  className="flex justify-center items-center " ><MdDeleteForever color='red' size={25}/></button>
+                                <button  className="flex justify-center items-center"  ><MdEditSquare color='yellow' size={18}/></button>
+                                <button  className="flex justify-center items-center " ><MdDeleteForever color='red' size={18}/></button>
                                 </div>
                               </td>
                             </tr>

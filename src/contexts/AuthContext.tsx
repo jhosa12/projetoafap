@@ -2,10 +2,16 @@ import { ReactNode,createContext,useState } from 'react';
 import {api} from "../services/apiClient"
 import {destroyCookie,setCookie,parseCookies} from "nookies"
 import Router from 'next/router';
-
+type DependentesProps={
+    nome:string,
+    nasc:string,
+    parentesco:string,
+    adesao:string,
+    carencia:string
+}
 type DadosCadastro={
     name:string,
-    date:string,
+    nasc:string,
     sexo:string,
     cep:string,
     endereço:string,
@@ -19,11 +25,28 @@ type DadosCadastro={
     cpf:string,
     closeModalPlano:boolean,
     closeModalCadastro:boolean
+    arraydep:Array<DependentesProps> ,
+    naturalidade:string,
+    celular1:string,
+    celular2:string,
+    telefone:string,
+    contrato:number,
+    origem:string,
+    plano:string,
+    valor:string,
+    cobrador:string,
+    consultor:string,
+    supervisor:string,
+    np:number,
+    dtvenc:string,
+    dtadesao:string,
+    dtcarencia:string
+    
 }
 
 const INITIAL_DATA:DadosCadastro ={
     name:'',
-    date:'',
+    nasc:'',
     sexo:'',
     cep:'',
     endereço:'',
@@ -36,7 +59,23 @@ const INITIAL_DATA:DadosCadastro ={
     rg:'',
     cpf:'',
     closeModalPlano:false,
-    closeModalCadastro:false
+    closeModalCadastro:false,
+    arraydep:[],
+    naturalidade:'',
+    celular1:'',
+    celular2:'',
+    telefone:'',
+    contrato:0,
+    origem:'',
+    plano:'',
+    valor:'',
+    cobrador:'',
+    consultor:'',
+    supervisor:'',
+    np:0,
+    dtvenc:'',
+    dtadesao:'',
+    dtcarencia:''
   }
 
 type AuthContextData = {

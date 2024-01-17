@@ -7,9 +7,9 @@ import { FaCircleArrowLeft } from "react-icons/fa6";
 import {FormEvent, useState} from 'react'
 import { DadosDependentes } from "@/components/dadosDependentes";
 import { IoIosClose } from "react-icons/io";
-import { createContext,useContext } from "react";
+import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
-
+import { MdSaveAlt } from "react-icons/md";
 
 
 
@@ -51,10 +51,10 @@ export default function TesteLayout() {
                   </button>
             </div>
             {step}
-            <div className="flex mt-4 gap-2 justify-end">
+            <div className="flex mt-4 gap-4 justify-end">
              {currentStepIndex!==0 &&(<button type="button" onClick={back}><FaCircleArrowLeft style={{color:'#CA9629'}} size={30}/></button>)} 
               <button type="submit">
-               {steps.length-1===currentStepIndex ?"Finish":(<FaCircleArrowRight size={30} style={{color:'#CA9629'}}/>)} 
+               {steps.length-1===currentStepIndex ?(<button className="flex flex-row bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/> SALVAR</button>):(<FaCircleArrowRight size={30} style={{color:'#CA9629'}}/>)} 
                 </button>
             </div>
           </form>
