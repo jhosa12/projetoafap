@@ -13,10 +13,9 @@ export default function Home() {
     const [loading,setLoading]= useState(false)
     const {sign} =useContext(AuthContext)
         async function handleSignUp(event:FormEvent){
-            const request =await api.get('/getuser')
-             console.log(request.data)
             setLoading(true)
             event.preventDefault();
+           
             if(user===""||password===""){
                 alert("Preencha todos os campos")
                 return;
