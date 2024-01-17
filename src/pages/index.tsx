@@ -1,11 +1,19 @@
 
-import {FormEvent,useState,useContext} from "react"
+import {FormEvent,useState,useContext, useEffect} from "react"
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import Image from "next/image";
 import logo from "../../public/logoafap.png"
 import {AuthContext} from "../contexts/AuthContext"
+import { api } from "@/services/apiClient";
 export default function Home() {
-   
+   useEffect(()=>{
+       teste()
+        
+   },[])
+   async function teste() {
+    const request =await api.get('/getuser')
+    console.log(request.data)
+   }
     const [user,setName]= useState("")
     const [password,setSenha]= useState("")
     const [loading,setLoading]= useState(false)
