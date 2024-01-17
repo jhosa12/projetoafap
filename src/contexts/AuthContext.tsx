@@ -77,6 +77,7 @@ async function sign({nome,password}:SignInProps) {
             nome,
             password
         })
+        console.log(response.data)
         const {id,token} = response.data
        setCookie(undefined,'@nextauth.token',token,{
         maxAge:60*60*24*30, // expirar em 1 mes
