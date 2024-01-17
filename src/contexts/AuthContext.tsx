@@ -49,12 +49,12 @@ type AuthContextData = {
 }
 
 type SignInProps={
-    user:string,
+    nome:string,
     password:string,
 }
 type UserProps ={
     id:string,
-    user:string,
+    nome:string,
 }
 export const AuthContext = createContext({} as AuthContextData)
 export function signOut(){
@@ -71,10 +71,10 @@ export function AuthProvider({children}:{children:ReactNode}){
     const [usuario,setUser] =useState<UserProps>()
     const isAuthenticated = !!usuario;
     const [data,setData] =useState(INITIAL_DATA)
-async function sign({user,password}:SignInProps) {
+async function sign({nome,password}:SignInProps) {
     try{
         const response = await api.post('/session',{
-            nome:user,
+            nome,
             password
         })
         const {id,token} = response.data
@@ -82,7 +82,7 @@ async function sign({user,password}:SignInProps) {
         maxAge:60*60*24*30, // expirar em 1 mes
         path:"/" // quais caminhos terão acesso ao cookie
        })
-       setUser({id,user})
+       setUser({id,nome})
        // Passar o token para as proximas paginas
        api.defaults.headers["Authorization"] =`Bearer ${token}`
        //redirecionar o user para /dashboard

@@ -19,7 +19,7 @@ export default function Home() {
                 }
                
             let data ={
-                user:user,
+                nome:user,
                 password:password
             }
            await sign(data)
@@ -41,7 +41,7 @@ export default function Home() {
         required
     />
     <input
-        type="password"
+        type="text"
         required
         placeholder="Senha"
         value={password}

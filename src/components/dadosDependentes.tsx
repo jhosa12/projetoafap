@@ -44,9 +44,9 @@ const [carencia,setCarencia]= useState('')
     
     return(
         <FormWrapper title="ADICIONAR DEPENDENTES">
-        <div className="flex flex-col   gap-9 p-2 rounded-lg w-full h-full ">
+        <div className="flex flex-row  max-h-96 gap-2 p-2 rounded-lg w-full  ">
           
-        <div  className="grid gap-2 grid-flow-row-dense pl-2 pr-2 w-full  md:grid-cols-4" >
+        <div  className="grid border-white h-2/3  border-r-2 pb-3 gap-2 grid-flow-row-dense pl-2 pr-2 w-1/2  md:grid-cols-2" >
               <div className="col-span-2">
               <label  className="block mb-1 text-sm font-medium  text-white">NOME</label>
               <input  autoComplete="off"  className="block uppercase w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " value={nome} onChange={e=>setNome(e.target.value.toUpperCase())} type="text"></input>
@@ -79,13 +79,16 @@ const [carencia,setCarencia]= useState('')
               <div className="relative">
               <label  className="block mb-1 text-sm font-medium  text-white">CARÊNCIA</label>
               <InputMask mask={"99/99/9999"} className="block uppercase w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " value={carencia} onChange={e=>setCarencia(e.target.value)} type="text"></InputMask>
-              <button  type="button" onClick={adicionar}  className=" absolute top-6 -right-28  px-3 py-1.5 text-sm font-medium text-center text-white rounded-lg  focus:ring-4 focus:outline-none  bg-blue-600 hover:bg-blue-700 focus:ring-blue-800" >ADICIONAR</button>  
               </div>
+              <div className="col-span-2">
+              <button  type="button" onClick={adicionar}  className=" block  justify-center items-center w-full px-3 py-1.5 text-sm font-medium text-center text-white rounded-lg  focus:ring-4 focus:outline-none  bg-blue-600 hover:bg-blue-700 focus:ring-blue-800" >ADICIONAR</button>  
+              </div>
+             
                           </div>
                          
                           
-            <div className="flex flex-col h-4/5 w-full text-[13px]">
-                        <table className="w-full text-xs text-left rtl:text-right overflow-y-auto   rounded-lg  text-gray-400 " border={1}>
+            <div className="flex flex-col overflow-y-auto w-full text-[13px]">
+                        <table className="w-full text-xs text-left rtl:text-right border-white rounded-lg  text-gray-400 ">
                         <thead className=" w-full text-xs  uppercase bg-gray-700 text-gray-400" >
                           <tr >
                             <th scope="col" className=" px-5 py-2">Nome</th>
@@ -96,7 +99,7 @@ const [carencia,setCarencia]= useState('')
                         </thead>
                         <tbody>
                           {arrayDependetes.map((usuario, index) => (
-                            <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600" key={index}>
+                            <tr className=" border-b border-l bg-gray-800 border-gray-700  hover:bg-gray-600" key={index}>
                               <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">{usuario.nome}</th>
                               <td className="px-5 py-3">{usuario.nasc}</td>
                               <td className="px-5 py-3">{usuario.parentesco}</td>

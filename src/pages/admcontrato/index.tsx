@@ -131,265 +131,265 @@ export default function AdmContrato(){
            
 <div className="flex  rounded-lg  overflow-y-auto w-full max-h-96  p-3   shadow-md sm:rounded-lg">
     <table 
-     className="w-full text-sm text-left rtl:text-right overflow-y-auto   rounded-lg  text-gray-400 ">
+     className="w-full text-xs text-left rtl:text-right overflow-y-auto   rounded-lg  text-gray-400 ">
         <thead className=" w-full text-xs  uppercase bg-gray-700 text-gray-400">
             <tr>
-                <th scope="col" className=" px-6 py-3">
+                <th scope="col" className=" px-6 py-1">
                     NP
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-1">
                     DATA VENC.
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-1">
                     DATA AGEND.
                 </th>
-                <th scope="col" className="px-8 py-3">
+                <th scope="col" className="px-8 py-1">
                     VALOR
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-1">
                     status
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-1">
                     BAIXADA POR
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-1">
                     AGENDADA POR
                 </th>
                 
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-1">
                     <span className="sr-only">Edit</span>
                 </th>
             </tr>
         </thead>
         <tbody>
             <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
-                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
                     1
                 </th>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     25/01/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 25/01/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 R$ 39,00
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 A
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4 text-right">
+                <td className="px-6 py-1 text-right">
                     <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
                 </td>
             </tr>
             <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
-                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
                     2
                 </th>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     25/02/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     25/02/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 R$ 39,00
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 A
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4 text-right">
+                <td className="px-6 py-1 text-right">
                     <a href="#" className="font-medium text-blue-500 hover:underline">Edit</a>
                 </td>
             </tr>
             <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
-                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
                     3
                 </th>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     25/03/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     25/03/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 R$ 39,00
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 A
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4 text-right">
+                <td className="px-6 py-1 text-right">
                     <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
                 </td>
                
             </tr>
             <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
-                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
-                    4
+                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
+                4
                 </th>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     25/04/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     25/04/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     R$ 39,00
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 A
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4 text-right">
+                <td className="px-6 py-1 text-right">
                     <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
                 </td>
             </tr>
             <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
-                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
                     5
                 </th>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     25/05/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     25/05/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 R$ 39,00
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 A
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4 text-right">
+                <td className="px-6 py-1 text-right">
                     <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
                 </td>
                
             </tr>
             <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
-                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
                     6
                 </th>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     25/05/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     25/05/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 R$ 39,00
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 A
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4 text-right">
+                <td className="px-6 py-1 text-right">
                     <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
                 </td>
                
             </tr>
             <tr  className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
-                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
                     7
                 </th>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     25/05/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     25/05/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 R$ 39,00
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4 text-right">
+                <td className="px-6 py-1 text-right">
                     <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
                 </td>
                
             </tr>
 
             <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
-                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
                     8
                 </th>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     25/05/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     25/05/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 R$ 39,00
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4 text-right">
+                <td className="px-6 py-1 text-right">
                     <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
                 </td>
                
             </tr>
             <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
-                <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">
+                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
                     8
                 </th>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     25/05/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                     25/05/2024
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 R$ 39,00
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-1">
                 
                 </td>
-                <td className="px-6 py-4 text-right">
+                <td className="px-6 py-1 text-right">
                     <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
                 </td>
                
