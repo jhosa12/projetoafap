@@ -91,19 +91,19 @@ const [carencia,setCarencia]= useState('')
                         <table className="w-full text-xs text-left rtl:text-right border-white rounded-lg  text-gray-400 ">
                         <thead className=" w-full text-xs  uppercase bg-gray-700 text-gray-400" >
                           <tr >
-                            <th scope="col" className=" px-5 py-2">Nome</th>
-                            <th scope="col" className=" px-5 py-2">Nasc</th>
-                            <th scope="col" className=" px-5 py-2">Parentesco</th>
-                            <th scope="col" className=" px-5 py-2">Ações</th>
+                            <th scope="col" className=" px-5 py-1">Nome</th>
+                            <th scope="col" className=" px-5 py-1">Nasc</th>
+                            <th scope="col" className=" px-5 py-1">Parentesco</th>
+                            <th scope="col" className=" px-5 py-1">Ações</th>
                           </tr>
                         </thead>
                         <tbody>
                           {arrayDependetes.map((usuario, index) => (
                             <tr className=" border-b border-l bg-gray-800 border-gray-700  hover:bg-gray-600" key={index}>
-                              <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap text-white">{usuario.nome}</th>
-                              <td className="px-5 py-3">{usuario.nasc}</td>
-                              <td className="px-5 py-3">{usuario.parentesco}</td>
-                              <td className="px-5 py-3">
+                              <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">{usuario.nome}</th>
+                              <td className="px-5 py-1">{usuario.nasc}</td>
+                              <td className="px-5 py-1">{usuario.parentesco}</td>
+                              <td className="px-5 py-1">
                                 <div className="flex gap-3">
                                 <button  className="flex justify-center items-center"  ><MdEditSquare color='yellow' size={22}/></button>
                                 <button  className="flex justify-center items-center " ><MdDeleteForever color='red' size={25}/></button>
