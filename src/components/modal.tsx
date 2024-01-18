@@ -1,21 +1,26 @@
 import { FormEvent, useEffect, useState,useContext} from "react"
 import { AuthContext } from "@/contexts/AuthContext";
 import { IoIosClose } from "react-icons/io";
+import { api } from "@/services/apiClient";
 
-type UserData={
-    closeModal:boolean,
-    nome:string
-}
-type UserFormProps =UserData & {
-    updateFields :(fields:Partial<UserData>)=>void
-}
+
+
 export function ModalBusca(){
     const [isOpen,setIsOpen] = useState(false)
+    const [input,setInput] =useState('')
     const [dropOpen,setDrop] = useState(false)
     const [criterio,setCriterio]=useState("Buscar Por")
     const {data,closeModa} = useContext(AuthContext)
   function onSubmit(event:FormEvent){
     event.preventDefault()
+    buscar()
+  }
+
+  async function buscar(){
+  const response =  await api.post('/buscar',{
+        nome:input
+    })
+    console.log(response.data)
   }
     return(
         <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full  ">
@@ -50,7 +55,7 @@ export function ModalBusca(){
       </div>
       )}
         <div className="relative  w-full">
-            <input type="search" autoComplete="off"  className="uppercase flex justify-center  p-2.5 w-full z-20 text-sm  rounded-e-lg rounded-s-gray-100 rounded-s-2 border bg-gray-700 border-gray-600 placeholder-gray-400 text-white " placeholder="Search" required/>
+            <input   value={input} onChange={e=>setInput(e.target.value)} type="search" autoComplete="off"  className="uppercase flex justify-center  p-2.5 w-full z-20 text-sm  rounded-e-lg rounded-s-gray-100 rounded-s-2 border bg-gray-700 border-gray-600 placeholder-gray-400 text-white " placeholder="Search" required/>
             <button type="submit" className="absolute top-0 end-0 p-2.5 h-full text-sm font-medium text-white  rounded-e-lg border border-blue-700 focus:ring-4 focus:outline-none  bg-blue-600 hover:bg-blue-700 ">
                 <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
@@ -77,104 +82,6 @@ export function ModalBusca(){
                                     </div>
                             </div>
                             <svg className="w-4 h-4 ms-3 rtl:rotate-180  text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
-                        </label>
-                    </li>
-                    <li onClick={()=>closeModa({closeModalPlano:false})}>
-                        <label  className="inline-flex items-center justify-between w-full p-2   rounded-lg cursor-pointer hover:text-gray-300 border-gray-500 peer-checked:text-blue-500 peer-checked:border-blue-600 text-white bg-gray-600 hover:bg-gray-500">                           
-                        <div className="block">
-                                <div className="w-full text-base font-semibold"><span className="pr-2">001</span> JOSÉ HENRIQUE BATISTA DE FREITAS </div>
-                                <div className="w-full text-gray-400">
-                                    Endereço:<span className="pr-2"> Agrovila Ubaldinho</span>
-                                    Nº:<span className="pr-2"> 22</span>
-                                    Bairro:<span className="pr-2"> Ubaldinho</span>
-                                    Cidade:<span className="pr-2"> Cedro/CE</span>
-                                    </div>
-                            </div>
-                            <svg className="w-4 h-4 ms-3 rtl:rotate-180  text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
-                        </label>
-                    </li>
-                    <li onClick={()=>closeModa({closeModalPlano:false})}>
-                        <label  className="inline-flex items-center justify-between w-full p-2  rounded-lg cursor-pointer hover:text-gray-300 border-gray-500 peer-checked:text-blue-500 peer-checked:border-blue-600 text-white bg-gray-600 hover:bg-gray-500">                           
-                        <div className="block">
-                                <div className="w-full text-base font-semibold"><span className="pr-2">001</span> JOSÉ HENRIQUE BATISTA DE FREITAS </div>
-                                <div className="w-full text-gray-400">
-                                    Endereço:<span className="pr-2"> Agrovila Ubaldinho</span>
-                                    Nº:<span className="pr-2"> 22</span>
-                                    Bairro:<span className="pr-2"> Ubaldinho</span>
-                                    Cidade:<span className="pr-2"> Cedro/CE</span>
-                                    </div>
-                            </div>
-                            <svg className="w-4 h-4 ms-3 rtl:rotate-180 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
-                        </label>
-                    </li>
-                    <li onClick={()=>closeModa({closeModalPlano:false})}>
-                        <label  className="inline-flex items-center justify-between w-full p-2 rounded-lg cursor-pointer hover:text-gray-300 border-gray-500 peer-checked:text-blue-500 peer-checked:border-blue-600 text-white bg-gray-600 hover:bg-gray-500">                           
-                        <div className="block">
-                                <div className="w-full text-base font-semibold"><span className="pr-2">001</span> JOSÉ HENRIQUE BATISTA DE FREITAS </div>
-                                <div className="w-full text-gray-400">
-                                    Endereço:<span className="pr-2"> Agrovila Ubaldinho</span>
-                                    Nº:<span className="pr-2"> 22</span>
-                                    Bairro:<span className="pr-2"> Ubaldinho</span>
-                                    Cidade:<span className="pr-2"> Cedro/CE</span>
-                                    </div>
-                            </div>
-                            <svg className="w-4 h-4 ms-3 rtl:rotate-180 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
-                        </label>
-                    </li>
-                    <li onClick={()=>closeModa({closeModalPlano:false})}>
-                        <label  className="inline-flex items-center justify-between w-full p-2  rounded-lg cursor-pointer hover:text-gray-300 border-gray-500 peer-checked:text-blue-500 peer-checked:border-blue-600 text-white bg-gray-600 hover:bg-gray-500">                           
-                        <div className="block">
-                                <div className="w-full text-base font-semibold"><span className="pr-2">001</span> JOSÉ HENRIQUE BATISTA DE FREITAS </div>
-                                <div className="w-full text-gray-400">
-                                    Endereço:<span className="pr-2"> Agrovila Ubaldinho</span>
-                                    Nº:<span className="pr-2"> 22</span>
-                                    Bairro:<span className="pr-2"> Ubaldinho</span>
-                                    Cidade:<span className="pr-2"> Cedro/CE</span>
-                                    </div>
-                            </div>
-                            <svg className="w-4 h-4 ms-3 rtl:rotate-180 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
-                        </label>
-                    </li>
-                    <li onClick={()=>setIsOpen(!isOpen)}>
-                        <label  className="inline-flex items-center justify-between w-full p-2  rounded-lg cursor-pointer hover:text-gray-300 border-gray-500 peer-checked:text-blue-500 peer-checked:border-blue-600 text-white bg-gray-600 hover:bg-gray-500">                           
-                        <div className="block">
-                                <div className="w-full text-base font-semibold"><span className="pr-2">001</span> JOSÉ HENRIQUE BATISTA DE FREITAS </div>
-                                <div className="w-full text-gray-400">
-                                    Endereço:<span className="pr-2"> Agrovila Ubaldinho</span>
-                                    Nº:<span className="pr-2"> 22</span>
-                                    Bairro:<span className="pr-2"> Ubaldinho</span>
-                                    Cidade:<span className="pr-2"> Cedro/CE</span>
-                                    </div>
-                            </div>
-                            <svg className="w-4 h-4 ms-3 rtl:rotate-180 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
-                        </label>
-                    </li>
-                    <li onClick={()=>setIsOpen(!isOpen)}>
-                        <label  className="inline-flex items-center justify-between w-full p-2  rounded-lg cursor-pointer hover:text-gray-300 border-gray-500 peer-checked:text-blue-500 peer-checked:border-blue-600 text-white bg-gray-600 hover:bg-gray-500">                           
-                        <div className="block">
-                                <div className="w-full text-base font-semibold"><span className="pr-2">001</span> JOSÉ HENRIQUE BATISTA DE FREITAS </div>
-                                <div className="w-full text-gray-400">
-                                    Endereço:<span className="pr-2"> Agrovila Ubaldinho</span>
-                                    Nº:<span className="pr-2"> 22</span>
-                                    Bairro:<span className="pr-2"> Ubaldinho</span>
-                                    Cidade:<span className="pr-2"> Cedro/CE</span>
-                                    </div>
-                            </div>
-                            <svg className="w-4 h-4 ms-3 rtl:rotate-180 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
-                        </label>
-                    </li>
-                    <li onClick={()=>setIsOpen(!isOpen)}>
-                        <label  className="inline-flex items-center justify-between w-full p-2  rounded-lg cursor-pointer hover:text-gray-300 border-gray-500 peer-checked:text-blue-500 peer-checked:border-blue-600  text-white bg-gray-600 hover:bg-gray-500">                           
-                        <div className="block">
-                                <div className="w-full text-base font-semibold"><span className="pr-2">001</span> JOSÉ HENRIQUE BATISTA DE FREITAS </div>
-                                <div className="w-full text-gray-400">
-                                    Endereço:<span className="pr-2"> Agrovila Ubaldinho</span>
-                                    Nº:<span className="pr-2"> 22</span>
-                                    Bairro:<span className="pr-2"> Ubaldinho</span>
-                                    Cidade:<span className="pr-2"> Cedro/CE</span>
-                                    </div>
-                            </div>
-                            <svg className="w-4 h-4 ms-3 rtl:rotate-180 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
                         </label>
                     </li>
                
