@@ -33,7 +33,7 @@ export default function AdmContrato(){
    },[])
    async function loadMensal() {
     const response = await api.post('/mensalidade',{
-        id_contrato:1
+        id_mensalidade:1
     }
     )
     setMensalidade(response.data)
