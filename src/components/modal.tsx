@@ -8,19 +8,21 @@ import { api } from "@/services/apiClient";
 export function ModalBusca(){
     const [isOpen,setIsOpen] = useState(false)
     const [input,setInput] =useState('')
+    const [array,setarray]=useState([])
     const [dropOpen,setDrop] = useState(false)
     const [criterio,setCriterio]=useState("Buscar Por")
     const {data,closeModa} = useContext(AuthContext)
-  function onSubmit(event:FormEvent){
+ async function onSubmit(event:FormEvent){
     event.preventDefault()
-    buscar()
+   await buscar()
+    console.log(array)
   }
 
   async function buscar(){
   const response =  await api.post('/buscar',{
         nome:input
     })
-    console.log(response.data)
+    setarray(response.data)
   }
     return(
         <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full  ">
