@@ -3,66 +3,44 @@ import { IoMdSearch } from "react-icons/io";
 import 'react-tabs/style/react-tabs.css';
 import {ModalBusca} from '../../components/modal'
 import Teste from '@/pages/teste/index';
-import { useState,useContext } from "react";
+import { useState,useContext, useEffect } from "react";
 import { RiFileAddLine } from "react-icons/ri";
 
 import {AuthContext} from "../../contexts/AuthContext"
+
+import { api } from "@/services/apiClient";
+
+
 type FormData={
-    
-        name:string,
-        date:string,
-        sexo:string,
-        cep:string,
-        endereço:string,
-        numero:string,
-        bairro:string, 
-        referencia:string,
-        cidade:string,
-        uf:string,
-        email:string,
-        rg:string,
-        cpf:string,
-        closeModal:boolean,
-         nome:string
+        parcela_n:number,
+        vencimento:Date,
+        cobranca:Date,
+        valor_principal:string,
+        status:string,
+        usuario:string,
 }
-const INITIAL_DATA:FormData ={
-    name:'',
-    date:'',
-    sexo:'',
-    cep:'',
-    endereço:'',
-    numero:'',
-    bairro:'', 
-    referencia:'',
-    cidade:'',
-    uf:'',
-    email:'',
-    rg:'',
-    cpf:'',
-    closeModal:false,
-    nome:''
-}
+
 
 export default function AdmContrato(){
    
     const {data,closeModa} = useContext(AuthContext)
-   
-  const [textarea,setTextArea] = useState(true)
-  const [modalbusca,setModalBusca] = useState(INITIAL_DATA)
-  const [modalplano,setModalPlano] = useState(false)
+   const [mensalidade,setMensalidade]=useState<FormData[]>([])  
   const [dados,setDados] =useState(true)
   const [historico,setHistorico] = useState(false)
   const [dependentes,setDependentes] =useState(false)
-   
-  function updateFields(fields:Partial<FormData>){
-    setModalBusca(prev=>{
-        return {...prev,...fields}
-    })
-   
-  }
+   useEffect(()=>{
+    loadMensal()
+   },[])
+   async function loadMensal() {
+    const response = await api.post('/mensalidade',{
+        id:1246
+    }
+    )
+    setMensalidade(response.data)
+   }
+
     return(
         <>
-       
         {data.closeModalPlano && (<ModalBusca/>)}
         {data.closeModalCadastro && (<Teste/>)}
         <div className="flex  flex-col w-full pl-4">
@@ -77,8 +55,6 @@ export default function AdmContrato(){
     <RiFileAddLine size={20} />
     </button>
             </div>
-
-
 <div className="w-11/12  border  rounded-lg shadow bg-gray-800 border-gray-700">
     <ul className="flex flex-wrap text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
         <li className="me-2">
@@ -155,31 +131,31 @@ export default function AdmContrato(){
                 <th scope="col" className="px-6 py-1">
                     AGENDADA POR
                 </th>
-                
                 <th scope="col" className="px-6 py-1">
                     <span className="sr-only">Edit</span>
                 </th>
             </tr>
         </thead>
         <tbody>
-            <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
-                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
-                    1
+            {mensalidade.map((item,index)=>(
+                <tr onDoubleClick={()=>{alert("CLICOU DUAS VEZES")}} className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
+                <th scope="row" className="px-7 py-1 font-medium  whitespace-nowrap text-white">
+                    {item.parcela_n}
                 </th>
-                <td className="px-6 py-1">
-                    25/01/2024
+                <td className="px-7 py-1">
+                    {new Date(item.vencimento).toLocaleDateString()}
                 </td>
-                <td className="px-6 py-1">
-                25/01/2024
+                <td className="px-7 py-1">
+                {new Date(item.cobranca).toLocaleDateString()} 
                 </td>
-                <td className="px-6 py-1">
-                R$ 39,00
+                <td className="px-10 py-1">
+                {item.valor_principal}
                 </td>
-                <td className="px-6 py-1">
-                A
+                <td className="px-10 py-1">
+                  {item.status==='P'?(<div className="text-green-500 font-bold">{item.status}</div>):item.status==='R'?(<div className="text-red-600">{item.status}</div>):(<div className="text-yellow-500 font-bold">{item.status}</div>)}
                 </td>
-                <td className="px-6 py-1">
-                
+                <td className="px-10 py-1">
+                {item.usuario}
                 </td>
                 <td className="px-6 py-1">
                 
@@ -188,140 +164,8 @@ export default function AdmContrato(){
                     <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
                 </td>
             </tr>
-            <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
-                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
-                    2
-                </th>
-                <td className="px-6 py-1">
-                    25/02/2024
-                </td>
-                <td className="px-6 py-1">
-                    25/02/2024
-                </td>
-                <td className="px-6 py-1">
-                R$ 39,00
-                </td>
-                <td className="px-6 py-1">
-                A
-                </td>
-                <td className="px-6 py-1">
-                
-                </td>
-                <td className="px-6 py-1">
-                
-                </td>
-                <td className="px-6 py-1 text-right">
-                    <a href="#" className="font-medium text-blue-500 hover:underline">Edit</a>
-                </td>
-            </tr>
-            <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
-                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
-                    3
-                </th>
-                <td className="px-6 py-1">
-                    25/03/2024
-                </td>
-                <td className="px-6 py-1">
-                    25/03/2024
-                </td>
-                <td className="px-6 py-1">
-                R$ 39,00
-                </td>
-                <td className="px-6 py-1">
-                A
-                </td>
-                <td className="px-6 py-1">
-                
-                </td>
-                <td className="px-6 py-1">
-                
-                </td>
-                <td className="px-6 py-1 text-right">
-                    <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
-                </td>
-               
-            </tr>
-            <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
-                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
-                4
-                </th>
-                <td className="px-6 py-1">
-                    25/04/2024
-                </td>
-                <td className="px-6 py-1">
-                    25/04/2024
-                </td>
-                <td className="px-6 py-1">
-                    R$ 39,00
-                </td>
-                <td className="px-6 py-1">
-                A
-                </td>
-                <td className="px-6 py-1">
-                
-                </td>
-                <td className="px-6 py-1">
-                
-                </td>
-                <td className="px-6 py-1 text-right">
-                    <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
-                </td>
-            </tr>
-            <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
-                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
-                    5
-                </th>
-                <td className="px-6 py-1">
-                    25/05/2024
-                </td>
-                <td className="px-6 py-1">
-                    25/05/2024
-                </td>
-                <td className="px-6 py-1">
-                R$ 39,00
-                </td>
-                <td className="px-6 py-1">
-                A
-                </td>
-                <td className="px-6 py-1">
-                
-                </td>
-                <td className="px-6 py-1">
-                
-                </td>
-                <td className="px-6 py-1 text-right">
-                    <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
-                </td>
-               
-            </tr>
-            <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
-                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
-                    6
-                </th>
-                <td className="px-6 py-1">
-                    25/05/2024
-                </td>
-                <td className="px-6 py-1">
-                    25/05/2024
-                </td>
-                <td className="px-6 py-1">
-                R$ 39,00
-                </td>
-                <td className="px-6 py-1">
-                A
-                </td>
-                <td className="px-6 py-1">
-                
-                </td>
-                <td className="px-6 py-1">
-                
-                </td>
-                <td className="px-6 py-1 text-right">
-                    <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
-                </td>
-               
-            </tr>
-        
+            ))}
+            
         </tbody>
     
     </table>
@@ -446,13 +290,8 @@ export default function AdmContrato(){
     </table>
 </div>)}
     </div>
-</div>
-
-
-           
+</div> 
         </div>
-        
         </>
     )
-
 }

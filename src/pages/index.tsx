@@ -44,7 +44,7 @@ export default function Home() {
         required
     />
     <input
-        type="text"
+        type="password"
         required
         placeholder="Senha"
         value={password}
