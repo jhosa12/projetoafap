@@ -37,14 +37,10 @@ const [arrayDependetes,setArray] =useState<UserProps[]>([])
             setNasc("")
             setPar("")
             setAdesao("")
-            setCarencia("")   
-           
-        }
-        
-            
+            setCarencia("")     
+        }   
         }
 
-    
     return(
         <FormWrapper title="ADICIONAR DEPENDENTES">
         <div className="flex flex-row  max-h-96 gap-2 p-2 rounded-lg w-full  ">
@@ -89,7 +85,7 @@ const [arrayDependetes,setArray] =useState<UserProps[]>([])
              
                           </div>
                          
-                          
+
             <div className="flex flex-col overflow-y-auto w-full text-[13px]">
                         <table className="w-full text-xs text-left rtl:text-right border-white rounded-lg  text-gray-400 ">
                         <thead className=" w-full text-xs  uppercase bg-gray-700 text-gray-400" >
@@ -97,6 +93,8 @@ const [arrayDependetes,setArray] =useState<UserProps[]>([])
                             <th scope="col" className=" px-5 py-1">Nome</th>
                             <th scope="col" className=" px-5 py-1">Nasc</th>
                             <th scope="col" className=" px-5 py-1">Parentesco</th>
+                            <th scope="col" className=" px-5 py-1">Adesão</th>
+                            <th scope="col" className=" px-5 py-1">Carência</th>
                             <th scope="col" className=" px-5 py-1">Ações</th>
                           </tr>
                         </thead>
@@ -106,6 +104,8 @@ const [arrayDependetes,setArray] =useState<UserProps[]>([])
                               <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">{usuario.nome}</th>
                               <td className="px-5 py-1">{usuario.nasc}</td>
                               <td className="px-5 py-1">{usuario.parentesco}</td>
+                              <td className="px-5 py-1">{usuario.adesao}</td>
+                              <td className="px-5 py-1">{usuario.carencia}</td>
                               <td className="px-5 py-1">
                                 <div className="flex gap-3">
                                 <button  className="flex justify-center items-center"  ><MdEditSquare color='yellow' size={18}/></button>

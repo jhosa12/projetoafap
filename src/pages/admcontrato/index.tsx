@@ -8,9 +8,6 @@ import { RiFileAddLine } from "react-icons/ri";
 
 import {AuthContext} from "../../contexts/AuthContext"
 
-import { api } from "@/services/apiClient";
-
-
 type FormData={
         parcela_n:number,
         vencimento:Date,
@@ -20,7 +17,6 @@ type FormData={
         usuario:string,
 }
 
-
 export default function AdmContrato(){
    
     const {data,closeModa} = useContext(AuthContext)
@@ -28,17 +24,6 @@ export default function AdmContrato(){
   const [dados,setDados] =useState(true)
   const [historico,setHistorico] = useState(false)
   const [dependentes,setDependentes] =useState(false)
-   useEffect(()=>{
-    loadMensal()
-   },[])
-   async function loadMensal() {
-    const response = await api.post('/mensalidade',{
-        id_contrato:828
-    }
-    )
-    setMensalidade(response.data)
-   }
-
     return(
         <>
         {data.closeModalPlano && (<ModalBusca/>)}
