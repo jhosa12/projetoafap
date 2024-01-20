@@ -62,15 +62,26 @@ export function ModalBusca(){
         })
         setarray(response.data)
       }
+      if(criterio ==="Endereço"){
+        const response =  await api.post('/buscar',{
+            endereco:input
+        })
+        setarray(response.data)
+      }
+      if(criterio ==="Bairro"){
+        const response =  await api.post('/buscar',{
+            bairro:input
+        })
+        setarray(response.data)
+      }
     }
     
-
     return(
         <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full  ">
   
     <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-10 bg-white ">
       
-        <div className="fixed flex flex-col  w-7/12 h-4/5 rounded-lg shadow bg-gray-700">
+        <div className="fixed flex flex-col  w-2/4 h-4/5 rounded-lg shadow bg-gray-700">
             <div className="flex w-full items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-600">
             <form onSubmit={onSubmit} className="flex w-3/4">
     <div className="flex w-full">
@@ -94,6 +105,9 @@ export function ModalBusca(){
           <li>
               <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white"  onClick={()=>{setCriterio('Endereço'),setDrop(false)}}>Endereço</a>
           </li>
+          <li>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white"  onClick={()=>{setCriterio('Bairro'),setDrop(false)}}>Bairro</a>
+          </li>
           </ul>
       </div>
       )}
@@ -115,15 +129,14 @@ export function ModalBusca(){
                 <ul className="overflow-y-visible space-y-2 mb-2">
                                 {array.map((item,index)=>(
                                      <li onClick={()=>closeModa({closeModalPlano:false})}>
-                                     <label  className="inline-flex items-center justify-between w-full p-2   rounded-lg cursor-pointer hover:text-gray-300 border-gray-500 peer-checked:text-blue-500 peer-checked:border-blue-600 text-white bg-gray-600 hover:bg-gray-500">                           
+                                     <label  className="inline-flex items-center justify-between w-full p-2 rounded-lg cursor-pointer hover:text-gray-300 border-gray-500 peer-checked:text-blue-500 peer-checked:border-blue-600 text-white bg-gray-600 hover:bg-gray-500">                           
                                     <div className="block">
-                                     <div className="w-full text-base font-semibold"><span className="pr-2">{item?.contrato?.id_contrato} - </span>{item.nome}  </div>
-                                     <div className="w-full text-gray-400">
+                                     <div className="w-full text-sm font-semibold"><span className="pr-2">{item?.contrato?.id_contrato}</span>{item.nome}<span className="flex flex-col gap-1">{item?.dependentes?.map((i,id)=>(<span>DEPENDENTE: {i.nome}</span>))}</span></div>
+                                     <div className="w-full text-sm text-gray-400">
                                          <span className="pr-2">{item.endereco}</span>
                                          Nº:<span className="pr-2">{item.numero}</span>
-                                         Bairro:<span className="pr-2"> {item.bairro}</span>
-                                         Cidade:<span className="pr-2">{item.cidade}/{item.uf}</span>
-                                         <span>{item?.dependentes?.map((i,id)=>(<span>{i.nome}</span>))}</span>
+                                         BAIRRO:<span className="pr-2"> {item.bairro}</span>
+                                         CIDADE:<span className="pr-2">{item.cidade}/{item.uf}</span>
                                          </div>
                                          </div>
                                          <svg className="w-4 h-4 ms-3 rtl:rotate-180  text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
