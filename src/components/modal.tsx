@@ -2,7 +2,8 @@ import { FormEvent, useEffect, useState,useContext} from "react"
 import { AuthContext } from "@/contexts/AuthContext";
 import { IoIosClose } from "react-icons/io";
 import { api } from "@/services/apiClient";
-import {toast} from 'react-toastify'
+import {toast} from 'react-toastify';
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 interface ContratoProps{
     id_contrato:number
 }
@@ -22,19 +23,21 @@ interface DadosProps{
 }
 
 export function ModalBusca(){
-    const [isOpen,setIsOpen] = useState(false)
+    const [loading,setLoading] = useState(false)
     const [input,setInput] =useState('')
     const [array,setarray]=useState<DadosProps[]>([])
     const [dropOpen,setDrop] = useState(false)
     const [criterio,setCriterio]=useState("Buscar Por")
     const {data,closeModa,carregarDados} = useContext(AuthContext)
-  function onSubmit(event:FormEvent){
+ async function onSubmit(event:FormEvent){
     event.preventDefault()
     if(criterio==="Buscar Por"){
         toast.warn("Selecione o criterio da busca!")
         return
     }
-    buscar()
+    setLoading(true)
+   await buscar()
+   setLoading(false)
   }
   function DadosAssociado(id_associado:number) {
    closeModa({id_associado:id_associado,closeModalPlano:false})
@@ -42,6 +45,7 @@ export function ModalBusca(){
   }
 
   async function buscar(){
+
     if(criterio ==="Contrato"){
         const response =  await api.post('/buscar',{
             id_contrato:Number(input)
@@ -122,7 +126,8 @@ export function ModalBusca(){
                     <IoIosClose size={30}/>
                 </button>
             </div>
-            <div className="flex flex-col overflow-y-auto mb-1 p-2 md:p-2">
+            {loading?((<div className="flex flex-col h-full justify-center items-center"><AiOutlineLoading3Quarters color='white' size={40} className="animate-spin"/></div>)):(
+                <div className="flex flex-col overflow-y-auto mb-1 p-2 md:p-2">
                 <p className="text-gray-400 mb-2">Selecione o Contrato:</p>
                 <ul className="overflow-y-visible space-y-2 mb-2">
                                 {array.map((item,index)=>(
@@ -143,6 +148,8 @@ export function ModalBusca(){
                                 ))}     
                 </ul>
             </div>
+            )}
+            
         </div>
     </div>
 </div> 
