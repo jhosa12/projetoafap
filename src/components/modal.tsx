@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useState,useContext} from "react"
 import { AuthContext } from "@/contexts/AuthContext";
 import { IoIosClose } from "react-icons/io";
 import { api } from "@/services/apiClient";
-import { Item } from "./dadosTitular";
+import {toast} from 'react-toastify'
 interface ContratoProps{
     id_contrato:number
 }
@@ -31,13 +31,14 @@ export function ModalBusca(){
   function onSubmit(event:FormEvent){
     event.preventDefault()
     if(criterio==="Buscar Por"){
-        alert("Selecione o criterio da busca!")
+        toast.warn("Selecione o criterio da busca!")
         return
     }
     buscar()
   }
   function DadosAssociado(id_associado:number) {
-   closeModa({id_associado:id_associado,closeModalPlano:false}) 
+   closeModa({id_associado:id_associado,closeModalPlano:false})
+
   }
 
   async function buscar(){

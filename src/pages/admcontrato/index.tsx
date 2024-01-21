@@ -55,7 +55,7 @@ export default function AdmContrato(){
     <div >
      {dados && (<div className={`p-4  rounded-lg md:p-8 bg-gray-800 ${dados? "":''}`}>
     
-              <h2 className="flex flex-row gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">{dadosassociado?.contrato.id_contrato}-{dadosassociado?.nome} <span>PLANO:<span className="pl-3 text-[#c5942b]">GOLD PRIME 5</span></span></h2>
+              <h2 className="flex flex-row gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">{dadosassociado?.contrato.id_contrato}-{dadosassociado?.nome} <span>PLANO:<span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato.plano}</span></span></h2>
     
           
           <div className="flex w-full flex-row gap-2">
@@ -69,19 +69,19 @@ export default function AdmContrato(){
         <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">BAIRRO: </span>{dadosassociado?.bairro}</p>
         </h5>
         <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
-            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">PONTO REF: </span>PROXIMO AO CENTRO</p>
-            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CIDADE: </span>VARZEA ALEGRE/CE</p>
+            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">PONTO REF: </span>{dadosassociado?.guia_rua}</p>
+            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CIDADE: </span>{dadosassociado?.cidade}</p>
          </h5>
     </div>
     <div className="flex flex-col p-4 text-sm border  rounded-lg shadow bg-gray-800 border-gray-700">
     <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO PLANO</h2>
     <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
-            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CATEGORIA: </span>GOLD PRIME 5</p>
-            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">VALOR: </span>R$ 39,00</p>
+            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CATEGORIA: </span>{dadosassociado?.contrato.plano}</p>
+            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">VALOR: </span>R$ {dadosassociado?.contrato.valor_mensalidade}</p>
          </h5>
          <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
-            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">ADESÃO: </span>25/01/2024</p>
-            <p className="mb-1 font-normal text-red-600"><span className="text-white font-semibold">CARÊNCIA: </span>25/03/2024</p>
+            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">ADESÃO: </span>{dadosassociado?.contrato.dt_adesao?new Date(dadosassociado.contrato.dt_adesao).toLocaleDateString():''}</p>
+            <p className="mb-1 font-normal text-red-600"><span className="text-white font-semibold">CARÊNCIA: </span>{dadosassociado?.contrato.dt_carencia? new Date(dadosassociado.contrato.dt_carencia).toLocaleDateString():''}</p>
          </h5>
  
 

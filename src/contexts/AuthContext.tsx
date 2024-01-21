@@ -89,7 +89,11 @@ const INITIAL_DATA:DadosCadastro ={
     usuario:string,
 }
 type ContratoProps={
-id_contrato:number
+id_contrato:number,
+plano:string,
+valor_mensalidade:number,
+dt_adesao:string,
+dt_carencia:string,
 }
 
 type AssociadoProps={
@@ -98,6 +102,7 @@ endereco:string,
 bairro:string,
 numero:number,
 cidade:string,
+guia_rua:string,
 uf:string,
 mensalidade:Array<FormData>,
 contrato:ContratoProps,
