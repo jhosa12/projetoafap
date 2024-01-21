@@ -7,6 +7,7 @@ import { useState,useContext, useEffect } from "react";
 import { RiFileAddLine } from "react-icons/ri";
 
 import {AuthContext} from "../../contexts/AuthContext"
+import { toast } from "react-toastify";
 
 
 
@@ -19,8 +20,14 @@ export default function AdmContrato(){
   const [historico,setHistorico] = useState(false)
   const [dependentes,setDependentes] =useState(false)
         useEffect(()=>{
-            carregarDados()
+           carregarDados().then(()=>{
+            if(dadosassociado?.contrato.situacao==='ATIVO'){
+                toast.warn("PLANO ATIVO")
+            }
+           })
+           
         },[data.id_associado])
+     
 
     return(
         <>
