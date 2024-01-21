@@ -8,20 +8,22 @@ import { MdEditSquare } from "react-icons/md";
 import { AuthContext } from "@/contexts/AuthContext";
 
 interface UserProps{
-    nome:string,
-    nasc:string,
-    parentesco:string,
-    adesao:string,
-    carencia:string
+  nome:string,
+    data_nasc:string,
+    grau_parentesco:string,
+    data_adesao:string,
+    carencia:string,
+    id_dependente:number
+
 }
 
 export function DadosDependentes(){
 
 const {data,closeModa}= useContext(AuthContext)
 const [nome,setNome]= useState('')
-const [nasc,setNasc]= useState('')
-const [parentesco,setPar]= useState('')
-const [adesao,setAdesao]= useState('')
+const [data_nasc,setNasc]= useState('')
+const [grau_parentesco,setPar]= useState('')
+const [data_adesao,setAdesao]= useState('')
 const [carencia,setCarencia]= useState('')
 const [arrayDependetes,setArray] =useState<UserProps[]>([])
 
@@ -29,7 +31,7 @@ const [arrayDependetes,setArray] =useState<UserProps[]>([])
      function adicionar(){
         if(nome!==''){
           const dados = {
-            nome,nasc,parentesco,adesao,carencia
+            nome,data_nasc,grau_parentesco,data_adesao,carencia,id_dependente:0
         }   
            // setArray([...arrayDependetes,dados])
             closeModa({arraydep:[...data.arraydep,dados]})
@@ -52,11 +54,11 @@ const [arrayDependetes,setArray] =useState<UserProps[]>([])
               </div>
               <div>
               <label  className="block mb-1 text-sm font-medium  text-white">NASCIMENTO</label>
-              <InputMask mask={"99/99/9999"} className="block uppercase w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " value={nasc} onChange={e=>setNasc(e.target.value)} type="text"></InputMask>
+              <InputMask mask={"99/99/9999"} className="block uppercase w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " value={data_nasc} onChange={e=>setNasc(e.target.value)} type="text"></InputMask>
               </div>
               <div>
               <label  className="block mb-1 text-sm font-medium  text-white">PARENTESCO</label>
-              <select className="block w-full p-1.5  sm:text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={parentesco} onChange={e=>setPar(e.target.value)} >
+              <select className="block w-full p-1.5  sm:text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={grau_parentesco} onChange={e=>setPar(e.target.value)} >
                     <option selected className="text-gray-200">PARENTESCO</option>
                     <option>CONJUGE</option>
                     <option>PAI</option>
@@ -73,7 +75,7 @@ const [arrayDependetes,setArray] =useState<UserProps[]>([])
               </div>
               <div>
               <label className="block mb-1 text-sm font-medium  text-white">ADESÃO</label>
-              <InputMask mask={"99/99/9999"} className="block uppercase w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " value={adesao} onChange={e=>setAdesao(e.target.value)} type="text"></InputMask>
+              <InputMask mask={"99/99/9999"} className="block uppercase w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " value={data_adesao} onChange={e=>setAdesao(e.target.value)} type="text"></InputMask>
               </div>
               <div className="relative">
               <label  className="block mb-1 text-sm font-medium  text-white">CARÊNCIA</label>
@@ -102,9 +104,9 @@ const [arrayDependetes,setArray] =useState<UserProps[]>([])
                           {data.arraydep.map((usuario, index) => (
                             <tr className=" border-b border-l bg-gray-800 border-gray-700  hover:bg-gray-600" key={index}>
                               <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">{usuario.nome}</th>
-                              <td className="px-5 py-1">{usuario.nasc}</td>
-                              <td className="px-5 py-1">{usuario.parentesco}</td>
-                              <td className="px-5 py-1">{usuario.adesao}</td>
+                              <td className="px-5 py-1">{usuario.data_nasc}</td>
+                              <td className="px-5 py-1">{usuario.grau_parentesco}</td>
+                              <td className="px-5 py-1">{usuario.data_adesao}</td>
                               <td className="px-5 py-1">{usuario.carencia}</td>
                               <td className="px-5 py-1">
                                 <div className="flex gap-3">
