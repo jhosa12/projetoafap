@@ -26,7 +26,7 @@ type DadosCadastro={
     cpf:string,
     closeModalPlano:boolean,
     closeModalCadastro:boolean
-    arraydep:Array<DependentesProps> ,
+    arraydep:Array<Partial<DependentesProps>> ,
     naturalidade:string,
     celular1:string,
     celular2:string,

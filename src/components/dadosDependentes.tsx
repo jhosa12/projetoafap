@@ -13,7 +13,7 @@ interface UserProps{
     grau_parentesco:string,
     data_adesao:string,
     carencia:string,
-    id_dependente:number
+  
 
 }
 
@@ -25,13 +25,13 @@ const [data_nasc,setNasc]= useState('')
 const [grau_parentesco,setPar]= useState('')
 const [data_adesao,setAdesao]= useState('')
 const [carencia,setCarencia]= useState('')
-const [arrayDependetes,setArray] =useState<UserProps[]>([])
+const [arrayDependetes,setArray] =useState<Partial<UserProps[]>>([])
 
 
      function adicionar(){
         if(nome!==''){
           const dados = {
-            nome,data_nasc,grau_parentesco,data_adesao,carencia,id_dependente:0
+            nome,data_nasc,grau_parentesco,data_adesao,carencia
         }   
            // setArray([...arrayDependetes,dados])
             closeModa({arraydep:[...data.arraydep,dados]})
