@@ -60,20 +60,20 @@ export default function AdmContrato(){
           
           <div className="flex w-full flex-row gap-2">
            
-            <div className="flex flex-col  p-4  border  rounded-lg shadow bg-gray-800 border-gray-700">
+            <div className="flex flex-col  p-4 text-sm  border  rounded-lg shadow bg-gray-800 border-gray-700">
             <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO TITULAR</h2>
  
-        <h5 className="mb-1 flex flex-row justify-between  gap-2 font-semibold tracking-tight  text-white">
-        <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">ENDEREÇO: </span>AGROVILA UBALDINHO</p>
-        <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">Nº: </span>22</p>
-        <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">BAIRRO: </span>UBALDINHO</p>
+        <h5 className="mb-1 inline-flex justify-between text-sm gap-2 font-semibold tracking-tight  text-white">
+        <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">ENDEREÇO: </span>{dadosassociado?.endereco}</p>
+        <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">Nº: </span>{dadosassociado?.numero}</p>
+        <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">BAIRRO: </span>{dadosassociado?.bairro}</p>
         </h5>
         <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
             <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">PONTO REF: </span>PROXIMO AO CENTRO</p>
             <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CIDADE: </span>VARZEA ALEGRE/CE</p>
          </h5>
     </div>
-    <div className="flex flex-col p-4  border  rounded-lg shadow bg-gray-800 border-gray-700">
+    <div className="flex flex-col p-4 text-sm border  rounded-lg shadow bg-gray-800 border-gray-700">
     <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO PLANO</h2>
     <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
             <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CATEGORIA: </span>GOLD PRIME 5</p>
@@ -128,19 +128,19 @@ export default function AdmContrato(){
                     {item.parcela_n}
                 </th>
                 <td className="px-7 py-1">
-                   
+                   {new Date(item.vencimento).toLocaleDateString()}
                 </td>
                 <td className="px-7 py-1">
-               
+                {new Date(item.cobranca).toLocaleDateString()}
                 </td>
                 <td className="px-10 py-1">
-               
+               {item.valor_principal}
                 </td>
                 <td className="px-10 py-1">
-                  
+                  {item.status}
                 </td>
                 <td className="px-10 py-1">
-               
+               {item.usuario}
                 </td>
                 <td className="px-6 py-1">
                 
@@ -183,92 +183,34 @@ export default function AdmContrato(){
             </tr>
         </thead>
         <tbody>
-            <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
-                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
-                    MARCOS ANTONIO BATISTA DE FREITAS
-                </th>
-                <td className="px-6 py-1">
-                    25/01/2024
-                </td>
-                <td className="px-6 py-1">
-                25/01/2024
-                </td>
-                <td className="px-6 py-1">
-                25/01/2024
-                </td>
-                <td className="px-6 py-1">
-                IRMÃO
-                </td>
-              
-                
-                <td className="px-6 py-1 text-right">
-                    <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
-                </td>
-            </tr>
-            <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
-                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
-                    PEDRO DANIEL DA SILVA
-                </th>
-                <td className="px-6 py-1">
-                    25/02/2024
-                </td>
-                <td className="px-6 py-1">
-                    25/02/2024
-                </td>
-                <td className="px-6 py-1">
-                25/02/2024
-                </td>
-                <td className="px-6 py-1">
-                PRIMO
-                </td>
-                
-                <td className="px-6 py-1 text-right">
-                    <a href="#" className="font-medium text-blue-500 hover:underline">Edit</a>
-                </td>
-            </tr>
-            <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
-                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
-                    JOSE HENRIQUE BATISTA DE FREITAS
-                </th>
-                <td className="px-6 py-1">
-                    25/03/2024
-                </td>
-                <td className="px-6 py-1">
-                    25/03/2024
-                </td>
-                <td className="px-6 py-1">
-                25/03/2024
-                </td>
-                <td className="px-6 py-1">
-                SOBRINHO
-                </td>
-               
-                <td className="px-6 py-1 text-right">
-                    <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
-                </td>
-               
-            </tr>
-            <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
-                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
-                    MARIA DAS GRAÇAS
-                </th>
-                <td className="px-6 py-1">
-                    25/04/2024
-                </td>
-                <td className="px-6 py-1">
-                    25/04/2024
-                </td>
-                <td className="px-6 py-1">
-                25/04/2024
-                </td>
-                <td className="px-6 py-1">
-                AMIGA
-                </td>
-                
-                <td className="px-6 py-1 text-right">
-                    <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
-                </td>
-            </tr>
+            {dadosassociado?.dependentes?.map((item,index)=>(
+ <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
+ <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
+    {item.nome}
+ </th>
+ <td className="px-6 py-1">
+ {new Date(item.data_adesao).toLocaleDateString()}
+ </td>
+ <td className="px-6 py-1">
+ {item?.carencia? new Date(item.carencia).toLocaleDateString():''}
+ </td>
+ <td className="px-6 py-1">
+ {item?.data_nasc? new Date(item.data_nasc).toLocaleDateString():''}
+ </td>
+ <td className="px-6 py-1">
+    {item.grau_parentesco}
+ </td>
+
+ 
+ <td className="px-6 py-1 text-right">
+     <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
+ </td>
+</tr>
+            ))}
+           
+        
+        
+         
         
         </tbody>
     

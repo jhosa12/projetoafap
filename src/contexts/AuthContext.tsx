@@ -4,10 +4,11 @@ import {destroyCookie,setCookie,parseCookies} from "nookies"
 import Router from 'next/router';
 type DependentesProps={
     nome:string,
-    nasc:string,
-    parentesco:string,
-    adesao:string,
-    carencia:string
+    data_nasc:string,
+    grau_parentesco:string,
+    data_adesao:string,
+    carencia:string,
+    id_dependente:number
 }
 type DadosCadastro={
     name:string,
@@ -93,9 +94,14 @@ id_contrato:number
 
 type AssociadoProps={
 nome:string,
-mensalidade:Array<FormData>
-contrato:ContratoProps
-
+endereco:string,
+bairro:string,
+numero:number,
+cidade:string,
+uf:string,
+mensalidade:Array<FormData>,
+contrato:ContratoProps,
+dependentes:Array<DependentesProps>
 }
 type AuthContextData = {
     usuario:UserProps | undefined,
