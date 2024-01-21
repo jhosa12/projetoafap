@@ -94,6 +94,7 @@ plano:string,
 valor_mensalidade:number,
 dt_adesao:string,
 dt_carencia:string,
+situacao:string
 }
 
 type AssociadoProps={

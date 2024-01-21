@@ -55,7 +55,7 @@ export default function AdmContrato(){
     <div >
      {dados && (<div className={`p-4  rounded-lg md:p-8 bg-gray-800 ${dados? "":''}`}>
     
-              <h2 className="flex flex-row gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">{dadosassociado?.contrato.id_contrato}-{dadosassociado?.nome} <span>PLANO:<span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato.plano}</span></span></h2>
+              <h2 className="flex flex-row gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">{dadosassociado?.contrato.id_contrato}-{dadosassociado?.nome} <span>PLANO:<span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato.plano}{dadosassociado?.contrato.situacao}</span></span></h2>
     
           
           <div className="flex w-full flex-row gap-2">
