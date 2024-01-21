@@ -40,7 +40,8 @@ type DadosCadastro={
     np:number,
     dtvenc:string,
     dtadesao:string,
-    dtcarencia:string
+    dtcarencia:string,
+    id_associado:number
     
 }
 
@@ -75,16 +76,36 @@ const INITIAL_DATA:DadosCadastro ={
     np:0,
     dtvenc:'',
     dtadesao:'',
-    dtcarencia:''
+    dtcarencia:'',
+    id_associado:0
   }
+  type FormData={
+    parcela_n:number,
+    vencimento:Date,
+    cobranca:Date,
+    valor_principal:string,
+    status:string,
+    usuario:string,
+}
+type ContratoProps={
+id_contrato:number
+}
 
+type AssociadoProps={
+nome:string,
+mensalidade:Array<FormData>
+contrato:ContratoProps
+
+}
 type AuthContextData = {
     usuario:UserProps | undefined,
     isAuthenticated:boolean,
     sign: (credentials:SignInProps)=>Promise<void>,
     signOut:()=>void,
     closeModa:(fields:Partial<DadosCadastro>)=>void,
-    data:DadosCadastro
+    data:DadosCadastro,
+    dadosassociado:AssociadoProps | undefined,
+    carregarDados:()=>Promise<void>
 }
 
 type SignInProps={
@@ -106,9 +127,12 @@ console.log("erro ao deslogar")
 }
 
 
+
+
 export function AuthProvider({children}:{children:ReactNode}){
     const [usuario,setUser] =useState<UserProps>()
     const isAuthenticated = !!usuario;
+    const [dadosassociado,setDadosAssociado]=useState<AssociadoProps>()  
     const [data,setData] =useState(INITIAL_DATA)
 async function sign({nome,password}:SignInProps) {
     try{
@@ -133,14 +157,21 @@ console.log("Erro ao acessar", err)
 
     }
 }
-function closeModa(fields: Partial<DadosCadastro>){
-   setData(prev=>{
+ function closeModa(fields: Partial<DadosCadastro>){
+  setData(prev=>{
      return{...prev,...fields}
     })
     
 }
+
+async function carregarDados(){
+    const response = await api.post('/associado',{
+             id_associado:Number(data.id_associado)
+         });
+     setDadosAssociado(response.data);
+   }
   return(
-    <AuthContext.Provider value={{usuario,isAuthenticated,sign,signOut,data,closeModa}}>
+    <AuthContext.Provider value={{usuario,isAuthenticated,sign,signOut,data,closeModa,dadosassociado,carregarDados}}>
         {children}
     </AuthContext.Provider>
   )

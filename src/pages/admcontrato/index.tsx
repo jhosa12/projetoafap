@@ -8,33 +8,30 @@ import { RiFileAddLine } from "react-icons/ri";
 
 import {AuthContext} from "../../contexts/AuthContext"
 
-type FormData={
-        parcela_n:number,
-        vencimento:Date,
-        cobranca:Date,
-        valor_principal:string,
-        status:string,
-        usuario:string,
-}
+
+
 
 export default function AdmContrato(){
    
-    const {data,closeModa} = useContext(AuthContext)
-   const [mensalidade,setMensalidade]=useState<FormData[]>([])  
+    const {data,closeModa,dadosassociado,carregarDados} = useContext(AuthContext)
+  
   const [dados,setDados] =useState(true)
   const [historico,setHistorico] = useState(false)
   const [dependentes,setDependentes] =useState(false)
+        useEffect(()=>{
+            carregarDados()
+        },[data.id_associado])
+
     return(
         <>
         {data.closeModalPlano && (<ModalBusca/>)}
         {data.closeModalCadastro && (<Teste/>)}
         <div className="flex  flex-col w-full pl-4">
-            <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
-            <button onClick={()=>closeModa({closeModalPlano:true})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
-            <IoMdSearch size={20}/>
+        <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
+        <button onClick={()=>closeModa({closeModalPlano:true})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
+        <IoMdSearch size={20}/>
         Buscar Cliente
-    </button>
-               
+    </button>         
     <button type="button" onClick={()=>closeModa({closeModalCadastro:true})}  className="text-white gap-1  focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-3 py-2.5 text-center inline-flex items-center bg-[#c5942b] hover:bg-[#c5942ba9] focus:ring-blue-800">
     Add Plano
     <RiFileAddLine size={20} />
@@ -57,7 +54,10 @@ export default function AdmContrato(){
     </ul>
     <div >
      {dados && (<div className={`p-4  rounded-lg md:p-8 bg-gray-800 ${dados? "":''}`}>
-            <h2 className="flex flex-row gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">001-JOSÉ HENRIQUE BATISTA DE FREITAS <span>PLANO:<span className="pl-3 text-[#c5942b]">GOLD PRIME 5</span></span></h2>
+    
+              <h2 className="flex flex-row gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">{dadosassociado?.contrato.id_contrato}-{dadosassociado?.nome} <span>PLANO:<span className="pl-3 text-[#c5942b]">GOLD PRIME 5</span></span></h2>
+    
+          
           <div className="flex w-full flex-row gap-2">
            
             <div className="flex flex-col  p-4  border  rounded-lg shadow bg-gray-800 border-gray-700">
@@ -122,25 +122,25 @@ export default function AdmContrato(){
             </tr>
         </thead>
         <tbody>
-            {mensalidade.map((item,index)=>(
+            {dadosassociado?.mensalidade.map((item,index)=>(
                 <tr onDoubleClick={()=>{alert("CLICOU DUAS VEZES")}} className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
                 <th scope="row" className="px-7 py-1 font-medium  whitespace-nowrap text-white">
                     {item.parcela_n}
                 </th>
                 <td className="px-7 py-1">
-                    {new Date(item.vencimento).toLocaleDateString()}
+                   
                 </td>
                 <td className="px-7 py-1">
-                {new Date(item.cobranca).toLocaleDateString()} 
+               
                 </td>
                 <td className="px-10 py-1">
-                {item.valor_principal}
+               
                 </td>
                 <td className="px-10 py-1">
-                  {item.status==='P'?(<div className="text-green-500 font-bold">{item.status}</div>):item.status==='R'?(<div className="text-red-600">{item.status}</div>):(<div className="text-yellow-500 font-bold">{item.status}</div>)}
+                  
                 </td>
                 <td className="px-10 py-1">
-                {item.usuario}
+               
                 </td>
                 <td className="px-6 py-1">
                 

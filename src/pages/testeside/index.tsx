@@ -19,7 +19,6 @@ import Adm from '../admcontrato/index'
 export default function SideBar(){
  const [isOpen,setIsOpen]= useState(true )
     return(
-      
       <div className='flex flex-col w-full overscroll-contain'>
         <header>
     <nav className="border-gray-200 px-4 lg:px-6 py-2.5 bg-[#101418] " >
@@ -78,7 +77,7 @@ export default function SideBar(){
        <MenuItem icon={<MdNewLabel size={23}/>}>Solicitar Serviço</MenuItem> 
        <MenuItem icon={<HiDocumentReport size={23}/>}>Relatório</MenuItem>
        </SubMenu>
-    <MenuItem> Calendar </MenuItem>
+   
     <SubMenu icon={<FaCross size={25} />} label="Fúnebre">
        <MenuItem icon={<MdNewLabel size={23}/>}>Solicitar Serviço</MenuItem> 
        <MenuItem icon={<HiDocumentReport size={23}/>}>Relatório</MenuItem>
