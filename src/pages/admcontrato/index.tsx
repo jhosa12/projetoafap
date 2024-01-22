@@ -150,9 +150,10 @@ export default function AdmContrato(){
         </div>)}
         {historico && (
            
-<div className="flex rounded-lg  h-5/6 p-2 shadow-md sm:rounded-lg">
+<div className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)]  p-2 shadow-md sm:rounded-lg">
+    <input className="m-2" type="text" />
     <table 
-     className="block  h-[375px] overflow-y-scroll text-xs text-left rtl:text-right border-collapse rounded-lg text-gray-400">
+     className="block  overflow-y-scroll text-xs text-left rtl:text-right border-collapse rounded-lg text-gray-400">
         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
             <tr >
                 <th scope="col" className="px-6 py-1">
