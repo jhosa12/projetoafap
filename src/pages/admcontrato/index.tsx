@@ -70,7 +70,7 @@ export default function AdmContrato(){
         <div className="flex w-full mr-2">
         {data.closeModalPlano && (<ModalBusca/>)}
         {data.closeModalCadastro && (<Teste/>)}
-        <div className="flex  flex-col w-full pl-4">
+        <div className="flex  flex-col pl-4">
         <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
         <button onClick={()=>closeModa({closeModalPlano:true})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
         <IoMdSearch size={20}/>
@@ -96,7 +96,9 @@ export default function AdmContrato(){
             <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Óbitos</button>
         </li>
     </ul>
-    <div >
+    <div className="flex flex-col">
+        
+       
      {dados && dadosassociado && (<div className={` p-4  rounded-lg md:p-8 bg-gray-800 ${dados? "":''}`}>
     
               <h2 className="inline-flex gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">
@@ -148,15 +150,15 @@ export default function AdmContrato(){
         </div>)}
         {historico && (
            
-<div className="flex  rounded-lg  overflow-y-auto w-full max-h-96  p-3   shadow-md sm:rounded-lg">
+<div className="flex rounded-lg  h-5/6 p-2 shadow-md sm:rounded-lg">
     <table 
-     className="w-full text-xs text-left rtl:text-right overflow-y-auto   rounded-lg  text-gray-400 ">
-        <thead className=" w-full text-xs  uppercase bg-gray-700 text-gray-400">
-            <tr>
-                <th scope="col" className=" px-6 py-1">
+     className="block  h-[375px] overflow-y-scroll text-xs text-left rtl:text-right border-collapse rounded-lg text-gray-400">
+        <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
+            <tr >
+                <th scope="col" className="px-6 py-1">
                     NP
                 </th>
-                <th scope="col" className="px-6 py-1">
+                <th scope="col" className=" px-6 py-1">
                     DATA VENC.
                 </th>
                 <th scope="col" className="px-6 py-1">
@@ -168,21 +170,21 @@ export default function AdmContrato(){
                 <th scope="col" className="px-6 py-1">
                     status
                 </th>
-                <th scope="col" className="px-6 py-1">
+                <th scope="col" className=" px-6 py-1">
                     BAIXADA POR
                 </th>
-                <th scope="col" className="px-6 py-1">
+                <th scope="col" className="  px-6 py-1">
                     AGENDADA POR
                 </th>
-                <th scope="col" className="px-6 py-1">
+                <th scope="col" className=" px-6 py-1">
                     ATRASO
                 </th>
-                <th scope="col" className="px-6 py-1">
+                <th scope="col" className=" px-6 py-1">
                     <span className="sr-only">Edit</span>
                 </th>
             </tr>
         </thead>
-        <tbody>
+        <tbody  >
             {dadosassociado?.mensalidade.map((item,index)=>(
                 
                 <tr onDoubleClick={()=>{alert("CLICOU DUAS VEZES")}} className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
