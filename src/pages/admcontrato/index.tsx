@@ -30,18 +30,45 @@ export default function AdmContrato(){
         console.error('Erro ao carregar dados:', error);
       }
     };
-
+    
     carregarDadosAsync();
   }, [data.id_associado]);
 
   useEffect(() => {
+    let x =0;
     if (dadosassociado?.contrato.situacao=== 'ATIVO') {
       toast.warn('PLANO ATIVO');
     }
+    dadosassociado?.mensalidade.map((item,index)=>{
+        new Date()>=new Date(item.vencimento) && item.status==='A'? x=x+1 :'';
+    })
+    if(x>1){
+        toast.warn(`Possui ${x} mensalidades em aberto`)
+    }
+   
+   
   }, [dadosassociado]);
 
+  function calcularDiferencaEmDias(data1:Date, data2:Date) {
+    // Convertendo as datas para objetos Date
+    const timestamp1 = data1.getTime();
+  const timestamp2 = data2.getTime();
+
+  // Calculando a diferença em milissegundos
+  const diferencaEmMilissegundos = Math.abs(timestamp2 - timestamp1);
+
+  // Convertendo a diferença em dias (1 dia = 24 horas x 60 minutos x 60 segundos x 1000 milissegundos)
+  const diferencaEmDias = Math.ceil(diferencaEmMilissegundos / (1000 * 60 * 60 * 24));
+
+  return diferencaEmDias;
+  }
+
+
+
+
+
     return(
-        <>
+        <div className="flex w-full mr-2">
         {data.closeModalPlano && (<ModalBusca/>)}
         {data.closeModalCadastro && (<Teste/>)}
         <div className="flex  flex-col w-full pl-4">
@@ -55,7 +82,7 @@ export default function AdmContrato(){
     <RiFileAddLine size={20} />
     </button>
             </div>
-<div className="w-11/12  border  rounded-lg shadow bg-gray-800 border-gray-700">
+<div className="w-full border  rounded-lg shadow bg-gray-800 border-gray-700">
     <ul className="flex flex-wrap text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
         <li className="me-2">
             <button  type="button" onClick={()=>{setDados(true),setDependentes(false),setHistorico(false)}}   className="inline-block p-4  rounded-ss-lg  bg-gray-800 hover:bg-gray-700 text-blue-500">Dados</button>
@@ -79,7 +106,7 @@ export default function AdmContrato(){
                 <span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato.plano}
                 </span>
                 </span>
-               
+                <p className="mb-1 font-extrabold">SITUAÇÃO:<span className="font-normal"> {dadosassociado?.contrato.situacao}</span></p>
                 </h2>
     
           
@@ -100,7 +127,7 @@ export default function AdmContrato(){
     </div>
     <div className="flex text-white flex-col p-4 text-sm border  rounded-lg shadow bg-gray-800 border-gray-700">
     <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO PLANO</h2>
-    <p className="mb-1 font-semibold">SITUAÇÃO:<span className="font-normal"> {dadosassociado?.contrato.situacao}</span></p>
+   
     <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
            
             <p className=" font-normal text-gray-400"><span className="text-white font-semibold">CATEGORIA: </span>{dadosassociado?.contrato.plano}</p>
@@ -144,24 +171,29 @@ export default function AdmContrato(){
                     AGENDADA POR
                 </th>
                 <th scope="col" className="px-6 py-1">
+                    ATRASO
+                </th>
+                <th scope="col" className="px-6 py-1">
                     <span className="sr-only">Edit</span>
                 </th>
             </tr>
         </thead>
         <tbody>
             {dadosassociado?.mensalidade.map((item,index)=>(
+                
                 <tr onDoubleClick={()=>{alert("CLICOU DUAS VEZES")}} className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
                 <th scope="row" className="px-7 py-1 font-medium  whitespace-nowrap text-white">
                     {item.parcela_n}
                 </th>
                 <td className="px-7 py-1">
                    {new Date(item.vencimento).toLocaleDateString()}
+                   
                 </td>
                 <td className="px-7 py-1">
                 {new Date(item.cobranca).toLocaleDateString()}
                 </td>
                 <td className="px-10 py-1">
-               {item.valor_principal}
+               {`R$${item.valor_principal}`}
                 </td>
                 <td className="px-10 py-1">
                   {item.status}
@@ -170,7 +202,10 @@ export default function AdmContrato(){
                {item.usuario}
                 </td>
                 <td className="px-6 py-1">
-                
+                   
+                </td>
+                <td className="px-6 py-1">
+                    {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
                 </td>
                 <td className="px-6 py-1 text-right">
                     <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
@@ -246,6 +281,6 @@ export default function AdmContrato(){
     </div>
 </div> 
         </div>
-        </>
+        </div>
     )
 }
