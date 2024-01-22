@@ -12,21 +12,33 @@ import { toast } from "react-toastify";
 
 
 
+
 export default function AdmContrato(){
    
     const {data,closeModa,dadosassociado,carregarDados} = useContext(AuthContext)
   const [dados,setDados] =useState(true)
   const [historico,setHistorico] = useState(false)
   const [dependentes,setDependentes] =useState(false)
-        useEffect(()=>{
-           carregarDados().then(()=>{
-            if(dadosassociado?.contrato.situacao==='ATIVO'){
-                toast.warn("PLANO ATIVO")
-            }
-           })
-           
-        },[data.id_associado])
-     
+ 
+  
+  useEffect(() => {
+    const carregarDadosAsync = async () => {
+      try {
+        await carregarDados();
+      
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+      }
+    };
+
+    carregarDadosAsync();
+  }, [data.id_associado]);
+
+  useEffect(() => {
+    if (dadosassociado?.contrato.situacao=== 'ATIVO') {
+      toast.warn('PLANO ATIVO');
+    }
+  }, [dadosassociado]);
 
     return(
         <>
