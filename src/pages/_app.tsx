@@ -5,11 +5,9 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 export default function App({ Component, pageProps }: AppProps) {
   return(
-    <AuthProvider>
-      
+    <AuthProvider>  
   <Component {...pageProps} />
   <ToastContainer autoClose={5000} theme='light'/>
     </AuthProvider>
-  
   )
 }

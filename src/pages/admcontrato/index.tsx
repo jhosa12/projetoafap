@@ -25,7 +25,6 @@ export default function AdmContrato(){
     const carregarDadosAsync = async () => {
       try {
         await carregarDados();
-      
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
       }

@@ -66,7 +66,7 @@ export function ModalBusca(){
       }
       if(criterio ==="Endereço"){
         const response =  await api.post('/buscar',{
-            endereco:input.toUpperCase
+            endereco:input.toUpperCase()
         })
         setarray(response.data)
       }
