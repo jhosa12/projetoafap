@@ -15,7 +15,6 @@ import { toast } from "react-toastify";
 export default function AdmContrato(){
    
     const {data,closeModa,dadosassociado,carregarDados} = useContext(AuthContext)
-  
   const [dados,setDados] =useState(true)
   const [historico,setHistorico] = useState(false)
   const [dependentes,setDependentes] =useState(false)
@@ -60,9 +59,16 @@ export default function AdmContrato(){
         </li>
     </ul>
     <div >
-     {dados && (<div className={`p-4  rounded-lg md:p-8 bg-gray-800 ${dados? "":''}`}>
+     {dados && (<div className={` p-4  rounded-lg md:p-8 bg-gray-800 ${dados? "":''}`}>
     
-              <h2 className="flex flex-row gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">{dadosassociado?.contrato.id_contrato}-{dadosassociado?.nome} <span>PLANO:<span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato.plano}{dadosassociado?.contrato.situacao}</span></span></h2>
+              <h2 className="inline-flex gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">
+                {dadosassociado?.contrato.id_contrato}-{dadosassociado?.nome}
+                 <span>PLANO:
+                <span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato.plano}
+                </span>
+                </span>
+               
+                </h2>
     
           
           <div className="flex w-full flex-row gap-2">
@@ -80,11 +86,13 @@ export default function AdmContrato(){
             <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CIDADE: </span>{dadosassociado?.cidade}</p>
          </h5>
     </div>
-    <div className="flex flex-col p-4 text-sm border  rounded-lg shadow bg-gray-800 border-gray-700">
+    <div className="flex text-white flex-col p-4 text-sm border  rounded-lg shadow bg-gray-800 border-gray-700">
     <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO PLANO</h2>
+    <p className="mb-1 font-semibold">SITUAÇÃO:<span className="font-normal"> {dadosassociado?.contrato.situacao}</span></p>
     <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
-            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CATEGORIA: </span>{dadosassociado?.contrato.plano}</p>
-            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">VALOR: </span>R$ {dadosassociado?.contrato.valor_mensalidade}</p>
+           
+            <p className=" font-normal text-gray-400"><span className="text-white font-semibold">CATEGORIA: </span>{dadosassociado?.contrato.plano}</p>
+            <p className="font-normal text-gray-400"><span className="text-white font-semibold">VALOR: </span>R$ {dadosassociado?.contrato.valor_mensalidade}</p>
          </h5>
          <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
             <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">ADESÃO: </span>{dadosassociado?.contrato.dt_adesao?new Date(dadosassociado.contrato.dt_adesao).toLocaleDateString():''}</p>
