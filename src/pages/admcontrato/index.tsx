@@ -36,8 +36,8 @@ export default function AdmContrato(){
 
   useEffect(() => {
     let x =0;
-    if (dadosassociado?.contrato.situacao=== 'ATIVO') {
-      toast.warn('PLANO ATIVO');
+    if (dadosassociado?.contrato.situacao=== 'INATIVO') {
+      toast.error('CONTRATO INATIVO');
     }
     dadosassociado?.mensalidade.map((item,index)=>{
         new Date()>=new Date(item.vencimento) && item.status==='A'? x=x+1 :'';
@@ -98,7 +98,7 @@ export default function AdmContrato(){
         </li>
     </ul>
     <div >
-     {dados && (<div className={` p-4  rounded-lg md:p-8 bg-gray-800 ${dados? "":''}`}>
+     {dados && dadosassociado && (<div className={` p-4  rounded-lg md:p-8 bg-gray-800 ${dados? "":''}`}>
     
               <h2 className="inline-flex gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">
                 {dadosassociado?.contrato.id_contrato}-{dadosassociado?.nome}
@@ -106,7 +106,12 @@ export default function AdmContrato(){
                 <span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato.plano}
                 </span>
                 </span>
-                <p className="mb-1 font-extrabold">SITUAÇÃO:<span className="font-normal"> {dadosassociado?.contrato.situacao}</span></p>
+              
+            <span className={`inline-flex items-center  text-sm font-medium px-2.5 py-0.5 rounded-full ${dadosassociado?.contrato.situacao==='ATIVO'?"bg-green-900 text-green-300":"bg-red-900 text-red-300"}`}>
+            <span className={`w-2 h-2 me-1 ${dadosassociado?.contrato.situacao==='ATIVO'?"bg-green-500 ":"bg-red-500"}  rounded-full`}></span>
+            {dadosassociado?.contrato.situacao}
+            </span>
+               
                 </h2>
     
           
