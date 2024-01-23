@@ -19,6 +19,7 @@ export default function AdmContrato(){
   const [dados,setDados] =useState(true)
   const [historico,setHistorico] = useState(false)
   const [dependentes,setDependentes] =useState(false)
+  const [teste,setmodalteste]=useState(false)
  
   
   useEffect(() => {
@@ -62,15 +63,11 @@ export default function AdmContrato(){
   return diferencaEmDias;
   }
 
-
-
-
-
     return(
         <div className="flex w-full mr-2 ">
         {data.closeModalPlano && (<ModalBusca/>)}
         {data.closeModalCadastro && (<Teste/>)}
-      
+        {teste && <ModalMensalidade/>}
         <div className="flex  flex-col pl-4 ">
         <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
         <button onClick={()=>closeModa({closeModalPlano:true})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
@@ -99,7 +96,7 @@ export default function AdmContrato(){
     </ul>
     <div className="flex flex-col">
  
-     {dados && dadosassociado && (<div className={` p-4  rounded-lg md:p-8 bg-gray-800 ${dados? "":''}`}>
+     {dados && dadosassociado && (<div className={` p-4  rounded-lg md:p-8  ${dados? "":''}`}>
               <h2 className="inline-flex gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">
                 {dadosassociado?.contrato.id_contrato}-{dadosassociado?.nome}
                  <span>PLANO:

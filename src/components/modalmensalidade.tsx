@@ -8,13 +8,13 @@ export function ModalMensalidade(){
     <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full  ">
   
     <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-10 bg-white ">
-    <div className="fixed flex flex-col  w-2/4  rounded-lg shadow bg-gray-800">
+    <div className="fixed flex flex-col  w-2/4  rounded-lg shadow-2xl border-gray-600 border  bg-gray-700">
     <button  type="button" onClick={()=>closeModa({closeModalPlano:false})} className="absolute right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
                     <IoIosClose size={30}/>
         </button>
         <form>
         
-        <div className="p-2 border-solid border-b-[1px] grid mt-2 gap-2 grid-flow-row-dense grid-cols-4">
+        <div className="p-2  border-b border-gray-600 grid mt-2 gap-2 grid-flow-row-dense grid-cols-4">
         <div className="grid grid-cols-subgrid gap-4 col-span-4">
 <label className="flex flex-row justify-center col-start-1 font-semibold  gap-2 text-white">EDITAR MENSALIDADE</label>
 </div>
