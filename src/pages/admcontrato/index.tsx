@@ -207,7 +207,7 @@ export default function AdmContrato(){
                     {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
                 </td>
                 <td className="px-6 py-1 text-right">
-                    <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
+                    <span onClick={()=>setmodalteste(true)} className="font-medium  text-blue-500 hover:underline">Edit</span>
                 </td>
             </tr>
             ))}
