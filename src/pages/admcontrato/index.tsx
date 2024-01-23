@@ -19,7 +19,7 @@ export default function AdmContrato(){
   const [dados,setDados] =useState(true)
   const [historico,setHistorico] = useState(false)
   const [dependentes,setDependentes] =useState(false)
-  const [teste,setmodalteste]=useState(false)
+  
  
   
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function AdmContrato(){
         <div className="flex w-full mr-2 ">
         {data.closeModalPlano && (<ModalBusca/>)}
         {data.closeModalCadastro && (<Teste/>)}
-        {teste && <ModalMensalidade/>}
+        {data.mensalidade.close && <ModalMensalidade/>}
         <div className="flex  flex-col pl-4 ">
         <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
         <button onClick={()=>closeModa({closeModalPlano:true})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
@@ -207,7 +207,7 @@ export default function AdmContrato(){
                     {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
                 </td>
                 <td className="px-6 py-1 text-right">
-                    <span onClick={()=>setmodalteste(true)} className="font-medium  text-blue-500 hover:underline">Edit</span>
+                    <span onClick={()=>closeModa({mensalidade:{np:Number(item.parcela_n),cobranca:(new Date(item.vencimento).toLocaleDateString()),vencimento:(new Date(item.vencimento).toLocaleDateString()),valor:Number(item.valor_principal),status:item.status,baixada_por:item.usuario,id_mensalidade:item.id_mensalidade,close:true}})} className="font-medium  cursor-pointer text-blue-500 hover:underline">Edit</span>
                 </td>
             </tr>
             ))}

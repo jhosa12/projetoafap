@@ -10,6 +10,17 @@ type DependentesProps={
     carencia:string,
     id_dependente:number
 }
+type MensalidadeProps={
+    np:number,
+    vencimento:string,
+    cobranca:string,
+    valor:number,
+    close:boolean,
+    status:string,
+    baixada_por:string,
+    agendada_por:string,
+    id_mensalidade:number
+}
 type DadosCadastro={
     name:string,
     nasc:string,
@@ -42,7 +53,8 @@ type DadosCadastro={
     dtvenc:string,
     dtadesao:string,
     dtcarencia:string,
-    id_associado:number
+    id_associado:number,
+    mensalidade:Partial<MensalidadeProps>
     
 }
 
@@ -78,7 +90,8 @@ const INITIAL_DATA:DadosCadastro ={
     dtvenc:'',
     dtadesao:'',
     dtcarencia:'',
-    id_associado:0
+    id_associado:0,
+    mensalidade:{close:false}
   }
   type FormData={
     parcela_n:number,
@@ -87,6 +100,7 @@ const INITIAL_DATA:DadosCadastro ={
     valor_principal:string,
     status:string,
     usuario:string,
+    id_mensalidade:number
 }
 type ContratoProps={
 id_contrato:number,
