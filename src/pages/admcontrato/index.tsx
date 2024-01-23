@@ -96,7 +96,7 @@ export default function AdmContrato(){
     </ul>
     <div className="flex flex-col">
  
-     {dados && dadosassociado && (<div className={` p-4  rounded-lg md:p-8  ${dados? "":''}`}>
+     {dados && dadosassociado && (<div className={` p-4  rounded-lg md:p-8`}>
               <h2 className="inline-flex gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">
                 {dadosassociado?.contrato.id_contrato}-{dadosassociado?.nome}
                  <span>PLANO:
