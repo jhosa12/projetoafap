@@ -5,6 +5,9 @@ import { GiReturnArrow } from "react-icons/gi";
 import { AuthContext } from "@/contexts/AuthContext";
 import { useContext, useEffect } from "react";
 import { toast } from "react-toastify";
+import { api } from "@/services/apiClient";
+
+
 
 export function ModalMensalidade(){
     const {closeModa,data}=useContext(AuthContext)
@@ -13,6 +16,20 @@ export function ModalMensalidade(){
         const [dia, mes, ano] = dataFormatoOriginal.split('/');
         return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
       };
+      async function baixar() {
+        try{
+            const response = await api.put('/mensalidade',{
+                id_mensalidade:data.mensalidade.id_mensalidade,
+                status:'P'
+            })
+            closeModa({mensalidade:{status:response.data.status}})
+            toast.done('Mensalidade Baixada com sucesso')
+        }catch(err){
+            toast.error('Erro ao Baixar Mensalidade')
+        }
+       
+        
+      }
     return(
     <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
     <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
@@ -79,7 +96,7 @@ export function ModalMensalidade(){
     <label  className="block mb-1 text-xs font-medium  text-white">DATA PAG.</label>
     <input type="text"  className="block w-full  pt-1 pb-1 pl-2 pr-2 text-gray-900 border  rounded-lg  sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
 </div>
-<button className="flex flex-row justify-center  bg-green-600 rounded-lg p-2 gap-2 text-white"><IoIosArrowDropdownCircle size={25}/>BAIXAR</button>
+<button type='button' onClick={baixar} className="flex flex-row justify-center  bg-green-600 rounded-lg p-2 gap-2 text-white"><IoIosArrowDropdownCircle size={25}/>BAIXAR</button>
 <button className="flex flex-row justify-center  bg-red-600 rounded-lg p-2 gap-2 text-white"><GiReturnArrow size={22}/> ESTORNAR</button>
 </div>
 </form>

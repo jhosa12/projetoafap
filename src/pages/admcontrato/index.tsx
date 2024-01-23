@@ -32,7 +32,7 @@ export default function AdmContrato(){
     };
     
     carregarDadosAsync();
-  }, [data.id_associado]);
+  }, [data.id_associado,data.mensalidade]);
 
   useEffect(() => {
     let x =0;
