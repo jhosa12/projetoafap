@@ -8,7 +8,7 @@ import { RiFileAddLine } from "react-icons/ri";
 
 import {AuthContext} from "../../contexts/AuthContext"
 import { toast } from "react-toastify";
-
+import { ModalMensalidade } from "@/components/modalmensalidade";
 
 
 
@@ -67,10 +67,11 @@ export default function AdmContrato(){
 
 
     return(
-        <div className="flex w-full mr-2">
+        <div className="flex w-full mr-2 ">
         {data.closeModalPlano && (<ModalBusca/>)}
         {data.closeModalCadastro && (<Teste/>)}
-        <div className="flex  flex-col pl-4">
+      
+        <div className="flex  flex-col pl-4 ">
         <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
         <button onClick={()=>closeModa({closeModalPlano:true})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
         <IoMdSearch size={20}/>
@@ -81,7 +82,7 @@ export default function AdmContrato(){
     <RiFileAddLine size={20} />
     </button>
             </div>
-<div className="w-full border  rounded-lg shadow bg-gray-800 border-gray-700">
+<div className="w-full border  rounded-lg shadow  border-gray-700">
     <ul className="flex flex-wrap text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
         <li className="me-2">
             <button  type="button" onClick={()=>{setDados(true),setDependentes(false),setHistorico(false)}}   className="inline-block p-4  rounded-ss-lg  bg-gray-800 hover:bg-gray-700 text-blue-500">Dados</button>
@@ -97,25 +98,19 @@ export default function AdmContrato(){
         </li>
     </ul>
     <div className="flex flex-col">
-        
-       
+ 
      {dados && dadosassociado && (<div className={` p-4  rounded-lg md:p-8 bg-gray-800 ${dados? "":''}`}>
-    
               <h2 className="inline-flex gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">
                 {dadosassociado?.contrato.id_contrato}-{dadosassociado?.nome}
                  <span>PLANO:
                 <span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato.plano}
                 </span>
                 </span>
-              
             <span className={`inline-flex items-center  text-sm font-medium px-2.5 py-0.5 rounded-full ${dadosassociado?.contrato.situacao==='ATIVO'?"bg-green-900 text-green-300":"bg-red-900 text-red-300"}`}>
             <span className={`w-2 h-2 me-1 ${dadosassociado?.contrato.situacao==='ATIVO'?"bg-green-500 ":"bg-red-500"}  rounded-full`}></span>
             {dadosassociado?.contrato.situacao}
             </span>
-               
                 </h2>
-    
-          
           <div className="flex w-full flex-row gap-2">
            
             <div className="flex flex-col  p-4 text-sm  border  rounded-lg shadow bg-gray-800 border-gray-700">
@@ -151,7 +146,8 @@ export default function AdmContrato(){
         {historico && (
            
 <div className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)]  p-2 shadow-md sm:rounded-lg">
-    <input className="m-2" type="text" />
+  
+
     <table 
      className="block  overflow-y-scroll text-xs text-left rtl:text-right border-collapse rounded-lg text-gray-400">
         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
@@ -186,8 +182,7 @@ export default function AdmContrato(){
             </tr>
         </thead>
         <tbody  >
-            {dadosassociado?.mensalidade.map((item,index)=>(
-                
+            {dadosassociado?.mensalidade.map((item,index)=>(  
                 <tr onDoubleClick={()=>{alert("CLICOU DUAS VEZES")}} className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
                 <th scope="row" className="px-7 py-1 font-medium  whitespace-nowrap text-white">
                     {item.parcela_n}

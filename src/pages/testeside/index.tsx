@@ -19,9 +19,9 @@ import Adm from '../admcontrato/index'
 export default function SideBar(){
  const [isOpen,setIsOpen]= useState(true )
     return(
-      <div className='flex flex-col w-full overscroll-contain'>
+      <div className='flex flex-col w-full overscroll-contain '>
         <header>
-    <nav className="border-gray-200 px-4 lg:px-6 py-2.5 bg-[#101418] " >
+    <nav className="border-gray-200 px-4 lg:px-6 py-2.5  " >
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
             <div className="flex items-center">
                 <Image onClick={()=>setIsOpen(!isOpen)} src={logo} className="cursor-pointer w-full mr-2 h-8 sm:h-11" alt="Flowbite Logo" />
@@ -40,10 +40,10 @@ export default function SideBar(){
 
     
 </header>
-   <div className=' flex flex-row bg-[#101418] w-full '> 
+   <div className=' flex flex-row  w-full '> 
   
    <div className={`flex h-[100vh] overscroll-y-${isOpen ? 'auto' : 'hidden'}`}>
-        <Sidebar  collapsed={!isOpen}  backgroundColor='#101418'  rootStyles={{
+        <Sidebar  collapsed={!isOpen}  backgroundColor='bg-[#0f172a]'  rootStyles={{
             [`.${sidebarClasses.container}`]: {
               height:'89%',
               
@@ -56,10 +56,10 @@ export default function SideBar(){
       button:{
         display:'flex',
         color:'#9ca3af',
-        ":hover":{color:'#FFFFFF',backgroundColor:'#101418'}
+        ":hover":{color:'#FFFFFF',backgroundColor:'#0f172a'}
       },
       subMenuContent:{
-        backgroundColor:'#101418',
+        backgroundColor:'#0f172a',
         
       }
     }
