@@ -20,6 +20,7 @@ type MensalidadeProps={
     baixada_por:string,
     agendada_por:string,
     id_mensalidade:number
+
 }
 type DadosCadastro={
     name:string,
@@ -55,6 +56,7 @@ type DadosCadastro={
     dtcarencia:string,
     id_associado:number,
     mensalidade:Partial<MensalidadeProps>
+    mensalidadeAnt:Partial<FormData>
     
 }
 
@@ -91,7 +93,8 @@ const INITIAL_DATA:DadosCadastro ={
     dtadesao:'',
     dtcarencia:'',
     id_associado:0,
-    mensalidade:{}
+    mensalidade:{},
+    mensalidadeAnt:{}
   }
   type FormData={
     parcela_n:number,
@@ -122,6 +125,7 @@ cidade:string,
 guia_rua:string,
 uf:string,
 mensalidade:Array<FormData>,
+
 contrato:ContratoProps,
 dependentes:Array<DependentesProps>
 }

@@ -8,13 +8,19 @@ import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 
 export function ModalMensalidade(){
-    const {closeModa,data}=useContext(AuthContext)
+    const {closeModa,data,usuario}=useContext(AuthContext)
     const [loading,setLoading] = useState()
       async function baixarEstornar(status:string,acao:string) {
+        if(data.mensalidadeAnt.status==='A'){
+            toast.info('A mensalidade anterior encontra-se em Aberto!')
+            return
+        }
         try{
             const response = await api.put('/mensalidade',{
                 id_mensalidade:data.mensalidade.id_mensalidade,
-                status:status
+                status:status,
+                data_pgto:new Date(),
+                usuario:usuario?.nome
             })
            
                 toast.success(`Mensalidade ${acao} com sucesso`)
