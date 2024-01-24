@@ -155,7 +155,7 @@ export default function AdmContrato(){
         </div>)}
         {historico && (
            
-<div   className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)]  p-2 shadow-md sm:rounded-lg">
+<div   className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)] max-w-[calc(100vw-275px)]  p-2 shadow-md sm:rounded-lg">
 <label className="relative inline-flex w-[130px] items-center mb-5 cursor-pointer">
   <input onChange={()=>setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer"/>
   <div className="w-9 h-5  peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
@@ -163,19 +163,19 @@ export default function AdmContrato(){
 </label>
     <table 
     ref={tabelaRef}
-     className="block  overflow-y-scroll text-xs text-left rtl:text-right border-collapse rounded-lg text-gray-400">
+     className="block  overflow-y-auto overflow-x-auto text-xs text-left rtl:text-right border-collapse rounded-lg text-gray-400">
         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
             <tr >
                 <th scope="col" className="px-4 py-1">
                     NP
                 </th>
-                <th scope="col" className=" px-4 py-1">
+                <th scope="col" className=" px-2 py-1">
                     DATA VENC.
                 </th>
                 <th scope="col" className="px-4 py-1">
                     DATA AGEND.
                 </th>
-                <th scope="col" className="px-6 py-1">
+                <th scope="col" className="px-2 py-1">
                     VALOR
                 </th>
                 <th scope="col" className="px-2 py-1">
@@ -185,19 +185,21 @@ export default function AdmContrato(){
                     Data Pag.
                 </th>
                 <th scope="col" className=" px-4 py-1">
-                    Hora Pag.
+                    Hr Pag.
                 </th>
                 <th scope="col" className=" px-4 py-1">
                     usuário
                 </th>
                 <th scope="col" className=" px-2 py-1">
-                    valor pago
+                    val pago
                 </th>
-                
-                <th scope="col" className=" px-4 py-1">
+                <th scope="col" className=" px-2 py-1">
+                    forma
+                </th>
+                <th scope="col" className=" px-3 py-1">
                     ATRASO
                 </th>
-                <th scope="col" className=" px-6 py-1">
+                <th scope="col" className=" px-4 py-1">
                     <span>ações</span>
                 </th>
             </tr>
@@ -210,14 +212,14 @@ export default function AdmContrato(){
                 <th scope="row" className="px-5 py-1 font-medium  whitespace-nowrap text-white">
                     {item.parcela_n}
                 </th>
-                <td className="px-5 py-1">
+                <td className="px-2 py-1">
                    {new Date(item.vencimento).toLocaleDateString()}
                    
                 </td>
                 <td className="px-5 py-1">
                 {new Date(item.cobranca).toLocaleDateString()}
                 </td>
-                <td className="px-8 py-1">
+                <td className="px-3 py-1">
                {`R$${item.valor_principal}`}
                 </td>
                 <td className={`px-4 py-1 ${item.status==='A'&& calcularDiferencaEmDias(new Date(),new Date(item.vencimento))>=1 ?"font-bold text-red-600":item.status=='P'?"font-bold text-blue-600" :''}`}>
@@ -235,11 +237,14 @@ export default function AdmContrato(){
                 <td className="px-6 py-1">
                {item.valor_total?`R$${item.valor_total}`:''}
                 </td>
+                <td className="px-4 py-1">
+               {item.valor_total?`R$${item.valor_total}`:''}
+                </td>
               
                 <td className="px-4 py-1">
                     {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
                 </td>
-                <td className="px-4 py-1 text-right">
+                <td className="px-1 py-1 text-right">
                 <span onClick={()=>closeModa({mensalidadeAnt:dadosassociado.mensalidade[index-1],mensalidade:{np:Number(item.parcela_n),cobranca:(new Date(item.vencimento).toLocaleDateString()),vencimento:(new Date(item.vencimento).toLocaleDateString()),valor:Number(item.valor_principal),status:item.status,baixada_por:item.usuario,id_mensalidade:item.id_mensalidade,close:true}})} className="font-medium  cursor-pointer text-blue-500 hover:underline">Baixar/Editar</span>
                 </td>
             </tr>
@@ -274,11 +279,14 @@ export default function AdmContrato(){
                 <td className="px-6 py-1">
                {item.valor_total?`R$${item.valor_total}`:''}
                 </td>
-              
+                <td className="px-6 py-1">
+               {item.valor_total?`R$${item.valor_total}`:''}
+                </td>
+        
                 <td className="px-4 py-1">
                     {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
                 </td>
-                <td className=" px-4 py-1 text-right">
+                <td className=" px-1 py-1 text-right">
                     <span onClick={()=>closeModa({mensalidadeAnt:dadosassociado.mensalidade[index-1],mensalidade:{np:Number(item.parcela_n),cobranca:(new Date(item.vencimento).toLocaleDateString()),vencimento:(new Date(item.vencimento).toLocaleDateString()),valor:Number(item.valor_principal),status:item.status,baixada_por:item.usuario,id_mensalidade:item.id_mensalidade,close:true}})} className="font-medium  cursor-pointer text-blue-500 hover:underline">Baixar/Editar</span>
                 </td>
             </tr>

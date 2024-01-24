@@ -20,9 +20,8 @@ export function ModalMensalidade(){
                 id_mensalidade:data.mensalidade.id_mensalidade,
                 status:status,
                 data_pgto:status==='A'?null:new Date(),
-                usuario:usuario?.nome
+                usuario:usuario?.nome.toUpperCase()
             })
-           
                 toast.success(`Mensalidade ${acao} com sucesso`)
                  closeModa({mensalidade:{status:response.data.status,close:true}})
         }catch(err){
@@ -32,6 +31,7 @@ export function ModalMensalidade(){
       }
     return(
     <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
+        
     <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
     <div className="fixed flex flex-col  w-2/4  rounded-lg shadow-2xl border-gray-600 border  bg-[#0f172a]">
     <button  type="button" onClick={()=>closeModa({mensalidade:{close:false}})} className="absolute cursor-pointer right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
