@@ -240,30 +240,30 @@ export default function AdmContrato(){
                     {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
                 </td>
                 <td className="px-4 py-1 text-right">
-                    <span onClick={()=>closeModa({mensalidade:{np:Number(item.parcela_n),cobranca:(new Date(item.vencimento).toLocaleDateString()),vencimento:(new Date(item.vencimento).toLocaleDateString()),valor:Number(item.valor_principal),status:item.status,baixada_por:item.usuario,id_mensalidade:item.id_mensalidade,close:true}})} className="font-medium  cursor-pointer text-blue-500 hover:underline">Baixar/Editar</span>
+                <span onClick={()=>closeModa({mensalidadeAnt:dadosassociado.mensalidade[index-1],mensalidade:{np:Number(item.parcela_n),cobranca:(new Date(item.vencimento).toLocaleDateString()),vencimento:(new Date(item.vencimento).toLocaleDateString()),valor:Number(item.valor_principal),status:item.status,baixada_por:item.usuario,id_mensalidade:item.id_mensalidade,close:true}})} className="font-medium  cursor-pointer text-blue-500 hover:underline">Baixar/Editar</span>
                 </td>
             </tr>
                ):item.status==='A'?(
-                <tr key={index} className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
+                <tr key={index} onDoubleClick={()=>{alert("CLICOU DUAS VEZES")}} className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
                    
                 <th scope="row" className="px-5 py-1 font-medium  whitespace-nowrap text-white">
                     {item.parcela_n}
                 </th>
-                <td className="px-4 py-1">
+                <td className="px-5 py-1">
                    {new Date(item.vencimento).toLocaleDateString()}
                    
                 </td>
                 <td className="px-5 py-1">
                 {new Date(item.cobranca).toLocaleDateString()}
                 </td>
-                <td className="px-6 py-1">
+                <td className="px-8 py-1">
                {`R$${item.valor_principal}`}
                 </td>
                 <td className={`px-4 py-1 ${item.status==='A'&& calcularDiferencaEmDias(new Date(),new Date(item.vencimento))>=1 ?"font-bold text-red-600":''}`}>
                   {item.status}
                 </td>
                 <td className="px-4 py-1">
-                {item.data_pgto? new Date(item.data_pgto).toLocaleTimeString():''}
+                  {item.data_pgto? new Date(item.data_pgto).toLocaleDateString():''}
                 </td>
                 <td className="px-4 py-1">
                   {item.data_pgto? new Date(item.data_pgto).toLocaleTimeString():''}
@@ -278,7 +278,7 @@ export default function AdmContrato(){
                 <td className="px-4 py-1">
                     {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
                 </td>
-                <td className=" py-4 text-right">
+                <td className=" px-4 py-1 text-right">
                     <span onClick={()=>closeModa({mensalidadeAnt:dadosassociado.mensalidade[index-1],mensalidade:{np:Number(item.parcela_n),cobranca:(new Date(item.vencimento).toLocaleDateString()),vencimento:(new Date(item.vencimento).toLocaleDateString()),valor:Number(item.valor_principal),status:item.status,baixada_por:item.usuario,id_mensalidade:item.id_mensalidade,close:true}})} className="font-medium  cursor-pointer text-blue-500 hover:underline">Baixar/Editar</span>
                 </td>
             </tr>
