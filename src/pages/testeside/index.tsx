@@ -55,12 +55,21 @@ export default function SideBar(){
     {
       button:{
         display:'flex',
-        color:'#9ca3af',
-        ":hover":{color:'#FFFFFF',backgroundColor:'#0f172a'}
+        borderRadius:'10px',
+        paddingLeft:'24px',
+        paddingRight:'24px',
+        marginLeft:'4px',
+        marginRight:'4px',
+        marginTop:'0',
+        color:'#ffff',
+        ":hover":{backgroundColor:'#1f2937'}
       },
       subMenuContent:{
         backgroundColor:'#0f172a',
         
+      },
+      icon:{
+        color:'#ffff'
       }
     }
   } >
