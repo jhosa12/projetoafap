@@ -91,15 +91,17 @@ const INITIAL_DATA:DadosCadastro ={
     dtadesao:'',
     dtcarencia:'',
     id_associado:0,
-    mensalidade:{close:false}
+    mensalidade:{}
   }
   type FormData={
     parcela_n:number,
     vencimento:Date,
     cobranca:Date,
-    valor_principal:string,
+    valor_principal:number,
+    valor_total:number
     status:string,
     usuario:string,
+    data_pgto:Date,
     id_mensalidade:number
 }
 type ContratoProps={

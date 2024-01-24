@@ -3,12 +3,13 @@ import { IoMdSearch } from "react-icons/io";
 import 'react-tabs/style/react-tabs.css';
 import {ModalBusca} from '../../components/modal'
 import Teste from '@/pages/teste/index';
-import { useState,useContext, useEffect } from "react";
+import { useState,useContext, useEffect, useRef } from "react";
 import { RiFileAddLine } from "react-icons/ri";
 
 import {AuthContext} from "../../contexts/AuthContext"
 import { toast } from "react-toastify";
 import { ModalMensalidade } from "@/components/modalmensalidade";
+import { Item } from "@/components/dadosTitular";
 
 
 
@@ -19,10 +20,9 @@ export default function AdmContrato(){
   const [dados,setDados] =useState(true)
   const [historico,setHistorico] = useState(false)
   const [dependentes,setDependentes] =useState(false)
-  
  
-  
   useEffect(() => {
+   
     const carregarDadosAsync = async () => {
       try {
         await carregarDados();
@@ -34,20 +34,20 @@ export default function AdmContrato(){
     carregarDadosAsync();
   }, [data.id_associado,data.mensalidade]);
 
+  
   useEffect(() => {
-    let x =0;
-    if (dadosassociado?.contrato.situacao=== 'INATIVO') {
-      toast.error('CONTRATO INATIVO');
-    }
-    dadosassociado?.mensalidade.map((item,index)=>{
-        new Date()>=new Date(item.vencimento) && item.status==='A'? x=x+1 :'';
-    })
-    if(x>1){
-        toast.warn(`Possui ${x} mensalidades em aberto`)
-    }
-   
-   
-  }, [dadosassociado]);
+    let x = 0;
+      if (dadosassociado?.contrato.situacao === 'INATIVO') {
+        toast.error('CONTRATO INATIVO');
+      }
+      dadosassociado?.mensalidade.map((item, index) => {
+        new Date() >= new Date(item.vencimento) && item.status === 'A' ? (x = x + 1) : '';
+      });
+      if (x > 1) {
+        toast.warn(`Possui ${x} mensalidades Vencidas`);
+      }
+    // Marcar o componente como desmontado quando ele for desmontado
+  }, [dadosassociado?.contrato.situacao, dadosassociado?.mensalidade]);
 
   function calcularDiferencaEmDias(data1:Date, data2:Date) {
     // Convertendo as datas para objetos Date
@@ -161,20 +161,24 @@ export default function AdmContrato(){
                 <th scope="col" className="px-8 py-1">
                     VALOR
                 </th>
-                <th scope="col" className="px-6 py-1">
+                <th scope="col" className="px-2 py-1">
                     status
                 </th>
                 <th scope="col" className=" px-6 py-1">
-                    BAIXADA POR
-                </th>
-                <th scope="col" className="  px-6 py-1">
-                    AGENDADA POR
+                    Data Pag.
                 </th>
                 <th scope="col" className=" px-6 py-1">
+                    usuário
+                </th>
+                <th scope="col" className=" px-2 py-1">
+                    valor pago
+                </th>
+                
+                <th scope="col" className=" px-4 py-1">
                     ATRASO
                 </th>
                 <th scope="col" className=" px-6 py-1">
-                    <span className="sr-only">Edit</span>
+                    <span>ações</span>
                 </th>
             </tr>
         </thead>
@@ -194,19 +198,23 @@ export default function AdmContrato(){
                 <td className="px-10 py-1">
                {`R$${item.valor_principal}`}
                 </td>
-                <td className="px-10 py-1">
+                <td className={`px-6 py-1 ${item.status==="P"? "font-bold text-blue-600":item.status==="A" && calcularDiferencaEmDias(new Date(),new Date(item.vencimento))>=1 ?"font-bold text-red-600":''}`}>
                   {item.status}
                 </td>
-                <td className="px-10 py-1">
+                <td className="px-6 py-1">
+                  {new Date(item.data_pgto).toLocaleDateString()}
+                </td>
+                <td className="px-8 py-1">
                {item.usuario}
                 </td>
-                <td className="px-6 py-1">
-                   
+                <td className="px-8 py-1">
+               {item.valor_total?`R$${item.valor_total}`:''}
                 </td>
+              
                 <td className="px-6 py-1">
                     {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
                 </td>
-                <td className="px-6 py-1 text-right">
+                <td className="px-8 py-1 text-right">
                     <span onClick={()=>closeModa({mensalidade:{np:Number(item.parcela_n),cobranca:(new Date(item.vencimento).toLocaleDateString()),vencimento:(new Date(item.vencimento).toLocaleDateString()),valor:Number(item.valor_principal),status:item.status,baixada_por:item.usuario,id_mensalidade:item.id_mensalidade,close:true}})} className="font-medium  cursor-pointer text-blue-500 hover:underline">Edit</span>
                 </td>
             </tr>
