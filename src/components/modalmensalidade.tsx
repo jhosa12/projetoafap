@@ -19,7 +19,7 @@ export function ModalMensalidade(){
             const response = await api.put('/mensalidade',{
                 id_mensalidade:data.mensalidade.id_mensalidade,
                 status:status,
-                data_pgto:new Date(),
+                data_pgto:status==='A'?null:new Date(),
                 usuario:usuario?.nome
             })
            

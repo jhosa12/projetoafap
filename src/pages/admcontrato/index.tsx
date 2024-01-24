@@ -124,7 +124,7 @@ export default function AdmContrato(){
           <div className="flex w-full flex-row gap-2">
            
             <div className="flex flex-col  p-4 text-sm  border  rounded-lg shadow bg-gray-800 border-gray-700">
-            <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO TITULAR</h2>
+            <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO TITULAR </h2>
  
         <h5 className="mb-1 inline-flex justify-between text-sm gap-2 font-semibold tracking-tight  text-white">
         <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">ENDEREÇO: </span>{dadosassociado?.endereco}</p>
