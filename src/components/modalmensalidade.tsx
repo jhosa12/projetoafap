@@ -7,8 +7,6 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 
-
-
 export function ModalMensalidade(){
     const {closeModa,data}=useContext(AuthContext)
     const [loading,setLoading] = useState()
@@ -87,15 +85,14 @@ export function ModalMensalidade(){
     <input type="text"  className="block w-full  pt-1 pb-1 pl-2 pr-2 text-gray-900 border  rounded-lg  sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-white">DATA PAG.</label>
-    <input type="text"  className="block w-full  pt-1 pb-1 pl-2 pr-2 text-gray-900 border  rounded-lg  sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+<label  className="block mb-1 text-xs font-medium  text-white">DATA PAG.</label>
+<input type="text"  className="block w-full  pt-1 pb-1 pl-2 pr-2 text-gray-900 border  rounded-lg  sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
 </div>
 <button type='button' onClick={()=>baixarEstornar('P','Baixada')} className="flex flex-row justify-center  bg-green-600 rounded-lg p-2 gap-2 text-white"><IoIosArrowDropdownCircle size={25}/>BAIXAR</button>
 <button type="button" onClick={()=>baixarEstornar('A','Estornada')} className="flex flex-row justify-center  bg-red-600 rounded-lg p-2 gap-2 text-white"><GiReturnArrow size={22}/> ESTORNAR</button>
 </div>
 </form>
-    </div>
-    </div>
-    </div>
-    )
+</div>
+</div>
+</div>)
 }

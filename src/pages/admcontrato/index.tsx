@@ -20,12 +20,24 @@ export default function AdmContrato(){
   const [dados,setDados] =useState(true)
   const [historico,setHistorico] = useState(false)
   const [dependentes,setDependentes] =useState(false)
- 
+  const [checkMensal,setCheck] = useState(false)
+    const tabelaRef = useRef<HTMLTableElement>(null)
+
+
+
+    function mensalidadeSet(){
+        setDados(false),setDependentes(false),setHistorico(true)
+        if (tabelaRef.current) {
+            // Ajusta o scrollTop para a altura total da tabela
+            tabelaRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+          }
+    }
   useEffect(() => {
    
     const carregarDadosAsync = async () => {
       try {
         await carregarDados();
+      
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
       }
@@ -45,6 +57,11 @@ export default function AdmContrato(){
       });
       if (x > 1) {
         toast.warn(`Possui ${x} mensalidades Vencidas`);
+      }
+
+      if (tabelaRef.current) {
+        // Ajusta o scrollTop para a altura total da tabela
+        tabelaRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
       }
     // Marcar o componente como desmontado quando ele for desmontado
   }, [dadosassociado?.contrato.situacao, dadosassociado?.mensalidade]);
@@ -85,7 +102,7 @@ export default function AdmContrato(){
             <button  type="button" onClick={()=>{setDados(true),setDependentes(false),setHistorico(false)}}   className="inline-block p-4  rounded-ss-lg  bg-gray-800 hover:bg-gray-700 text-blue-500">Dados</button>
         </li>
         <li className="me-2">
-            <button type="button" onClick={()=>{setDados(false),setDependentes(false),setHistorico(true)}}    className="inline-block p-4  hover:bg-gray-700 hover:text-gray-300">Histórico</button>
+            <button type="button" onClick={()=>mensalidadeSet()}    className="inline-block p-4  hover:bg-gray-700 hover:text-gray-300">Histórico</button>
         </li>
         <li className="me-2">
             <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Dependentes</button>
@@ -142,10 +159,14 @@ export default function AdmContrato(){
         </div>)}
         {historico && (
            
-<div className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)]  p-2 shadow-md sm:rounded-lg">
-  
-
+<div   className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)]  p-2 shadow-md sm:rounded-lg">
+<label className="relative inline-flex items-center mb-5 cursor-pointer">
+  <input onChange={()=>setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer"/>
+  <div className="w-9 h-5  peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
+  <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Exibir Todas</span>
+</label>
     <table 
+    ref={tabelaRef}
      className="block  overflow-y-scroll text-xs text-left rtl:text-right border-collapse rounded-lg text-gray-400">
         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
             <tr >
@@ -184,7 +205,9 @@ export default function AdmContrato(){
         </thead>
         <tbody  >
             {dadosassociado?.mensalidade.map((item,index)=>(  
+               checkMensal?(
                 <tr onDoubleClick={()=>{alert("CLICOU DUAS VEZES")}} className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
+                   
                 <th scope="row" className="px-7 py-1 font-medium  whitespace-nowrap text-white">
                     {item.parcela_n}
                 </th>
@@ -198,7 +221,7 @@ export default function AdmContrato(){
                 <td className="px-10 py-1">
                {`R$${item.valor_principal}`}
                 </td>
-                <td className={`px-6 py-1 ${item.status==="P"? "font-bold text-blue-600":item.status==="A" && calcularDiferencaEmDias(new Date(),new Date(item.vencimento))>=1 ?"font-bold text-red-600":''}`}>
+                <td className={`px-6 py-1 ${item.status==='A'&& calcularDiferencaEmDias(new Date(),new Date(item.vencimento))>=1 ?"font-bold text-red-600":item.status=='P'?"font-bold text-blue-600" :''}`}>
                   {item.status}
                 </td>
                 <td className="px-6 py-1">
@@ -218,6 +241,46 @@ export default function AdmContrato(){
                     <span onClick={()=>closeModa({mensalidade:{np:Number(item.parcela_n),cobranca:(new Date(item.vencimento).toLocaleDateString()),vencimento:(new Date(item.vencimento).toLocaleDateString()),valor:Number(item.valor_principal),status:item.status,baixada_por:item.usuario,id_mensalidade:item.id_mensalidade,close:true}})} className="font-medium  cursor-pointer text-blue-500 hover:underline">Edit</span>
                 </td>
             </tr>
+               ):item.status==='A'?(
+                <tr onDoubleClick={()=>{alert("CLICOU DUAS VEZES")}} className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
+                   
+                <th scope="row" className="px-7 py-1 font-medium  whitespace-nowrap text-white">
+                    {item.parcela_n}
+                </th>
+                <td className="px-7 py-1">
+                   {new Date(item.vencimento).toLocaleDateString()}
+                   
+                </td>
+                <td className="px-7 py-1">
+                {new Date(item.cobranca).toLocaleDateString()}
+                </td>
+                <td className="px-10 py-1">
+               {`R$${item.valor_principal}`}
+                </td>
+                <td className={`px-6 py-1 ${item.status==='A'&& calcularDiferencaEmDias(new Date(),new Date(item.vencimento))>=1 ?"font-bold text-red-600":''}`}>
+                  {item.status}
+                </td>
+                <td className="px-6 py-1">
+                  {new Date(item.data_pgto).toLocaleDateString()}
+                </td>
+                <td className="px-8 py-1">
+               {item.usuario}
+                </td>
+                <td className="px-8 py-1">
+               {item.valor_total?`R$${item.valor_total}`:''}
+                </td>
+              
+                <td className="px-6 py-1">
+                    {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
+                </td>
+                <td className="px-8 py-1 text-right">
+                    <span onClick={()=>closeModa({mensalidade:{np:Number(item.parcela_n),cobranca:(new Date(item.vencimento).toLocaleDateString()),vencimento:(new Date(item.vencimento).toLocaleDateString()),valor:Number(item.valor_principal),status:item.status,baixada_por:item.usuario,id_mensalidade:item.id_mensalidade,close:true}})} className="font-medium  cursor-pointer text-blue-500 hover:underline">Edit</span>
+                </td>
+            </tr>
+
+               ):''
+                
+               
             ))}
             
         </tbody>
@@ -228,6 +291,7 @@ export default function AdmContrato(){
         )}
         {dependentes && (<div className="flex rounded-lg  overflow-y-auto w-full max-h-96  p-3   shadow-md sm:rounded-lg">
     <table 
+   
      className="w-full text-sm text-left rtl:text-right overflow-y-auto   rounded-lg  text-gray-400 ">
         <thead className=" w-full text-xs  uppercase bg-gray-700 text-gray-400">
             <tr>
