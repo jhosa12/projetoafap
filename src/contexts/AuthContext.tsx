@@ -2,6 +2,7 @@ import { ReactNode,createContext,useState } from 'react';
 import {api} from "../services/apiClient"
 import {destroyCookie,setCookie,parseCookies} from "nookies"
 import Router from 'next/router';
+import produce from 'immer';
 type DependentesProps={
     nome:string,
     data_nasc:string,
@@ -19,10 +20,12 @@ type MensalidadeProps={
     status:string,
     baixada_por:string,
     agendada_por:string,
-    id_mensalidade:number
+    id_mensalidade:number,
+    valor_total:number
 
 }
 type DadosCadastro={
+    
     name:string,
     nasc:string,
     sexo:string,
@@ -60,42 +63,7 @@ type DadosCadastro={
     
 }
 
-const INITIAL_DATA:DadosCadastro ={
-    name:'',
-    nasc:'',
-    sexo:'',
-    cep:'',
-    endereço:'',
-    numero:'',
-    bairro:'', 
-    referencia:'',
-    cidade:'',
-    uf:'',
-    email:'',
-    rg:'',
-    cpf:'',
-    closeModalPlano:false,
-    closeModalCadastro:false,
-    arraydep:[],
-    naturalidade:'',
-    celular1:'',
-    celular2:'',
-    telefone:'',
-    contrato:0,
-    origem:'',
-    plano:'',
-    valor:'',
-    cobrador:'',
-    consultor:'',
-    supervisor:'',
-    np:0,
-    dtvenc:'',
-    dtadesao:'',
-    dtcarencia:'',
-    id_associado:0,
-    mensalidade:{},
-    mensalidadeAnt:{}
-  }
+
   type FormData={
     parcela_n:number,
     vencimento:Date,
@@ -116,6 +84,7 @@ dt_carencia:string,
 situacao:string
 }
 
+
 type AssociadoProps={
 nome:string,
 endereco:string,
@@ -135,7 +104,7 @@ type AuthContextData = {
     sign: (credentials:SignInProps)=>Promise<void>,
     signOut:()=>void,
     closeModa:(fields:Partial<DadosCadastro>)=>void,
-    data:DadosCadastro,
+    data:Partial<DadosCadastro>,
     dadosassociado:AssociadoProps | undefined,
     carregarDados:()=>Promise<void>
 }
@@ -148,6 +117,7 @@ type UserProps ={
     id:string,
     nome:string,
 }
+
 export const AuthContext = createContext({} as AuthContextData)
 export function signOut(){
     try{
@@ -158,14 +128,45 @@ console.log("erro ao deslogar")
     }
 }
 
-
-
-
 export function AuthProvider({children}:{children:ReactNode}){
     const [usuario,setUser] =useState<UserProps>()
     const isAuthenticated = !!usuario;
     const [dadosassociado,setDadosAssociado]=useState<AssociadoProps>()  
-    const [data,setData] =useState(INITIAL_DATA)
+    const [data,setData] =useState<Partial<DadosCadastro>>({
+        arraydep:[],
+        bairro:'',
+        celular1:'',
+        email:'',
+        mensalidade:{agendada_por:'',baixada_por:'',close:false,cobranca:'',id_mensalidade:0,np:0,status:'',valor:0,valor_total:0,vencimento:''},
+        cep:'',
+        cidade:'',
+        closeModalCadastro:false,
+        closeModalPlano:false,
+        cobrador:'',
+        consultor:'',
+        contrato:0,
+        cpf:'',
+        dtadesao:'',
+        dtcarencia:'',
+        dtvenc:'',
+        endereço:'',
+        id_associado:0,
+        mensalidadeAnt:{},
+        name:'',
+        nasc:'',
+        naturalidade:'',
+        np:0,
+        numero:'',
+        origem:'',
+        plano:'',
+        referencia:'',
+        rg:'',
+        sexo:'',
+        supervisor:'',
+        telefone:'',
+        uf:'',
+        valor:''
+    })
 async function sign({nome,password}:SignInProps) {
     try{
         const response = await api.post('/session',{
@@ -189,12 +190,16 @@ console.log("Erro ao acessar", err)
 
     }
 }
- function closeModa(fields: Partial<DadosCadastro>){
-  setData(prev=>{
-     return{...prev,...fields}
-    })
-    
+function closeModa(fields: Partial<DadosCadastro>) {
+    setData((prev: Partial<DadosCadastro>) => {
+        if (prev) {
+            return { ...prev, ...fields };
+        } else {
+            return { ...fields };
+        }
+    });
 }
+
 
 async function carregarDados(){
     const response = await api.post('/associado',{

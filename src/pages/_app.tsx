@@ -7,7 +7,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return(
     <AuthProvider>  
   <Component {...pageProps} />
-  <ToastContainer autoClose={5000} theme='dark'/>
+  <ToastContainer autoClose={4000} theme='dark'/>
     </AuthProvider>
   )
 }

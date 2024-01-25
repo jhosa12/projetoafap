@@ -11,9 +11,6 @@ import { toast } from "react-toastify";
 import { ModalMensalidade } from "@/components/modalmensalidade";
 import { Item } from "@/components/dadosTitular";
 
-
-
-
 export default function AdmContrato(){
    
     const {data,closeModa,dadosassociado,carregarDados} = useContext(AuthContext)
@@ -22,8 +19,6 @@ export default function AdmContrato(){
   const [dependentes,setDependentes] =useState(false)
   const [checkMensal,setCheck] = useState(false)
     const tabelaRef = useRef<HTMLTableElement>(null)
-
-
 
     function mensalidadeSet(){
         setDados(false),setDependentes(false),setHistorico(true)
@@ -41,7 +36,7 @@ export default function AdmContrato(){
       }
     };
     carregarDadosAsync();
-  }, [data.id_associado,data.mensalidade]);
+  }, [data.id_associado,data?.mensalidade?.close]);
 
   useEffect(() => {
     let x = 0;
@@ -60,7 +55,7 @@ export default function AdmContrato(){
         tabelaRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
       }
     // Marcar o componente como desmontado quando ele for desmontado
-  }, [dadosassociado?.contrato.situacao, dadosassociado?.mensalidade]);
+  }, [dadosassociado?.contrato?.situacao, dadosassociado?.mensalidade]);
 
   function calcularDiferencaEmDias(data1:Date, data2:Date) {
     // Convertendo as datas para objetos Date
@@ -80,7 +75,7 @@ export default function AdmContrato(){
         <div className="flex w-full mr-2 ">
         {data.closeModalPlano && (<ModalBusca/>)}
         {data.closeModalCadastro && (<Teste/>)}
-        {data.mensalidade.close && <ModalMensalidade/>}
+        {data.mensalidade?.close && <ModalMensalidade/>}
         <div className="flex  flex-col pl-4 ">
         <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
         <button onClick={()=>closeModa({closeModalPlano:true})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
@@ -163,7 +158,7 @@ export default function AdmContrato(){
 </label>
     <table 
     ref={tabelaRef}
-     className="block  overflow-y-auto overflow-x-auto text-xs text-left rtl:text-right border-collapse rounded-lg text-gray-400">
+     className="block  overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse rounded-lg text-gray-400">
         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
             <tr >
                 <th scope="col" className="px-4 py-1">
@@ -245,7 +240,19 @@ export default function AdmContrato(){
                     {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
                 </td>
                 <td className="px-1 py-1 text-right">
-                <span onClick={()=>closeModa({mensalidadeAnt:dadosassociado.mensalidade[index-1],mensalidade:{np:Number(item.parcela_n),cobranca:(new Date(item.vencimento).toLocaleDateString()),vencimento:(new Date(item.vencimento).toLocaleDateString()),valor:Number(item.valor_principal),status:item.status,baixada_por:item.usuario,id_mensalidade:item.id_mensalidade,close:true}})} className="font-medium  cursor-pointer text-blue-500 hover:underline">Baixar/Editar</span>
+                <span onClick={()=>closeModa(
+                    {mensalidadeAnt:
+                    dadosassociado.mensalidade[index-1],
+                    mensalidade:{np:Number(item.parcela_n),
+                    cobranca:(new Date(item.vencimento).toLocaleDateString()),
+                    vencimento:(new Date(item.vencimento).toLocaleDateString()),
+                    valor:Number(item.valor_principal),
+                    status:item.status,
+                    baixada_por:item.usuario,
+                    id_mensalidade:item.id_mensalidade,
+                    close:true,
+                    valor_total:item.valor_total
+                    }})} className="font-medium  cursor-pointer text-blue-500 hover:underline">Baixar/Editar</span>
                 </td>
             </tr>
                ):item.status==='A'?(

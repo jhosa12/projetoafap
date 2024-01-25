@@ -27,14 +27,11 @@ export function ModalBusca(){
     const [input,setInput] =useState('')
     const [array,setarray]=useState<DadosProps[]>([])
     const [dropOpen,setDrop] = useState(false)
-    const [criterio,setCriterio]=useState("Buscar Por")
+    const [criterio,setCriterio]=useState("Contrato")
     const {data,closeModa,carregarDados} = useContext(AuthContext)
  async function onSubmit(event:FormEvent){
     event.preventDefault()
-    if(criterio==="Buscar Por"){
-        toast.warn("Selecione o criterio da busca!")
-        return
-    }
+   
     setLoading(true)
    await buscar()
    setLoading(false)

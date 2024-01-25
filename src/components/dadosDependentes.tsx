@@ -34,7 +34,7 @@ const [arrayDependetes,setArray] =useState<Partial<UserProps[]>>([])
             nome,data_nasc,grau_parentesco,data_adesao,carencia
         }   
            // setArray([...arrayDependetes,dados])
-            closeModa({arraydep:[...data.arraydep,dados]})
+            closeModa({arraydep:[...data.arraydep || [],dados]})
             setNome("")
             setNasc("")
             setPar("")
@@ -101,7 +101,7 @@ const [arrayDependetes,setArray] =useState<Partial<UserProps[]>>([])
                           </tr>
                         </thead>
                         <tbody>
-                          {data.arraydep.map((usuario, index) => (
+                          {data.arraydep?.map((usuario, index) => (
                             <tr className=" border-b border-l bg-gray-800 border-gray-700  hover:bg-gray-600" key={index}>
                               <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">{usuario.nome}</th>
                               <td className="px-5 py-1">{usuario.data_nasc}</td>
