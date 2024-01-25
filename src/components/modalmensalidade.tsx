@@ -11,7 +11,15 @@ export function ModalMensalidade(){
     const {closeModa,data,usuario}=useContext(AuthContext)
     const [dadosrecebidos,setDados]=useState({})
     const [loading,setLoading] = useState()
-  
+        
+
+        useEffect(()=>{ // Faz com que o valor pago/total inicie com o valor principal
+            if(!data.mensalidade?.valor_total){
+            closeModa({mensalidade:{...(data.mensalidade),valor_total:data.mensalidade?.valor}})
+            }
+           
+        },[])
+
       async function baixarEstornar(status:string,acao:string) {
         if(data.mensalidadeAnt?.status==='A'){
             toast.info('A mensalidade anterior encontra-se em Aberto!')
