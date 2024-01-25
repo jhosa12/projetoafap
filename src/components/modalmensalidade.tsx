@@ -122,14 +122,20 @@ export function ModalMensalidade(){
 <input type="text"  className="block w-full  pt-1 pb-1 pl-2 pr-2 text-gray-900 border  rounded-lg  sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
 </div>
 {((data.mensalidade?.valor_total ?? 0)<(data.mensalidade?.valor ?? 0) && data.mensalidade?.valor_total!==undefined)&& data.mensalidade.valor_total>0?(
-  <div className="mb-1 col-span-2">
+ <div className="col-span-4 gap-1 mt-1 inline-flex ">
+    <div className="flex items-top w-2/12 ">
+    <input id="link-checkbox" type="checkbox" value="" className="w-4 h-4 mt-[2px] text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+    <label  className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Desconto</label>
+</div>
+    <div className="mb-1 w-full">
   <label  className="block mb-1 text-xs font-medium  text-white">INFORME O MOTIVO DO DESCONTO</label>
   <input  type="text"  className="block w-full  pt-1 pb-1 pl-2 pr-2 text-gray-900 border  rounded-lg  sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
   </div>
+ </div> 
 ):''}
   
-<button type='button' onClick={()=>baixarEstornar('P','Baixada')} className="flex flex-row justify-center items-center bg-green-600 rounded-lg p-2 gap-2 text-white"><IoIosArrowDropdownCircle size={25}/>BAIXAR</button>
-<button type="button" onClick={()=>baixarEstornar('A','Estornada')} className="flex flex-row justify-center items-center  bg-red-600 rounded-lg p-2 gap-2 text-white"><GiReturnArrow size={22}/> ESTORNAR</button>
+<button  type='button' onClick={()=>baixarEstornar('P','Baixada')} className="col-span-2 flex flex-row justify-center items-center bg-green-600 rounded-lg p-2 gap-2 text-white"><IoIosArrowDropdownCircle size={25}/>BAIXAR</button>
+<button type="button" onClick={()=>baixarEstornar('A','Estornada')} className="col-span-2 flex flex-row justify-center items-center  bg-red-600 rounded-lg p-2 gap-2 text-white"><GiReturnArrow size={22}/> ESTORNAR</button>
 </div>
 </form>
 </div>
