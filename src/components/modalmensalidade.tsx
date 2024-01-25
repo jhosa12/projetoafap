@@ -22,14 +22,30 @@ export function ModalMensalidade(){
                 id_mensalidade:data.mensalidade?.id_mensalidade,
                 status:status,
                 data_pgto:status==='A'?null:new Date(),
-                usuario:usuario?.nome.toUpperCase()
+                usuario:status==='A'?null:usuario?.nome.toUpperCase(),
+                valor_total:status==='A'?null:data.mensalidade?.valor_total,
+                
             })
                 toast.success(`Mensalidade ${acao} com sucesso`)
-                 closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status,close:true}})
+                 closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
         }catch(err){
             toast.error('Erro ao Baixar Mensalidade')
             console.log(data.mensalidade?.id_mensalidade)
         }
+
+        if((data.mensalidade?.valor ?? 0)<(data.mensalidade?.valor_total ?? 0)){
+            try{
+                const response = await api.put('/mensalidade',{
+                    id_mensalidade:data.mensalidadeProx?.id_mensalidade,
+                    valor_principal:(data.mensalidade?.valor ?? 0)-((data.mensalidade?.valor ?? 0)-(data.mensalidade?.valor_total ?? 0))
+                })
+                    toast.success(`Mensalidade ${acao} com sucesso`)
+                     closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
+            }catch(err){
+                toast.error('Erro ao Baixar Mensalidade')
+                console.log(data.mensalidadeProx?.id_mensalidade)
+            }  
+}
       }
     return(
     <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">

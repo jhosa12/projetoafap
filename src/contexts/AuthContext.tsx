@@ -60,6 +60,7 @@ type DadosCadastro={
     id_associado:number,
     mensalidade:Partial<MensalidadeProps>
     mensalidadeAnt:Partial<FormData>
+    mensalidadeProx:Partial<FormData>
     
 }
 

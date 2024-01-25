@@ -243,6 +243,7 @@ export default function AdmContrato(){
                 <span onClick={()=>closeModa(
                     {mensalidadeAnt:
                     dadosassociado.mensalidade[index-1],
+                    mensalidadeProx:dadosassociado.mensalidade[index+1],
                     mensalidade:{np:Number(item.parcela_n),
                     cobranca:(new Date(item.vencimento).toLocaleDateString()),
                     vencimento:(new Date(item.vencimento).toLocaleDateString()),
@@ -294,7 +295,20 @@ export default function AdmContrato(){
                     {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
                 </td>
                 <td className=" px-1 py-1 text-right">
-                    <span onClick={()=>closeModa({mensalidadeAnt:dadosassociado.mensalidade[index-1],mensalidade:{np:Number(item.parcela_n),cobranca:(new Date(item.vencimento).toLocaleDateString()),vencimento:(new Date(item.vencimento).toLocaleDateString()),valor:Number(item.valor_principal),status:item.status,baixada_por:item.usuario,id_mensalidade:item.id_mensalidade,close:true}})} className="font-medium  cursor-pointer text-blue-500 hover:underline">Baixar/Editar</span>
+                <span onClick={()=>closeModa(
+                    {mensalidadeAnt:
+                    dadosassociado.mensalidade[index-1],
+                    mensalidadeProx:dadosassociado.mensalidade[index+1],
+                    mensalidade:{np:Number(item.parcela_n),
+                    cobranca:(new Date(item.vencimento).toLocaleDateString()),
+                    vencimento:(new Date(item.vencimento).toLocaleDateString()),
+                    valor:Number(item.valor_principal),
+                    status:item.status,
+                    baixada_por:item.usuario,
+                    id_mensalidade:item.id_mensalidade,
+                    close:true,
+                    valor_total:item.valor_total
+                    }})} className="font-medium  cursor-pointer text-blue-500 hover:underline">Baixar/Editar</span>
                 </td>
             </tr>
 
