@@ -233,7 +233,7 @@ export default function AdmContrato(){
                {item.valor_total?`R$${item.valor_total}`:''}
                 </td>
                 <td className="px-4 py-1">
-               {item.valor_total?`R$${item.valor_total}`:''}
+               
                 </td>
               
                 <td className="px-4 py-1">
@@ -288,7 +288,7 @@ export default function AdmContrato(){
                {item.valor_total?`R$${item.valor_total}`:''}
                 </td>
                 <td className="px-6 py-1">
-               {item.valor_total?`R$${item.valor_total}`:''}
+              
                 </td>
         
                 <td className="px-4 py-1">
