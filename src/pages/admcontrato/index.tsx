@@ -375,10 +375,6 @@ export default function AdmContrato(){
 </tr>
             ))}
            
-        
-        
-         
-        
         </tbody>
     
     </table>

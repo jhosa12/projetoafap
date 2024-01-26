@@ -21,7 +21,9 @@ type MensalidadeProps={
     baixada_por:string,
     agendada_por:string,
     id_mensalidade:number,
-    valor_total:number
+    valor_total:number,
+   
+    
 
 }
 type DadosCadastro={
@@ -60,7 +62,8 @@ type DadosCadastro={
     id_associado:number,
     mensalidade:Partial<MensalidadeProps>
     mensalidadeAnt:Partial<FormData>
-    mensalidadeProx:Partial<FormData>
+    mensalidadeProx:Partial<FormData>,
+    
     
 }
 
@@ -138,7 +141,7 @@ export function AuthProvider({children}:{children:ReactNode}){
         bairro:'',
         celular1:'',
         email:'',
-        mensalidade:{agendada_por:'',baixada_por:'',close:false,cobranca:'',id_mensalidade:0,np:0,status:'',valor:0,valor_total:0,vencimento:''},
+        mensalidade:{ agendada_por:'',baixada_por:'',close:false,cobranca:'',id_mensalidade:0,np:0,status:'',valor:0,valor_total:0,vencimento:''},
         cep:'',
         cidade:'',
         closeModalCadastro:false,
@@ -166,7 +169,8 @@ export function AuthProvider({children}:{children:ReactNode}){
         supervisor:'',
         telefone:'',
         uf:'',
-        valor:''
+        valor:'',
+       
     })
 async function sign({nome,password}:SignInProps) {
     try{

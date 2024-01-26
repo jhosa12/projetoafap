@@ -9,20 +9,28 @@ import { api } from "@/services/apiClient";
 
 export function ModalMensalidade(){
     const {closeModa,data,usuario,carregarDados}=useContext(AuthContext)
-    const [dadosrecebidos,setDados]=useState({})
-    const [loading,setLoading] = useState()
-        
-
+    const [desconto,setDesconto] = useState(false)
+    const [motivo,setMotivo] = useState('')
+  
         useEffect(()=>{ // Faz com que o valor pago/total inicie com o valor principal
             if(!data.mensalidade?.valor_total){
             closeModa({mensalidade:{...(data.mensalidade),valor_total:data.mensalidade?.valor}})
+
             }
            
         },[])
 
       async function baixarEstornar(status:string,acao:string) {
+        if(data.mensalidade?.status ===status){
+            toast.error(`Mensalidade com ${acao} já realizado`)
+            return;
+        }
         if(data.mensalidadeAnt?.status==='A'){
             toast.info('A mensalidade anterior encontra-se em Aberto!')
+            return
+        }
+        if(desconto===true && motivo===''){
+            toast.info("Informe o motivo do desconto!")
             return
         }
         try{
@@ -39,28 +47,45 @@ export function ModalMensalidade(){
                   pending: `Efetuando ${acao}`,
                   success: `${acao} efetuada com sucesso`,
                   error: `Erro ao efetuar ${acao}`
-                                })
-               
-                carregarDados()
+                 })
                  closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
         }catch(err){
             toast.error('Erro ao Baixar Mensalidade')
             console.log(data.mensalidade?.id_mensalidade)
         }
 
-        if((data.mensalidade?.valor ?? 0)<(data.mensalidade?.valor_total ?? 0)){
+        if((data.mensalidade?.valor ?? 0)<(data.mensalidade?.valor_total ?? 0) && data.mensalidadeProx && status ==='P'){
             try{
                 const response = await api.put('/mensalidade',{
                     id_mensalidade:data.mensalidadeProx?.id_mensalidade,
-                    valor_principal:(data.mensalidade?.valor ?? 0)-((data.mensalidade?.valor ?? 0)-(data.mensalidade?.valor_total ?? 0))
+                    valor_principal:(data.mensalidadeProx?.valor_principal ?? 0)-((data.mensalidade?.valor_total ?? 0)-(data.mensalidade?.valor?? 0))
                 })
-                    toast.success(`Mensalidade ${acao} com sucesso`)
+                
                      closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
             }catch(err){
                 toast.error('Erro ao Baixar Mensalidade')
                 console.log(data.mensalidadeProx?.id_mensalidade)
             }  
 }
+if(((data.mensalidade?.valor ?? 0)>(data.mensalidade?.valor_total ?? 0)) && desconto===false && data.mensalidadeProx && status ==='P'){
+    try{
+        const response = await api.put('/mensalidade',{
+            id_mensalidade:data.mensalidadeProx?.id_mensalidade,
+            valor_principal:Number(data.mensalidadeProx?.valor_principal ?? 0)+Number((data.mensalidade?.valor ?? 0)-Number(data.mensalidade?.valor_total ?? 0))
+        })
+            
+             closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
+    }catch(err){
+        toast.error('Erro ao Baixar Mensalidade')
+        console.log(data.mensalidadeProx?.id_mensalidade)
+    } 
+}
+
+
+
+
+
+    carregarDados()
       }
     return(
     <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
@@ -131,12 +156,12 @@ export function ModalMensalidade(){
 {((data.mensalidade?.valor_total ?? 0)<(data.mensalidade?.valor ?? 0) && data.mensalidade?.valor_total!==undefined)&& data.mensalidade.valor_total>0?(
  <div className="col-span-4 gap-1 mt-1 inline-flex ">
     <div className="flex items-top w-2/12 ">
-    <input id="link-checkbox" type="checkbox" value="" className="w-4 h-4 mt-[2px] text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+    <input  onClick={()=>setDesconto(!desconto)} type="checkbox" value="" className="w-4 h-4 mt-[2px] text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
     <label  className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Desconto</label>
 </div>
     <div className="mb-1 w-full">
   <label  className="block mb-1 text-xs font-medium  text-white">INFORME O MOTIVO DO DESCONTO</label>
-  <input  type="text"  className="block w-full  pt-1 pb-1 pl-2 pr-2 text-gray-900 border  rounded-lg  sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+  <input value={motivo} onChange={e=>setMotivo(e.target.value)} disabled={!desconto} type="text"  className="block w-full  pt-1 pb-1 pl-2 pr-2 text-gray-900 border  rounded-lg  sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
   </div>
  </div> 
 ):''}
