@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 
 export function ModalMensalidade(){
-    const {closeModa,data,usuario}=useContext(AuthContext)
+    const {closeModa,data,usuario,carregarDados}=useContext(AuthContext)
     const [dadosrecebidos,setDados]=useState({})
     const [loading,setLoading] = useState()
         
@@ -26,15 +26,22 @@ export function ModalMensalidade(){
             return
         }
         try{
-            const response = await api.put('/mensalidade',{
-                id_mensalidade:data.mensalidade?.id_mensalidade,
-                status:status,
-                data_pgto:status==='A'?null:new Date(),
-                usuario:status==='A'?null:usuario?.nome.toUpperCase(),
-                valor_total:status==='A'?null:data.mensalidade?.valor_total,
-                
-            })
-                toast.success(`Mensalidade ${acao} com sucesso`)
+            const response = await  toast.promise(
+                api.put('/mensalidade',{
+                    id_mensalidade:data.mensalidade?.id_mensalidade,
+                    status:status,
+                    data_pgto:status==='A'?null:new Date(),
+                    usuario:status==='A'?null:usuario?.nome.toUpperCase(),
+                    valor_total:status==='A'?null:data.mensalidade?.valor_total,
+                    
+                }),
+                {
+                  pending: `Efetuando ${acao}`,
+                  success: `${acao} efetuada com sucesso`,
+                  error: `Erro ao efetuar ${acao}`
+                                })
+               
+                carregarDados()
                  closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
         }catch(err){
             toast.error('Erro ao Baixar Mensalidade')
@@ -134,8 +141,8 @@ export function ModalMensalidade(){
  </div> 
 ):''}
   
-<button  type='button' onClick={()=>baixarEstornar('P','Baixada')} className="col-span-2 flex flex-row justify-center items-center bg-green-600 rounded-lg p-2 gap-2 text-white"><IoIosArrowDropdownCircle size={25}/>BAIXAR</button>
-<button type="button" onClick={()=>baixarEstornar('A','Estornada')} className="col-span-2 flex flex-row justify-center items-center  bg-red-600 rounded-lg p-2 gap-2 text-white"><GiReturnArrow size={22}/> ESTORNAR</button>
+<button  type='button' onClick={()=>baixarEstornar('P','Baixa')} className="col-span-2 flex flex-row justify-center items-center bg-green-600 rounded-lg p-2 gap-2 text-white"><IoIosArrowDropdownCircle size={25}/>BAIXAR</button>
+<button type="button" onClick={()=>baixarEstornar('A','Estorno')} className="col-span-2 flex flex-row justify-center items-center  bg-red-600 rounded-lg p-2 gap-2 text-white"><GiReturnArrow size={22}/> ESTORNAR</button>
 </div>
 </form>
 </div>
