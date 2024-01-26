@@ -22,9 +22,7 @@ type MensalidadeProps={
     agendada_por:string,
     id_mensalidade:number,
     valor_total:number,
-   
-    
-
+    motivo_bonus: string
 }
 type DadosCadastro={
     
@@ -78,6 +76,7 @@ type DadosCadastro={
     usuario:string,
     data_pgto:Date,
     id_mensalidade:number
+    motivo_bonus:string
 }
 type ContratoProps={
 id_contrato:number,

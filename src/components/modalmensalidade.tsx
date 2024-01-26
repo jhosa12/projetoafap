@@ -41,6 +41,7 @@ export function ModalMensalidade(){
                     data_pgto:status==='A'?null:new Date(),
                     usuario:status==='A'?null:usuario?.nome.toUpperCase(),
                     valor_total:status==='A'?null:data.mensalidade?.valor_total,
+                    motivo_bonus:status==='A'?null:data.mensalidade?.motivo_bonus
                     
                 }),
                 {
@@ -161,7 +162,7 @@ if(((data.mensalidade?.valor ?? 0)>(data.mensalidade?.valor_total ?? 0)) && desc
 </div>
     <div className="mb-1 w-full">
   <label  className="block mb-1 text-xs font-medium  text-white">INFORME O MOTIVO DO DESCONTO</label>
-  <input value={motivo} onChange={e=>setMotivo(e.target.value)} disabled={!desconto} type="text"  className="block w-full  pt-1 pb-1 pl-2 pr-2 text-gray-900 border  rounded-lg  sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+  <input value={data.mensalidade.motivo_bonus} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),motivo_bonus:e.target.value}})} disabled={desconto===false || data.mensalidade.status==='P'} type="text"  className="block w-full  pt-1 pb-1 pl-2 pr-2 text-gray-900 border  rounded-lg  sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
   </div>
  </div> 
 ):''}

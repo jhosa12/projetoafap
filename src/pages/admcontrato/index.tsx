@@ -229,8 +229,8 @@ export default function AdmContrato(){
                 <td className="px-6 py-1">
                {item.usuario}
                 </td>
-                <td className="px-6 py-1">
-               {item.valor_total?`R$${item.valor_total}`:''}
+                <td className={`px-6 py-1`}>
+                {item.valor_total?`R$${item.valor_total}`:''}     
                 </td>
                 <td className="px-4 py-1">
                
@@ -351,9 +351,9 @@ export default function AdmContrato(){
         </thead>
         <tbody>
             {dadosassociado?.dependentes?.map((item,index)=>(
- <tr className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
- <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap text-white">
-    {item.nome}
+ <tr key={index} className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
+ <th scope="row"  className="px-6 py-1 font-medium  whitespace-nowrap text-white">
+        {item.nome}
  </th>
  <td className="px-6 py-1">
  {new Date(item.data_adesao).toLocaleDateString()}
