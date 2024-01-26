@@ -252,7 +252,8 @@ export default function AdmContrato(){
                     baixada_por:item.usuario,
                     id_mensalidade:item.id_mensalidade,
                     close:true,
-                    valor_total:item.valor_total
+                    valor_total:item.valor_total,
+                    motivo_bonus:item.motivo_bonus
                     }})} className="font-medium  cursor-pointer text-blue-500 hover:underline">Baixar/Editar</span>
                 </td>
             </tr>

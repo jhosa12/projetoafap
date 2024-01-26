@@ -29,7 +29,7 @@ export function ModalMensalidade(){
             toast.info('A mensalidade anterior encontra-se em Aberto!')
             return
         }
-        if(desconto===true && motivo===''){
+        if(desconto===true && data.mensalidade?.motivo_bonus===''){
             toast.info("Informe o motivo do desconto!")
             return
         }
@@ -41,8 +41,9 @@ export function ModalMensalidade(){
                     data_pgto:status==='A'?null:new Date(),
                     usuario:status==='A'?null:usuario?.nome.toUpperCase(),
                     valor_total:status==='A'?null:data.mensalidade?.valor_total,
-                    motivo_bonus:status==='A'?null:data.mensalidade?.motivo_bonus
-                    
+                    motivo_bonus:status==='A'?null:data.mensalidade?.motivo_bonus,
+                    estorno_dt:status==='P'?null:new Date(),
+                    estorno_user:status==='P'?null:usuario?.nome
                 }),
                 {
                   pending: `Efetuando ${acao}`,
