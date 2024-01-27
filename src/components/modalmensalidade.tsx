@@ -104,23 +104,23 @@ if(((data.mensalidade?.valor ?? 0)>(data.mensalidade?.valor_total ?? 0)) && desc
 </div>
 <div className="mb-1 col-span-1 ">
 <label  className="block mb-1 text-xs font-medium  text-white">NP</label>
-<input disabled type="number" value={data.mensalidade?.np} onChange={e=>closeModa({mensalidade:{np:Number(e.target.value)}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+<input disabled type="number" value={data.mensalidade?.np} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),np:Number(e.target.value)}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">VENCIMENTO</label>
-    <input type="text" value={data.mensalidade?.vencimento} onChange={e=>closeModa({mensalidade:{vencimento:e.target.value}})}  className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input type="text" value={data.mensalidade?.vencimento} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),vencimento:e.target.value}})}  className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">COBRANÇA</label>
-    <input type="text"value={data.mensalidade?.cobranca} onChange={e=>closeModa({mensalidade:{cobranca:e.target.value}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2 border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input type="text"value={data.mensalidade?.cobranca} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),cobranca:e.target.value}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2 border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">VALOR</label>
-    <input disabled type="text" value={data.mensalidade?.valor} onChange={e=>closeModa({mensalidade:{close:true,valor:Number(e.target.value)}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input disabled type="text" value={data.mensalidade?.valor} onChange={e=>closeModa({mensalidade:{...(data.mensalidade),valor:Number(e.target.value)}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">STATUS</label>
-    <input type="text" disabled value={data.mensalidade?.status} onChange={e=>closeModa({mensalidade:{status:e.target.value}})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input type="text" disabled value={data.mensalidade?.status}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">BAIXADA POR</label>

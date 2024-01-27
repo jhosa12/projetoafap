@@ -36,13 +36,14 @@ export default function AdmContrato(){
       }
     };
     carregarDadosAsync();
-  }, [data.id_associado,data?.mensalidade?.close]);
+    if (dadosassociado?.contrato.situacao === 'INATIVO') {
+        toast.error('CONTRATO INATIVO');
+      }
+  }, [data.id_associado]);
 
   useEffect(() => {
     let x = 0;
-      if (dadosassociado?.contrato.situacao === 'INATIVO') {
-        toast.error('CONTRATO INATIVO');
-      }
+    
       dadosassociado?.mensalidade.map((item, index) => {
         new Date() >= new Date(item.vencimento) && item.status === 'A' ? (x = x + 1) : '';
       });
