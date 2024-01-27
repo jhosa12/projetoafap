@@ -10,14 +10,12 @@ import { api } from "@/services/apiClient";
 export function ModalMensalidade(){
     const {closeModa,data,usuario,carregarDados}=useContext(AuthContext)
     const [desconto,setDesconto] = useState(false)
-    const [motivo,setMotivo] = useState('')
+    
   
         useEffect(()=>{ // Faz com que o valor pago/total inicie com o valor principal
             if(!data.mensalidade?.valor_total){
-            closeModa({mensalidade:{...(data.mensalidade),valor_total:data.mensalidade?.valor}})
-
+            closeModa({mensalidade:{...(data.mensalidade),valor_total:data.mensalidade?.valor_principal}})
             }
-           
         },[])
 
       async function baixarEstornar(status:string,acao:string) {
@@ -56,11 +54,11 @@ export function ModalMensalidade(){
             console.log(data.mensalidade?.id_mensalidade)
         }
 
-        if((data.mensalidade?.valor ?? 0)<(data.mensalidade?.valor_total ?? 0) && data.mensalidadeProx && status ==='P'){
+        if((data.mensalidade?.valor_principal ?? 0)<(data.mensalidade?.valor_total ?? 0) && data.mensalidadeProx && status ==='P'){
             try{
                 const response = await api.put('/mensalidade',{
                     id_mensalidade:data.mensalidadeProx?.id_mensalidade,
-                    valor_principal:(data.mensalidadeProx?.valor_principal ?? 0)-((data.mensalidade?.valor_total ?? 0)-(data.mensalidade?.valor?? 0))
+                    valor_principal:(data.mensalidadeProx?.valor_principal ?? 0)-((data.mensalidade?.valor_total ?? 0)-(data.mensalidade?.valor_principal?? 0))
                 })
                 
                      closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
@@ -69,11 +67,11 @@ export function ModalMensalidade(){
                 console.log(data.mensalidadeProx?.id_mensalidade)
             }  
 }
-if(((data.mensalidade?.valor ?? 0)>(data.mensalidade?.valor_total ?? 0)) && desconto===false && data.mensalidadeProx && status ==='P'){
+if(((data.mensalidade?.valor_principal ?? 0)>(data.mensalidade?.valor_total ?? 0)) && desconto===false && data.mensalidadeProx && status ==='P'){
     try{
         const response = await api.put('/mensalidade',{
             id_mensalidade:data.mensalidadeProx?.id_mensalidade,
-            valor_principal:Number(data.mensalidadeProx?.valor_principal ?? 0)+Number((data.mensalidade?.valor ?? 0)-Number(data.mensalidade?.valor_total ?? 0))
+            valor_principal:Number(data.mensalidadeProx?.valor_principal ?? 0)+Number((data.mensalidade?.valor_principal ?? 0)-Number(data.mensalidade?.valor_total ?? 0))
         })
             
              closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
@@ -81,12 +79,11 @@ if(((data.mensalidade?.valor ?? 0)>(data.mensalidade?.valor_total ?? 0)) && desc
         toast.error('Erro ao Baixar Mensalidade')
         console.log(data.mensalidadeProx?.id_mensalidade)
     } 
+  
 }
-
-
-
-
-
+if(data.mensalidadeProx && status==='P'){
+    closeModa({mensalidade:{...(data.mensalidadeProx),close:true,cobranca:data?.mensalidadeProx?.cobranca}})
+}
     carregarDados()
       }
     return(
@@ -104,19 +101,19 @@ if(((data.mensalidade?.valor ?? 0)>(data.mensalidade?.valor_total ?? 0)) && desc
 </div>
 <div className="mb-1 col-span-1 ">
 <label  className="block mb-1 text-xs font-medium  text-white">NP</label>
-<input disabled type="number" value={data.mensalidade?.np} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),np:Number(e.target.value)}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+<input disabled type="number" value={data.mensalidade?.parcela_n} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),parcela_n:Number(e.target.value)}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">VENCIMENTO</label>
-    <input type="text" value={data.mensalidade?.vencimento} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),vencimento:e.target.value}})}  className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input type="text" value={data.mensalidade?.vencimento? new Date(data?.mensalidade?.vencimento).toLocaleDateString():''} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),vencimento:e.target.value}})}  className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">COBRANÇA</label>
-    <input type="text"value={data.mensalidade?.cobranca} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),cobranca:e.target.value}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2 border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input type="text"value={data.mensalidade?.cobranca? new Date(data?.mensalidade?.cobranca).toLocaleDateString():''} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),cobranca:e.target.value}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2 border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">VALOR</label>
-    <input disabled type="text" value={data.mensalidade?.valor} onChange={e=>closeModa({mensalidade:{...(data.mensalidade),valor:Number(e.target.value)}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input disabled type="text" value={data.mensalidade?.valor_principal} onChange={e=>closeModa({mensalidade:{...(data.mensalidade),valor_principal:Number(e.target.value)}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">STATUS</label>
@@ -124,7 +121,7 @@ if(((data.mensalidade?.valor ?? 0)>(data.mensalidade?.valor_total ?? 0)) && desc
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">BAIXADA POR</label>
-    <input disabled type="text" value={data.mensalidade?.baixada_por} onChange={e=>closeModa({mensalidade:{baixada_por:e.target.value}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input disabled type="text" value={data.mensalidade?.usuario} onChange={e=>closeModa({mensalidade:{usuario:e.target.value}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">AGENDADA POR</label>
@@ -155,7 +152,7 @@ if(((data.mensalidade?.valor ?? 0)>(data.mensalidade?.valor_total ?? 0)) && desc
 <label  className="block mb-1 text-xs font-medium  text-white">DATA PAG.</label>
 <input type="text"  className="block w-full  pt-1 pb-1 pl-2 pr-2 text-gray-900 border  rounded-lg  sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
 </div>
-{((data.mensalidade?.valor_total ?? 0)<(data.mensalidade?.valor ?? 0) && data.mensalidade?.valor_total!==undefined)&& data.mensalidade.valor_total>0?(
+{((data.mensalidade?.valor_total ?? 0)<(data.mensalidade?.valor_principal ?? 0) && data.mensalidade?.valor_total!==undefined)&& data.mensalidade.valor_total>0?(
  <div className="col-span-4 gap-1 mt-1 inline-flex ">
     <div className="flex items-top w-2/12 ">
     <input  onClick={()=>setDesconto(!desconto)} type="checkbox" value="" className="w-4 h-4 mt-[2px] text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>

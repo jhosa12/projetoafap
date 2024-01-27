@@ -12,17 +12,17 @@ type DependentesProps={
     id_dependente:number
 }
 type MensalidadeProps={
-    np:number,
+    parcela_n:number,
     vencimento:string,
-    cobranca:string,
-    valor:number,
+    cobranca:string | Date,
+    valor_principal:number,
     close:boolean,
     status:string,
-    baixada_por:string,
-    agendada_por:string,
+    usuario:string,
     id_mensalidade:number,
     valor_total:number,
-    motivo_bonus: string
+    motivo_bonus: string,
+    data_pgto:Date,
 }
 type DadosCadastro={
     
@@ -59,10 +59,8 @@ type DadosCadastro={
     dtcarencia:string,
     id_associado:number,
     mensalidade:Partial<MensalidadeProps>
-    mensalidadeAnt:Partial<FormData>
-    mensalidadeProx:Partial<FormData>,
-    
-    
+    mensalidadeAnt:Partial<MensalidadeProps>
+    mensalidadeProx:Partial<MensalidadeProps>,
 }
 
 
@@ -96,7 +94,7 @@ numero:number,
 cidade:string,
 guia_rua:string,
 uf:string,
-mensalidade:Array<FormData>,
+mensalidade:Array<MensalidadeProps>,
 
 contrato:ContratoProps,
 dependentes:Array<DependentesProps>
@@ -140,7 +138,7 @@ export function AuthProvider({children}:{children:ReactNode}){
         bairro:'',
         celular1:'',
         email:'',
-        mensalidade:{ agendada_por:'',baixada_por:'',close:false,cobranca:'',id_mensalidade:0,np:0,status:'',valor:0,valor_total:0,vencimento:''},
+        mensalidade:{},
         cep:'',
         cidade:'',
         closeModalCadastro:false,

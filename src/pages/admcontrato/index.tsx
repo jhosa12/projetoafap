@@ -242,15 +242,14 @@ export default function AdmContrato(){
                 </td>
                 <td className="px-1 py-1 text-right">
                 <span onClick={()=>closeModa(
-                    {mensalidadeAnt:
-                    dadosassociado.mensalidade[index-1],
+                    {mensalidadeAnt:dadosassociado.mensalidade[index-1],
                     mensalidadeProx:dadosassociado.mensalidade[index+1],
-                    mensalidade:{np:Number(item.parcela_n),
+                    mensalidade:{parcela_n:Number(item.parcela_n),
                     cobranca:(new Date(item.vencimento).toLocaleDateString()),
                     vencimento:(new Date(item.vencimento).toLocaleDateString()),
-                    valor:Number(item.valor_principal),
+                    valor_principal:Number(item.valor_principal),
                     status:item.status,
-                    baixada_por:item.usuario,
+                    usuario:item.usuario,
                     id_mensalidade:item.id_mensalidade,
                     close:true,
                     valor_total:item.valor_total,
@@ -301,12 +300,12 @@ export default function AdmContrato(){
                     {mensalidadeAnt:
                     dadosassociado.mensalidade[index-1],
                     mensalidadeProx:dadosassociado.mensalidade[index+1],
-                    mensalidade:{np:Number(item.parcela_n),
+                    mensalidade:{parcela_n:Number(item.parcela_n),
                     cobranca:(new Date(item.vencimento).toLocaleDateString()),
                     vencimento:(new Date(item.vencimento).toLocaleDateString()),
-                    valor:Number(item.valor_principal),
+                    valor_principal:Number(item.valor_principal),
                     status:item.status,
-                    baixada_por:item.usuario,
+                    usuario:item.usuario,
                     id_mensalidade:item.id_mensalidade,
                     close:true,
                     valor_total:item.valor_total
