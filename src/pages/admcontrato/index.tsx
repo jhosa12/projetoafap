@@ -8,7 +8,8 @@ import { RiFileAddLine } from "react-icons/ri";
 import {AuthContext} from "../../contexts/AuthContext"
 import { toast } from "react-toastify";
 import { ModalMensalidade } from "@/components/modalmensalidade";
-
+import { RiAddCircleFill } from "react-icons/ri";
+import { MdDeleteForever } from "react-icons/md";
 export default function AdmContrato(){
    
     const {data,closeModa,dadosassociado,carregarDados} = useContext(AuthContext)
@@ -37,6 +38,9 @@ export default function AdmContrato(){
     if (dadosassociado?.contrato.situacao === 'INATIVO') {
         toast.error('CONTRATO INATIVO');
       }
+      setDados(false),
+      setDependentes(false),
+      setHistorico(true)
   }, [data.id_associado]);
 
   useEffect(() => {
@@ -111,7 +115,7 @@ export default function AdmContrato(){
                 <span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato.plano}
                 </span>
                 </span>
-                {new Date().getFullYear()}
+              
             <span className={`inline-flex items-center  text-sm font-medium px-2.5 py-0.5 rounded-full ${dadosassociado?.contrato.situacao==='ATIVO'?"bg-green-900 text-green-300":"bg-red-900 text-red-300"}`}>
             <span className={`w-2 h-2 me-1 ${dadosassociado?.contrato.situacao==='ATIVO'?"bg-green-500 ":"bg-red-500"}  rounded-full`}></span>
             {dadosassociado?.contrato.situacao}
@@ -153,11 +157,28 @@ export default function AdmContrato(){
         {historico && (
            
 <div   className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)] max-w-[calc(100vw-275px)]  p-2 shadow-md sm:rounded-lg">
-<label className="relative inline-flex w-[130px] items-center mb-5 cursor-pointer">
+<div className="flex w-full mb-2 gap-2">
+<label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
   <input checked={checkMensal} onChange={()=>setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer"/>
-  <div className="w-9 h-5  peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
+  <div className="w-9 h-5  peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[5px] after:start-[5px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
   <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Exibir Pagas</span>
 </label>
+<div className="inline-flex rounded-md shadow-sm" role="group">
+  <button type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
+ <RiAddCircleFill size={20}/>
+    Adicionar
+  </button>
+  <button type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
+    Settings
+  </button>
+  <button type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
+   <MdDeleteForever size={20}/>
+    Excluir
+  </button>
+</div>
+
+</div>
+
     <table 
      className="block  overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse rounded-lg text-gray-400">
         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">

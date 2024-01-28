@@ -95,6 +95,10 @@ if(data.mensalidadeProx && status==='P'){
             toast.warn('Mensalidade Paga! Para excluir solite ao gerente')
             return
         }
+        if(data.mensalidadeAnt?.status==='A'){
+            toast.info('A mensalidade anterior encontra-se em Aberto!')
+            return
+        }
         try{
          const response = await toast.promise(
                 api.delete('/mensalidade/delete',{
