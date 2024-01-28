@@ -7,6 +7,7 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
+import { TbAlertTriangle } from "react-icons/tb";
 
 export function ModalMensalidade(){
     const {closeModa,data,usuario,carregarDados}=useContext(AuthContext)
@@ -86,7 +87,28 @@ if(((data.mensalidade?.valor_principal ?? 0)>(data.mensalidade?.valor_total ?? 0
 if(data.mensalidadeProx && status==='P'){
     closeModa({mensalidade:{...(data.mensalidadeProx),close:true,cobranca:data?.mensalidadeProx?.cobranca}})
 }
-    carregarDados()
+   await carregarDados()
+      }
+
+      async function excluirMesal(){
+        try{
+            await toast.promise(
+                api.delete('/delmensal',{
+                    data:{
+                        id_mensalidade:data.mensalidade?.id_mensalidade
+                    }    
+                }),
+                {
+                    pending: `Efetuando`,
+                    success: `efetuada com sucesso`,
+                    error: `Erro ao efetuar`
+                   }
+
+            ) 
+                 await carregarDados()
+        }catch(err){
+            toast.error(`Erro ao excluir: ${err}`)
+        }
       }
     return(
     <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
@@ -133,19 +155,19 @@ if(data.mensalidadeProx && status==='P'){
 <button type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>SALVAR</button>
 <button type="button" onClick={()=>setExcluir(!excluir)} className="flex flex-row justify-center   bg-yellow-600 rounded-lg p-2 gap-2 text-white"><MdDeleteForever size={22}/>EXCLUIR</button>
 {excluir?( <div  className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-    <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-10 bg-gray-50 ">
-        <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+    <div className="flex items-center justify-center p-2 w-full h-full">
+        <div className="relative rounded-lg shadow bg-gray-800">
             <button type="button" onClick={()=>setExcluir(!excluir)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" >
-                <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                </svg>
+             <button  type="button" onClick={()=>closeModa({closeModalPlano:false})} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                    <IoIosClose size={30}/>
+                </button>
             </button>
             <div className="p-4 md:p-5 text-center">
-                <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                </svg>
+                <div className="flex w-full justify-center items-center">
+                  <TbAlertTriangle className='text-gray-400' size={60}/>
+                </div>
                 <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Realmente deseja deletar esssa mensalidade?</h3>
-                <button data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+                <button onClick={excluirMesal} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
                     Sim, tenho certeza
                 </button>
                 <button data-modal-hide="popup-modal" type="button" className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">Não, cancelar</button>

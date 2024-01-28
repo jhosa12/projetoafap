@@ -5,11 +5,9 @@ import {ModalBusca} from '../../components/modal'
 import Teste from '@/pages/teste/index';
 import { useState,useContext, useEffect, useRef } from "react";
 import { RiFileAddLine } from "react-icons/ri";
-
 import {AuthContext} from "../../contexts/AuthContext"
 import { toast } from "react-toastify";
 import { ModalMensalidade } from "@/components/modalmensalidade";
-import { Item } from "@/components/dadosTitular";
 
 export default function AdmContrato(){
    
@@ -153,12 +151,11 @@ export default function AdmContrato(){
            
 <div   className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)] max-w-[calc(100vw-275px)]  p-2 shadow-md sm:rounded-lg">
 <label className="relative inline-flex w-[130px] items-center mb-5 cursor-pointer">
-  <input onChange={()=>setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer"/>
+  <input checked={checkMensal} onChange={()=>setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer"/>
   <div className="w-9 h-5  peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
   <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Exibir Pagas</span>
 </label>
     <table 
-    ref={tabelaRef}
      className="block  overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse rounded-lg text-gray-400">
         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
             <tr >
