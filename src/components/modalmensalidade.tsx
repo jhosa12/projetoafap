@@ -92,11 +92,12 @@ if(data.mensalidadeProx && status==='P'){
 
       async function excluirMesal(){
         try{
-            await toast.promise(
+         const response = await toast.promise(
                 api.delete('/delmensal',{
-                    data:{
-                        id_mensalidade:data.mensalidade?.id_mensalidade
-                    }    
+                   params:{
+                    id_mensalidade:data.mensalidade?.id_mensalidade
+                   }
+                       
                 }),
                 {
                     pending: `Efetuando`,
