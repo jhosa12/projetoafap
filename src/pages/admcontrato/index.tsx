@@ -107,12 +107,15 @@ export default function AdmContrato(){
               <h2 className="inline-flex gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">
                 {dadosassociado?.contrato.id_contrato}-{dadosassociado?.nome}
                  <span>PLANO:
+                
                 <span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato.plano}
                 </span>
                 </span>
+                {new Date().getFullYear()}
             <span className={`inline-flex items-center  text-sm font-medium px-2.5 py-0.5 rounded-full ${dadosassociado?.contrato.situacao==='ATIVO'?"bg-green-900 text-green-300":"bg-red-900 text-red-300"}`}>
             <span className={`w-2 h-2 me-1 ${dadosassociado?.contrato.situacao==='ATIVO'?"bg-green-500 ":"bg-red-500"}  rounded-full`}></span>
             {dadosassociado?.contrato.situacao}
+           
             </span>
                 </h2>
           <div className="flex w-full flex-row gap-2">
@@ -242,8 +245,8 @@ export default function AdmContrato(){
                     {mensalidadeAnt:dadosassociado.mensalidade[index-1],
                     mensalidadeProx:dadosassociado.mensalidade[index+1],
                     mensalidade:{parcela_n:Number(item.parcela_n),
-                    cobranca:(new Date(item.vencimento).toLocaleDateString()),
-                    vencimento:(new Date(item.vencimento).toLocaleDateString()),
+                    cobranca:item.cobranca,
+                    vencimento:item.vencimento,
                     valor_principal:Number(item.valor_principal),
                     status:item.status,
                     usuario:item.usuario,
@@ -298,8 +301,8 @@ export default function AdmContrato(){
                     dadosassociado.mensalidade[index-1],
                     mensalidadeProx:dadosassociado.mensalidade[index+1],
                     mensalidade:{parcela_n:Number(item.parcela_n),
-                    cobranca:(new Date(item.vencimento).toLocaleDateString()),
-                    vencimento:(new Date(item.vencimento).toLocaleDateString()),
+                    cobranca:item.cobranca,
+                    vencimento:item.vencimento,
                     valor_principal:Number(item.valor_principal),
                     status:item.status,
                     usuario:item.usuario,

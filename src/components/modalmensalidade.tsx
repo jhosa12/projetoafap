@@ -91,22 +91,26 @@ if(data.mensalidadeProx && status==='P'){
       }
 
       async function excluirMesal(){
+        if(data.mensalidade?.status==='P'){
+            toast.warn('Mensalidade Paga! Para excluir solite ao gerente')
+            return
+        }
         try{
          const response = await toast.promise(
-                api.delete('/delmensal',{
+                api.delete('/mensalidade/delete',{
                    params:{
                     id_mensalidade:data.mensalidade?.id_mensalidade
-                   }
-                       
+                   }  
                 }),
                 {
                     pending: `Efetuando`,
-                    success: `efetuada com sucesso`,
-                    error: `Erro ao efetuar`
+                    success: `Excluida com sucesso`,
+                    error: `Erro ao efetuar exlusão`
                    }
 
             ) 
                  await carregarDados()
+                 setExcluir(false)
         }catch(err){
             toast.error(`Erro ao excluir: ${err}`)
         }
@@ -130,11 +134,11 @@ if(data.mensalidadeProx && status==='P'){
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">VENCIMENTO</label>
-    <input type="text" value={data.mensalidade?.vencimento? new Date(data?.mensalidade?.vencimento).toLocaleDateString():''} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),vencimento:e.target.value}})}  className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input type="text" value={data.mensalidade?.vencimento? new Date(data?.mensalidade?.vencimento).toLocaleDateString():''} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),vencimento:new Date(e.target.value)}})}  className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">COBRANÇA</label>
-    <input type="text"value={data.mensalidade?.cobranca? new Date(data?.mensalidade?.cobranca).toLocaleDateString():''} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),cobranca:e.target.value}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2 border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input type="text"value={data.mensalidade?.cobranca? new Date(data?.mensalidade?.cobranca).toLocaleDateString():''} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),cobranca:new Date(e.target.value)}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2 border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">VALOR</label>

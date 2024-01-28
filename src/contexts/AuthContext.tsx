@@ -13,8 +13,8 @@ type DependentesProps={
 }
 type MensalidadeProps={
     parcela_n:number,
-    vencimento:string,
-    cobranca:string | Date,
+    vencimento:Date,
+    cobranca:Date,
     valor_principal:number,
     close:boolean,
     status:string,
