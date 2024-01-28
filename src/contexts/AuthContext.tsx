@@ -63,19 +63,6 @@ type DadosCadastro={
     mensalidadeProx:Partial<MensalidadeProps>,
 }
 
-
-  type FormData={
-    parcela_n:number,
-    vencimento:Date,
-    cobranca:Date,
-    valor_principal:number,
-    valor_total:number
-    status:string,
-    usuario:string,
-    data_pgto:Date,
-    id_mensalidade:number
-    motivo_bonus:string
-}
 type ContratoProps={
 id_contrato:number,
 plano:string,
@@ -84,7 +71,6 @@ dt_adesao:string,
 dt_carencia:string,
 situacao:string
 }
-
 
 type AssociadoProps={
 nome:string,
@@ -133,42 +119,7 @@ export function AuthProvider({children}:{children:ReactNode}){
     const [usuario,setUser] =useState<UserProps>()
     const isAuthenticated = !!usuario;
     const [dadosassociado,setDadosAssociado]=useState<AssociadoProps>()  
-    const [data,setData] =useState<Partial<DadosCadastro>>({
-        arraydep:[],
-        bairro:'',
-        celular1:'',
-        email:'',
-        mensalidade:{},
-        cep:'',
-        cidade:'',
-        closeModalCadastro:false,
-        closeModalPlano:false,
-        cobrador:'',
-        consultor:'',
-        contrato:0,
-        cpf:'',
-        dtadesao:'',
-        dtcarencia:'',
-        dtvenc:'',
-        endereço:'',
-        id_associado:0,
-        mensalidadeAnt:{},
-        name:'',
-        nasc:'',
-        naturalidade:'',
-        np:0,
-        numero:'',
-        origem:'',
-        plano:'',
-        referencia:'',
-        rg:'',
-        sexo:'',
-        supervisor:'',
-        telefone:'',
-        uf:'',
-        valor:'',
-       
-    })
+    const [data,setData] =useState<Partial<DadosCadastro>>({})
 async function sign({nome,password}:SignInProps) {
     try{
         const response = await api.post('/session',{

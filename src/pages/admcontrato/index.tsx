@@ -1,4 +1,4 @@
-
+import { IoIosClose } from "react-icons/io";
 import { IoMdSearch } from "react-icons/io";
 import 'react-tabs/style/react-tabs.css';
 import {ModalBusca} from '../../components/modal'
@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 import { ModalMensalidade } from "@/components/modalmensalidade";
 import { RiAddCircleFill } from "react-icons/ri";
 import { MdDeleteForever } from "react-icons/md";
+import { api } from "@/services/apiClient";
+import { TbAlertTriangle } from "react-icons/tb";
 export default function AdmContrato(){
    
     const {data,closeModa,dadosassociado,carregarDados} = useContext(AuthContext)
@@ -18,6 +20,7 @@ export default function AdmContrato(){
   const [dependentes,setDependentes] =useState(false)
   const [checkMensal,setCheck] = useState(false)
     const tabelaRef = useRef<HTMLTableElement>(null)
+    const [excluir,setExcluir]=useState(false)
 
     function mensalidadeSet(){
         setDados(false),setDependentes(false),setHistorico(true)
@@ -74,6 +77,38 @@ export default function AdmContrato(){
   return diferencaEmDias;
   }
 
+  async function excluirMesal(){
+    if(!data.mensalidade?.id_mensalidade){
+        toast.info("Selecione uma mensalidade")
+        return
+    }
+   
+    if(data.mensalidade?.status==='P'){
+        toast.warn('Mensalidade Paga! Para excluir solite ao gerente')
+        return
+    }
+    setExcluir(false)
+    try{
+     const response = await toast.promise(
+            api.delete('/mensalidade/delete',{
+               params:{
+                id_mensalidade:data.mensalidade?.id_mensalidade
+               }  
+            }),
+            {
+                pending: `Efetuando`,
+                success: `Excluida com sucesso`,
+                error: `Erro ao efetuar exlusão`
+               }
+
+        ) 
+             await carregarDados()
+             
+    }catch(err){
+        toast.error(`Erro ao excluir: ${err}`)
+    }
+  }
+
     return(
         <div className="flex w-full mr-2 ">
         {data.closeModalPlano && (<ModalBusca/>)}
@@ -81,7 +116,7 @@ export default function AdmContrato(){
         {data.mensalidade?.close && <ModalMensalidade/>}
         <div className="flex  flex-col pl-4 ">
         <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
-        <button onClick={()=>closeModa({closeModalPlano:true})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
+        <button onClick={()=>closeModa({closeModalPlano:true,mensalidade:{}})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
         <IoMdSearch size={20}/>
         Buscar Cliente
     </button>         
@@ -171,10 +206,31 @@ export default function AdmContrato(){
   <button type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
     Settings
   </button>
-  <button type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
+  <button onClick={()=>setExcluir(!excluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
    <MdDeleteForever size={20}/>
     Excluir
   </button>
+  {excluir?( <div  className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div className="flex items-center justify-center p-2 w-full h-full">
+        <div className="relative rounded-lg shadow bg-gray-800">
+            <button type="button" onClick={()=>setExcluir(!excluir)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" >
+             <button  type="button" onClick={()=>closeModa({closeModalPlano:false})} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                    <IoIosClose size={30}/>
+                </button>
+            </button>
+            <div className="p-4 md:p-5 text-center">
+                <div className="flex w-full justify-center items-center">
+                  <TbAlertTriangle className='text-gray-400' size={60}/>
+                </div>
+                <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Realmente deseja deletar esssa mensalidade?</h3>
+                <button onClick={excluirMesal} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+                    Sim, tenho certeza
+                </button>
+                <button data-modal-hide="popup-modal" type="button" className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">Não, cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>):''}
 </div>
 
 </div>
@@ -216,7 +272,7 @@ export default function AdmContrato(){
                 <th scope="col" className=" px-3 py-1">
                     ATRASO
                 </th>
-                <th scope="col" className=" px-4 py-1">
+                <th scope="col" className="px-4 py-1">
                     <span>ações</span>
                 </th>
             </tr>
@@ -224,7 +280,10 @@ export default function AdmContrato(){
         <tbody  >
             {dadosassociado?.mensalidade.map((item,index)=>(  
                checkMensal?(
-                <tr key={index} onDoubleClick={()=>{alert("CLICOU DUAS VEZES")}} className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
+                <tr key={index} onClick={()=>{closeModa({mensalidade:{
+                    id_mensalidade:item.id_mensalidade,
+                    status:item.status
+                }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600`}>
                    
                 <th scope="row" className="px-5 py-1 font-medium  whitespace-nowrap text-white">
                     {item.parcela_n}
@@ -261,8 +320,10 @@ export default function AdmContrato(){
                 <td className="px-4 py-1">
                     {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
                 </td>
-                <td className="px-1 py-1 text-right">
-                <span onClick={()=>closeModa(
+                <td  className="px-1 py-1 text-right">
+                <button onClick={(event)=>{
+                    event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
+                    closeModa(
                     {mensalidadeAnt:dadosassociado.mensalidade[index-1],
                     mensalidadeProx:dadosassociado.mensalidade[index+1],
                     mensalidade:{parcela_n:Number(item.parcela_n),
@@ -275,11 +336,14 @@ export default function AdmContrato(){
                     close:true,
                     valor_total:item.valor_total,
                     motivo_bonus:item.motivo_bonus
-                    }})} className="font-medium  cursor-pointer text-blue-500 hover:underline">Baixar/Editar</span>
+                    }})}} className="font-medium  text-blue-500 hover:underline">Baixar/Editar</button>
                 </td>
             </tr>
                ):item.status==='A'?(
-                <tr key={index} onDoubleClick={()=>{alert("CLICOU DUAS VEZES")}} className=" border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
+                <tr key={index} onClick={()=>{closeModa({mensalidade:{
+                    id_mensalidade:item.id_mensalidade,
+                    status:item.status
+                }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600`}>
                    
                 <th scope="row" className="px-5 py-1 font-medium  whitespace-nowrap text-white">
                     {item.parcela_n}
