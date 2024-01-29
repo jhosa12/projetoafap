@@ -104,6 +104,7 @@ export default function AdmContrato(){
 
         ) 
              await carregarDados()
+             closeModa({mensalidade:{}})
              
     }catch(err){
         toast.error(`Erro ao excluir: ${err}`)

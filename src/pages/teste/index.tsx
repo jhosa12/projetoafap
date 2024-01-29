@@ -10,6 +10,7 @@ import { IoIosClose } from "react-icons/io";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { MdSaveAlt } from "react-icons/md";
+import { ResumoCadastro } from "@/components/resumoCadastro";
 
 
 
@@ -33,6 +34,7 @@ export default function TesteLayout() {
     <Item />,
     <DadosPlano />,
     <DadosDependentes />,
+    <ResumoCadastro/>
   ])
   function onSubmit(e:FormEvent){
     e.preventDefault()
