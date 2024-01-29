@@ -31,7 +31,7 @@ export default function Home() {
     return(
         <div className=" flex h-[100vh] w-full items-center justify-center">
        
-       <div className="sm:w-5/6 md:w-3/4 lg:w-1/2 xl:w-1/3 flex flex-col gap-4 bg-[#111827] p-8 items-center justify-center rounded-lg shadow-xl">
+       <div className="sm:w-5/6 md:w-3/4 lg:w-1/2 xl:w-1/3 flex flex-col gap-4 bg-gray-900 p-8 items-center justify-center rounded-lg shadow-xl">
        <Image className="w-40 h-16 mr-7" src={logo} alt="" />
     <h1 className="text-white text-2xl font-medium">Login</h1>
     <form onSubmit={handleSignUp} className="flex flex-col gap-4 w-full items-center">
@@ -54,7 +54,7 @@ export default function Home() {
     <button type="submit" className={`flex items-center justify-center w-full max-w-md h-12 rounded-lg text-white font-bold bg-[#CA9629]`}>
         {!loading ? "Acessar" : (<AiOutlineLoading3Quarters size={25} className="animate-spin"/>)}
     </button>
-    <span className="text-red-500 text-[20px]"> Login: admin - Senha: admin</span>
+   
     </form>
 </div>
 </div>)
