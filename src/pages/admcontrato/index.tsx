@@ -226,24 +226,24 @@ export default function AdmContrato(){
 <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
   <input checked={checkMensal} onChange={()=>setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer"/>
   <div className="w-9 h-5  peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[5px] after:start-[5px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
-  <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Exibir Pagas</span>
+  <span className="ms-3 text-sm font-medium  text-gray-300">Exibir Pagas</span>
 </label>
 <div className="inline-flex rounded-md shadow-sm" role="group">
-  <button onClick={adicionarMensalidade} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
+  <button onClick={adicionarMensalidade} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border  rounded-s-lg  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
  <RiAddCircleFill size={20}/>
     Adicionar
   </button>
-  <button type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
+  <button type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
     Settings
   </button>
-  <button onClick={()=>setExcluir(!excluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
+  <button onClick={()=>setExcluir(!excluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2   bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
    <MdDeleteForever size={20}/>
     Excluir
   </button>
   {excluir?( <div  className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div className="flex items-center justify-center p-2 w-full h-full">
         <div className="relative rounded-lg shadow bg-gray-800">
-            <button type="button" onClick={()=>setExcluir(!excluir)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" >
+            <button type="button" onClick={()=>setExcluir(!excluir)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
              <button  type="button" onClick={()=>closeModa({closeModalPlano:false})} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
                     <IoIosClose size={30}/>
                 </button>
@@ -252,11 +252,11 @@ export default function AdmContrato(){
                 <div className="flex w-full justify-center items-center">
                   <TbAlertTriangle className='text-gray-400' size={60}/>
                 </div>
-                <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Realmente deseja deletar esssa mensalidade?</h3>
-                <button onClick={excluirMesal} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+                <h3 className="mb-5 text-lg font-normal  text-gray-400">Realmente deseja deletar esssa mensalidade?</h3>
+                <button onClick={excluirMesal} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
                     Sim, tenho certeza
                 </button>
-                <button onClick={()=>setExcluir(!excluir)}  type="button" className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">Não, cancelar</button>
+                <button onClick={()=>setExcluir(!excluir)}  type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
             </div>
         </div>
     </div>
@@ -386,7 +386,6 @@ export default function AdmContrato(){
                 </th>
                 <td className="px-5 py-1">
                    {new Date(item.vencimento).toLocaleDateString()}
-                   
                 </td>
                 <td className="px-5 py-1">
                 {new Date(item.cobranca).toLocaleDateString()}
