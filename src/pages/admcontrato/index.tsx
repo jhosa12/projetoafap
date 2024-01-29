@@ -38,15 +38,16 @@ export default function AdmContrato(){
       }
     };
     carregarDadosAsync();
-    if (dadosassociado?.contrato.situacao === 'INATIVO') {
-        toast.error('CONTRATO INATIVO');
-      }
+   
       setDados(false),
       setDependentes(false),
       setHistorico(true)
   }, [data.id_associado]);
 
   useEffect(() => {
+    if (dadosassociado?.contrato.situacao === 'INATIVO') {
+        toast.error('CONTRATO INATIVO');
+      }
     let x = 0;
     
       dadosassociado?.mensalidade.map((item, index) => {
@@ -362,12 +363,14 @@ export default function AdmContrato(){
                     closeModa(
                     {mensalidadeAnt:dadosassociado.mensalidade[index-1],
                     mensalidadeProx:dadosassociado.mensalidade[index+1],
-                    mensalidade:{parcela_n:Number(item.parcela_n),
+                    mensalidade:{
+                    parcela_n:Number(item.parcela_n),
                     cobranca:item.cobranca,
                     vencimento:item.vencimento,
                     valor_principal:Number(item.valor_principal),
                     status:item.status,
                     usuario:item.usuario,
+                    referencia:item.referencia,
                     id_mensalidade:item.id_mensalidade,
                     close:true,
                     valor_total:item.valor_total,
@@ -381,16 +384,20 @@ export default function AdmContrato(){
                     status:item.status
                 }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600`}>
                    
-                <th scope="row" className="px-5 py-1 font-medium  whitespace-nowrap text-white">
+                   <th scope="row" className="px-5 py-1 font-medium  whitespace-nowrap text-white">
                     {item.parcela_n}
                 </th>
-                <td className="px-5 py-1">
+                <td className="px-2 py-1">
                    {new Date(item.vencimento).toLocaleDateString()}
+                   
+                </td>
+                <td className="px-2 py-1">
+                   {item.referencia}
                 </td>
                 <td className="px-5 py-1">
                 {new Date(item.cobranca).toLocaleDateString()}
                 </td>
-                <td className="px-8 py-1">
+                <td className="px-3 py-1">
                {`R$${item.valor_principal}`}
                 </td>
                 <td className={`px-4 py-1 ${item.status==='A'&& calcularDiferencaEmDias(new Date(),new Date(item.vencimento))>=1 ?"font-bold text-red-600":''}`}>
@@ -405,13 +412,11 @@ export default function AdmContrato(){
                 <td className="px-6 py-1">
                {item.usuario}
                 </td>
-                <td className="px-6 py-1">
-               {item.valor_total?`R$${item.valor_total}`:''}
+                <td className={`px-6 py-1`}>
+                {item.valor_total?`R$${item.valor_total}`:''}     
                 </td>
-                <td className="px-6 py-1">
-              
+                <td className="px-4 py-1">
                 </td>
-        
                 <td className="px-4 py-1">
                     {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
                 </td>

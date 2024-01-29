@@ -102,8 +102,8 @@ if(data.mensalidadeProx && status==='P'){
 <label className="flex flex-row justify-center col-start-1 font-semibold  gap-2 text-white">EDITAR MENSALIDADE</label>
 </div>
 <div className="mb-1 col-span-1 ">
-<label  className="block mb-1 text-xs font-medium  text-white">NP</label>
-<input disabled type="number" value={data.mensalidade?.parcela_n} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),parcela_n:Number(e.target.value)}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+<label  className="block mb-1 text-xs font-medium  text-white">Referencia</label>
+<input disabled type="text" value={data.mensalidade?.referencia} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),referencia:e.target.value}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">VENCIMENTO</label>
