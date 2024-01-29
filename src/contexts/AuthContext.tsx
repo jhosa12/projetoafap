@@ -2,7 +2,7 @@ import { ReactNode,createContext,useState } from 'react';
 import {api} from "../services/apiClient"
 import {destroyCookie,setCookie,parseCookies} from "nookies"
 import Router from 'next/router';
-import produce from 'immer';
+
 type DependentesProps={
     nome:string,
     data_nasc:string,
@@ -23,6 +23,7 @@ type MensalidadeProps={
     valor_total:number,
     motivo_bonus: string,
     data_pgto:Date,
+    referencia:string
 }
 type DadosCadastro={
     
@@ -74,6 +75,7 @@ situacao:string
 
 type AssociadoProps={
 nome:string,
+id_associado:number,
 endereco:string,
 bairro:string,
 numero:number,

@@ -108,6 +108,36 @@ export default function AdmContrato(){
         toast.error(`Erro ao excluir: ${err}`)
     }
   }
+  async function adicionarMensalidade(){
+    const ultimaMensalidade = dadosassociado?.mensalidade[dadosassociado.mensalidade.length-1]
+    const vencimento = new Date(ultimaMensalidade?.vencimento?ultimaMensalidade?.vencimento:'')
+   const proxData = vencimento.setMonth(vencimento.getMonth()+1)
+    try{
+        await  toast.promise(
+            api.post('/mensalidade/adicionar',{
+            id_contrato:dadosassociado?.contrato.id_contrato,
+            id_associado:dadosassociado?.id_associado,
+            status:'A',
+            valor_principal:dadosassociado?.contrato.valor_mensalidade,
+            parcela_n:ultimaMensalidade?.parcela_n?ultimaMensalidade?.parcela_n+1:null,
+            vencimento:new Date(proxData),
+            cobranca:new Date(proxData),
+            referencia:`${String(new Date(proxData).getMonth()+1).padStart(2,'0')}/${new Date(proxData).getFullYear()%100}`
+        }),
+        {
+            pending: `Efetuando`,
+            success: `Mensalidade Adicionada`,
+            error: `Erro ao gerar mensalidade`
+           }
+
+       ) 
+        carregarDados()
+      
+    }catch(err){
+        toast.error('Erro ao Adicionar nova parcela')
+    }
+   
+  }
 
     return(
         <div className="flex w-full mr-2 ">
@@ -199,7 +229,7 @@ export default function AdmContrato(){
   <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Exibir Pagas</span>
 </label>
 <div className="inline-flex rounded-md shadow-sm" role="group">
-  <button type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
+  <button onClick={adicionarMensalidade} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
  <RiAddCircleFill size={20}/>
     Adicionar
   </button>
@@ -226,7 +256,7 @@ export default function AdmContrato(){
                 <button onClick={excluirMesal} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
                     Sim, tenho certeza
                 </button>
-                <button data-modal-hide="popup-modal" type="button" className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">Não, cancelar</button>
+                <button onClick={()=>setExcluir(!excluir)}  type="button" className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">Não, cancelar</button>
             </div>
         </div>
     </div>
@@ -244,6 +274,9 @@ export default function AdmContrato(){
                 </th>
                 <th scope="col" className=" px-2 py-1">
                     DATA VENC.
+                </th>
+                <th scope="col" className=" px-2 py-1">
+                    REF
                 </th>
                 <th scope="col" className="px-4 py-1">
                     DATA AGEND.
@@ -291,6 +324,9 @@ export default function AdmContrato(){
                 <td className="px-2 py-1">
                    {new Date(item.vencimento).toLocaleDateString()}
                    
+                </td>
+                <td className="px-2 py-1">
+                   {item.referencia}
                 </td>
                 <td className="px-5 py-1">
                 {new Date(item.cobranca).toLocaleDateString()}
