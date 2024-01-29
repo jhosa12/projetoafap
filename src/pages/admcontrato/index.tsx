@@ -381,9 +381,10 @@ export default function AdmContrato(){
                     {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
                 </td>
                 <td className=" px-1 py-1 text-right">
-                <span onClick={()=>closeModa(
-                    {mensalidadeAnt:
-                    dadosassociado.mensalidade[index-1],
+                <button onClick={(event)=>{
+                    event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
+                    closeModa(
+                    {mensalidadeAnt:dadosassociado.mensalidade[index-1],
                     mensalidadeProx:dadosassociado.mensalidade[index+1],
                     mensalidade:{parcela_n:Number(item.parcela_n),
                     cobranca:item.cobranca,
@@ -393,8 +394,9 @@ export default function AdmContrato(){
                     usuario:item.usuario,
                     id_mensalidade:item.id_mensalidade,
                     close:true,
-                    valor_total:item.valor_total
-                    }})} className="font-medium  cursor-pointer text-blue-500 hover:underline">Baixar/Editar</span>
+                    valor_total:item.valor_total,
+                    motivo_bonus:item.motivo_bonus
+                    }})}} className="font-medium  text-blue-500 hover:underline">Baixar/Editar</button>
                 </td>
             </tr>
 

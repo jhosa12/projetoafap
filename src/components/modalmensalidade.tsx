@@ -1,6 +1,5 @@
 import { IoIosClose } from "react-icons/io";
 import { MdSaveAlt } from "react-icons/md";
-import { MdDeleteForever } from "react-icons/md";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { GiReturnArrow } from "react-icons/gi";
 import { AuthContext } from "@/contexts/AuthContext";
