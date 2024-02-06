@@ -22,7 +22,7 @@ type MensalidadeProps={
     id_mensalidade:number,
     valor_total:number,
     motivo_bonus: string,
-    data_pgto:Date,
+    data_pgto:Date | string,
     referencia:string
 }
 type DadosCadastro={

@@ -3,12 +3,7 @@ import { FormWrapper } from "./organizador"
 import InputMask from 'react-input-mask'
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
-
 import { useState } from "react";
-
-
-
-
 export function Item(){
   const [inputType, setInputType] = useState('text');
   const {data,closeModa}= useContext(AuthContext)
@@ -66,8 +61,8 @@ export function Item(){
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">CIDADE</label>
             <select value={data.cidade} onChange={e=>closeModa({cidade:e.target.value})} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option selected></option>
-              <option value="M">CEDRO</option>
-              <option value="F">LAVRAS DA MANGABEIRA</option>
+              <option >CEDRO</option>
+              <option >LAVRAS DA MANGABEIRA</option>
             </select>
           </div>
           <div className="col-span-1">
@@ -98,16 +93,8 @@ export function Item(){
           <label  className="block mb-1 text-sm font-medium  text-white">TELEFONE</label>
           <InputMask value={data.telefone} onChange={e=>closeModa({telefone:e.target.value})} mask={'(99) 9 9999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
-        
-
-
-
         </div>
-
-
         </div>
-        
-  
       </FormWrapper>
     )
 }

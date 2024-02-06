@@ -375,7 +375,8 @@ export default function AdmContrato(){
                     id_mensalidade:item.id_mensalidade,
                     close:true,
                     valor_total:item.valor_total,
-                    motivo_bonus:item.motivo_bonus
+                    motivo_bonus:item.motivo_bonus,
+                    data_pgto:item.data_pgto ? item.data_pgto: new Date()
                     }})}} className="font-medium  text-blue-500 hover:underline">Baixar/Editar</button>
                 </td>
             </tr>

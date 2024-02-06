@@ -7,13 +7,10 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 
-
 export function ModalMensalidade(){
     const {closeModa,data,usuario,carregarDados}=useContext(AuthContext)
     const [desconto,setDesconto] = useState(false)
     
-    
-  
         useEffect(()=>{ // Faz com que o valor pago/total inicie com o valor principal
             if(!data.mensalidade?.valor_total){
             closeModa({mensalidade:{...(data.mensalidade),valor_total:data.mensalidade?.valor_principal}})
@@ -38,7 +35,7 @@ export function ModalMensalidade(){
                 api.put('/mensalidade',{
                     id_mensalidade:data.mensalidade?.id_mensalidade,
                     status:status,
-                    data_pgto:status==='A'?null:new Date(),
+                    data_pgto:status==='A'?null:data.mensalidade?.data_pgto && new Date(data.mensalidade?.data_pgto).toLocaleDateString()===new Date().toLocaleDateString()?new Date():data.mensalidade?.data_pgto?new Date(data.mensalidade?.data_pgto):null,
                     usuario:status==='A'?null:usuario?.nome.toUpperCase(),
                     valor_total:status==='A'?null:data.mensalidade?.valor_total,
                     motivo_bonus:status==='A'?null:data.mensalidade?.motivo_bonus,
@@ -87,12 +84,16 @@ if(data.mensalidadeProx && status==='P'){
     closeModa({mensalidade:{...(data.mensalidadeProx),close:true,cobranca:data?.mensalidadeProx?.cobranca}})
 }
    await carregarDados()
-      }
+      }  
+      
+    
+
+
     return(
     <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
        
     <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
-    <div className="fixed flex flex-col  w-2/4  rounded-lg shadow-2xl border-gray-600 border  bg-[#0f172a]">
+    <div className="fixed flex flex-col  w-2/4  rounded-lg  shadow bg-gray-800">
     <button  type="button" onClick={()=>closeModa({mensalidade:{close:false}})} className="absolute cursor-pointer right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
     <IoIosClose size={30}/>
         </button>
@@ -154,7 +155,7 @@ if(data.mensalidadeProx && status==='P'){
 </div>
 <div className="mb-1 col-span-1">
 <label  className="block mb-1 text-xs font-medium  text-white">DATA PAG.</label>
-<input type="text"  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+<input value={data.mensalidade?.data_pgto?new Date(data.mensalidade.data_pgto).toISOString().split('T')[0]:''} onChange={e=>closeModa({mensalidade:{...(data.mensalidade),data_pgto:new Date(e.target.value)}})} type="date" className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 {((data.mensalidade?.valor_total ?? 0)<(data.mensalidade?.valor_principal ?? 0) && data.mensalidade?.valor_total!==undefined)&& data.mensalidade.valor_total>0?(
  <div className="col-span-4 gap-1 mt-1 inline-flex ">
