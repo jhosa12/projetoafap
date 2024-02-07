@@ -25,8 +25,9 @@ export default function SideBar(){
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
             <div className="flex items-center">
                 <Image onClick={()=>setIsOpen(!isOpen)} src={logo} className="cursor-pointer w-full mr-2 h-8 sm:h-11" alt="Flowbite Logo" />
-                <span className="self-center text-xl font-semibold  text-[#e6ba55]">SISAFAP</span>
+                <span className="inline-flex whitespace-nowrap w-full text-xl font-semibold  text-white">SISTEMA DE GERENCIAMENTO AFAP</span>
             </div>
+           
             <div className="flex items-center gap-4">
     <Image className="w-10 h-10 rounded-full" src={fototeste} alt=""/>
     <div className  ="font-medium text-white">
