@@ -17,6 +17,7 @@ body{
 /* Track */
 ::-webkit-scrollbar-track {
     background: #444141;
+    border-radius: 8px;
 }
  
 /* Handle */
