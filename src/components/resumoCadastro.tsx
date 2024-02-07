@@ -8,8 +8,8 @@ export function ResumoCadastro(){
     const {data,closeModa}= useContext(AuthContext)
     return(
         <FormWrapper title="Resumo do Cadastro">
-            <div className="flex flex-col   max-h-96 gap-4 p-2 rounded-lg w-[calc(100vw-200px)]">
-                <div className="flex gap-4 flex-col p-2 rounded-lg bg-gray-800 border-gray-500 border-[1px]"  >
+            <div className="flex flex-col   max-h-96 gap-2 p-2 rounded-lg w-[calc(100vw-200px)]">
+                <div className="flex gap-4 flex-col p-2 rounded-lg  border-gray-500 border-[1px]"  >
                 <div className="flex gap-4 w-full">
                 <div className="flex flex-col w-3/4">
             <label  className="block  text-xs font-medium text-gray-900 dark:text-white">Nome</label>
@@ -72,6 +72,93 @@ export function ResumoCadastro(){
                 </div>
        
                 </div>
+
+                <div className="flex gap-4 flex-col p-2 rounded-lg  border-gray-500 border-[1px]"  >
+                <div className="flex gap-4 w-full">
+                <div className="flex flex-col w-1/6">
+            <label  className="block  text-xs font-medium text-gray-900 dark:text-white">Contrato</label>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.contrato}</span><span/>
+        </div>
+        <div className="flex flex-col w-1/4">
+            <label  className="block  text-xs font-medium text-gray-900 dark:text-white">Origem</label>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.origem}</span><span/>
+        </div>
+        <div className="flex flex-col w-1/4">
+            <label  className="block  text-xs font-medium text-gray-900 dark:text-white">Plano</label>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.plano}</span><span/>
+        </div>
+        <div className="flex flex-col w-1/6">
+            <label  className="block  text-xs font-medium text-gray-900 dark:text-white">Valor</label>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.valor?data.valor:'0,00'}</span><span/>
+        </div>
+        <div className="flex flex-col w-2/6">
+            <label  className="block  text-xs font-medium text-gray-900 dark:text-white">Cobrador</label>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.cobrador}</span><span/>
+        </div>
+        <div className="flex flex-col w-2/6">
+            <label  className="block  text-xs font-medium text-gray-900 dark:text-white">Consultor</label>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.consultor}</span><span/>
+        </div>
+        <div className="flex flex-col w-2/6">
+            <label  className="block  text-xs font-medium text-gray-900 dark:text-white">Supervisor</label>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.supervisor}</span><span/>
+        </div>
+        <div className="flex flex-col w-1/12">
+            <label  className="block  text-xs font-medium text-gray-900 dark:text-white">NP</label>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.np}</span><span/>
+        </div>
+        <div className="flex flex-col w-1/6">
+            <label  className="block  text-xs font-medium text-gray-900 dark:text-white">Vencimento</label>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.dtvenc?new Date(data.dtvenc).toLocaleDateString():''}</span><span/>
+        </div>
+        <div className="flex flex-col w-1/6">
+            <label  className="block  text-xs font-medium text-gray-900 dark:text-white">Adesão</label>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.dtadesao?new Date(data.dtadesao).toLocaleDateString():''}</span><span/>
+        </div>
+        <div className="flex flex-col w-1/6">
+            <label  className="block  text-xs font-medium text-gray-900 dark:text-white">Carência</label>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.dtcarencia?new Date(data.dtcarencia).toLocaleDateString():''}</span><span/>
+        </div>
+          
+                </div>
+                </div>
+
+
+            <div className="flex justify-center">
+                <div className="flex p-2 rounded-lg  border-gray-500 border-[1px]"  >
+                {data.arraydep?(
+                      <table 
+                      className="block overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse rounded-lg text-gray-400">
+                        <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
+                                <tr >
+                                  <th scope="col" className=" px-4 py-1">Nome</th>
+                                  <th scope="col" className=" px-4 py-1">Nasc</th>
+                                  <th scope="col" className=" px-4 py-1">Parent.</th>
+                                  <th scope="col" className=" px-4 py-1">Adesão</th>
+                                  <th scope="col" className=" px-3 py-1">Carência</th>
+                                
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {data.arraydep?.map((usuario, index) => (
+                                  <tr className=" border-b border-l bg-gray-800 border-gray-700  hover:bg-gray-600" key={index}>
+                                    <th scope="row" className="px-4 py-1 font-medium  whitespace-nowrap text-white">{usuario.nome}</th>
+                                    <td className="px-4 py-1">{usuario.data_nasc}</td>
+                                    <td className="px-4 py-1">{usuario.grau_parentesco}</td>
+                                    <td className="px-4 py-1">{usuario.data_adesao}</td>
+                                    <td className="px-3 py-1">{usuario.carencia}</td>
+                                   
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                ):(<h2 className="text-white">NÃO HÁ DEPENDENTES CADASTRADOS!</h2>)}
+              
+                </div>
+
+                </div>
+
+
             </div>
         </FormWrapper>
     )

@@ -20,16 +20,16 @@ export function DadosPlano(){
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">ORIGEM</label>
             <select value={data.origem} onChange={e=>closeModa({origem:e.target.value})} className="block w-full p-1.5  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option selected></option>
-              <option value="M">PLANO NOVO</option>
-              <option value="F">TRANSFERÊNCIA</option>
+              <option >PLANO NOVO</option>
+              <option >TRANSFERÊNCIA</option>
             </select>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">PLANO</label>
             <select value={data.plano} onChange={e=>closeModa({plano:e.target.value})} className="block w-full p-1.5  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option selected></option>
-              <option value="M">GOLD</option>
-              <option value="F">PLANO B6</option>
+              <option >GOLD</option>
+              <option >PLANO B6</option>
             </select>
           </div>
           <div className="col-span-1">
@@ -40,24 +40,24 @@ export function DadosPlano(){
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">COBRADOR</label>
             <select value={data.cobrador} onChange={e=>closeModa({cobrador:e.target.value})} className="block w-full p-1.5  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option selected></option>
-              <option value="M">JACKSON</option>
-              <option value="F">SAMUEL</option>
+              <option >JACKSON</option>
+              <option >SAMUEL</option>
             </select>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">CONSULTOR</label>
             <select value={data.consultor} onChange={e=>closeModa({consultor:e.target.value})} className="block w-full p-1.5  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option selected></option>
-              <option value="M">MATEUS</option>
-              <option value="F">JOÃO</option>
+              <option >MATEUS</option>
+              <option >JOÃO</option>
             </select>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">SUPERVISOR</label>
             <select value={data.supervisor} onChange={e=>closeModa({supervisor:e.target.value})} className="block w-full p-1.5  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option selected></option>
-              <option value="M">MATEUS</option>
-              <option value="F">JOÃO</option>
+              <option >MATEUS</option>
+              <option >JOÃO</option>
             </select>
           </div>
         
