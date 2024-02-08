@@ -5,16 +5,26 @@ import { useContext, useEffect } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { useState } from "react";
 import { api } from "@/services/apiClient";
+interface CidadesProps{
+  id_cidade:number,
+ estado:number,
+ uf:string,
+ cidade:string
+}
 export function Item(){
 
   const {data,closeModa}= useContext(AuthContext)
- 
+  const [cidades,setCidades] = useState<CidadesProps[]>([])
+  const [ufs,setUfs] =useState<string[]>([])
   useEffect(()=>{
     capturarUltimo()
 },[])
 async function capturarUltimo(){
-    const response = await api.get('/ultimocontrato')
-    closeModa({contrato:Number(response.data.ultimo.id_contrato)+1,planos:response.data.planos})
+    const response = await api.get('/ultimocontrato');
+    closeModa({contrato:Number(response.data.ultimo.id_contrato)+1,planos:response.data.planos});
+    setCidades(response.data.cidades);
+  
+    
 }
     return(
         <FormWrapper title="DADOS DO TITULAR">
@@ -31,7 +41,7 @@ async function capturarUltimo(){
           </div>
           <div className="col-span-1">
           <label   className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">SEXO</label>
-            <select value={data.sexo} onChange={e=>closeModa({sexo:e.target.value})} className="block w-full pb-1 pt-1 pr-2 pl-2  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <select value={data.sexo} onChange={e=>closeModa({sexo:e.target.value.toUpperCase()})} className="block w-full pb-1 pt-1 pr-2 pl-2  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option   selected></option>
               <option   value="M">MASCULINO</option>
               <option   value="F">FEMININO</option>
@@ -44,7 +54,7 @@ async function capturarUltimo(){
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">ENDEREÇO</label>
-          <input value={data.endereço} onChange={e=>closeModa({endereço:e.target.value})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.endereço} onChange={e=>closeModa({endereço:e.target.value.toUpperCase()})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">NUMERO</label>
@@ -52,26 +62,59 @@ async function capturarUltimo(){
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">BAIRRO</label>
-          <input value={data.bairro} onChange={e=>closeModa({bairro:e.target.value})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.bairro} onChange={e=>closeModa({bairro:e.target.value.toUpperCase()})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-2">
           <label  className="block mb-1 text-sm font-medium  text-white">PONTO REF</label>
-          <input value={data.referencia} onChange={e=>closeModa({referencia:e.target.value})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50 dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.referencia} onChange={e=>closeModa({referencia:e.target.value.toUpperCase()})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50 dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">UF</label>
-            <select value={data.uf} onChange={e=>closeModa({uf:e.target.value})} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm   text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <select value={data.uf} onChange={e=>closeModa({uf:e.target.value.toUpperCase()})} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm   text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option selected></option>
-              <option value="M">CE</option>
-              <option value="F">TO</option>
+             
+                  <option>AC</option>
+                  <option>AL</option>
+                  <option>AM</option>
+                  <option>AP</option>
+                  <option>BA</option>
+                  <option>CE</option>
+                  <option>DF</option>
+                  <option>ES</option>
+                  <option>GO</option>
+                  <option>MA</option>
+                  <option>MG</option>
+                  <option>MS</option>
+                  <option>MT</option>
+                  <option>DF</option>
+                  <option>PA</option>
+                  <option>PB</option>
+                  <option>PE</option>
+                  <option>PI</option>
+                  <option>PR</option>
+                  <option>RJ</option>
+                  <option>RN</option>
+                  <option>RO</option>
+                  <option>RR</option>
+                  <option>RS</option>
+                  <option>SC</option>
+                  <option>SE</option>
+                  <option>SP</option>
+                  <option>TO</option>
+
+                
+              
             </select>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">CIDADE</label>
-            <select value={data.cidade} onChange={e=>closeModa({cidade:e.target.value})} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <select value={data.cidade} onChange={e=>closeModa({cidade:e.target.value.toUpperCase()})} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option selected></option>
-              <option >CEDRO</option>
-              <option >LAVRAS DA MANGABEIRA</option>
+                {cidades.map((item)=>{
+                  return(
+                      item.uf===data.uf?(<option>{item.cidade}</option>):''
+                  )
+                })}
             </select>
           </div>
           <div className="col-span-1">
@@ -84,11 +127,11 @@ async function capturarUltimo(){
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">NATURALIDADE</label>
-          <input value={data.naturalidade} onChange={e=>closeModa({naturalidade:e.target.value})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.naturalidade} onChange={e=>closeModa({naturalidade:e.target.value.toUpperCase()})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">EMAIL</label>
-          <input value={data.email} onChange={e=>closeModa({email:e.target.value})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.email} onChange={e=>closeModa({email:e.target.value.toUpperCase()})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">CELULAR1</label>

@@ -15,7 +15,7 @@ export function ResumoCadastro(){
                 <div className="flex gap-4 w-full">
                 <div className="flex flex-col w-3/4">
             <label  className="block  text-xs font-medium  text-white">Nome</label>
-            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.name}</span><span/>
+            <span  className="whitespace-nowrap font-bold py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.name}</span><span/>
         </div>
         <div className="flex flex-col w-1/6">
             <label  className="block  text-xs font-medium  text-white">Nascimento</label>
@@ -79,7 +79,7 @@ export function ResumoCadastro(){
                 <div className="flex gap-4 w-full">
                 <div className="flex flex-col w-1/6">
             <label  className="block  text-xs font-medium  text-white">Contrato</label>
-            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.contrato}</span><span/>
+            <span  className="whitespace-nowrap font-bold py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.contrato}</span><span/>
         </div>
         <div className="flex flex-col w-1/4">
             <label  className="block  text-xs font-medium  text-white">Origem</label>
