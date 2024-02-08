@@ -28,8 +28,11 @@ export function DadosPlano(){
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">PLANO</label>
             <select value={data.plano} onChange={e=>closeModa({plano:e.target.value})} className="block w-full p-1.5  pb-1 pt-1 pr-2 pl-2 sm:text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option selected></option>
-              <option >GOLD</option>
-              <option >PLANO B6</option>
+              {data.planos?.map((item,index)=>{
+                return (
+                  <option key={item.id_Plano}>{item.descricao}</option>
+                )
+              })}
             </select>
           </div>
           <div className="col-span-1">

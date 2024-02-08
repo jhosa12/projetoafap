@@ -50,6 +50,7 @@ type DadosCadastro={
     contrato:number,
     origem:string,
     plano:string,
+    planos:Array<PlanosProps>
     valor:string,
     cobrador:string,
     consultor:string,
@@ -62,6 +63,11 @@ type DadosCadastro={
     mensalidade:Partial<MensalidadeProps>
     mensalidadeAnt:Partial<MensalidadeProps>
     mensalidadeProx:Partial<MensalidadeProps>,
+}
+type PlanosProps={
+    id_Plano:number,
+    descricao:string,
+    valor:string
 }
 
 type ContratoProps={
