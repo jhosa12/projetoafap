@@ -1,11 +1,13 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { FormWrapper } from "./organizador";
 import { AuthContext } from "@/contexts/AuthContext";
+import { api } from "@/services/apiClient";
 
 
 
 export function ResumoCadastro(){
     const {data,closeModa}= useContext(AuthContext)
+ 
     return(
         <FormWrapper title="Resumo do Cadastro">
             <div className="flex flex-col   max-h-[450px] gap-2 p-2 rounded-lg w-[calc(100vw-200px)]">
