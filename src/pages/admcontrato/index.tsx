@@ -318,7 +318,7 @@ export default function AdmContrato(){
                 <tr key={index} onClick={()=>{closeModa({mensalidade:{
                     id_mensalidade:item.id_mensalidade,
                     status:item.status
-                }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600  ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-white'}`}>
+                }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600  ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":item.status==='P'? 'text-blue-500':'text-white'}`}>
                    
                 <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
                     {item.parcela_n}
@@ -386,7 +386,7 @@ export default function AdmContrato(){
                     status:item.status
                 }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600 ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-white'}`}>
                    
-                   <th scope="row" className="px-5 py-1 font-medium  whitespace-nowrap text-white">
+                   <th scope="row" className="px-5 py-1 font-medium  whitespace-nowrap">
                     {item.parcela_n}
                 </th>
                 <td className="px-2 py-1">
