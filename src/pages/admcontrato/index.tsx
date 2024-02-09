@@ -318,12 +318,12 @@ export default function AdmContrato(){
                 <tr key={index} onClick={()=>{closeModa({mensalidade:{
                     id_mensalidade:item.id_mensalidade,
                     status:item.status
-                }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600 ${new Date(item.vencimento)<new Date()&& item.status==='A'?"bg-red-500":''}`}>
+                }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600  ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-white'}`}>
                    
-                <th scope="row" className="px-5 py-1 font-medium  whitespace-nowrap text-white">
+                <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
                     {item.parcela_n}
                 </th>
-                <td className="px-2 py-1">
+                <td className={`px-2 py-1 `}>
                    {new Date(item.vencimento).toLocaleDateString()}
                    
                 </td>
@@ -377,14 +377,14 @@ export default function AdmContrato(){
                     valor_total:item.valor_total,
                     motivo_bonus:item.motivo_bonus,
                     data_pgto:item.data_pgto ? item.data_pgto: new Date()
-                    }})}} className="font-medium  text-blue-500 hover:underline">Baixar/Editar</button>
+                    }})}} className={`font-medium  hover:underline ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-blue-500'}`}>Baixar/Editar</button>
                 </td>
             </tr>
                ):item.status==='A'?(
                 <tr key={index} onClick={()=>{closeModa({mensalidade:{
                     id_mensalidade:item.id_mensalidade,
                     status:item.status
-                }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600 ${new Date(item.vencimento)<new Date() && item.status==='A'?"bg-red-500":''}`}>
+                }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600 ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-white'}`}>
                    
                    <th scope="row" className="px-5 py-1 font-medium  whitespace-nowrap text-white">
                     {item.parcela_n}
@@ -438,7 +438,7 @@ export default function AdmContrato(){
                     close:true,
                     valor_total:item.valor_total,
                     motivo_bonus:item.motivo_bonus
-                    }})}} className="font-medium  text-blue-500 hover:underline">Baixar/Editar</button>
+                    }})}} className={`font-medium  hover:underline ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-blue-500'}`}>Baixar/Editar</button>
                 </td>
             </tr>
 
