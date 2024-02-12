@@ -6,13 +6,17 @@ import { TiDelete } from "react-icons/ti";
 import { MdDeleteForever } from "react-icons/md";
 import { MdEditSquare } from "react-icons/md";
 import { AuthContext } from "@/contexts/AuthContext";
+import DatePicker,{registerLocale, setDefaultLocale} from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import pt from 'date-fns/locale/pt-BR';
+registerLocale('pt', pt)
 
 interface UserProps{
   nome:string,
-    data_nasc:string,
+    data_nasc:Date,
     grau_parentesco:string,
-    data_adesao:string,
-    carencia:string,
+    data_adesao:Date,
+    carencia:Date,
   
 
 }
@@ -20,11 +24,11 @@ interface UserProps{
 export function DadosDependentes(){
 
 const {data,closeModa}= useContext(AuthContext)
-const [nome,setNome]= useState('')
-const [data_nasc,setNasc]= useState('')
-const [grau_parentesco,setPar]= useState('')
-const [data_adesao,setAdesao]= useState('')
-const [carencia,setCarencia]= useState('')
+const [nome,setNome]= useState("")
+const [data_nasc,setNasc]= useState<Date>() 
+const [grau_parentesco,setPar]= useState("")
+const [data_adesao,setAdesao]= useState<Date>()
+const [carencia,setCarencia]= useState<Date>()
 const [arrayDependetes,setArray] =useState<Partial<UserProps[]>>([])
 
 
@@ -34,12 +38,12 @@ const [arrayDependetes,setArray] =useState<Partial<UserProps[]>>([])
             nome,data_nasc,grau_parentesco,data_adesao,carencia
         }   
            // setArray([...arrayDependetes,dados])
-            closeModa({arraydep:[...data.arraydep || [],dados]})
+            closeModa({...data,arraydep:[...data.arraydep || [],dados]})
             setNome("")
-            setNasc("")
+            setNasc(undefined)
             setPar("")
-            setAdesao("")
-            setCarencia("")     
+            setAdesao(undefined)
+            setCarencia(undefined)     
         }   
         }
 
@@ -51,10 +55,13 @@ const [arrayDependetes,setArray] =useState<Partial<UserProps[]>>([])
               <label  className="block mb-1 text-sm font-medium  text-white">NOME</label>
               <input  autoComplete="off"  className="block uppercase w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " value={nome} onChange={e=>setNome(e.target.value.toUpperCase())} type="text"></input>
               </div>
+             
               <div>
               <label  className="block mb-1 text-sm font-medium  text-white">NASCIMENTO</label>
-              <InputMask mask={"99/99/9999"} className="block uppercase w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " value={data_nasc} onChange={e=>setNasc(e.target.value)} type="text"></InputMask>
+              <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"}  className="block  w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " selected={data_nasc} onChange={(date)=>date && setNasc(date)} ></DatePicker>
               </div>
+            
+              
               <div>
               <label  className="block mb-1 text-sm font-medium  text-white">PARENTESCO</label>
               <select className="block w-full p-1.5  sm:text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={grau_parentesco} onChange={e=>setPar(e.target.value)} >
@@ -74,11 +81,11 @@ const [arrayDependetes,setArray] =useState<Partial<UserProps[]>>([])
               </div>
               <div>
               <label className="block mb-1 text-sm font-medium  text-white">ADESÃO</label>
-              <InputMask mask={"99/99/9999"} className="block uppercase w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " value={data_adesao} onChange={e=>setAdesao(e.target.value)} type="text"></InputMask>
+              <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"}  className="block  w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " selected={data_adesao} onChange={(date)=>date && setAdesao(date)} ></DatePicker>
               </div>
               <div className="relative">
               <label  className="block mb-1 text-sm font-medium  text-white">CARÊNCIA</label>
-              <InputMask mask={"99/99/9999"} className="block uppercase w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " value={carencia} onChange={e=>setCarencia(e.target.value)} type="text"></InputMask>
+              <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"}  className="block  w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " selected={carencia} onChange={(date)=>date && setCarencia(date)} ></DatePicker>
               </div>
               <div className="col-span-2">
               <button  type="button" onClick={adicionar}  className=" block  justify-center items-center w-full px-3 py-1.5 text-sm font-medium text-center text-white rounded-lg  focus:ring-4 focus:outline-none  bg-blue-600 hover:bg-blue-700 focus:ring-blue-800" >ADICIONAR</button>  
@@ -104,10 +111,10 @@ const [arrayDependetes,setArray] =useState<Partial<UserProps[]>>([])
                           {data.arraydep?.map((usuario, index) => (
                             <tr className=" border-b border-l bg-gray-800 border-gray-700  hover:bg-gray-600" key={index}>
                               <th scope="row" className="px-4 py-1 font-medium  whitespace-nowrap text-white">{usuario.nome}</th>
-                              <td className="px-4 py-1">{usuario.data_nasc}</td>
+                              <td className="px-4 py-1">{usuario.data_nasc?.toLocaleDateString()}</td>
                               <td className="px-4 py-1">{usuario.grau_parentesco}</td>
-                              <td className="px-4 py-1">{usuario.data_adesao}</td>
-                              <td className="px-3 py-1">{usuario.carencia}</td>
+                              <td className="px-4 py-1">{usuario.data_adesao?.toLocaleDateString()}</td>
+                              <td className="px-3 py-1">{usuario.carencia?.toLocaleDateString()}</td>
                               <td className="px-4 py-1">
                                 <div className="flex gap-3">
                                 <button  className="flex justify-center items-center"  ><MdEditSquare color='yellow' size={18}/></button>

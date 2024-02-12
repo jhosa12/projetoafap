@@ -5,10 +5,10 @@ import Router from 'next/router';
 
 type DependentesProps={
     nome:string,
-    data_nasc:string,
+    data_nasc:Date,
     grau_parentesco:string,
-    data_adesao:string,
-    carencia:string,
+    data_adesao:Date,
+    carencia:Date,
     id_dependente:number
 }
 type MensalidadeProps={
@@ -31,7 +31,7 @@ type DadosCadastro={
     nasc:string,
     sexo:string,
     cep:string,
-    endereço:string,
+    endereco:string,
     numero:string,
     bairro:string, 
     referencia:string,
@@ -47,18 +47,9 @@ type DadosCadastro={
     celular1:string,
     celular2:string,
     telefone:string,
-    contrato:number,
+    contrato:Partial<ContratoProps>,
     origem:string,
-    plano:string,
     planos:Array<PlanosProps>
-    valor:string,
-    cobrador:string,
-    consultor:string,
-    supervisor:string,
-    np:number,
-    dtvenc:string,
-    dtadesao:string,
-    dtcarencia:string,
     id_associado:number,
     mensalidade:Partial<MensalidadeProps>
     mensalidadeAnt:Partial<MensalidadeProps>
@@ -73,10 +64,18 @@ type PlanosProps={
 type ContratoProps={
 id_contrato:number,
 plano:string,
+id_plano:number,
 valor_mensalidade:number,
 dt_adesao:string,
 dt_carencia:string,
-situacao:string
+situacao:string,
+consultor:string,
+cobrador:string,
+data_vencimento:string,
+n_parcelas:number,
+origem:string,
+supervisor:string
+
 }
 
 type AssociadoProps={
@@ -89,7 +88,6 @@ cidade:string,
 guia_rua:string,
 uf:string,
 mensalidade:Array<MensalidadeProps>,
-
 contrato:ContratoProps,
 dependentes:Array<DependentesProps>
 }

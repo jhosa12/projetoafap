@@ -27,7 +27,7 @@ export function ResumoCadastro(){
         </div>
         <div className="flex flex-col w-2/3">
             <label  className="block  text-xs font-medium  text-white">Endereço</label>
-            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.endereço}</span><span/>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.endereco}</span><span/>
         </div>
         <div className="flex flex-col w-1/6">
             <label  className="block  text-xs font-medium  text-white">Numero</label>
@@ -79,7 +79,7 @@ export function ResumoCadastro(){
                 <div className="flex gap-4 w-full">
                 <div className="flex flex-col w-1/6">
             <label  className="block  text-xs font-medium  text-white">Contrato</label>
-            <span  className="whitespace-nowrap font-bold py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.contrato}</span><span/>
+            <span  className="whitespace-nowrap font-bold py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.contrato?.id_contrato}</span><span/>
         </div>
         <div className="flex flex-col w-1/4">
             <label  className="block  text-xs font-medium  text-white">Origem</label>
@@ -87,39 +87,39 @@ export function ResumoCadastro(){
         </div>
         <div className="flex flex-col w-1/4">
             <label  className="block  text-xs font-medium  text-white">Plano</label>
-            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.plano}</span><span/>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.contrato?.plano}</span><span/>
         </div>
         <div className="flex flex-col w-1/6">
             <label  className="block  text-xs font-medium  text-white">Valor</label>
-            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.valor?data.valor:'0,00'}</span><span/>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.contrato?.valor_mensalidade?data.contrato.valor_mensalidade:'0,00'}</span><span/>
         </div>
         <div className="flex flex-col w-2/6">
             <label  className="block  text-xs font-medium  text-white">Cobrador</label>
-            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.cobrador}</span><span/>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.contrato?.cobrador}</span><span/>
         </div>
         <div className="flex flex-col w-2/6">
             <label  className="block  text-xs font-medium  text-white">Consultor</label>
-            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.consultor}</span><span/>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.contrato?.consultor}</span><span/>
         </div>
         <div className="flex flex-col w-2/6">
             <label  className="block  text-xs font-medium  text-white">Supervisor</label>
-            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.supervisor}</span><span/>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.contrato?.supervisor}</span><span/>
         </div>
         <div className="flex flex-col w-1/12">
             <label  className="block  text-xs font-medium  text-white">NP</label>
-            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.np}</span><span/>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.contrato?.n_parcelas}</span><span/>
         </div>
         <div className="flex flex-col w-1/6">
             <label  className="block  text-xs font-medium  text-white">Vencimento</label>
-            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.dtvenc?new Date(data.dtvenc).toLocaleDateString():''}</span><span/>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.contrato?.data_vencimento?new Date(data.contrato.data_vencimento).toLocaleDateString():''}</span><span/>
         </div>
         <div className="flex flex-col w-1/6">
             <label  className="block  text-xs font-medium  text-white">Adesão</label>
-            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.dtadesao?new Date(data.dtadesao).toLocaleDateString():''}</span><span/>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.contrato?.dt_adesao?new Date(data.contrato.dt_adesao).toLocaleDateString():''}</span><span/>
         </div>
         <div className="flex flex-col w-1/6">
             <label  className="block  text-xs font-medium  text-white">Carência</label>
-            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.dtcarencia?new Date(data.dtcarencia).toLocaleDateString():''}</span><span/>
+            <span  className="whitespace-nowrap py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{data.contrato?.dt_carencia?new Date(data.contrato.dt_carencia).toLocaleDateString():''}</span><span/>
         </div>
           
                 </div>
@@ -146,11 +146,10 @@ export function ResumoCadastro(){
                                 {data.arraydep?.map((usuario, index) => (
                                   <tr className=" border-b border-l bg-gray-800 border-gray-700  hover:bg-gray-600" key={index}>
                                     <th scope="row" className="px-4 py-1 font-medium  whitespace-nowrap text-white">{usuario.nome}</th>
-                                    <td className="px-4 py-1">{usuario.data_nasc}</td>
+                                    <td className="px-4 py-1">{usuario.data_nasc?new Date(usuario.data_nasc).toLocaleDateString():''}</td>
                                     <td className="px-4 py-1">{usuario.grau_parentesco}</td>
-                                    <td className="px-4 py-1">{usuario.data_adesao}</td>
-                                    <td className="px-3 py-1">{usuario.carencia}</td>
-                                   
+                                    <td className="px-4 py-1">{usuario.data_adesao?new Date(usuario.data_adesao).toLocaleDateString():''}</td>
+                                    <td className="px-3 py-1">{usuario.carencia?new Date(usuario.carencia).toLocaleDateString():''}</td>
                                   </tr>
                                 ))}
                               </tbody>
