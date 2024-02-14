@@ -2,11 +2,14 @@
 import InputMask from 'react-input-mask'
 import { FormWrapper } from "./organizador";
 import { AuthContext } from '@/contexts/AuthContext';
-import { useContext } from 'react';
-import { Item } from './dadosTitular';
+import { useContext, useEffect } from 'react';
+
 
 export function DadosPlano(){
   const {data,closeModa} =useContext(AuthContext)
+  useEffect(()=>{
+    console.log(data.planos)
+  },[data.planos])
     return(
         <FormWrapper title="DADOS DO PLANO">
               <div className="flex flex-col   gap-9 p-4 rounded-lg w-full h-full ">
@@ -27,14 +30,35 @@ export function DadosPlano(){
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">PLANO</label>
-            <select value={data.contrato?.plano} onChange={e=>closeModa({contrato:{...data.contrato,plano:e.target.options[e.target.selectedIndex].text,id_plano:Number(e.target.value)}})} className="block w-full p-1.5  pb-1 pt-1 pr-2 pl-2 sm:text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option ></option>
-              {data.planos?.map((item,index)=>{
-                return (
-                  <option value={item.id_Plano} key={item.id_Plano}>{item.descricao}</option>
-                )
-              })}
-            </select>
+          <select
+          defaultValue ={data.contrato?.plano}
+  className="block w-full p-1.5 pb-1 pt-1 pr-2 pl-2 sm:text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+  onChange={(e) => {
+    const selectedPlanId = Number(e.target.value); 
+    const selectedPlan = data.planos?.find(plan =>plan.id_plano === selectedPlanId);
+    if(selectedPlan){
+      closeModa({
+        contrato: {
+          ...(data.contrato || {}),
+          id_plano: selectedPlanId, 
+          valor_mensalidade: Number(selectedPlan.valor),
+          plano:selectedPlan.descricao
+        }
+      });
+      console.log(selectedPlan.descricao)
+    }
+  }}>
+
+  {data.planos?.map((item)=>{
+    return (
+      <option value={item.id_plano} key={item.id_plano} >{item.descricao}</option>
+    )
+  })}
+</select>
+
+
+
+
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">VALOR</label>

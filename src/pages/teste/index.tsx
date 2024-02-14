@@ -14,16 +14,41 @@ import { ResumoCadastro } from "@/components/resumoCadastro";
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
 
-export default function TesteLayout() {
-    const {data,closeModa} = useContext(AuthContext)
- 
-  const [closePlano,setTestePlano]=useState(false)
-   
-   function testeFields(){
 
-    setTestePlano(true)
-    console.log(closePlano)
+interface ParcelaData {
+  parcela_n: number;
+  vencimento: Date;
+  cobranca: Date;
+  valor_principal: number;
+  status: string;
+  referencia: string;
+}
+
+
+export default function TesteLayout() {
+    const {usuario,data,closeModa} = useContext(AuthContext)
+ 
+
+   function gerarMensalidade(){
+    const mensalidades : Array<ParcelaData> = []
+    let currentDate = new Date(data.contrato?.data_vencimento?data.contrato.data_vencimento:'');
+    for (let i = 0;i<Number(data.contrato?.n_parcelas);i++){
+      const dataMensalidade: ParcelaData = {
+        parcela_n: i + 1,
+        vencimento: new Date(currentDate), // Copia da data atual
+        cobranca: new Date(currentDate), // Copia da data atual
+        valor_principal:Number(data.contrato?.valor_mensalidade),
+        status:'A',
+        referencia: `${String(new Date(currentDate).getMonth()+1).padStart(2,'0')}/${new Date(currentDate).getFullYear()%100}`
+    };
+    mensalidades.push(dataMensalidade);
+    
+    // Aumenta um mês para a próxima iteração
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    }
+    return mensalidades
    }
+
 
   async function save(){
     try{
@@ -43,12 +68,12 @@ export default function TesteLayout() {
             celular1:data.celular1,
             celular2:data.celular2,
             telefone:data.telefone,
-            cad_usu:"teste",
+            cad_usu:usuario?.nome,
             cad_dh:new Date(),
-            edi_usu:"teste",
+            edi_usu:usuario?.nome,
             edi_dh:new Date(),
-            profissao:"teste",
-            sexo:'M',
+            profissao:data.profissao,
+            sexo:data.sexo,
             contrato:{id_plano:data.contrato?.id_plano?10:10,
               plano:data.contrato?.plano,
               consultor:data.contrato?.consultor,
@@ -62,24 +87,19 @@ export default function TesteLayout() {
               carencia:"",
               dt_carencia:data.contrato?.dt_carencia?new Date(data.contrato.dt_carencia):null
             },
-            dependentes:data.arraydep
-          
+            dependentes:data.arraydep,
+            mensalidades:gerarMensalidade()
         }),
         {
           pending: `Efetuando`,
           success: `Cadastrado com sucesso`,
-          error: `Erro ao efetuar Cadastrar`
+          error: `Erro ao efetuar Cadastro`
          }
-  
       )
     }catch(err){
       console.log(err)
-      console.log(data.contrato)
-      console.log(data.arraydep)
     }
-  
-     
-
+    
    }
 
   const {steps,currentStepIndex,step,next,back} =MultiStep([

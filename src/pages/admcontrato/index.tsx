@@ -70,7 +70,7 @@ export default function AdmContrato(){
   const timestamp2 = data2.getTime();
 
   // Calculando a diferença em milissegundos
-  const diferencaEmMilissegundos = Math.abs(timestamp2 - timestamp1);
+  const diferencaEmMilissegundos =timestamp1 - timestamp2;
 
   // Convertendo a diferença em dias (1 dia = 24 horas x 60 minutos x 60 segundos x 1000 milissegundos)
   const diferencaEmDias = Math.ceil(diferencaEmMilissegundos / (1000 * 60 * 60 * 24));
@@ -167,6 +167,9 @@ export default function AdmContrato(){
         </li>
         <li className="me-2">
             <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Dependentes</button>
+        </li>
+        <li className="me-2">
+            <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Carteiras</button>
         </li>
         <li className="me-2">
             <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Óbitos</button>
@@ -356,7 +359,7 @@ export default function AdmContrato(){
                 </td>
               
                 <td className="px-4 py-1">
-                    {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
+                    {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))<=0?0:calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
                 </td>
                 <td  className="px-1 py-1 text-right">
                 <button onClick={(event)=>{
@@ -420,7 +423,7 @@ export default function AdmContrato(){
                 <td className="px-4 py-1">
                 </td>
                 <td className="px-4 py-1">
-                    {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
+                    {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))<=0?0:calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
                 </td>
                 <td className=" px-1 py-1 text-right">
                 <button onClick={(event)=>{

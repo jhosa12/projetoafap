@@ -50,16 +50,17 @@ type DadosCadastro={
     telefone:string,
     contrato:Partial<ContratoProps>,
     origem:string,
-    planos:Array<PlanosProps>
+    profissao:string,
+    planos:PlanosProps[]
     id_associado:number,
     mensalidade:Partial<MensalidadeProps>
     mensalidadeAnt:Partial<MensalidadeProps>
     mensalidadeProx:Partial<MensalidadeProps>,
 }
 type PlanosProps={
-    id_Plano:number,
+    id_plano:number,
     descricao:string,
-    valor:string
+    valor:number
 }
 
 type ContratoProps={
