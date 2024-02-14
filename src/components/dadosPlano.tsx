@@ -3,7 +3,10 @@ import InputMask from 'react-input-mask'
 import { FormWrapper } from "./organizador";
 import { AuthContext } from '@/contexts/AuthContext';
 import { useContext, useEffect } from 'react';
-
+import DatePicker,{registerLocale, setDefaultLocale} from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import pt from 'date-fns/locale/pt-BR';
+registerLocale('pt', pt)
 
 export function DadosPlano(){
   const {data,closeModa} =useContext(AuthContext)
@@ -55,10 +58,6 @@ export function DadosPlano(){
     )
   })}
 </select>
-
-
-
-
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">VALOR</label>
@@ -95,15 +94,15 @@ export function DadosPlano(){
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">VENC. 1° PARCELA</label>
-          <input value={data.contrato?.data_vencimento} onChange={e=>closeModa({contrato:{...data.contrato,data_vencimento:e.target.value}})} type="date" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={data.contrato?.data_vencimento} onChange={(e)=>e && closeModa({contrato:{...data.contrato,data_vencimento:e}})}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">DATA DE ADESÃO</label>
-          <input value={data.contrato?.dt_adesao} onChange={e=>closeModa({contrato:{...data.contrato,dt_adesao:e.target.value}})} type="date" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <DatePicker selected={data.contrato?.dt_adesao} onChange={e=>e && closeModa({contrato:{...data.contrato,dt_adesao:e}})} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">FIM DA CARÊNCIA</label>
-          <input value={data.contrato?.dt_carencia} onChange={e=>closeModa({contrato:{...data.contrato,dt_carencia:e.target.value}})} type="date" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <DatePicker selected={data.contrato?.dt_carencia} onChange={e=>e && closeModa({contrato:{...data.contrato,dt_carencia:e}})} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
          
         </div>
