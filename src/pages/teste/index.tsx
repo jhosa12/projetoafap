@@ -29,7 +29,6 @@ export default function TesteLayout() {
     try{
       const response = await toast.promise(
         api.post('/novoAssociado',{
-          data:{
             nome:data.name,
             cep:data.cep,
             endereco:data.endereco,
@@ -39,7 +38,7 @@ export default function TesteLayout() {
             uf:data.uf,
             guia_rua:data.referencia,
             email:data.email,
-            data_nasc:data.nasc?new Date(data.nasc):'',
+            data_nasc:data.nasc && new Date(data.nasc),
             data_cadastro:new Date(),
             celular1:data.celular1,
             celular2:data.celular2,
@@ -50,10 +49,10 @@ export default function TesteLayout() {
             edi_dh:new Date(),
             profissao:"teste",
             sexo:'M',
-            contrato:{id_plano:data.contrato?.id_plano,
+            contrato:{id_plano:data.contrato?.id_plano?10:10,
               plano:data.contrato?.plano,
               consultor:data.contrato?.consultor,
-              situação:"ATIVO",
+              situacao:"ATIVO",
               valor_mensalidade:data.contrato?.valor_mensalidade,
               dt_adesao:data.contrato?.dt_adesao?new Date(data.contrato?.dt_adesao):new Date(),
               cobrador:data.contrato?.cobrador,
@@ -63,10 +62,8 @@ export default function TesteLayout() {
               carencia:"",
               dt_carencia:data.contrato?.dt_carencia?new Date(data.contrato.dt_carencia):null
             },
-            
-  
             dependentes:data.arraydep
-          }
+          
         }),
         {
           pending: `Efetuando`,
@@ -77,6 +74,8 @@ export default function TesteLayout() {
       )
     }catch(err){
       console.log(err)
+      console.log(data.contrato)
+      console.log(data.arraydep)
     }
   
      

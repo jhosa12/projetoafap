@@ -17,8 +17,7 @@ interface UserProps{
     grau_parentesco:string,
     data_adesao:Date,
     carencia:Date,
-  
-
+    cad_dh:Date
 }
 
 export function DadosDependentes(){
@@ -35,7 +34,7 @@ const [arrayDependetes,setArray] =useState<Partial<UserProps[]>>([])
      function adicionar(){
         if(nome!==''){
           const dados = {
-            nome,data_nasc,grau_parentesco,data_adesao,carencia
+            nome,data_nasc,grau_parentesco,data_adesao,carencia,cad_dh:new Date()
         }   
            // setArray([...arrayDependetes,dados])
             closeModa({...data,arraydep:[...data.arraydep || [],dados]})

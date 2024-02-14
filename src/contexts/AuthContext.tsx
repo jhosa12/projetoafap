@@ -9,7 +9,8 @@ type DependentesProps={
     grau_parentesco:string,
     data_adesao:Date,
     carencia:Date,
-    id_dependente:number
+    id_dependente:number,
+    cad_dh:Date
 }
 type MensalidadeProps={
     parcela_n:number,
@@ -32,7 +33,7 @@ type DadosCadastro={
     sexo:string,
     cep:string,
     endereco:string,
-    numero:string,
+    numero:number,
     bairro:string, 
     referencia:string,
     cidade:string,
