@@ -147,7 +147,7 @@ export default function AdmContrato(){
         {data.closeModalPlano && (<ModalBusca/>)}
         {data.closeModalCadastro && (<Teste/>)}
         {data.mensalidade?.close && <ModalMensalidade/>}
-        {data.dependente?.close && <ModalMensalidade/>}
+        {data.dependente?.close && <ModalDependentes/>}
         <div className="flex  flex-col pl-4 ">
         <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
         <button onClick={()=>closeModa({closeModalPlano:true,mensalidade:{}})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
@@ -158,7 +158,7 @@ export default function AdmContrato(){
     Add Plano
     <RiFileAddLine size={20} />
     </button>
-    <button>Teste- Me apague</button>
+    
             </div>
 <div className="w-full border  rounded-lg shadow  border-gray-700">
     <ul className="flex flex-wrap text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
@@ -463,10 +463,9 @@ export default function AdmContrato(){
 
         )}
         {dependentes && (<div className="flex rounded-lg  overflow-y-auto w-full max-h-96  p-3   shadow-md sm:rounded-lg">
-    <table 
-   
-     className="w-full text-sm text-left rtl:text-right overflow-y-auto   rounded-lg  text-gray-400 ">
-        <thead className=" w-full text-xs  uppercase bg-gray-700 text-gray-400">
+        <table 
+     className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
+        <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
             <tr>
                 <th scope="col" className=" px-6 py-1">
                     NOME
@@ -509,7 +508,20 @@ export default function AdmContrato(){
 
  
  <td className="px-6 py-1 text-right">
-     <a href="#" className="font-medium  text-blue-500 hover:underline">Edit</a>
+     <button onClick={(event)=>{
+                    event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
+                    closeModa(
+                    {
+                        dependente:{
+                            close:true,
+                            carencia:item.carencia,
+                            data_adesao:item.data_adesao,
+                            data_nasc:item.data_nasc,
+                            grau_parentesco:item.grau_parentesco,
+                            id_dependente:item.id_dependente,
+                            nome:item.nome
+                        }
+                    })}} className="font-medium  text-blue-500 hover:underline">Edit</button>
  </td>
 </tr>
             ))}
