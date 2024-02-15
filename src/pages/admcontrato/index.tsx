@@ -462,7 +462,20 @@ export default function AdmContrato(){
 </div>
 
         )}
-        {dependentes && (<div className="flex rounded-lg  overflow-y-auto w-full max-h-96  p-3   shadow-md sm:rounded-lg">
+        {dependentes && (<div className="flex-col rounded-lg  overflow-y-auto w-full max-h-96  p-3   shadow-md sm:rounded-lg">
+        <div className="inline-flex rounded-md shadow-sm mb-1" role="group" >
+  <button onClick={()=>closeModa({dependente:{close:true}})} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border  rounded-s-lg  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+ <RiAddCircleFill size={20}/>
+    Adicionar
+  </button>
+  <button type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+    Settings
+  </button>
+  <button onClick={()=>setExcluir(!excluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2   bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+   <MdDeleteForever size={20}/>
+    Excluir
+  </button>
+</div>
         <table 
      className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
