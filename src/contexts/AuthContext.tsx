@@ -10,7 +10,8 @@ type DependentesProps={
     data_adesao:Date,
     carencia:Date,
     id_dependente:number,
-    cad_dh:Date
+    cad_dh:Date,
+    close:boolean
 }
 type MensalidadeProps={
     parcela_n:number,
@@ -44,6 +45,7 @@ type DadosCadastro={
     closeModalPlano:boolean,
     closeModalCadastro:boolean
     arraydep:Array<Partial<DependentesProps>> ,
+    dependente:Partial<DependentesProps>,
     naturalidade:string,
     celular1:string,
     celular2:string,
@@ -92,6 +94,7 @@ uf:string,
 mensalidade:Array<MensalidadeProps>,
 contrato:ContratoProps,
 dependentes:Array<DependentesProps>
+
 }
 type AuthContextData = {
     usuario:UserProps | undefined,

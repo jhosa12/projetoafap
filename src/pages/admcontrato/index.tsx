@@ -12,6 +12,7 @@ import { RiAddCircleFill } from "react-icons/ri";
 import { MdDeleteForever } from "react-icons/md";
 import { api } from "@/services/apiClient";
 import { TbAlertTriangle } from "react-icons/tb";
+import { ModalDependentes } from "@/components/modalDependentes";
 export default function AdmContrato(){
    
     const {data,closeModa,dadosassociado,carregarDados} = useContext(AuthContext)
@@ -146,6 +147,7 @@ export default function AdmContrato(){
         {data.closeModalPlano && (<ModalBusca/>)}
         {data.closeModalCadastro && (<Teste/>)}
         {data.mensalidade?.close && <ModalMensalidade/>}
+        <ModalDependentes/>
         <div className="flex  flex-col pl-4 ">
         <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
         <button onClick={()=>closeModa({closeModalPlano:true,mensalidade:{}})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
@@ -156,6 +158,7 @@ export default function AdmContrato(){
     Add Plano
     <RiFileAddLine size={20} />
     </button>
+    <button>Teste- Me apague</button>
             </div>
 <div className="w-full border  rounded-lg shadow  border-gray-700">
     <ul className="flex flex-wrap text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
@@ -431,16 +434,19 @@ export default function AdmContrato(){
                     closeModa(
                     {mensalidadeAnt:dadosassociado.mensalidade[index-1],
                     mensalidadeProx:dadosassociado.mensalidade[index+1],
-                    mensalidade:{parcela_n:Number(item.parcela_n),
+                    mensalidade:{
+                    parcela_n:Number(item.parcela_n),
                     cobranca:item.cobranca,
                     vencimento:item.vencimento,
                     valor_principal:Number(item.valor_principal),
                     status:item.status,
                     usuario:item.usuario,
+                    referencia:item.referencia,
                     id_mensalidade:item.id_mensalidade,
                     close:true,
                     valor_total:item.valor_total,
-                    motivo_bonus:item.motivo_bonus
+                    motivo_bonus:item.motivo_bonus,
+                    data_pgto:item.data_pgto ? item.data_pgto: new Date()
                     }})}} className={`font-medium  hover:underline ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-blue-500'}`}>Baixar/Editar</button>
                 </td>
             </tr>

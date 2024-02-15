@@ -68,7 +68,8 @@ const [arrayDependetes,setArray] =useState<Partial<UserProps[]>>([])
                     <option>CONJUGE</option>
                     <option>PAI</option>
                     <option>MÃE</option>
-                    <option>FILHO(A)</option>
+                    <option>FILHO(A)</option>,
+                    <option>IRMÃO(Ã)</option>
                     <option>PRIMO(A)</option>
                     <option>SOBRINHA(A)</option>
                     <option>NORA</option>
