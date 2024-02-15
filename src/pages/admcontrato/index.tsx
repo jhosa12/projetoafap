@@ -147,7 +147,7 @@ export default function AdmContrato(){
         {data.closeModalPlano && (<ModalBusca/>)}
         {data.closeModalCadastro && (<Teste/>)}
         {data.mensalidade?.close && <ModalMensalidade/>}
-        <ModalDependentes/>
+        {data.dependente?.close && <ModalMensalidade/>}
         <div className="flex  flex-col pl-4 ">
         <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
         <button onClick={()=>closeModa({closeModalPlano:true,mensalidade:{}})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
