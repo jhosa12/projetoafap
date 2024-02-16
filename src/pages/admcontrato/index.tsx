@@ -150,7 +150,7 @@ export default function AdmContrato(){
     try{
         await toast.promise(
             api.put('/excluirDependente',{
-                id_dependente:data.dependente?.id_dependente,
+                id_dependente:Number(data.dependente?.id_dependente),
                 excluido:true
             }),
             {
@@ -159,7 +159,14 @@ export default function AdmContrato(){
                 error: `Erro ao Excluir`
             }
         )
-    }catch(err){}
+        
+        carregarDados()
+        setExcluirDependente(false)
+        closeModa({dependente:{close:false}})
+    }catch(err){
+        console.log(err)
+    }
+
     
   }
 
@@ -514,7 +521,7 @@ export default function AdmContrato(){
                   <TbAlertTriangle className='text-gray-400' size={60}/>
                 </div>
                 <h3 className="mb-5 text-lg font-normal  text-gray-400">{`Realmente deseja deletar ${data.dependente?.nome} ?`}</h3>
-                <button onClick={excluirMesal} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+                <button onClick={excluirDep} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
                     Sim, tenho certeza
                 </button>
                 <button onClick={()=>setExcluirDependente(!excluirDependente)}  type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
@@ -550,8 +557,8 @@ export default function AdmContrato(){
         </thead>
         <tbody>
             {dadosassociado?.dependentes?.map((item,index)=>(
-            checkDependente && item.excluido?( <tr key={index} onClick={()=>closeModa({dependente:{id_dependente:item.id_dependente,nome:item.nome}})} className={ `border-b ${item.id_dependente===data.dependente?.id_dependente?"bg-gray-600":"bg-gray-800"} border-gray-700  hover:bg-gray-600`}>
-            <th scope="row"  className="px-6 py-1 font-medium  whitespace-nowrap text-white">
+            checkDependente && item.excluido?( <tr key={index} onClick={()=>closeModa({dependente:{id_dependente:item.id_dependente,nome:item.nome}})} className={ `border-b ${item.id_dependente===data.dependente?.id_dependente?"bg-gray-600":"bg-gray-800"} border-gray-700  hover:bg-gray-600 text-red-500`}>
+            <th scope="row"  className="px-6 py-1 font-medium  whitespace-nowrap">
                    {item.nome}
             </th>
             <td className="px-6 py-1">
@@ -585,7 +592,7 @@ export default function AdmContrato(){
                                    }
                                })}} className="font-medium  text-blue-500 hover:underline">Edit</button>
             </td>
-           </tr>):item.excluido===null || false?(
+           </tr>):!checkDependente && !item.excluido?(
              <tr key={index} onClick={()=>closeModa({dependente:{id_dependente:item.id_dependente,nome:item.nome}})} className={ `border-b ${item.id_dependente===data.dependente?.id_dependente?"bg-gray-600":"bg-gray-800"} border-gray-700  hover:bg-gray-600`}>
              <th scope="row"  className="px-6 py-1 font-medium  whitespace-nowrap text-white">
                     {item.nome}
