@@ -11,7 +11,10 @@ type DependentesProps={
     carencia:Date,
     id_dependente:number,
     cad_dh:Date,
-    close:boolean
+    close:boolean,
+    sexo:string,
+    saveAdd:boolean,
+    excluido:boolean
 }
 type MensalidadeProps={
     parcela_n:number,
