@@ -152,7 +152,7 @@ export default function AdmContrato(){
             api.put('/excluirDependente',{
                 id_dependente:Number(data.dependente?.id_dependente),
                 excluido:true,
-                usuario_exclusao:usuario?.nome
+                user_exclusao:usuario?.nome
             }),
             {
                 pending: `Efetuando`,
@@ -164,6 +164,7 @@ export default function AdmContrato(){
         carregarDados()
         setExcluirDependente(false)
         closeModa({dependente:{close:false}})
+        console.log(usuario?.nome)
     }catch(err){
         console.log(err)
     }
@@ -605,7 +606,7 @@ export default function AdmContrato(){
                {new Date(item.dt_exclusao).toLocaleDateString()}
             </td>
             <td className="px-6 py-1">
-               {item.usuario_exclusao}
+               {item.user_exclusao}
             </td>
            
             
