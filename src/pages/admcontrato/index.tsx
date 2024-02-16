@@ -147,6 +147,10 @@ export default function AdmContrato(){
   }
 
   async function excluirDep(){
+   if(data.dependente?.excluido){
+    toast.info("Dependente ja excluido")
+    return;
+   }
     try{
         await toast.promise(
             api.put('/excluirDependente',{
@@ -274,11 +278,11 @@ export default function AdmContrato(){
   <button type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
     Settings
   </button>
-  <button onClick={()=>setExcluir(!excluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2   bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+  <button onClick={()=>setExcluirDependente(!excluirDependente)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2   bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
    <MdDeleteForever size={20}/>
     Excluir
   </button>
-  {excluir?( <div  className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+  {excluir?(<div  className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div className="flex items-center justify-center p-2 w-full h-full">
         <div className="relative rounded-lg shadow bg-gray-800">
             <button type="button" onClick={()=>setExcluir(!excluir)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
@@ -586,7 +590,7 @@ export default function AdmContrato(){
         </thead>
         <tbody>
             {dadosassociado?.dependentes?.map((item,index)=>(
-            checkDependente && item.excluido?( <tr key={index} onClick={()=>closeModa({dependente:{id_dependente:item.id_dependente,nome:item.nome}})} className={ `border-b ${item.id_dependente===data.dependente?.id_dependente?"bg-gray-600":"bg-gray-800"} border-gray-700  hover:bg-gray-600 text-red-500`}>
+            checkDependente && item.excluido?( <tr key={index} onClick={()=>closeModa({dependente:{id_dependente:item.id_dependente,nome:item.nome,excluido:item.excluido}})} className={ `border-b ${item.id_dependente===data.dependente?.id_dependente?"bg-gray-600":"bg-gray-800"} border-gray-700  hover:bg-gray-600 text-red-500`}>
             <th scope="row"  className="px-6 py-1 font-medium  whitespace-nowrap">
                    {item.nome}
             </th>
@@ -628,7 +632,7 @@ export default function AdmContrato(){
                                })}} className="font-medium  text-blue-500 hover:underline">Edit</button>
             </td>
            </tr>):!checkDependente && !item.excluido?(
-             <tr key={index} onClick={()=>closeModa({dependente:{id_dependente:item.id_dependente,nome:item.nome}})} className={ `border-b ${item.id_dependente===data.dependente?.id_dependente?"bg-gray-600":"bg-gray-800"} border-gray-700  hover:bg-gray-600`}>
+             <tr key={index} onClick={()=>closeModa({dependente:{id_dependente:item.id_dependente,nome:item.nome,excluido:item.excluido}})} className={ `border-b ${item.id_dependente===data.dependente?.id_dependente?"bg-gray-600":"bg-gray-800"} border-gray-700  hover:bg-gray-600`}>
              <th scope="row"  className="px-6 py-1 font-medium  whitespace-nowrap text-white">
                     {item.nome}
              </th>
