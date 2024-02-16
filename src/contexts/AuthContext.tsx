@@ -14,7 +14,9 @@ type DependentesProps={
     close:boolean,
     sexo:string,
     saveAdd:boolean,
-    excluido:boolean
+    excluido:boolean,
+    dt_exclusao:Date,
+    usuario_exclusao:string
 }
 type MensalidadeProps={
     parcela_n:number,

@@ -15,7 +15,7 @@ import { TbAlertTriangle } from "react-icons/tb";
 import { ModalDependentes } from "@/components/modalDependentes";
 export default function AdmContrato(){
    
-    const {data,closeModa,dadosassociado,carregarDados} = useContext(AuthContext)
+    const {data,closeModa,dadosassociado,carregarDados,usuario} = useContext(AuthContext)
   const [dados,setDados] =useState(true)
   const [historico,setHistorico] = useState(false)
   const [dependentes,setDependentes] =useState(false)
@@ -151,7 +151,8 @@ export default function AdmContrato(){
         await toast.promise(
             api.put('/excluirDependente',{
                 id_dependente:Number(data.dependente?.id_dependente),
-                excluido:true
+                excluido:true,
+                usuario_exclusao:usuario?.nome
             }),
             {
                 pending: `Efetuando`,
@@ -534,7 +535,7 @@ export default function AdmContrato(){
         <table 
      className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
-            <tr>
+          {!checkDependente?(  <tr>
                 <th scope="col" className=" px-6 py-1">
                     NOME
                 </th>
@@ -553,7 +554,34 @@ export default function AdmContrato(){
                 <th scope="col" className="px-6 py-1">
                     <span className="sr-only">Edit</span>
                 </th>
-            </tr>
+            </tr>):(
+                  <tr>
+                  <th scope="col" className=" px-6 py-1">
+                      NOME
+                  </th>
+                  <th scope="col" className="px-6 py-1">
+                      ADESÃO
+                  </th>
+                  <th scope="col" className="px-6 py-1">
+                      CARÊNCIA
+                  </th>
+                  <th scope="col" className="px-6 py-1">
+                      NASC.
+                  </th>
+                  <th scope="col" className="px-6 py-1">
+                      PARENTESCO
+                  </th> 
+                  <th scope="col" className="px-6 py-1">
+                      DATA EXCLUSÃO
+                  </th> 
+                  <th scope="col" className="px-6 py-1">
+                      USUÁRIO
+                  </th> 
+                  <th scope="col" className="px-6 py-1">
+                      <span className="sr-only">Edit</span>
+                  </th>
+              </tr>
+            )}
         </thead>
         <tbody>
             {dadosassociado?.dependentes?.map((item,index)=>(
@@ -572,6 +600,12 @@ export default function AdmContrato(){
             </td>
             <td className="px-6 py-1">
                {item.grau_parentesco}
+            </td>
+            <td className="px-6 py-1">
+               {new Date(item.dt_exclusao).toLocaleDateString()}
+            </td>
+            <td className="px-6 py-1">
+               {item.usuario_exclusao}
             </td>
            
             
