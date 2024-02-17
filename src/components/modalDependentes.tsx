@@ -1,6 +1,7 @@
 import { IoIosClose } from "react-icons/io";
 import { MdSaveAlt } from "react-icons/md";
 import { RiAddCircleFill } from "react-icons/ri";
+import { TfiReload } from "react-icons/tfi";
 import { AuthContext } from "@/contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -32,7 +33,7 @@ export function ModalDependentes(){
             success:'Adicionado com Sucesso!'
         }
     )
-    carregarDados()
+   await carregarDados()
    
  }
 
@@ -52,7 +53,7 @@ export function ModalDependentes(){
             success:'Atualizado com Sucesso!'
         }
     )
-    carregarDados()
+   await carregarDados()
  }
 
     return(
@@ -69,15 +70,15 @@ export function ModalDependentes(){
 </div>
 <div className="mb-1 col-span-2 ">
 <label  className="block mb-1 text-xs font-medium  text-white">NOME</label>
-<input type="text" value={data.dependente?.nome} onChange={e=>closeModa({dependente:{...(data.dependente || {}),nome:e.target.value.toUpperCase()}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+<input disabled={data.dependente?.excluido} type="text" value={data.dependente?.nome} onChange={e=>closeModa({dependente:{...(data.dependente || {}),nome:e.target.value.toUpperCase()}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">DATA NASC.</label>
-    <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"}  selected={data.dependente?.data_nasc} onChange={e=>e && closeModa({dependente:{...(data.dependente || {}),data_nasc:e}})}  className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <DatePicker disabled={data.dependente?.excluido} dateFormat={"dd/MM/yyyy"} locale={"pt"}  selected={data.dependente?.data_nasc} onChange={e=>e && closeModa({dependente:{...(data.dependente || {}),data_nasc:e}})}  className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">GRAU PARENTESCO</label>
-    <select defaultValue={data.dependente?.grau_parentesco} onChange={e=>closeModa({dependente:{...(data.dependente || {}),grau_parentesco:e.target.value}})} className="block w-full pt-1 pb-1 pl-2 pr-2  sm:text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  >
+    <select disabled={data.dependente?.excluido} defaultValue={data.dependente?.grau_parentesco} onChange={e=>closeModa({dependente:{...(data.dependente || {}),grau_parentesco:e.target.value}})} className="block w-full pt-1 pb-1 pl-2 pr-2  sm:text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  >
                     <option selected className="text-gray-200">PARENTESCO</option>
                     <option>CONJUGE</option>
                     <option>PAI</option>
@@ -95,16 +96,19 @@ export function ModalDependentes(){
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">DATA ADESÃO</label>
-    <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"}  selected={data.dependente?.data_adesao} onChange={e=>e && closeModa({dependente:{...(data.dependente || {}),data_adesao:e}})}  className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <DatePicker disabled={data.dependente?.excluido} dateFormat={"dd/MM/yyyy"} locale={"pt"}  selected={data.dependente?.data_adesao} onChange={e=>e && closeModa({dependente:{...(data.dependente || {}),data_adesao:e}})}  className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">FIM DA CARÊNCIA</label>
-    <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"}  selected={data.dependente?.carencia} onChange={e=>e && closeModa({dependente:{...(data.dependente || {}),carencia:e}})}  className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <DatePicker disabled={data.dependente?.excluido} dateFormat={"dd/MM/yyyy"} locale={"pt"}  selected={data.dependente?.carencia} onChange={e=>e && closeModa({dependente:{...(data.dependente || {}),carencia:e}})}  className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
-
+{data.dependente?.exclusao_motivo && (<div className="mb-1 col-span-2 ">
+<label  className="block mb-1 text-xs font-medium  text-white">MOTIVO</label>
+<input disabled={data.dependente?.excluido} type="text" value={data.dependente?.exclusao_motivo} onChange={e=>closeModa({dependente:{...(data.dependente || {}),exclusao_motivo:e.target.value.toUpperCase()}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+</div>)}
 
 <div className=" gap-2 col-span-4  flex flex-row justify-end">
-{data.dependente?.saveAdd?(<button type="button" onClick={()=>atualizarDependente()} className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>SALVAR</button>):
+{data.dependente?.saveAdd && !data.dependente.excluido?(<button type="button" onClick={()=>atualizarDependente()} className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>SALVAR</button>):data.dependente?.excluido?(<button type="button" onClick={()=>addDependente()} className="flex flex-row justify-center  bg-yellow-600 rounded-lg p-2 gap-2 text-white"><TfiReload size={22}/>RESGATAR</button>):
 (<button type="button" onClick={()=>addDependente()} className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><RiAddCircleFill size={22}/>ADICIONAR</button>)
 }
 </div>

@@ -156,7 +156,7 @@ export default function AdmContrato(){
     toast.info("Selecione um dependente!")
     return;
    }
-   if(!data.dependente?.exclusaomotivo){
+   if(!data.dependente?.exclusao_motivo){
     toast.warning("Informe um motivo!")
     return;
    }
@@ -165,7 +165,8 @@ export default function AdmContrato(){
             api.put('/excluirDependente',{
                 id_dependente:Number(data.dependente?.id_dependente),
                 excluido:true,
-                user_exclusao:usuario?.nome
+                user_exclusao:usuario?.nome,
+                exclusao_motivo:data.dependente.exclusao_motivo
             }),
             {
                 pending: `Efetuando`,
@@ -174,10 +175,10 @@ export default function AdmContrato(){
             }
         )
         
-        carregarDados()
+       await carregarDados()
         setExcluirDependente(false)
         closeModa({dependente:{close:false}})
-        console.log(usuario?.nome)
+       
     }catch(err){
         console.log(err)
     }
@@ -536,7 +537,7 @@ export default function AdmContrato(){
                   <TbAlertTriangle className='text-gray-400' size={60}/>
                 </div>
                 <h3 className="mb-3 text-lg font-normal  text-gray-400">{`Realmente deseja deletar ${data.dependente?.nome} ?`}</h3>
-                <input placeholder="Informe o motivo da exclusão" autoComplete='off' value={data.dependente?.exclusaomotivo} onChange={e=>closeModa({dependente:{...data.dependente,exclusaomotivo:e.target.value}})}  type="text" required className="block uppercase w-full mb-2 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+                <input placeholder="Informe o motivo da exclusão" autoComplete='off' value={data.dependente?.exclusao_motivo} onChange={e=>closeModa({dependente:{...data.dependente,exclusao_motivo:e.target.value}})}  type="text" required className="block uppercase w-full mb-2 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
                 <button onClick={excluirDep} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
                     Sim, tenho certeza
                 </button>
@@ -637,8 +638,9 @@ export default function AdmContrato(){
                                        data_nasc:item.data_nasc,
                                        grau_parentesco:item.grau_parentesco,
                                        id_dependente:item.id_dependente,
-                                       nome:item.nome
-                                   }
+                                       nome:item.nome,
+                                       excluido:item.excluido,
+                                       exclusao_motivo:item.exclusao_motivo                                   }
                                })}} className="font-medium  text-blue-500 hover:underline">Edit</button>
             </td>
            </tr>):!checkDependente && !item.excluido?(
@@ -673,7 +675,9 @@ export default function AdmContrato(){
                                         data_nasc:item.data_nasc,
                                         grau_parentesco:item.grau_parentesco,
                                         id_dependente:item.id_dependente,
-                                        nome:item.nome
+                                        excluido:item.excluido,
+                                        nome:item.nome,
+                                       
                                     }
                                 })}} className="font-medium  text-blue-500 hover:underline">Edit</button>
              </td>
