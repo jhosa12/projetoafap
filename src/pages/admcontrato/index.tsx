@@ -36,11 +36,12 @@ export default function AdmContrato(){
     const carregarDadosAsync = async () => {
       try {
         await carregarDados();
+        closeModa({contrato:{},dependente:{}})
 
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
       }
-      console.log(dadosassociado?.id_associado)
+     
     };
     carregarDadosAsync();
    
@@ -149,6 +150,14 @@ export default function AdmContrato(){
   async function excluirDep(){
    if(data.dependente?.excluido){
     toast.info("Dependente ja excluido")
+    return;
+   }
+   if(!data.dependente?.id_dependente){
+    toast.info("Selecione um dependente!")
+    return;
+   }
+   if(!data.dependente?.exclusaomotivo){
+    toast.warning("Informe um motivo!")
     return;
    }
     try{
@@ -526,7 +535,8 @@ export default function AdmContrato(){
                 <div className="flex w-full justify-center items-center">
                   <TbAlertTriangle className='text-gray-400' size={60}/>
                 </div>
-                <h3 className="mb-5 text-lg font-normal  text-gray-400">{`Realmente deseja deletar ${data.dependente?.nome} ?`}</h3>
+                <h3 className="mb-3 text-lg font-normal  text-gray-400">{`Realmente deseja deletar ${data.dependente?.nome} ?`}</h3>
+                <input placeholder="Informe o motivo da exclusão" autoComplete='off' value={data.dependente?.exclusaomotivo} onChange={e=>closeModa({dependente:{...data.dependente,exclusaomotivo:e.target.value}})}  type="text" required className="block uppercase w-full mb-2 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
                 <button onClick={excluirDep} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
                     Sim, tenho certeza
                 </button>
