@@ -86,13 +86,17 @@ export default function AdmContrato(){
 
   async function excluirMesal(){
     if(!data.mensalidade?.id_mensalidade){
-        toast.info("Selecione uma mensalidade")
-        return
+        toast.info("Selecione uma mensalidade");
+        return;
+    }
+    if(!data.mensalidade.exclusao_motivo){
+        toast.info("Informe um motivo para a exclusão!");
+        return;
     }
    
     if(data.mensalidade?.status==='P'){
-        toast.warn('Mensalidade Paga! Para excluir solite ao gerente')
-        return
+        toast.warn('Mensalidade Paga! Para excluir solite ao gerente');
+        return;
     }
     setExcluir(false)
     try{
@@ -210,7 +214,7 @@ export default function AdmContrato(){
             <button  type="button" onClick={()=>{setDados(true),setDependentes(false),setHistorico(false)}}   className="inline-block p-4  rounded-ss-lg  bg-gray-800 hover:bg-gray-700 text-blue-500">Dados</button>
         </li>
         <li className="me-2">
-            <button type="button" onClick={()=>mensalidadeSet()}    className="inline-block p-4  hover:bg-gray-700 hover:text-gray-300">Histórico</button>
+            <button type="button" onClick={()=>mensalidadeSet()}    className="inline-block p-4  hover:bg-gray-700 hover:text-gray-300">Histórico/Movimentação</button>
         </li>
         <li className="me-2">
             <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Dependentes</button>
@@ -277,7 +281,7 @@ export default function AdmContrato(){
 <div className="flex w-full mb-2 gap-2">
 <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
   <input checked={checkMensal} onChange={()=>setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer"/>
-  <div className="w-9 h-5  peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[5px] after:start-[5px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
+  <div className="w-9 h-5 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[5px] after:start-[5px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
   <span className="ms-3 text-sm font-medium  text-gray-300">Exibir Pagas</span>
 </label>
 <div className="inline-flex rounded-md shadow-sm" role="group">
@@ -288,7 +292,7 @@ export default function AdmContrato(){
   <button type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
     Settings
   </button>
-  <button onClick={()=>setExcluirDependente(!excluirDependente)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2   bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+  <button onClick={()=>setExcluir(!excluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2   bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
    <MdDeleteForever size={20}/>
     Excluir
   </button>
@@ -305,6 +309,7 @@ export default function AdmContrato(){
                   <TbAlertTriangle className='text-gray-400' size={60}/>
                 </div>
                 <h3 className="mb-5 text-lg font-normal  text-gray-400">Realmente deseja deletar esssa mensalidade?</h3>
+                <input placeholder="Informe o motivo da exclusão" autoComplete='off' value={data.mensalidade?.exclusao_motivo} onChange={e=>closeModa({mensalidade:{...data.mensalidade,exclusao_motivo:e.target.value}})}  type="text" required className="block uppercase w-full mb-2 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
                 <button onClick={excluirMesal} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
                     Sim, tenho certeza
                 </button>
@@ -509,7 +514,7 @@ export default function AdmContrato(){
         <div className="flex w-full mb-2 gap-2">
         <label className="relative inline-flex w-[150px] justify-center  items-center mb-1 cursor-pointer">
   <input checked={checkDependente} onChange={()=>setCheckDependente(!checkDependente)} type="checkbox" value="2" className="sr-only peer"/>
-  <div className="w-9 h-5  peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[7px] after:start-[5px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
+  <div className="w-9 h-5 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[7px] after:start-[5px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
   <span className="ms-2 text-sm font-medium whitespace-nowrap text-gray-300">Exibir Excluidos</span>
 </label>
         <div className="inline-flex rounded-md shadow-sm mb-1" role="group" >
@@ -644,8 +649,8 @@ export default function AdmContrato(){
                                })}} className="font-medium  text-blue-500 hover:underline">Edit</button>
             </td>
            </tr>):!checkDependente && !item.excluido?(
-             <tr key={index} onClick={()=>closeModa({dependente:{id_dependente:item.id_dependente,nome:item.nome,excluido:item.excluido}})} className={ `border-b ${item.id_dependente===data.dependente?.id_dependente?"bg-gray-600":"bg-gray-800"} border-gray-700  hover:bg-gray-600`}>
-             <th scope="row"  className="px-6 py-1 font-medium  whitespace-nowrap text-white">
+             <tr key={index} onClick={()=>closeModa({dependente:{id_dependente:item.id_dependente,nome:item.nome,excluido:item.excluido}})} className={ `border-b ${new Date(item.carencia)>new Date()?"text-yellow-500":"text-white"} ${item.id_dependente===data.dependente?.id_dependente?"bg-gray-600":"bg-gray-800"} border-gray-700  hover:bg-gray-600`}>
+             <th scope="row"  className="px-6 py-1 font-medium  whitespace-nowra">
                     {item.nome}
              </th>
              <td className="px-6 py-1">

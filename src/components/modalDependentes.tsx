@@ -82,11 +82,7 @@ export function ModalDependentes(){
      }catch(err){
          console.log(err)
      }
- 
-     
    }
-
-
     return(
     <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">  
     <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
@@ -145,7 +141,6 @@ export function ModalDependentes(){
 }
 </div>
     </div>
-
 </form>
 </div>
 </div>
