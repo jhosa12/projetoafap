@@ -2,17 +2,24 @@
 import InputMask from 'react-input-mask'
 import { FormWrapper } from "./organizador";
 import { AuthContext } from '@/contexts/AuthContext';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import DatePicker,{registerLocale, setDefaultLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
+import { kMaxLength } from 'buffer';
 registerLocale('pt', pt)
 
 export function DadosPlano(){
   const {data,closeModa} =useContext(AuthContext)
+  const [inicioDatas,setDatas] =useState(true)
   useEffect(()=>{
-    console.log(data.planos)
-  },[data.planos])
+    if(inicioDatas){
+      const dataCarencia = new Date().setMonth(new Date().getMonth()+3)
+      closeModa({contrato:{...data.contrato,dt_adesao:new Date(),dt_carencia:new Date(dataCarencia)}})
+    }
+    setDatas(false)
+   
+  },[])
     return(
         <FormWrapper title="DADOS DO PLANO">
               <div className="flex flex-col   gap-9 p-4 rounded-lg w-full h-full ">
@@ -92,9 +99,9 @@ export function DadosPlano(){
           <label  className="block mb-1 text-sm font-medium  text-white">NP</label>
           <input value={data.contrato?.n_parcelas} onChange={e=>closeModa({contrato:{...data.contrato,n_parcelas:Number(e.target.value)}})} autoComplete="off" type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
-          <div className="col-span-1">
+          <div  className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">VENC. 1° PARCELA</label>
-          <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={data.contrato?.data_vencimento} onChange={(e)=>e && closeModa({contrato:{...data.contrato,data_vencimento:e}})}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <DatePicker  isClearable showYearDropdown scrollableMonthYearDropdown  dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={data.contrato?.data_vencimento} onChange={(e)=>e && closeModa({contrato:{...data.contrato,data_vencimento:e}})}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">DATA DE ADESÃO</label>
