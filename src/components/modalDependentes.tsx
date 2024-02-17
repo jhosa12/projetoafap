@@ -56,6 +56,37 @@ export function ModalDependentes(){
    await carregarDados()
  }
 
+ async function resgatarDep(){
+
+    if(!data.dependente?.id_dependente){
+     toast.info("Selecione um dependente!")
+     return;
+    }
+ 
+     try{
+         await toast.promise(
+             api.put('/excluirDependente',{
+                 id_dependente:Number(data.dependente?.id_dependente),
+                 excluido:false,
+             }),
+             {
+                 pending: `Efetuando`,
+                 success: `Dependente Resgatado`,
+                 error: `Erro ao Resgatar`
+             }
+         )
+         
+        await carregarDados()
+        closeModa({dependente:{close:false}})
+        
+     }catch(err){
+         console.log(err)
+     }
+ 
+     
+   }
+
+
     return(
     <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">  
     <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
@@ -108,7 +139,8 @@ export function ModalDependentes(){
 </div>)}
 
 <div className=" gap-2 col-span-4  flex flex-row justify-end">
-{data.dependente?.saveAdd && !data.dependente.excluido?(<button type="button" onClick={()=>atualizarDependente()} className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>SALVAR</button>):data.dependente?.excluido?(<button type="button" onClick={()=>addDependente()} className="flex flex-row justify-center  bg-yellow-600 rounded-lg p-2 gap-2 text-white"><TfiReload size={22}/>RESGATAR</button>):
+{data.dependente?.saveAdd && !data.dependente.excluido?(<button type="button" onClick={()=>atualizarDependente()} className="flex flex-row justify-center  bg-green-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>SALVAR</button>):data.dependente?.excluido?(
+<button type="button" onClick={()=>resgatarDep()} className="flex flex-row justify-center  bg-yellow-600 rounded-lg p-2 gap-2 text-white"><TfiReload size={22}/>RESGATAR</button>):
 (<button type="button" onClick={()=>addDependente()} className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><RiAddCircleFill size={22}/>ADICIONAR</button>)
 }
 </div>
