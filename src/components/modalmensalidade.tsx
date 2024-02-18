@@ -8,16 +8,25 @@ import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 
 export function ModalMensalidade(){
-    const {closeModa,data,usuario,carregarDados}=useContext(AuthContext)
+    const {closeModa,data,usuario,carregarDados,dadosassociado}=useContext(AuthContext)
     const [desconto,setDesconto] = useState(false)
     
-        useEffect(()=>{ // Faz com que o valor pago/total inicie com o valor principal
+        useEffect(()=>{
+ // Faz com que o valor pago/total inicie com o valor principal
             if(!data.mensalidade?.valor_total){
             closeModa({mensalidade:{...(data.mensalidade),valor_total:data.mensalidade?.valor_principal}})
             }
         },[])
 
       async function baixarEstornar(status:string,acao:string) {
+        console.log(data.mensalidade?.index)
+        closeModa({
+            mensalidadeProx: {
+                ...dadosassociado?.mensalidade[data.mensalidade?.index?data.mensalidade.index:0],
+                index: data.mensalidade?.index ? (data.mensalidade.index + 1) : 0
+            }
+        })
+    console.log(data.mensalidadeProx?.index)
         if(data.mensalidade?.status ===status){
             toast.error(`Mensalidade com ${acao} já realizado`)
             return;
@@ -63,7 +72,7 @@ export function ModalMensalidade(){
                      closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
             }catch(err){
                 toast.error('Erro ao Baixar Mensalidade')
-                console.log(data.mensalidadeProx?.id_mensalidade)
+               
             }  
 }
 if(((data.mensalidade?.valor_principal ?? 0)>(data.mensalidade?.valor_total ?? 0)) && desconto===false && data.mensalidadeProx && status ==='P'){
@@ -76,14 +85,18 @@ if(((data.mensalidade?.valor_principal ?? 0)>(data.mensalidade?.valor_total ?? 0
              closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
     }catch(err){
         toast.error('Erro ao Baixar Mensalidade')
-        console.log(data.mensalidadeProx?.id_mensalidade)
+        
     } 
   
 }
-if(data.mensalidadeProx && status==='P'){
-    closeModa({mensalidade:{...(data.mensalidadeProx),close:true,cobranca:data?.mensalidadeProx?.cobranca}})
-}
+
    await carregarDados()
+   if(data.mensalidade?.index && status==='P'){
+    
+    closeModa({mensalidade:{...(dadosassociado?.mensalidade[data.mensalidade?.index]),close:true, index: data.mensalidade?.index ? (data.mensalidade.index + 1) : 0}})
+    
+   }
+   console.log(data.mensalidade?.index)
       }  
       
     

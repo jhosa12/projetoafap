@@ -24,7 +24,7 @@ export default function AdmContrato(){
     const tabelaRef = useRef<HTMLTableElement>(null)
     const [excluir,setExcluir]=useState(false)
     const [excluirDependente,setExcluirDependente]=useState(false)
-
+    const [indexMensal,setIndex] = useState<number>(0);
     function mensalidadeSet(){
         setDados(false),setDependentes(false),setHistorico(true)
         if (tabelaRef.current) {
@@ -67,9 +67,11 @@ export default function AdmContrato(){
         // Ajusta o scrollTop para a altura total da tabela
         tabelaRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
       }
+    
+      
     // Marcar o componente como desmontado quando ele for desmontado
   }, [dadosassociado?.contrato?.situacao, dadosassociado?.mensalidade]);
-
+ 
   function calcularDiferencaEmDias(data1:Date, data2:Date) {
     // Convertendo as datas para objetos Date
     const timestamp1 = data1.getTime();
@@ -418,7 +420,7 @@ export default function AdmContrato(){
                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                     closeModa(
                     {mensalidadeAnt:dadosassociado.mensalidade[index-1],
-                    mensalidadeProx:dadosassociado.mensalidade[index+1],
+                    
                     mensalidade:{
                     parcela_n:Number(item.parcela_n),
                     cobranca:item.cobranca,
@@ -431,7 +433,8 @@ export default function AdmContrato(){
                     close:true,
                     valor_total:item.valor_total,
                     motivo_bonus:item.motivo_bonus,
-                    data_pgto:item.data_pgto ? item.data_pgto: new Date()
+                    data_pgto:item.data_pgto ? item.data_pgto: new Date(),
+                    index:index+1
                     }})}} className={`font-medium  hover:underline ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-blue-500'}`}>Baixar/Editar</button>
                 </td>
             </tr>
@@ -482,7 +485,7 @@ export default function AdmContrato(){
                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                     closeModa(
                     {mensalidadeAnt:dadosassociado.mensalidade[index-1],
-                    mensalidadeProx:dadosassociado.mensalidade[index+1],
+                    
                     mensalidade:{
                     parcela_n:Number(item.parcela_n),
                     cobranca:item.cobranca,
@@ -495,7 +498,8 @@ export default function AdmContrato(){
                     close:true,
                     valor_total:item.valor_total,
                     motivo_bonus:item.motivo_bonus,
-                    data_pgto:item.data_pgto ? item.data_pgto: new Date()
+                    data_pgto:item.data_pgto ? item.data_pgto: new Date(),
+                    index:index+1
                     }})}} className={`font-medium  hover:underline ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-blue-500'}`}>Baixar/Editar</button>
                 </td>
             </tr>
