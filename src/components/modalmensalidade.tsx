@@ -14,26 +14,28 @@ export function ModalMensalidade(){
         useEffect(()=>{
 //Faz com que o valor pago/total inicie com o valor principal
         if(!data.mensalidade?.valor_total){
-         closeModa({mensalidade:{...(data.mensalidade),valor_total:data.mensalidade?.valor_principal,index:data.mensalidade?.index}})
+         closeModa({mensalidade:{...(data.mensalidade || {}),valor_total:data.mensalidade?.valor_principal,index:data.mensalidade?.index}})
          }
-      },[data.mensalidade?.id_mensalidade])
+         if(data.mensalidade?.index){
+            closeModa({
+                mensalidadeProx:{...dadosassociado?.mensalidade[data.mensalidade.index+1]},
+            })
+            console.log(data.mensalidade)
+            console.log(data.mensalidadeProx)
+        }
+      
+      },[dadosassociado?.mensalidade])
 
       async function baixarEstornar(status:string,acao:string) {
-        console.log(data.mensalidade?.index)
-        if(data.mensalidade?.index){
-            closeModa({
-                mensalidadeProx: {
-                    ...dadosassociado?.mensalidade[data.mensalidade?.index?data.mensalidade.index:0],
-                    index: data.mensalidade?.index
-                },
-            })
-        }
+       
+       
      
   
         if(data.mensalidade?.status ===status){
             toast.error(`Mensalidade com ${acao} já realizado`)
             return;
         }
+     
         if(data.mensalidadeAnt?.status==='A'){
             toast.info('A mensalidade anterior encontra-se em Aberto!')
             return
@@ -59,55 +61,59 @@ export function ModalMensalidade(){
                   success: `${acao} efetuada com sucesso`,
                   error: `Erro ao efetuar ${acao}`
                  })
+
+                 if((data.mensalidade?.valor_principal ?? 0)<(data.mensalidade?.valor_total ?? 0) && data.mensalidadeProx && status ==='P'){
+                    try{
+                        const response = await api.put('/mensalidade',{
+                            id_mensalidade:data.mensalidadeProx?.id_mensalidade,
+                            valor_principal:Number(data.mensalidadeProx?.valor_principal)-(Number(data.mensalidade?.valor_total)-Number(data.mensalidade?.valor_principal))
+                        })
+                        
+                            // closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
+                    }catch(err){
+                        toast.error('Erro ao Baixar Mensalidade')
+                       
+                    }  
+        }
+        if(((data.mensalidade?.valor_principal ?? 0)>(data.mensalidade?.valor_total ?? 0)) && desconto===false && data.mensalidadeProx && status ==='P'){
+            try{
+                const response = await api.put('/mensalidade',{
+                    id_mensalidade:data.mensalidadeProx?.id_mensalidade,
+                    valor_principal:Number(data.mensalidadeProx?.valor_principal ?? 0)+Number((data.mensalidade?.valor_principal ?? 0)-Number(data.mensalidade?.valor_total ?? 0))
+                })
+                    
+                    // closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status,valor_principal:response.data.valor_principal}})
+            }catch(err){
+                toast.error('Erro ao Baixar Mensalidade')
+                
+            } 
+          
+        }
+
+
                  //closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
         }catch(err){
             toast.error('Erro ao Baixar Mensalidade')
             
         }
-        console.log(data.mensalidadeProx?.index)
-        if((data.mensalidade?.valor_principal ?? 0)<(data.mensalidade?.valor_total ?? 0) && data.mensalidadeProx && status ==='P'){
-            try{
-                const response = await api.put('/mensalidade',{
-                    id_mensalidade:data.mensalidadeProx?.id_mensalidade,
-                    valor_principal:(data.mensalidadeProx?.valor_principal ?? 0)-((data.mensalidade?.valor_total ?? 0)-(data.mensalidade?.valor_principal?? 0))
-                })
-                
-                    // closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
-            }catch(err){
-                toast.error('Erro ao Baixar Mensalidade')
-               
-            }  
-}
-if(((data.mensalidade?.valor_principal ?? 0)>(data.mensalidade?.valor_total ?? 0)) && desconto===false && data.mensalidadeProx && status ==='P'){
-    try{
-        const response = await api.put('/mensalidade',{
-            id_mensalidade:data.mensalidadeProx?.id_mensalidade,
-            valor_principal:Number(data.mensalidadeProx?.valor_principal ?? 0)+Number((data.mensalidade?.valor_principal ?? 0)-Number(data.mensalidade?.valor_total ?? 0))
-        })
-            
-            // closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status,valor_principal:response.data.valor_principal}})
-    }catch(err){
-        toast.error('Erro ao Baixar Mensalidade')
-        
-    } 
-  
-}
+      
+   
 
    await carregarDados()
 
 
    closeModa({
-    mensalidadeAnt: dadosassociado?.mensalidade[data.mensalidade?.index?data.mensalidade.index-2:0]
+    mensalidadeAnt: dadosassociado?.mensalidade[data.mensalidade?.index?data.mensalidade.index-1:0]
  })  
 
-   if(data.mensalidade?.index && status==='P'){
+   if(data.mensalidade?.index){
     
-    closeModa({mensalidade:{...(dadosassociado?.mensalidade[data.mensalidade?.index] || {}),close:true, index: data.mensalidade?.index ? (data.mensalidade.index + 1) : 0,data_pgto:new Date()}})
+    closeModa({mensalidade:{...(dadosassociado?.mensalidade[status ==='P'?data.mensalidade?.index+1:data.mensalidade?.index] || {}),close:true, index:status ==='P'? (data.mensalidade?.index + 1):data.mensalidade?.index,data_pgto:new Date()}})
     
 
    }
    
-console.log(data.mensalidade)
+
 
       }  
       

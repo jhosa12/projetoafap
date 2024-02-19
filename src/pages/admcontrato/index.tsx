@@ -434,7 +434,7 @@ export default function AdmContrato(){
                     valor_total:item.valor_total,
                     motivo_bonus:item.motivo_bonus,
                     data_pgto:item.data_pgto ? item.data_pgto: new Date(),
-                    index:index+1
+                    index:index
                     }})}} className={`font-medium  hover:underline ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-blue-500'}`}>Baixar/Editar</button>
                 </td>
             </tr>
@@ -499,7 +499,7 @@ export default function AdmContrato(){
                     valor_total:item.valor_total,
                     motivo_bonus:item.motivo_bonus,
                     data_pgto:item.data_pgto ? item.data_pgto: new Date(),
-                    index:index+1
+                    index:index
                     }})}} className={`font-medium  hover:underline ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-blue-500'}`}>Baixar/Editar</button>
                 </td>
             </tr>
