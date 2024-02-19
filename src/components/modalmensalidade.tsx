@@ -12,21 +12,24 @@ export function ModalMensalidade(){
     const [desconto,setDesconto] = useState(false)
     
         useEffect(()=>{
- // Faz com que o valor pago/total inicie com o valor principal
-            if(!data.mensalidade?.valor_total){
-            closeModa({mensalidade:{...(data.mensalidade),valor_total:data.mensalidade?.valor_principal}})
-            }
-        },[])
+//Faz com que o valor pago/total inicie com o valor principal
+        if(!data.mensalidade?.valor_total){
+         closeModa({mensalidade:{...(data.mensalidade),valor_total:data.mensalidade?.valor_principal,index:data.mensalidade?.index}})
+         }
+      },[data.mensalidade?.id_mensalidade])
 
       async function baixarEstornar(status:string,acao:string) {
         console.log(data.mensalidade?.index)
-        closeModa({
-            mensalidadeProx: {
-                ...dadosassociado?.mensalidade[data.mensalidade?.index?data.mensalidade.index:0],
-                index: data.mensalidade?.index
-            },
-        })
-    console.log(data.mensalidadeProx?.index)
+        if(data.mensalidade?.index){
+            closeModa({
+                mensalidadeProx: {
+                    ...dadosassociado?.mensalidade[data.mensalidade?.index?data.mensalidade.index:0],
+                    index: data.mensalidade?.index
+                },
+            })
+        }
+     
+  
         if(data.mensalidade?.status ===status){
             toast.error(`Mensalidade com ${acao} já realizado`)
             return;
@@ -47,7 +50,7 @@ export function ModalMensalidade(){
                     data_pgto:status==='A'?null:data.mensalidade?.data_pgto && new Date(data.mensalidade?.data_pgto).toLocaleDateString()===new Date().toLocaleDateString()?new Date():data.mensalidade?.data_pgto?new Date(data.mensalidade?.data_pgto):null,
                     usuario:status==='A'?null:usuario?.nome.toUpperCase(),
                     valor_total:status==='A'?null:data.mensalidade?.valor_total,
-                    motivo_bonus:status==='A'?null:data.mensalidade?.motivo_bonus,
+                    motivo_bonus:status==='A'?null:data.mensalidade?.motivo_bonus?.toUpperCase(),
                     estorno_dt:status==='P'?null:new Date(),
                     estorno_user:status==='P'?null:usuario?.nome
                 }),
@@ -56,12 +59,12 @@ export function ModalMensalidade(){
                   success: `${acao} efetuada com sucesso`,
                   error: `Erro ao efetuar ${acao}`
                  })
-                 closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
+                 //closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
         }catch(err){
             toast.error('Erro ao Baixar Mensalidade')
-            console.log(data.mensalidade?.id_mensalidade)
+            
         }
-
+        console.log(data.mensalidadeProx?.index)
         if((data.mensalidade?.valor_principal ?? 0)<(data.mensalidade?.valor_total ?? 0) && data.mensalidadeProx && status ==='P'){
             try{
                 const response = await api.put('/mensalidade',{
@@ -69,7 +72,7 @@ export function ModalMensalidade(){
                     valor_principal:(data.mensalidadeProx?.valor_principal ?? 0)-((data.mensalidade?.valor_total ?? 0)-(data.mensalidade?.valor_principal?? 0))
                 })
                 
-                     closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
+                    // closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
             }catch(err){
                 toast.error('Erro ao Baixar Mensalidade')
                
@@ -82,7 +85,7 @@ if(((data.mensalidade?.valor_principal ?? 0)>(data.mensalidade?.valor_total ?? 0
             valor_principal:Number(data.mensalidadeProx?.valor_principal ?? 0)+Number((data.mensalidade?.valor_principal ?? 0)-Number(data.mensalidade?.valor_total ?? 0))
         })
             
-             closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
+            // closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status,valor_principal:response.data.valor_principal}})
     }catch(err){
         toast.error('Erro ao Baixar Mensalidade')
         
@@ -91,25 +94,20 @@ if(((data.mensalidade?.valor_principal ?? 0)>(data.mensalidade?.valor_total ?? 0
 }
 
    await carregarDados()
+
+
    closeModa({
-    mensalidadeAnt: {
-        ...dadosassociado?.mensalidade[data.mensalidade?.index?data.mensalidade.index-2:0],
-       
-    }
+    mensalidadeAnt: dadosassociado?.mensalidade[data.mensalidade?.index?data.mensalidade.index-2:0]
  })  
 
    if(data.mensalidade?.index && status==='P'){
     
-    closeModa({mensalidade:{...(dadosassociado?.mensalidade[data.mensalidade?.index]),close:true, index: data.mensalidade?.index ? (data.mensalidade.index + 1) : 0}})
+    closeModa({mensalidade:{...(dadosassociado?.mensalidade[data.mensalidade?.index] || {}),close:true, index: data.mensalidade?.index ? (data.mensalidade.index + 1) : 0,data_pgto:new Date()}})
     
 
    }
-   closeModa({
-    mensalidadeAnt: {
-        ...dadosassociado?.mensalidade[data.mensalidade?.index?data.mensalidade.index-2:0],
-       
-    }
- })  
+   
+console.log(data.mensalidade)
 
       }  
       

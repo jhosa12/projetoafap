@@ -178,7 +178,8 @@ function closeModa(fields: Partial<DadosCadastro>) {
 async function carregarDados(){
     const response = await api.post('/associado',{
              id_associado:Number(data.id_associado)
-         });
+         })
+         
      setDadosAssociado(response.data);
    }
   return(
