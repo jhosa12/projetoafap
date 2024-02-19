@@ -23,8 +23,8 @@ export function ModalMensalidade(){
         closeModa({
             mensalidadeProx: {
                 ...dadosassociado?.mensalidade[data.mensalidade?.index?data.mensalidade.index:0],
-                index: data.mensalidade?.index ? (data.mensalidade.index + 1) : 0
-            }
+                index: data.mensalidade?.index
+            },
         })
     console.log(data.mensalidadeProx?.index)
         if(data.mensalidade?.status ===status){
@@ -91,12 +91,26 @@ if(((data.mensalidade?.valor_principal ?? 0)>(data.mensalidade?.valor_total ?? 0
 }
 
    await carregarDados()
+   closeModa({
+    mensalidadeAnt: {
+        ...dadosassociado?.mensalidade[data.mensalidade?.index?data.mensalidade.index-2:0],
+       
+    }
+ })  
+
    if(data.mensalidade?.index && status==='P'){
     
     closeModa({mensalidade:{...(dadosassociado?.mensalidade[data.mensalidade?.index]),close:true, index: data.mensalidade?.index ? (data.mensalidade.index + 1) : 0}})
     
+
    }
-   console.log(data.mensalidade?.index)
+   closeModa({
+    mensalidadeAnt: {
+        ...dadosassociado?.mensalidade[data.mensalidade?.index?data.mensalidade.index-2:0],
+       
+    }
+ })  
+
       }  
       
     
