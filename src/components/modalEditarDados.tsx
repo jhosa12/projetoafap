@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-
+import InputMask from 'react-input-mask'
 
 export function ModalEditarDados(){
     const [aba,setAba] = useState(1)
@@ -22,32 +22,119 @@ export function ModalEditarDados(){
     </ul>
     <div  className="border-t border-gray-200 dark:border-gray-600">
         <div className={`${aba===1?"":"hidden"}  p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800`}>
-            <dl className="grid max-w-screen-xl grid-cols-2 gap-8 p-4 mx-auto text-gray-900 sm:grid-cols-3 xl:grid-cols-6 dark:text-white sm:p-8">
-                <div className="flex flex-col items-center justify-center">
-                    <dt className="mb-2 text-3xl font-extrabold">73M+</dt>
-                    <dd className="text-gray-500 dark:text-gray-400">Developers</dd>
-                </div>
-                <div className="flex flex-col items-center justify-center">
-                    <dt className="mb-2 text-3xl font-extrabold">100M+</dt>
-                    <dd className="text-gray-500 dark:text-gray-400">Public repositories</dd>
-                </div>
-                <div className="flex flex-col items-center justify-center">
-                    <dt className="mb-2 text-3xl font-extrabold">1000s</dt>
-                    <dd className="text-gray-500 dark:text-gray-400">Open source projects</dd>
-                </div>
-                <div className="flex flex-col items-center justify-center">
-                    <dt className="mb-2 text-3xl font-extrabold">1B+</dt>
-                    <dd className="text-gray-500 dark:text-gray-400">Contributors</dd>
-                </div>
-                <div className="flex flex-col items-center justify-center">
-                    <dt className="mb-2 text-3xl font-extrabold">90+</dt>
-                    <dd className="text-gray-500 dark:text-gray-400">Top Forbes companies</dd>
-                </div>
-                <div className="flex flex-col items-center justify-center">
-                    <dt className="mb-2 text-3xl font-extrabold">4M+</dt>
-                    <dd className="text-gray-500 dark:text-gray-400">Organizations</dd>
-                </div>
-            </dl>
+            <div className="grid max-w-screen-xl grid-cols-2 gap-8 p-4 mx-auto text-gray-900 sm:grid-cols-3 xl:grid-cols-6 dark:text-white sm:p-8">
+            <div className="col-span-2">
+          <label  className="block mb-1 text-sm font-medium  text-white">NOME</label>
+          <input autoComplete='off'    type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div className="col-span-1">
+          <label  className="block mb-1 text-sm font-medium  text-white">NASCIMENTO</label>
+          <input  type="date" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-sm dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div className="col-span-1">
+          <label   className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">SEXO</label>
+            <select  className="block w-full pb-1 pt-1 pr-2 pl-2  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+              <option   selected></option>
+              <option   value="M">MASCULINO</option>
+              <option   value="F">FEMININO</option>
+            </select >
+          </div>
+       
+        <div className="col-span-1">
+          <label  className="block mb-1 text-sm font-medium  text-white">CEP</label>
+          <InputMask  mask={'99999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div className="col-span-1">
+          <label  className="block mb-1 text-sm font-medium  text-white">ENDEREÇO</label>
+          <input  autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div className="col-span-1">
+          <label  className="block mb-1 text-sm font-medium  text-white">NUMERO</label>
+          <input  autoComplete="off" type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div className="col-span-1">
+          <label  className="block mb-1 text-sm font-medium  text-white">BAIRRO</label>
+          <input  autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div className="col-span-2">
+          <label  className="block mb-1 text-sm font-medium  text-white">PONTO REF</label>
+          <input  autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50 dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div className="col-span-1">
+          <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">UF</label>
+            <select  className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm   text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+              <option selected></option>
+             
+                  <option>AC</option>
+                  <option>AL</option>
+                  <option>AM</option>
+                  <option>AP</option>
+                  <option>BA</option>
+                  <option>CE</option>
+                  <option>DF</option>
+                  <option>ES</option>
+                  <option>GO</option>
+                  <option>MA</option>
+                  <option>MG</option>
+                  <option>MS</option>
+                  <option>MT</option>
+                  <option>DF</option>
+                  <option>PA</option>
+                  <option>PB</option>
+                  <option>PE</option>
+                  <option>PI</option>
+                  <option>PR</option>
+                  <option>RJ</option>
+                  <option>RN</option>
+                  <option>RO</option>
+                  <option>RR</option>
+                  <option>RS</option>
+                  <option>SC</option>
+                  <option>SE</option>
+                  <option>SP</option>
+                  <option>TO</option>
+
+                
+              
+            </select>
+          </div>
+          <div className="col-span-1">
+          <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">CIDADE</label>
+            <select  className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+              <option selected></option>
+           
+            </select>
+          </div>
+          <div className="col-span-1">
+          <label  className="block mb-1 text-sm font-medium  text-white">RG</label>
+          <input  autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div className="col-span-1">
+          <label  className="block mb-1 text-sm font-medium  text-white">CPF</label>
+          <InputMask mask={'999.999.999-99'}   autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div className="col-span-1">
+          <label  className="block mb-1 text-sm font-medium  text-white">NATURALIDADE</label>
+          <input autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div className="col-span-1">
+          <label  className="block mb-1 text-sm font-medium  text-white">EMAIL</label>
+          <input  autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div className="col-span-1">
+          <label  className="block mb-1 text-sm font-medium  text-white">CELULAR1</label>
+          <InputMask mask={'(99) 9 9999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div className="col-span-1">
+          <label  className="block mb-1 text-sm font-medium  text-white">CELULAR2</label>
+          <InputMask mask={'(99) 9 9999-9999'} type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div className="col-span-1">
+          <label  className="block mb-1 text-sm font-medium  text-white">TELEFONE</label>
+          <InputMask  mask={'(99) 9 9999-9999'} type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+        </div>
+            </div>
         </div>
         <div className={`${aba===2?"":"hidden"} p-4  rounded-lg md:p-8 bg-gray-800`}>
             <h2 className="mb-5 text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">We invest in the world’s potential</h2>
@@ -134,6 +221,6 @@ export function ModalEditarDados(){
 </div>
 
             </div>
-            </div>
+           
     )
 }
