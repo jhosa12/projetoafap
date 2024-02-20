@@ -1,4 +1,4 @@
-import {  useContext, useState } from "react"
+import {  useContext, useEffect, useState } from "react"
 import { FormWrapper } from "./organizador"
 import InputMask from 'react-input-mask'
 import { TiDeleteOutline } from "react-icons/ti";
@@ -30,6 +30,10 @@ const [data_adesao,setAdesao]= useState<Date>()
 const [carencia,setCarencia]= useState<Date>()
 const [arrayDependetes,setArray] =useState<Partial<UserProps[]>>([])
 
+useEffect(()=>{
+ setCarencia(data.contrato?.dt_carencia)
+ setAdesao(data.contrato?.dt_adesao)
+})
 
      function adicionar(){
         if(nome!==''){
