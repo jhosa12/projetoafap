@@ -11,6 +11,7 @@ export function ModalMensalidade(){
     const {closeModa,data,usuario,carregarDados,dadosassociado}=useContext(AuthContext)
     const [desconto,setDesconto] = useState(false)
     const [componentMounted, setComponentMounted] = useState(false);
+    const [status,setStatus]=useState('')
 
 
 
@@ -28,20 +29,21 @@ export function ModalMensalidade(){
            })
        
        }
-   
-      
-      
       },[])
       useEffect(()=>{
       
-          if(data.mensalidade?.index && componentMounted){
+          if(data.mensalidade?.index && componentMounted && dadosassociado?.mensalidade[data.mensalidade.index+1]){
               closeModa({
                   mensalidade: {
-                      ...(dadosassociado?.mensalidade[data.mensalidade?.index +1] || {}),
-                      valor_total:dadosassociado?.mensalidade[data.mensalidade?.index+1].valor_principal? dadosassociado?.mensalidade[data.mensalidade?.index+1].valor_principal : 0 ,
-                      index:data.mensalidade?.index && data.mensalidade?.index+1,
-                      close:true
-                  }
+                      ...(status==='P'?dadosassociado?.mensalidade[data.mensalidade?.index +1]:dadosassociado?.mensalidade[data.mensalidade?.index]),
+                      valor_total:status==='P'?dadosassociado?.mensalidade[data.mensalidade?.index+1].valor_principal:dadosassociado?.mensalidade[data.mensalidade?.index].valor_principal,
+                      index:status==='P'?data.mensalidade?.index+1:data.mensalidade.index,
+                      close:status ==='P'?true:false,
+                      data_pgto:new Date()
+                  },
+                
+                    mensalidadeProx:{...(dadosassociado?.mensalidade[data.mensalidade.index+2]?dadosassociado.mensalidade[data.mensalidade?.index+2]:{})},
+                
               });
          
               // Trate qualquer erro aqui
@@ -56,6 +58,7 @@ export function ModalMensalidade(){
            //   },[data.mensalidade?.index])
       async function baixarEstornar(status:string,acao:string) {
         setComponentMounted(true)
+        setStatus(status)
         if(data.mensalidade?.status ===status){
             toast.error(`Mensalidade com ${acao} já realizado`)
             return;
