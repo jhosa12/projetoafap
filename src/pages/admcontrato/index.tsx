@@ -13,6 +13,8 @@ import { MdDeleteForever } from "react-icons/md";
 import { api } from "@/services/apiClient";
 import { TbAlertTriangle } from "react-icons/tb";
 import { ModalDependentes } from "@/components/modalDependentes";
+import { FaEdit } from "react-icons/fa";
+import { ModalEditarDados } from "@/components/modalEditarDados";
 export default function AdmContrato(){
    
     const {data,closeModa,dadosassociado,carregarDados,usuario} = useContext(AuthContext)
@@ -198,6 +200,7 @@ export default function AdmContrato(){
         {data.closeModalCadastro && (<Teste/>)}
         {data.mensalidade?.close && <ModalMensalidade/>}
         {data.dependente?.close && <ModalDependentes/>}
+        <ModalEditarDados/>
         <div className="flex  flex-col pl-4 ">
         <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
         <button onClick={()=>closeModa({closeModalPlano:true,mensalidade:{}})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
@@ -247,7 +250,7 @@ export default function AdmContrato(){
                 </h2>
           <div className="flex w-full flex-row gap-2">
            
-            <div className="flex flex-col  p-4 text-sm  border  rounded-lg shadow bg-gray-800 border-gray-700">
+            <div className="flex relative flex-col  p-4 text-sm  border  rounded-lg shadow bg-gray-800 border-gray-700">
             <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO TITULAR </h2>
  
         <h5 className="mb-1 inline-flex justify-between text-sm gap-2 font-semibold tracking-tight  text-white">
@@ -259,8 +262,9 @@ export default function AdmContrato(){
             <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">PONTO REF: </span>{dadosassociado?.guia_rua}</p>
             <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CIDADE: </span>{dadosassociado?.cidade}</p>
          </h5>
+         <button className="absolute -right-1 -top-1 text-blue-400 "><FaEdit size={16}/></button>
     </div>
-    <div className="flex text-white flex-col p-4 text-sm border  rounded-lg shadow bg-gray-800 border-gray-700">
+    <div className="flex relative text-white flex-col p-4 text-sm border  rounded-lg shadow bg-gray-800 border-gray-700">
     <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO PLANO</h2>
    
     <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
@@ -273,9 +277,13 @@ export default function AdmContrato(){
             <p className="mb-1 font-normal text-red-600"><span className="text-white font-semibold">CARÊNCIA: </span>{dadosassociado?.contrato.dt_carencia? new Date(dadosassociado.contrato.dt_carencia).toLocaleDateString():''}</p>
          </h5>
  
-
+        <button className="absolute -right-1 -top-1  text-blue-400"><FaEdit size={16}/></button>
 </div>
     </div>  
+    <div className="flex flex-row w-full justify-end mt-2 ">
+   
+    </div>
+    
         </div>)}
         {historico && (
            
