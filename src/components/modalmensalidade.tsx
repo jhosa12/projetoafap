@@ -24,7 +24,14 @@ export function ModalMensalidade(){
             console.log(data.mensalidadeProx)
         }
       
-      },[dadosassociado?.mensalidade])
+      },[])
+
+      useEffect(()=>{
+        //Faz com que o valor pago/total inicie com o valor principal
+                if(!data.mensalidade?.valor_total && data.mensalidade?.index){
+                 closeModa({mensalidade:{...(dadosassociado?.mensalidade[data.mensalidade?.index]),valor_total:data.mensalidade?.valor_principal,index:data.mensalidade?.index,close:true,data_pgto:new Date()}})
+                 }
+              },[data.mensalidade?.index])
 
       async function baixarEstornar(status:string,acao:string) {
        
