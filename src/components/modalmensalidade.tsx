@@ -10,34 +10,52 @@ import { api } from "@/services/apiClient";
 export function ModalMensalidade(){
     const {closeModa,data,usuario,carregarDados,dadosassociado}=useContext(AuthContext)
     const [desconto,setDesconto] = useState(false)
-    
+    const [componentMounted, setComponentMounted] = useState(false);
+
+
+
+// Adicione isso no final do componente ou em algum lugar apropriado onde você deseja definir componentMounted como true
+
         useEffect(()=>{
-//Faz com que o valor pago/total inicie com o valor principal
-        if(!data.mensalidade?.valor_total){
-         closeModa({mensalidade:{...(data.mensalidade || {}),valor_total:data.mensalidade?.valor_principal,index:data.mensalidade?.index}})
-         }
-         if(data.mensalidade?.index){
-            closeModa({
-                mensalidadeProx:{...dadosassociado?.mensalidade[data.mensalidade.index+1]},
-            })
-            console.log(data.mensalidade)
-            console.log(data.mensalidadeProx)
-        }
+        //Faz com que o valor pago/total inicie com o valor principal
+
+        closeModa({mensalidade:{...(data.mensalidade || {}),index:data.mensalidade?.index,data_pgto:new Date(),valor_total:data.mensalidade?.valor_principal}})
+      
+       
+        if(data.mensalidade?.index){
+           closeModa({
+               mensalidadeProx:{...dadosassociado?.mensalidade[data.mensalidade.index+1]},
+           })
+       
+       }
+   
+      
       
       },[])
-
       useEffect(()=>{
-        //Faz com que o valor pago/total inicie com o valor principal
-                if(!data.mensalidade?.valor_total && data.mensalidade?.index){
-                 closeModa({mensalidade:{...(dadosassociado?.mensalidade[data.mensalidade?.index]),valor_total:data.mensalidade?.valor_principal,index:data.mensalidade?.index,close:true,data_pgto:new Date()}})
-                 }
-              },[data.mensalidade?.index])
+      
+          if(data.mensalidade?.index && componentMounted){
+              closeModa({
+                  mensalidade: {
+                      ...(dadosassociado?.mensalidade[data.mensalidade?.index +1] || {}),
+                      valor_total:dadosassociado?.mensalidade[data.mensalidade?.index+1].valor_principal? dadosassociado?.mensalidade[data.mensalidade?.index+1].valor_principal : 0 ,
+                      index:data.mensalidade?.index && data.mensalidade?.index+1,
+                      close:true
+                  }
+              });
+         
+              // Trate qualquer erro aqui
+          }
+      },[dadosassociado?.mensalidade]) 
 
+      //useEffect(()=>{
+        //Faz com que o valor pago/total inicie com o valor principal
+             //   if(!data.mensalidade?.valor_total && data.mensalidade?.index){
+              //   closeModa({mensalidade:{...(dadosassociado?.mensalidade[data.mensalidade?.index]),index:data.mensalidade?.index,close:true,data_pgto:new Date()}})
+               //  }
+           //   },[data.mensalidade?.index])
       async function baixarEstornar(status:string,acao:string) {
-       
-       
-     
-  
+        setComponentMounted(true)
         if(data.mensalidade?.status ===status){
             toast.error(`Mensalidade com ${acao} já realizado`)
             return;
@@ -92,41 +110,21 @@ export function ModalMensalidade(){
                     // closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status,valor_principal:response.data.valor_principal}})
             }catch(err){
                 toast.error('Erro ao Baixar Mensalidade')
-                
             } 
           
         }
-
-
-                 //closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
+     //closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
         }catch(err){
-            toast.error('Erro ao Baixar Mensalidade')
-            
+            toast.error('Erro ao Baixar Mensalidade') 
         }
       
-   
-
-   await carregarDados()
-
-
-   closeModa({
-    mensalidadeAnt: dadosassociado?.mensalidade[data.mensalidade?.index?data.mensalidade.index-1:0]
- })  
-
-   if(data.mensalidade?.index){
-    
-    closeModa({mensalidade:{...(dadosassociado?.mensalidade[status ==='P'?data.mensalidade?.index+1:data.mensalidade?.index] || {}),close:true, index:status ==='P'? (data.mensalidade?.index + 1):data.mensalidade?.index,data_pgto:new Date()}})
-    
-
-   }
-   
-
-
-      }  
+       
+ 
+        await carregarDados();
+       
       
-    
-
-
+ 
+    }
     return(
     <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
        
@@ -141,7 +139,7 @@ export function ModalMensalidade(){
 <label className="flex flex-row justify-center col-start-1 font-semibold  gap-2 text-white">EDITAR MENSALIDADE</label>
 </div>
 <div className="mb-1 col-span-1 ">
-<label  className="block mb-1 text-xs font-medium  text-white">Referencia</label>
+<label  className="block mb-1 text-xs font-medium  text-white">REFERÊNCIA</label>
 <input disabled type="text" value={data.mensalidade?.referencia} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),referencia:e.target.value}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
