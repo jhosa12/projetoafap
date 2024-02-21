@@ -23,7 +23,7 @@ export function ModalMensalidade(){
         closeModa({mensalidade:{...(data.mensalidade || {}),index:data.mensalidade?.index,data_pgto:new Date(),valor_total:data.mensalidade?.valor_principal}})
       
        
-        if(data.mensalidade?.index){
+        if(data.mensalidade?.index || data.mensalidade?.index===0){
            closeModa({
                mensalidadeProx:{...dadosassociado?.mensalidade[data.mensalidade.index+1]},
            })
@@ -32,7 +32,7 @@ export function ModalMensalidade(){
       },[])
       useEffect(()=>{
       
-          if(data.mensalidade?.index && componentMounted && dadosassociado?.mensalidade[data.mensalidade.index+1]){
+          if((data.mensalidade?.index || data.mensalidade?.index===0) && componentMounted && dadosassociado?.mensalidade[data.mensalidade.index+1]){
               closeModa({
                   mensalidade: {
                       ...(status==='P'?dadosassociado?.mensalidade[data.mensalidade?.index +1]:dadosassociado?.mensalidade[data.mensalidade?.index]),

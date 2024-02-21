@@ -19,7 +19,7 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
     return(
         <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
        
-        <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
+        <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-30 bg-gray-300 ">
             
 <div className="w-8/12 relative max-w-full bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
     <ul className=" text-sm font-medium text-center text-gray-500 divide-x divide-gray-200 rounded-lg sm:flex dark:divide-gray-600 dark:text-gray-400 rtl:divide-x-reverse" id="fullWidthTab" data-tabs-toggle="#fullWidthTabContent" role="tablist">
@@ -151,7 +151,7 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
             </div>
         </div>
         <div className={`${aba===2?"":"hidden"} p-4  rounded-lg md:p-8 bg-gray-800`}>
-        <div  className="grid gap-2 grid-flow-c-dense pl-2 pr-2 w-full  md:grid-cols-4" >
+<div  className="grid gap-2 grid-flow-c-dense pl-2 pr-2 w-full  md:grid-cols-4" >
   
   <div className="col-span-1">
     <label  className="block mb-1 text-sm font-medium  text-white">CONTRATO</label>
@@ -227,7 +227,7 @@ selected={item.descricao === data.contrato?.plano ? true : false}
     <input value={data.contrato?.n_parcelas} onChange={e=>closeModa({contrato:{...data.contrato,n_parcelas:Number(e.target.value)}})} autoComplete="off" type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
     </div>
     <div  className="col-span-1">
-    <label  className="block mb-1 text-sm font-medium  text-white">VENC. 1° PARCELA</label>
+    <label  className="block mb-1 text-sm font-medium  text-white">VENCIMENTO INICIAL</label>
     <DatePicker   dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={data.contrato?.data_vencimento} onChange={(e)=>e && closeModa({contrato:{...data.contrato,data_vencimento:e}})}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
     </div>
     <div className="col-span-1">
@@ -237,6 +237,12 @@ selected={item.descricao === data.contrato?.plano ? true : false}
     <div className="col-span-1">
     <label  className="block mb-1 text-sm font-medium  text-white">FIM DA CARÊNCIA</label>
     <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={data.contrato?.dt_carencia} onChange={e=>e && closeModa({contrato:{...data.contrato,dt_carencia:e}})} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+    </div>
+   
+    <div className="col-span-4 inline-flex gap-4 justify-end">
+    <button  type='button' className="flex flex-row justify-center items-center bg-blue-600 rounded-lg p-3 gap-2 text-white">SALVAR DADOS</button>
+
+
     </div>
    
   </div>
