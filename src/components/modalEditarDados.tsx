@@ -30,7 +30,7 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
             <button onClick={()=>setAba(3)}   data-tabs-target="#faq" type="button" role="tab" aria-controls="faq" aria-selected="false" className="inline-block w-full p-4 rounded-se-lg bg-gray-50 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600">DEPENDENTES</button>
         </li>
     </ul>
-    <button onClick={()=>closeModa({closeEditarAssociado:false})} className="absolute top-0 right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto  hover:bg-gray-600 hover:text-white"><IoIosClose size={30}/></button>
+    <button onClick={()=>closeModa({closeEditarAssociado:false,contrato:{},arraydep:[],dependente:{}})} className="absolute top-0 right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto  hover:bg-gray-600 hover:text-white"><IoIosClose size={30}/></button>
     <div  className="border-t border-gray-200 dark:border-gray-600">
         <div className={`${aba===1?"":"hidden"}  p-2 bg-white rounded-lg dark:bg-gray-800`}>
             <div className="grid max-w-screen-xl grid-cols-2 gap-2 p-2 mx-auto text-gray-900 sm:grid-cols-3 xl:grid-cols-6 dark:text-white  pt-3 pb-3">
@@ -44,39 +44,37 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
           </div>
           <div className="col-span-1">
           <label   className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">SEXO</label>
-            <select  className="block w-full pb-1 pt-1 pr-2 pl-2  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <select defaultValue={data.sexo}  className="block w-full pb-1 pt-1 pr-2 pl-2  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option   selected></option>
               <option   value="M">MASCULINO</option>
               <option   value="F">FEMININO</option>
             </select >
           </div>
-       
-      
+    
           <div className="col-span-2">
           <label  className="block mb-1 text-sm font-medium  text-white">ENDEREÇO</label>
-          <input  autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input defaultValue={data.endereco}  autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">CEP</label>
-          <InputMask  mask={'99999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <InputMask defaultValue={data.cep}  mask={'99999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">NUMERO</label>
-          <input  autoComplete="off" type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input defaultValue={data.numero}  autoComplete="off" type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">BAIRRO</label>
-          <input  autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input defaultValue={data.bairro} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-2">
           <label  className="block mb-1 text-sm font-medium  text-white">PONTO REF</label>
-          <input  autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50 dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input defaultValue={data.referencia} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50 dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">UF</label>
-            <select  className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm   text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <select defaultValue={data.uf} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm   text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option selected></option>
-             
                   <option>AC</option>
                   <option>AL</option>
                   <option>AM</option>
@@ -105,45 +103,42 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
                   <option>SE</option>
                   <option>SP</option>
                   <option>TO</option>
-
-                
-              
             </select>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">CIDADE</label>
-            <select  className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <select defaultValue={data.cidade}  className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option selected></option>
-           
+
             </select>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">RG</label>
-          <input  autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input defaultValue={data.rg} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">CPF</label>
-          <InputMask mask={'999.999.999-99'}   autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <InputMask defaultValue={data.cpf} mask={'999.999.999-99'}   autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">NATURALIDADE</label>
-          <input autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input defaultValue={data.naturalidade} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-2">
           <label  className="block mb-1 text-sm font-medium  text-white">EMAIL</label>
-          <input  autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input defaultValue={data.email}  autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">CELULAR1</label>
-          <InputMask mask={'(99) 9 9999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <InputMask defaultValue={data.celular1} mask={'(99) 9 9999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">CELULAR2</label>
-          <InputMask mask={'(99) 9 9999-9999'} type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <InputMask defaultValue={data.celular2} mask={'(99) 9 9999-9999'} type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">TELEFONE</label>
-          <InputMask  mask={'(99) 9 9999-9999'} type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <InputMask defaultValue={data.telefone}  mask={'(99) 9 9999-9999'} type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
         </div>
             </div>

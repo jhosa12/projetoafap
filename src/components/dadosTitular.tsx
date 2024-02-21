@@ -11,21 +11,16 @@ interface CidadesProps{
  uf:string,
  cidade:string
 }
+
 export function Item(){
 
-  const {data,closeModa}= useContext(AuthContext)
-  const [cidades,setCidades] = useState<CidadesProps[]>([])
+  const {data,closeModa,usuario}= useContext(AuthContext)
+  const [cidades,setCidades] = useState<Array<Partial<CidadesProps>>>([])
   const [ufs,setUfs] =useState<string[]>([])
   useEffect(()=>{
-    capturarUltimo()
+    usuario?.cidades && setCidades(usuario?.cidades)
 },[])
-async function capturarUltimo(){
-    const response = await api.get('/ultimocontrato');
-    closeModa({contrato:{...(data.contrato || {}),id_contrato:Number(response.data.ultimo.id_contrato)+1},planos:response.data.planos});
-    setCidades(response.data.cidades);
-  
-    
-}
+
     return(
         <FormWrapper title="DADOS DO TITULAR">
         <div className="flex flex-col   gap-9 p-4 rounded-lg w-full h-full ">

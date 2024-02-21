@@ -15,6 +15,8 @@ import { TbAlertTriangle } from "react-icons/tb";
 import { ModalDependentes } from "@/components/modalDependentes";
 import { FaEdit } from "react-icons/fa";
 import { ModalEditarDados } from "@/components/modalEditarDados";
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 export default function AdmContrato(){
    
     const {data,closeModa,dadosassociado,carregarDados,usuario} = useContext(AuthContext)
@@ -246,7 +248,6 @@ export default function AdmContrato(){
             <span className={`inline-flex items-center  text-sm font-medium px-2.5 py-0.5 rounded-full ${dadosassociado?.contrato.situacao==='ATIVO'?"bg-green-900 text-green-300":"bg-red-900 text-red-300"}`}>
             <span className={`w-2 h-2 me-1 ${dadosassociado?.contrato.situacao==='ATIVO'?"bg-green-500 ":"bg-red-500"}  rounded-full`}></span>
             {dadosassociado?.contrato.situacao}
-           
             </span>
                 </h2>
           <div className="flex w-full flex-row gap-2">
@@ -263,10 +264,41 @@ export default function AdmContrato(){
             <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">PONTO REF: </span>{dadosassociado?.guia_rua}</p>
             <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CIDADE: </span>{dadosassociado?.cidade}</p>
          </h5>
-         <button onClick={()=>{setOpenEdit(1),closeModa({closeEditarAssociado:true,
+  
+         <button data-tooltip-id="my-tooltip"
+  data-tooltip-content="Editar Dados do Cliente/Contrato" onClick={()=>{setOpenEdit(1),closeModa({closeEditarAssociado:true,
          name:dadosassociado.nome,
-         nasc:new Date(dadosassociado.data_nasc).toLocaleDateString()
+         nasc:new Date(dadosassociado.data_nasc).toLocaleDateString(),
+         bairro:dadosassociado.bairro,
+         celular1:dadosassociado.celular1,
+         celular2:dadosassociado.celular2,
+         telefone:dadosassociado.telefone,
+         cidade:dadosassociado.cidade,
+         cep:dadosassociado.cep,
+         cpf:dadosassociado.cpf,
+         endereco:dadosassociado.endereco,
+         email:dadosassociado.email,
+         id_associado:dadosassociado.id_associado,
+         contrato:{id_contrato:dadosassociado.contrato.id_contrato,
+            cobrador:dadosassociado.contrato.cobrador,
+            consultor:dadosassociado.contrato.consultor,
+            data_vencimento:dadosassociado.contrato.data_vencimento,
+            dt_adesao:dadosassociado.contrato.dt_adesao,
+            dt_carencia:dadosassociado.contrato.dt_carencia,
+            id_plano:dadosassociado.contrato.id_plano,
+            origem:dadosassociado.contrato.origem,
+            plano:dadosassociado.contrato.plano,
+            situacao:dadosassociado.contrato.situacao,
+            supervisor:dadosassociado.contrato.supervisor,
+            valor_mensalidade:dadosassociado.contrato.valor_mensalidade
+        },
+        numero:dadosassociado.numero,
+        profissao:dadosassociado.profissao,
+        rg:dadosassociado.rg,
+        referencia:dadosassociado.guia_rua,
+        uf:dadosassociado.uf
         })}} className="absolute -right-1 -top-1 text-blue-400 "><FaEdit size={16}/></button>
+       <Tooltip id="my-tooltip"/>
     </div>
     <div className="flex relative text-white flex-col p-4 text-sm border  rounded-lg shadow bg-gray-800 border-gray-700">
     <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO PLANO</h2>
@@ -281,7 +313,8 @@ export default function AdmContrato(){
             <p className="mb-1 font-normal text-red-600"><span className="text-white font-semibold">CARÊNCIA: </span>{dadosassociado?.contrato.dt_carencia? new Date(dadosassociado.contrato.dt_carencia).toLocaleDateString():''}</p>
          </h5>
  
-        <button onClick={()=>{setOpenEdit(2),closeModa({closeEditarAssociado:true,
+        <button data-tooltip-id="my-tooltip"
+  data-tooltip-content="Editar Dados do Cliente/Contrato" onClick={()=>{setOpenEdit(2),closeModa({closeEditarAssociado:true,
         name:dadosassociado.nome
         })}} className="absolute -right-1 -top-1  text-blue-400"><FaEdit size={16}/></button>
 </div>

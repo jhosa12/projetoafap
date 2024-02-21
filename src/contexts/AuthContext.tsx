@@ -3,6 +3,15 @@ import {api} from "../services/apiClient"
 import {destroyCookie,setCookie,parseCookies} from "nookies"
 import Router from 'next/router';
 
+
+type CidadesProps={
+    id_cidade:number,
+   estado:number,
+   uf:string,
+   cidade:string
+  }
+
+
 type DependentesProps={
     nome:string,
     data_nasc:Date,
@@ -63,7 +72,7 @@ type DadosCadastro={
     contrato:Partial<ContratoProps>,
     origem:string,
     profissao:string,
-    planos:PlanosProps[]
+    planos:Array<Partial<PlanosProps>>
     id_associado:number,
     mensalidade:Partial<MensalidadeProps>
     mensalidadeAnt:Partial<MensalidadeProps>
@@ -96,11 +105,17 @@ supervisor:string
 type AssociadoProps={
 nome:string,
 data_nasc:Date,
+sexo:string,
+celular1:string,celular2:string,telefone:string,
 id_associado:number,
 endereco:string,
 bairro:string,
 numero:number,
 cidade:string,
+cep:string,
+cpf:string,rg:string
+email:string,
+profissao:string,
 guia_rua:string,
 uf:string,
 mensalidade:Array<MensalidadeProps>,
@@ -126,6 +141,8 @@ type SignInProps={
 type UserProps ={
     id:string,
     nome:string,
+    planos:Array<Partial<PlanosProps>>
+    cidades:Array<Partial<CidadesProps>>
 }
 
 export const AuthContext = createContext({} as AuthContextData)
@@ -150,12 +167,12 @@ async function sign({nome,password}:SignInProps) {
             password
         })
         
-        const {id,token} = response.data
+        const {id,token,planos,cidades} = response.data
        setCookie(undefined,'@nextauth.token',token,{
         maxAge:60*60*24*30, // expirar em 1 mes
         path:"/" // quais caminhos terão acesso ao cookie
        })
-       setUser({id,nome})
+       setUser({id,nome,planos,cidades})
        // Passar o token para as proximas paginas
        api.defaults.headers["Authorization"] =`Bearer ${token}`
        //redirecionar o user para /dashboard
