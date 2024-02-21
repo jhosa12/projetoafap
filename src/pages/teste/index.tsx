@@ -126,7 +126,7 @@ export default function TesteLayout() {
             </div>
             {step}
             <div className="flex mt-4 gap-4 justify-end">
-             {currentStepIndex!==0 &&(<button type="button" onClick={back}><FaCircleArrowLeft style={{color:'#CA9629'}} size={30}/></button>)} 
+             {currentStepIndex!==0 &&(<button type="button" onClick={back}><FaCircleArrowLeft color='blue' style={{color:'#CA9629'}} size={30}/></button>)} 
               <button type="submit">
                {steps.length-1===currentStepIndex ?(<button onClick={save} className="flex flex-row bg-blue-600 rounded-lg p-2 gap-2 text-white" type="button" ><MdSaveAlt size={22}/> SALVAR</button>):(<FaCircleArrowRight size={30} style={{color:'#CA9629'}}/>)} 
                 </button>

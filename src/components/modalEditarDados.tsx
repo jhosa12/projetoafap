@@ -1,14 +1,24 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import InputMask from 'react-input-mask'
+import { IoIosClose } from "react-icons/io";
+import { AuthContext } from "@/contexts/AuthContext";
 
-export function ModalEditarDados(){
+
+export function ModalEditarDados({openEdit}:{openEdit:number}){
+    const {closeModa,data,dadosassociado} = useContext(AuthContext)
+    const [mountedComponente,setMounted]= useState(true)
     const [aba,setAba] = useState(1)
+    useEffect(()=>{
+      mountedComponente &&  setAba(openEdit)
+      setMounted(false)
+       
+    })
     return(
         <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
        
         <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
             
-<div className="w-8/12 max-w-full bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+<div className="w-8/12 relative max-w-full bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
     <ul className=" text-sm font-medium text-center text-gray-500 divide-x divide-gray-200 rounded-lg sm:flex dark:divide-gray-600 dark:text-gray-400 rtl:divide-x-reverse" id="fullWidthTab" data-tabs-toggle="#fullWidthTabContent" role="tablist">
         <li className="w-full">
             <button onClick={()=>setAba(1)}  type="button"  aria-selected="true" className="inline-block w-full p-4 rounded-ss-lg bg-gray-50 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600">TITULAR</button>
@@ -20,16 +30,17 @@ export function ModalEditarDados(){
             <button onClick={()=>setAba(3)}   data-tabs-target="#faq" type="button" role="tab" aria-controls="faq" aria-selected="false" className="inline-block w-full p-4 rounded-se-lg bg-gray-50 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600">DEPENDENTES</button>
         </li>
     </ul>
+    <button onClick={()=>closeModa({closeEditarAssociado:false})} className="absolute top-0 right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto  hover:bg-gray-600 hover:text-white"><IoIosClose size={30}/></button>
     <div  className="border-t border-gray-200 dark:border-gray-600">
         <div className={`${aba===1?"":"hidden"}  p-2 bg-white rounded-lg dark:bg-gray-800`}>
             <div className="grid max-w-screen-xl grid-cols-2 gap-2 p-2 mx-auto text-gray-900 sm:grid-cols-3 xl:grid-cols-6 dark:text-white  pt-3 pb-3">
             <div className="col-span-2">
           <label  className="block mb-1 text-sm font-medium  text-white">NOME</label>
-          <input autoComplete='off'    type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input autoComplete='off'defaultValue={data.name}    type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">NASCIMENTO</label>
-          <input  type="date" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-sm dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input defaultValue={data.nasc}  type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-sm dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label   className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">SEXO</label>
@@ -40,13 +51,14 @@ export function ModalEditarDados(){
             </select >
           </div>
        
-        <div className="col-span-1">
-          <label  className="block mb-1 text-sm font-medium  text-white">CEP</label>
-          <InputMask  mask={'99999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-          </div>
-          <div className="col-span-1">
+      
+          <div className="col-span-2">
           <label  className="block mb-1 text-sm font-medium  text-white">ENDEREÇO</label>
           <input  autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div className="col-span-1">
+          <label  className="block mb-1 text-sm font-medium  text-white">CEP</label>
+          <InputMask  mask={'99999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">NUMERO</label>
@@ -117,7 +129,7 @@ export function ModalEditarDados(){
           <label  className="block mb-1 text-sm font-medium  text-white">NATURALIDADE</label>
           <input autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
-          <div className="col-span-1">
+          <div className="col-span-2">
           <label  className="block mb-1 text-sm font-medium  text-white">EMAIL</label>
           <input  autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>

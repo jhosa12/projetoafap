@@ -68,6 +68,7 @@ type DadosCadastro={
     mensalidade:Partial<MensalidadeProps>
     mensalidadeAnt:Partial<MensalidadeProps>
     mensalidadeProx:Partial<MensalidadeProps>,
+    closeEditarAssociado:boolean
 }
 type PlanosProps={
     id_plano:number,
@@ -94,6 +95,7 @@ supervisor:string
 
 type AssociadoProps={
 nome:string,
+data_nasc:Date,
 id_associado:number,
 endereco:string,
 bairro:string,

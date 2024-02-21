@@ -26,7 +26,8 @@ export default function AdmContrato(){
     const tabelaRef = useRef<HTMLTableElement>(null)
     const [excluir,setExcluir]=useState(false)
     const [excluirDependente,setExcluirDependente]=useState(false)
-    const [indexMensal,setIndex] = useState<number>(0);
+    const [openEdit,setOpenEdit] = useState<number>(0)
+   
     function mensalidadeSet(){
         setDados(false),setDependentes(false),setHistorico(true)
         if (tabelaRef.current) {
@@ -200,7 +201,7 @@ export default function AdmContrato(){
         {data.closeModalCadastro && (<Teste/>)}
         {data.mensalidade?.close && <ModalMensalidade/>}
         {data.dependente?.close && <ModalDependentes/>}
-        <ModalEditarDados/>
+        {data.closeEditarAssociado && <ModalEditarDados openEdit={openEdit}/>}
         <div className="flex  flex-col pl-4 ">
         <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
         <button onClick={()=>closeModa({closeModalPlano:true,mensalidade:{}})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
@@ -262,7 +263,10 @@ export default function AdmContrato(){
             <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">PONTO REF: </span>{dadosassociado?.guia_rua}</p>
             <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CIDADE: </span>{dadosassociado?.cidade}</p>
          </h5>
-         <button className="absolute -right-1 -top-1 text-blue-400 "><FaEdit size={16}/></button>
+         <button onClick={()=>{setOpenEdit(1),closeModa({closeEditarAssociado:true,
+         name:dadosassociado.nome,
+         nasc:new Date(dadosassociado.data_nasc).toLocaleDateString()
+        })}} className="absolute -right-1 -top-1 text-blue-400 "><FaEdit size={16}/></button>
     </div>
     <div className="flex relative text-white flex-col p-4 text-sm border  rounded-lg shadow bg-gray-800 border-gray-700">
     <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO PLANO</h2>
@@ -277,7 +281,9 @@ export default function AdmContrato(){
             <p className="mb-1 font-normal text-red-600"><span className="text-white font-semibold">CARÊNCIA: </span>{dadosassociado?.contrato.dt_carencia? new Date(dadosassociado.contrato.dt_carencia).toLocaleDateString():''}</p>
          </h5>
  
-        <button className="absolute -right-1 -top-1  text-blue-400"><FaEdit size={16}/></button>
+        <button onClick={()=>{setOpenEdit(2),closeModa({closeEditarAssociado:true,
+        name:dadosassociado.nome
+        })}} className="absolute -right-1 -top-1  text-blue-400"><FaEdit size={16}/></button>
 </div>
     </div>  
     <div className="flex flex-row w-full justify-end mt-2 ">
