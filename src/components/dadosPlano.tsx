@@ -1,12 +1,12 @@
 
-import InputMask from 'react-input-mask'
+
 import { FormWrapper } from "./organizador";
 import { AuthContext } from '@/contexts/AuthContext';
-import { ChangeEvent, useContext, useEffect, useState } from 'react';
-import DatePicker,{registerLocale, setDefaultLocale} from "react-datepicker";
+import { useContext, useEffect, useState } from 'react';
+import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { kMaxLength } from 'buffer';
+
 registerLocale('pt', pt)
 
 export function DadosPlano(){
@@ -15,10 +15,10 @@ export function DadosPlano(){
   useEffect(()=>{
     if(inicioDatas){
       const dataCarencia = new Date().setMonth(new Date().getMonth()+3)
-      closeModa({contrato:{...data.contrato,dt_adesao:new Date(),dt_carencia:new Date(dataCarencia)}})
+      closeModa({contrato:{...data.contrato,dt_adesao:new Date(),dt_carencia:new Date(dataCarencia)},planos:usuario?.planos})
     }
     setDatas(false)
-    closeModa({planos:usuario?.planos})
+   
   },[])
     return(
         <FormWrapper title="DADOS DO PLANO">

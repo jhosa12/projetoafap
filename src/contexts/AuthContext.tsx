@@ -73,6 +73,7 @@ type DadosCadastro={
     origem:string,
     profissao:string,
     planos:Array<Partial<PlanosProps>>
+    cidades :Array<Partial<CidadesProps>>
     id_associado:number,
     mensalidade:Partial<MensalidadeProps>
     mensalidadeAnt:Partial<MensalidadeProps>

@@ -2,6 +2,9 @@ import { useContext, useEffect, useState } from "react"
 import InputMask from 'react-input-mask'
 import { IoIosClose } from "react-icons/io";
 import { AuthContext } from "@/contexts/AuthContext";
+import DatePicker,{registerLocale} from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import pt from 'date-fns/locale/pt-BR';
 
 
 export function ModalEditarDados({openEdit}:{openEdit:number}){
@@ -109,7 +112,11 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">CIDADE</label>
             <select defaultValue={data.cidade}  className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option selected></option>
-
+                {data.cidades?.map((item,index)=>{
+                    return(
+                       item.uf===data.uf?(<option>{item.cidade}</option>):''
+                    )
+                })}
             </select>
           </div>
           <div className="col-span-1">
@@ -144,34 +151,95 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
             </div>
         </div>
         <div className={`${aba===2?"":"hidden"} p-4  rounded-lg md:p-8 bg-gray-800`}>
-            <h2 className="mb-5 text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">We invest in the world’s potential</h2>
-         
-            <ul role="list" className="space-y-4 text-gray-500 dark:text-gray-400">
-                <li className="flex space-x-2 rtl:space-x-reverse items-center">
-                    <svg className="flex-shrink-0 w-3.5 h-3.5 text-blue-600 dark:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
-                    </svg>
-                    <span className="leading-tight">Dynamic reports and dashboards</span>
-                </li>
-                <li className="flex space-x-2 rtl:space-x-reverse items-center">
-                    <svg className="flex-shrink-0 w-3.5 h-3.5 text-blue-600 dark:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
-                    </svg>
-                    <span className="leading-tight">Templates for everyone</span>
-                </li>
-                <li className="flex space-x-2 rtl:space-x-reverse items-center">
-                    <svg className="flex-shrink-0 w-3.5 h-3.5 text-blue-600 dark:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
-                    </svg>
-                    <span className="leading-tight">Development workflow</span>
-                </li>
-                <li className="flex space-x-2 rtl:space-x-reverse items-center">
-                    <svg className="flex-shrink-0 w-3.5 h-3.5 text-blue-600 dark:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
-                    </svg>
-                    <span className="leading-tight">Limitless business automation</span>
-                </li>
-            </ul>
+        <div  className="grid gap-2 grid-flow-c-dense pl-2 pr-2 w-full  md:grid-cols-4" >
+  
+  <div className="col-span-1">
+    <label  className="block mb-1 text-sm font-medium  text-white">CONTRATO</label>
+    <input value={data.contrato?.id_contrato} onChange={e=>closeModa({contrato:{...data.contrato,id_contrato:Number(e.target.value)}})} autoComplete="off"  type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+    </div>
+   
+    <div className="col-span-1">
+    <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">ORIGEM</label>
+      <select value={data.origem} onChange={e=>closeModa({origem:e.target.value})} className="block w-full  pb-1 pt-1 pr-2 pl-2 sm:text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        <option selected></option>
+        <option >PLANO NOVO</option>
+        <option >TRANSFERÊNCIA</option>
+      </select>
+    </div>
+    <div className="col-span-1">
+    <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">PLANO</label>
+    <select
+   defaultValue ={data.contrato?.plano}
+className="block w-full p-1.5 pb-1 pt-1 pr-2 pl-2 sm:text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+onChange={(e) => {
+    const selectedPlano = data.planos?.find(item => item.descricao === e.target.value);
+closeModa({
+  contrato: {
+    ...(data.contrato || {}),
+    id_plano:Number(selectedPlano?.id_plano),
+    plano:e.target.options[e.target.selectedIndex].text ?e.target.options[e.target.selectedIndex].text :data.contrato?.plano,
+    
+  }
+});
+
+}}>
+<option value=" "></option>
+{data.planos?.map((item)=>{
+return (
+<option 
+selected={item.descricao === data.contrato?.plano ? true : false} 
+ value={item.descricao} key={item.id_plano} >{item.descricao}</option>
+)
+})}
+</select>
+    </div>
+    <div className="col-span-1">
+    <label  className="block mb-1 text-sm font-medium  text-white">VALOR</label>
+    <input value={data.contrato?.valor_mensalidade} onChange={e=>closeModa({contrato:{...data.contrato,valor_mensalidade:Number(e.target.value)}})} autoComplete="off" type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50 dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+    </div>
+    <div className="col-span-1">
+    <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">COBRADOR</label>
+      <select value={data.contrato?.cobrador} onChange={e=>closeModa({contrato:{...data.contrato,cobrador:e.target.value}})} className="block w-full   pb-1 pt-1 pr-2 pl-2 sm:text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        <option selected></option>
+        <option >JACKSON</option>
+        <option >SAMUEL</option>
+      </select>
+    </div>
+    <div className="col-span-1">
+    <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">CONSULTOR</label>
+      <select value={data.contrato?.consultor} onChange={e=>closeModa({contrato:{...data.contrato,consultor:e.target.value}})} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        <option selected></option>
+        <option >MATEUS</option>
+        <option >JOÃO</option>
+      </select>
+    </div>
+    <div className="col-span-1">
+    <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">SUPERVISOR</label>
+      <select value={data.contrato?.supervisor} onChange={e=>closeModa({contrato:{...data.contrato,supervisor:e.target.value}})} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        <option selected></option>
+        <option >MATEUS</option>
+        <option >JOÃO</option>
+      </select>
+    </div>
+  
+    <div className="col-span-1">
+    <label  className="block mb-1 text-sm font-medium  text-white">NP</label>
+    <input value={data.contrato?.n_parcelas} onChange={e=>closeModa({contrato:{...data.contrato,n_parcelas:Number(e.target.value)}})} autoComplete="off" type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+    </div>
+    <div  className="col-span-1">
+    <label  className="block mb-1 text-sm font-medium  text-white">VENC. 1° PARCELA</label>
+    <DatePicker   dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={data.contrato?.data_vencimento} onChange={(e)=>e && closeModa({contrato:{...data.contrato,data_vencimento:e}})}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+    </div>
+    <div className="col-span-1">
+    <label  className="block mb-1 text-sm font-medium  text-white">DATA DE ADESÃO</label>
+    <DatePicker  dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={data.contrato?.dt_adesao} onChange={e=>e && closeModa({contrato:{...data.contrato,dt_adesao:e}})} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+    </div>
+    <div className="col-span-1">
+    <label  className="block mb-1 text-sm font-medium  text-white">FIM DA CARÊNCIA</label>
+    <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={data.contrato?.dt_carencia} onChange={e=>e && closeModa({contrato:{...data.contrato,dt_carencia:e}})} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+    </div>
+   
+  </div>
         </div>
         <div className={`${aba===3?"":"hidden"} p-4 bg-white rounded-lg dark:bg-gray-800`} id="faq" role="tabpanel" aria-labelledby="faq-tab">
             <div id="accordion-flush" data-accordion="collapse" data-active-classes="bg-white dark:bg-gray-800 text-gray-900 dark:text-white" data-inactive-classes="text-gray-500 dark:text-gray-400">
