@@ -172,7 +172,7 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
       {situacao?(<div  className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div className="flex items-center justify-center p-2 w-full h-full">
         <div className="relative rounded-lg border-solid border-[1px] border-red-500 shadow bg-gray-800">
-            <button type="button" onClick={()=>{setSituaçao(!situacao),closeModa({contrato:{...(data.contrato),situacao:data.contrato?.situacao==='ATIVO'?'INATIVO':'ATIVO'}})}} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+            <button type="button" onClick={()=>{setSituaçao(!situacao),closeModa({contrato:{...(data.contrato),situacao:dadosassociado?.contrato.situacao}})}} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
              <button  type="button" onClick={()=>closeModa({closeModalPlano:false})} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
                     <IoIosClose size={30}/>
                 </button>
@@ -186,7 +186,7 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
                 <button onClick={()=>{}} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
                     Sim, tenho certeza
                 </button>
-                <button onClick={()=>{setSituaçao(!situacao),closeModa({contrato:{...(data.contrato),situacao:data.contrato?.situacao==='ATIVO'?'INATIVO':'ATIVO'}})}}  type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
+                <button onClick={()=>{setSituaçao(!situacao),closeModa({contrato:{...(data.contrato),situacao:dadosassociado?.contrato.situacao}})}}  type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
             </div>
         </div>
     </div>

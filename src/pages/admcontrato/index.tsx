@@ -29,7 +29,22 @@ export default function AdmContrato(){
     const [excluir,setExcluir]=useState(false)
     const [excluirDependente,setExcluirDependente]=useState(false)
     const [openEdit,setOpenEdit] = useState<number>(0)
-   
+   async function handleObservacao() {
+   await toast.promise(
+    await api.put('atualizarObaservacao',{
+        id_contrato:dadosassociado?.contrato.id_contrato,
+        anotacao:dadosassociado?.contrato.anotacoes
+    }),
+    {
+error:'',
+pending:'',
+success:''
+    }
+
+    )
+ 
+    
+   }
     function mensalidadeSet(){
         setDados(false),setDependentes(false),setHistorico(true)
         if (tabelaRef.current) {
@@ -354,13 +369,13 @@ export default function AdmContrato(){
     </div>  
    
 <div>
-   <div className="w-full mb-2 mt-2 border  rounded-lg  bg-gray-700 border-gray-600">
+   <div className="w-full  mt-2 border  rounded-lg  bg-gray-700 border-gray-600">
        <div className="px-4 py-2 bg-white rounded-t-lg dark:bg-gray-800">
           
-           <textarea  rows={4} className="w-full px-0 text-sm pl-2  border-0 bg-gray-800 focus:ring-0 text-white placeholder-gray-400" placeholder="Digite aqui todas as observações em relação ao plano" required />
+           <textarea  rows={4} className="w-full px-0 text-sm pl-2  border-0 bg-gray-800 focus:ring-0 text-white placeholder-gray-400" placeholder="Digite aqui todas as observações em relação ao plano" />
        </div>
        <div className="flex items-center justify-end px-3 py-2 border-t dark:border-gray-600">
-           <button type="submit" className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
+           <button onClick={()=>handleObservacao()}  type="button" className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
                SALVAR
            </button>
            <div className="flex ps-0 space-x-1 rtl:space-x-reverse sm:ps-2">
