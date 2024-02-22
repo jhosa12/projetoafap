@@ -13,10 +13,6 @@ export function ModalMensalidade(){
     const [componentMounted, setComponentMounted] = useState(false);
     const [status,setStatus]=useState('')
 
-
-
-
-
         useEffect(()=>{
         //Faz com que o valor pago/total inicie com o valor principal
 
