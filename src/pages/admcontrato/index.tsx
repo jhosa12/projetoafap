@@ -352,11 +352,26 @@ export default function AdmContrato(){
         })}} className="absolute -right-1 -top-1  text-blue-400"><FaEdit size={16}/></button>
 </div>
     </div>  
-    <div className="flex flex-row w-full justify-end mt-2 ">
    
-    </div>
-    
-        </div>)}
+<div>
+   <div className="w-full mb-2 mt-2 border  rounded-lg  bg-gray-700 border-gray-600">
+       <div className="px-4 py-2 bg-white rounded-t-lg dark:bg-gray-800">
+          
+           <textarea  rows={4} className="w-full px-0 text-sm   border-0 bg-gray-800 focus:ring-0 text-white placeholder-gray-400" placeholder="Digite aqui todas as observações em relação ao plano" required />
+       </div>
+       <div className="flex items-center justify-end px-3 py-2 border-t dark:border-gray-600">
+           <button type="submit" className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
+               Post comment
+           </button>
+           <div className="flex ps-0 space-x-1 rtl:space-x-reverse sm:ps-2">
+           </div>
+       </div>
+   </div>
+   </div> 
+   </div>
+)}
+
+
         {historico && (
            
 <div   className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)] max-w-[calc(100vw-275px)]  p-2 shadow-md sm:rounded-lg">
