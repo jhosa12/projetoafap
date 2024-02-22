@@ -11,6 +11,7 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
     const {closeModa,data,dadosassociado} = useContext(AuthContext)
     const [mountedComponente,setMounted]= useState(true)
     const [aba,setAba] = useState(1)
+    
     useEffect(()=>{
       mountedComponente &&  setAba(openEdit)
       setMounted(false)
@@ -66,7 +67,7 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
           <label  className="block mb-1 text-sm font-medium  text-white">NUMERO</label>
           <input defaultValue={data.numero}  autoComplete="off" type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
-          <div className="col-span-1">
+          <div className="col-span-2">
           <label  className="block mb-1 text-sm font-medium  text-white">BAIRRO</label>
           <input defaultValue={data.bairro} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
@@ -76,7 +77,7 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">UF</label>
-            <select defaultValue={data.uf} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm   text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <select defaultValue={data.uf} onChange={(e)=>closeModa({uf:e.target.value})} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm   text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option selected></option>
                   <option>AC</option>
                   <option>AL</option>
@@ -131,10 +132,7 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
           <label  className="block mb-1 text-sm font-medium  text-white">NATURALIDADE</label>
           <input defaultValue={data.naturalidade} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
-          <div className="col-span-2">
-          <label  className="block mb-1 text-sm font-medium  text-white">EMAIL</label>
-          <input defaultValue={data.email}  autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-          </div>
+       
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">CELULAR1</label>
           <InputMask defaultValue={data.celular1} mask={'(99) 9 9999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
@@ -147,10 +145,22 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
           <label  className="block mb-1 text-sm font-medium  text-white">TELEFONE</label>
           <InputMask defaultValue={data.telefone}  mask={'(99) 9 9999-9999'} type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
+          <div className="col-span-2">
+          <label  className="block mb-1 text-sm font-medium  text-white">EMAIL</label>
+          <input defaultValue={data.email}  autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
         </div>
             </div>
         </div>
         <div className={`${aba===2?"":"hidden"} p-4  rounded-lg md:p-8 bg-gray-800`}>
+    <div className="inline-flex gap-2 mb-2">
+      <span className=" text-sm text-white font-medium">SITUAÇÃO:</span>
+    <label className="relative inline-flex w-[120px] justify-center  items-center  cursor-pointer">
+  <input checked={data.contrato?.situacao==='ATIVO'?true:false} onChange={()=>closeModa({contrato:{...(data.contrato),situacao:data.contrato?.situacao==='ATIVO'?'INATIVO':'ATIVO'}})}  type="checkbox" value="2" className="sr-only peer"/>
+  <div className="absolute right-20 w-9 h-5 rounded-full peer bg-red-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1.9px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-green-600"></div>
+  <span className={`ms-6 text-sm font-medium  ${data.contrato?.situacao==='ATIVO'?"text-green-500":"text-red-500"}`}>{data.contrato?.situacao}</span>
+</label>
+      </div>  
 <div  className="grid gap-2 grid-flow-c-dense pl-2 pr-2 w-full  md:grid-cols-4" >
   
   <div className="col-span-1">
@@ -159,7 +169,7 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
     </div>
    
     <div className="col-span-1">
-    <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">ORIGEM</label>
+    <label  className="block mb-1 text-sm font-medium  text-white">ORIGEM</label>
       <select value={data.origem} onChange={e=>closeModa({origem:e.target.value})} className="block w-full  pb-1 pt-1 pr-2 pl-2 sm:text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
         <option selected></option>
         <option >PLANO NOVO</option>
@@ -239,17 +249,11 @@ selected={item.descricao === data.contrato?.plano ? true : false}
     <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={data.contrato?.dt_carencia} onChange={e=>e && closeModa({contrato:{...data.contrato,dt_carencia:e}})} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
     </div>
    
-    <div className="col-span-4 inline-flex gap-4 justify-end">
-    <button  type='button' className="flex flex-row justify-center items-center bg-blue-600 rounded-lg p-3 gap-2 text-white">SALVAR DADOS</button>
-
-
-    </div>
-   
   </div>
         </div>
-        <div className={`${aba===3?"":"hidden"} p-4 bg-white rounded-lg dark:bg-gray-800`} id="faq" role="tabpanel" aria-labelledby="faq-tab">
-            <div id="accordion-flush" data-accordion="collapse" data-active-classes="bg-white dark:bg-gray-800 text-gray-900 dark:text-white" data-inactive-classes="text-gray-500 dark:text-gray-400">
-                <h2 id="accordion-flush-heading-1">
+        <div className={`${aba===3?"":"hidden"} p-2  rounded-lg bg-gray-800`} >
+            <div >
+                <h2>
                     <button type="button" className="flex items-center justify-between w-full py-5 font-medium text-left rtl:text-right text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400" data-accordion-target="#accordion-flush-body-1" aria-expanded="true" aria-controls="accordion-flush-body-1">
                     <span>What is Flowbite?</span>
                     <svg data-accordion-icon className="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -298,6 +302,9 @@ selected={item.descricao === data.contrato?.plano ? true : false}
                 </div>
             </div>
         </div>
+        <div className="inline-flex w-full justify-end p-2">
+    <button  type='button' className="flex flex-row justify-center items-center bg-blue-600 rounded-lg p-2 text-white font-medium">SALVAR</button>
+    </div>
     </div>
 </div>
 

@@ -15,7 +15,7 @@ export function ModalMensalidade(){
 
 
 
-// Adicione isso no final do componente ou em algum lugar apropriado onde você deseja definir componentMounted como true
+
 
         useEffect(()=>{
         //Faz com que o valor pago/total inicie com o valor principal
@@ -62,6 +62,11 @@ export function ModalMensalidade(){
         if(data.mensalidade?.status ===status){
             toast.error(`Mensalidade com ${acao} já realizado`)
             return;
+        }
+        if(dadosassociado?.contrato.situacao==='INATIVO'){
+            toast.info(`Contrato inativo, impossivel realizar ${acao}!`)
+            return
+
         }
      
         if(data.mensalidadeAnt?.status==='A'){
