@@ -17,6 +17,8 @@ import { FaEdit } from "react-icons/fa";
 import { ModalEditarDados } from "@/components/modalEditarDados";
 import { Tooltip } from 'react-tooltip';
 import { BiSave } from "react-icons/bi";
+import { IoMdEye } from "react-icons/io";
+import { IoMdEyeOff } from "react-icons/io";
 import 'react-tooltip/dist/react-tooltip.css';
 export default function AdmContrato(){
    
@@ -31,6 +33,7 @@ export default function AdmContrato(){
     const [excluirDependente,setExcluirDependente]=useState(false)
     const [openEdit,setOpenEdit] = useState<number>(0)
     const [observacao, setObservacao] = useState('');
+    const [verObs,setVerObs] =useState(false)
    async function handleObservacao() {
   // await toast.promise(
     //await api.put('atualizarObaservacao',{
@@ -381,6 +384,12 @@ export default function AdmContrato(){
 <div>
    <div className="w-full  mt-2 border  rounded-lg  bg-gray-700 border-gray-600">
    <div className="flex gap-2 items-center justify-end px-2 py-1 border-b dark:border-gray-600">
+      <button onClick={()=>setVerObs(!verObs)}  type="button" className="inline-flex items-center py-1 px-2  text-center text-white 0 rounded-lg  hover:bg-blue-800">
+     {verObs?<IoMdEye data-tooltip-id="my-tooltip"
+  data-tooltip-content="Ocultar Observações" size={20}/> : <IoMdEyeOff data-tooltip-id="my-tooltip"
+  data-tooltip-content="Visualizar Observações" size={20}/>}
+           </button>
+  
    <input value={observacao ?? ''} onChange={e=>setObservacao(e.target.value ?? '')} placeholder="Digite aqui todas as observações em relação ao plano" type="text"  className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-sm bg-gray-800 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
            <button onClick={()=>handleObservacao()}  type="button" className="inline-flex items-center py-1 px-2  text-center text-white bg-blue-700 rounded-lg  hover:bg-blue-800">
            <BiSave size={22}/>
@@ -389,7 +398,7 @@ export default function AdmContrato(){
        </div>
        <div className="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
           
-           <textarea value={data.contrato?.anotacoes ?? ''}  disabled rows={4} className="w-full px-0 text-sm pl-2  border-0 bg-gray-800 focus:ring-0 text-white placeholder-gray-400" />
+           <textarea value={verObs?data.contrato?.anotacoes: ''}  disabled rows={4} className="w-full px-0 text-sm pl-2  border-0 bg-gray-800 focus:ring-0 text-white placeholder-gray-400" />
        </div>
     
    </div>
