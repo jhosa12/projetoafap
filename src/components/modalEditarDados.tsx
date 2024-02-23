@@ -182,7 +182,7 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
                   <TbAlertTriangle className='text-gray-400' size={60}/>
                 </div>
                 <h3 className="mb-5 text-lg font-normal  text-gray-400">{`Realmente deseja inativar o contrato Nº ${data.contrato?.id_contrato}`}?</h3>
-                <input placeholder="Informe o motivo da Inativação" autoComplete='off' value={data.mensalidade?.exclusao_motivo} onChange={e=>closeModa({mensalidade:{...data.mensalidade,exclusao_motivo:e.target.value}})}  type="text" required className="block uppercase w-full mb-2 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+                <input placeholder="Informe o motivo da Inativação" autoComplete='off' value={''}   type="text" required className="block uppercase w-full mb-2 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
                 <button onClick={()=>{}} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
                     Sim, tenho certeza
                 </button>

@@ -21,6 +21,26 @@ import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
 import 'react-tooltip/dist/react-tooltip.css';
 import { da } from "date-fns/locale";
+
+
+interface MensalidadeProps{
+    parcela_n:number,
+    vencimento:Date,
+    cobranca:Date,
+    valor_principal:number,
+    close:boolean,
+    status:string,
+    usuario:string,
+    id_mensalidade:number,
+    valor_total:number,
+    motivo_bonus: string,
+    data_pgto:Date | string,
+    referencia:string,
+    index:number
+}
+
+
+
 export default function AdmContrato(){
    
     const {data,closeModa,dadosassociado,carregarDados,usuario} = useContext(AuthContext)
@@ -36,6 +56,23 @@ export default function AdmContrato(){
     const [observacao, setObservacao] = useState('');
     const [verObs,setVerObs] =useState(false)
     const [componenteMounted,setMounted]=useState(false)
+    const [linhasSelecionadas, setLinhasSelecionadas] = useState<Array<Partial<MensalidadeProps>>>([]);
+
+    // Função para adicionar ou remover linhas do array de linhas selecionadas
+    const toggleSelecionada = (item:MensalidadeProps) => {
+        const index = linhasSelecionadas.findIndex((linha) => linha.id_mensalidade === item.id_mensalidade);
+
+        if (index === -1) {
+            // Adiciona a linha ao array se não estiver selecionada
+            setLinhasSelecionadas([...linhasSelecionadas, item]);
+        } else {
+            // Remove a linha do array se já estiver selecionada
+            const novasLinhasSelecionadas = [...linhasSelecionadas];
+            novasLinhasSelecionadas.splice(index, 1);
+            setLinhasSelecionadas(novasLinhasSelecionadas);
+        }
+        console.log(item)
+    };
 
 
    function handleObservacao() {
@@ -142,26 +179,26 @@ async function atualizarObs() {
   }
 
   async function excluirMesal(){
-    if(!data.mensalidade?.id_mensalidade){
+    if(!linhasSelecionadas){
         toast.info("Selecione uma mensalidade");
         return;
     }
-    if(!data.mensalidade.exclusao_motivo){
-        toast.info("Informe um motivo para a exclusão!");
-        return;
-    }
-   
-    if(data.mensalidade?.status==='P'){
+ 
+   linhasSelecionadas.map((mensalidade)=>{
+    if(mensalidade.status==='P'){
         toast.warn('Mensalidade Paga! Para excluir solite ao gerente');
-        return;
+        return ;
     }
+
+   })
+    
     setExcluir(false)
     try{
      const response = await toast.promise(
             api.delete('/mensalidade/delete',{
-               params:{
-                id_mensalidade:data.mensalidade?.id_mensalidade
-               }  
+             data:{
+                mensalidades:linhasSelecionadas
+             } 
             }),
             {
                 pending: `Efetuando`,
@@ -174,7 +211,7 @@ async function atualizarObs() {
              closeModa({mensalidade:{}})
              
     }catch(err){
-        toast.error(`Erro ao excluir: ${err}`)
+        console.log(err)
     }
   }
   async function adicionarMensalidade(){
@@ -463,7 +500,7 @@ async function atualizarObs() {
                   <TbAlertTriangle className='text-gray-400' size={60}/>
                 </div>
                 <h3 className="mb-5 text-lg font-normal  text-gray-400">Realmente deseja deletar esssa mensalidade?</h3>
-                <input placeholder="Informe o motivo da exclusão" autoComplete='off' value={data.mensalidade?.exclusao_motivo} onChange={e=>closeModa({mensalidade:{...data.mensalidade,exclusao_motivo:e.target.value}})}  type="text" required className="block uppercase w-full mb-2 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+               
                 <button onClick={excluirMesal} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
                     Sim, tenho certeza
                 </button>
@@ -524,11 +561,13 @@ async function atualizarObs() {
         <tbody  >
             {dadosassociado?.mensalidade.map((item,index)=>(  
                checkMensal?(
-                <tr key={index} onClick={()=>{closeModa({mensalidade:{
-                    id_mensalidade:item.id_mensalidade,
-                    status:item.status
-                }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600  ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":item.status==='P'? 'text-blue-500':'text-white'}`}>
-                   
+                <tr key={index} //onClick={()=>{closeModa({mensalidade:{
+                   // id_mensalidade:item.id_mensalidade,
+                   // status:item.status
+               // }})}}
+               onClick={()=>toggleSelecionada(item)}
+                //className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600  ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":item.status==='P'? 'text-blue-500':'text-white'}`}>
+                className={`border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-600" : "bg-gray-800"} border-gray-700 hover:bg-gray-500 hover:text-black`}>
                 <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
                     {item.parcela_n}
                 </th>
@@ -591,11 +630,12 @@ async function atualizarObs() {
                 </td>
             </tr>
                ):item.status==='A'?(
-                <tr key={index} onClick={()=>{closeModa({mensalidade:{
-                    id_mensalidade:item.id_mensalidade,
-                    status:item.status
-                }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600 ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-white'}`}>
-                   
+                <tr key={index} //onClick={()=>{closeModa({mensalidade:{
+                   // id_mensalidade:item.id_mensalidade,
+                   // status:item.status
+               // }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600 ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-white'}`}>
+               onClick={()=>toggleSelecionada(item)}
+               className={`border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-600" : "bg-gray-800"} border-gray-700 hover:bg-gray-500 hover:text-black`}>
                    <th scope="row" className="px-5 py-1 font-medium  whitespace-nowrap">
                     {item.parcela_n}
                 </th>
