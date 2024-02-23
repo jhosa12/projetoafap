@@ -45,11 +45,11 @@ export default function AdmContrato(){
 
    // )
 
-   const novaObservacao = observacao.trim() + '\n';
+   const novaObservacao = observacao.trim();
 
    if (novaObservacao !== '') {
      const anotacoesAntigas = data.contrato?.anotacoes || ''; // Definindo um valor padrão para anotacoesAntigas caso seja null ou undefined
-     closeModa({ contrato: { anotacoes: anotacoesAntigas + novaObservacao } });
+     closeModa({ contrato: { anotacoes: anotacoesAntigas + novaObservacao + ' '+ `[${usuario?.nome+' ' +'em'+' '+ new Date().toLocaleDateString() }]`+ '\n' } }) ;
      setObservacao('');
    }
  
