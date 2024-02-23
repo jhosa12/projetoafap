@@ -20,6 +20,7 @@ import { BiSave } from "react-icons/bi";
 import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
 import 'react-tooltip/dist/react-tooltip.css';
+import { da } from "date-fns/locale";
 export default function AdmContrato(){
    
     const {data,closeModa,dadosassociado,carregarDados,usuario} = useContext(AuthContext)
@@ -34,30 +35,46 @@ export default function AdmContrato(){
     const [openEdit,setOpenEdit] = useState<number>(0)
     const [observacao, setObservacao] = useState('');
     const [verObs,setVerObs] =useState(false)
-   async function handleObservacao() {
-  // await toast.promise(
-    //await api.put('atualizarObaservacao',{
-     //   id_contrato:dadosassociado?.contrato.id_contrato,
-     //   anotacao:dadosassociado?.contrato.anotacoes
-  //  }),
-    //{
-//error:'',
-//pending:'',
-//success:''
-   // }
 
-   // )
 
-   const novaObservacao = observacao.trim();
+   function handleObservacao() {
+    
+   const novaObservacao = observacao.trim() ;
 
    if (novaObservacao !== '') {
-     const anotacoesAntigas = data.contrato?.anotacoes || ''; // Definindo um valor padrão para anotacoesAntigas caso seja null ou undefined
-     closeModa({ contrato: { anotacoes: anotacoesAntigas + novaObservacao + ' '+ `[${usuario?.nome+' ' +'em'+' '+ new Date().toLocaleDateString() }]`+ '\n' } }) ;
-     setObservacao('');
+     const anotacoesAntigas = dadosassociado && dadosassociado.contrato?.anotacoes || ''; // Definindo um valor padrão para anotacoesAntigas caso seja null ou undefined
+    closeModa({ contrato: { anotacoes: anotacoesAntigas + novaObservacao + ' '+ `[${usuario?.nome+' ' +'em'+' '+ new Date().toLocaleDateString() }]`+ '\n' } }) ;
+     setObservacao('')
    }
- 
+   }
+
+   useEffect(()=>{
+    atualizarObs()
+ },[data.contrato?.anotacoes] )
+async function atualizarObs() {
+    try{
+        console.log(data.contrato?.anotacoes)
+      const response =  await toast.promise(
+            api.put('/atualizarObservacao',{
+             id_contrato:dadosassociado?.contrato.id_contrato,
+             anotacoes:data.contrato?.anotacoes
+          }),
+           {
+       error:'Erro ao adicionar Observação',
+       pending:'Adicionando Observação',
+       success:'Observação inserida com sucesso'
+           }
+          
+           )
+       
+           await carregarDados()
     
-   }
+       } catch(err){
+        console.log(err)
+       }
+    
+    
+}
     function mensalidadeSet(){
         setDados(false),setDependentes(false),setHistorico(true)
         if (tabelaRef.current) {
@@ -84,6 +101,7 @@ export default function AdmContrato(){
   }, [data.id_associado]);
 
   useEffect(() => {
+  
     if (dadosassociado?.contrato.situacao === 'INATIVO') {
         toast.error('CONTRATO INATIVO');
       }
@@ -398,7 +416,7 @@ export default function AdmContrato(){
        </div>
        <div className="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
           
-           <textarea value={verObs?data.contrato?.anotacoes: ''}  disabled rows={4} className="w-full px-0 text-sm pl-2  border-0 bg-gray-800 focus:ring-0 text-white placeholder-gray-400" />
+           <textarea value={verObs?dadosassociado.contrato?.anotacoes: ''}   disabled rows={4} className="w-full px-0 text-sm pl-2  border-0 bg-gray-800 focus:ring-0 text-white placeholder-gray-400" />
        </div>
     
    </div>
