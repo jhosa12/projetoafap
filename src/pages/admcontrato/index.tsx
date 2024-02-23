@@ -21,6 +21,7 @@ import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
 import 'react-tooltip/dist/react-tooltip.css';
 import { da } from "date-fns/locale";
+import { ModalAcordos } from "@/components/modalAcordos";
 
 
 interface MensalidadeProps{
@@ -288,9 +289,10 @@ async function atualizarObs() {
         <div className="flex w-full mr-2 ">
         {data.closeModalPlano && (<ModalBusca/>)}
         {data.closeModalCadastro && (<Teste/>)}
-        {data.mensalidade?.close && <ModalMensalidade/>}
+        {data.mensalidade?.close && (<ModalMensalidade/>)}
         {data.dependente?.close && <ModalDependentes/>}
         {data.closeEditarAssociado && <ModalEditarDados openEdit={openEdit}/>}
+       {data.mensalidade?.closeAcordo && (<ModalAcordos mensalidades={linhasSelecionadas}/>)}
         <div className="flex  flex-col pl-4 ">
         <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
         <button onClick={()=>closeModa({closeModalPlano:true,mensalidade:{}})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
@@ -323,7 +325,7 @@ async function atualizarObs() {
     </ul>
     <div className="flex flex-col">
  
-     {dados && dadosassociado && (<div className={` p-4  rounded-lg md:p-8`}>
+     {dados && dadosassociado && (<div className={`p-4  rounded-lg md:p-8`}>
               <h2 className="inline-flex gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">
                 {dadosassociado?.contrato.id_contrato}-{dadosassociado?.nome}
                  <span>PLANO:
@@ -480,8 +482,8 @@ async function atualizarObs() {
  <RiAddCircleFill size={20}/>
     Adicionar
   </button>
-  <button type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
-    Settings
+  <button type="button" onClick={()=>closeModa({mensalidade:{closeAcordo:true}})} className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+    Acordos
   </button>
   <button onClick={()=>setExcluir(!excluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2   bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
    <MdDeleteForever size={20}/>
@@ -698,7 +700,6 @@ async function atualizarObs() {
 
                ):''
                 
-               
             ))}
             
         </tbody>

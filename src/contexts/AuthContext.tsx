@@ -41,7 +41,8 @@ type MensalidadeProps={
     motivo_bonus: string,
     data_pgto:Date | string,
     referencia:string,
-    index:number
+    index:number,
+    closeAcordo:boolean
 }
 type DadosCadastro={
     
