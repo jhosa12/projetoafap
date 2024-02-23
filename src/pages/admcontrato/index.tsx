@@ -16,6 +16,7 @@ import { ModalDependentes } from "@/components/modalDependentes";
 import { FaEdit } from "react-icons/fa";
 import { ModalEditarDados } from "@/components/modalEditarDados";
 import { Tooltip } from 'react-tooltip';
+import { BiSave } from "react-icons/bi";
 import 'react-tooltip/dist/react-tooltip.css';
 export default function AdmContrato(){
    
@@ -29,19 +30,28 @@ export default function AdmContrato(){
     const [excluir,setExcluir]=useState(false)
     const [excluirDependente,setExcluirDependente]=useState(false)
     const [openEdit,setOpenEdit] = useState<number>(0)
+    const [observacao, setObservacao] = useState('');
    async function handleObservacao() {
-   await toast.promise(
-    await api.put('atualizarObaservacao',{
-        id_contrato:dadosassociado?.contrato.id_contrato,
-        anotacao:dadosassociado?.contrato.anotacoes
-    }),
-    {
-error:'',
-pending:'',
-success:''
-    }
+  // await toast.promise(
+    //await api.put('atualizarObaservacao',{
+     //   id_contrato:dadosassociado?.contrato.id_contrato,
+     //   anotacao:dadosassociado?.contrato.anotacoes
+  //  }),
+    //{
+//error:'',
+//pending:'',
+//success:''
+   // }
 
-    )
+   // )
+
+   const novaObservacao = observacao.trim() + '\n';
+
+   if (novaObservacao !== '') {
+     const anotacoesAntigas = data.contrato?.anotacoes || ''; // Definindo um valor padrão para anotacoesAntigas caso seja null ou undefined
+     closeModa({ contrato: { anotacoes: anotacoesAntigas + novaObservacao } });
+     setObservacao('');
+   }
  
     
    }
@@ -370,17 +380,18 @@ success:''
    
 <div>
    <div className="w-full  mt-2 border  rounded-lg  bg-gray-700 border-gray-600">
-       <div className="px-4 py-2 bg-white rounded-t-lg dark:bg-gray-800">
-          
-           <textarea  rows={4} className="w-full px-0 text-sm pl-2  border-0 bg-gray-800 focus:ring-0 text-white placeholder-gray-400" placeholder="Digite aqui todas as observações em relação ao plano" />
-       </div>
-       <div className="flex items-center justify-end px-3 py-2 border-t dark:border-gray-600">
-           <button onClick={()=>handleObservacao()}  type="button" className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
-               SALVAR
+   <div className="flex gap-2 items-center justify-end px-2 py-1 border-b dark:border-gray-600">
+   <input value={observacao ?? ''} onChange={e=>setObservacao(e.target.value ?? '')} placeholder="Digite aqui todas as observações em relação ao plano" type="text"  className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-sm bg-gray-800 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+           <button onClick={()=>handleObservacao()}  type="button" className="inline-flex items-center py-1 px-2  text-center text-white bg-blue-700 rounded-lg  hover:bg-blue-800">
+           <BiSave size={22}/>
            </button>
-           <div className="flex ps-0 space-x-1 rtl:space-x-reverse sm:ps-2">
-           </div>
+           
        </div>
+       <div className="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
+          
+           <textarea value={data.contrato?.anotacoes ?? ''}  disabled rows={4} className="w-full px-0 text-sm pl-2  border-0 bg-gray-800 focus:ring-0 text-white placeholder-gray-400" />
+       </div>
+    
    </div>
    </div> 
    </div>
