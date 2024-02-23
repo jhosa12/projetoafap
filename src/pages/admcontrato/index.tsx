@@ -35,6 +35,7 @@ export default function AdmContrato(){
     const [openEdit,setOpenEdit] = useState<number>(0)
     const [observacao, setObservacao] = useState('');
     const [verObs,setVerObs] =useState(false)
+    const [componenteMounted,setMounted]=useState(false)
 
 
    function handleObservacao() {
@@ -49,15 +50,17 @@ export default function AdmContrato(){
    }
 
    useEffect(()=>{
-    atualizarObs()
+  if(componenteMounted){atualizarObs()}
+   setMounted(true)
  },[data.contrato?.anotacoes] )
 async function atualizarObs() {
+   
     try{
-        console.log(data.contrato?.anotacoes)
+     
       const response =  await toast.promise(
             api.put('/atualizarObservacao',{
              id_contrato:dadosassociado?.contrato.id_contrato,
-             anotacoes:data.contrato?.anotacoes
+             anotacoes:data.contrato?.anotacoes?.toUpperCase()
           }),
            {
        error:'Erro ao adicionar Observação',
@@ -87,6 +90,7 @@ async function atualizarObs() {
       try {
         await carregarDados();
         closeModa({contrato:{},dependente:{}})
+        setVerObs(false)
 
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
