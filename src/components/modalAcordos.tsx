@@ -163,6 +163,10 @@ export function ModalAcordos({mensalidades}:{mensalidades:Array<Partial<Mensalid
     <label  className="block mb-1 text-xs font-medium  text-white">TOTAL ACORDO</label>
     <input disabled type="text" value={data.mensalidade?.valor_principal} onChange={e=>closeModa({mensalidade:{...(data.mensalidade),valor_principal:Number(e.target.value)}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
+<div className="mb-1 col-span-1">
+    <label  className="block mb-1 text-xs font-medium  text-white">REALIZADO POR</label>
+    <input disabled type="text" value={data.mensalidade?.valor_principal} onChange={e=>closeModa({mensalidade:{...(data.mensalidade),valor_principal:Number(e.target.value)}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+</div>
 
 
 <div className="mb-1 col-span-4">
@@ -170,7 +174,7 @@ export function ModalAcordos({mensalidades}:{mensalidades:Array<Partial<Mensalid
     <input type="text" placeholder="Descreva aqui todos os detalhes do acordo" className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className=" gap-2 col-span-4  flex flex-row justify-end">
-<button type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>SALVAR</button>
+<button type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>APLICAR</button>
 
 
 </div>
@@ -206,7 +210,7 @@ export function ModalAcordos({mensalidades}:{mensalidades:Array<Partial<Mensalid
         <tbody  >
             {mensalidades.map((item,index)=>(  
                 <tr key={index} 
-                className={` border-b "bg-gray-800"} border-gray-700 hover:bg-gray-500 hover:text-black`}>
+                className={` border-b "bg-gray-800"} border-gray-700 `}>
                 <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
                     {item.parcela_n}
                 </th>

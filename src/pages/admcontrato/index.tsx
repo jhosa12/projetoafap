@@ -62,7 +62,10 @@ export default function AdmContrato(){
     // Função para adicionar ou remover linhas do array de linhas selecionadas
     const toggleSelecionada = (item:MensalidadeProps) => {
         const index = linhasSelecionadas.findIndex((linha) => linha.id_mensalidade === item.id_mensalidade);
-
+if(item.status==='P'){
+    toast.info('Mensalidade Paga!')
+    return;
+}
         if (index === -1) {
             // Adiciona a linha ao array se não estiver selecionada
             setLinhasSelecionadas([...linhasSelecionadas, item]);
