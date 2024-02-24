@@ -141,7 +141,7 @@ export function ModalAcordos({mensalidades}:{mensalidades:Array<Partial<Mensalid
     <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
        
     <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
-    <div className="fixed flex flex-col  w-2/4  rounded-lg  shadow bg-gray-800">
+    <div className="fixed flex flex-col  w-2/4  max-h-[calc(100vh-150px)] rounded-lg  shadow bg-gray-800">
     <button  type="button" onClick={()=>closeModa({mensalidade:{close:false}})} className="absolute cursor-pointer right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
     <IoIosClose size={30}/>
         </button>
@@ -175,17 +175,15 @@ export function ModalAcordos({mensalidades}:{mensalidades:Array<Partial<Mensalid
 
 </div>
     </div>
-   
-    
-<label className="flex flex-row justify-center  font-semibold pt-2 text-white">REFERÊNCIAS</label>
-<div className="flex items-center justify-center w-full h-full overflow-y-auto pl-2 pr-2">
 
-
+</form>
+<label className="flex w-full justify-center text-white font-semibold p-1">REFERÊNCIAS</label>
+<div className="flex-col overflow-auto w-full justify-center items-center max-h-[350px] bg-gray-800 rounded-lg mb-4 pl-2 pr-2">
     <table 
-     className=" w-full overflow-y-auto  overflow-x-auto text-xs text-center rtl:text-center border-collapse rounded-lg text-gray-400">
-        <thead  className="sticky   top-0  text-xs uppercase bg-gray-700 text-gray-400">
+    className="flex-col w-full p-2 overflow-y-auto overflow-x-auto  text-xs text-center rtl:text-center border-collapse  rounded-lg text-gray-400">
+    <thead className=" text-xs uppercase bg-gray-700 text-gray-400">
             <tr >
-                <th scope="col" className="px-4 py-1">
+                <th scope="col" className="px-2 py-1">
                     NP
                 </th>
                 <th scope="col" className=" px-2 py-1">
@@ -207,12 +205,7 @@ export function ModalAcordos({mensalidades}:{mensalidades:Array<Partial<Mensalid
         </thead>
         <tbody  >
             {mensalidades.map((item,index)=>(  
-                <tr key={index} //onClick={()=>{closeModa({mensalidade:{
-                   // id_mensalidade:item.id_mensalidade,
-                   // status:item.status
-               // }})}}
-              
-                //className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600  ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":item.status==='P'? 'text-blue-500':'text-white'}`}>
+                <tr key={index} 
                 className={` border-b "bg-gray-800"} border-gray-700 hover:bg-gray-500 hover:text-black`}>
                 <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
                     {item.parcela_n}
@@ -241,9 +234,7 @@ export function ModalAcordos({mensalidades}:{mensalidades:Array<Partial<Mensalid
         </tbody>
     
     </table>
-</div>
-
-</form>
+    </div>
 </div>
 </div>
 </div>)
