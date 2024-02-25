@@ -28,19 +28,17 @@ export function ModalAcordos({mensalidades}:{mensalidades:Array<Partial<Mensalid
     const [desconto,setDesconto] = useState(false)
     const [componentMounted, setComponentMounted] = useState(false);
     const [status,setStatus]=useState('')
-
+    const[valor,setValor]=useState<number>()
+    const [user,setUser] = useState<string>('')
         useEffect(()=>{
         //Faz com que o valor pago/total inicie com o valor principal
 
-        closeModa({mensalidade:{...(data.mensalidade || {}),index:data.mensalidade?.index,data_pgto:new Date(),valor_total:data.mensalidade?.valor_principal}})
+       const valor_total = mensalidades.reduce((total,mensalidade)=>total+Number(mensalidade.valor_principal),0)
+       setValor(valor_total)
+       setUser(usuario?.nome ||'')
       
        
-        if(data.mensalidade?.index || data.mensalidade?.index===0){
-           closeModa({
-               mensalidadeProx:{...dadosassociado?.mensalidade[data.mensalidade.index+1]},
-           })
-       
-       }
+     
       },[])
       useEffect(()=>{
       
@@ -161,11 +159,11 @@ export function ModalAcordos({mensalidades}:{mensalidades:Array<Partial<Mensalid
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">TOTAL ACORDO</label>
-    <input disabled type="text" value={data.mensalidade?.valor_principal} onChange={e=>closeModa({mensalidade:{...(data.mensalidade),valor_principal:Number(e.target.value)}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input disabled type="text" value={valor}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">REALIZADO POR</label>
-    <input disabled type="text" value={data.mensalidade?.valor_principal} onChange={e=>closeModa({mensalidade:{...(data.mensalidade),valor_principal:Number(e.target.value)}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input disabled type="text" value={user}   className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 
 

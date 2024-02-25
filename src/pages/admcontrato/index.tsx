@@ -170,6 +170,7 @@ async function atualizarObs() {
         tabelaRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
       }
 
+      // Criação do grupo com mensalidades em Acordo!! novo array
       const mensalidadesE =dadosassociado?.mensalidade && dadosassociado.mensalidade.filter(mensalidade => mensalidade.status === 'E');
 
       const valor_total=   mensalidadesE?.reduce((total,mensalidade)=>total+Number(mensalidade.valor_principal),0)
