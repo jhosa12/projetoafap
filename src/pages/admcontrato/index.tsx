@@ -58,7 +58,25 @@ export default function AdmContrato(){
     const [verObs,setVerObs] =useState(false)
     const [componenteMounted,setMounted]=useState(false)
     const [linhasSelecionadas, setLinhasSelecionadas] = useState<Array<Partial<MensalidadeProps>>>([]);
+    const [showSublinhas, setShowSublinhas] = useState<boolean>(false);
+ 
+  
+const mensalidadesE =dadosassociado?.mensalidade && dadosassociado.mensalidade.filter(mensalidade => mensalidade.status === 'E');
+  
+  const valor_total=   mensalidadesE?.reduce((total,mensalidade)=>total+Number(mensalidade.valor_principal),0)
+    console.log(mensalidadesE)
+    console.log(valor_total)
+    const mensalidadesComGrupoE:Array<Partial<MensalidadeProps>> =dadosassociado?.mensalidade ?? [];
+    const indicePrimeiroE = mensalidadesComGrupoE.findIndex(item => item.status === 'E');
 
+    if (indicePrimeiroE !== -1) {
+      mensalidadesComGrupoE.splice(indicePrimeiroE, 0, {
+        id_mensalidade: 0, // Um identificador único para o grupo "E"
+        status: 'E', // Status "E" para indicar que é um grupo
+        valor_principal: valor_total,
+        // Outras propriedades do grupo "E", se necessário
+      });
+    }
     // Função para adicionar ou remover linhas do array de linhas selecionadas
     const toggleSelecionada = (item:MensalidadeProps) => {
         const index = linhasSelecionadas.findIndex((linha) => linha.id_mensalidade === item.id_mensalidade);
@@ -163,7 +181,7 @@ async function atualizarObs() {
         // Ajusta o scrollTop para a altura total da tabela
         tabelaRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
       }
-    
+
       
     // Marcar o componente como desmontado quando ele for desmontado
   }, [dadosassociado?.contrato?.situacao, dadosassociado?.mensalidade]);
@@ -564,15 +582,34 @@ async function atualizarObs() {
             </tr>
         </thead>
         <tbody  >
-            {dadosassociado?.mensalidade.map((item,index)=>(  
-               checkMensal?(
+     
+        {/*showSublinhas && mensalidadesE?.map(mensalidade => (
+            <tr key={mensalidade.id_mensalidade}>
+              <td>{mensalidade.parcela_n}</td>
+              <td>{mensalidade.valor_principal}</td>
+              <td>{mensalidade.status}</td>
+            </tr>
+        ))*/}
+            {dadosassociado?.mensalidade.map((item,index)=>( 
+                     item.id_mensalidade === 0 && !showSublinhas?
+                       (  <tr onClick={() => setShowSublinhas(!showSublinhas)}>
+                            <td>Grupo E</td>
+                            <td>{valor_total}</td>
+                            <td>Status E</td>
+                          </tr>):       
+                            
+               checkMensal?
+            
+               (
+
                 <tr key={index} //onClick={()=>{closeModa({mensalidade:{
                    // id_mensalidade:item.id_mensalidade,
                    // status:item.status
                // }})}}
+    
                onClick={()=>toggleSelecionada(item)}
                 //className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600  ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":item.status==='P'? 'text-blue-500':'text-white'}`}>
-                className={`border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-600" : "bg-gray-800"} border-gray-700 hover:bg-gray-500 hover:text-black`}>
+                className={`border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade)? "bg-gray-600" : "bg-gray-800"} border-gray-700 hover:bg-gray-500 hover:text-black   ${!showSublinhas && item.status==='E'?"hidden":''}`}>
                 <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
                     {item.parcela_n}
                 </th>
@@ -704,6 +741,8 @@ async function atualizarObs() {
                ):''
                 
             ))}
+        {/* Encontrar a primeira mensalidade com status 'E' */}
+
             
         </tbody>
     
