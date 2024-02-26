@@ -70,6 +70,10 @@ if(item.status==='P'){
     toast.info('Mensalidade Paga!')
     return;
 }
+if(item.status ==='E'){
+    toast.info('Mensalidade em acordo!')
+    return;
+}
         if (index === -1) {
             // Adiciona a linha ao array se não estiver selecionada
             setLinhasSelecionadas([...linhasSelecionadas, item]);
@@ -197,7 +201,8 @@ async function atualizarObs() {
             // Outras propriedades do grupo "E", se necessário
           });
         }
-        setMensalidaGrupo(dadosassociado?.mensalidade || [])
+       dadosassociado?.mensalidade && setMensalidaGrupo(dadosassociado?.mensalidade)
+       
     // Marcar o componente como desmontado quando ele for desmontado
   }, [dadosassociado?.contrato?.situacao, dadosassociado?.mensalidade]);
  
@@ -605,12 +610,12 @@ async function atualizarObs() {
               <td>{mensalidade.status}</td>
             </tr>
         ))*/}
-            {mensalidadeComGrupoE.map((item,index)=>( 
+            {dadosassociado?.mensalidade.map((item,index)=>( 
                      item.id_mensalidade === 0?
-                       (  <tr className=" hover:bg-gray-600 font-semibold text-yellow-500 border-b bg-gray-800 border-gray-700" onClick={() => setShowSublinhas(!showSublinhas)}>
+                       (  <tr className="cursor-pointer hover:bg-gray-600 font-semibold text-yellow-500 border-b bg-gray-800 border-gray-700" onClick={() => setShowSublinhas(!showSublinhas)}>
                             <td>{}</td>
                             <td>ACORDO</td>
-                            <td>{item.valor_principal}</td>
+                            <td>R$ {item.valor_principal}</td>
                             <td>{}</td>
                             <td>{}</td>
                             <td>{}</td>
@@ -620,8 +625,10 @@ async function atualizarObs() {
                             <td>{}</td>
                             <td>{}</td>
                             <td>{}</td>
-                            <td>{}</td>
-                            <td>{}</td>
+                            <td>
+                                <button className={`font-medium  hover:underline ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-blue-500'}`}>
+                                    Baixar/Editar</button>
+                            </td>
                           </tr>):       
                             
                checkMensal?
@@ -694,16 +701,16 @@ async function atualizarObs() {
                     motivo_bonus:item.motivo_bonus,
                     data_pgto:item.data_pgto ? item.data_pgto: new Date(),
                     index:index
-                    }})}} className={`font-medium  hover:underline ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-blue-500'}`}>Baixar/Editar</button>
+                    }})}} className={`font-medium ${item.status ==='E' ? "hidden":''}  hover:underline ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-blue-500'}`}>Baixar/Editar</button>
                 </td>
             </tr>
-               ):item.status==='A'?(
+               ):item.status==='A' || item.status==='E'?(
                 <tr key={index} //onClick={()=>{closeModa({mensalidade:{
                    // id_mensalidade:item.id_mensalidade,
                    // status:item.status
                // }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600 ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-white'}`}>
                onClick={()=>toggleSelecionada(item)}
-               className={`border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-600" : "bg-gray-800"} border-gray-700 hover:bg-gray-500 hover:text-black `}>
+               className={`border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade)? "bg-gray-600" : "bg-gray-800"}  ${item.status==='E' && "text-yellow-500"} border-gray-700  hover:bg-gray-500 hover:text-black   ${!showSublinhas && item.status==='E' || item.parcela_n===0?"hidden":''}`}>
                    <th scope="row" className="px-5 py-1 font-medium  whitespace-nowrap">
                     {item.parcela_n}
                 </th>
