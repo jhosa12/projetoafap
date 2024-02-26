@@ -29,6 +29,7 @@ type DependentesProps={
     exclusao_motivo:string
 }
 type MensalidadeProps={
+   
     parcela_n:number,
     vencimento:Date,
     cobranca:Date,
@@ -101,6 +102,16 @@ origem:string,
 supervisor:string
 
 }
+type AcordoProps={
+    total_acordo:number,
+    data_inicio:Date,
+    data_fim:Date,
+    realizado_por:string,
+    dt_pgto:Date,
+    mensalidade:Array<MensalidadeProps>,
+    status:string
+
+}
 
 type AssociadoProps={
 nome:string,
@@ -121,6 +132,7 @@ uf:string,
 mensalidade:Array<MensalidadeProps>,
 contrato:ContratoProps,
 dependentes:Array<DependentesProps>
+acordo:Array<AcordoProps>
 
 }
 type AuthContextData = {

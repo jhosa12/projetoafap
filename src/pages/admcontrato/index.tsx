@@ -22,7 +22,7 @@ import { IoMdEyeOff } from "react-icons/io";
 import 'react-tooltip/dist/react-tooltip.css';
 import { da } from "date-fns/locale";
 import { ModalAcordos } from "@/components/modalAcordos";
-
+import React from 'react';
 
 interface MensalidadeProps{
     parcela_n:number,
@@ -202,7 +202,7 @@ async function atualizarObs() {
           });
         }
        dadosassociado?.mensalidade && setMensalidaGrupo(dadosassociado?.mensalidade)
-       
+      
     // Marcar o componente como desmontado quando ele for desmontado
   }, [dadosassociado?.contrato?.situacao, dadosassociado?.mensalidade]);
  
@@ -610,28 +610,83 @@ async function atualizarObs() {
               <td>{mensalidade.status}</td>
             </tr>
         ))*/}
-            {dadosassociado?.mensalidade.map((item,index)=>( 
-                     item.id_mensalidade === 0?
-                       (  <tr className="cursor-pointer hover:bg-gray-600 font-semibold text-yellow-500 border-b bg-gray-800 border-gray-700" onClick={() => setShowSublinhas(!showSublinhas)}>
-                            <td>{}</td>
-                            <td>ACORDO</td>
-                            <td>R$ {item.valor_principal}</td>
-                            <td>{}</td>
-                            <td>{}</td>
-                            <td>{}</td>
-                            <td>{}</td>
-                            <td>{}</td>
-                            <td>{}</td>
-                            <td>{}</td>
-                            <td>{}</td>
-                            <td>{}</td>
-                            <td>
-                                <button className={`font-medium  hover:underline ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-blue-500'}`}>
-                                    Baixar/Editar</button>
-                            </td>
-                          </tr>):       
+          {dadosassociado?.mensalidade.map((item, index) => (
+  item.id_mensalidade === 0 ? (
+    <React.Fragment key={index}>
+      {dadosassociado.acordo.map((i, l) => (
+        <React.Fragment key={l}>
+        <tr onAuxClick={()=>setShowSublinhas(!showSublinhas)} className="cursor-pointer hover:bg-gray-600 font-semibold text-yellow-500 border-b bg-gray-800 border-gray-700" onClick={() => setShowSublinhas(!showSublinhas)} key={l}>
+          <td className="px-2 py-1">{/* Renderizar algo aqui */}</td>
+          <td className="px-2 py-1">ACORDO</td>
+          <td className="px-2 py-1">VALOR:R${i.total_acordo}</td>
+          <td className="px-2 py-1">VENC.:{new Date(i.data_fim).toLocaleDateString()}</td>
+          <td className="px-2 py-1">RESP.:{i.realizado_por}</td>
+          <td className="px-2 py-1">{i.status}</td>
+          <td className="px-2 py-1">{}</td>
+          <td className="px-2 py-1">{}</td>
+          <td className="px-2 py-1">{}</td>
+          <td className="px-2 py-1">{}</td>
+          <td className="px-2 py-1">{}</td>
+          <td className="px-2 py-1">{}</td>
+          {/* Renderizar mais colunas se necessário */}
+          <td>
+            <button className={`font-medium hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>
+              Baixar/Editar
+            </button>
+          </td>
+        </tr>
+        {i.mensalidade?.map((ii, ee) => (
+          <tr   className={`border-b ${!showSublinhas && "hidden" } text-yellow-500 border-gray-700  hover:bg-gray-500 hover:text-black `} key={ee}>
+            <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
+                    {ii.parcela_n}
+                </th>
+                <td className={`px-2 py-1 `}>
+                   {new Date(ii.vencimento).toLocaleDateString()}
+                   
+                </td>
+                <td className="px-2 py-1">
+                   {ii.referencia}
+                </td>
+                <td className="px-5 py-1">
+                {new Date(ii.cobranca).toLocaleDateString()}
+                </td>
+                <td className="px-3 py-1">
+               {`R$${ii.valor_principal}`}
+                </td>
+                <td className={`px-4 py-1 ${ii.status==='A'&& calcularDiferencaEmDias(new Date(),new Date(ii.vencimento))>=1 ?"font-bold text-red-600":item.status=='P'?"font-bold text-blue-600" :''}`}>
+                  {ii.status}
+                </td>
+                <td className="px-4 py-1">
+                  {ii.data_pgto? new Date(ii.data_pgto).toLocaleDateString():''}
+                </td>
+                <td className="px-4 py-1">
+                  {ii.data_pgto? new Date(ii.data_pgto).toLocaleTimeString():''}
+                </td>
+                <td className="px-6 py-1">
+               {ii.usuario}
+                </td>
+                <td className={`px-6 py-1`}>
+                {ii.valor_total?`R$${ii.valor_total}`:''}     
+                </td>
+                <td className="px-4 py-1">
+               
+                </td>
+              
+                <td className="px-4 py-1">
+                    {calcularDiferencaEmDias(new Date(),new Date(ii.vencimento))<=0?0:calcularDiferencaEmDias(new Date(),new Date(ii.vencimento))}
+                </td>
+                <td className="px-4 py-1">
+                  
+                </td>
+               
+          </tr>
+        ))}
+        </React.Fragment>
+      ))}
+    </React.Fragment>
+  ) :      
                             
-               checkMensal?
+               checkMensal && item.status!=='E'?
             
                (
 
@@ -642,7 +697,7 @@ async function atualizarObs() {
     
                onClick={()=>toggleSelecionada(item)}
                 //className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600  ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":item.status==='P'? 'text-blue-500':'text-white'}`}>
-                className={`border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade)? "bg-gray-600" : "bg-gray-800"}  ${item.status==='E' && "text-yellow-500"} border-gray-700  hover:bg-gray-500 hover:text-black   ${!showSublinhas && item.status==='E' || item.parcela_n===0?"hidden":''}`}>
+                className={`border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade)? "bg-gray-600" : "bg-gray-800"}  ${item.status==='E' && "text-yellow-500"} border-gray-700  hover:bg-gray-500 hover:text-black   ${item.parcela_n===0?"hidden":''}`}>
                 <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
                     {item.parcela_n}
                 </th>
@@ -704,13 +759,13 @@ async function atualizarObs() {
                     }})}} className={`font-medium ${item.status ==='E' ? "hidden":''}  hover:underline ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-blue-500'}`}>Baixar/Editar</button>
                 </td>
             </tr>
-               ):item.status==='A' || item.status==='E'?(
+               ):item.status==='A'?(
                 <tr key={index} //onClick={()=>{closeModa({mensalidade:{
                    // id_mensalidade:item.id_mensalidade,
                    // status:item.status
                // }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600 ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-white'}`}>
                onClick={()=>toggleSelecionada(item)}
-               className={`border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade)? "bg-gray-600" : "bg-gray-800"}  ${item.status==='E' && "text-yellow-500"} border-gray-700  hover:bg-gray-500 hover:text-black   ${!showSublinhas && item.status==='E' || item.parcela_n===0?"hidden":''}`}>
+               className={`border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade)? "bg-gray-600" : "bg-gray-800"}   border-gray-700  hover:bg-gray-500 hover:text-black   ${item.parcela_n===0?"hidden":''}`}>
                    <th scope="row" className="px-5 py-1 font-medium  whitespace-nowrap">
                     {item.parcela_n}
                 </th>
@@ -767,7 +822,7 @@ async function atualizarObs() {
                     motivo_bonus:item.motivo_bonus,
                     data_pgto:item.data_pgto ? item.data_pgto: new Date(),
                     index:index
-                    }})}} className={`font-medium  hover:underline ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-blue-500'}`}>Baixar/Editar</button>
+                    }})}} className={`font-medium   hover:underline ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-blue-500'}`}>Baixar/Editar</button>
                 </td>
             </tr>
 

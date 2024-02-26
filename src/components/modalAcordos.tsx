@@ -131,8 +131,7 @@ export function ModalAcordos({mensalidades}:{mensalidades:Array<Partial<Mensalid
             toast.error('Erro ao Baixar Mensalidade') 
         }
       
-       
- 
+    
         await carregarDados();
     }
     return(
