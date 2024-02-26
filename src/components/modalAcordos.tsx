@@ -23,123 +23,36 @@ interface MensalidadeProps{
     index:number
 }
 
-export function ModalAcordos({mensalidades}:{mensalidades:Array<Partial<MensalidadeProps>>}){
+export function ModalAcordos(){
     const {closeModa,data,usuario,carregarDados,dadosassociado}=useContext(AuthContext)
     const [desconto,setDesconto] = useState(false)
     const [componentMounted, setComponentMounted] = useState(false);
     const [status,setStatus]=useState('')
-    const[valor,setValor]=useState<number>()
+   
     const [user,setUser] = useState<string>('')
-        useEffect(()=>{
-        //Faz com que o valor pago/total inicie com o valor principal
 
-       const valor_total = mensalidades.reduce((total,mensalidade)=>total+Number(mensalidade.valor_principal),0)
-       setValor(valor_total)
+
+
+        useEffect(()=>{
+
+       const valor_total =data.acordo?.mensalidade && data.acordo?.mensalidade.reduce((total,mensalidade)=>total+Number(mensalidade.valor_principal),0)
+        
+        if(!data.acordo?.total_acordo)  closeModa({acordo:{...data.acordo,total_acordo:valor_total}});
        setUser(usuario?.nome ||'')
       
        
      
       },[])
-      useEffect(()=>{
-      
-          if((data.mensalidade?.index || data.mensalidade?.index===0) && componentMounted && dadosassociado?.mensalidade[data.mensalidade.index+1]){
-              closeModa({
-                  mensalidade: {
-                      ...(status==='P'?dadosassociado?.mensalidade[data.mensalidade?.index +1]:dadosassociado?.mensalidade[data.mensalidade?.index]),
-                      valor_total:status==='P'?dadosassociado?.mensalidade[data.mensalidade?.index+1].valor_principal:dadosassociado?.mensalidade[data.mensalidade?.index].valor_principal,
-                      index:status==='P'?data.mensalidade?.index+1:data.mensalidade.index,
-                      close:status ==='P'?true:false,
-                      data_pgto:new Date()
-                  },
-                
-                    mensalidadeProx:{...(dadosassociado?.mensalidade[data.mensalidade.index+2]?dadosassociado.mensalidade[data.mensalidade?.index+2]:{})},
-                
-              });
-         
-      
-          }
-      },[dadosassociado?.mensalidade]) 
+     
 
    
-      async function baixarEstornar(status:string,acao:string) {
-        setComponentMounted(true)
-        setStatus(status)
-        if(data.mensalidade?.status ===status){
-            toast.error(`Mensalidade com ${acao} já realizado`)
-            return;
-        }
-        if(dadosassociado?.contrato.situacao==='INATIVO'){
-            toast.info(`Contrato inativo, impossivel realizar ${acao}!`)
-            return
-
-        }
      
-        if(data.mensalidadeAnt?.status==='A'){
-            toast.info('A mensalidade anterior encontra-se em Aberto!')
-            return
-        }
-        if(desconto===true && data.mensalidade?.motivo_bonus===''){
-            toast.info("Informe o motivo do desconto!")
-            return
-        }
-        try{
-            const response = await  toast.promise(
-                api.put('/mensalidade',{
-                    id_mensalidade:data.mensalidade?.id_mensalidade,
-                    status:status,
-                    data_pgto:status==='A'?null:data.mensalidade?.data_pgto && new Date(data.mensalidade?.data_pgto).toLocaleDateString()===new Date().toLocaleDateString()?new Date():data.mensalidade?.data_pgto?new Date(data.mensalidade?.data_pgto):null,
-                    usuario:status==='A'?null:usuario?.nome.toUpperCase(),
-                    valor_total:status==='A'?null:data.mensalidade?.valor_total,
-                    motivo_bonus:status==='A'?null:data.mensalidade?.motivo_bonus?.toUpperCase(),
-                    estorno_dt:status==='P'?null:new Date(),
-                    estorno_user:status==='P'?null:usuario?.nome
-                }),
-                {
-                  pending: `Efetuando ${acao}`,
-                  success: `${acao} efetuada com sucesso`,
-                  error: `Erro ao efetuar ${acao}`
-                 })
-
-                 if((data.mensalidade?.valor_principal ?? 0)<(data.mensalidade?.valor_total ?? 0) && data.mensalidadeProx && status ==='P'){
-                    try{
-                        const response = await api.put('/mensalidade',{
-                            id_mensalidade:data.mensalidadeProx?.id_mensalidade,
-                            valor_principal:Number(data.mensalidadeProx?.valor_principal)-(Number(data.mensalidade?.valor_total)-Number(data.mensalidade?.valor_principal))
-                        })
-                        
-                           
-                    }catch(err){
-                        toast.error('Erro ao Baixar Mensalidade')
-                       
-                    }  
-        }
-        if(((data.mensalidade?.valor_principal ?? 0)>(data.mensalidade?.valor_total ?? 0)) && desconto===false && data.mensalidadeProx && status ==='P'){
-            try{
-                const response = await api.put('/mensalidade',{
-                    id_mensalidade:data.mensalidadeProx?.id_mensalidade,
-                    valor_principal:Number(data.mensalidadeProx?.valor_principal ?? 0)+Number((data.mensalidade?.valor_principal ?? 0)-Number(data.mensalidade?.valor_total ?? 0))
-                })
-                    
-                    // closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status,valor_principal:response.data.valor_principal}})
-            }catch(err){
-                toast.error('Erro ao Baixar Mensalidade')
-            } 
-          
-        }
-     //closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
-        }catch(err){
-            toast.error('Erro ao Baixar Mensalidade') 
-        }
-      
-    
-        await carregarDados();
-    }
     return(
     <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
        
     <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
     <div className="fixed flex flex-col  w-2/4  max-h-[calc(100vh-150px)] rounded-lg  shadow bg-gray-800">
-    <button  type="button" onClick={()=>closeModa({mensalidade:{close:false}})} className="absolute cursor-pointer right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+    <button  type="button" onClick={()=>closeModa({acordo:{closeAcordo:false}})} className="absolute cursor-pointer right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
     <IoIosClose size={30}/>
         </button>
         <form>
@@ -150,19 +63,19 @@ export function ModalAcordos({mensalidades}:{mensalidades:Array<Partial<Mensalid
 
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">DATA INICIO</label>
-    <input type="text" value={data.mensalidade?.vencimento? new Date(data?.mensalidade?.vencimento).toLocaleDateString():''} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),vencimento:new Date(e.target.value)}})}  className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input type="text" value={data.acordo?.data_inicio? new Date(data?.acordo?.data_inicio).toLocaleDateString():''}   className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">DATA FIM</label>
-    <input type="text"value={data.mensalidade?.cobranca? new Date(data?.mensalidade?.cobranca).toLocaleDateString():''} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),cobranca:new Date(e.target.value)}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2 border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input type="text"value={data.acordo?.data_fim? new Date(data?.acordo?.data_fim).toLocaleDateString():''}   className="block w-full  pt-1 pb-1 pl-2 pr-2 border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">TOTAL ACORDO</label>
-    <input disabled type="text" value={valor}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input disabled type="text" value={data.acordo?.total_acordo}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">REALIZADO POR</label>
-    <input disabled type="text" value={user}   className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input disabled type="text" value={data.acordo?.realizado_por} className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 
 
@@ -205,7 +118,7 @@ export function ModalAcordos({mensalidades}:{mensalidades:Array<Partial<Mensalid
             </tr>
         </thead>
         <tbody  >
-            {mensalidades.map((item,index)=>(  
+            {data.acordo?.mensalidade && data.acordo?.mensalidade.map((item,index)=>(  
                 <tr key={index} 
                 className={` border-b "bg-gray-800"} border-gray-700 `}>
                 <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>

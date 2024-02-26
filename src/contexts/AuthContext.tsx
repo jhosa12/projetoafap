@@ -43,7 +43,7 @@ type MensalidadeProps={
     data_pgto:Date,
     referencia:string,
     index:number,
-    closeAcordo:boolean
+   
 }
 type DadosCadastro={
     
@@ -77,7 +77,8 @@ type DadosCadastro={
     mensalidade:Partial<MensalidadeProps>
     mensalidadeAnt:Partial<MensalidadeProps>
     mensalidadeProx:Partial<MensalidadeProps>,
-    closeEditarAssociado:boolean
+    closeEditarAssociado:boolean,
+    acordo:Partial<AcordoProps>
 }
 type PlanosProps={
     id_plano:number,
@@ -108,9 +109,10 @@ type AcordoProps={
     data_fim:Date,
     realizado_por:string,
     dt_pgto:Date,
-    mensalidade:Array<MensalidadeProps>,
-    status:string
-
+    mensalidade:Array<Partial<MensalidadeProps>>,
+    status:string,
+    descricao:string
+    closeAcordo:boolean
 }
 
 type AssociadoProps={
@@ -132,7 +134,7 @@ uf:string,
 mensalidade:Array<MensalidadeProps>,
 contrato:ContratoProps,
 dependentes:Array<DependentesProps>
-acordo:Array<AcordoProps>
+acordo:Array<AcordoProps> 
 
 }
 type AuthContextData = {

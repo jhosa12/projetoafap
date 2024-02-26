@@ -65,7 +65,7 @@ export default function AdmContrato(){
 
     // Função para adicionar ou remover linhas do array de linhas selecionadas
     const toggleSelecionada = (item:MensalidadeProps) => {
-        const index = linhasSelecionadas.findIndex((linha) => linha.id_mensalidade === item.id_mensalidade);
+        const index =linhasSelecionadas.findIndex((linha) => linha.id_mensalidade === item.id_mensalidade);
 if(item.status==='P'){
     toast.info('Mensalidade Paga!')
     return;
@@ -76,14 +76,16 @@ if(item.status ==='E'){
 }
         if (index === -1) {
             // Adiciona a linha ao array se não estiver selecionada
-            setLinhasSelecionadas([...linhasSelecionadas, item]);
+            setLinhasSelecionadas([...linhasSelecionadas,item]);
+            closeModa({acordo:{mensalidade:[...linhasSelecionadas,item]}})
         } else {
             // Remove a linha do array se já estiver selecionada
             const novasLinhasSelecionadas = [...linhasSelecionadas];
-            novasLinhasSelecionadas.splice(index, 1);
+            novasLinhasSelecionadas.splice(index ?? 0 , 1);
             setLinhasSelecionadas(novasLinhasSelecionadas);
+            closeModa({acordo:{mensalidade:novasLinhasSelecionadas}})
         }
-        console.log(item)
+       
     };
 
 
@@ -189,7 +191,6 @@ async function atualizarObs() {
             valor_principal: Number(valor_total),
             close:true,
             valor_total:0,
-            closeAcordo:true,
             cobranca:new Date(),
             data_pgto:new Date(),
             index:0,
@@ -333,7 +334,7 @@ async function atualizarObs() {
         {data.mensalidade?.close && (<ModalMensalidade/>)}
         {data.dependente?.close && <ModalDependentes/>}
         {data.closeEditarAssociado && <ModalEditarDados openEdit={openEdit}/>}
-       {data.mensalidade?.closeAcordo && (<ModalAcordos mensalidades={linhasSelecionadas}/>)}
+       {data.acordo?.closeAcordo && (<ModalAcordos />)}
         <div className="flex  flex-col pl-4 ">
         <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
         <button onClick={()=>closeModa({closeModalPlano:true,mensalidade:{}})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
@@ -523,7 +524,7 @@ async function atualizarObs() {
  <RiAddCircleFill size={20}/>
     Adicionar
   </button>
-  <button type="button" onClick={()=>closeModa({mensalidade:{closeAcordo:true}})} className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+  <button type="button" onClick={()=>closeModa({acordo:{...data.acordo,closeAcordo:true}})} className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
     Acordos
   </button>
   <button onClick={()=>setExcluir(!excluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2   bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
@@ -630,7 +631,19 @@ async function atualizarObs() {
           <td className="px-2 py-1">{}</td>
           {/* Renderizar mais colunas se necessário */}
           <td>
-            <button className={`font-medium hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>
+            <button onClick={(event)=>{
+                    event.stopPropagation()
+                    closeModa({acordo:{closeAcordo:true, mensalidade:i.mensalidade,
+                        data_fim:i.data_fim,
+                        data_inicio:i.data_inicio,
+                        dt_pgto:i.dt_pgto,
+                        realizado_por:i.realizado_por,
+                        status:i.status,
+                        total_acordo:i.total_acordo,
+
+                    }})
+                    
+                    }} className={`font-medium hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>
               Baixar/Editar
             </button>
           </td>
@@ -641,19 +654,19 @@ async function atualizarObs() {
                     {ii.parcela_n}
                 </th>
                 <td className={`px-2 py-1 `}>
-                   {new Date(ii.vencimento).toLocaleDateString()}
+                   {ii.vencimento && new Date(ii.vencimento).toLocaleDateString()}
                    
                 </td>
                 <td className="px-2 py-1">
                    {ii.referencia}
                 </td>
                 <td className="px-5 py-1">
-                {new Date(ii.cobranca).toLocaleDateString()}
+                {ii.cobranca && new Date(ii.cobranca).toLocaleDateString()}
                 </td>
                 <td className="px-3 py-1">
                {`R$${ii.valor_principal}`}
                 </td>
-                <td className={`px-4 py-1 ${ii.status==='A'&& calcularDiferencaEmDias(new Date(),new Date(ii.vencimento))>=1 ?"font-bold text-red-600":item.status=='P'?"font-bold text-blue-600" :''}`}>
+                <td className={`px-4 py-1 ${ii.status==='A'&& ii.vencimento && calcularDiferencaEmDias(new Date(), new Date(ii.vencimento))>=1 ?"font-bold text-red-600":item.status=='P'?"font-bold text-blue-600" :''}`}>
                   {ii.status}
                 </td>
                 <td className="px-4 py-1">
@@ -673,7 +686,7 @@ async function atualizarObs() {
                 </td>
               
                 <td className="px-4 py-1">
-                    {calcularDiferencaEmDias(new Date(),new Date(ii.vencimento))<=0?0:calcularDiferencaEmDias(new Date(),new Date(ii.vencimento))}
+                    {ii.vencimento && calcularDiferencaEmDias(new Date(),new Date(ii.vencimento))<=0?0:ii.vencimento && calcularDiferencaEmDias(new Date(),new Date(ii.vencimento))}
                 </td>
                 <td className="px-4 py-1">
                   
@@ -690,10 +703,7 @@ async function atualizarObs() {
             
                (
 
-                <tr key={index} //onClick={()=>{closeModa({mensalidade:{
-                   // id_mensalidade:item.id_mensalidade,
-                   // status:item.status
-               // }})}}
+                <tr key={index} 
     
                onClick={()=>toggleSelecionada(item)}
                 //className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600  ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":item.status==='P'? 'text-blue-500':'text-white'}`}>
