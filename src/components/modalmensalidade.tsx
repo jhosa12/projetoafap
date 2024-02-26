@@ -65,7 +65,7 @@ export function ModalMensalidade(){
 
         }
      
-        if(data.mensalidadeAnt?.status==='A'){
+        if(data.mensalidadeAnt?.status==='A'|| data.mensalidadeAnt?.status==='E'){
             toast.info('A mensalidade anterior encontra-se em Aberto!')
             return
         }

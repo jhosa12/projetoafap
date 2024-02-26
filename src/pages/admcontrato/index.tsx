@@ -607,10 +607,21 @@ async function atualizarObs() {
         ))*/}
             {mensalidadeComGrupoE.map((item,index)=>( 
                      item.id_mensalidade === 0?
-                       (  <tr onClick={() => setShowSublinhas(!showSublinhas)}>
-                            <td>Grupo E</td>
+                       (  <tr className=" hover:bg-gray-600 font-semibold text-yellow-500 border-b bg-gray-800 border-gray-700" onClick={() => setShowSublinhas(!showSublinhas)}>
+                            <td>{}</td>
+                            <td>ACORDO</td>
                             <td>{item.valor_principal}</td>
-                            <td>Status E</td>
+                            <td>{}</td>
+                            <td>{}</td>
+                            <td>{}</td>
+                            <td>{}</td>
+                            <td>{}</td>
+                            <td>{}</td>
+                            <td>{}</td>
+                            <td>{}</td>
+                            <td>{}</td>
+                            <td>{}</td>
+                            <td>{}</td>
                           </tr>):       
                             
                checkMensal?
@@ -624,7 +635,7 @@ async function atualizarObs() {
     
                onClick={()=>toggleSelecionada(item)}
                 //className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600  ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":item.status==='P'? 'text-blue-500':'text-white'}`}>
-                className={`border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade)? "bg-gray-600" : "bg-gray-800"} border-gray-700 hover:bg-gray-500 hover:text-black   ${!showSublinhas && item.status==='E' || item.parcela_n===0?"hidden":''}`}>
+                className={`border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade)? "bg-gray-600" : "bg-gray-800"}  ${item.status==='E' && "text-yellow-500"} border-gray-700  hover:bg-gray-500 hover:text-black   ${!showSublinhas && item.status==='E' || item.parcela_n===0?"hidden":''}`}>
                 <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
                     {item.parcela_n}
                 </th>
