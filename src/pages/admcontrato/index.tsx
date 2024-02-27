@@ -21,6 +21,7 @@ import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
 import 'react-tooltip/dist/react-tooltip.css';
 import { ModalAcordos } from "@/components/modalAcordos";
+import { Item } from "@/components/dadosTitular";
 
 
 interface MensalidadeProps{
@@ -60,7 +61,7 @@ export default function AdmContrato(){
     const [showSublinhas, setShowSublinhas] = useState<boolean>(false);
     const [mensalidadeComGrupoE,setMensalidaGrupo] =useState<Array<MensalidadeProps>>([]);
  
-  
+    let currentAcordoId :string | null=null;
 
     // Função para adicionar ou remover linhas do array de linhas selecionadas
     const toggleSelecionada = (item:MensalidadeProps) => {
@@ -182,24 +183,25 @@ async function atualizarObs() {
         const indicePrimeiroE = dadosassociado?.mensalidade.findIndex(item => item.status === 'E');
         
     
-        if (indicePrimeiroE !== -1) {
-          dadosassociado?.mensalidade.splice(Number(indicePrimeiroE), 0, {
-            id_mensalidade: 0, // Um identificador único para o grupo "E"
-            status: 'E', // Status "E" para indicar que é um grupo
-            valor_principal: Number(valor_total),
-            close:true,
-            valor_total:0,
-            cobranca:new Date(),
-            data_pgto:new Date(),
-            index:0,
-            motivo_bonus:'',
-             parcela_n:0,
-             referencia:'',
-            usuario:'',
-            vencimento:new Date()
+      //  if (indicePrimeiroE !== -1) {
+        //  dadosassociado?.mensalidade.splice(Number(indicePrimeiroE), 0, {
+        //    id_mensalidade: 0, // Um identificador único para o grupo "E"
+         //   status: 'E', // Status "E" para indicar que é um grupo
+         //   valor_principal: Number(valor_total),
+       //    close:true,
+        //    valor_total:0,
+        //    cobranca:new Date(),
+        //    data_pgto:new Date(),
+        //    index:0,
+         //   motivo_bonus:'',
+          //   parcela_n:0,
+          //   referencia:'',
+         //   usuario:'',
+         //   vencimento:new Date()
             // Outras propriedades do grupo "E", se necessário
-          });
-        }
+        //  }
+      //  );
+     //   }
        dadosassociado?.mensalidade && setMensalidaGrupo(dadosassociado?.mensalidade)
       
     // Marcar o componente como desmontado quando ele for desmontado
@@ -603,17 +605,22 @@ async function atualizarObs() {
         </thead>
         <tbody  >
      
-        {/*showSublinhas && mensalidadesE?.map(mensalidade => (
-            <tr key={mensalidade.id_mensalidade}>
-              <td>{mensalidade.parcela_n}</td>
-              <td>{mensalidade.valor_principal}</td>
-              <td>{mensalidade.status}</td>
-            </tr>
-        ))*/}
-          {dadosassociado?.mensalidade.map((item, index) => (
-  item.id_mensalidade === 0 ? (
-    <React.Fragment key={index}>
-      {dadosassociado.acordo.map((i, l) => (
+      
+          {dadosassociado?.mensalidade.map((item, index) => {
+
+const idAcordoMudou = currentAcordoId !== item.status;
+currentAcordoId = item.status;
+     return ( idAcordoMudou && item.id_acordo!==null ? (
+            <React.Fragment key={index}>
+               
+              { dadosassociado.acordo.map((i, l) => {
+             
+        
+
+      return(
+
+        
+        
         <React.Fragment key={l}>
         <tr onAuxClick={()=>setShowSublinhas(!showSublinhas)} className="cursor-pointer hover:bg-gray-600 font-semibold text-yellow-500 border-b bg-gray-800 border-gray-700" onClick={() => setShowSublinhas(!showSublinhas)} key={l}>
           <td className="px-2 py-1">{/* Renderizar algo aqui */}</td>
@@ -694,7 +701,8 @@ async function atualizarObs() {
           </tr>
         ))}
         </React.Fragment>
-      ))}
+      )
+     })}
     </React.Fragment>
   ) :      
                             
@@ -837,7 +845,7 @@ async function atualizarObs() {
 
                ):''
                 
-            ))}
+               ) })}
         {/* Encontrar a primeira mensalidade com status 'E' */}
 
             

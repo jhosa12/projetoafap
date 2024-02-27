@@ -43,6 +43,7 @@ type MensalidadeProps={
     data_pgto:Date,
     referencia:string,
     index:number,
+    id_acordo:number
    
 }
 type DadosCadastro={
@@ -112,7 +113,8 @@ type AcordoProps={
     mensalidade:Array<Partial<MensalidadeProps>>,
     status:string,
     descricao:string
-    closeAcordo:boolean
+    closeAcordo:boolean,
+    id_acordo:number
 }
 
 type AssociadoProps={

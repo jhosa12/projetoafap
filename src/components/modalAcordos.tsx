@@ -1,11 +1,13 @@
 import { IoIosClose } from "react-icons/io";
 import { MdSaveAlt } from "react-icons/md";
-import { IoIosArrowDropdownCircle } from "react-icons/io";
-import { GiReturnArrow } from "react-icons/gi";
+
 import { AuthContext } from "@/contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
+import DatePicker,{registerLocale} from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import pt from 'date-fns/locale/pt-BR';
 
 interface MensalidadeProps{
     parcela_n:number,
@@ -37,10 +39,10 @@ export function ModalAcordos(){
 
        const valor_total =data.acordo?.mensalidade && data.acordo?.mensalidade.reduce((total,mensalidade)=>total+Number(mensalidade.valor_principal),0)
         
-        if(!data.acordo?.total_acordo)  closeModa({acordo:{...data.acordo,total_acordo:valor_total}});
+        if(!data.acordo?.total_acordo && !data.acordo?.data_inicio)  closeModa({acordo:{...data.acordo,total_acordo:valor_total,data_inicio:new Date()}});
        setUser(usuario?.nome ||'')
       
-       
+      
      
       },[])
 
@@ -57,23 +59,28 @@ export function ModalAcordos(){
             toast.info("Preencha todos os campos!")
             return;
         }
-        const response = await toast.promise(
-            api.post('/novoAcordo',{
-                id_contrato:dadosassociado?.contrato.id_contrato,
-                data_inicio:data.acordo?.data_inicio,
-                data_fim:data.acordo?.data_fim,
-                total_acordo:data.acordo?.total_acordo,
-                realizado_por:data.acordo?.realizado_por ,
-                dt_criacao:new Date() ,
-                user_criacao:usuario?.nome,
-                mensalidades:novasMensalidades
-            }),
-            {
-                error:'Erro ao Criar Acordo!',
-                pending:'Adicionando novo acordo!',
-                success:'Acordo Adicionado com Sucesso'
-        }
-        )
+        try{
+            const response = await toast.promise(
+                api.post('/novoAcordo',{
+                    id_contrato:dadosassociado?.contrato.id_contrato,
+                    id_associado:dadosassociado?.id_associado,
+                    data_inicio:data.acordo?.data_inicio,
+                    data_fim:data.acordo?.data_fim,
+                    total_acordo:data.acordo?.total_acordo,
+                    realizado_por:data.acordo?.realizado_por ,
+                    dt_criacao:new Date() ,
+                    user_criacao:usuario?.nome,
+                    mensalidades:novasMensalidades
+                }),
+                {
+                    error:'Erro ao Criar Acordo!',
+                    pending:'Adicionando novo acordo!',
+                    success:'Acordo Adicionado com Sucesso'
+            }
+            )
+
+        }catch(err){console.log(err)}
+     
         await carregarDados()
       }
      
@@ -96,11 +103,11 @@ export function ModalAcordos(){
 
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">DATA INICIO</label>
-    <input type="text" value={data.acordo?.data_inicio? new Date(data?.acordo?.data_inicio).toLocaleDateString():''}   className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <DatePicker   dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={data.acordo?.data_inicio} onChange={(e)=>e && closeModa({acordo:{...data.acordo,data_inicio:e}})}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">DATA FIM</label>
-    <input type="text"value={data.acordo?.data_fim? new Date(data?.acordo?.data_fim).toLocaleDateString():''}   className="block w-full  pt-1 pb-1 pl-2 pr-2 border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <DatePicker   dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={data.acordo?.data_fim} onChange={(e)=>e && closeModa({acordo:{...data.acordo,data_fim:e}})}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">TOTAL ACORDO</label>
@@ -108,13 +115,13 @@ export function ModalAcordos(){
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">REALIZADO POR</label>
-    <input disabled type="text" value={data.acordo?.realizado_por} className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input type="text" value={data.acordo?.realizado_por} onChange={e=>closeModa({acordo:{...data.acordo,realizado_por:e.target.value}})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 
 
 <div className="mb-1 col-span-4">
     <label  className="block mb-1 text-xs font-medium  text-white">DESCRIÇÃO</label>
-    <input type="text" placeholder="Descreva aqui todos os detalhes do acordo" className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input value={data.acordo?.descricao} onChange={e=>closeModa({acordo:{...data.acordo,descricao:e.target.value}})} type="text" placeholder="Descreva aqui todos os detalhes do acordo" className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className=" gap-2 col-span-4  flex flex-row justify-end">
 <button onClick={()=>criarAcordo()} type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>APLICAR</button>
