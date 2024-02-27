@@ -85,6 +85,28 @@ export function ModalAcordos(){
      
         await carregarDados()
       }
+
+      async function baixarAcordo(){
+        const novasMensalidades = data.acordo?.mensalidade?.map(mensal=>{
+            return {...mensal,status:'P',data_pgto:new Date(),usuario:usuario?.nome,valor_total:mensal.valor_principal}
+        }
+        )
+
+        const response = await toast.promise(
+            api.put('/editarAcordo',{
+           id_acordo:data.acordo?.id_acordo,
+            status:'P',
+            dt_pgto:new Date(),
+            mensalidade:novasMensalidades
+            }),
+            {
+            error:'Erro ao efetuar baixa',
+            pending:'Efetuando Baixa',
+            success:'Baixa Efetuada com sucesso!'
+            }
+        )
+      
+      }
      
 
    
@@ -127,7 +149,7 @@ export function ModalAcordos(){
 </div>
 <div className=" gap-2 col-span-4  flex flex-row justify-end">
 <button onClick={()=>criarAcordo()} type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>APLICAR</button>
-<button onClick={()=>criarAcordo()} type="button" className="flex flex-row justify-center  bg-green-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>BAIXAR ACORDO</button>
+<button onClick={()=>baixarAcordo()} type="button" className="flex flex-row justify-center  bg-green-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>BAIXAR ACORDO</button>
 </div>
     </div>
 

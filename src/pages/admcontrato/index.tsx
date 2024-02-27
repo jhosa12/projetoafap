@@ -637,6 +637,7 @@ currentAcordoId = item.status;
             <button onClick={(event)=>{
                     event.stopPropagation()
                     closeModa({acordo:{closeAcordo:true, mensalidade:i.mensalidade,
+                        id_acordo:i.id_acordo,
                         data_fim:i.data_fim,
                         data_inicio:i.data_inicio,
                         dt_pgto:i.dt_pgto,
@@ -729,7 +730,7 @@ currentAcordoId = item.status;
                 <td className="px-3 py-1">
                {`R$${item.valor_principal}`}
                 </td>
-                <td className={`px-4 py-1 ${item.status==='A' && "font-bold text-red-600"}`}>
+                <td className={`px-4 py-1  font-bold ${item.status==='A' && "text-red-600"}`}>
                   {item.status}
                 </td>
                 <td className="px-4 py-1">
