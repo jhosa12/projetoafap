@@ -21,7 +21,7 @@ import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
 import 'react-tooltip/dist/react-tooltip.css';
 import { ModalAcordos } from "@/components/modalAcordos";
-import { Item } from "@/components/dadosTitular";
+import { FaHandshake } from "react-icons/fa";
 
 
 interface MensalidadeProps{
@@ -526,7 +526,8 @@ async function atualizarObs() {
     Adicionar
   </button>
   <button type="button" onClick={()=>closeModa({acordo:{...data.acordo,closeAcordo:true,visibilidade:false}})} className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
-    Acordos
+   <FaHandshake size={20}/>
+    Acordo
   </button>
   <button onClick={()=>setExcluir(!excluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2   bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
    <MdDeleteForever size={20}/>
