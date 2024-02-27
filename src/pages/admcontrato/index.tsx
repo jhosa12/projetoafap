@@ -81,7 +81,7 @@ if(item.status ==='E'){
         } else {
             // Remove a linha do array se já estiver selecionada
             const novasLinhasSelecionadas = [...linhasSelecionadas];
-            novasLinhasSelecionadas.splice(index ?? 0 , 1);
+            novasLinhasSelecionadas.splice(index , 1);
             setLinhasSelecionadas(novasLinhasSelecionadas);
             closeModa({acordo:{mensalidade:novasLinhasSelecionadas}})
         }
@@ -202,8 +202,8 @@ async function atualizarObs() {
         //  }
       //  );
      //   }
-       dadosassociado?.mensalidade && setMensalidaGrupo(dadosassociado?.mensalidade)
-      
+      // dadosassociado?.mensalidade && setMensalidaGrupo(dadosassociado?.mensalidade)
+      setLinhasSelecionadas([])
     // Marcar o componente como desmontado quando ele for desmontado
   }, [dadosassociado?.contrato?.situacao, dadosassociado?.mensalidade]);
  
@@ -614,9 +614,6 @@ currentAcordoId = item.status;
             <React.Fragment key={index}>
                
               { dadosassociado.acordo.map((i, l) => {
-             
-        
-
       return(
 
         
@@ -646,6 +643,7 @@ currentAcordoId = item.status;
                         realizado_por:i.realizado_por,
                         status:i.status,
                         total_acordo:i.total_acordo,
+                        descricao:i.descricao,
 
                     }})
                     
@@ -731,7 +729,7 @@ currentAcordoId = item.status;
                 <td className="px-3 py-1">
                {`R$${item.valor_principal}`}
                 </td>
-                <td className={`px-4 py-1 ${item.status==='A' && "font-bold"}`}>
+                <td className={`px-4 py-1 ${item.status==='A' && "font-bold text-red-600"}`}>
                   {item.status}
                 </td>
                 <td className="px-4 py-1">

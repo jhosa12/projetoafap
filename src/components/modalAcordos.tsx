@@ -68,6 +68,7 @@ export function ModalAcordos(){
                     data_fim:data.acordo?.data_fim,
                     total_acordo:data.acordo?.total_acordo,
                     realizado_por:data.acordo?.realizado_por ,
+                    descricao:data.acordo.descricao,
                     dt_criacao:new Date() ,
                     user_criacao:usuario?.nome,
                     mensalidades:novasMensalidades
@@ -78,6 +79,7 @@ export function ModalAcordos(){
                     success:'Acordo Adicionado com Sucesso'
             }
             )
+            console.log(novasMensalidades)
 
         }catch(err){console.log(err)}
      
