@@ -3,7 +3,7 @@ import { IoMdSearch } from "react-icons/io";
 import 'react-tabs/style/react-tabs.css';
 import {ModalBusca} from '../../components/modal'
 import Teste from '@/pages/teste/index';
-import { useState,useContext, useEffect, useRef } from "react";
+import React,{ useState,useContext, useEffect, useRef } from "react";
 import { RiFileAddLine } from "react-icons/ri";
 import {AuthContext} from "../../contexts/AuthContext"
 import { toast } from "react-toastify";
@@ -20,9 +20,8 @@ import { BiSave } from "react-icons/bi";
 import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
 import 'react-tooltip/dist/react-tooltip.css';
-import { da } from "date-fns/locale";
 import { ModalAcordos } from "@/components/modalAcordos";
-import React from 'react';
+
 
 interface MensalidadeProps{
     parcela_n:number,
@@ -130,11 +129,10 @@ async function atualizarObs() {
     
 }
     function mensalidadeSet(){
-        setDados(false),setDependentes(false),setHistorico(true)
-        if (tabelaRef.current) {
-            // Ajusta o scrollTop para a altura total da tabela
-            tabelaRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-          }
+        setDados(false),
+        setDependentes(false),
+        setHistorico(true)
+      
     }
   useEffect(() => {
  
@@ -335,6 +333,7 @@ async function atualizarObs() {
         {data.dependente?.close && <ModalDependentes/>}
         {data.closeEditarAssociado && <ModalEditarDados openEdit={openEdit}/>}
        {data.acordo?.closeAcordo && (<ModalAcordos />)}
+      
         <div className="flex  flex-col pl-4 ">
         <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
         <button onClick={()=>closeModa({closeModalPlano:true,mensalidade:{}})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">

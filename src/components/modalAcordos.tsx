@@ -18,7 +18,7 @@ interface MensalidadeProps{
     id_mensalidade:number,
     valor_total:number,
     motivo_bonus: string,
-    data_pgto:Date | string,
+    data_pgto:Date,
     referencia:string,
     index:number
 }
@@ -43,6 +43,39 @@ export function ModalAcordos(){
        
      
       },[])
+
+      async function criarAcordo() {
+
+        const novasMensalidades = data.acordo?.mensalidade?.map(mensal=>{
+            return {...mensal,status:'E',cobranca:data.acordo?.data_fim}
+        })
+        if(!data.acordo?.mensalidade){
+        toast.info("Selecione as referências do acordo!")
+        return;
+        }
+        if(!data.acordo.data_inicio||!data.acordo.data_fim||!data.acordo.descricao||!data.acordo.realizado_por){
+            toast.info("Preencha todos os campos!")
+            return;
+        }
+        const response = await toast.promise(
+            api.post('/novoAcordo',{
+                id_contrato:dadosassociado?.contrato.id_contrato,
+                data_inicio:data.acordo?.data_inicio,
+                data_fim:data.acordo?.data_fim,
+                total_acordo:data.acordo?.total_acordo,
+                realizado_por:data.acordo?.realizado_por ,
+                dt_criacao:new Date() ,
+                user_criacao:usuario?.nome,
+                mensalidades:novasMensalidades
+            }),
+            {
+                error:'Erro ao Criar Acordo!',
+                pending:'Adicionando novo acordo!',
+                success:'Acordo Adicionado com Sucesso'
+        }
+        )
+        await carregarDados()
+      }
      
 
    
@@ -84,9 +117,8 @@ export function ModalAcordos(){
     <input type="text" placeholder="Descreva aqui todos os detalhes do acordo" className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className=" gap-2 col-span-4  flex flex-row justify-end">
-<button type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>APLICAR</button>
-
-
+<button onClick={()=>criarAcordo()} type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>APLICAR</button>
+<button onClick={()=>criarAcordo()} type="button" className="flex flex-row justify-center  bg-green-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>BAIXAR ACORDO</button>
 </div>
     </div>
 
