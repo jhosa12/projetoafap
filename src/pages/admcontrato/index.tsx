@@ -714,7 +714,7 @@ currentAcordoId = item.status;
     
                onClick={()=>toggleSelecionada(item)}
                 //className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600  ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":item.status==='P'? 'text-blue-500':'text-white'}`}>
-                className={`border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade)? "bg-gray-600" : "bg-gray-800"}  ${item.status==='E' && "text-yellow-500"} border-gray-700  hover:bg-gray-500 hover:text-black   ${item.parcela_n===0?"hidden":''}`}>
+                className={`${calcularDiferencaEmDias(new Date(),new Date(item.vencimento))>=1 && item.status==='A' && "text-red-600"} border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade)? "bg-gray-600" : "bg-gray-800"}  ${item.status==='P' && "text-blue-500"} border-gray-700  hover:bg-gray-500 hover:text-black   ${item.parcela_n===0?"hidden":''}`}>
                 <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
                     {item.parcela_n}
                 </th>
@@ -731,7 +731,7 @@ currentAcordoId = item.status;
                 <td className="px-3 py-1">
                {`R$${item.valor_principal}`}
                 </td>
-                <td className={`px-4 py-1 ${item.status==='A'&& calcularDiferencaEmDias(new Date(),new Date(item.vencimento))>=1 ?"font-bold text-red-600":item.status=='P'?"font-bold text-blue-600" :''}`}>
+                <td className={`px-4 py-1 ${item.status==='A' && "font-bold"}`}>
                   {item.status}
                 </td>
                 <td className="px-4 py-1">
@@ -782,7 +782,7 @@ currentAcordoId = item.status;
                    // status:item.status
                // }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600 ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-white'}`}>
                onClick={()=>toggleSelecionada(item)}
-               className={`border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade)? "bg-gray-600" : "bg-gray-800"}   border-gray-700  hover:bg-gray-500 hover:text-black   ${item.parcela_n===0?"hidden":''}`}>
+               className={`${calcularDiferencaEmDias(new Date(),new Date(item.vencimento))>=1 && "text-red-600"}  border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade)? "bg-gray-600" : "bg-gray-800"}   border-gray-700  hover:bg-gray-500 hover:text-black   ${item.parcela_n===0?"hidden":''}`}>
                    <th scope="row" className="px-5 py-1 font-medium  whitespace-nowrap">
                     {item.parcela_n}
                 </th>
@@ -799,7 +799,7 @@ currentAcordoId = item.status;
                 <td className="px-3 py-1">
                {`R$${item.valor_principal}`}
                 </td>
-                <td className={`px-4 py-1 ${item.status==='A'&& calcularDiferencaEmDias(new Date(),new Date(item.vencimento))>=1 ?"font-bold text-red-600":''}`}>
+                <td className={`px-4 py-1 ${item.status==='A' && "font-bold text-red-600"}`}>
                   {item.status}
                 </td>
                 <td className="px-4 py-1">
