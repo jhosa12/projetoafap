@@ -114,7 +114,8 @@ type AcordoProps={
     status:string,
     descricao:string
     closeAcordo:boolean,
-    id_acordo:number
+    id_acordo:number,
+    visibilidade:boolean
 }
 
 type AssociadoProps={

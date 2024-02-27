@@ -525,7 +525,7 @@ async function atualizarObs() {
  <RiAddCircleFill size={20}/>
     Adicionar
   </button>
-  <button type="button" onClick={()=>closeModa({acordo:{...data.acordo,closeAcordo:true}})} className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+  <button type="button" onClick={()=>closeModa({acordo:{...data.acordo,closeAcordo:true,visibilidade:false}})} className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
     Acordos
   </button>
   <button onClick={()=>setExcluir(!excluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2   bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
@@ -619,7 +619,7 @@ currentAcordoId = item.status;
         
         
         <React.Fragment key={l}>
-        <tr onAuxClick={()=>setShowSublinhas(!showSublinhas)} className="cursor-pointer hover:bg-gray-600 font-semibold text-yellow-500 border-b bg-gray-800 border-gray-700" onClick={() => setShowSublinhas(!showSublinhas)} key={l}>
+        <tr onAuxClick={()=>setShowSublinhas(!showSublinhas)} className={` ${i.status !=='A' && "hidden" } cursor-pointer hover:bg-gray-600 font-semibold text-yellow-500 border-b bg-gray-800 border-gray-700`} onClick={() => setShowSublinhas(!showSublinhas)} key={l}>
           <td className="px-2 py-1">{/* Renderizar algo aqui */}</td>
           <td className="px-2 py-1">ACORDO</td>
           <td className="px-2 py-1">VALOR:R${i.total_acordo}</td>
@@ -645,16 +645,16 @@ currentAcordoId = item.status;
                         status:i.status,
                         total_acordo:i.total_acordo,
                         descricao:i.descricao,
-
+                        visibilidade:true,
                     }})
-                    
+                
                     }} className={`font-medium hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>
               Baixar/Editar
             </button>
           </td>
         </tr>
         {i.mensalidade?.map((ii, ee) => (
-          <tr   className={`border-b ${!showSublinhas && "hidden" } text-yellow-500 border-gray-700  hover:bg-gray-500 hover:text-black `} key={ee}>
+          <tr   className={`border-b ${!showSublinhas && "hidden" } ${ii.status!=='E' && "hidden"} text-yellow-500 border-gray-700  hover:bg-gray-500 hover:text-black `} key={ee}>
             <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
                     {ii.parcela_n}
                 </th>
