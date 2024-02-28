@@ -63,6 +63,26 @@ export default function TiArea(){
         
         await lista()
    }
+
+   async function editar(id_ideia:number){
+    try{
+        await toast.promise(
+            api.put('/editarIdeia',{
+               
+                    id_ideia,
+                  status:'CONCLUIDO'
+                
+            }),
+            {
+                error:'Erro ao editar',
+                pending:'Efetuando',
+                success:'Editado com sucesso'
+            }
+        ) 
+    }catch(err){console.log(err)}
+        
+        await lista()
+   }
    
     return(
         <div className="flex w-full h-screen ml-2 mt-2 gap-2 ">
@@ -80,7 +100,7 @@ export default function TiArea(){
                                <span className="flex w-full text-sm justify-end">{new Date(ideia.data_post).toLocaleDateString()}</span>
                                <div className="absolute flex top-1 right-1 gap-2">
                                <button onClick={()=>deletar(Number(ideia.id_ideia))} className="text-red-600 hover:text-red-500" ><MdCancel  size={21}/></button>
-                               <button className="text-green-500 hover:text-green-400" ><FaCheckCircle  size={20}/></button>
+                               <button onClick={()=>editar(Number(ideia.id_ideia))} className="text-green-500 hover:text-green-400" ><FaCheckCircle  size={20}/></button>
                               
                                </div>
                                
@@ -94,12 +114,10 @@ export default function TiArea(){
             <h1 className=" text-white uppercase font-semibold">Concluídas</h1>
             <ul className="flex flex-col w-full">
                         {arrayIdeias.map((ideia,index)=>(
-                          ideia.status==='CONCLUIDA' &&  (<li className="relative flex flex-col rounded-lg p-4 text-white w-full bg-gray-500" key={index}>
-                               <span className="font-semibold">{ideia.descricao}</span>
+                          ideia.status==='CONCLUIDO' &&  (<li className="relative flex flex-col rounded-lg p-4 text-white w-full bg-gray-500" key={index}>
+                              <span className="text-xs break-all pt-2">{ideia.descricao}</span>
                                <span className="flex w-full text-sm justify-end">{new Date(ideia.data_post).toLocaleDateString()}</span>
-                               <div className="absolute flex top-1 right-1 gap-2 ">
-                               <button onClick={()=>deletar(Number(ideia.id_ideia))} type="button" className="flex flex-row justify-center  bg-green-600 rounded-lg p-2 gap-2 text-white"><MdCancel color="blue"  size={21}/></button>
-                               <button ><FaCheckCircle  size={20}/></button>
+                               <div className="absolute flex top-1 right-1 gap-2">
                               
                                </div>
                                
