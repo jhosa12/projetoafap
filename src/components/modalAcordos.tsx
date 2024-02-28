@@ -123,12 +123,16 @@ export function ModalAcordos(){
                id_acordo:data.acordo?.id_acordo,
                 status:'A',
                 dt_pgto:new Date(),
+                data_inicio:data.acordo?.data_inicio,
+                data_fim:data.acordo?.data_fim,
+                descricao:data.acordo?.descricao,
+                total_acordo:data.acordo?.total_acordo,
                 mensalidade:novasMensalidades
                 }),
                 {
-                error:'Erro ao efetuar baixa',
-                pending:'Efetuando Baixa',
-                success:'Baixa Efetuada com sucesso!'
+                error:'Erro ao efetuar atualização',
+                pending:'Efetuando atualização',
+                success:'Atualização Efetuada com sucesso!'
                 }
             )
 

@@ -101,6 +101,7 @@ if(item.status ==='E'){
    }
 
    useEffect(()=>{
+    closeModa({acordo:{...{}}})
   if(componenteMounted){atualizarObs()}
    setMounted(true)
  },[data.contrato?.anotacoes] )
@@ -609,7 +610,9 @@ currentAcordoId = item.status;
           <td>
             <button onClick={(event)=>{
                     event.stopPropagation()
-                    closeModa({acordo:{closeAcordo:true, mensalidade:i.mensalidade,
+                       
+                    closeModa({acordo:{
+                        mensalidade:i.mensalidade,
                         id_acordo:i.id_acordo,
                         data_fim:i.data_fim,
                         data_inicio:i.data_inicio,
@@ -619,6 +622,7 @@ currentAcordoId = item.status;
                         total_acordo:i.total_acordo,
                         descricao:i.descricao,
                         visibilidade:true,
+                        closeAcordo:true, 
                     }})
                 
                     }} className={`font-medium hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>
