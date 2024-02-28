@@ -16,8 +16,11 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Adm from '../admcontrato/index'
 
+import Link from 'next/link';
+
 export default function SideBar(){
  const [isOpen,setIsOpen]= useState(true )
+ const [Ti,setTi] = useState(false)
     return(
       <div className='flex flex-col w-full overscroll-contain '>
         <header>
@@ -50,8 +53,6 @@ export default function SideBar(){
               
             },
           }}>
-    
-
   <Menu  transitionDuration={600}  closeOnClick={true} menuItemStyles={
     {
       button:{
@@ -74,6 +75,7 @@ export default function SideBar(){
       }
     }
   } >
+    
    
     <SubMenu icon={<MdManageAccounts size={30}/>} label={<span className='font-bold'>Administrativo</span>} active={true}>
       <MenuItem icon={<HiDocumentSearch size={25} /> } >Adm Contrato</MenuItem>
@@ -81,13 +83,11 @@ export default function SideBar(){
       <MenuItem icon={<FaMoneyBillTransfer size={23} />} >Movimentação</MenuItem>
       <MenuItem icon={<TbReportMoney size={23}/>}>Relatório</MenuItem>
        </SubMenu>
-     
     </SubMenu>
-    <SubMenu icon={<FaCross size={25} />} label="Fúnebre">
-       <MenuItem icon={<MdNewLabel size={23}/>}>Solicitar Serviço</MenuItem> 
-       <MenuItem icon={<HiDocumentReport size={23}/>}>Relatório</MenuItem>
-       </SubMenu>
-   
+    <Link href={'/TI'} about='external'>
+    <MenuItem onClick={()=>setTi(true)} style={{fontWeight:'bold'}}>Sugestões</MenuItem>
+    </Link>
+    
     <SubMenu icon={<FaCross size={25} />} label="Fúnebre">
        <MenuItem icon={<MdNewLabel size={23}/>}>Solicitar Serviço</MenuItem> 
        <MenuItem icon={<HiDocumentReport size={23}/>}>Relatório</MenuItem>
@@ -99,8 +99,8 @@ export default function SideBar(){
   </Menu>
 </Sidebar>
 </div>
-<Adm/>
+
 </div>  
 </div>
-    )
+  )
 }

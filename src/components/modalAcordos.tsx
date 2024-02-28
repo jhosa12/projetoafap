@@ -9,21 +9,7 @@ import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 
-interface MensalidadeProps{
-    parcela_n:number,
-    vencimento:Date,
-    cobranca:Date,
-    valor_principal:number,
-    close:boolean,
-    status:string,
-    usuario:string,
-    id_mensalidade:number,
-    valor_total:number,
-    motivo_bonus: string,
-    data_pgto:Date,
-    referencia:string,
-    index:number
-}
+
 
 export function ModalAcordos(){
     const {closeModa,data,usuario,carregarDados,dadosassociado}=useContext(AuthContext)
