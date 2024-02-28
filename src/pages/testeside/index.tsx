@@ -15,8 +15,9 @@ import { HiDocumentReport } from "react-icons/hi";
 import { useState } from 'react';
 import Image from 'next/image';
 import Adm from '../admcontrato/index'
-
 import Link from 'next/link';
+
+
 
 export default function SideBar(){
  const [isOpen,setIsOpen]= useState(true )
@@ -85,7 +86,7 @@ export default function SideBar(){
        </SubMenu>
     </SubMenu>
    
-    <MenuItem onClick={()=>setTi(true)} style={{fontWeight:'bold'}}> <Link href={'/TI'} target='_blank' rel='noopener' about='external'>Sugestões  </Link></MenuItem>
+    <MenuItem onClick={()=>setTi(true)} style={{fontWeight:'bold'}}><span> <Link href={'/TI'} target='blank' ><span>Sugestões</span></Link></span></MenuItem>
   
     
     <SubMenu icon={<FaCross size={25} />} label="Fúnebre">

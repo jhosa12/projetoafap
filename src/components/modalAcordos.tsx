@@ -29,7 +29,7 @@ export function ModalAcordos(){
             const novoArray = data.acordo?.mensalidade
       novoArray && novoArray.push(dadosassociado?.mensalidade[ultimoIndex+1])
          
-            closeModa({acordo:{...data.acordo,mensalidade:novoArray}})
+            closeModa({acordo:{...data.acordo,mensalidade:novoArray,total_acordo:novoArray && novoArray.reduce((total,mensalidade)=>total+Number(mensalidade.valor_principal),0)}})
         }
     }
 
@@ -135,19 +135,16 @@ export function ModalAcordos(){
 
         }catch(err){
             console.log(err)
-            console.log(novasMensalidades)
+            
         }
         
       }
-     
-
-   
      
     return(
     <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
     <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
     <div className="fixed flex flex-col  w-2/4  max-h-[calc(100vh-150px)] rounded-lg  shadow bg-gray-800">
-    <button  type="button" onClick={()=>closeModa({acordo:{closeAcordo:false}})} className="absolute cursor-pointer right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+    <button  type="button" onClick={()=>closeModa({acordo:{closeAcordo:false,mensalidade:[]}})} className="absolute cursor-pointer right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
     <IoIosClose size={30}/>
         </button>
         <form>
