@@ -90,7 +90,7 @@ export default function TiArea(){
             <textarea value={descricao} onChange={e=>setDescricao(e.target.value)} placeholder="Digite aqui as ideias e sugestões!" className=" h-2/3 text-sm p-2 rounded-lg  border-0 bg-gray-800 focus:ring-0 text-white placeholder-gray-400" />
                <button onClick={()=>adiocionar()} className=" p-2  text-white font-semibold rounded-lg bg-blue-600">LANÇAR</button>
             </div>
-            <div className="flex flex-row  w-full h-3/4 gap-2 mr-4 ">
+            <div className="flex flex-row  w-full h-[calc(100vh-30px)] gap-2 mr-4 ">
             <div className="flex flex-col items-center overflow-y-auto w-full rounded-lg border-[1px] border-gray-400 p-2 bg-gray-700">
                     <h1 className=" text-white uppercase font-semibold">Sugestões/Ideias Pendentes</h1>
                     <ul className="flex flex-col w-full p-2">

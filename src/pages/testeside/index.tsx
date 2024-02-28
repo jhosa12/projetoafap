@@ -84,9 +84,9 @@ export default function SideBar(){
       <MenuItem icon={<TbReportMoney size={23}/>}>Relatório</MenuItem>
        </SubMenu>
     </SubMenu>
-    <Link href={'/TI'} about='external'>
-    <MenuItem onClick={()=>setTi(true)} style={{fontWeight:'bold'}}>Sugestões</MenuItem>
-    </Link>
+   
+    <MenuItem onClick={()=>setTi(true)} style={{fontWeight:'bold'}}> <Link href={'/TI'} target='_blank' rel='noopener' about='external'>Sugestões  </Link></MenuItem>
+  
     
     <SubMenu icon={<FaCross size={25} />} label="Fúnebre">
        <MenuItem icon={<MdNewLabel size={23}/>}>Solicitar Serviço</MenuItem> 

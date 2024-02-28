@@ -26,8 +26,10 @@ export function ModalAcordos(){
             }
         }
         if(ultimoIndex!==-1 && dadosassociado?.mensalidade){
-          data.acordo?.mensalidade?.push(dadosassociado?.mensalidade[ultimoIndex+1])
-            closeModa({acordo:{...data.acordo,mensalidade:data.acordo?.mensalidade}})
+            const novoArray = data.acordo?.mensalidade
+      novoArray && novoArray.push(dadosassociado?.mensalidade[ultimoIndex+1])
+         
+            closeModa({acordo:{...data.acordo,mensalidade:novoArray}})
         }
     }
 
@@ -102,10 +104,40 @@ export function ModalAcordos(){
         }catch(err){
 
             console.log(err)
+            
         }
         await carregarDados();
     
       
+      }
+
+      async function editarAcordo(){
+        const novasMensalidades = data.acordo?.mensalidade?.map(mensal=>{
+            return {...mensal,status:'E'}
+        }
+        )
+
+        try{
+            const response = await toast.promise(
+                api.put('/editarAcordo',{
+               id_acordo:data.acordo?.id_acordo,
+                status:'A',
+                dt_pgto:new Date(),
+                mensalidade:novasMensalidades
+                }),
+                {
+                error:'Erro ao efetuar baixa',
+                pending:'Efetuando Baixa',
+                success:'Baixa Efetuada com sucesso!'
+                }
+            )
+
+
+        }catch(err){
+            console.log(err)
+            console.log(novasMensalidades)
+        }
+        
       }
      
 
@@ -150,7 +182,7 @@ export function ModalAcordos(){
 {!data.acordo?.visibilidade?(
 <button onClick={()=>criarAcordo()} type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>APLICAR</button>):(
 <div className=" inline-flex w-full justify-between">
-<button onClick={()=>baixarAcordo()} type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>SALVAR</button>
+<button onClick={()=>editarAcordo()} type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>SALVAR</button>
 <button onClick={()=>baixarAcordo()} type="button" className="flex flex-row justify-center  bg-green-600 rounded-lg p-2 gap-2 text-white"><IoIosArrowDropdownCircle size={22}/>BAIXAR ACORDO</button>
 </div>
 )}

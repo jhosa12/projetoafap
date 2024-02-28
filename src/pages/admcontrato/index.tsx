@@ -175,34 +175,6 @@ async function atualizarObs() {
         tabelaRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
       }
 
-      // Criação do grupo com mensalidades em Acordo!! novo array
-      const mensalidadesE =dadosassociado?.mensalidade && dadosassociado.mensalidade.filter(mensalidade => mensalidade.status === 'E');
-
-      const valor_total=   mensalidadesE?.reduce((total,mensalidade)=>total+Number(mensalidade.valor_principal),0)
-     
-        const indicePrimeiroE = dadosassociado?.mensalidade.findIndex(item => item.status === 'E');
-        
-    
-      //  if (indicePrimeiroE !== -1) {
-        //  dadosassociado?.mensalidade.splice(Number(indicePrimeiroE), 0, {
-        //    id_mensalidade: 0, // Um identificador único para o grupo "E"
-         //   status: 'E', // Status "E" para indicar que é um grupo
-         //   valor_principal: Number(valor_total),
-       //    close:true,
-        //    valor_total:0,
-        //    cobranca:new Date(),
-        //    data_pgto:new Date(),
-        //    index:0,
-         //   motivo_bonus:'',
-          //   parcela_n:0,
-          //   referencia:'',
-         //   usuario:'',
-         //   vencimento:new Date()
-            // Outras propriedades do grupo "E", se necessário
-        //  }
-      //  );
-     //   }
-      // dadosassociado?.mensalidade && setMensalidaGrupo(dadosassociado?.mensalidade)
       setLinhasSelecionadas([])
     // Marcar o componente como desmontado quando ele for desmontado
   }, [dadosassociado?.contrato?.situacao, dadosassociado?.mensalidade]);
