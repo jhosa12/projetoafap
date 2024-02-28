@@ -3,6 +3,8 @@ import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import { FaCheckCircle } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
+import { TbAlertTriangle } from "react-icons/tb";
+import { IoIosClose } from "react-icons/io";
 interface IdeiasProps{
     id_ideia:number,
     descricao:string,
@@ -13,6 +15,7 @@ interface IdeiasProps{
 export default function TiArea(){
     const [arrayIdeias,setIdeias]= useState<Array<IdeiasProps>>([])
     const [descricao,setDescricao]=useState('')
+    const [modalExclusao,setModal]=useState<boolean>(true)
    useEffect(()=>{
  
     lista()
@@ -42,6 +45,24 @@ export default function TiArea(){
     await lista()
     
    }
+   async function deletar(id_ideia:number){
+    try{
+        await toast.promise(
+            api.delete('/deletarIdeia',{
+                data:{
+                    id_ideia
+                }
+            }),
+            {
+                error:'Erro ao deletar',
+                pending:'Efetuando',
+                success:'Deletado com sucesso'
+            }
+        ) 
+    }catch(err){console.log(err)}
+        
+        await lista()
+   }
    
     return(
         <div className="flex w-full h-screen ml-2 mt-2 gap-2 ">
@@ -58,7 +79,7 @@ export default function TiArea(){
                                <span className="text-xs break-all pt-2">{ideia.descricao}</span>
                                <span className="flex w-full text-sm justify-end">{new Date(ideia.data_post).toLocaleDateString()}</span>
                                <div className="absolute flex top-1 right-1 gap-2">
-                               <button className="text-red-600 hover:text-red-500" ><MdCancel  size={21}/></button>
+                               <button onClick={()=>deletar(Number(ideia.id_ideia))} className="text-red-600 hover:text-red-500" ><MdCancel  size={21}/></button>
                                <button className="text-green-500 hover:text-green-400" ><FaCheckCircle  size={20}/></button>
                               
                                </div>
@@ -77,7 +98,7 @@ export default function TiArea(){
                                <span className="font-semibold">{ideia.descricao}</span>
                                <span className="flex w-full text-sm justify-end">{new Date(ideia.data_post).toLocaleDateString()}</span>
                                <div className="absolute flex top-1 right-1 gap-2 ">
-                               <button type="button" className="flex flex-row justify-center  bg-green-600 rounded-lg p-2 gap-2 text-white"><MdCancel color="blue"  size={21}/></button>
+                               <button onClick={()=>deletar(Number(ideia.id_ideia))} type="button" className="flex flex-row justify-center  bg-green-600 rounded-lg p-2 gap-2 text-white"><MdCancel color="blue"  size={21}/></button>
                                <button ><FaCheckCircle  size={20}/></button>
                               
                                </div>
@@ -89,6 +110,8 @@ export default function TiArea(){
                     </ul>
             </div>
             </div>
+
+
         </div>
     )
 }
