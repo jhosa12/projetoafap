@@ -95,7 +95,7 @@ export default function TiArea(){
                     <h1 className=" text-white uppercase font-semibold">Sugestões/Ideias Pendentes</h1>
                     <ul className="flex flex-col w-full p-2">
                         {arrayIdeias.map((ideia,index)=>(
-                          ideia.status==='PENDENTE' &&  (<li className="relative flex flex-col rounded-lg p-4 mb-2 text-white w-full bg-gray-500" key={index}>
+                          ideia.status==='PENDENTE' &&  (<li className="relative flex flex-col rounded-lg p-4 mb-2 text-white w-full bg-yellow-600" key={index}>
                                <span className="text-xs break-all pt-2">{ideia.descricao}</span>
                                <span className="flex w-full text-sm justify-end">{new Date(ideia.data_post).toLocaleDateString()}</span>
                                <div className="absolute flex top-1 right-1 gap-2">
@@ -114,7 +114,7 @@ export default function TiArea(){
             <h1 className=" text-white uppercase font-semibold">Concluídas</h1>
             <ul className="flex flex-col w-full">
                         {arrayIdeias.map((ideia,index)=>(
-                          ideia.status==='CONCLUIDO' &&  (<li className="relative flex flex-col rounded-lg p-4 text-white w-full bg-gray-500" key={index}>
+                          ideia.status==='CONCLUIDO' &&  (<li className="relative flex flex-col rounded-lg p-4 text-white w-full bg-green-600" key={index}>
                               <span className="text-xs break-all pt-2">{ideia.descricao}</span>
                                <span className="flex w-full text-sm justify-end">{new Date(ideia.data_post).toLocaleDateString()}</span>
                                <div className="absolute flex top-1 right-1 gap-2">
