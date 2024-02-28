@@ -99,7 +99,7 @@ export default function SideBar(){
   </Menu>
 </Sidebar>
 </div>
-
+<Adm/>
 </div>  
 </div>
   )
