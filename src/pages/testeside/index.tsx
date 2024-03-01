@@ -15,6 +15,7 @@ import Adm from '../admcontrato/index'
 import { canSRRAuth } from '@/utils/canSSRAuth';
 import { MdLogout } from "react-icons/md";
 import { AuthContext } from '@/contexts/AuthContext';
+import { Tooltip } from 'react-tooltip';
 
 
 export default function SideBar(){
@@ -32,10 +33,10 @@ export default function SideBar(){
             </div>
            
             <div className="flex items-center gap-4">
-              <button onClick={signOut}>
+              <button data-tooltip-id='logout' data-tooltip-content='Deslogar' onClick={signOut}>
               <MdLogout color='white' size={25}/>
               </button>
-              
+              <Tooltip id='logout'/>
     <Image className="w-10 h-10 rounded-full" src={fototeste} alt=""/>
     <div className  ="font-medium text-white">
         <div>Henrique Freitas</div>
