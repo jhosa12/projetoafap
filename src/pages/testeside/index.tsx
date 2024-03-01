@@ -1,27 +1,25 @@
 import { Sidebar, Menu, MenuItem, SubMenu, sidebarClasses} from 'react-pro-sidebar';
 import logo from '../../../public/logoafap.png';
 import fototeste from '../../../public/fototeste.jpeg'
-import { FiAlertOctagon } from "react-icons/fi";
 import { MdManageAccounts } from "react-icons/md";
 import { HiDocumentSearch } from "react-icons/hi";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { GiReceiveMoney } from "react-icons/gi";
 import { TbReportMoney } from "react-icons/tb";
-import { BsArrowLeftCircleFill } from "react-icons/bs";
-import { BsArrowRightCircleFill } from "react-icons/bs";
 import { MdNewLabel } from "react-icons/md";
 import { FaCross } from "react-icons/fa";
 import { HiDocumentReport } from "react-icons/hi";
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import Image from 'next/image';
 import Adm from '../admcontrato/index'
-import Link from 'next/link';
 import { canSRRAuth } from '@/utils/canSSRAuth';
-
+import { MdLogout } from "react-icons/md";
+import { AuthContext } from '@/contexts/AuthContext';
 
 
 export default function SideBar(){
  const [isOpen,setIsOpen]= useState(true )
+ const {signOut} =useContext(AuthContext)
  const [Ti,setTi] = useState(false)
     return(
       <div className='flex flex-col w-full overscroll-contain '>
@@ -34,6 +32,10 @@ export default function SideBar(){
             </div>
            
             <div className="flex items-center gap-4">
+              <button onClick={signOut}>
+              <MdLogout color='white' size={25}/>
+              </button>
+              
     <Image className="w-10 h-10 rounded-full" src={fototeste} alt=""/>
     <div className  ="font-medium text-white">
         <div>Henrique Freitas</div>
