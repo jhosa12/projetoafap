@@ -105,6 +105,8 @@ if(item.status ==='E'){
   if(componenteMounted){atualizarObs()}
    setMounted(true)
  },[data.contrato?.anotacoes] )
+
+ 
 async function atualizarObs() {
    
     try{
@@ -319,6 +321,10 @@ async function atualizarObs() {
     Add Plano
     <RiFileAddLine size={20} />
     </button>
+    <a href="/TI" target="blank" className="text-white gap-1  focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-3 py-2.5 text-center inline-flex items-center bg-blue-600 hover:bg-[#c5942ba9] focus:ring-blue-800">
+    Sugestões
+
+    </a>
     
             </div>
 <div className="w-full border  rounded-lg shadow  border-gray-700">

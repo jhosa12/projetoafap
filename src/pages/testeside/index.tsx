@@ -16,6 +16,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Adm from '../admcontrato/index'
 import Link from 'next/link';
+import { canSRRAuth } from '@/utils/canSSRAuth';
 
 
 
@@ -86,7 +87,7 @@ export default function SideBar(){
        </SubMenu>
     </SubMenu>
    
-    <MenuItem onClick={()=>setTi(true)} style={{fontWeight:'bold'}}><span> <Link href={'/TI'} target='blank' ><span>Sugestões</span></Link></span></MenuItem>
+   
   
     
     <SubMenu icon={<FaCross size={25} />} label="Fúnebre">
@@ -105,3 +106,10 @@ export default function SideBar(){
 </div>
   )
 }
+
+export const getServerSideProps = canSRRAuth(async(ctx)=>{
+  return{
+    props:{}
+  }
+})
+
