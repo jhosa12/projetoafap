@@ -4,7 +4,7 @@ import { Item } from "../../components/dadosTitular";
 import { DadosPlano } from "../../components/dadosPlano";
 import { FaCircleArrowRight } from "react-icons/fa6";
 import { FaCircleArrowLeft } from "react-icons/fa6";
-import {FormEvent, useState} from 'react'
+import {FormEvent, useEffect, useState} from 'react'
 import { DadosDependentes } from "@/components/dadosDependentes";
 import { IoIosClose } from "react-icons/io";
 import { useContext } from "react";
@@ -26,7 +26,8 @@ interface ParcelaData {
 
 
 export default function TesteLayout() {
-    const {usuario,data,closeModa} = useContext(AuthContext)
+    const {usuario,data,closeModa,carregarDados} = useContext(AuthContext)
+    const [mounted,setMounted] = useState(false)
  
 
    function gerarMensalidade(){
@@ -74,7 +75,7 @@ export default function TesteLayout() {
             edi_dh:new Date(),
             profissao:data.profissao,
             sexo:data.sexo,
-            contrato:{id_plano:data.contrato?.id_plano?10:10,
+            contrato:{id_plano:data.contrato?.id_plano,
               plano:data.contrato?.plano,
               consultor:data.contrato?.consultor,
               situacao:"ATIVO",
@@ -95,12 +96,26 @@ export default function TesteLayout() {
           success: `Cadastrado com sucesso`,
           error: `Erro ao efetuar Cadastro`
          }
+        
+   
       )
+      
+      closeModa({id_associado:response.data.novoassociado.id_associado,contrato:{...data.contrato,id_contrato:response.data.novoContrato.id_contrato}})
+     
     }catch(err){
       console.log(err)
     }
+  
+   
     
    }
+   useEffect(()=>{
+    mounted && carregarDados()
+    setMounted(true)
+   },[data.id_associado])
+
+
+
 
   const {steps,currentStepIndex,step,next,back} =MultiStep([
     <Item />,

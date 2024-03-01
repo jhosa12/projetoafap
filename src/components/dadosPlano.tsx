@@ -25,10 +25,7 @@ export function DadosPlano(){
               <div className="flex flex-col   gap-9 p-4 rounded-lg w-full h-full ">
         <div  className="grid gap-2 grid-flow-c-dense pl-2 pr-2 w-full  md:grid-cols-4" >
   
-        <div className="col-span-1">
-          <label  className="block mb-1 text-sm font-medium  text-white">CONTRATO</label>
-          <input value={data.contrato?.id_contrato} onChange={e=>closeModa({contrato:{...data.contrato,id_contrato:Number(e.target.value)}})} autoComplete="off"  type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-          </div>
+   
          
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">ORIGEM</label>

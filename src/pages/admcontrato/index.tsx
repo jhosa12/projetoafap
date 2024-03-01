@@ -141,7 +141,7 @@ async function atualizarObs() {
     const carregarDadosAsync = async () => {
       try {
         await carregarDados();
-        closeModa({contrato:{},dependente:{}})
+       // closeModa({contrato:{},dependente:{}})
         setVerObs(false)
 
       } catch (error) {
