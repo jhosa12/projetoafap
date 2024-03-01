@@ -106,7 +106,7 @@ if(item.status ==='E'){
    setMounted(true)
  },[data.contrato?.anotacoes] )
 
- 
+
 async function atualizarObs() {
    
     try{
@@ -167,7 +167,7 @@ async function atualizarObs() {
     let x = 0;
     
       dadosassociado?.mensalidade.map((item, index) => {
-        new Date() >= new Date(item.vencimento) && item.status === 'A' ? (x = x + 1) : '';
+        new Date() >= new Date(item.vencimento) && item.status === 'A' || item.status==='E' ? (x = x + 1) : '';
       });
       if (x > 1) {
         toast.warn(`Possui ${x} mensalidades Vencidas`);
@@ -615,6 +615,7 @@ currentAcordoId = item.status;
           {/* Renderizar mais colunas se necessário */}
           <td>
             <button onClick={(event)=>{
+                console.log(i.mensalidade)
                     event.stopPropagation()
                        
                     closeModa({acordo:{

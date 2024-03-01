@@ -37,7 +37,7 @@ export function ModalAcordos(){
             
         
        const valor_total =data.acordo?.mensalidade && data.acordo?.mensalidade.reduce((total,mensalidade)=>total+Number(mensalidade.valor_principal),0)
-        if(!data.acordo?.total_acordo && !data.acordo?.data_inicio)  closeModa({acordo:{...data.acordo,total_acordo:valor_total,data_inicio:new Date()}});
+        if(!data.acordo?.total_acordo && !data.acordo?.data_inicio)  closeModa({acordo:{...data.acordo, mensalidade:data.acordo?.mensalidade,total_acordo:valor_total,data_inicio:new Date()}});
       },[])
 
       async function criarAcordo() {
@@ -193,7 +193,7 @@ export function ModalAcordos(){
 </form>
 <label className="flex w-full justify-center text-white font-semibold pt-1">REFERÊNCIAS</label>
 <div className="inline-flex w-full justify-start  rounded-md shadow-sm pl-2 pb-2">
-  <button onClick={()=>adicionarProxima()}  type="button" className="inline-flex items-center px-2 py-1 gap-1 text-sm font-medium  border  rounded-lg  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+  <button onClick={adicionarProxima}  type="button" className="inline-flex items-center px-2 py-1 gap-1 text-sm font-medium  border  rounded-lg  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
     Adicionar Próxima
   </button>
 
