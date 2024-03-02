@@ -8,7 +8,6 @@ import { api } from "@/services/apiClient";
 import { canSSRGuest } from "@/utils/canSSRGuest";
 export default function Home() {
  
-
     const [user,setName]= useState("")
     const [password,setSenha]= useState("")
     const [loading,setLoading]= useState(false)
@@ -32,7 +31,7 @@ export default function Home() {
     return(
         <div className=" flex h-[100vh] w-full items-center justify-center">
        
-       <div className="sm:w-5/6 md:w-3/4 lg:w-1/2 xl:w-1/3 flex flex-col gap-4 bg-gray-900 p-8 items-center justify-center rounded-lg shadow-xl">
+       <div className="sm:w-5/6 md:w-3/4 lg:w-1/2 xl:w-1/3 flex flex-col gap-4 bg-gray-800 p-8 items-center justify-center rounded-lg shadow-xl">
        <Image className="w-40 h-16 mr-7" src={logo} alt="" />
     <h1 className="text-white text-2xl font-medium">Login</h1>
     <form onSubmit={handleSignUp} className="flex flex-col gap-4 w-full items-center">
