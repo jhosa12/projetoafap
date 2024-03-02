@@ -10,7 +10,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 
 
-
 export function ModalAcordos(){
     const {closeModa,data,usuario,carregarDados,dadosassociado}=useContext(AuthContext)
 

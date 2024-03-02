@@ -303,7 +303,7 @@ async function atualizarObs() {
   }
 
     return(
-        <div className="flex w-full mr-2 ">
+        <div className="flex w-full mr-2 mt-5 pl-10">
         {data.closeModalPlano && (<ModalBusca/>)}
         {data.closeModalCadastro && (<Teste/>)}
         {data.mensalidade?.close && (<ModalMensalidade/>)}
