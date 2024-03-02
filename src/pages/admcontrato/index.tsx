@@ -22,6 +22,7 @@ import { IoMdEyeOff } from "react-icons/io";
 import 'react-tooltip/dist/react-tooltip.css';
 import { ModalAcordos } from "@/components/modalAcordos";
 import { FaHandshake } from "react-icons/fa";
+import { MenuLateral } from "@/components/menu";
 
 
 interface MensalidadeProps{
@@ -303,16 +304,16 @@ async function atualizarObs() {
   }
 
     return(
-        <div className="flex w-full mr-2 mt-5 pl-10">
+        <div className="flex flex-col w-full mr-2  justify-center">
         {data.closeModalPlano && (<ModalBusca/>)}
         {data.closeModalCadastro && (<Teste/>)}
         {data.mensalidade?.close && (<ModalMensalidade/>)}
         {data.dependente?.close && <ModalDependentes/>}
         {data.closeEditarAssociado && <ModalEditarDados openEdit={openEdit}/>}
        {data.acordo?.closeAcordo && (<ModalAcordos />)}
-      
-        <div className="flex  flex-col pl-4 ">
-        <div className="flex  flex-row justify-start gap-2 items-center w-full mb-4">
+       <MenuLateral/>
+        <div className="flex  flex-col p-4  ">
+        <div className="flex  flex-row justify-start gap-2 items-center w-full mt-5 mb-4">
         <button onClick={()=>closeModa({closeModalPlano:true,mensalidade:{}})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
         <IoMdSearch size={20}/>
         Buscar Cliente
@@ -327,7 +328,7 @@ async function atualizarObs() {
     </a>
     
             </div>
-<div className="w-full border  rounded-lg shadow  border-gray-700">
+<div className="flex-col w-full border  rounded-lg shadow  border-gray-700">
     <ul className="flex flex-wrap text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
         <li className="me-2">
             <button  type="button" onClick={()=>{setDados(true),setDependentes(false),setHistorico(false)}}   className="inline-block p-4  rounded-ss-lg  bg-gray-800 hover:bg-gray-700 text-blue-500">Dados</button>
@@ -492,7 +493,7 @@ async function atualizarObs() {
 
         {historico && (
            
-<div   className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)] max-w-[calc(100vw-275px)]  p-2 shadow-md sm:rounded-lg">
+<div   className="flex flex-col rounded-lg  max-h-[calc(100vh-220px)]  p-2 shadow-md sm:rounded-lg">
 <div className="flex w-full mb-2 gap-2">
 <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
   <input checked={checkMensal} onChange={()=>setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer"/>
@@ -542,43 +543,43 @@ async function atualizarObs() {
      className="block  overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse rounded-lg text-gray-400">
         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
             <tr >
-                <th scope="col" className="px-4 py-1">
+                <th scope="col" className="px-6 py-1">
                     NP
                 </th>
-                <th scope="col" className=" px-2 py-1">
+                <th scope="col" className=" px-6 py-1">
                     DATA VENC.
                 </th>
-                <th scope="col" className=" px-2 py-1">
+                <th scope="col" className=" px-6 py-1">
                     REF
                 </th>
-                <th scope="col" className="px-4 py-1">
+                <th scope="col" className="px-6 py-1">
                     DATA AGEND.
                 </th>
-                <th scope="col" className="px-2 py-1">
+                <th scope="col" className="px-6 py-1">
                     VALOR
                 </th>
-                <th scope="col" className="px-2 py-1">
+                <th scope="col" className="px-6 py-1">
                     status
                 </th>
-                <th scope="col" className=" px-4 py-1">
+                <th scope="col" className=" px-6 py-1">
                     Data Pag.
                 </th>
-                <th scope="col" className=" px-4 py-1">
+                <th scope="col" className=" px-6 py-1">
                     Hr Pag.
                 </th>
-                <th scope="col" className=" px-4 py-1">
+                <th scope="col" className=" px-6 py-1">
                     usuário
                 </th>
-                <th scope="col" className=" px-2 py-1">
+                <th scope="col" className=" px-6 py-1">
                     val pago
                 </th>
-                <th scope="col" className=" px-2 py-1">
+                <th scope="col" className=" px-6 py-1">
                     forma
                 </th>
-                <th scope="col" className=" px-3 py-1">
+                <th scope="col" className=" px-6 py-1">
                     ATRASO
                 </th>
-                <th scope="col" className="px-4 py-1">
+                <th scope="col" className="px-12 py-1">
                     <span>ações</span>
                 </th>
             </tr>
@@ -837,7 +838,7 @@ currentAcordoId = item.status;
     </table>
 </div>
         )}
-        {dependentes && (<div className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)] max-w-[calc(100vw-275px)]  p-2 shadow-md sm:rounded-lg">
+        {dependentes && (<div className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)]  max-w-[calc(100vw-275px)]  p-4 shadow-md sm:rounded-lg">
         <div className="flex w-full mb-2 gap-2">
         <label className="relative inline-flex w-[150px] justify-center  items-center mb-1 cursor-pointer">
   <input checked={checkDependente} onChange={()=>setCheckDependente(!checkDependente)} type="checkbox" value="2" className="sr-only peer"/>
