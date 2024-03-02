@@ -313,7 +313,7 @@ async function atualizarObs() {
        {data.acordo?.closeAcordo && (<ModalAcordos />)}
        <MenuLateral/>
         <div className="flex  flex-col p-4  ">
-        <div className="flex  flex-row justify-start gap-2 items-center w-full mt-5 mb-4">
+        <div className="flex  flex-row justify-start gap-2 items-center w-full mt-3 pb-1">
         <button onClick={()=>closeModa({closeModalPlano:true,mensalidade:{}})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
         <IoMdSearch size={20}/>
         Buscar Cliente
@@ -743,7 +743,7 @@ currentAcordoId = item.status;
                 <td className="px-4 py-1">
                     {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))<=0?0:calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
                 </td>
-                <td  className="px-1 py-1 text-right">
+                <td  className="px-8 py-1 text-right">
                 <button onClick={(event)=>{
                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                     closeModa(
@@ -809,7 +809,7 @@ currentAcordoId = item.status;
                 <td className="px-4 py-1">
                     {calcularDiferencaEmDias(new Date(),new Date(item.vencimento))<=0?0:calcularDiferencaEmDias(new Date(),new Date(item.vencimento))}
                 </td>
-                <td className=" px-1 py-1 text-right">
+                <td className=" px-8 py-1 text-right">
                 <button onClick={(event)=>{
                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                     closeModa(
