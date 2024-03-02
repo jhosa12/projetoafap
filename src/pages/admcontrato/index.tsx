@@ -371,10 +371,13 @@ async function atualizarObs() {
         <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">ENDEREÇO: </span>{dadosassociado?.endereco}</p>
         <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">Nº: </span>{dadosassociado?.numero}</p>
         <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">BAIRRO: </span>{dadosassociado?.bairro}</p>
+        <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CIDADE: </span>{dadosassociado?.cidade}</p>
         </h5>
         <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
             <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">PONTO REF: </span>{dadosassociado?.guia_rua}</p>
-            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CIDADE: </span>{dadosassociado?.cidade}</p>
+            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CELULAR1: </span>{dadosassociado?.celular1}</p>
+            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CELULAR2: </span>{dadosassociado?.celular2}</p>
+
          </h5>
   
          <button data-tooltip-id="my-tooltip"
@@ -419,12 +422,15 @@ async function atualizarObs() {
    
     <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
            
-            <p className=" font-normal text-gray-400"><span className="text-white font-semibold">CATEGORIA: </span>{dadosassociado?.contrato.plano}</p>
-            <p className="font-normal text-gray-400"><span className="text-white font-semibold">VALOR: </span>R$ {dadosassociado?.contrato.valor_mensalidade}</p>
+            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CATEGORIA: </span>{dadosassociado?.contrato.plano}</p>
+            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">VALOR: </span>R$ {dadosassociado?.contrato.valor_mensalidade}</p>
+            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">ADESÃO: </span> {new Date(dadosassociado?.contrato.dt_adesao).toLocaleDateString()}</p>
+            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CARÊNCIA: </span>{new Date(dadosassociado?.contrato.dt_carencia).toLocaleDateString()}</p>
          </h5>
          <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
-            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">ADESÃO: </span>{dadosassociado?.contrato.dt_adesao?new Date(dadosassociado.contrato.dt_adesao).toLocaleDateString():''}</p>
-            <p className="mb-1 font-normal text-red-600"><span className="text-white font-semibold">CARÊNCIA: </span>{dadosassociado?.contrato.dt_carencia? new Date(dadosassociado.contrato.dt_carencia).toLocaleDateString():''}</p>
+            <p className=" font-normal text-gray-400"><span className="text-white font-semibold">ORIGEM: </span>{dadosassociado?.contrato.origem}</p>
+            <p className=" font-normal text-red-600"><span className="text-white font-semibold">CONSULTOR: </span>{dadosassociado?.contrato.consultor}</p>
+            <p className=" font-normal text-red-600"><span className="text-white font-semibold">COBRADOR: </span>{dadosassociado?.contrato.cobrador}</p>
          </h5>
  
         <button data-tooltip-id="my-tooltip"
