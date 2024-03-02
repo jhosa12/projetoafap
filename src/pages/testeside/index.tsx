@@ -33,9 +33,5 @@ export default function SideBar(){
   )
 }
 
-export const getServerSideProps = canSRRAuth(async(ctx)=>{
-  return{
-    props:{}
-  }
-})
+
 

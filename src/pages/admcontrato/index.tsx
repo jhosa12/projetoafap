@@ -23,6 +23,7 @@ import 'react-tooltip/dist/react-tooltip.css';
 import { ModalAcordos } from "@/components/modalAcordos";
 import { FaHandshake } from "react-icons/fa";
 import { MenuLateral } from "@/components/menu";
+import { canSRRAuth } from "@/utils/canSSRAuth";
 
 
 interface MensalidadeProps{
@@ -313,7 +314,7 @@ async function atualizarObs() {
        {data.acordo?.closeAcordo && (<ModalAcordos />)}
        <MenuLateral/>
         <div className="flex  flex-col p-4  ">
-        <div className="flex  flex-row justify-start gap-2 items-center w-full mt-3 pb-1">
+        <div className="flex  flex-row justify-start gap-2 items-center w-full mt-2 pb-1">
         <button onClick={()=>closeModa({closeModalPlano:true,mensalidade:{}})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
         <IoMdSearch size={20}/>
         Buscar Cliente
@@ -322,10 +323,7 @@ async function atualizarObs() {
     Add Plano
     <RiFileAddLine size={20} />
     </button>
-    <a href="/TI" target="blank" className="text-white gap-1  focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-3 py-2.5 text-center inline-flex items-center bg-blue-600 hover:bg-[#c5942ba9] focus:ring-blue-800">
-    Sugestões
-
-    </a>
+   
     
             </div>
 <div className="flex-col w-full border  rounded-lg shadow  border-gray-700">
@@ -891,7 +889,7 @@ currentAcordoId = item.status;
      className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
           {!checkDependente?(  <tr>
-                <th scope="col" className=" px-12 py-1">
+                <th scope="col" className=" px-2 py-1">
                     NOME
                 </th>
                 <th scope="col" className="px-12 py-1">
@@ -906,7 +904,7 @@ currentAcordoId = item.status;
                 <th scope="col" className="px-12 py-1">
                     PARENTESCO
                 </th> 
-                <th scope="col" className="px-12 py-1">
+                <th scope="col" className="px-[42px] py-1">
                     <span className="sr-only">Edit</span>
                 </th>
             </tr>):(
@@ -932,7 +930,7 @@ currentAcordoId = item.status;
                   <th scope="col" className="px-6 py-1">
                       USUÁRIO
                   </th> 
-                  <th scope="col" className="px-6 py-1">
+                  <th scope="col" className="px-4 py-1">
                       <span className="sr-only">Edit</span>
                   </th>
               </tr>
@@ -964,7 +962,7 @@ currentAcordoId = item.status;
             </td>
            
             
-            <td className="px-6 py-1 text-right">
+            <td className="px-4 py-1 text-right">
                 <button onClick={(event)=>{
                                event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                                closeModa(
@@ -984,7 +982,7 @@ currentAcordoId = item.status;
             </td>
            </tr>):!checkDependente && !item.excluido?(
              <tr key={index} onClick={()=>closeModa({dependente:{id_dependente:item.id_dependente,nome:item.nome,excluido:item.excluido}})} className={ `border-b ${new Date(item.carencia)>new Date()?"text-yellow-500":"text-white"} ${item.id_dependente===data.dependente?.id_dependente?"bg-gray-600":"bg-gray-800"} border-gray-700  hover:bg-gray-600`}>
-             <th scope="row"  className="px-6 py-1 font-medium   whitespace-nowra">
+             <th scope="row"  className="px-2 py-1 font-medium   whitespace-nowrap">
                     {item.nome}
              </th>
              <td className="px-8 py-1">
@@ -1001,7 +999,7 @@ currentAcordoId = item.status;
              </td>
             
              
-             <td className="px-6 py-1 text-right">
+             <td className="px-3 py-1 ">
                  <button onClick={(event)=>{
                                 event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                                 closeModa(
@@ -1035,3 +1033,8 @@ currentAcordoId = item.status;
         </div>
     )
 }
+export const getServerSideProps = canSRRAuth(async(ctx)=>{
+    return{
+      props:{}
+    }
+  })
