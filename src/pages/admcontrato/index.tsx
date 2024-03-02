@@ -364,7 +364,7 @@ async function atualizarObs() {
                 </h2>
           <div className="flex w-full flex-row gap-2">
            
-            <div className="flex relative flex-col  p-4 text-sm  border  rounded-lg shadow bg-gray-800 border-gray-700">
+            <div className="flex relative flex-col w-1/2  p-4 text-sm  border  rounded-lg shadow bg-gray-800 border-gray-700">
             <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO TITULAR </h2>
  
         <h5 className="mb-1 inline-flex justify-between text-sm gap-2 font-semibold tracking-tight  text-white">
@@ -414,7 +414,7 @@ async function atualizarObs() {
         })}} className="absolute -right-1 -top-1 text-blue-400 "><FaEdit size={16}/></button>
        <Tooltip id="my-tooltip"/>
     </div>
-    <div className="flex relative text-white flex-col p-4 text-sm border  rounded-lg shadow bg-gray-800 border-gray-700">
+    <div className="flex relative  w-1/2 text-white flex-col p-4 text-sm border  rounded-lg shadow bg-gray-800 border-gray-700">
     <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO PLANO</h2>
    
     <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
@@ -614,7 +614,7 @@ currentAcordoId = item.status;
           <td className="px-2 py-1">{}</td>
           <td className="px-2 py-1">{}</td>
           {/* Renderizar mais colunas se necessário */}
-          <td>
+          <td className="px-2 py-1">
             <button onClick={(event)=>{
                 console.log(i.mensalidade)
                     event.stopPropagation()
@@ -838,7 +838,7 @@ currentAcordoId = item.status;
     </table>
 </div>
         )}
-        {dependentes && (<div className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)]  max-w-[calc(100vw-275px)]  p-4 shadow-md sm:rounded-lg">
+        {dependentes && (<div className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)]  max-w-[calc(100vw-350px)]  p-4 shadow-md sm:rounded-lg">
         <div className="flex w-full mb-2 gap-2">
         <label className="relative inline-flex w-[150px] justify-center  items-center mb-1 cursor-pointer">
   <input checked={checkDependente} onChange={()=>setCheckDependente(!checkDependente)} type="checkbox" value="2" className="sr-only peer"/>
@@ -885,22 +885,22 @@ currentAcordoId = item.status;
      className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
           {!checkDependente?(  <tr>
-                <th scope="col" className=" px-6 py-1">
+                <th scope="col" className=" px-12 py-1">
                     NOME
                 </th>
-                <th scope="col" className="px-6 py-1">
+                <th scope="col" className="px-12 py-1">
                     ADESÃO
                 </th>
-                <th scope="col" className="px-6 py-1">
+                <th scope="col" className="px-12 py-1">
                     CARÊNCIA
                 </th>
-                <th scope="col" className="px-6 py-1">
+                <th scope="col" className="px-12 py-1">
                     NASC.
                 </th>
-                <th scope="col" className="px-6 py-1">
+                <th scope="col" className="px-12 py-1">
                     PARENTESCO
                 </th> 
-                <th scope="col" className="px-6 py-1">
+                <th scope="col" className="px-12 py-1">
                     <span className="sr-only">Edit</span>
                 </th>
             </tr>):(
@@ -978,19 +978,19 @@ currentAcordoId = item.status;
             </td>
            </tr>):!checkDependente && !item.excluido?(
              <tr key={index} onClick={()=>closeModa({dependente:{id_dependente:item.id_dependente,nome:item.nome,excluido:item.excluido}})} className={ `border-b ${new Date(item.carencia)>new Date()?"text-yellow-500":"text-white"} ${item.id_dependente===data.dependente?.id_dependente?"bg-gray-600":"bg-gray-800"} border-gray-700  hover:bg-gray-600`}>
-             <th scope="row"  className="px-6 py-1 font-medium  whitespace-nowra">
+             <th scope="row"  className="px-6 py-1 font-medium   whitespace-nowra">
                     {item.nome}
              </th>
-             <td className="px-6 py-1">
+             <td className="px-8 py-1">
              {new Date(item.data_adesao).toLocaleDateString()}
              </td>
-             <td className="px-6 py-1">
+             <td className="px-10 py-1">
              {item?.carencia? new Date(item.carencia).toLocaleDateString():''}
              </td>
-             <td className="px-6 py-1">
+             <td className="px-8 py-1">
              {item?.data_nasc? new Date(item.data_nasc).toLocaleDateString():''}
              </td>
-             <td className="px-6 py-1">
+             <td className="px-12 py-1">
                 {item.grau_parentesco}
              </td>
             
