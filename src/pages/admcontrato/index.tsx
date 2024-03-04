@@ -24,6 +24,9 @@ import { ModalAcordos } from "@/components/modalAcordos";
 import { FaHandshake } from "react-icons/fa";
 import { MenuLateral } from "@/components/menu";
 import { canSRRAuth } from "@/utils/canSSRAuth";
+import Head from "next/head";
+
+import Image from "next/image";
 
 
 interface MensalidadeProps{
@@ -305,6 +308,11 @@ async function atualizarObs() {
   }
 
     return(
+        <>
+        <Head>
+            <title>Administrar Contrato</title>
+         
+        </Head>
         <div className="flex flex-col w-full mr-2  justify-center">
         {data.closeModalPlano && (<ModalBusca/>)}
         {data.closeModalCadastro && (<Teste/>)}
@@ -1031,6 +1039,7 @@ currentAcordoId = item.status;
 </div> 
         </div>
         </div>
+        </>
     )
 }
 export const getServerSideProps = canSRRAuth(async(ctx)=>{
