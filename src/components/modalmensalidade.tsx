@@ -83,7 +83,9 @@ export function ModalMensalidade(){
                     valor_total:status==='A'?null:data.mensalidade?.valor_total,
                     motivo_bonus:status==='A'?null:data.mensalidade?.motivo_bonus?.toUpperCase(),
                     estorno_dt:status==='P'?null:new Date(),
-                    estorno_user:status==='P'?null:usuario?.nome
+                    estorno_user:status==='P'?null:usuario?.nome,
+                    associado:dadosassociado?.nome
+                    
                 }),
                 {
                   pending: `Efetuando ${acao}`,
@@ -114,12 +116,14 @@ export function ModalMensalidade(){
                     // closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status,valor_principal:response.data.valor_principal}})
             }catch(err){
                 toast.error('Erro ao Baixar Mensalidade')
+                console.log(err)
             } 
           
         }
      //closeModa({mensalidade:{...(data.mensalidade || {}),status:response.data.status}})
         }catch(err){
             toast.error('Erro ao Baixar Mensalidade') 
+            console.log(err)
         }
       
        
