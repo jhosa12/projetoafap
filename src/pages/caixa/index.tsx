@@ -1,5 +1,6 @@
 import { MenuLateral } from "@/components/menu";
 import { api } from "@/services/apiClient";
+import { MdOutlineAddCircle } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import DatePicker,{registerLocale} from "react-datepicker";
@@ -32,7 +33,12 @@ export default function CaixaMovimentar(){
 
         async function listarLancamentos() {
             try{
-                const response = await api.get('/listarLancamentos')
+                const response = await api.post('/listarLancamentos',{
+                  
+                    dataInicial:new Date(),
+                    dataFinal:new Date()
+              
+                })
 
                 setLancamentos(response.data.lista)
                 
@@ -70,25 +76,29 @@ return(
     <span className="text-yellow-300 font-medium">Saldo Inical:</span>
     <span className="text-green-500 font-medium">Saldo do Dia: R${saldo}</span>
     <span className="text-green-500 font-medium">Receitas:</span>
-    <span className="text-green-500 font-medium">Despesas: </span>
+    <span className="text-red-500 font-medium">Despesas: </span>
     </p>
     </div>
     <div className="flex flex-col">
-        <div className="flex flex-row p-2 gap-2">
+        <div className="flex flex-row w-full p-2 gap-2">
         <div>
-          <label  className="block mb-1 text-sm font-medium  text-white">DATA INICIAL</label>
+          <label  className="block mb-1 text-xs font-medium  text-white">DATA INICIAL</label>
           <DatePicker selected={dataInicial} onChange={e=>e && setDataInicial(e)}  dateFormat={"dd/MM/yyyy"} locale={"pt"}   required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div>
-          <label  className="block mb-1 text-sm font-medium  text-white">DATA FINAL</label>
+          <label  className="block mb-1 text-xs font-medium  text-white">DATA FINAL</label>
           <DatePicker selected={dataFinal} onChange={e=>e && setDataFinal(e)}  dateFormat={"dd/MM/yyyy"} locale={"pt"}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="flex flex-col w-1/3">
-          <label  className="block mb-1 text-sm font-medium  text-white">BUSCAR LANÇAMENTO</label>
+          <label  className="block mb-1 text-xs font-medium  text-white">BUSCAR LANÇAMENTO</label>
           <input className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-sm bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"></input>
                    </div>
                    <div className="flex items-end">
-                   <button type="button" className="inline-flex h-8 justify-center items-center bg-blue-600 rounded-lg p-2 gap-2 text-white"><IoSearchSharp size={20}/> Buscar</button>
+                   <button type="button" className="inline-flex h-8 font-semibold justify-center items-center bg-blue-600 rounded-lg p-2 gap-2 text-white"><IoSearchSharp size={20}/> Buscar</button>
+                   </div>
+
+                   <div className="flex w-1/3  items-end justify-end pr-2 ">
+                   <button type="button" className="inline-flex w- h-8 font-semibold justify-center items-center bg-green-600 rounded-lg p-2 gap-2 text-white"><MdOutlineAddCircle size={20}/> Novo</button>
                    </div>
                   
        
@@ -104,13 +114,13 @@ return(
                 <th scope="col" className="px-8 py-1">
                     DATA
                 </th>
-                <th scope="col" className="px-8 py-1">
+                <th scope="col" className="px-5 py-1">
                     CONTA
                 </th>
                 <th scope="col" className="px-8 py-1">
                     C.CUSTOS
                 </th>
-                <th scope="col" className="px-8 py-1">
+                <th scope="col" className="px-6 py-1">
                     DOCUMENTO
                 </th> 
                 <th scope="col" className="px-8 py-1">
@@ -119,10 +129,10 @@ return(
                 <th scope="col" className="px-8 py-1">
                     TIPO
                 </th>
-                <th scope="col" className="px-8 py-1">
+                <th scope="col" className="px-6 py-1">
                     VALOR
                 </th>  
-                <th scope="col" className="px-8 py-1">
+                <th scope="col" className="px-4 py-1">
                     AÇÕES
                 </th> 
              
@@ -132,13 +142,13 @@ return(
         <tbody className="text-white">
             {lancamentos.map((item,index)=>(
             <tr className="border-b border-gray-400">
-            <th scope="row"  className="px-6 py-1 font-medium  whitespace-nowrap">
+            <th scope="row"  className="px-2 py-1 font-medium  whitespace-nowrap">
                    {item.num_seq}
             </th>
             <td className="px-6 py-1">
-            {new Date(item.data).toLocaleDateString()}
+            {new Date(item.data).toLocaleDateString('pt-BR',{timeZone: 'UTC'})}
             </td>
-            <td className="px-6 py-1">
+            <td className="px-5 py-1">
             {item.conta}
            
             </td>
@@ -148,14 +158,14 @@ return(
             <td className="px-6 py-1">
                {item.notafiscal}
             </td>
-            <td className="px-6 py-1">
+            <td className=" px-6 py-1">
                {item.historico}
             </td>
-            <td className="px-6 py-1">
+            <td className={`px-6 py-1 font-semibold ${item.tipo==='RECEITA'?"text-green-500":"text-red-500"}`}>
                {item.tipo}
             </td>
             <td className="px-6 py-1">
-               {item.valor}
+               R${item.valor}
             </td>
            
             
