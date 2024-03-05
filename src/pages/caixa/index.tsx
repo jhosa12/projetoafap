@@ -6,6 +6,7 @@ import { IoSearchSharp } from "react-icons/io5";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
+import { ModalLancamentosCaixa } from "@/components/modalLancamentosCaixa";
 registerLocale('pt', pt)
 
 interface LancamentosProps{
@@ -28,31 +29,40 @@ export default function CaixaMovimentar(){
     const[dataInicial,setDataInicial] =useState<Date>(new Date())
     const[dataFinal,setDataFinal] =useState<Date>(new Date())
     const[saldo,setSaldo]=useState(0)
+    const[IsModalOpen,setIsModalOpen] =useState(false)
+
+    const closeModal = ()=>{
+        setIsModalOpen(false)
+    }
 
     useEffect(()=>{
 
-        async function listarLancamentos() {
-            try{
-                const response = await api.post('/listarLancamentos',{
-                  
-                    dataInicial:new Date(),
-                    dataFinal:new Date()
-              
-                })
-
-                setLancamentos(response.data.lista)
-                
-                
-             }catch(err){
-     
-             }
-            
-        }
+      
         
         listarLancamentos()
        
 
     },[])
+
+    async function listarLancamentos() {
+        try{
+            const response = await api.post('/listarLancamentos',{
+              
+                dataInicial:dataInicial,
+                dataFinal:dataFinal
+          
+            })
+
+            setLancamentos(response.data.lista)
+            
+            
+         }catch(err){
+ 
+         }
+        
+    }
+
+
     useEffect(()=>{
        
             const soma =   lancamentos.reduce((total,item)=>{
@@ -67,6 +77,7 @@ export default function CaixaMovimentar(){
 
 return(
 <>
+{IsModalOpen && <ModalLancamentosCaixa closeModal={closeModal}/>}
 <MenuLateral/>
 <div className="flex w-full justify-center p-4">
 <div className="flex flex-col w-11/12 border  rounded-lg shadow  border-gray-700 ">
@@ -98,7 +109,7 @@ return(
                    </div>
 
                    <div className="flex w-1/3  items-end justify-end pr-2 ">
-                   <button type="button" className="inline-flex w- h-8 font-semibold justify-center items-center bg-green-600 rounded-lg p-2 gap-2 text-white"><MdOutlineAddCircle size={20}/> Novo</button>
+                   <button onClick={()=>setIsModalOpen(!IsModalOpen)} type="button" className="inline-flex w- h-8 font-semibold justify-center items-center bg-green-600 rounded-lg p-2 gap-2 text-white"><MdOutlineAddCircle size={22}/> Novo</button>
                    </div>
                   
        
@@ -141,7 +152,7 @@ return(
         </thead>
         <tbody className="text-white">
             {lancamentos.map((item,index)=>(
-            <tr className="border-b border-gray-400">
+            <tr className="border-b border-gray-500">
             <th scope="row"  className="px-2 py-1 font-medium  whitespace-nowrap">
                    {item.num_seq}
             </th>
