@@ -248,7 +248,7 @@ async function atualizarObs() {
             id_associado:dadosassociado?.id_associado,
             status:'A',
             valor_principal:dadosassociado?.contrato.valor_mensalidade,
-            parcela_n:ultimaMensalidade?.parcela_n?ultimaMensalidade?.parcela_n+1:null,
+            parcela_n:ultimaMensalidade?.parcela_n && ultimaMensalidade?.parcela_n+1,
             vencimento:new Date(proxData),
             cobranca:new Date(proxData),
             referencia:`${String(new Date(proxData).getMonth()+1).padStart(2,'0')}/${new Date(proxData).getFullYear()%100}`
@@ -264,6 +264,7 @@ async function atualizarObs() {
       
     }catch(err){
         toast.error('Erro ao Adicionar nova parcela')
+        console.log(err)
     }
    
   }
@@ -711,7 +712,7 @@ currentAcordoId = item.status;
                onClick={()=>toggleSelecionada(item)}
                 //className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600  ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":item.status==='P'? 'text-blue-500':'text-white'}`}>
                 className={`${calcularDiferencaEmDias(new Date(),new Date(item.vencimento))>=1 && item.status==='A' && "text-red-600"} border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade)? "bg-gray-600" : "bg-gray-800"}  ${item.status==='P' && "text-blue-500"} border-gray-700  hover:bg-gray-500 hover:text-black   ${item.parcela_n===0?"hidden":''}`}>
-                <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
+                <th scope="row" className={`px-5 py-1 font-medium `}>
                     {item.parcela_n}
                 </th>
                 <td className={`px-2 py-1 `}>
@@ -779,7 +780,7 @@ currentAcordoId = item.status;
                // }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600 ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-white'}`}>
                onClick={()=>toggleSelecionada(item)}
                className={`${calcularDiferencaEmDias(new Date(),new Date(item.vencimento))>=1 && "text-red-600"}  border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade)? "bg-gray-600" : "bg-gray-800"}   border-gray-700  hover:bg-gray-500 hover:text-black   ${item.parcela_n===0?"hidden":''}`}>
-                   <th scope="row" className="px-5 py-1 font-medium  whitespace-nowrap">
+                   <th  className="px-5 py-1 font-medium  ">
                     {item.parcela_n}
                 </th>
                 <td className="px-2 py-1">

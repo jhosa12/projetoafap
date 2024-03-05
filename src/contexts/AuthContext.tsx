@@ -10,9 +10,7 @@ type CidadesProps={
    uf:string,
    cidade:string
   }
-type LançamentosProps={
-    
-}
+
 
 type DependentesProps={
     nome:string,

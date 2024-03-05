@@ -1,6 +1,11 @@
-import { MenuLateral } from "@/components/menu"
-import { api } from "@/services/apiClient"
-import { useEffect, useState } from "react"
+import { MenuLateral } from "@/components/menu";
+import { api } from "@/services/apiClient";
+import { useEffect, useState } from "react";
+import { IoSearchSharp } from "react-icons/io5";
+import DatePicker,{registerLocale} from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import pt from 'date-fns/locale/pt-BR';
+registerLocale('pt', pt)
 
 interface LancamentosProps{
     num_seq:number,
@@ -18,7 +23,10 @@ interface LancamentosProps{
 }
 
 export default function CaixaMovimentar(){
-    const[lançamentos,setLancamentos]=useState<Array<LancamentosProps>>([])
+    const[lancamentos,setLancamentos]=useState<Array<LancamentosProps>>([])
+    const[dataInicial,setDataInicial] =useState<Date>(new Date())
+    const[dataFinal,setDataFinal] =useState<Date>(new Date())
+    const[saldo,setSaldo]=useState(0)
 
     useEffect(()=>{
 
@@ -26,8 +34,9 @@ export default function CaixaMovimentar(){
             try{
                 const response = await api.get('/listarLancamentos')
 
-                setLancamentos(response.data)
-     
+                setLancamentos(response.data.lista)
+                
+                
              }catch(err){
      
              }
@@ -35,20 +44,54 @@ export default function CaixaMovimentar(){
         }
         
         listarLancamentos()
+       
 
     },[])
+    useEffect(()=>{
+       
+            const soma =   lancamentos.reduce((total,item)=>{
+                    if(item.tipo ==='RECEITA'){ return total=total+Number(item.valor)}
+                    else return total=total-Number(item.valor)
+                },0)
+            setSaldo(soma)
+       
+   
+
+    },[lancamentos])
 
 return(
 <>
 <MenuLateral/>
 <div className="flex w-full justify-center p-4">
 <div className="flex flex-col w-11/12 border  rounded-lg shadow  border-gray-700 ">
-    <div className="bg-gray-800 rounded-t-lg">
-    <h1 className="text-gray-300 text-lg p-2 pl-3 font-medium">Movimentação de Caixa</h1>
+    <div className="text-gray-300 bg-gray-800 rounded-t-lg inline-flex items-center p-2 justify-between">
+    <h1 className=" text-lg  pl-3 font-medium">Movimentação de Caixa</h1>
+    <p className="inline-flex gap-28  text-[15px]">
+    <span className="text-yellow-300 font-medium">Saldo Inical:</span>
+    <span className="text-green-500 font-medium">Saldo do Dia: R${saldo}</span>
+    <span className="text-green-500 font-medium">Receitas:</span>
+    <span className="text-green-500 font-medium">Despesas: </span>
+    </p>
     </div>
     <div className="flex flex-col">
-        <div className="flex flex-row p-2">
-        <input className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-sm bg-gray-800 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"></input>
+        <div className="flex flex-row p-2 gap-2">
+        <div>
+          <label  className="block mb-1 text-sm font-medium  text-white">DATA INICIAL</label>
+          <DatePicker selected={dataInicial} onChange={e=>e && setDataInicial(e)}  dateFormat={"dd/MM/yyyy"} locale={"pt"}   required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div>
+          <label  className="block mb-1 text-sm font-medium  text-white">DATA FINAL</label>
+          <DatePicker selected={dataFinal} onChange={e=>e && setDataFinal(e)}  dateFormat={"dd/MM/yyyy"} locale={"pt"}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div className="flex flex-col w-1/3">
+          <label  className="block mb-1 text-sm font-medium  text-white">BUSCAR LANÇAMENTO</label>
+          <input className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-sm bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"></input>
+                   </div>
+                   <div className="flex items-end">
+                   <button type="button" className="inline-flex h-8 justify-center items-center bg-blue-600 rounded-lg p-2 gap-2 text-white"><IoSearchSharp size={20}/> Buscar</button>
+                   </div>
+                  
+       
         </div>
       
         <table 
@@ -87,8 +130,8 @@ return(
             
         </thead>
         <tbody className="text-white">
-            {lançamentos.map((item,index)=>(
-            <tr>
+            {lancamentos.map((item,index)=>(
+            <tr className="border-b border-gray-400">
             <th scope="row"  className="px-6 py-1 font-medium  whitespace-nowrap">
                    {item.num_seq}
             </th>
@@ -97,6 +140,7 @@ return(
             </td>
             <td className="px-6 py-1">
             {item.conta}
+           
             </td>
             <td className="px-6 py-1">
             {item.ccustos_desc  }
