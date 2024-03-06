@@ -28,8 +28,11 @@ export default function CaixaMovimentar(){
     const[lancamentos,setLancamentos]=useState<Array<LancamentosProps>>([])
     const[dataInicial,setDataInicial] =useState<Date>(new Date())
     const[dataFinal,setDataFinal] =useState<Date>(new Date())
+    const[descricao,setDescricao] =useState('')
     const[saldo,setSaldo]=useState(0)
     const[IsModalOpen,setIsModalOpen] =useState(false)
+    const [planos,setPlanos]=useState([])
+  
 
     const closeModal = ()=>{
         setIsModalOpen(false)
@@ -49,11 +52,14 @@ export default function CaixaMovimentar(){
             const response = await api.post('/listarLancamentos',{
               
                 dataInicial:dataInicial,
-                dataFinal:dataFinal
+                dataFinal:dataFinal,
+                descricao:descricao
           
             })
 
             setLancamentos(response.data.lista)
+            setPlanos(response.data.plano_de_contas)
+            console.log(response.data.plano_de_contas)
             
             
          }catch(err){
@@ -77,7 +83,7 @@ export default function CaixaMovimentar(){
 
 return(
 <>
-{IsModalOpen && <ModalLancamentosCaixa closeModal={closeModal}/>}
+{IsModalOpen && <ModalLancamentosCaixa planos={planos} closeModal={closeModal}/>}
 <MenuLateral/>
 <div className="flex w-full justify-center p-4">
 <div className="flex flex-col w-11/12 border  rounded-lg shadow  border-gray-700 ">
@@ -102,10 +108,10 @@ return(
           </div>
           <div className="flex flex-col w-1/3">
           <label  className="block mb-1 text-xs font-medium  text-white">BUSCAR LANÇAMENTO</label>
-          <input className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-sm bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"></input>
+          <input value={descricao} onChange={e=>setDescricao(e.target.value)} className="uppercase block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-sm bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"></input>
                    </div>
                    <div className="flex items-end">
-                   <button type="button" className="inline-flex h-8 font-semibold justify-center items-center bg-blue-600 rounded-lg p-2 gap-2 text-white"><IoSearchSharp size={20}/> Buscar</button>
+                   <button onClick={()=>listarLancamentos()} type="button" className="inline-flex h-8 font-semibold justify-center items-center bg-blue-600 rounded-lg p-2 gap-2 text-white"><IoSearchSharp size={20}/> Buscar</button>
                    </div>
 
                    <div className="flex w-1/3  items-end justify-end pr-2 ">

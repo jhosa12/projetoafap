@@ -4,18 +4,31 @@ import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { GiReturnArrow } from "react-icons/gi";
 import { AuthContext } from "@/contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
+import DatePicker,{registerLocale} from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import pt from 'date-fns/locale/pt-BR';
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 
 interface ModalProps{
     closeModal:()=>void;
+    planos:Array<PlanosProps>
 }
-
-export function ModalLancamentosCaixa({closeModal}:ModalProps){
+interface PlanosProps{
+    conta:string,
+    descricao:string,
+    tipo:string,
+    perm_lanc:string,
+}
+export function ModalLancamentosCaixa({closeModal,planos}:ModalProps){
     const {closeModa,data,usuario,carregarDados,dadosassociado}=useContext(AuthContext)
     const [desconto,setDesconto] = useState(false)
     const [componentMounted, setComponentMounted] = useState(false);
     const [status,setStatus]=useState('')
+    const [descricao,setDescricao]=useState('')
+    const[conta,setConta] =useState('')
+    const[tipo,setTipo]=useState<string>('')
+    const[datalanc,setData] =useState(new Date())
 
    
 
@@ -30,37 +43,54 @@ export function ModalLancamentosCaixa({closeModal}:ModalProps){
     <IoIosClose size={30}/>
         </button>
         <form>
-        <div className="p-2  border-b border-gray-600 grid mt-2 gap-2 grid-flow-row-dense grid-cols-4">
-        <div className="grid grid-cols-subgrid gap-4 col-span-4">
-<label className="flex flex-row justify-center col-start-1 font-semibold  gap-2 text-white">CONTA</label>
+        
+<label className="flex flex-row justify-center  font-semibold mt-2 gap-2 text-white">NOVO LANÇAMENTO</label>
+<div className="ml-2 justify-start w-2/12">
+<label  className="block mb-1 text-xs font-medium  text-white">DATA</label>
+<DatePicker selected={datalanc} onChange={e=>e && setData(e)}  dateFormat={"dd/MM/yyyy"} locale={"pt"}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
 </div>
+
+        <div className="p-2   grid mt-2 gap-2 grid-flow-row-dense grid-cols-4">
+   
 <div className="mb-1 col-span-1 ">
-<label  className="block mb-1 text-xs font-medium  text-white">DESCRIÇÃO</label>
-<input disabled type="text" value={data.mensalidade?.referencia} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),referencia:e.target.value}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+<label  className="block mb-1 text-xs font-medium  text-white">CONTA</label>
+<input disabled type="text" value={conta} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),referencia:e.target.value}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+</div>
+<div className="mb-1 col-span-2">
+    <label  className="block mb-1 text-xs font-medium  text-white">DESCRIÇÃO</label>
+    <select onChange={e=>{
+        const tipo = planos.find((item)=>item.descricao===e.target.value)
+        setDescricao(e.target.value)
+        setTipo(String(tipo?.tipo))
+        setConta(String(tipo?.conta))
+        }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+    <option value={''}></option>
+        {planos.map((item,index)=>
+            
+            (
+              item.perm_lanc==='S' &&  <option value={item.descricao}>{item.descricao.toUpperCase()}</option>
+            )
+        )}
+
+    </select>
+
 </div>
 <div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-white">USUARIO</label>
-    <input type="text" value={data.mensalidade?.vencimento? new Date(data?.mensalidade?.vencimento).toLocaleDateString():''} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),vencimento:new Date(e.target.value)}})}  className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <label  className="block mb-1 text-xs font-medium  text-white">TIPO</label>
+    <input disabled value={tipo}  className="block w-full  pt-1 pb-1 pl-2 pr-2 border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
+
 <div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-white">COBRANÇA</label>
-    <input type="text"value={data.mensalidade?.cobranca? new Date(data?.mensalidade?.cobranca).toLocaleDateString():''} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),cobranca:new Date(e.target.value)}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2 border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <label  className="block mb-1 text-xs font-medium  text-white">USUÁRIO</label>
+    <input type="text" disabled value={usuario?.nome}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+</div>
+<div className="mb-1 col-span-2">
+    <label  className="block mb-1 text-xs font-medium  text-white">HISTÓRICO</label>
+    <input type="text" value={data.mensalidade?.usuario} onChange={e=>closeModa({mensalidade:{usuario:e.target.value}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">VALOR</label>
-    <input disabled type="text" value={data.mensalidade?.valor_principal} onChange={e=>closeModa({mensalidade:{...(data.mensalidade),valor_principal:Number(e.target.value)}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
-</div>
-<div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-white">STATUS</label>
-    <input type="text" disabled value={data.mensalidade?.status}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
-</div>
-<div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-white">BAIXADA POR</label>
-    <input disabled type="text" value={data.mensalidade?.usuario} onChange={e=>closeModa({mensalidade:{usuario:e.target.value}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
-</div>
-<div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-white">AGENDADA POR</label>
-    <input disabled type="text"  className="block w-full  pt-1 pb-1 pl-2 pr-2 border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input  type="number"  inputMode="decimal"  className="block w-full  pt-1 pb-1 pl-2 pr-2 border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className=" gap-2 col-span-4  flex flex-row justify-end">
 <button type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>SALVAR</button>
@@ -68,43 +98,7 @@ export function ModalLancamentosCaixa({closeModal}:ModalProps){
 
 </div>
     </div>
-    <div className="p-2  grid gap-2 grid-flow-row-dense grid-cols-4">
-    <div className="grid grid-cols-subgrid gap-4 col-span-4">
-<label className="flex flex-row justify-center col-start-1 font-semibold p-2 gap-2 text-white">BAIXA/STORNO</label>
-</div>
-<div className="mb-1 col-span-1">
-<label  className="block mb-1 text-xs font-medium  text-white">VALOR PAGO</label>
-<input type="text" value={data.mensalidade?.valor_total} onChange={(e) =>closeModa({mensalidade: { ...(data.mensalidade || {}), valor_total: Number(e.target.value) },
-    })}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
-</div>
-<div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-white">RECEBIDO POR</label>
-    <input type="text"  className="block w-full pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
-</div>
-<div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-white">FORMA PAG.</label>
-    <input type="text"  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
-</div>
-<div className="mb-1 col-span-1">
-<label  className="block mb-1 text-xs font-medium  text-white">DATA PAG.</label>
-<input value={data.mensalidade?.data_pgto?new Date(data.mensalidade.data_pgto).toISOString().split('T')[0]:''} onChange={e=>closeModa({mensalidade:{...(data.mensalidade),data_pgto:new Date(e.target.value)}})} type="date" className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
-</div>
-{((data.mensalidade?.valor_total ?? 0)<(data.mensalidade?.valor_principal ?? 0) && data.mensalidade?.valor_total!==undefined)&& data.mensalidade.valor_total>0?(
- <div className="col-span-4 gap-1 mt-1 inline-flex ">
-    <div className="flex items-top w-2/12 ">
-    <input  onClick={()=>setDesconto(!desconto)} type="checkbox" value="" className="w-4 h-4 mt-[2px] text-blue-600  rounded  focus:ring-blue-600 ring-offset-gray-800 focus:ring-2 bg-gray-700 border-gray-600"/>
-    <label  className="ms-2 text-sm font-medium text-gray-300">Desconto</label>
-</div>
-    <div className="mb-1 w-full">
-  <label  className="block mb-1 text-xs font-medium  text-white">INFORME O MOTIVO DO DESCONTO</label>
-  <input value={data.mensalidade.motivo_bonus} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),motivo_bonus:e.target.value}})} disabled={desconto===false || data.mensalidade.status==='P'} type="text"  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
-  </div>
- </div> 
-):''}
-  
-<button  type='button'  className="col-span-2 flex flex-row justify-center items-center bg-green-600 rounded-lg p-2 gap-2 text-white"><IoIosArrowDropdownCircle size={25}/>BAIXAR</button>
-<button type="button"  className="col-span-2 flex flex-row justify-center items-center  bg-red-600 rounded-lg p-2 gap-2 text-white"><GiReturnArrow size={22}/> ESTORNAR</button>
-</div>
+
 </form>
 </div>
 </div>
