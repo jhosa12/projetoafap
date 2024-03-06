@@ -1,13 +1,14 @@
 import { MenuLateral } from "@/components/menu";
 import { api } from "@/services/apiClient";
 import { MdOutlineAddCircle } from "react-icons/md";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { ModalLancamentosCaixa } from "@/components/modalLancamentosCaixa";
 import { Tooltip } from "react-tooltip";
+import { AuthContext } from "@/contexts/AuthContext";
 registerLocale('pt', pt)
 
 interface LancamentosProps{
@@ -22,8 +23,10 @@ interface LancamentosProps{
     historico:string,
     tipo:string,
     valor:number,
-    datalanc:Date
+    datalanc:Date,
+    usuario:string
 }
+
 
 export default function CaixaMovimentar(){
     const[lancamentos,setLancamentos]=useState<Array<LancamentosProps>>([])
@@ -34,7 +37,7 @@ export default function CaixaMovimentar(){
     const[despesas,setDespesas]=useState(0)
     const[IsModalOpen,setIsModalOpen] =useState(false)
     const [planos,setPlanos]=useState([])
-  
+    const {caixaMovimentacao} =useContext(AuthContext)
 
     const closeModal = ()=>{
         setIsModalOpen(false)
@@ -95,7 +98,7 @@ export default function CaixaMovimentar(){
 
 return(
 <>
-{IsModalOpen && <ModalLancamentosCaixa planos={planos} closeModal={closeModal}/>}
+{IsModalOpen && <ModalLancamentosCaixa listarLancamentos={listarLancamentos} planos={planos} closeModal={closeModal}/>}
 <MenuLateral/>
 <div className="flex w-full justify-center p-4">
 <div className="flex flex-col w-11/12 border  rounded-lg shadow  border-gray-700 ">
@@ -127,7 +130,7 @@ return(
                    </div>
 
                    <div className="flex w-1/3  items-end justify-end pr-2 ">
-                   <button onClick={()=>setIsModalOpen(!IsModalOpen)} type="button" className="inline-flex w- h-8 font-semibold justify-center items-center bg-green-600 rounded-lg p-2 gap-2 text-white"><MdOutlineAddCircle size={22}/> Novo</button>
+                   <button onClick={()=>{caixaMovimentacao({conta:'',conta_n:'',ccustos_desc:'',data:new Date(),datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null}),setIsModalOpen(!IsModalOpen)}} type="button" className="inline-flex w- h-8 font-semibold justify-center items-center bg-green-600 rounded-lg p-2 gap-2 text-white"><MdOutlineAddCircle size={22}/> Novo</button>
                    </div>
                   
        
@@ -181,19 +184,19 @@ return(
             {item.conta}
            
             </td>
-            <td className="px-6 py-1 ">
+            <td className="px-5 py-1 ">
             {item.ccustos_desc  }
             </td>
-            <td className="px-6 py-1 ">
+            <td className="px-5 py-1 whitespace-nowrap ">
                {item.notafiscal?item.notafiscal:item.descricao}
             </td>
-            <td className=" px-6 py-1 w-full whitespace-nowrap">
+            <td className=" px-5 py-1 w-full whitespace-nowrap">
                {item.historico}
             </td>
-            <td className={`px-6 py-1  font-semibold ${item.tipo==='RECEITA'?"text-green-500":"text-red-500"}`}>
+            <td className={`px-5 py-1  font-semibold ${item.tipo==='RECEITA'?"text-green-500":"text-red-500"}`}>
                {item.tipo}
             </td>
-            <td className="px-6 py-1 ">
+            <td className="px-5 py-1 ">
                R${item.valor}
             </td>
            
@@ -201,6 +204,17 @@ return(
             <td className="px-4 py-1 text-right">
                 <button onClick={(event)=>{
                                event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
+                               caixaMovimentacao({data:item.data,
+                                conta:item.conta,
+                                conta_n:item.conta_n,
+                                ccustos_desc:item.ccustos_desc,
+                                descricao:item.descricao,
+                                historico:item.historico,
+                                num_seq:item.num_seq,
+                                tipo:item.tipo,
+                                valor:item.valor,
+                                usuario:item.usuario})
+                               setIsModalOpen(true)
                             }} className="font-medium  text-blue-500 hover:underline">Edit</button>
             </td>
            </tr>

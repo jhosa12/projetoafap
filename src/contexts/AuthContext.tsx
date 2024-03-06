@@ -11,6 +11,20 @@ type CidadesProps={
    cidade:string
   }
 
+  type CaixaProps={
+    num_seq:number | null,
+    conta:string,
+    conta_n:string,
+    descricao:string,
+    historico:string,
+    ccustos_desc:string,
+    valor:number | null,
+    usuario:string,
+    data:Date
+    tipo:string,
+    datalanc:Date
+  }
+
 
 type DependentesProps={
     nome:string,
@@ -146,6 +160,8 @@ type AuthContextData = {
     sign: (credentials:SignInProps)=>Promise<void>,
     signOut:()=>void,
     closeModa:(fields:Partial<DadosCadastro>)=>void,
+    caixaMovimentacao:(fields:Partial<CaixaProps>)=>void,
+    mov:Partial<CaixaProps>,
     data:Partial<DadosCadastro>,
     dadosassociado:AssociadoProps | undefined,
     carregarDados:()=>Promise<void>
@@ -177,6 +193,7 @@ export function AuthProvider({children}:{children:ReactNode}){
     const isAuthenticated = !!usuario;
     const [dadosassociado,setDadosAssociado]=useState<AssociadoProps>()  
     const [data,setData] =useState<Partial<DadosCadastro>>({})
+    const [mov,setMov]=useState<Partial<CaixaProps>>({})
 async function sign({nome,password}:SignInProps) {
     try{
         const response = await api.post('/session',{
@@ -210,6 +227,16 @@ function closeModa(fields: Partial<DadosCadastro>) {
     });
 }
 
+function caixaMovimentacao(fields: Partial<CaixaProps>) {
+    setMov((prev: Partial<CaixaProps>) => {
+        if (prev) {
+            return { ...prev, ...fields };
+        } else {
+            return { ...fields };
+        }
+    });
+}
+
 
 async function carregarDados(){
     const response = await api.post('/associado',{
@@ -219,7 +246,7 @@ async function carregarDados(){
      setDadosAssociado(response.data);
    }
   return(
-    <AuthContext.Provider value={{usuario,isAuthenticated,sign,signOut,data,closeModa,dadosassociado,carregarDados}}>
+    <AuthContext.Provider value={{usuario,isAuthenticated,sign,signOut,data,closeModa,dadosassociado,carregarDados,caixaMovimentacao,mov}}>
         {children}
     </AuthContext.Provider>
   )

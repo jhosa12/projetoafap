@@ -13,6 +13,8 @@ import { api } from "@/services/apiClient";
 interface ModalProps{
     closeModal:()=>void;
     planos:Array<PlanosProps>
+    listarLancamentos:()=>Promise<void>
+
 }
 interface PlanosProps{
     conta:string,
@@ -20,11 +22,8 @@ interface PlanosProps{
     tipo:string,
     perm_lanc:string,
 }
-export function ModalLancamentosCaixa({closeModal,planos}:ModalProps){
-    const {closeModa,data,usuario,carregarDados,dadosassociado}=useContext(AuthContext)
-    const [desconto,setDesconto] = useState(false);
-    const [componentMounted, setComponentMounted] = useState(false);
-    const [status,setStatus]=useState('');
+export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:ModalProps){
+    const {usuario,mov}=useContext(AuthContext)
     const [descricao,setDescricao]=useState('');
     const[conta,setConta] =useState('');
     const[tipo,setTipo]=useState<string>('');
@@ -33,7 +32,17 @@ export function ModalLancamentosCaixa({closeModal,planos}:ModalProps){
     const[valor,setValor]=useState(0)
     
 
-   
+   useEffect(()=>{
+        
+        mov.descricao &&  setDescricao(mov.descricao)
+        mov.conta && setConta(mov.conta)
+        mov.tipo && setTipo(mov.tipo)
+        mov.data && setData(mov.data)
+        mov.historico && setHistorico(mov.historico)
+        mov.valor && setValor(mov.valor)
+
+        
+   })
 
      async function lancarMovimentacao() {
         await toast.promise(
@@ -55,6 +64,7 @@ export function ModalLancamentosCaixa({closeModal,planos}:ModalProps){
                 success:'Lançado com sucesso!'
             }
         )
+        listarLancamentos()
         
      }
 
@@ -84,11 +94,11 @@ export function ModalLancamentosCaixa({closeModal,planos}:ModalProps){
    
 <div className="mb-1 col-span-1 ">
 <label  className="block mb-1 text-xs font-medium  text-white">CONTA</label>
-<input disabled type="text" value={conta} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),referencia:e.target.value}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+<input disabled type="text" value={conta}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-2">
     <label  className="block mb-1 text-xs font-medium  text-white">DESCRIÇÃO</label>
-    <select onChange={e=>{
+    <select value={descricao} onChange={e=>{
         const tipo = planos.find((item)=>item.descricao===e.target.value)
         setDescricao(e.target.value)
         setTipo(String(tipo?.tipo))
