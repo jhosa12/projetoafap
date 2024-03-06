@@ -7,6 +7,7 @@ import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { ModalLancamentosCaixa } from "@/components/modalLancamentosCaixa";
+import { Tooltip } from "react-tooltip";
 registerLocale('pt', pt)
 
 interface LancamentosProps{
@@ -30,6 +31,7 @@ export default function CaixaMovimentar(){
     const[dataFinal,setDataFinal] =useState<Date>(new Date())
     const[descricao,setDescricao] =useState('')
     const[saldo,setSaldo]=useState(0)
+    const[despesas,setDespesas]=useState(0)
     const[IsModalOpen,setIsModalOpen] =useState(false)
     const [planos,setPlanos]=useState([])
   
@@ -76,6 +78,16 @@ export default function CaixaMovimentar(){
                     else return total=total-Number(item.valor)
                 },0)
             setSaldo(soma)
+            const somadespesas = lancamentos.reduce((total,item)=>{
+                if(item.tipo==='DESPESA'){
+                    return total=total+Number(item.valor)
+                }
+                else{
+                    return total
+                }
+                
+                },0)
+                setDespesas(somadespesas)
        
    
 
@@ -92,8 +104,8 @@ return(
     <p className="inline-flex gap-28  text-[15px]">
     <span className="text-yellow-300 font-medium">Saldo Inical:</span>
     <span className="text-green-500 font-medium">Saldo do Dia: R${saldo}</span>
-    <span className="text-green-500 font-medium">Receitas:</span>
-    <span className="text-red-500 font-medium">Despesas: </span>
+    <span className="text-green-500 font-medium">Receitas:R${saldo+despesas}</span>
+    <span className="text-red-500 font-medium">Despesas:R${despesas} </span>
     </p>
     </div>
     <div className="flex flex-col">
@@ -120,7 +132,7 @@ return(
                   
        
         </div>
-      
+        <Tooltip id="tooltip-hora"/>
         <table 
      className="block p-2 overflow-y-auto overflow-x-auto text-xs text-left rtl:text-center border-collapse rounded-lg text-gray-400">
         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
@@ -162,26 +174,26 @@ return(
             <th scope="row"  className="px-2 py-1 font-medium  whitespace-nowrap">
                    {item.num_seq}
             </th>
-            <td className="px-6 py-1">
+            <td data-tooltip-id="tooltip-hora" data-tooltip-place="bottom" data-tooltip-content={new Date(item.data).toLocaleTimeString()} className="px-6 py-1">
             {new Date(item.data).toLocaleDateString('pt-BR',{timeZone: 'UTC'})}
             </td>
-            <td className="px-5 py-1">
+            <td className="px-5 py-1 ">
             {item.conta}
            
             </td>
-            <td className="px-6 py-1">
+            <td className="px-6 py-1 ">
             {item.ccustos_desc  }
             </td>
-            <td className="px-6 py-1">
-               {item.notafiscal}
+            <td className="px-6 py-1 ">
+               {item.notafiscal?item.notafiscal:item.descricao}
             </td>
-            <td className=" px-6 py-1">
+            <td className=" px-6 py-1 w-full whitespace-nowrap">
                {item.historico}
             </td>
-            <td className={`px-6 py-1 font-semibold ${item.tipo==='RECEITA'?"text-green-500":"text-red-500"}`}>
+            <td className={`px-6 py-1  font-semibold ${item.tipo==='RECEITA'?"text-green-500":"text-red-500"}`}>
                {item.tipo}
             </td>
-            <td className="px-6 py-1">
+            <td className="px-6 py-1 ">
                R${item.valor}
             </td>
            

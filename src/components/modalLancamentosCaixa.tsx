@@ -22,17 +22,41 @@ interface PlanosProps{
 }
 export function ModalLancamentosCaixa({closeModal,planos}:ModalProps){
     const {closeModa,data,usuario,carregarDados,dadosassociado}=useContext(AuthContext)
-    const [desconto,setDesconto] = useState(false)
+    const [desconto,setDesconto] = useState(false);
     const [componentMounted, setComponentMounted] = useState(false);
-    const [status,setStatus]=useState('')
-    const [descricao,setDescricao]=useState('')
-    const[conta,setConta] =useState('')
-    const[tipo,setTipo]=useState<string>('')
-    const[datalanc,setData] =useState(new Date())
+    const [status,setStatus]=useState('');
+    const [descricao,setDescricao]=useState('');
+    const[conta,setConta] =useState('');
+    const[tipo,setTipo]=useState<string>('');
+    const[datalanc,setData] =useState(new Date());
+    const[historico,setHistorico]= useState('');
+    const[valor,setValor]=useState(0)
+    
 
    
 
-     
+     async function lancarMovimentacao() {
+        await toast.promise(
+            api.post('/novoLancamento',{
+                datalanc:new Date(),
+            conta,
+            conta_n:conta,
+            descricao:descricao,
+            historico:historico,
+            ccustos_desc:usuario?.nome,
+            valor:valor,
+            usuario:usuario?.nome,
+            data:new Date(datalanc),
+            tipo:tipo
+            }),
+            {
+                error:'Erro realizar Lançamento',
+                pending:'Realizando Lançamento',
+                success:'Lançado com sucesso!'
+            }
+        )
+        
+     }
 
     return(
     <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
@@ -45,9 +69,15 @@ export function ModalLancamentosCaixa({closeModal,planos}:ModalProps){
         <form>
         
 <label className="flex flex-row justify-center  font-semibold mt-2 gap-2 text-white">NOVO LANÇAMENTO</label>
+<div className="inline-flex gap-4 w-full">
 <div className="ml-2 justify-start w-2/12">
 <label  className="block mb-1 text-xs font-medium  text-white">DATA</label>
 <DatePicker selected={datalanc} onChange={e=>e && setData(e)}  dateFormat={"dd/MM/yyyy"} locale={"pt"}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+</div>
+<div className="mb-1 col-span-1">
+    <label  className="block mb-1 text-xs font-medium  text-white">USUÁRIO</label>
+    <input required type="text" disabled value={usuario?.nome}  className="block w-full  pt-2 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+</div>
 </div>
 
         <div className="p-2   grid mt-2 gap-2 grid-flow-row-dense grid-cols-4">
@@ -77,23 +107,20 @@ export function ModalLancamentosCaixa({closeModal,planos}:ModalProps){
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">TIPO</label>
-    <input disabled value={tipo}  className="block w-full  pt-1 pb-1 pl-2 pr-2 border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input required disabled value={tipo}  className="block w-full  pt-1 pb-1 pl-2 pr-2 border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 
-<div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-white">USUÁRIO</label>
-    <input type="text" disabled value={usuario?.nome}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
-</div>
-<div className="mb-1 col-span-2">
+
+<div className="mb-1 col-span-3">
     <label  className="block mb-1 text-xs font-medium  text-white">HISTÓRICO</label>
-    <input type="text" value={data.mensalidade?.usuario} onChange={e=>closeModa({mensalidade:{usuario:e.target.value}})}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input type="text" value={historico} onChange={e=>setHistorico(e.target.value)}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">VALOR</label>
-    <input  type="number"  inputMode="decimal"  className="block w-full  pt-1 pb-1 pl-2 pr-2 border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input value={valor} onChange={e=>e && setValor(Number(e.target.value))}  type="number"  inputMode="decimal"  className="block w-full  pt-1 pb-1 pl-2 pr-2 border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className=" gap-2 col-span-4  flex flex-row justify-end">
-<button type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>SALVAR</button>
+<button onClick={()=>lancarMovimentacao()} type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>SALVAR</button>
 
 
 </div>
