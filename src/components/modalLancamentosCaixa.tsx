@@ -42,7 +42,29 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
         mov.valor && setValor(mov.valor)
 
         
-   })
+   },[])
+
+   async function editarMovimentacao(){
+        await toast.promise(
+            api.put('/atualizarLancamento',{
+            num_seq:mov.num_seq,
+            conta:conta,
+            descricao:descricao,
+            historico:historico,
+            ccustos_desc:usuario?.nome,
+           // ccustos_id,
+            valor:valor,
+            usuario:usuario,
+            data:datalanc,
+            tipo:tipo
+            }),
+            {pending:'Atualizando.....',
+            error:'Erro ao atualizar',
+            success:'Atualizado com sucesso!'
+        }
+        )
+        listarLancamentos()
+   }
 
      async function lancarMovimentacao() {
         await toast.promise(
@@ -132,7 +154,7 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
 <div className=" gap-2 col-span-4  flex flex-row justify-end">
 
 {mov.num_seq ?<div className="inline-flex w-full justify-between"> <button onClick={()=>lancarMovimentacao()} type="button" disabled={!!mov.notafiscal} className={`flex flex-row justify-center ${mov.notafiscal?"bg-gray-500":"bg-blue-600"}  rounded-lg p-2 gap-2 text-white`}><MdSaveAlt size={22}/>EXCLUIR</button>
-<button disabled={!!mov.notafiscal} onClick={()=>lancarMovimentacao()} type="button" className={`flex flex-row justify-center ${mov.notafiscal?"bg-gray-500":"bg-blue-600"}  rounded-lg p-2 gap-2 text-white`}><MdSaveAlt size={22}/>Editar</button>
+<button disabled={!!mov.notafiscal} onClick={()=>editarMovimentacao()} type="button" className={`flex flex-row justify-center ${mov.notafiscal?"bg-gray-500":"bg-blue-600"}  rounded-lg p-2 gap-2 text-white`}><MdSaveAlt size={22}/>Editar</button>
  </div>:
 <button onClick={()=>lancarMovimentacao()} type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>SALVAR</button>}
 </div>
