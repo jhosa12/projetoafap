@@ -22,7 +22,8 @@ type CidadesProps={
     usuario:string,
     data:Date
     tipo:string,
-    datalanc:Date
+    datalanc:Date,
+    notafiscal:string
   }
 
 

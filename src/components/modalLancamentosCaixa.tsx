@@ -130,9 +130,11 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
     <input value={valor} onChange={e=>e && setValor(Number(e.target.value))}  type="number"  inputMode="decimal"  className="block w-full  pt-1 pb-1 pl-2 pr-2 border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className=" gap-2 col-span-4  flex flex-row justify-end">
-<button onClick={()=>lancarMovimentacao()} type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>SALVAR</button>
 
-
+{mov.num_seq ?<div className="inline-flex w-full justify-between"> <button onClick={()=>lancarMovimentacao()} type="button" disabled={!!mov.notafiscal} className={`flex flex-row justify-center ${mov.notafiscal?"bg-gray-500":"bg-blue-600"}  rounded-lg p-2 gap-2 text-white`}><MdSaveAlt size={22}/>EXCLUIR</button>
+<button disabled={!!mov.notafiscal} onClick={()=>lancarMovimentacao()} type="button" className={`flex flex-row justify-center ${mov.notafiscal?"bg-gray-500":"bg-blue-600"}  rounded-lg p-2 gap-2 text-white`}><MdSaveAlt size={22}/>Editar</button>
+ </div>:
+<button onClick={()=>lancarMovimentacao()} type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>SALVAR</button>}
 </div>
     </div>
 

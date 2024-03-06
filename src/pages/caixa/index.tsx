@@ -213,7 +213,9 @@ return(
                                 num_seq:item.num_seq,
                                 tipo:item.tipo,
                                 valor:item.valor,
-                                usuario:item.usuario})
+                                usuario:item.usuario,
+                                notafiscal:item.notafiscal
+                            })
                                setIsModalOpen(true)
                             }} className="font-medium  text-blue-500 hover:underline">Edit</button>
             </td>
