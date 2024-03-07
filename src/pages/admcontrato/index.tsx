@@ -106,7 +106,7 @@ if(item.status ==='E'){
    }
 
    useEffect(()=>{
-    user()
+   // user()
     closeModa({acordo:{...{}}})
    
   if(componenteMounted){atualizarObs()}
