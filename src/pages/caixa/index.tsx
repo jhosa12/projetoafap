@@ -138,8 +138,9 @@ return(
        
         </div>
         <Tooltip id="tooltip-hora"/>
+        <div className="p-2">
         <table 
-     className="block p-2 overflow-y-auto overflow-x-auto text-xs text-left rtl:text-center border-collapse rounded-lg text-gray-400">
+     className="block overflow-y-auto overflow-x-auto text-xs text-left rtl:text-center border-collapse rounded-lg text-gray-400">
         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
         <tr>
                 <th scope="col" className=" px-2 py-1 whitespace-nowrap">
@@ -151,19 +152,19 @@ return(
                 <th scope="col" className="px-5 py-1">
                     CONTA
                 </th>
-                <th scope="col" className="px-8 py-1">
+                <th scope="col" className="px-5 py-1">
                     C.CUSTOS
                 </th>
-                <th scope="col" className="px-6 py-1">
+                <th scope="col" className="px-5 py-1">
                     DOCUMENTO
                 </th> 
-                <th scope="col" className="px-8 py-1">
+                <th scope="col" className="px-5 py-1">
                     HISTÓRICO
                 </th> 
-                <th scope="col" className="px-8 py-1">
+                <th scope="col" className="px-5 py-1">
                     TIPO
                 </th>
-                <th scope="col" className="px-6 py-1">
+                <th scope="col" className="px-5 py-1">
                     VALOR
                 </th>  
                 <th scope="col" className="px-4 py-1">
@@ -186,7 +187,7 @@ return(
             {item.conta}
            
             </td>
-            <td className="px-5 py-1 ">
+            <td className="px-5 py-1 whitespace-nowrap ">
             {item.ccustos_desc  }
             </td>
             <td className="px-5 py-1 whitespace-nowrap ">
@@ -228,6 +229,7 @@ return(
         </tbody>
     
     </table>
+    </div>
     </div>
     <div className="flex  items-end justify-end p-1 ">
                    <button onClick={()=>{caixaMovimentacao({conta:'',conta_n:'',ccustos_desc:'',data:new Date(),datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null}),setIsModalOpen(!IsModalOpen)}} type="button" className="inline-flex  font-semibold justify-center items-center bg-yellow-600 rounded-lg p-2 gap-2 text-white"><BiTransfer size={22}/> Transferir</button>
