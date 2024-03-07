@@ -18,7 +18,7 @@ export function Item(){
   const [cidades,setCidades] = useState<Array<Partial<CidadesProps>>>([])
   const [ufs,setUfs] =useState<string[]>([])
   useEffect(()=>{
-    usuario?.cidades && setCidades(usuario?.cidades)
+  //  usuario?.cidades && setCidades(usuario?.cidades)
 },[])
 
     return(

@@ -15,7 +15,7 @@ export function DadosPlano(){
   useEffect(()=>{
     if(inicioDatas){
       const dataCarencia = new Date().setMonth(new Date().getMonth()+3)
-      closeModa({contrato:{...data.contrato,dt_adesao:new Date(),dt_carencia:new Date(dataCarencia)},planos:usuario?.planos})
+      closeModa({contrato:{...data.contrato,dt_adesao:new Date(),dt_carencia:new Date(dataCarencia)},/*planos:usuario?.planos*/})
     }
     setDatas(false)
    
