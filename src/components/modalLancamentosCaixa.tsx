@@ -70,12 +70,12 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
      async function lancarMovimentacao() {
         await toast.promise(
             api.post('/novoLancamento',{
-                datalanc:new Date(),
+            id_user:usuario?.id,
+            datalanc:new Date(),
             conta,
             conta_n:conta,
             descricao:descricao,
             historico:historico.toUpperCase(),
-            ccustos_desc:usuario?.nome.toUpperCase(),
             valor:valor,
             usuario:usuario?.nome.toUpperCase(),
             data:new Date(datalanc),
@@ -146,7 +146,7 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
 
 <div className="mb-1 col-span-3">
     <label  className="block mb-1 text-xs font-medium  text-white">HISTÓRICO</label>
-    <input type="text" value={historico} onChange={e=>setHistorico(e.target.value)}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input type="text" value={historico} onChange={e=>setHistorico(e.target.value.toUpperCase())}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">VALOR</label>

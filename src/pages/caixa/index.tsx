@@ -49,11 +49,8 @@ export default function CaixaMovimentar(){
     }
 
     useEffect(()=>{
-
-        
-       user()
-        listarLancamentos()
-    },[])
+      listarLancamentos()
+    },[usuario])
 
     async function listarLancamentos() {
         try{
@@ -69,7 +66,7 @@ export default function CaixaMovimentar(){
             setLancamentos(response.data.lista)
             setSaldoInicial(response.data.dif)
             setPlanos(response.data.plano_de_contas)
-            console.log(response.data.plano_de_contas)
+           console.log(response.data)
             
             
          }catch(err){
