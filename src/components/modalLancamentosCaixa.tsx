@@ -10,6 +10,7 @@ import pt from 'date-fns/locale/pt-BR';
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 
+
 interface ModalProps{
     closeModal:()=>void;
     planos:Array<PlanosProps>
@@ -41,7 +42,7 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
         mov.historico && setHistorico(mov.historico)
         mov.valor && setValor(mov.valor)
 
-        
+       
    },[])
 
    async function editarMovimentacao(){
@@ -104,11 +105,11 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
 <div className="inline-flex gap-4 w-full">
 <div className="ml-2 justify-start w-2/12">
 <label  className="block mb-1 text-xs font-medium  text-white">DATA</label>
-<DatePicker selected={datalanc} onChange={e=>e && setData(e)}  dateFormat={"dd/MM/yyyy"} locale={"pt"}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+<DatePicker  selected={datalanc} onChange={e=>e && setData(e)}  dateFormat={"dd/MM/yyyy"} locale={"pt"}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
 </div>
-<div className="mb-1 col-span-1">
+<div className="mb-1  col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">USUÁRIO</label>
-    <input required type="text" disabled value={usuario?.nome}  className="block w-full  pt-2 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+    <input required type="text" disabled value={usuario?.nome}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 </div>
 

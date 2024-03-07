@@ -49,7 +49,7 @@ interface MensalidadeProps{
 
 export default function AdmContrato(){
    
-    const {data,closeModa,dadosassociado,carregarDados,usuario} = useContext(AuthContext)
+    const {data,closeModa,dadosassociado,carregarDados,usuario,user} = useContext(AuthContext)
   const [dados,setDados] =useState(true)
   const [historico,setHistorico] = useState(false)
   const [dependentes,setDependentes] =useState(false)
@@ -106,7 +106,9 @@ if(item.status ==='E'){
    }
 
    useEffect(()=>{
+    user()
     closeModa({acordo:{...{}}})
+   
   if(componenteMounted){atualizarObs()}
    setMounted(true)
  },[data.contrato?.anotacoes] )
@@ -414,8 +416,8 @@ async function atualizarObs() {
             supervisor:dadosassociado.contrato.supervisor,
             valor_mensalidade:dadosassociado.contrato.valor_mensalidade
         },
-        planos:usuario?.planos,
-        cidades:usuario?.cidades,
+      //  planos:usuario?.planos,
+       // cidades:usuario?.cidades,
         numero:dadosassociado.numero,
         profissao:dadosassociado.profissao,
         rg:dadosassociado.rg,
@@ -467,8 +469,8 @@ async function atualizarObs() {
        supervisor:dadosassociado.contrato.supervisor,
        valor_mensalidade:dadosassociado.contrato.valor_mensalidade
    },
-   planos:usuario?.planos,
-   cidades:usuario?.cidades,
+ //  planos:usuario?.planos,
+  // cidades:usuario?.cidades,
    numero:dadosassociado.numero,
    profissao:dadosassociado.profissao,
    rg:dadosassociado.rg,

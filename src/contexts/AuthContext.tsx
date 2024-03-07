@@ -2,7 +2,7 @@ import { ReactNode,createContext,useState } from 'react';
 import {api} from "../services/apiClient"
 import {destroyCookie,setCookie,parseCookies} from "nookies"
 import Router from 'next/router';
-
+import {decode} from 'jsonwebtoken'
 
 type CidadesProps={
     id_cidade:number,
@@ -166,6 +166,7 @@ type AuthContextData = {
     data:Partial<DadosCadastro>,
     dadosassociado:AssociadoProps | undefined,
     carregarDados:()=>Promise<void>
+    user:()=>void
 }
 
 type SignInProps={
@@ -175,8 +176,7 @@ type SignInProps={
 type UserProps ={
     id:string,
     nome:string,
-    planos:Array<Partial<PlanosProps>>
-    cidades:Array<Partial<CidadesProps>>
+   
 }
 
 export const AuthContext = createContext({} as AuthContextData)
@@ -204,10 +204,10 @@ async function sign({nome,password}:SignInProps) {
         
         const {id,token,planos,cidades} = response.data
        setCookie(undefined,'@nextauth.token',token,{
-        maxAge:60*60*24*30, // expirar em 1 mes
+        maxAge:60*60*24*1, // expirar em 1 mes
         path:"/" // quais caminhos terão acesso ao cookie
        })
-       setUser({id,nome,planos,cidades})
+       setUser({id,nome:nome.toUpperCase()})
        // Passar o token para as proximas paginas
        api.defaults.headers["Authorization"] =`Bearer ${token}`
        //redirecionar o user para /dashboard
@@ -227,6 +227,20 @@ function closeModa(fields: Partial<DadosCadastro>) {
         }
     });
 }
+ function user(){
+    const cookies = parseCookies();
+    if(cookies['@nextauth.token']){
+        const token = cookies['@nextauth.token'];
+        const decodeToken = decode(token);
+        if(decodeToken && typeof decodeToken === 'object'){
+            const {nome,sub} = decodeToken;
+            setUser({id:String(sub),nome:nome.toUpperCase()})
+        }
+     
+       
+        
+    }
+ }
 
 function caixaMovimentacao(fields: Partial<CaixaProps>) {
     setMov((prev: Partial<CaixaProps>) => {
@@ -247,7 +261,7 @@ async function carregarDados(){
      setDadosAssociado(response.data);
    }
   return(
-    <AuthContext.Provider value={{usuario,isAuthenticated,sign,signOut,data,closeModa,dadosassociado,carregarDados,caixaMovimentacao,mov}}>
+    <AuthContext.Provider value={{user,usuario,isAuthenticated,sign,signOut,data,closeModa,dadosassociado,carregarDados,caixaMovimentacao,mov}}>
         {children}
     </AuthContext.Provider>
   )

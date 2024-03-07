@@ -9,6 +9,9 @@ import pt from 'date-fns/locale/pt-BR';
 import { ModalLancamentosCaixa } from "@/components/modalLancamentosCaixa";
 import { Tooltip } from "react-tooltip";
 import { AuthContext } from "@/contexts/AuthContext";
+import {decode} from 'jsonwebtoken';
+import {destroyCookie,setCookie,parseCookies} from "nookies"
+
 registerLocale('pt', pt)
 
 interface LancamentosProps{
@@ -37,7 +40,7 @@ export default function CaixaMovimentar(){
     const[despesas,setDespesas]=useState(0)
     const[IsModalOpen,setIsModalOpen] =useState(false)
     const [planos,setPlanos]=useState([])
-    const {caixaMovimentacao} =useContext(AuthContext)
+    const {caixaMovimentacao,user} =useContext(AuthContext)
 
     const closeModal = ()=>{
         setIsModalOpen(false)
@@ -45,8 +48,8 @@ export default function CaixaMovimentar(){
 
     useEffect(()=>{
 
-      
         
+       user()
         listarLancamentos()
        
 
