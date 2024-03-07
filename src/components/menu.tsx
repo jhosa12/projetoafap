@@ -33,7 +33,7 @@ export function MenuLateral(){
 <Image className="w-10 h-10 rounded-full" src={fototeste} alt=""/>
 <div className  ="font-medium text-white">
     <span>{usuario?.nome}</span>
-    <div className="text-sm  text-gray-400">Técnico de TI</div>
+    <div className="text-sm  text-gray-400">{usuario?.cargo}</div>
 </div>
 </div>
     </div>

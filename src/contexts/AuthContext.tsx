@@ -176,6 +176,8 @@ type SignInProps={
 type UserProps ={
     id:string,
     nome:string,
+    cargo:string,
+    dir:string
    
 }
 
@@ -202,12 +204,12 @@ async function sign({nome,password}:SignInProps) {
             password
         })
         
-        const {id,token,planos,cidades} = response.data
+        const {id,token,cargo,dir} = response.data
        setCookie(undefined,'@nextauth.token',token,{
         maxAge:60*60*24*1, // expirar em 1 dia
         path:"/" // quais caminhos terão acesso ao cookie
        })
-       setUser({id,nome:nome.toUpperCase()})
+       setUser({id,nome:nome.toUpperCase(),cargo,dir})
        // Passar o token para as proximas paginas
        api.defaults.headers["Authorization"] =`Bearer ${token}`
        //redirecionar o user para /dashboard
@@ -234,7 +236,7 @@ function closeModa(fields: Partial<DadosCadastro>) {
         const decodeToken = decode(token);
         if(decodeToken && typeof decodeToken === 'object'){
             const {nome,sub} = decodeToken;
-            setUser({id:String(sub),nome:nome.toUpperCase()})
+            setUser({id:String(sub),nome:nome.toUpperCase(),cargo:'',dir:''})
         }
     }
  }
