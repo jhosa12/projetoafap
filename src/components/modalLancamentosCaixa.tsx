@@ -30,7 +30,7 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
     const[tipo,setTipo]=useState<string>('');
     const[datalanc,setData] =useState(new Date());
     const[historico,setHistorico]= useState('');
-    const[valor,setValor]=useState(0)
+    const[valor,setValor]=useState<number>()
     
 
    useEffect(()=>{
@@ -53,7 +53,7 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
             descricao:descricao,
             historico:historico,
             ccustos_desc:usuario?.nome,
-           // ccustos_id,
+            ccustos_id:usuario?.id,
             valor:valor,
             usuario:usuario,
             data:datalanc,
@@ -74,10 +74,10 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
             conta,
             conta_n:conta,
             descricao:descricao,
-            historico:historico,
-            ccustos_desc:usuario?.nome,
+            historico:historico.toUpperCase(),
+            ccustos_desc:usuario?.nome.toUpperCase(),
             valor:valor,
-            usuario:usuario?.nome,
+            usuario:usuario?.nome.toUpperCase(),
             data:new Date(datalanc),
             tipo:tipo
             }),
@@ -131,7 +131,7 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
         {planos.map((item,index)=>
             
             (
-              item.perm_lanc==='S' &&  <option value={item.descricao}>{item.descricao.toUpperCase()}</option>
+              item.perm_lanc==='S' &&  <option key={index} value={item.descricao}>{item.descricao.toUpperCase()}</option>
             )
         )}
 

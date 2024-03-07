@@ -204,7 +204,7 @@ async function sign({nome,password}:SignInProps) {
         
         const {id,token,planos,cidades} = response.data
        setCookie(undefined,'@nextauth.token',token,{
-        maxAge:60*60*24*1, // expirar em 1 mes
+        maxAge:60*60*24*1, // expirar em 1 dia
         path:"/" // quais caminhos terão acesso ao cookie
        })
        setUser({id,nome:nome.toUpperCase()})
@@ -236,9 +236,6 @@ function closeModa(fields: Partial<DadosCadastro>) {
             const {nome,sub} = decodeToken;
             setUser({id:String(sub),nome:nome.toUpperCase()})
         }
-     
-       
-        
     }
  }
 

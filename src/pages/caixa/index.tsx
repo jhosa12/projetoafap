@@ -32,15 +32,16 @@ interface LancamentosProps{
 
 
 export default function CaixaMovimentar(){
-    const[lancamentos,setLancamentos]=useState<Array<LancamentosProps>>([])
-    const[dataInicial,setDataInicial] =useState<Date>(new Date())
-    const[dataFinal,setDataFinal] =useState<Date>(new Date())
-    const[descricao,setDescricao] =useState('')
-    const[saldo,setSaldo]=useState(0)
-    const[despesas,setDespesas]=useState(0)
-    const[IsModalOpen,setIsModalOpen] =useState(false)
-    const [planos,setPlanos]=useState([])
-    const {caixaMovimentacao,user} =useContext(AuthContext)
+    const[lancamentos,setLancamentos]=useState<Array<LancamentosProps>>([]);
+    const[dataInicial,setDataInicial] =useState<Date>(new Date());
+    const[dataFinal,setDataFinal] =useState<Date>(new Date());
+    const[descricao,setDescricao] =useState('');
+    const[saldo,setSaldo]=useState(0);
+    const[saldoInicial,setSaldoInicial]=useState(0);
+    const[despesas,setDespesas]=useState(0);
+    const[IsModalOpen,setIsModalOpen] =useState(false);
+    const [planos,setPlanos]=useState([]);
+    const {caixaMovimentacao,user} =useContext(AuthContext);
 
     const closeModal = ()=>{
         setIsModalOpen(false)
@@ -66,6 +67,7 @@ export default function CaixaMovimentar(){
             })
 
             setLancamentos(response.data.lista)
+            setSaldoInicial(response.data.dif)
             setPlanos(response.data.plano_de_contas)
             console.log(response.data.plano_de_contas)
             
@@ -108,8 +110,8 @@ return(
     <div className="text-gray-300 bg-gray-800 rounded-t-lg inline-flex items-center p-2 justify-between">
     <h1 className=" text-lg  pl-3 font-medium">Movimentação de Caixa</h1>
     <p className="inline-flex gap-28  text-[15px]">
-    <span className="text-yellow-300 font-medium">Saldo Inical:</span>
-    <span className="text-green-500 font-medium">Saldo do Dia: R${saldo}</span>
+    <span className="text-yellow-300 font-medium">Saldo Inical: R$ {saldoInicial}</span>
+    <span className="text-green-500 font-medium">Saldo do Dia: R${saldo+saldoInicial}</span>
     <span className="text-green-500 font-medium">Receitas:R${saldo+despesas}</span>
     <span className="text-red-500 font-medium">Despesas:R${despesas} </span>
     </p>
