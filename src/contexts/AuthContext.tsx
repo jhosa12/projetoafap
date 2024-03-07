@@ -170,7 +170,7 @@ type AuthContextData = {
 }
 
 type SignInProps={
-    nome:string,
+    user:string,
     password:string,
 }
 type UserProps ={
@@ -197,14 +197,14 @@ export function AuthProvider({children}:{children:ReactNode}){
     const [dadosassociado,setDadosAssociado]=useState<AssociadoProps>()  
     const [data,setData] =useState<Partial<DadosCadastro>>({})
     const [mov,setMov]=useState<Partial<CaixaProps>>({})
-async function sign({nome,password}:SignInProps) {
+async function sign({user,password}:SignInProps) {
     try{
         const response = await api.post('/session',{
-            nome,
+            usuario:user,
             password
         })
         
-        const {id,token,cargo,dir} = response.data
+        const {id,token,cargo,dir,nome} = response.data
        setCookie(undefined,'@nextauth.token',token,{
         maxAge:60*60*24*1, // expirar em 1 dia
         path:"/" // quais caminhos terão acesso ao cookie
@@ -235,8 +235,8 @@ function closeModa(fields: Partial<DadosCadastro>) {
         const token = cookies['@nextauth.token'];
         const decodeToken = decode(token);
         if(decodeToken && typeof decodeToken === 'object'){
-            const {nome,sub} = decodeToken;
-            setUser({id:String(sub),nome:nome.toUpperCase(),cargo:'',dir:''})
+            const {nome,sub,dir,cargo} = decodeToken;
+            setUser({id:String(sub),nome:nome.toUpperCase(),cargo,dir})
         }
     }
  }

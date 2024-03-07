@@ -1,4 +1,5 @@
 import { MenuLateral } from "@/components/menu";
+import { BiTransfer } from "react-icons/bi";
 import { api } from "@/services/apiClient";
 import { MdOutlineAddCircle } from "react-icons/md";
 import { useContext, useEffect, useState } from "react";
@@ -41,7 +42,7 @@ export default function CaixaMovimentar(){
     const[despesas,setDespesas]=useState(0);
     const[IsModalOpen,setIsModalOpen] =useState(false);
     const [planos,setPlanos]=useState([]);
-    const {caixaMovimentacao,user} =useContext(AuthContext);
+    const {caixaMovimentacao,user,usuario} =useContext(AuthContext);
 
     const closeModal = ()=>{
         setIsModalOpen(false)
@@ -52,8 +53,6 @@ export default function CaixaMovimentar(){
         
        user()
         listarLancamentos()
-       
-
     },[])
 
     async function listarLancamentos() {
@@ -62,7 +61,8 @@ export default function CaixaMovimentar(){
               
                 dataInicial:dataInicial,
                 dataFinal:dataFinal,
-                descricao:descricao
+                descricao:descricao,
+                ccustos_id:Number(usuario?.id)
           
             })
 
@@ -231,6 +231,9 @@ return(
         </tbody>
     
     </table>
+    </div>
+    <div className="flex  items-end justify-end p-1 ">
+                   <button onClick={()=>{caixaMovimentacao({conta:'',conta_n:'',ccustos_desc:'',data:new Date(),datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null}),setIsModalOpen(!IsModalOpen)}} type="button" className="inline-flex  font-semibold justify-center items-center bg-yellow-600 rounded-lg p-2 gap-2 text-white"><BiTransfer size={22}/> Transferir</button>
     </div>
 </div>
 </div>

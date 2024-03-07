@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import Image from 'next/image';
 import { MdManageAccounts } from "react-icons/md";
 import logo from '../../public/logoafap.png'
@@ -12,16 +12,23 @@ import { FaMoneyBillTransfer } from "react-icons/fa6";
 import Link from "next/link";
 export function MenuLateral(){
     const [isOpen,setIsOpen]=useState(false)
-    const {signOut,usuario}= useContext(AuthContext)
+    const {signOut,usuario,user}= useContext(AuthContext)
     const [isAdmOpen,setIsAdmOpen]= useState(false )
     const [isCaixaOpen,setIsCaixaOpen] = useState(false)
+    
+useEffect(()=>{
+   user()
+},[])
   return (
+
+   
     <div className='flex flex-col w-full'>
+
     <header className='border-b-[1px] border-gray-500'>
 <nav className="border-gray-200 px-4 lg:px-6 py-2.5  " >
     <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
         <div className="flex items-center">
-            <Image onClick={()=>setIsOpen(!isOpen)} src={logo} className="cursor-pointer w-full mr-2 h-8 sm:h-11" alt="Flowbite Logo" />
+            <Image onClick={()=>setIsOpen(!isOpen)}  src={logo}  className="cursor-pointer w-full mr-2 h-8 sm:h-11" alt="Flowbite Logo" />
             <span className="inline-flex whitespace-nowrap w-full text-xl font-semibold  text-white">SISTEMA DE GERENCIAMENTO AFAP</span>
         </div>
        
@@ -30,7 +37,15 @@ export function MenuLateral(){
           <MdLogout color='white' size={25}/>
           </button>
           <Tooltip id='logout'/>
-<Image className="w-10 h-10 rounded-full" src={fototeste} alt=""/>
+          <div className="w-11 h-11 rounded-full overflow-hidden">
+    <Image 
+        className="object-cover" 
+        src={usuario?.dir ? `${usuario.dir}` : fototeste} 
+        width={100} 
+        height={100} // Mantive a altura 100 para manter a proporção, ajuste conforme necessário
+        alt=""
+    />
+</div>
 <div className  ="font-medium text-white">
     <span>{usuario?.nome}</span>
     <div className="text-sm  text-gray-400">{usuario?.cargo}</div>

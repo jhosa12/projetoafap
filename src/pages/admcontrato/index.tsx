@@ -25,7 +25,6 @@ import { FaHandshake } from "react-icons/fa";
 import { MenuLateral } from "@/components/menu";
 import { canSRRAuth } from "@/utils/canSSRAuth";
 import Head from "next/head";
-
 import Image from "next/image";
 
 
@@ -106,7 +105,7 @@ if(item.status ==='E'){
    }
 
    useEffect(()=>{
-   // user()
+  
     closeModa({acordo:{...{}}})
    
   if(componenteMounted){atualizarObs()}
@@ -312,6 +311,7 @@ async function atualizarObs() {
 
     return(
         <>
+       
         <Head>
             <title>Administrar Contrato</title>
          

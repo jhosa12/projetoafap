@@ -21,7 +21,7 @@ export default function Home() {
                 }
                
             let data ={
-                nome:user,
+                user,
                 password:password
             }
            await sign(data)
