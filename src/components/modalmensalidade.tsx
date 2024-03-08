@@ -76,7 +76,7 @@ export function ModalMensalidade(){
         try{
             const response = await  toast.promise(
                 api.put('/mensalidade',{
-                    id_usuario:usuario?.id,
+                    id_usuario:Number(usuario?.id),
                     id_mensalidade:data.mensalidade?.id_mensalidade,
                     status:status,
                     data_pgto:status==='A'?null:data.mensalidade?.data_pgto && new Date(data.mensalidade?.data_pgto).toLocaleDateString()===new Date().toLocaleDateString()?new Date():data.mensalidade?.data_pgto?new Date(data.mensalidade?.data_pgto):null,
