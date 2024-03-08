@@ -55,7 +55,7 @@ export default function CaixaMovimentar(){
     }
 
     const closeModalSangria = ()=>{
-        setIsModalOpen(false)
+        setModalSangria(false)
     }
 
     useEffect(()=>{
