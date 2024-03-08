@@ -10,8 +10,11 @@ import pt from 'date-fns/locale/pt-BR';
 import { ModalLancamentosCaixa } from "@/components/modalLancamentosCaixa";
 import { Tooltip } from "react-tooltip";
 import { AuthContext } from "@/contexts/AuthContext";
-import {decode} from 'jsonwebtoken';
-import {destroyCookie,setCookie,parseCookies} from "nookies"
+import { IoMdEye } from "react-icons/io";
+import { IoMdEyeOff } from "react-icons/io";
+import { FaBalanceScale } from "react-icons/fa";
+import { MdDeleteForever } from "react-icons/md";
+import { FaHandshake } from "react-icons/fa";
 
 registerLocale('pt', pt)
 
@@ -43,6 +46,7 @@ export default function CaixaMovimentar(){
     const[IsModalOpen,setIsModalOpen] =useState(false);
     const [planos,setPlanos]=useState([]);
     const {caixaMovimentacao,user,usuario} =useContext(AuthContext);
+    const[visible,setVisible] = useState(false)
 
     const closeModal = ()=>{
         setIsModalOpen(false)
@@ -106,12 +110,7 @@ return(
 <div className="flex flex-col w-11/12 border  rounded-lg shadow  border-gray-700 ">
     <div className="text-gray-300 bg-gray-800 rounded-t-lg inline-flex items-center p-2 justify-between">
     <h1 className=" text-lg  pl-3 font-medium">Movimentação de Caixa</h1>
-    <p className="inline-flex gap-28  text-[15px]">
-    <span className="text-yellow-300 font-medium">Saldo Inical: R$ {saldoInicial}</span>
-    <span className="text-green-500 font-medium">Saldo do Dia: R${saldo+saldoInicial}</span>
-    <span className="text-green-500 font-medium">Receitas:R${saldo+despesas}</span>
-    <span className="text-red-500 font-medium">Despesas:R${despesas} </span>
-    </p>
+   
     </div>
     <div className="flex flex-col">
         <div className="flex flex-row w-full p-2 gap-2">
@@ -130,12 +129,9 @@ return(
                    <div className="flex items-end">
                    <button onClick={()=>listarLancamentos()} type="button" className="inline-flex h-8 font-semibold justify-center items-center bg-blue-600 rounded-lg p-2 gap-2 text-white"><IoSearchSharp size={20}/> Buscar</button>
                    </div>
-
                    <div className="flex w-1/3  items-end justify-end pr-2 ">
                    <button onClick={()=>{caixaMovimentacao({conta:'',conta_n:'',ccustos_desc:'',data:new Date(),datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null}),setIsModalOpen(!IsModalOpen)}} type="button" className="inline-flex w- h-8 font-semibold justify-center items-center bg-green-600 rounded-lg p-2 gap-2 text-white"><MdOutlineAddCircle size={22}/> Novo</button>
                    </div>
-                  
-       
         </div>
         <Tooltip id="tooltip-hora"/>
         <div className="p-2">
@@ -231,8 +227,29 @@ return(
     </table>
     </div>
     </div>
-    <div className="flex  items-end justify-end p-1 ">
-                   <button onClick={()=>{caixaMovimentacao({conta:'',conta_n:'',ccustos_desc:'',data:new Date(),datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null}),setIsModalOpen(!IsModalOpen)}} type="button" className="inline-flex  font-semibold justify-center items-center bg-yellow-600 rounded-lg p-2 gap-2 text-white"><BiTransfer size={22}/> Transferir</button>
+
+    <div className="flex  items-end justify-between p-2 ">
+
+    <div className="inline-flex gap-2 text-white">
+        <button onClick={()=>setVisible(!visible)} className="justify-center items-center">
+           {visible? <IoMdEye size={20}/>:<IoMdEyeOff size={20}/>}
+            </button>
+   
+    <div><span className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border  rounded-s-lg  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+
+   {visible?`Saldo: R$ ${saldo}`:"------"}
+  </span>
+  <span className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+   
+  {visible?`Receitas: R$ ${saldo+despesas}`:"------"}
+  </span>
+  <span className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2   bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+
+  {visible?`Despesas: R$ ${saldo+despesas}`:"------"}
+  </span>
+  </div>
+    </div>
+    <button onClick={()=>{caixaMovimentacao({conta:'',conta_n:'',ccustos_desc:'',data:new Date(),datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null}),setIsModalOpen(!IsModalOpen)}} type="button" className="inline-flex  font-semibold justify-center items-center bg-yellow-600 rounded-lg p-2 gap-2 text-white"><BiTransfer size={22}/> Transferir</button>
     </div>
 </div>
 </div>
