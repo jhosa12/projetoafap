@@ -98,7 +98,7 @@ try{
             conta:'1.02.003',
             conta_n:'1.02.003',
             descricao:"SANGRIA",
-            historico:historico.toUpperCase(),
+            historico:`${historico.toUpperCase()} RECEBIDO POR:${usuarioDestino}`,
             valor:valor,
             usuario:usuario?.nome.toUpperCase(),
             data:new Date(datalanc),
@@ -110,9 +110,8 @@ try{
                 success:'Lançado com sucesso!'
             }
         )
-        console.log(Number(usuario?.id))
-        listarLancamentos()
         
+        listarLancamentos()
      }
 
     return(
