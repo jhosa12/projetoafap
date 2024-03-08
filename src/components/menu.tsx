@@ -42,7 +42,7 @@ useEffect(()=>{
         className="object-cover" 
         src={usuario?.dir ? `${usuario.dir}` : fototeste} 
         width={100} 
-        height={100} // Mantive a altura 100 para manter a proporção, ajuste conforme necessário
+        height={100} 
         alt=""
     />
 </div>
@@ -64,12 +64,12 @@ useEffect(()=>{
       <li >
     <button type="button" className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsAdmOpen(!isAdmOpen)}>
     <MdManageAccounts size={25}/>
-        <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Adm Contrato</span>
+        <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Administrativo</span>
             <FaAngleDown size={18}/>
     </button>
     <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isAdmOpen && "hidden"}`}>
         <li>
-            <a href="#" className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Products</a>
+            <Link href="/admcontrato" className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Adm Contrato</Link>
         </li>
         <li>
             <a href="#" className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Billing</a>
@@ -141,12 +141,6 @@ useEffect(()=>{
       </ul>
    </div>
 </div>
-
-
-
-
 </div>
-    
-
   )  
 }
