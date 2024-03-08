@@ -27,7 +27,6 @@ interface PlanosProps{
 export function ModalSangria({closeModalSangria,listarLancamentos}:ModalProps){
     const {usuario,mov}=useContext(AuthContext)
     const [descricao,setDescricao]=useState('');
-    const[tipo,setTipo]=useState<string>('');
     const[datalanc,setData] =useState(new Date());
     const[historico,setHistorico]= useState('');
     const[valor,setValor]=useState<number>();
@@ -84,9 +83,17 @@ try{
  
 
      async function lancarMovimentacao() {
+        if(!verificadoDestino || !verificadoOrigem){
+            toast.warn("Realize a etapa de autenticação!")
+            return;
+        }
+        if(!descricao || !valor || !datalanc){
+            toast.warn("Preencha todos os campos!")
+            return;
+        }
         await toast.promise(
             api.post('/novoLancamento',{
-            id_user:usuario?.id,
+            id_usuario:Number(usuario?.id),
             datalanc:new Date(),
             conta:'1.02.003',
             conta_n:'1.02.003',
@@ -95,7 +102,7 @@ try{
             valor:valor,
             usuario:usuario?.nome.toUpperCase(),
             data:new Date(datalanc),
-            tipo:tipo
+            tipo:"DESPESA"
             }),
             {
                 error:'Erro realizar Lançamento',
@@ -103,6 +110,7 @@ try{
                 success:'Lançado com sucesso!'
             }
         )
+        console.log(Number(usuario?.id))
         listarLancamentos()
         
      }
@@ -189,7 +197,7 @@ try{
           <input value={valor} onChange={e=>setValor(Number(e.target.value))} className="uppercase block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-sm bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"></input>
                    </div>
                    </div>
-<button   type="button" className={`w-1/2 text-white    font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-600 hover:bg-blue-700 `}>Realizar Transação</button>
+<button onClick={()=>lancarMovimentacao()}  type="button" className={`w-1/2 text-white    font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-600 hover:bg-blue-700 `}>Realizar Transação</button>
 </div>
 </div>
 </div>
