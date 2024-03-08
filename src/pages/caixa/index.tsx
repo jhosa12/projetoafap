@@ -15,6 +15,7 @@ import { IoMdEyeOff } from "react-icons/io";
 import { FaBalanceScale } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { FaHandshake } from "react-icons/fa";
+import { ModalSangria } from "@/components/modalSangria";
 
 registerLocale('pt', pt)
 
@@ -47,8 +48,13 @@ export default function CaixaMovimentar(){
     const [planos,setPlanos]=useState([]);
     const {caixaMovimentacao,user,usuario} =useContext(AuthContext);
     const[visible,setVisible] = useState(false)
+    const[modalSangria,setModalSangria] = useState(false)
 
     const closeModal = ()=>{
+        setIsModalOpen(false)
+    }
+
+    const closeModalSangria = ()=>{
         setIsModalOpen(false)
     }
 
@@ -104,8 +110,10 @@ export default function CaixaMovimentar(){
 
 return(
 <>
+{modalSangria && <ModalSangria  listarLancamentos={listarLancamentos} closeModalSangria={closeModalSangria}/>}
 {IsModalOpen && <ModalLancamentosCaixa listarLancamentos={listarLancamentos} planos={planos} closeModal={closeModal}/>}
 <MenuLateral/>
+
 <div className="flex w-full justify-center p-4">
 <div className="flex flex-col w-11/12 border  rounded-lg shadow  border-gray-700 ">
     <div className="text-gray-300 bg-gray-800 rounded-t-lg inline-flex items-center p-2 justify-between">
@@ -187,7 +195,7 @@ return(
             {item.ccustos_desc  }
             </td>
             <td className="px-5 py-1 whitespace-nowrap ">
-               {item.notafiscal?item.notafiscal:item.descricao}
+               {item.notafiscal?item.notafiscal.toUpperCase():item.descricao.toUpperCase()}
             </td>
             <td className=" px-5 py-1 w-full whitespace-nowrap">
                {item.historico}
@@ -245,11 +253,11 @@ return(
   </span>
   <span className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2   bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
 
-  {visible?`Despesas: R$ ${saldo+despesas}`:"------"}
+  {visible?`Despesas: R$ ${despesas}`:"------"}
   </span>
   </div>
     </div>
-    <button onClick={()=>{caixaMovimentacao({conta:'',conta_n:'',ccustos_desc:'',data:new Date(),datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null}),setIsModalOpen(!IsModalOpen)}} type="button" className="inline-flex  font-semibold justify-center items-center bg-yellow-600 rounded-lg p-2 gap-2 text-white"><BiTransfer size={22}/> Transferir</button>
+    <button onClick={()=>{caixaMovimentacao({conta:'',conta_n:'',ccustos_desc:'',data:new Date(),datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null}),setModalSangria(!modalSangria)}} type="button" className="inline-flex  font-semibold justify-center items-center bg-yellow-600 rounded-lg p-2 gap-2 text-white"><BiTransfer size={22}/>Sangria</button>
     </div>
 </div>
 </div>
