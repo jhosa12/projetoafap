@@ -65,7 +65,7 @@ export default function AdmContrato(){
     const [showSublinhas, setShowSublinhas] = useState<boolean>(false);
     const [mensalidadeComGrupoE,setMensalidaGrupo] =useState<Array<MensalidadeProps>>([]);
  
-    let currentAcordoId :string | null=null;
+    let currentAcordoId :string;
 
     // Função para adicionar ou remover linhas do array de linhas selecionadas
     const toggleSelecionada = (item:MensalidadeProps) => {
@@ -95,7 +95,7 @@ if(item.status ==='E'){
 
    function handleObservacao() {
     
-   const novaObservacao = observacao.trim() ;
+   const novaObservacao = observacao.trim();
 
    if (novaObservacao !== '') {
      const anotacoesAntigas = dadosassociado && dadosassociado.contrato?.anotacoes || ''; // Definindo um valor padrão para anotacoesAntigas caso seja null ou undefined
