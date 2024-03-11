@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react"
 
 import { MdDelete } from "react-icons/md";
 import { RiSaveFill } from "react-icons/ri";
+import { toast } from "react-toastify";
 
 
 interface PlanoContas{
@@ -46,6 +47,45 @@ export default function gerenciarAdministrativo(){
         newPlanoContas[index].descricao =event.target.value;
         setArrayPlanoContas(newPlanoContas)
     }
+
+    const editarPlanoConta = async(index:number)=>{
+        const conta = arrayPlanoContas[index]
+        await toast.promise(
+            api.put('/gerenciarAdministrativo/editarplanoconta',{
+                conta:conta.conta,
+                id_grupo: conta.id_grupo,
+                descricao: conta.descricao,
+                tipo: conta.tipo,
+                perm_lanc:conta.perm_lanc,
+                data: conta.data, 
+
+            }),
+            {
+                error:'Erro ao editar plano de conta',
+                pending:'Editando',
+                success:'Editado com sucesso'
+            }
+        )
+carregarDados()
+    }
+
+const deletarPlanoConta = async(conta:string)=>{
+    await toast.promise(
+        api.delete('/gerenciarAdministrativo/deletarplanoconta',{
+            data:{
+                conta,
+            }
+        }),
+        {
+            error:'Erro ao deletar plano de conta',
+            pending:'Deletando',
+            success:'Deletado com sucesso!'
+        }
+    )
+carregarDados()
+    
+
+}
 
 
 
@@ -94,7 +134,7 @@ async function carregarDados() {
         <thead className="sticky top-0  uppercase bg-gray-700 text-gray-400">
             <tr>
                 <th scope="col" className=" px-2 py-1">
-                    CONTA
+                    ID_GRUPO
                 </th>
            
                 <th scope="col" className="px-4 py-1">
@@ -167,12 +207,8 @@ async function carregarDados() {
             </td>
            
             <td className="px-10 py-1 inline-flex text-right gap-2">
-                <button onClick={(event)=>{
-                               event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                              }} className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"><RiSaveFill size={17}/></button>
-                               <button onClick={(event)=>{
-                               event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                              }} className=" rounded-lg bg-red-600 px-1 py-1 text-white hover:underline"><MdDelete size={17}/></button>
+                <button onClick={()=>editarPlanoConta(index)} className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"><RiSaveFill size={17}/></button>
+                <button onClick={()=>deletarPlanoConta(item.conta)} className=" rounded-lg bg-red-600 px-1 py-1 text-white hover:underline"><MdDelete size={17}/></button>
             </td>
            </tr>
            ))}
