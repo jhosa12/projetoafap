@@ -1,3 +1,4 @@
+import { PlanoContas } from "@/components/gerenciarAdm/planoContas";
 import { MenuLateral } from "@/components/menu"
 import { api } from "@/services/apiClient"
 import Head from "next/head"
@@ -6,6 +7,7 @@ import React, { useEffect, useState } from "react"
 import { MdDelete } from "react-icons/md";
 import { RiSaveFill } from "react-icons/ri";
 import { toast } from "react-toastify";
+
 
 
 interface PlanoContas{
@@ -26,7 +28,6 @@ interface GruposProps{
 }
 
 
-
 export default function gerenciarAdministrativo(){
     const [PlanosContas,setPlanosContas] =useState(true)
     const [Planos,setPlanos] = useState(false)
@@ -35,60 +36,11 @@ export default function gerenciarAdministrativo(){
     const [arraygrupos,setArrayGrupos] = useState<Array<GruposProps>>([])
     const [tipo,setTipo]=useState('')
 
-
-    const handleTipoChange = (index: number, event: React.ChangeEvent<HTMLSelectElement>) => {
-        const newPlanoContas = [...arrayPlanoContas];
-        newPlanoContas[index].tipo = event.target.value;
-        setArrayPlanoContas(newPlanoContas);
-    };
-
-    const handleDescricaoChange=(index:number,event:React.ChangeEvent<HTMLInputElement>)=>{
-        const newPlanoContas = [...arrayPlanoContas];
-        newPlanoContas[index].descricao =event.target.value;
-        setArrayPlanoContas(newPlanoContas)
-    }
-
-    const editarPlanoConta = async(index:number)=>{
-        const conta = arrayPlanoContas[index]
-        await toast.promise(
-            api.put('/gerenciarAdministrativo/editarplanoconta',{
-                conta:conta.conta,
-                id_grupo: conta.id_grupo,
-                descricao: conta.descricao,
-                tipo: conta.tipo,
-                perm_lanc:conta.perm_lanc,
-                data: conta.data, 
-
-            }),
-            {
-                error:'Erro ao editar plano de conta',
-                pending:'Editando',
-                success:'Editado com sucesso'
-            }
-        )
-carregarDados()
-    }
-
-const deletarPlanoConta = async(conta:string)=>{
-    await toast.promise(
-        api.delete('/gerenciarAdministrativo/deletarplanoconta',{
-            data:{
-                conta,
-            }
-        }),
-        {
-            error:'Erro ao deletar plano de conta',
-            pending:'Deletando',
-            success:'Deletado com sucesso!'
-        }
-    )
-carregarDados()
-    
-
+const setarDados =(planoContas:Array<PlanoContas>,grupos:Array<GruposProps>)=>{
+    setArrayPlanoContas(planoContas)
+    setArrayGrupos(grupos)
 }
-
-
-
+   
 useEffect(()=>{
     try{
 carregarDados()
@@ -101,8 +53,7 @@ carregarDados()
 
 async function carregarDados() {
     const response= await api.get('/gerenciarAdministrativo')
-    setArrayPlanoContas(response.data.plano_contas)
-    setArrayGrupos(response.data.grupos)
+    setarDados(response.data.plano_contas,response.data.grupos)
     console.log(response.data)
     
 }
@@ -127,100 +78,7 @@ async function carregarDados() {
         </li>
 
     </ul>
-    <div className="inline-flex w-full max-h-[calc(100vh-150px)]   gap-4">
-    <div className="flex flex-col rounded-lg p-2 max-w-[600px]   shadow-md sm:rounded-lg">
-    <table 
-     className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
-        <thead className="sticky top-0  uppercase bg-gray-700 text-gray-400">
-            <tr>
-                <th scope="col" className=" px-2 py-1">
-                    ID_GRUPO
-                </th>
-           
-                <th scope="col" className="px-4 py-1">
-                    DESCRIÇÃO
-                </th>
-                <th scope="col" className="px-2 py-1">
-                    <span className="sr-only">Edit</span>
-                </th>
-            </tr> 
-        </thead>
-        <tbody>
-            {arraygrupos?.map((item,index)=>(
-           <tr key={index}  className={ `border-b bg-gray-800 border-gray-700  hover:bg-gray-600`}>
-            <th scope="row"  className="px-2 py-1 font-medium  whitespace-nowrap">
-                   {item.id_grupo}
-            </th>
-            <td className="px-2 py-1">
-            {item.descricao}
-            </td>     
-            <td className="px-4 py-1 text-right">
-                <button onClick={(event)=>{
-                               event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                              }} className="font-medium  text-blue-500 hover:underline">Edit</button>
-            </td>
-           </tr>
-           ))}
-
-            
-           
-        </tbody>
-    
-    </table>
-
-    </div>
-    <div className="flex flex-col rounded-lg  p-2 max-w-[700px] w-full  shadow-md sm:rounded-lg">
-    <table 
-     className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
-        <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
-            <tr>
-                <th scope="col" className=" px-5 py-1">
-                    CONTA
-                </th>
-           
-                <th scope="col" className="px-10 py-1">
-                    DESCRIÇÃO
-                </th>
-                <th scope="col" className="px-10 py-1">
-                    TIPO
-                </th> 
-                <th scope="col" className="px-10 py-1">
-                    AÇÕES
-                </th>
-            </tr> 
-        </thead>
-        <tbody>
-            {arrayPlanoContas?.map((item,index)=>(
-           <tr key={index}  className={ `border-b bg-gray-800 border-gray-700 w-full hover:bg-gray-600`}>
-            <th scope="row"  className="px-5 py-1 font-medium  whitespace-nowrap">
-                   {item.conta}
-            </th>
-            <td className="px-10 py-1 w-full whitespace-nowrap">
-                <input onChange={(event)=>handleDescricaoChange(index,event)} value={item.descricao} className="flex bg-transparent w-full " type="text" />
-            </td>   
-            <td className="px-10 py-1">
-                <select className="bg-transparent" value={item.tipo} onChange={(event) => handleTipoChange(index, event)} name="TIPO" >
-                    <option className="bg-transparent" value="RECEITA">RECEITA</option>
-                    <option className="bg-transparent" value={"DESPESA"}>DESPESA</option>
-                </select>
-               
-            </td>
-           
-            <td className="px-10 py-1 inline-flex text-right gap-2">
-                <button onClick={()=>editarPlanoConta(index)} className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"><RiSaveFill size={17}/></button>
-                <button onClick={()=>deletarPlanoConta(item.conta)} className=" rounded-lg bg-red-600 px-1 py-1 text-white hover:underline"><MdDelete size={17}/></button>
-            </td>
-           </tr>
-           ))}
-
-            
-           
-        </tbody>
-    
-    </table>
-
-    </div>
-    </div>
+ {PlanosContas && <PlanoContas carregarDados={carregarDados} arrayPlanoContas={arrayPlanoContas} arraygrupos={arraygrupos} setarDados={setarDados}/>}
 </div>
 </div>
 </>

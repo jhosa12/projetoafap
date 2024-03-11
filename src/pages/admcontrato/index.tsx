@@ -25,7 +25,7 @@ import { FaHandshake } from "react-icons/fa";
 import { MenuLateral } from "@/components/menu";
 import { canSRRAuth } from "@/utils/canSSRAuth";
 import Head from "next/head";
-import Image from "next/image";
+
 
 
 interface MensalidadeProps{
