@@ -26,6 +26,9 @@ interface GruposProps{
     id_grupo:number,
     descricao:string
 }
+interface PlanosProps{
+    
+}
 
 
 export default function gerenciarAdministrativo(){
