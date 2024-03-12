@@ -1,4 +1,5 @@
 import { PlanoContas } from "@/components/gerenciarAdm/planoContas";
+import { GerenciarPlanos } from "@/components/gerenciarAdm/planos";
 import { MenuLateral } from "@/components/menu"
 import { api } from "@/services/apiClient"
 import Head from "next/head"
@@ -27,6 +28,11 @@ interface GruposProps{
     descricao:string
 }
 interface PlanosProps{
+id_plano:number,
+descricao:string,
+limite_dep:number,
+valor:number,
+acrescimo:number
     
 }
 
@@ -37,11 +43,16 @@ export default function gerenciarAdministrativo(){
     const [Convalescencia,setConv] =useState(false)
     const [arrayPlanoContas,setArrayPlanoContas] = useState<Array<PlanoContas>>([])
     const [arraygrupos,setArrayGrupos] = useState<Array<GruposProps>>([])
+    const [arrayPlanos,setArrayPlanos]= useState<Array<PlanosProps>>([])
     const [tipo,setTipo]=useState('')
 
 const setarDados =(planoContas:Array<PlanoContas>,grupos:Array<GruposProps>)=>{
     setArrayPlanoContas(planoContas)
     setArrayGrupos(grupos)
+}
+const setarPlanos =(planos:Array<PlanosProps>)=>{
+    setArrayPlanos(planos)
+
 }
    
 useEffect(()=>{
@@ -57,7 +68,9 @@ carregarDados()
 async function carregarDados() {
     const response= await api.get('/gerenciarAdministrativo')
     setarDados(response.data.plano_contas,response.data.grupos)
-    console.log(response.data)
+    setArrayPlanos(response.data.planos)
+    console.log(response.data.planos)
+    
     
 }
 
@@ -81,7 +94,9 @@ async function carregarDados() {
         </li>
 
     </ul>
+
  {PlanosContas && <PlanoContas carregarDados={carregarDados} arrayPlanoContas={arrayPlanoContas} arraygrupos={arraygrupos} setarDados={setarDados}/>}
+ {Planos && <GerenciarPlanos carregarDados={carregarDados}  setarPlanos={setarPlanos} arrayPlanos={arrayPlanos}/>}
 </div>
 </div>
 </>
