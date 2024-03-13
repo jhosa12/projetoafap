@@ -53,7 +53,7 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
             descricao:descricao,
             historico:historico,
             ccustos_desc:usuario?.nome,
-            ccustos_id:usuario?.id,
+            ccustos_id:Number(usuario?.id),
             valor:valor,
             usuario:usuario,
             data:datalanc,
@@ -70,7 +70,7 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
      async function lancarMovimentacao() {
         await toast.promise(
             api.post('/novoLancamento',{
-            id_user:usuario?.id,
+            id_usuario:Number(usuario?.id),
             datalanc:new Date(),
             conta,
             conta_n:conta,
