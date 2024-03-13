@@ -4,7 +4,7 @@ import { toast } from "react-toastify"
 import { MdDelete } from "react-icons/md";
 import { RiSaveFill } from "react-icons/ri";
 import { IoMdAddCircle } from "react-icons/io";
-import InputMask from 'react-input-mask'
+
 
 interface PlanosProps{
     id_plano:number,
@@ -48,12 +48,15 @@ const handleValor=(index:number,event:React.ChangeEvent<HTMLInputElement>)=>{
     const editarPlano = async(index:number)=>{
         const plano = arrayPlanos[index]
         await toast.promise(
-            api.put('/gerenciarAdministrativo/editarplanoconta',{
-          
+            api.put('/gerenciarAdministrativo/editarplano',{
+                id_plano:plano.id_plano,
+                descricao:plano.descricao,
+                limite_dep:plano.limite_dep,
+                valor:plano.valor
 
             }),
             {
-                error:'Erro ao editar plano de conta',
+                error:'Erro ao editar plano',
                 pending:'Editando',
                 success:'Editado com sucesso'
             }
@@ -61,11 +64,11 @@ const handleValor=(index:number,event:React.ChangeEvent<HTMLInputElement>)=>{
 carregarDados()
     }
 
-const deletarPlano = async(conta:string)=>{
+const deletarPlano = async(id_plano:number)=>{
     await toast.promise(
-        api.delete('/gerenciarAdministrativo/deletarplanoconta',{
+        api.delete('/gerenciarAdministrativo/deletarplano',{
             data:{
-                conta,
+                id_plano,
             }
         }),
         {
@@ -81,10 +84,6 @@ carregarDados()
 
 
 
-
-
-
-
 const adicionarPlano = async()=>{
     if(!descricao||!limite||!valor){
         toast.info('Preencha todos os campos!')
@@ -93,13 +92,12 @@ const adicionarPlano = async()=>{
     try{
         await toast.promise(
             api.post('/gerenciarAdministrativo/adicionarPlano',{
-                    limite,
+                    limite_dep:limite,
                     descricao:descricao.toUpperCase(),
-                    valor
-                
+                    valor  
             }),
             {
-                error:'Erro ao adicionar Conta',
+                error:'Erro ao adicionar Plano',
                 pending:'Adicionando...',
                 success:'Adicionado com sucesso!'
             }
@@ -175,7 +173,7 @@ const adicionarPlano = async()=>{
                 </td>
                 <td className="px-10 py-1 inline-flex text-right gap-2">
                     <button onClick={()=>editarPlano(index)} className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"><RiSaveFill size={17}/></button>
-                    <button onClick={()=>deletarPlano(item.descricao)} className=" rounded-lg bg-red-600 px-1 py-1 text-white hover:underline"><MdDelete size={17}/></button>
+                    <button onClick={()=>deletarPlano(item.id_plano)} className=" rounded-lg bg-red-600 px-1 py-1 text-white hover:underline"><MdDelete size={17}/></button>
                 </td>
                </tr>
                ))}

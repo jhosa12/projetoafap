@@ -10,7 +10,7 @@ interface MapProps{
 const Map:React.FC<MapProps> =({lat,lng}:MapProps)=>{
     return(
         <LoadScript googleMapsApiKey='AIzaSyDlRkS1K2FQ8dqXsO0zK5-RPh2v7zs0HZQ'>
-            <GoogleMap mapContainerStyle={{width:'100%',height:'500px'}} center={{lat,lng}} zoom={10}>
+            <GoogleMap mapContainerStyle={{width:'100%',height:'500px'}} center={{lat,lng}} zoom={15}>
             <Marker position={{lat,lng}}/>
             </GoogleMap>
 

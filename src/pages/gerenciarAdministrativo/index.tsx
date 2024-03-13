@@ -69,7 +69,7 @@ async function carregarDados() {
     const response= await api.get('/gerenciarAdministrativo')
     setarDados(response.data.plano_contas,response.data.grupos)
     setArrayPlanos(response.data.planos)
-    console.log(response.data.planos)
+  
     
     
 }

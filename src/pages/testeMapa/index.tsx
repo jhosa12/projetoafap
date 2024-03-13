@@ -8,7 +8,7 @@ export default function testeMapa(){
         <>
         <MenuLateral/>
            <div className="flex justify-center items-center h-screen">
-             <Map lat={-6.604485482851719} lng={-39.067270917454486}/>
+             <Map lat={-6.605182802518718} lng={-39.05961651179807}/>
         </div>
         </>
      
