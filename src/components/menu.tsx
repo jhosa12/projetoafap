@@ -64,7 +64,7 @@ useEffect(()=>{
          
 <button type="button" className="relative inline-flex items-center p-1 text-sm font-medium text-center text-white  rounded-lg  focus:ring-4 focus:outline-none   hover:bg-blue-700 focus:ring-blue-800">
 <IoNotifications size={22}/>
-  {teste && <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-green-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900"></div>}
+  {teste && <div className="absolute inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-green-500 border-2 border-white rounded-full -top-1 -end-1 dark:border-gray-900"></div>}
 </button>
 
           <button data-tooltip-id='logout' data-tooltip-content='Deslogar' onClick={signOut}>

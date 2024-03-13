@@ -1,9 +1,10 @@
 import { PlanoContas } from "@/components/gerenciarAdm/planoContas";
 import { GerenciarPlanos } from "@/components/gerenciarAdm/planos";
 import { MenuLateral } from "@/components/menu"
+import { AuthContext } from "@/contexts/AuthContext";
 import { api } from "@/services/apiClient"
 import Head from "next/head"
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 
 import { MdDelete } from "react-icons/md";
 import { RiSaveFill } from "react-icons/ri";
@@ -38,6 +39,7 @@ acrescimo:number
 
 
 export default function gerenciarAdministrativo(){
+    const {signOut} = useContext(AuthContext)
     const [PlanosContas,setPlanosContas] =useState(true)
     const [Planos,setPlanos] = useState(false)
     const [Convalescencia,setConv] =useState(false)
@@ -45,7 +47,7 @@ export default function gerenciarAdministrativo(){
     const [arraygrupos,setArrayGrupos] = useState<Array<GruposProps>>([])
     const [arrayPlanos,setArrayPlanos]= useState<Array<PlanosProps>>([])
     const [tipo,setTipo]=useState('')
-
+    
 const setarDados =(planoContas:Array<PlanoContas>,grupos:Array<GruposProps>)=>{
     setArrayPlanoContas(planoContas)
     setArrayGrupos(grupos)
@@ -55,15 +57,19 @@ const setarPlanos =(planos:Array<PlanosProps>)=>{
 
 }
    
-useEffect(()=>{
-    try{
-carregarDados()
-      
-    }catch(err){
-        console.log(err)
-
+useEffect(() => {
+    try {
+        carregarDados();
+    } catch (err) {
+        toast.error('Erro ao Carregar Dados')
     }
-},[])
+    
+}, []);
+
+
+
+
+
 
 async function carregarDados() {
     const response= await api.get('/gerenciarAdministrativo')
