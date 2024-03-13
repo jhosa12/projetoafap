@@ -5,7 +5,7 @@ import { MdDelete } from "react-icons/md";
 import { RiSaveFill } from "react-icons/ri";
 import { IoMdAddCircle } from "react-icons/io";
 import InputMask from 'react-input-mask'
-import { io } from 'socket.io-client';
+
 
 interface PlanoContas{
     conta: string,
@@ -30,7 +30,7 @@ interface DadosProps{
     setarDados:(planoContas:Array<PlanoContas>,grupos:Array<GruposProps>)=>void
 
 }
-const socket = io("https://apiafap.onrender.com");
+
 
 export function PlanoContas({carregarDados,arrayPlanoContas,arraygrupos,setarDados}:DadosProps){
     const [descricaoGrupo,setDescricaoGrupo] =useState('')
@@ -192,14 +192,6 @@ const adicionarPlanoContas = async()=>{
 
 }
 
-useEffect(() => {
-    socket.on("nova-tarefa", (tarefa) => {
-        // Lógica para lidar com a nova tarefa recebida
-        console.log("Nova tarefa recebida:", tarefa);
-    });
-
-  
-}, []);
 
 
 

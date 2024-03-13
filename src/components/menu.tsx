@@ -9,16 +9,46 @@ import { Tooltip } from 'react-tooltip';
 import { IoIosClose } from "react-icons/io";
 import { FaAngleDown } from "react-icons/fa";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
+import { IoNotifications } from "react-icons/io5";
+import { io } from 'socket.io-client';
 import Link from "next/link";
+const socket = io("https://apiafap.onrender.com");
+
+
+interface GrupoTeste{
+   id_grupo:number,
+   descricao:string
+ }
+
+
+
+
 export function MenuLateral(){
-    const [isOpen,setIsOpen]=useState(false)
-    const {signOut,usuario,user}= useContext(AuthContext)
-    const [isAdmOpen,setIsAdmOpen]= useState(false )
-    const [isCaixaOpen,setIsCaixaOpen] = useState(false)
+    const [isOpen,setIsOpen]=useState(false);
+    const {signOut,usuario,user}= useContext(AuthContext);
+    const [isAdmOpen,setIsAdmOpen]= useState(false );
+    const [isCaixaOpen,setIsCaixaOpen] = useState(false);
+    const[teste,setTeste] = useState<GrupoTeste>();
+
+ 
     
 useEffect(()=>{
    user()
+   socket.on("nova-tarefa", (tarefa) => {
+      // Lógica para lidar com a nova tarefa recebida
+      console.log("Nova tarefa recebida:", tarefa);
+    setTeste(tarefa)
+  });
+
+  return ()=>{
+   socket.disconnect();
+  }
+
 },[])
+
+
+
+
   return (
 
    
@@ -33,6 +63,12 @@ useEffect(()=>{
         </div>
        
         <div className="flex items-center gap-4">
+         
+<button type="button" className="relative inline-flex items-center p-1 text-sm font-medium text-center text-white  rounded-lg  focus:ring-4 focus:outline-none   hover:bg-blue-700 focus:ring-blue-800">
+<IoNotifications size={22}/>
+  {teste && <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-green-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900"></div>}
+</button>
+
           <button data-tooltip-id='logout' data-tooltip-content='Deslogar' onClick={signOut}>
           <MdLogout color='white' size={25}/>
           </button>
