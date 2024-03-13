@@ -40,9 +40,7 @@ useEffect(()=>{
     setTeste(tarefa)
   });
 
-  return ()=>{
-   socket.disconnect();
-  }
+  
 
 },[])
 
