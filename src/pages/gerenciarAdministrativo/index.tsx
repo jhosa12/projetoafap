@@ -1,3 +1,4 @@
+import { GerenciarConvalescenca } from "@/components/gerenciarAdm/convalescencia";
 import { PlanoContas } from "@/components/gerenciarAdm/planoContas";
 import { GerenciarPlanos } from "@/components/gerenciarAdm/planos";
 import { MenuLateral } from "@/components/menu"
@@ -37,6 +38,23 @@ acrescimo:number
     
 }
 
+interface ConvProps{
+id_conv: number,
+id_produto: number,
+descricao: string,
+unidade: number,
+grupo: number,
+data: Date,
+data_dev: Date,
+quantidade: number,
+valor:number,
+desconto: number,
+total: number,
+cortesia:string,
+retornavel: string,
+status: string
+}
+
 
 export default function gerenciarAdministrativo(){
     const {signOut} = useContext(AuthContext)
@@ -46,6 +64,7 @@ export default function gerenciarAdministrativo(){
     const [arrayPlanoContas,setArrayPlanoContas] = useState<Array<PlanoContas>>([])
     const [arraygrupos,setArrayGrupos] = useState<Array<GruposProps>>([])
     const [arrayPlanos,setArrayPlanos]= useState<Array<PlanosProps>>([])
+    const [arrayConv,setArrayConv]= useState<Array<ConvProps>>([])
     const [tipo,setTipo]=useState('')
     
 const setarDados =(planoContas:Array<PlanoContas>,grupos:Array<GruposProps>)=>{
@@ -54,6 +73,10 @@ const setarDados =(planoContas:Array<PlanoContas>,grupos:Array<GruposProps>)=>{
 }
 const setarPlanos =(planos:Array<PlanosProps>)=>{
     setArrayPlanos(planos)
+
+}
+const setarConv =(conv:Array<ConvProps>)=>{
+    setArrayConv(conv)
 
 }
    
@@ -75,6 +98,7 @@ async function carregarDados() {
     const response= await api.get('/gerenciarAdministrativo')
     setarDados(response.data.plano_contas,response.data.grupos)
     setArrayPlanos(response.data.planos)
+    setArrayConv(response.data.convalescenca)
   
     
     
@@ -103,6 +127,7 @@ async function carregarDados() {
 
  {PlanosContas && <PlanoContas carregarDados={carregarDados} arrayPlanoContas={arrayPlanoContas} arraygrupos={arraygrupos} setarDados={setarDados}/>}
  {Planos && <GerenciarPlanos carregarDados={carregarDados}  setarPlanos={setarPlanos} arrayPlanos={arrayPlanos}/>}
+ {Convalescencia && <GerenciarConvalescenca carregarDados={carregarDados}  setarConv={setarConv} arrayConv={arrayConv}/>}
 </div>
 </div>
 </>

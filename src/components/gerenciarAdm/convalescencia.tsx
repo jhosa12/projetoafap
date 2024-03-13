@@ -5,52 +5,60 @@ import { MdDelete } from "react-icons/md";
 import { RiSaveFill } from "react-icons/ri";
 import { IoMdAddCircle } from "react-icons/io";
 
-
-interface PlanosProps{
-    id_plano:number,
-    descricao:string,
-    limite_dep:number,
+interface ConvProps{
+    id_conv: number,
+    id_produto: number,
+    descricao: string,
+    unidade: number,
+    grupo: number,
+    data: Date,
+    data_dev: Date,
+    quantidade: number,
     valor:number,
-    acrescimo:number 
+    desconto: number,
+    total: number,
+    cortesia:string,
+    retornavel: string,
+    status: string
     }
 interface DadosProps{
     carregarDados:()=>Promise<void>
-    arrayPlanos:Array<PlanosProps>,
-    setarPlanos:(planoContas:Array<PlanosProps>)=>void
+    arrayConv:Array<ConvProps>,
+    setarConv:(Convalescenca:Array<ConvProps>)=>void
 }
-export function GerenciarPlanos({carregarDados,arrayPlanos,setarPlanos}:DadosProps){
+export function GerenciarConvalescenca({carregarDados,arrayConv,setarConv}:DadosProps){
     const [descricao,setDescricao] =useState('')
     const [limite,setLimite]=useState<number>()
     const [valor,setValor]=useState<number>()
 
 
 const handleDescricao=(index:number,event:React.ChangeEvent<HTMLInputElement>)=>{
-    const novoArray = [...arrayPlanos]
+    const novoArray = [...arrayConv]
     novoArray[index].descricao = event.target.value
-    setarPlanos(novoArray)
+    setarConv(novoArray)
 
 }
 const handleLimite=(index:number,event:React.ChangeEvent<HTMLInputElement>)=>{
-    const novoArray = [...arrayPlanos]
-    novoArray[index].limite_dep = Number(event.target.value)
-    setarPlanos(novoArray)
+    const novoArray = [...arrayConv]
+    //novoArray[index].limite_dep = Number(event.target.value)
+    setarConv(novoArray)
 
 }
 const handleValor=(index:number,event:React.ChangeEvent<HTMLInputElement>)=>{
-    const novoArray = [...arrayPlanos]
+    const novoArray = [...arrayConv]
     novoArray[index].valor = Number(event.target.value)
-    setarPlanos(novoArray)
+    setarConv(novoArray)
 
 }
 
     const editarPlano = async(index:number)=>{
-        const plano = arrayPlanos[index]
+        const plano = arrayConv[index]
         await toast.promise(
             api.put('/gerenciarAdministrativo/editarplano',{
-                id_plano:plano.id_plano,
-                descricao:plano.descricao,
-                limite_dep:plano.limite_dep,
-                valor:plano.valor
+               // id_plano:plano.id_plano,
+               // descricao:plano.descricao,
+               // limite_dep:plano.limite_dep,
+              //  valor:plano.valor
 
             }),
             {
@@ -122,7 +130,7 @@ const adicionarPlano = async()=>{
         <div className="inline-flex justify-between pl-6 pt-2 pr-6 w-full max-h-[calc(100vh-150px)]   gap-4">
      
         <div className="flex bg-slate-600 flex-col rounded-lg  p-2 max-w-[900px] w-full  shadow-md sm:rounded-lg">
-        <h1 className="flex w-full text-gray-400 font-medium">PLANOS</h1>
+        <h1 className="flex w-full text-gray-400 font-medium">CONVALESCENÇA</h1>
             <div className="flex flex-row p-2 gap-2">
           
            
@@ -154,16 +162,16 @@ const adicionarPlano = async()=>{
                 </tr> 
             </thead>
             <tbody>
-                {arrayPlanos?.map((item,index)=>(
+                {arrayConv?.map((item,index)=>(
                <tr key={index}  className={ `border-b bg-gray-800 border-gray-700 w-full hover:bg-gray-600`}>
                 <th scope="row"  className="px-5 py-1 font-medium  whitespace-nowrap">
-                       {item.id_plano}
+                       {item.id_conv}
                 </th>
                 <td className="px-10 py-1 w-full whitespace-nowrap">
                     <input onChange={(event)=>handleDescricao(index,event)}  value={item.descricao} className="flex bg-transparent w-full " type="text" />
                 </td>   
                 <td className="px-10 py-1 w-full ">
-                <input onChange={(event)=>handleLimite(index,event)}  value={item.limite_dep} className="flex bg-transparent w-full pl-2" type="text" />
+                <input onChange={(event)=>handleLimite(index,event)}  value={item.unidade} className="flex bg-transparent w-full pl-2" type="text" />
                    
                 </td>
                 <td className="px-12 py-1 w-full ">
@@ -171,7 +179,7 @@ const adicionarPlano = async()=>{
                 </td>
                 <td className="px-10 py-1 inline-flex text-right gap-2">
                     <button onClick={()=>editarPlano(index)} className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"><RiSaveFill size={17}/></button>
-                    <button onClick={()=>deletarPlano(item.id_plano)} className=" rounded-lg bg-red-600 px-1 py-1 text-white hover:underline"><MdDelete size={17}/></button>
+                    <button onClick={()=>deletarPlano(item.id_conv)} className=" rounded-lg bg-red-600 px-1 py-1 text-white hover:underline"><MdDelete size={17}/></button>
                 </td>
                </tr>
                ))}
