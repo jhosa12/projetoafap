@@ -37,6 +37,7 @@ useEffect(()=>{
    socket.on('connect', () => {
       socket.emit('userId',userId);
   });
+  console.log(userId)
    socket.on("nova-tarefa", (tarefa) => {
       // Lógica para lidar com a nova tarefa recebida
       console.log("Nova tarefa recebida:", tarefa);
