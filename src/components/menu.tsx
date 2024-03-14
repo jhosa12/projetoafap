@@ -32,28 +32,18 @@ export function MenuLateral(){
 
   const userId =usuario?.id.toString()
     
-useEffect(()=>{
-   try{
+  useEffect(() => {
+   socket.on('connect', () => {
+      socket.emit('userId', userId);
+   });
 
-      socket.on('connection',()=>{
-         socket.emit('userId',userId)
-      })
+   socket.on('nova-tarefa', (tarefa) => {
+      // Lógica para lidar com a nova tarefa recebida
+      console.log('Nova tarefa recebida:', tarefa);
+      setTeste(tarefa);
+   });
 
-      socket.on("nova-tarefa", (tarefa) => {
-         // Lógica para lidar com a nova tarefa recebida
-         console.log("Nova tarefa recebida:", tarefa);
-       setTeste(tarefa)
-     });
-   } catch(err){
-      console.log(err)
-
-   }
-   //user()
-
-
-  
-
-},[])
+}, [socket, userId]);
 
 
 
