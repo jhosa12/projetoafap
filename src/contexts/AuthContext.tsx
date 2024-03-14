@@ -166,7 +166,7 @@ type AuthContextData = {
     data:Partial<DadosCadastro>,
     dadosassociado:AssociadoProps | undefined,
     carregarDados:()=>Promise<void>
-    user:()=>void
+   // user:()=>void
 }
 
 type SignInProps={
@@ -229,7 +229,7 @@ function closeModa(fields: Partial<DadosCadastro>) {
         }
     });
 }
- function user(){
+/* function user(){
     const cookies = parseCookies();
     if(cookies['@nextauth.token']){
         const token = cookies['@nextauth.token'];
@@ -239,7 +239,7 @@ function closeModa(fields: Partial<DadosCadastro>) {
             setUser({id:String(sub),nome:nome.toUpperCase(),cargo,dir})
         }
     }
- }
+ }*/
 
 function caixaMovimentacao(fields: Partial<CaixaProps>) {
     setMov((prev: Partial<CaixaProps>) => {
@@ -260,7 +260,7 @@ async function carregarDados(){
      setDadosAssociado(response.data);
    }
   return(
-    <AuthContext.Provider value={{user,usuario,isAuthenticated,sign,signOut,data,closeModa,dadosassociado,carregarDados,caixaMovimentacao,mov}}>
+    <AuthContext.Provider value={{usuario,isAuthenticated,sign,signOut,data,closeModa,dadosassociado,carregarDados,caixaMovimentacao,mov}}>
         {children}
     </AuthContext.Provider>
   )

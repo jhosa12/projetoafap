@@ -5,7 +5,7 @@ import {ModalBusca} from '../../components/modal'
 import Teste from '@/pages/teste/index';
 import React,{ useState,useContext, useEffect, useRef } from "react";
 import { RiFileAddLine } from "react-icons/ri";
-import {AuthContext} from "../../contexts/AuthContext"
+import {AuthContext, signOut} from "../../contexts/AuthContext"
 import { toast } from "react-toastify";
 import { ModalMensalidade } from "@/components/modalmensalidade";
 import { RiAddCircleFill } from "react-icons/ri";
@@ -48,7 +48,7 @@ interface MensalidadeProps{
 
 export default function AdmContrato(){
    
-    const {data,closeModa,dadosassociado,carregarDados,usuario,user} = useContext(AuthContext)
+    const {data,closeModa,dadosassociado,carregarDados,usuario} = useContext(AuthContext)
   const [dados,setDados] =useState(true)
   const [historico,setHistorico] = useState(false)
   const [dependentes,setDependentes] =useState(false)
@@ -105,6 +105,11 @@ if(item.status ==='E'){
    }
 
    useEffect(()=>{
+    if(!usuario){
+       
+        signOut()
+
+    }
   
     closeModa({acordo:{...{}}})
    

@@ -57,7 +57,7 @@ status: string
 
 
 export default function gerenciarAdministrativo(){
-    const {signOut} = useContext(AuthContext)
+   
     const [PlanosContas,setPlanosContas] =useState(true)
     const [Planos,setPlanos] = useState(false)
     const [Convalescencia,setConv] =useState(false)

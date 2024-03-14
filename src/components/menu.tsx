@@ -25,7 +25,7 @@ interface GrupoTeste{
 
 export function MenuLateral(){
     const [isOpen,setIsOpen]=useState(false);
-    const {signOut,usuario,user}= useContext(AuthContext);
+    const {signOut,usuario}= useContext(AuthContext);
     const [isAdmOpen,setIsAdmOpen]= useState(false );
     const [isCaixaOpen,setIsCaixaOpen] = useState(false);
     const[teste,setTeste] = useState<GrupoTeste>();
@@ -33,7 +33,7 @@ export function MenuLateral(){
  
     
 useEffect(()=>{
-   user()
+   //user()
    socket.on("nova-tarefa", (tarefa) => {
       // Lógica para lidar com a nova tarefa recebida
       console.log("Nova tarefa recebida:", tarefa);
@@ -106,7 +106,7 @@ useEffect(()=>{
             <Link href="/admcontrato" className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Adm Contrato</Link>
         </li>
         <li>
-            <a href="/gerenciarAdministrativo" className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Gerenciar</a>
+            <Link href="/gerenciarAdministrativo" className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Gerenciar</Link>
         </li>
         <li>
             <a href="#" className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Invoice</a>
