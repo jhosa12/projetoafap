@@ -12,7 +12,7 @@ import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { IoNotifications } from "react-icons/io5";
 import { io } from 'socket.io-client';
 import Link from "next/link";
-const socket = io("https://apiafap.onrender.com");
+
 
 
 interface GrupoTeste{
@@ -24,6 +24,7 @@ interface GrupoTeste{
 
 
 export function MenuLateral(){
+   const socket = io("https://apiafap.onrender.com");
     const [isOpen,setIsOpen]=useState(false);
     const {signOut,usuario}= useContext(AuthContext);
     const [isAdmOpen,setIsAdmOpen]= useState(false );
