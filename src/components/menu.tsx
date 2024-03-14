@@ -34,7 +34,7 @@ export function MenuLateral(){
     
 useEffect(()=>{
    //user()
-   socket.on('connect', () => {
+   socket.on('connection', () => {
       socket.emit('userId',usuario?.id);
   });
    socket.on("nova-tarefa", (tarefa) => {
