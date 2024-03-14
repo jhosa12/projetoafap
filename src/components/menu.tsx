@@ -34,6 +34,9 @@ export function MenuLateral(){
     
 useEffect(()=>{
    //user()
+   socket.on('connect', () => {
+      socket.emit('userId',usuario?.id);
+  });
    socket.on("nova-tarefa", (tarefa) => {
       // Lógica para lidar com a nova tarefa recebida
       console.log("Nova tarefa recebida:", tarefa);

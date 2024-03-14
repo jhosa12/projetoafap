@@ -105,23 +105,23 @@ if(item.status ==='E'){
    }
 
    useEffect(()=>{
-    if(!usuario){
-       
-        signOut()
-
+    async function listaCadastro() {
+        const response = await api.get('/listarDadosCadastro')
+        closeModa({cidades:response.data.cidades,planos:response.data.planos})
+        
     }
-  
+    
+    if(!usuario){ 
+        signOut()
+    }
+
+    listaCadastro()
     closeModa({acordo:{...{}}})
-   
   if(componenteMounted){atualizarObs()}
    setMounted(true)
  },[data.contrato?.anotacoes] )
-
-
 async function atualizarObs() {
-   
     try{
-     
       const response =  await toast.promise(
             api.put('/atualizarObservacao',{
              id_contrato:dadosassociado?.contrato.id_contrato,

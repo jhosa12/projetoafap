@@ -1,10 +1,11 @@
 import { api } from "@/services/apiClient"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import { MdDelete } from "react-icons/md";
 import { RiSaveFill } from "react-icons/ri";
 import { IoMdAddCircle } from "react-icons/io";
 import InputMask from 'react-input-mask'
+import { AuthContext } from "@/contexts/AuthContext";
 
 
 interface PlanoContas{
@@ -37,6 +38,7 @@ export function PlanoContas({carregarDados,arrayPlanoContas,arraygrupos,setarDad
     const [conta,setConta]=useState('')
     const [descricaoPlanoContas,setDescricaoPlanoC]=useState('')
     const [tipo,setTipo]=useState<string>()
+    const {usuario} = useContext(AuthContext)
  
 
 
@@ -105,6 +107,7 @@ const editarGrupo = async(index:number)=>{
            
             id_grupo: grupo.id_grupo,
             descricao: grupo.descricao,
+          
         
 
         }),
@@ -141,7 +144,8 @@ const adicionarGrupo = async()=>{
         await toast.promise(
             api.post('/gerenciarAdministrativo/adicionarGrupo',{
                
-                    descricao:descricaoGrupo.toUpperCase()
+                    descricao:descricaoGrupo.toUpperCase(),
+                    userId:3
                 
             }),
             {
@@ -155,10 +159,7 @@ const adicionarGrupo = async()=>{
         toast.error(erro.response.data.error)
 
     }
- 
-
     carregarDados()
-
 }
 
 const adicionarPlanoContas = async()=>{

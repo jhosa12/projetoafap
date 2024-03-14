@@ -5,21 +5,14 @@ import { useContext, useEffect } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { useState } from "react";
 import { api } from "@/services/apiClient";
-interface CidadesProps{
-  id_cidade:number,
- estado:number,
- uf:string,
- cidade:string
-}
+
 
 export function Item(){
 
-  const {data,closeModa,usuario}= useContext(AuthContext)
-  const [cidades,setCidades] = useState<Array<Partial<CidadesProps>>>([])
+  const {data,closeModa}= useContext(AuthContext)
+
   const [ufs,setUfs] =useState<string[]>([])
-  useEffect(()=>{
-  //  usuario?.cidades && setCidades(usuario?.cidades)
-},[])
+
 
     return(
         <FormWrapper title="DADOS DO TITULAR">
@@ -105,7 +98,7 @@ export function Item(){
           <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">CIDADE</label>
             <select value={data.cidade} onChange={e=>closeModa({...data,cidade:e.target.value.toUpperCase()})} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option selected></option>
-                {cidades.map((item)=>{
+                {data.cidades?.map((item)=>{
                   return(
                       item.uf===data.uf?(<option>{item.cidade}</option>):''
                   )
