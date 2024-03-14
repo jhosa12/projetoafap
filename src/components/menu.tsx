@@ -31,11 +31,11 @@ export function MenuLateral(){
     const [isCaixaOpen,setIsCaixaOpen] = useState(false);
     const[teste,setTeste] = useState<GrupoTeste>();
 
-  const userId =usuario?.id.toString()
+  
     
   useEffect(() => {
    socket.on('connect', () => {
-      socket.emit('userId', userId);
+      socket.emit('userId', usuario?.id.toString());
    });
 
    socket.on('nova-tarefa', (tarefa) => {
@@ -44,7 +44,7 @@ export function MenuLateral(){
       setTeste(tarefa);
    });
 
-}, [socket, userId]);
+}, [socket,usuario?.id]);
 
 
 
