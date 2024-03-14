@@ -33,16 +33,19 @@ export function MenuLateral(){
    const userId = String(usuario?.id)
     
 useEffect(()=>{
+   try{
+
+      socket.on("nova-tarefa", (tarefa) => {
+         // Lógica para lidar com a nova tarefa recebida
+         console.log("Nova tarefa recebida:", tarefa);
+       setTeste(tarefa)
+     });
+   } catch(err){
+      console.log(err)
+
+   }
    //user()
-   socket.on('connect', () => {
-      socket.emit('userId',userId);
-  });
-  console.log(userId)
-   socket.on("nova-tarefa", (tarefa) => {
-      // Lógica para lidar com a nova tarefa recebida
-      console.log("Nova tarefa recebida:", tarefa);
-    setTeste(tarefa)
-  });
+
 
   
 

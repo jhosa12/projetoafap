@@ -162,7 +162,7 @@ async function atualizarObs() {
       }
      
     };
-    carregarDadosAsync();
+   componenteMounted && carregarDadosAsync();
    
       setDados(false),
       setDependentes(false),
