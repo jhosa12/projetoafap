@@ -30,12 +30,12 @@ export function MenuLateral(){
     const [isCaixaOpen,setIsCaixaOpen] = useState(false);
     const[teste,setTeste] = useState<GrupoTeste>();
 
- 
+   const userId = String(usuario?.id)
     
 useEffect(()=>{
    //user()
-   socket.on('connection', () => {
-      socket.emit('userId',usuario?.id);
+   socket.on('connect', () => {
+      socket.emit('userId',userId);
   });
    socket.on("nova-tarefa", (tarefa) => {
       // Lógica para lidar com a nova tarefa recebida
