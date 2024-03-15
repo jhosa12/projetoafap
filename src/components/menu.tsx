@@ -44,7 +44,13 @@ export function MenuLateral(){
       setTeste(tarefa);
    });
 
-}, [socket,usuario?.id]);
+   return ()=>{
+      socket.on('disconnect', () => {
+         console.log('Cliente desconectado');
+     });
+   }
+
+}, [usuario?.id]);
 
 
 
