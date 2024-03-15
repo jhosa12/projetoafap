@@ -105,16 +105,13 @@ if(item.status ==='E'){
    }
 
    useEffect(()=>{
+   
     async function listaCadastro() {
         const response = await api.get('/listarDadosCadastro')
         closeModa({cidades:response.data.cidades,planos:response.data.planos})
         
     }
     
-    if(!usuario){ 
-        signOut()
-    }
-
     listaCadastro()
     closeModa({acordo:{...{}}})
   if(componenteMounted){atualizarObs()}
@@ -328,7 +325,7 @@ async function atualizarObs() {
         {data.dependente?.close && <ModalDependentes/>}
         {data.closeEditarAssociado && <ModalEditarDados openEdit={openEdit}/>}
        {data.acordo?.closeAcordo && (<ModalAcordos />)}
-       <MenuLateral/>
+       
         <div className="flex  flex-col p-4  ">
         <div className="flex  flex-row justify-start gap-2 items-center w-full mt-2 pb-1">
         <button onClick={()=>closeModa({closeModalPlano:true,mensalidade:{}})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">

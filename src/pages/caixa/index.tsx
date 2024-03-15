@@ -1,4 +1,3 @@
-import { MenuLateral } from "@/components/menu";
 import { BiTransfer } from "react-icons/bi";
 import { api } from "@/services/apiClient";
 import { MdOutlineAddCircle } from "react-icons/md";
@@ -12,9 +11,6 @@ import { Tooltip } from "react-tooltip";
 import { AuthContext } from "@/contexts/AuthContext";
 import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
-import { FaBalanceScale } from "react-icons/fa";
-import { MdDeleteForever } from "react-icons/md";
-import { FaHandshake } from "react-icons/fa";
 import { ModalSangria } from "@/components/modalSangria";
 
 registerLocale('pt', pt)
@@ -49,6 +45,7 @@ export default function CaixaMovimentar(){
     const {caixaMovimentacao,usuario} =useContext(AuthContext);
     const[visible,setVisible] = useState(false)
     const[modalSangria,setModalSangria] = useState(false)
+   
 
     const closeModal = ()=>{
         setIsModalOpen(false)
@@ -112,7 +109,7 @@ return(
 <>
 {modalSangria && <ModalSangria  listarLancamentos={listarLancamentos} closeModalSangria={closeModalSangria}/>}
 {IsModalOpen && <ModalLancamentosCaixa listarLancamentos={listarLancamentos} planos={planos} closeModal={closeModal}/>}
-<MenuLateral/>
+
 
 <div className="flex w-full justify-center p-4">
 <div className="flex flex-col w-11/12 border  rounded-lg shadow  border-gray-700 ">

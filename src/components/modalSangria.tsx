@@ -47,6 +47,10 @@ export function ModalSangria({closeModalSangria,listarLancamentos}:ModalProps){
 
    async function userOrigem(e:FormEvent){
     e.preventDefault()
+    if(!descricao || !valor || !datalanc){
+        toast.warn("Preencha todos os campos!")
+        return;
+    }
 try{
     setLoadingOrigem(true)
  const login =   await api.post('/sangria/userOrigem',{
@@ -55,16 +59,21 @@ try{
         })
         console.log(login.data)
         setVerificadoOrigem(true)
+
+        if(login){
+            const notify = await api.post('/notification/adicionar',{
+                descricao:`Sangria - Origem: ${usuarioOrigem} - Valor: ${valor}`,
+                id_usuario:3,
+                data:new Date(),
+                status:'Pendente'
+            })
+        }
 }catch(err){
    setLoadingOrigem(false)
 }
-    
-      
-    
 
    }
 
-   
    async function userDestino(e:FormEvent){
     e.preventDefault()
 try{
@@ -79,8 +88,6 @@ try{
 }
     
    }
-
- 
 
      async function lancarMovimentacao() {
         if(!verificadoDestino || !verificadoOrigem){

@@ -1,14 +1,10 @@
 import { GerenciarConvalescenca } from "@/components/gerenciarAdm/convalescencia";
 import { PlanoContas } from "@/components/gerenciarAdm/planoContas";
 import { GerenciarPlanos } from "@/components/gerenciarAdm/planos";
-import { MenuLateral } from "@/components/menu"
 import { AuthContext } from "@/contexts/AuthContext";
 import { api } from "@/services/apiClient"
 import Head from "next/head"
-import React, { useContext, useEffect, useState } from "react"
-
-import { MdDelete } from "react-icons/md";
-import { RiSaveFill } from "react-icons/ri";
+import React, {useContext, useEffect, useState } from "react"
 import { toast } from "react-toastify";
 
 
@@ -57,7 +53,6 @@ status: string
 
 
 export default function gerenciarAdministrativo(){
-   
     const [PlanosContas,setPlanosContas] =useState(true)
     const [Planos,setPlanos] = useState(false)
     const [Convalescencia,setConv] =useState(false)
@@ -66,7 +61,7 @@ export default function gerenciarAdministrativo(){
     const [arrayPlanos,setArrayPlanos]= useState<Array<PlanosProps>>([])
     const [arrayConv,setArrayConv]= useState<Array<ConvProps>>([])
     const [tipo,setTipo]=useState('')
-    
+    const {usuario,signOut} = useContext(AuthContext)
 const setarDados =(planoContas:Array<PlanoContas>,grupos:Array<GruposProps>)=>{
     setArrayPlanoContas(planoContas)
     setArrayGrupos(grupos)
@@ -81,6 +76,7 @@ const setarConv =(conv:Array<ConvProps>)=>{
 }
    
 useEffect(() => {
+  
     try {
         carregarDados();
     } catch (err) {
@@ -110,7 +106,7 @@ async function carregarDados() {
     <title>Gerenciar setor Administrativo</title>
 </Head>
 <div className="flex flex-col w-full p-2  justify-center">
-<MenuLateral/>
+
 <div className="flex-col w-full p-2 mt-2 border  rounded-lg shadow  border-gray-700">
     <ul className="flex flex-wrap text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 "  >
         <li className="me-2">
