@@ -75,7 +75,8 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
                 api.post('/notification/adicionar',{
                     titulo:'Sangria',
                     descricao:`Sangria - Descrição: ${historico} - Origem: ${usuario?.nome} - Valor: ${valor}`,
-                    id_usuario:3,
+                    id_usuario:'2',
+                    id_destino:'3',
                     data:new Date(),
                     status:'Pendente'
                 }),
@@ -116,7 +117,7 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
        
     <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
     <div className="fixed flex flex-col  w-2/4 p-4 rounded-lg  shadow bg-gray-800">
-    <button  type="button" onClick={closeModal} className="absolute cursor-pointer right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+    <button  type="button" onClick={closeModal} className="absolute cursor-pointer top-0 right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
     <IoIosClose size={30}/>
         </button>
         <form>

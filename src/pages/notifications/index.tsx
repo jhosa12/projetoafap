@@ -75,7 +75,7 @@ console.log(err)
     return(
         <>
         <div className="flex flex-col w-full pl-10 pr-10 pt-4">
-            <h1 className="flex w-full p-2 border-b-[1px] text-gray-300 font-semibold text-2xl border-gray-600">Notificações</h1>
+            <h1 className="flex w-full p-2 border-b-[1px] text-gray-300 font-semibold text-2xl border-gray-600">Notificações/Tarefas</h1>
             <ul className="flex flex-col gap-3 w-full  p-4">
                 {notificacoes.map((item,index)=>{
                     return(
