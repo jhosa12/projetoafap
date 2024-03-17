@@ -109,7 +109,7 @@ export function MenuLateral(){
     </div>
 </nav>
 </header>
-<div  className={`fixed  rounded-e-lg z-40 top-[65px] left-0 w-64 h-[645px] p-4 overflow-y-auto bg-gray-800 transition-transform ${isOpen ? "" : "transform -translate-x-full"}`}>
+<div  className={`fixed  rounded-e-lg z-40 top-[65px] left-0 w-64 h-[520px] p-4 overflow-y-auto bg-gray-800 transition-transform ${isOpen ? "" : "transform -translate-x-full"}`}>
     <h5  className="text-base font-semibold text-gray-500 uppercase dark:text-gray-400">Menu</h5>
     <button onClick={()=>setIsOpen(!isOpen)} type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" >
        <IoIosClose size={35}/>

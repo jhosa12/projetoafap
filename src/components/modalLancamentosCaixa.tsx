@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 
 
+
 interface ModalProps{
     closeModal:()=>void;
     planos:Array<PlanosProps>
@@ -68,6 +69,25 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
    }
 
      async function lancarMovimentacao() {
+
+        if(descricao==='SANGRIA'){
+            await toast.promise(
+                api.post('/notification/adicionar',{
+                    titulo:'Sangria',
+                    descricao:`Sangria - Descrição: ${historico} - Origem: ${usuario?.nome} - Valor: ${valor}`,
+                    id_usuario:3,
+                    data:new Date(),
+                    status:'Pendente'
+                }),
+                {
+                    error:'Erro na requisição',
+                    pending:'Gerando Notificação',
+                    success:'Pendência Enviada com Sucesso, Aguarde a confirmação do financeiro',
+                   
+                }
+             )
+             return;
+        }
         await toast.promise(
             api.post('/novoLancamento',{
             id_usuario:Number(usuario?.id),
@@ -95,13 +115,13 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
     <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
        
     <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
-    <div className="fixed flex flex-col  w-2/4  rounded-lg  shadow bg-gray-800">
+    <div className="fixed flex flex-col  w-2/4 p-4 rounded-lg  shadow bg-gray-800">
     <button  type="button" onClick={closeModal} className="absolute cursor-pointer right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
     <IoIosClose size={30}/>
         </button>
         <form>
         
-<label className="flex flex-row justify-center  font-semibold mt-2 gap-2 text-white">NOVO LANÇAMENTO</label>
+<label className="flex flex-row justify-start mb-4 border-b-[1px] text-lg border-gray-500 font-semibold mt-2 gap-2 text-white">NOVO LANÇAMENTO</label>
 <div className="inline-flex gap-4 w-full">
 <div className="ml-2 justify-start w-2/12">
 <label  className="block mb-1 text-xs font-medium  text-white">DATA</label>
@@ -121,7 +141,7 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
 </div>
 <div className="mb-1 col-span-2">
     <label  className="block mb-1 text-xs font-medium  text-white">DESCRIÇÃO</label>
-    <select value={descricao} onChange={e=>{
+    <select  value={descricao} onChange={e=>{
         const tipo = planos.find((item)=>item.descricao===e.target.value)
         setDescricao(e.target.value)
         setTipo(String(tipo?.tipo))

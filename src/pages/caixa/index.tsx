@@ -11,7 +11,7 @@ import { Tooltip } from "react-tooltip";
 import { AuthContext } from "@/contexts/AuthContext";
 import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
-import { ModalSangria } from "@/components/modalSangria";
+
 
 registerLocale('pt', pt)
 
@@ -44,16 +44,14 @@ export default function CaixaMovimentar(){
     const [planos,setPlanos]=useState([]);
     const {caixaMovimentacao,usuario} =useContext(AuthContext);
     const[visible,setVisible] = useState(false)
-    const[modalSangria,setModalSangria] = useState(false)
+    
    
 
     const closeModal = ()=>{
         setIsModalOpen(false)
     }
 
-    const closeModalSangria = ()=>{
-        setModalSangria(false)
-    }
+ 
 
     useEffect(()=>{
       listarLancamentos()
@@ -107,7 +105,7 @@ export default function CaixaMovimentar(){
 
 return(
 <>
-{modalSangria && <ModalSangria  listarLancamentos={listarLancamentos} closeModalSangria={closeModalSangria}/>}
+
 {IsModalOpen && <ModalLancamentosCaixa listarLancamentos={listarLancamentos} planos={planos} closeModal={closeModal}/>}
 
 
@@ -254,7 +252,7 @@ return(
   </span>
   </div>
     </div>
-    <button onClick={()=>{caixaMovimentacao({conta:'',conta_n:'',ccustos_desc:'',data:new Date(),datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null}),setModalSangria(!modalSangria)}} type="button" className="inline-flex  font-semibold justify-center items-center bg-yellow-600 rounded-lg p-2 gap-2 text-white"><BiTransfer size={22}/>Sangria</button>
+    <button onClick={()=>{caixaMovimentacao({conta:'1.02.003',conta_n:'',ccustos_desc:'',data:new Date(),datalanc:new Date(),descricao:'SANGRIA',historico:'',num_seq:null,tipo:'DESPESA',usuario:'',valor:null}),setIsModalOpen(!IsModalOpen)}} type="button" className="inline-flex  font-semibold justify-center items-center bg-yellow-600 rounded-lg p-2 gap-2 text-white"><BiTransfer size={22}/>Sangria</button>
     </div>
 </div>
 </div>

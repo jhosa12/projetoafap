@@ -1,6 +1,8 @@
-import { api } from "@/services/apiClient"
-import { useEffect, useState } from "react"
-import { toast } from "react-toastify"
+import { api } from "@/services/apiClient";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { FaCheck } from "react-icons/fa";
+import { AuthContext } from "@/contexts/AuthContext";
 
 interface NotifyProps{
     id_notificacao: number,
@@ -8,11 +10,14 @@ interface NotifyProps{
     descricao:string,
     id_usuario: number,
     data: Date,
-    status: string
+    status: string,
+    id_destino:string,
+    sangria:boolean
   }
 
 export default function Notificacoes(){
     const[notificacoes,setNotify] = useState<Array<NotifyProps>>([])
+    const {usuario}= useContext(AuthContext)
 
     useEffect(()=>{
         try{
@@ -30,6 +35,43 @@ export default function Notificacoes(){
      }
 
 
+        async function lancarMovimentacao({dados,id_origem}:{dados:string,id_origem:number}) {
+        
+            const array  = dados.split('-')
+            const descricao= array[1].split(':')[1]
+            const nome= array[2].split(':')[1]
+            const valor = array[3].split(':')[1]
+            console.log(Number(valor))
+            try{
+                await toast.promise(
+
+                    api.post('/novoLancamento',{
+                    id_usuario:Number(id_origem),
+                    datalanc:new Date(),
+                    conta:'1.02.003',
+                    conta_n:'1.02.003',
+                    descricao:'SANGRIA',
+                    historico:descricao,
+                    valor:Number(valor),
+                    usuario:nome,
+                    data:new Date(),
+                    tipo:'DESPESA'
+                    }),
+                    {
+                        error:'Erro realizar Lançamento',
+                        pending:'Realizando Lançamento',
+                        success:'Lançado com sucesso!'
+                    }
+                )
+            }catch(err){
+console.log(err)
+            }
+     
+   
+        
+     }
+
+
     return(
         <>
         <div className="flex flex-col w-full pl-10 pr-10 pt-4">
@@ -37,13 +79,21 @@ export default function Notificacoes(){
             <ul className="flex flex-col gap-3 w-full  p-4">
                 {notificacoes.map((item,index)=>{
                     return(
-                        <li key={index} className="flex justify-between items-center p-2 border-t-[3px] shadow-sm shadow-gray-400 border-red-600 rounded-lg w-full text-white bg-gray-700">
-                            <div>
+                        <li key={index} className="flex justify-between items-center p-2 border-t-[3px] shadow-sm shadow-gray-400 border-yellow-600 rounded-lg w-full text-white bg-gray-700">
+                            <div className="flex flex-col w-full ">
                             <h1 className="uppercase font-bold justify-start pl-2  ">{item.titulo}</h1>
+                            <div className="flex flex-row justify-between w-full">
                             <p className="pl-2">{item.descricao}</p>
+                            <span className="flex items-end justify-end h-full">{new Date(item.data).toLocaleDateString()}</span>
+                            <span className="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300">
+                <span className="w-2 h-2 me-1 bg-yellow-500 rounded-full"></span>
+                {item.status}
+            </span>
+            {item.sangria && <button onClick={()=>lancarMovimentacao({dados:item.descricao,id_origem:item.id_usuario})} className=" bg-blue-600 p-1 rounded-lg text-white">ACEITAR</button>}
+                            </div>
+                            
                                 </div>
-                                <span>{new Date(item.data).toLocaleDateString()}</span>
-                            <span className="flex p-2 bg-yellow-400 rounded-2xl">{item.status}</span>
+                               
                             </li>
                     )
                 })}
