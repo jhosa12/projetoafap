@@ -29,13 +29,17 @@ export default function Notificacoes(){
      },[])
 
      async function listarNotificacoes() {
-        const response = await api.get('/notification/listar')
+        const response = await api.post('/notification/listar',
+           { 
+                id_destino:String(usuario?.id)
+        }
+        )
         setNotify(response.data)
         console.log(response.data)
      }
 
 
-        async function lancarMovimentacao({dados,id_origem}:{dados:string,id_origem:number}) {
+        async function lancarMovimentacao({dados,id_origem,id_notificacao}:{dados:string,id_origem:number,id_notificacao:number}) {
         
             const array  = dados.split('-')
             const descricao= array[1].split(':')[1]
@@ -43,7 +47,7 @@ export default function Notificacoes(){
             const valor = array[3].split(':')[1]
             console.log(Number(valor))
             try{
-                await toast.promise(
+             const lancamento = await toast.promise(
 
                     api.post('/novoLancamento',{
                     id_usuario:Number(id_origem),
@@ -63,6 +67,14 @@ export default function Notificacoes(){
                         success:'Lançado com sucesso!'
                     }
                 )
+                if(lancamento){
+                    await api.put("/notificatio/update",
+                    {
+                        id_notificacao
+                    }
+                    )
+                }
+                listarNotificacoes()
             }catch(err){
 console.log(err)
             }
@@ -84,12 +96,12 @@ console.log(err)
                             <h1 className="uppercase font-bold justify-start pl-2  ">{item.titulo}</h1>
                             <div className="flex flex-row justify-between w-full">
                             <p className="pl-2">{item.descricao}</p>
-                            <span className="flex items-end justify-end h-full">{new Date(item.data).toLocaleDateString()}</span>
+                            <span className="flex items-end justify-end h-full">{new Date(item.data).toLocaleDateString()} - {new Date(item.data).toLocaleTimeString()}</span>
                             <span className="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300">
                 <span className="w-2 h-2 me-1 bg-yellow-500 rounded-full"></span>
                 {item.status}
             </span>
-            {item.sangria && <button onClick={()=>lancarMovimentacao({dados:item.descricao,id_origem:item.id_usuario})} className=" bg-blue-600 p-1 rounded-lg text-white">ACEITAR</button>}
+            {item.sangria && item.status==='PENDENTE' && <button onClick={()=>lancarMovimentacao({dados:item.descricao,id_origem:item.id_usuario,id_notificacao:item.id_notificacao})} className=" bg-blue-600 p-1 rounded-lg text-white">ACEITAR</button>}
                             </div>
                             
                                 </div>
