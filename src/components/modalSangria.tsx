@@ -60,16 +60,27 @@ try{
         console.log(login.data)
         setVerificadoOrigem(true)
 
-        if(login){
-            const notify = await api.post('/notification/adicionar',{
+
+
+
+         await toast.promise(
+            api.post('/notification/adicionar',{
+                titulo:'Sangria',
                 descricao:`Sangria - Origem: ${usuarioOrigem} - Valor: ${valor}`,
                 id_usuario:3,
                 data:new Date(),
                 status:'Pendente'
-            })
-        }
+            }),
+            {
+                error:'Erro na requisição',
+                pending:'Gerando Notificação',
+                success:'Pendencia Enviada com Sucesso'
+            }
+         )
+       
 }catch(err){
    setLoadingOrigem(false)
+   console.log(err)
 }
 
    }
