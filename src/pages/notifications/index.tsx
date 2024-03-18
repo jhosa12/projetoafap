@@ -68,7 +68,7 @@ export default function Notificacoes(){
                     }
                 )
                 if(lancamento){
-                    await api.put("/notificatio/update",
+                    await api.put("/notification/update",
                     {
                         id_notificacao
                     }

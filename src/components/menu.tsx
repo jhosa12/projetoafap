@@ -46,8 +46,13 @@ export function MenuLateral(){
       setTeste(tarefa);
    });
    
- 
+   try{
 
+     contagem() 
+
+   }catch(err){
+
+   }
    return ()=>{
       socket.on('disconnect', () => {
          console.log('Cliente desconectado');
@@ -57,6 +62,14 @@ export function MenuLateral(){
 }, [usuario?.id]);
 
 
+async function contagem() {
+ const cont = await api.post("/notification/contagem",{
+   id_destino:String(usuario?.id)
+ })
+ setTeste(cont.data)
+ console.log(cont.data)
+   
+}
 
 
 
@@ -78,7 +91,7 @@ export function MenuLateral(){
   <div className="relative">      
 <button type="button" onClick={()=>setModalNot(!modalNotification)} className="relative inline-flex items-center p-1 text-sm font-medium text-center text-white  rounded-lg  hover:bg-gray-700 ">
 <IoNotifications size={22}/>
-  {teste && <div className="absolute inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-green-500 border-2 border-white rounded-full -top-1 -end-1 dark:border-gray-900">{teste}</div>}
+  {teste && <div className="absolute inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-green-500 border-2 border-white rounded-full -top-1 -end-1 dark:border-gray-900"></div>}
  
 </button>
 
