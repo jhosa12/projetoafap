@@ -24,49 +24,6 @@ export default function GerarOS(){
 
 
 
-        async function lancarMovimentacao({dados,id_origem,id_notificacao}:{dados:string,id_origem:number,id_notificacao:number}) {
-        
-            const array  = dados.split('-')
-            const descricao= array[1].split(':')[1]
-            const nome= array[2].split(':')[1]
-            const valor = array[3].split(':')[1]
-            console.log(Number(valor))
-            try{
-             const lancamento = await toast.promise(
-
-                    api.post('/novoLancamento',{
-                    id_usuario:Number(id_origem),
-                    datalanc:new Date(),
-                    conta:'1.02.003',
-                    conta_n:'1.02.003',
-                    descricao:'SANGRIA',
-                    historico:descricao,
-                    valor:Number(valor),
-                    usuario:nome,
-                    data:new Date(),
-                    tipo:'DESPESA'
-                    }),
-                    {
-                        error:'Erro realizar Lançamento',
-                        pending:'Realizando Lançamento',
-                        success:'Lançado com sucesso!'
-                    }
-                )
-                if(lancamento){
-                    await api.put("/notification/update",
-                    {
-                        id_notificacao
-                    }
-                    )
-                }
-     
-            }catch(err){
-console.log(err)
-            }
-     
-   
-        
-     }
 
 
     return(
@@ -84,9 +41,9 @@ console.log(err)
         Buscar
     </button> 
     </div>
-
             </div>
-            <ul className="flex flex-wrap text-sm font-medium text-center  border-b mt-2  rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800"  role="tablist">
+            <div className="flex-col w-full border mt-2 rounded-lg shadow  border-gray-700">
+            <ul className="flex flex-wrap text-sm font-medium text-center  border-b   rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800"  role="tablist">
         <li className="me-2">
             <button  type="button" onClick={()=>{}}   className="inline-block p-4 font-semibold rounded-ss-lg  bg-gray-800 hover:bg-gray-700 text-blue-500">Falecido</button>
         </li>
@@ -99,8 +56,48 @@ console.log(err)
         <li className="me-2">
             <button type="button" onClick={()=>{}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Produtos e Serviços</button>
         </li>
-     
     </ul>
+    <div className="rounded-lg p-4 grid grid-flow-row-dense grid-cols-4 gap-3">
+    <div className="flex flex-col col-span-1 ">
+            <label  className="block  text-xs font-medium  text-white">Nome do Falecido</label>
+            <input  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+        </div>
+        <div className="flex flex-col col-span-1 ">
+            <label  className="block  text-xs font-medium  text-white">Data Nascimento</label>
+            <input  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+        </div>
+        <div className="flex flex-col col-span-1 ">
+            <label  className="block  text-xs font-medium  text-white">Religião</label>
+            <select  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >
+                <option value="">CATÓLICA</option>
+                <option value="">EVANGÉLICA</option>
+            </select>
+        </div>
+        <div className="flex flex-col col-span-1 ">
+            <label  className="block  text-xs font-medium  text-white">Sexo</label>
+            <input  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+        </div>
+        <div className="flex flex-col col-span-1 ">
+            <label  className="block  text-xs font-medium  text-white">RG</label>
+            <input  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+        </div>
+        <div className="flex flex-col col-span-1 ">
+            <label  className="block  text-xs font-medium  text-white">CPF</label>
+            <input  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+        </div>
+        <div className="flex flex-col col-span-1 ">
+            <label  className="block  text-xs font-medium  text-white">Estado Civil</label>
+            <select  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >
+                <option value="">CATÓLICA</option>
+                <option value="">EVANGÉLICA</option>
+            </select>
+        </div>
+        <div className="flex flex-col col-span-1 ">
+            <label  className="block  text-xs font-medium  text-white">Certidão de Casamento</label>
+            <input  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+        </div>
+        </div>
+    </div>
             
 
         </div>
