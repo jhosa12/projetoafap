@@ -1,7 +1,7 @@
 import { api } from "@/services/apiClient";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { FaCheck } from "react-icons/fa";
+
 import { AuthContext } from "@/contexts/AuthContext";
 
 interface NotifyProps{
