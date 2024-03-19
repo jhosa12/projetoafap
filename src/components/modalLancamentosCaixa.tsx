@@ -78,7 +78,8 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
                     id_usuario:'2',
                     id_destino:'3',
                     data:new Date(),
-                    status:'Pendente'
+                    status:'PENDENTE',
+                    sangria:true
                 }),
                 {
                     error:'Erro na requisição',

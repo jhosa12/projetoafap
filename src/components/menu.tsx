@@ -28,7 +28,7 @@ export function MenuLateral(){
     const [isAdmOpen,setIsAdmOpen]= useState(false );
     const [isCaixaOpen,setIsCaixaOpen] = useState(false);
     const[teste,setTeste] = useState<number>();
-    const[modalNotification,setModalNot] =useState(true)
+    
  
 
   
@@ -89,11 +89,11 @@ async function contagem() {
        
         <div className="flex relative items-center gap-4">
   <div className="relative">      
-<button type="button" onClick={()=>setModalNot(!modalNotification)} className="relative inline-flex items-center p-1 text-sm font-medium text-center text-white  rounded-lg  hover:bg-gray-700 ">
+<Link href={"/notifications"}   className="relative inline-flex items-center p-1 text-sm font-medium text-center text-white  rounded-lg  hover:bg-gray-700 ">
 <IoNotifications size={22}/>
-  {teste && <div className="absolute inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-green-500 border-2 border-white rounded-full -top-1 -end-1 dark:border-gray-900"></div>}
+  {!!teste && <div className="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-green-500 border-2 border-white rounded-full -top-1 -end-1 dark:border-gray-900">{teste}</div>}
  
-</button>
+</Link>
 
 </div> 
 
