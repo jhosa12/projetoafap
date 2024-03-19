@@ -92,12 +92,8 @@ async function contagem() {
 <Link href={"/notifications"}   className="relative inline-flex items-center p-1 text-sm font-medium text-center text-white  rounded-lg  hover:bg-gray-700 ">
 <IoNotifications size={22}/>
   {!!teste && <div className="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-green-500 border-2 border-white rounded-full -top-1 -end-1 dark:border-gray-900">{teste}</div>}
- 
 </Link>
-
 </div> 
-
-
           <button data-tooltip-id='logout' data-tooltip-content='Deslogar' onClick={signOut}>
           <MdLogout color='white' size={25}/>
           </button>
@@ -119,7 +115,7 @@ async function contagem() {
     </div>
 </nav>
 </header>
-<div  className={`fixed  rounded-e-lg z-40 top-[65px] left-0 w-64 h-[520px] p-4 overflow-y-auto bg-gray-800 transition-transform ${isOpen ? "" : "transform -translate-x-full"}`}>
+<div  className={`fixed  rounded-e-lg z-40 top-[65px] left-0 w-64 h-[calc(100vh-60px)] p-4 overflow-y-auto bg-gray-800 transition-transform ${isOpen ? "" : "transform -translate-x-full"}`}>
     <h5  className="text-base font-semibold text-gray-500 uppercase dark:text-gray-400">Menu</h5>
     <button onClick={()=>setIsOpen(!isOpen)} type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" >
        <IoIosClose size={35}/>
