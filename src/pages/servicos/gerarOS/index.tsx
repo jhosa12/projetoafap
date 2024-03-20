@@ -62,6 +62,9 @@ export default function GerarOS(){
         <li className="me-2">
             <button type="button" onClick={()=>{setFalecido(false), setDeclarante(false),setObito(false),setProdutos(true)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Produtos e Serviços</button>
         </li>
+        <li className="me-2">
+            <button type="button" onClick={()=>{setFalecido(false), setDeclarante(false),setObito(false),setProdutos(true)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Velório</button>
+        </li>
     </ul>
    {falecido && <div className="rounded-lg p-6 grid grid-flow-row-dense grid-cols-4 gap-6">
     <div className="flex flex-col col-span-1">
@@ -281,7 +284,7 @@ export default function GerarOS(){
         </div>
         <div className="flex flex-col col-span-3 ">
             <label  className="block  text-xs font-medium  p-1 text-white">Observações</label>
-            <textarea  rows={3} className="whitespace-nowrap uppercase rounded-lg  py-1 px-0 w-full text-xs  bg-transparent border-2   text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</textarea>
+            <textarea  rows={3} className="whitespace-nowrap uppercase rounded-lg  py-1 px-2 w-full text-xs  bg-transparent border-2   text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</textarea>
         </div>
         </div>}
 
