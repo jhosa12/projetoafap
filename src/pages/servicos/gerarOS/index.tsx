@@ -5,7 +5,9 @@ import { toast } from "react-toastify";
 import { AuthContext } from "@/contexts/AuthContext";
 import { IoMdSearch } from "react-icons/io";
 
-
+interface ArrayProps{
+    id:number
+}
 
 
 export default function GerarOS(){
@@ -15,6 +17,7 @@ export default function GerarOS(){
     const [declarante,setDeclarante] =useState(false);
     const [dadosObito,setObito] = useState(false);
     const [produtos,setProdutos] = useState(false);
+    const [array,setArray]=useState<Array<ArrayProps>>([])
     useEffect(()=>{
         try{
          
@@ -284,27 +287,93 @@ export default function GerarOS(){
 
 
 
-        {produtos && <div className="flex flex-col rounded-lg p-6   gap-6">
-        <div>
+        {produtos && <div className="flex flex-col w-full rounded-lg p-6   gap-6">
+    <div className="flex flex-row gap-6 w-full">
+       <div>
           <label   className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Descrição</label>
-            <select  className="block w-full pb-1 pt-1 pr-2 pl-2  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <select  className="block w-full pb-1 pt-1 pr-2 pl-2 appearance-none text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option   selected></option>
               <option   value="M">MASCULINO</option>
               <option   value="F">FEMININO</option>
             </select>
           </div>
           <div>
-          <label  className="block mb-1 text-sm font-medium  text-white">NOME</label>
+          <label  className="block mb-1 text-sm font-medium  text-white">Valor Unit.</label>
           <input autoComplete='off'  type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
-
-        </div>}
-
-
-
-
-
+          <div>
+          <label  className="block mb-1 text-sm font-medium  text-white">Quantidade</label>
+          <input autoComplete='off'  type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div>
+          <label  className="block mb-1 text-sm font-medium  text-white">Desconto</label>
+          <input autoComplete='off'  type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div>
+          <label  className="block mb-1 text-sm font-medium  text-white">Acrescimo</label>
+          <input autoComplete='off'  type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          <div>
+          <label  className="block mb-1 text-sm font-medium  text-white">Total</label>
+          <input autoComplete='off'  type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+          </div>
+          <div className="flex">
+          <table 
+         className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
+            <thead className="sticky top-0 text-sm  uppercase bg-gray-700 text-gray-400">
+                <tr>
+                    <th scope="col" className=" px-2 py-1">
+                        Descrição Item
+                    </th>
+               
+                    <th scope="col" className="px-4 py-1">
+                        Valor Unit.
+                    </th>
+                    <th scope="col" className="px-4 py-1">
+                        Quantidade
+                    </th>
+                    <th scope="col" className="px-4 py-1">
+                        Desconto
+                    </th>
+                    <th scope="col" className="px-4 py-1">
+                        Acrescimo
+                    </th>
+                    <th scope="col" className="px-4 py-1">
+                        Valor Total
+                    </th>
+                    <th scope="col" className="px-10 py-1">
+                        <span >AÇÕES</span>
+                    </th>
+                </tr> 
+            </thead>
+            <tbody>
+                {array?.map((item,index)=>(
+               <tr key={index}  className={ `border-b bg-gray-800 border-gray-700  hover:bg-gray-600`}>
+                  <td className="px-2 py-1">
+                {item.id}
+                </td> 
+              
+                <td className="px-10 py-1 inline-flex text-right gap-2">
+                    <button  className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"></button>
+                    <button className=" rounded-lg bg-red-600 px-1 py-1 text-white hover:underline"></button>
+                </td>
+               
+               </tr>
+               ))}
+    
+                
+               
+            </tbody>
+        
+        </table>
+        </div>
+        </div>
+        
+        }
     </div>
+ 
+    
         </div>
         </>
     )
