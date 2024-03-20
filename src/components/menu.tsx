@@ -27,6 +27,7 @@ export function MenuLateral(){
     const {signOut,usuario}= useContext(AuthContext);
     const [isAdmOpen,setIsAdmOpen]= useState(false );
     const [isCaixaOpen,setIsCaixaOpen] = useState(false);
+    const [isServicosOpen,setIsServicosOpen] =useState(false);
     const[notifyCount,setCount] = useState<number>();
     
  
@@ -166,12 +167,12 @@ async function contagem() {
             </Link>
          </li>
          <li >
-    <button type="button" className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsCaixaOpen(!isCaixaOpen)}>
+    <button type="button" className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsServicosOpen(!isServicosOpen)}>
       <FaMoneyBillTransfer  size={23}/>
         <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Serviços</span>
         <FaAngleDown size={18}/>
     </button>
-    <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isCaixaOpen && "hidden"}`}>
+    <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isServicosOpen && "hidden"}`}>
         <li>
             <Link href='/servicos/gerarOS' className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Gerar OS</Link>
         </li>
