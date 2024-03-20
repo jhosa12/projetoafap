@@ -14,6 +14,7 @@ export default function GerarOS(){
     const [falecido,setFalecido] =useState(true);
     const [declarante,setDeclarante] =useState(false);
     const [dadosObito,setObito] = useState(false);
+    const [produtos,setProdutos] = useState(false);
     useEffect(()=>{
         try{
          
@@ -47,16 +48,16 @@ export default function GerarOS(){
             <div className="flex-col w-full border mt-2 rounded-lg shadow  border-gray-700">
             <ul className="flex flex-wrap text-sm font-medium text-center  border-b   rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800"  role="tablist">
         <li className="me-2">
-            <button  type="button" onClick={()=>{setFalecido(true), setDeclarante(false),setObito(false)}}   className="inline-block p-4 font-semibold rounded-ss-lg  bg-gray-800 hover:bg-gray-700 text-blue-500">Falecido</button>
+            <button  type="button" onClick={()=>{setFalecido(true), setDeclarante(false),setObito(false),setProdutos(false)}}   className="inline-block p-4 font-semibold rounded-ss-lg  bg-gray-800 hover:bg-gray-700 text-blue-500">Falecido</button>
         </li>
         <li className="me-2">
-            <button type="button" onClick={()=>{setFalecido(false), setDeclarante(true),setObito(false)}}    className="inline-block p-4  hover:bg-gray-700 hover:text-gray-300">Declarante</button>
+            <button type="button" onClick={()=>{setFalecido(false), setDeclarante(true),setObito(false),setProdutos(false)}}    className="inline-block p-4  hover:bg-gray-700 hover:text-gray-300">Declarante</button>
         </li>
         <li className="me-2">
-            <button type="button" onClick={()=>{setFalecido(false), setDeclarante(false),setObito(true)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Dados do Óbito</button>
+            <button type="button" onClick={()=>{setFalecido(false), setDeclarante(false),setObito(true),setProdutos(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Dados do Óbito</button>
         </li>
         <li className="me-2">
-            <button type="button" onClick={()=>{}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Produtos e Serviços</button>
+            <button type="button" onClick={()=>{setFalecido(false), setDeclarante(false),setObito(false),setProdutos(true)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Produtos e Serviços</button>
         </li>
     </ul>
    {falecido && <div className="rounded-lg p-6 grid grid-flow-row-dense grid-cols-4 gap-6">
@@ -260,7 +261,45 @@ export default function GerarOS(){
             <label  className="block  text-xs font-medium  text-white">Tipo</label>
             <input  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
         </div>
+        <div className="flex flex-col col-span-1 ">
+            <label  className="block  text-xs font-medium  text-white">Local do Velório</label>
+            <input  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+        </div>
+        <div className="flex flex-row gap-x-4 col-span-1 ">
+            <div className="flex flex-col">
+            <label  className="block  text-xs font-medium  text-white">Data Velório</label>
+            <input  className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+            </div>
+            <div className="flex flex-col">
+            <label  className="block  text-xs font-medium  text-white">Hora Valório</label>
+            <input  className="whitespace-nowrap uppercase py-1  px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+            </div> 
+
+        </div>
+        <div className="flex flex-col col-span-3 ">
+            <label  className="block  text-xs font-medium  p-1 text-white">Observações</label>
+            <textarea  rows={3} className="whitespace-nowrap uppercase rounded-lg  py-1 px-0 w-full text-xs  bg-transparent border-2   text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</textarea>
+        </div>
         </div>}
+
+
+
+        {produtos && <div className="flex flex-col rounded-lg p-6   gap-6">
+        <div>
+          <label   className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Descrição</label>
+            <select  className="block w-full pb-1 pt-1 pr-2 pl-2  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+              <option   selected></option>
+              <option   value="M">MASCULINO</option>
+              <option   value="F">FEMININO</option>
+            </select>
+          </div>
+          <div>
+          <label  className="block mb-1 text-sm font-medium  text-white">NOME</label>
+          <input autoComplete='off'  type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          </div>
+
+        </div>}
+
 
 
 
