@@ -1,12 +1,18 @@
 
 import { api } from "@/services/apiClient";
-import { useContext, useEffect, useState } from "react";
+import { use, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { AuthContext } from "@/contexts/AuthContext";
 import { IoMdSearch } from "react-icons/io";
 
 interface ArrayProps{
-    id:number
+    descricao:string ;
+    valor_unit:number | null,
+    quantidade:number | null ,
+    desconto:number |null ,
+    acrescimo:number |null,
+    valor_total:number  | null
+
 }
 interface CheckListProps{
     id_check: number,
@@ -24,8 +30,28 @@ export default function GerarOS(){
     const [produtos,setProdutos] = useState(false);
     const [velorio,setVelorio] =useState(false);
     const [checagem,setChecagem] =useState(false);
-    const [array,setArray]=useState<Array<ArrayProps>>([]);
+   const[listaProduto,setListaProdutos] =useState<Partial<ArrayProps>>({descricao:''})
+    const [arrayProdutos,setArrayProdutos]=useState<Array<Partial<ArrayProps>>>([]);
     const [checkList,setCheckList]=useState<Array<CheckListProps>>([])
+
+
+
+    function setarProdutos(fields:Partial<ArrayProps>){
+        setListaProdutos((prev:Partial<ArrayProps>)=>{
+            if(prev){
+                return {...prev,...fields}
+            }
+            else{
+                return {...fields}
+            }
+
+        })
+        
+    }
+  useEffect(()=>{
+    setListaProdutos({acrescimo:null,desconto:null,descricao:'',quantidade:null,valor_total:null,valor_unit:null})
+
+  },[arrayProdutos])
     
     useEffect(()=>{
         try{
@@ -310,35 +336,46 @@ async function carregarCheckList() {
 
 
         {produtos && <div className="flex flex-col w-full rounded-lg p-6   gap-6">
-    <div className="flex flex-row gap-6 w-full">
+    <div className="flex flex-row text-white gap-6 w-full">
        <div>
           <label   className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Descrição</label>
-            <select  className="block w-full pb-1 pt-1 pr-2 pl-2 appearance-none text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option   selected></option>
-              <option   value="M">MASCULINO</option>
-              <option   value="F">FEMININO</option>
+            <select value={listaProduto.descricao}  className="block w-full pb-1 pt-1 pr-2 pl-2 appearance-none text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+              <option value={'teste'}  selected></option>
+             
             </select>
           </div>
           <div>
           <label  className="block mb-1 text-sm font-medium  text-white">Valor Unit.</label>
-          <input autoComplete='off'  type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={Number(listaProduto.valor_unit)} onChange={(e)=>setarProdutos({valor_unit:Number(e.target.value)})} autoComplete='off'  type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div>
           <label  className="block mb-1 text-sm font-medium  text-white">Quantidade</label>
-          <input autoComplete='off'  type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={Number(listaProduto.quantidade)} onChange={(e)=>setarProdutos({quantidade:Number(e.target.value)})} autoComplete='off'  type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div>
           <label  className="block mb-1 text-sm font-medium  text-white">Desconto</label>
-          <input autoComplete='off'  type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={Number(listaProduto.desconto)} onChange={(e)=>setarProdutos({desconto:Number(e.target.value)})} autoComplete='off'  type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div>
           <label  className="block mb-1 text-sm font-medium  text-white">Acrescimo</label>
-          <input autoComplete='off'  type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={Number(listaProduto.acrescimo)} onChange={(e)=>setarProdutos({acrescimo:Number(e.target.value)})} autoComplete='off'  type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div>
           <label  className="block mb-1 text-sm font-medium  text-white">Total</label>
-          <input autoComplete='off'  type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={Number(listaProduto.valor_total)} onChange={(e)=>setarProdutos({valor_total:Number(e.target.value)})}  autoComplete='off'  type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
+          <div className="flex items-end">
+          <button onClick={()=>{
+            
+            const novoArray = [...arrayProdutos];
+            novoArray.push(listaProduto)
+            setArrayProdutos(novoArray)
+            
+            
+            }}
+             className="flex bg-blue-600 p-1 pl-2 pr-2 rounded-lg ">Adicionar</button>
+          </div>
+          
           </div>
           <div className="flex">
           <table 
@@ -370,12 +407,26 @@ async function carregarCheckList() {
                 </tr> 
             </thead>
             <tbody>
-                {array?.map((item,index)=>(
+                {arrayProdutos?.map((item,index)=>(
                <tr key={index}  className={ `border-b bg-gray-800 border-gray-700  hover:bg-gray-600`}>
                   <td className="px-2 py-1">
-                {item.id}
+                {item.descricao}
                 </td> 
-              
+                <td className="px-2 py-1">
+                {item.valor_unit}
+                </td> 
+                <td className="px-2 py-1">
+                {item.quantidade}
+                </td> 
+                <td className="px-2 py-1">
+                {item.desconto}
+                </td> 
+                <td className="px-2 py-1">
+                {item.acrescimo}
+                </td> 
+                <td className="px-2 py-1">
+                {item.valor_total}
+                </td> 
                 <td className="px-10 py-1 inline-flex text-right gap-2">
                     <button  className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"></button>
                     <button className=" rounded-lg bg-red-600 px-1 py-1 text-white hover:underline"></button>
