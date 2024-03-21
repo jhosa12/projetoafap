@@ -8,6 +8,10 @@ import { IoMdSearch } from "react-icons/io";
 interface ArrayProps{
     id:number
 }
+interface CheckListProps{
+    id_check: number,
+	descricao: string,
+}
 
 
 export default function GerarOS(){
@@ -19,16 +23,22 @@ export default function GerarOS(){
     const [produtos,setProdutos] = useState(false);
     const [velorio,setVelorio] =useState(false)
     const [array,setArray]=useState<Array<ArrayProps>>([])
+    const [checkList,setCheckList]=useState<Array<CheckListProps>>([])
     useEffect(()=>{
         try{
-         
+            
+         carregarCheckList()
           
         }catch(err){
-           toast.error('Erro ao Listar Notificações')
+           toast.error('Erro ao Listar CheckList')
         }
      },[])
 
-
+async function carregarCheckList() {
+    const response = await api.get("/obitos/listarCheckList")
+    setCheckList(response.data)
+    
+}
 
 
 
@@ -429,74 +439,14 @@ export default function GerarOS(){
         <div className="flex flex-col overflow-y-auto w-1/3 text-white p-2 gap-2 rounded-md bg-gray-600 mt-1 mb-1 max-h-[calc(100vh-250px)] ">
         <h1 className="border-b-[1px] border-gray-500">Checklist</h1>
         <ul className="flex flex-col gap-2">
-            <li className="flex items-center "> 
-    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
-    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">05 Unid. de sacos para lixo 100L</label>
-</li>
+           {checkList.map((item,index)=>{
+            return(
 <li className="flex items-center "> 
     <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
-    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
-</li>
-<li className="flex items-center "> 
-    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
-    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
-</li>
-<li className="flex items-center "> 
-    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
-    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
-</li>
-<li className="flex items-center "> 
-    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
-    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
-</li>
-<li className="flex items-center "> 
-    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
-    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
-</li>
-<li className="flex items-center "> 
-    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
-    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
-</li>
-<li className="flex items-center "> 
-    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
-    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
-</li>
-<li className="flex items-center "> 
-    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
-    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
-</li>
-<li className="flex items-center "> 
-    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
-    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
-</li>
-<li className="flex items-center "> 
-    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
-    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
-</li>
-<li className="flex items-center "> 
-    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
-    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
-</li>
-<li className="flex items-center "> 
-    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
-    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
-</li>
-<li className="flex items-center "> 
-    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
-    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
-</li>
-<li className="flex items-center "> 
-    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
-    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
-</li>
-<li className="flex items-center "> 
-    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
-    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
-</li>
-
-
-
-
+    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">{item.descricao}</label>
+            </li>
+            )
+           }) }
         </ul>
 
     </div>
