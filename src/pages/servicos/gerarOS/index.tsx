@@ -17,6 +17,7 @@ export default function GerarOS(){
     const [declarante,setDeclarante] =useState(false);
     const [dadosObito,setObito] = useState(false);
     const [produtos,setProdutos] = useState(false);
+    const [velorio,setVelorio] =useState(false)
     const [array,setArray]=useState<Array<ArrayProps>>([])
     useEffect(()=>{
         try{
@@ -51,19 +52,19 @@ export default function GerarOS(){
             <div className="flex-col w-full border mt-2 rounded-lg shadow  border-gray-700">
             <ul className="flex flex-wrap text-sm font-medium text-center  border-b   rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800"  role="tablist">
         <li className="me-2">
-            <button  type="button" onClick={()=>{setFalecido(true), setDeclarante(false),setObito(false),setProdutos(false)}}   className="inline-block p-4 font-semibold rounded-ss-lg  bg-gray-800 hover:bg-gray-700 text-blue-500">Falecido</button>
+            <button  type="button" onClick={()=>{setFalecido(true), setDeclarante(false),setObito(false),setProdutos(false),setVelorio(false)}}   className="inline-block p-4 font-semibold rounded-ss-lg  bg-gray-800 hover:bg-gray-700 text-blue-500">Falecido</button>
         </li>
         <li className="me-2">
-            <button type="button" onClick={()=>{setFalecido(false), setDeclarante(true),setObito(false),setProdutos(false)}}    className="inline-block p-4  hover:bg-gray-700 hover:text-gray-300">Declarante</button>
+            <button type="button" onClick={()=>{setFalecido(false), setDeclarante(true),setObito(false),setProdutos(false),setVelorio(false)}}    className="inline-block p-4  hover:bg-gray-700 hover:text-gray-300">Declarante</button>
         </li>
         <li className="me-2">
-            <button type="button" onClick={()=>{setFalecido(false), setDeclarante(false),setObito(true),setProdutos(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Dados do Óbito</button>
+            <button type="button" onClick={()=>{setFalecido(false), setDeclarante(false),setObito(true),setProdutos(false),setVelorio(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Dados do Óbito</button>
         </li>
         <li className="me-2">
-            <button type="button" onClick={()=>{setFalecido(false), setDeclarante(false),setObito(false),setProdutos(true)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Produtos e Serviços</button>
+            <button type="button" onClick={()=>{setFalecido(false), setDeclarante(false),setObito(false),setProdutos(true),setVelorio(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Produtos e Serviços</button>
         </li>
         <li className="me-2">
-            <button type="button" onClick={()=>{setFalecido(false), setDeclarante(false),setObito(false),setProdutos(true)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Velório</button>
+            <button type="button" onClick={()=>{setFalecido(false), setDeclarante(false),setObito(false),setProdutos(false),setVelorio(true)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Velório</button>
         </li>
     </ul>
    {falecido && <div className="rounded-lg p-6 grid grid-flow-row-dense grid-cols-4 gap-6">
@@ -374,7 +375,138 @@ export default function GerarOS(){
         </div>
         
         }
+
+
+{velorio && <div className="flex w-full p-2"> <div className="rounded-lg p-6 grid grid-flow-row-dense grid-cols-3 gap-4  h-full">
+    <div className="flex flex-col col-span-1">
+            <label  className="block  text-xs font-medium  text-white">Endereço do Velório</label>
+            <input  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+        </div>
+        <div className="flex flex-col col-span-1 ">
+            <label  className="block  text-xs font-medium  text-white">Número</label>
+            <input  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+        </div>
+    
+        <div className="flex flex-col col-span-1 ">
+            <label  className="block  text-xs font-medium  text-white">Bairro</label>
+            <input  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+        </div>
+        <div className="flex flex-col col-span-2 ">
+            <label  className="block  text-xs font-medium  text-white">Ponto de Referência</label>
+            <input  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+        </div>
+        <div className="flex flex-row gap-x-4 col-span-1 ">
+            <div className="flex flex-col">
+            <label  className="block  text-xs font-medium  text-white">Cidade</label>
+            <input  className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+            </div>
+            <div className="flex flex-col">
+            <label  className="block  text-xs font-medium  text-white">UF</label>
+            <input  className="whitespace-nowrap uppercase py-1  px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+            </div>
+           
+        </div>
+
+        <div className="flex flex-col col-span-1 ">
+            <label  className="block  text-xs font-medium  text-white">Copeira</label>
+            <input  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+        </div>
+      
+        <div className="flex flex-col col-span-1 ">
+            <label  className="block  text-xs font-medium  text-white">Enfermeira</label>
+            <input  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+        </div>
+        <div className="flex flex-col col-span-1 ">
+            <label  className="block  text-xs font-medium  text-white">Veiculo Retirada</label>
+            <input  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+        </div>
+        <div className="flex flex-col col-span-1 ">
+            <label  className="block  text-xs font-medium  text-white">Veiculo Cortejo</label>
+            <input  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{}</input>
+        </div>
+     
+        </div>
+        <div className="flex flex-col overflow-y-auto w-1/3 text-white p-2 gap-2 rounded-md bg-gray-600 mt-1 mb-1 max-h-[calc(100vh-250px)] ">
+        <h1 className="border-b-[1px] border-gray-500">Checklist</h1>
+        <ul className="flex flex-col gap-2">
+            <li className="flex items-center "> 
+    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
+    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">05 Unid. de sacos para lixo 100L</label>
+</li>
+<li className="flex items-center "> 
+    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
+    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
+</li>
+<li className="flex items-center "> 
+    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
+    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
+</li>
+<li className="flex items-center "> 
+    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
+    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
+</li>
+<li className="flex items-center "> 
+    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
+    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
+</li>
+<li className="flex items-center "> 
+    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
+    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
+</li>
+<li className="flex items-center "> 
+    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
+    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
+</li>
+<li className="flex items-center "> 
+    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
+    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
+</li>
+<li className="flex items-center "> 
+    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
+    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
+</li>
+<li className="flex items-center "> 
+    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
+    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
+</li>
+<li className="flex items-center "> 
+    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
+    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
+</li>
+<li className="flex items-center "> 
+    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
+    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
+</li>
+<li className="flex items-center "> 
+    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
+    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
+</li>
+<li className="flex items-center "> 
+    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
+    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
+</li>
+<li className="flex items-center "> 
+    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
+    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
+</li>
+<li className="flex items-center "> 
+    <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
+    <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
+</li>
+
+
+
+
+        </ul>
+
     </div>
+        </div>
+        }
+
+
+
+    </div>
+   
  
     
         </div>
