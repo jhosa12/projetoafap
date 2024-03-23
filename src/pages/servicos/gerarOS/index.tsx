@@ -70,7 +70,7 @@ export default function GerarOS(){
         
     }
   useEffect(()=>{
-    setListaProdutos({acrescimo:null,desconto:null,descricao:'',quantidade:null,valor_total:null,valor_unit:null})
+    setListaProdutos({acrescimo:null,desconto:null,descricao:'',quantidade:1,valor_total:null,valor_unit:null})
 
   },[arrayProdutos])
     
@@ -107,6 +107,22 @@ async function carregarCheckList() {
      setCheckList(novoArray)
     }
 
+
+        useEffect(()=>{
+           if (listaProduto.valor_unit && listaProduto.quantidade){
+            setarProdutos({valor_total:listaProduto.valor_unit*listaProduto.quantidade})
+
+           }
+
+           if (listaProduto.valor_unit && listaProduto.quantidade ){
+            setarProdutos({valor_total:listaProduto.valor_unit*listaProduto.quantidade+(listaProduto.acrescimo ?? 0) - (listaProduto.desconto ?? 0)})
+
+           }
+           
+           
+
+
+        },[listaProduto.quantidade,listaProduto.valor_unit,listaProduto.acrescimo,listaProduto.desconto])
     return(
         <>
         <div className="flex flex-col w-full pl-10 pr-10 pt-4">
@@ -389,11 +405,16 @@ async function carregarCheckList() {
           </div>
           <div>
           <label  className="block mb-1 text-sm font-medium  text-white">Valor Unit.</label>
-          <input value={Number(listaProduto.valor_unit)} onChange={(e)=>setarProdutos({valor_unit:Number(e.target.value)})} autoComplete='off'  type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input disabled value={Number(listaProduto.valor_unit)} autoComplete='off'  type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div>
           <label  className="block mb-1 text-sm font-medium  text-white">Quantidade</label>
-          <input value={Number(listaProduto.quantidade)} onChange={(e)=>setarProdutos({quantidade:Number(e.target.value)})} autoComplete='off'  type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={Number(listaProduto.quantidade)} onChange={(e)=>{setarProdutos({quantidade:Number(e.target.value)}),
+            setarProdutos({valor_total:listaProduto.valor_unit && listaProduto.quantidade && listaProduto.valor_unit*listaProduto.quantidade})
+        
+        
+        
+        }} autoComplete='off'  type="number"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div>
           <label  className="block mb-1 text-sm font-medium  text-white">Desconto</label>
@@ -405,7 +426,7 @@ async function carregarCheckList() {
           </div>
           <div>
           <label  className="block mb-1 text-sm font-medium  text-white">Total</label>
-          <input value={Number(listaProduto.valor_total)} onChange={(e)=>setarProdutos({valor_total:Number(e.target.value)})}  autoComplete='off'  type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input disabled value={Number(listaProduto.valor_total)}   autoComplete='off'  type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="flex items-end">
           <button onClick={()=>{
