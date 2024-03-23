@@ -4,8 +4,11 @@ import { use, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { AuthContext } from "@/contexts/AuthContext";
 import { IoMdSearch } from "react-icons/io";
+import { MdClose } from "react-icons/md";
+import { IoIosSave } from "react-icons/io";
 
 interface ArrayProps{
+    id_produto:number,
     descricao:string ;
     valor_unit:number | null,
     quantidade:number | null ,
@@ -57,6 +60,7 @@ export default function GerarOS(){
 
 
 
+
     function setarProdutos(fields:Partial<ArrayProps>){
         setListaProdutos((prev:Partial<ArrayProps>)=>{
             if(prev){
@@ -70,7 +74,7 @@ export default function GerarOS(){
         
     }
   useEffect(()=>{
-    setListaProdutos({acrescimo:null,desconto:null,descricao:'',quantidade:1,valor_total:null,valor_unit:null})
+    setListaProdutos({acrescimo:null,desconto:null,descricao:"",quantidade:1,valor_total:null,valor_unit:null})
 
   },[arrayProdutos])
     
@@ -101,6 +105,13 @@ async function carregarCheckList() {
     setCheckList(response.data)
     
 }
+
+
+function deletarProduto(index:number){
+    arrayProdutos.splice(index,1)
+  setArrayProdutos([...arrayProdutos])
+}
+
     function alterCheckList(index:number){
      const novoArray = [...checkList];
      novoArray[index].status = !novoArray[index].status
@@ -388,9 +399,9 @@ async function carregarCheckList() {
     <div className="flex flex-row text-white gap-6 w-full">
        <div>
           <label   className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Descrição</label>
-            <select defaultValue={listaProduto.descricao} onChange={e=>{
+            <select defaultValue={listaProduto.descricao?listaProduto.descricao:''} onChange={e=>{
                 const item = selectProdutos.find((item)=>item.id_produto===Number(e.target.value))
-                setarProdutos({descricao:item?.descricao,valor_unit:item?.valor_venda})
+                setarProdutos({descricao:item?.descricao,valor_unit:item?.valor_venda,id_produto:item?.id_produto})
 
             }} className="block w-full pb-1 pt-1 pr-2 pl-2 appearance-none text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
              <option value={''}></option>
@@ -465,7 +476,7 @@ async function carregarCheckList() {
                     <th scope="col" className="px-4 py-1">
                         Valor Total
                     </th>
-                    <th scope="col" className="px-10 py-1">
+                    <th scope="col" className="px-4 py-1">
                         <span >AÇÕES</span>
                     </th>
                 </tr> 
@@ -476,24 +487,24 @@ async function carregarCheckList() {
                   <td className="px-2 py-1">
                 {item.descricao}
                 </td> 
-                <td className="px-2 py-1">
-                {item.valor_unit}
+                <td className="px-4 py-1">
+                 R${item.valor_unit}
                 </td> 
-                <td className="px-2 py-1">
+                <td className="px-4 py-1">
                 {item.quantidade}
                 </td> 
-                <td className="px-2 py-1">
-                {item.desconto}
+                <td className="px-4 py-1">
+               {item.desconto&& `R$${item.desconto}`}
                 </td> 
-                <td className="px-2 py-1">
-                {item.acrescimo}
+                <td className="px-4 py-1">
+                {item.acrescimo&& `R$${item.acrescimo}`}
                 </td> 
-                <td className="px-2 py-1">
-                {item.valor_total}
+                <td className="px-4 py-1">
+                R${item.valor_total}
                 </td> 
-                <td className="px-10 py-1 inline-flex text-right gap-2">
-                    <button  className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"></button>
-                    <button className=" rounded-lg bg-red-600 px-1 py-1 text-white hover:underline"></button>
+                <td className="px-4 py-1 inline-flex text-right gap-2">
+                    <button  className="font-semibold rounded-lg bg-blue-600 px-1 py-1 text-white hover:underline"><IoIosSave/></button>
+                    <button onClick={()=>deletarProduto(index)} className=" rounded-lg bg-red-600 px-1 py-1 text-white hover:underline"><MdClose/></button>
                 </td>
                
                </tr>
