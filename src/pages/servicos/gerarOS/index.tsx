@@ -19,6 +19,26 @@ interface CheckListProps{
 	descricao: string,
     status:boolean
 }
+interface ListaProdutos{
+    
+		id_produto: number,
+		descricao: string,
+		unidade: string,
+		valor_custo: number,
+		valor_venda: number,
+		quantidade: number,
+		margem_lucro: number,
+		valor_aluguel:number,
+		est_inicial: number,
+		est_entradas: number,
+	    est_saidas: number,
+		est_saldo: number,
+		situacao: string,
+		data_inc: Date,
+		grupo: string,
+		tipo: string,
+		taxa_conval:number
+}
 
 
 export default function GerarOS(){
@@ -33,6 +53,7 @@ export default function GerarOS(){
    const[listaProduto,setListaProdutos] =useState<Partial<ArrayProps>>({descricao:''})
     const [arrayProdutos,setArrayProdutos]=useState<Array<Partial<ArrayProps>>>([]);
     const [checkList,setCheckList]=useState<Array<CheckListProps>>([])
+    const [selectProdutos,setselectProdutos]=useState<Array<ListaProdutos>>([])
 
 
 
@@ -55,13 +76,25 @@ export default function GerarOS(){
     
     useEffect(()=>{
         try{
-            
+         listarProdutos() 
          carregarCheckList()
           
         }catch(err){
            toast.error('Erro ao Listar CheckList')
         }
      },[])
+
+
+
+async function listarProdutos() {
+    const response = await api.get("/obitos/listarProdutos")
+    console.log(response.data)
+    setselectProdutos(response.data)
+    
+}
+
+
+
 
 async function carregarCheckList() {
     const response = await api.get("/obitos/listarCheckList")
@@ -339,8 +372,18 @@ async function carregarCheckList() {
     <div className="flex flex-row text-white gap-6 w-full">
        <div>
           <label   className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Descrição</label>
-            <select value={listaProduto.descricao}  className="block w-full pb-1 pt-1 pr-2 pl-2 appearance-none text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option value={'teste'}  selected></option>
+            <select defaultValue={listaProduto.descricao} onChange={e=>{
+                const item = selectProdutos.find((item)=>item.id_produto===Number(e.target.value))
+                setarProdutos({descricao:item?.descricao,valor_unit:item?.valor_venda})
+
+            }} className="block w-full pb-1 pt-1 pr-2 pl-2 appearance-none text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+             <option value={''}></option>
+              {selectProdutos.map((item,index)=>{
+                return(
+                    <option key={item.id_produto} value={item.id_produto}>{item.descricao}</option>
+                )
+
+              })}
              
             </select>
           </div>
