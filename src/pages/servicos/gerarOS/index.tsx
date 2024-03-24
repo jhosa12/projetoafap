@@ -1,11 +1,12 @@
 
 import { api } from "@/services/apiClient";
-import { use, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { AuthContext } from "@/contexts/AuthContext";
 import { IoMdSearch } from "react-icons/io";
 import { MdClose } from "react-icons/md";
 import { IoIosSave } from "react-icons/io";
+import { ModalBusca } from "@/components/modal";
 
 interface ArrayProps{
     id_produto:number,
@@ -46,7 +47,7 @@ interface ListaProdutos{
 
 export default function GerarOS(){
     
-    const {usuario}= useContext(AuthContext)
+    const {usuario,data,closeModa}= useContext(AuthContext)
     const [falecido,setFalecido] =useState(true);
     const [declarante,setDeclarante] =useState(false);
     const [dadosObito,setObito] = useState(false);
@@ -118,24 +119,17 @@ function deletarProduto(index:number){
      setCheckList(novoArray)
     }
 
-
         useEffect(()=>{
            if (listaProduto.valor_unit && listaProduto.quantidade){
             setarProdutos({valor_total:listaProduto.valor_unit*listaProduto.quantidade})
-
            }
-
            if (listaProduto.valor_unit && listaProduto.quantidade ){
             setarProdutos({valor_total:listaProduto.valor_unit*listaProduto.quantidade+(listaProduto.acrescimo ?? 0) - (listaProduto.desconto ?? 0)})
-
            }
-           
-           
-
-
         },[listaProduto.quantidade,listaProduto.valor_unit,listaProduto.acrescimo,listaProduto.desconto])
     return(
         <>
+       {data.closeModalPlano && <ModalBusca/>}
         <div className="flex flex-col w-full pl-10 pr-10 pt-4">
             <div className="flex flex-row p-2 border-b-[1px] border-gray-600">
             <h1 className="flex w-full  text-gray-300 font-semibold text-2xl ">Gerar Ordem de Serviço</h1>
@@ -144,7 +138,7 @@ function deletarProduto(index:number){
     <input  type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600"/>
     <label  className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
 </div>
-            <button onClick={()=>{}} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
+            <button onClick={()=>closeModa({closeModalPlano:true})} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
         <IoMdSearch size={20}/>
         Buscar
     </button> 
