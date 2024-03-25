@@ -5,7 +5,9 @@ import { toast } from "react-toastify";
 import { AuthContext } from "@/contexts/AuthContext";
 import { IoMdSearch } from "react-icons/io";
 import { MdClose } from "react-icons/md";
+import { HiOutlineSave } from "react-icons/hi";
 import { IoIosSave } from "react-icons/io";
+import InputMask from 'react-input-mask'
 import { ModalBusca } from "@/components/modal";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -147,6 +149,7 @@ interface ObitoProps{
     deixa_testamento: string,
     nb_aposentado: string,
     certidao_casado: string,
+    status:string,
     listacheckida: Array<CheckListProps>,
     listacheckvolta:Array<CheckListProps>,
 }
@@ -167,7 +170,7 @@ export default function GerarOS() {
     const [checkList, setCheckList] = useState<Array<CheckListProps>>([])
     const [selectProdutos, setselectProdutos] = useState<Array<ListaProdutos>>([])
     const [total, setTotal] = useState<number>()
-    const [obitoCadastro,setDadoObito]=useState<Partial<ObitoProps>>({hr_sepultamento:new Date(),end_hora_falecimento:new Date(),hr_velorio:new Date(),end_hora_informaram:new Date()})
+    const [obitoCadastro,setDadoObito]=useState<Partial<ObitoProps>>({hr_sepultamento:new Date(),end_hora_falecimento:new Date(),end_hora_informaram:new Date()})
 
 
 
@@ -223,13 +226,16 @@ export default function GerarOS() {
 
     async function listarProdutos() {
         const response = await api.get("/obitos/listarProdutos")
-        console.log(response.data)
+       
         setselectProdutos(response.data)
 
     }
 
     async function cadastrarObito(){
-        console.log(obitoCadastro)
+        if(obitoCadastro.nome_falecido||!obitoCadastro.rd_nome){
+            toast.info("Preencha todos os campos obrigatórios");
+            return;
+        }
         const response =await toast.promise(
             api.post("/obitos/adicionarObito",{
                     ...obitoCadastro
@@ -246,7 +252,7 @@ export default function GerarOS() {
     async function carregarCheckList() {
         const response = await api.get("/obitos/listarCheckList")
         setarDadosObitos({...obitoCadastro, listacheckida:response.data})
-
+        setarDadosObitos({...obitoCadastro,listacheckvolta:response.data})
     }
 
 
@@ -255,7 +261,7 @@ export default function GerarOS() {
         setArrayProdutos([...arrayProdutos])
     }
 
-    function alterCheckList(index: number) {
+    function alterCheckListIda(index: number) {
         if(obitoCadastro.listacheckida){
             const novoArray = [...obitoCadastro.listacheckida];
             novoArray[index].status = !novoArray[index].status
@@ -263,6 +269,19 @@ export default function GerarOS() {
         }
        
     }
+
+
+    function alterCheckListVolta(index: number) {
+        if(obitoCadastro.listacheckvolta){
+            const novoArray = [...obitoCadastro.listacheckvolta];
+            novoArray[index].status = !novoArray[index].status
+            setarDadosObitos({listacheckvolta:novoArray})
+        }
+       
+    }
+
+
+
 
     useEffect(() => {
         if (listaProduto.valor_unit && listaProduto.quantidade) {
@@ -316,7 +335,7 @@ export default function GerarOS() {
                             <button type="button" onClick={() => { setFalecido(false), setDeclarante(false), setObito(false), setProdutos(false), setVelorio(false), setChecagem(true) }} className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">CheckLists</button>
                         </li>
                         <li className="ml-auto flex items-center mr-2">
-                        <button  type="button" onClick={()=>cadastrarObito()}  className="p-2 text-white font-semibold rounded-lg bg-green-600">Cadastrar</button>
+                        <button  type="button" onClick={()=>cadastrarObito()}  className="inline-flex p-2 text-white font-semibold rounded-lg bg-green-600 gap-1">Salvar<HiOutlineSave size={22}/></button>
                         </li>
                     </ul>
 
@@ -371,7 +390,7 @@ export default function GerarOS() {
 
 
 
-                    {falecido && <div className="rounded-lg p-6 grid grid-flow-row-dense max-h-[calc(100vh-200px)] grid-cols-4 gap-6">
+                    {falecido && <div className="rounded-lg p-6 grid grid-flow-row-dense max-h-[calc(100vh-200px)] grid-cols-4 gap-5">
                         <div className="flex flex-col col-span-1">
                             <label className="block  text-xs font-medium  text-white">Nome do Falecido</label>
                             <input value={obitoCadastro.nome_falecido} onChange={e=>setarDadosObitos({nome_falecido:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
@@ -470,7 +489,7 @@ export default function GerarOS() {
 
 
 
-                    {declarante && <div className="rounded-lg p-6 grid grid-flow-row-dense grid-cols-4 gap-6">
+                    {declarante && <div className="rounded-lg p-6 grid grid-flow-row-dense grid-cols-4 gap-5">
                         <div className="flex flex-col col-span-1">
                             <label className="block  text-xs font-medium  text-white">Nome do Declarante</label>
                             <input value={obitoCadastro.rd_nome} onChange={e=>setarDadosObitos({rd_nome:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
@@ -517,7 +536,7 @@ export default function GerarOS() {
 
 
 
-                    {dadosObito && <div className="rounded-lg p-6 grid grid-flow-row-dense grid-cols-4 gap-6">
+                    {dadosObito && <div className="rounded-lg p-6 grid grid-flow-row-dense grid-cols-4 gap-5">
                         <div className="flex flex-col col-span-1">
                             <label className="block  text-xs font-medium  text-white">Data do Falecimento</label>
                             <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={obitoCadastro.end_data_falecimento} onChange={e=>e && setarDadosObitos({end_data_falecimento:e})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></DatePicker>
@@ -577,7 +596,7 @@ export default function GerarOS() {
                         </div>
                     </div>}
 
-                    {produtos && <div className="flex flex-col w-full rounded-lg p-6   gap-6">
+                    {produtos && <div className="flex flex-col w-full rounded-lg p-6   gap-5">
                         <div className="flex flex-row text-white gap-6 w-full">
                             <div>
                                 <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Descrição</label>
@@ -605,8 +624,6 @@ export default function GerarOS() {
                                 <input value={Number(listaProduto.quantidade)} onChange={(e) => {
                                     setarProdutos({ quantidade: Number(e.target.value) }),
                                     setarProdutos({ valor_total: listaProduto.valor_unit && listaProduto.quantidade && listaProduto.valor_unit * listaProduto.quantidade })
-
-
 
                                 }} autoComplete='off' type="number" className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
                             </div>
@@ -708,7 +725,7 @@ export default function GerarOS() {
                     }
 
 
-                    {velorio && <div className="rounded-lg p-6 grid grid-flow-row-dense grid-cols-4 gap-6  h-full">
+                    {velorio && <div className="rounded-lg p-6 grid grid-flow-row-dense grid-cols-4 gap-5  h-full">
                         <div className="flex flex-col col-span-1">
                             <label className="block  text-xs font-medium  text-white">Endereço do Velório</label>
                             <input value={obitoCadastro.local_velorio} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
@@ -744,7 +761,24 @@ export default function GerarOS() {
                             </div>
                             <div className="flex flex-col">
                                 <label className="block  text-xs font-medium  text-white">Hora de Saída</label>
-                                <input className="whitespace-nowrap uppercase py-1  px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
+                               
+      
+       
+            <InputMask
+                mask={"99:99:99"} 
+                value={new Date().toLocaleDateString()}
+                onChange={e=>{
+                    const { value } = e.target;
+                    // Dividindo o valor do InputMask em horas e minutos
+                    const [hours, minutes] = value.split(':');
+                    const newDate = new Date();
+                    newDate.setHours(parseInt(hours));
+                    newDate.setMinutes(parseInt(minutes));
+                    setarDadosObitos({...obitoCadastro,hr_velorio:newDate})}}
+                className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs bg-transparent border-0 border-b-2 appearance-none text-white border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+            />
+      
+   
                             </div>
                         </div>
                         <div className="flex flex-row gap-x-4 col-span-1 ">
@@ -785,7 +819,7 @@ export default function GerarOS() {
                             {obitoCadastro.listacheckida?.map((item, index) => {
                                 return (
                                     <li className="flex items-center ">
-                                        <input checked={item.status} onChange={() => alterCheckList(index)} type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                                        <input checked={item.status} onChange={() => alterCheckListIda(index)} type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                                         <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">{item.descricao}</label>
                                     </li>
                                 )
@@ -797,10 +831,10 @@ export default function GerarOS() {
                         <div className="flex flex-col overflow-y-auto w-1/3 text-white p-2 gap-2 rounded-md bg-gray-600 mt-1 mb-1 max-h-[calc(100vh-250px)] ">
                             <h1 className="border-b-[1px] border-gray-500">Checklist Retorno</h1>
                             <ul className="flex flex-col gap-2">
-                                {obitoCadastro?.listacheckida?.map((item, index) => {
+                                {obitoCadastro?.listacheckvolta?.map((item, index) => {
                                     return (
                                         <li className="flex items-center ">
-                                            <input checked={item.status} onChange={() => alterCheckList(index)} type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                                            <input checked={item.status} onChange={() => alterCheckListVolta(index)} type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                                             <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">{item.descricao}</label>
                                         </li>
                                     )
