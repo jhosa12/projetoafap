@@ -14,14 +14,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 
 interface ArrayProps {
-    id_produto: number,
-    descricao: string;
+    id_produto:number,
+    descricao_item: string;
     valor_unit: number | null,
     quantidade: number | null,
     desconto: number | null,
     acrescimo: number | null,
     valor_total: number | null
-
 }
 interface CheckListProps {
     id_check: number,
@@ -133,7 +132,7 @@ interface ObitoProps{
     jazigo: string,
     local_velorio: string,
     dt_velorio: Date,
-    hr_velorio: Date,
+    hr_velorio: string,
     ct_nome: string,
     ct_livro: string,
     ct_folha: string,
@@ -165,13 +164,13 @@ export default function GerarOS() {
     const [produtos, setProdutos] = useState(false);
     const [velorio, setVelorio] = useState(false);
     const [checagem, setChecagem] = useState(false);
-    const [listaProduto, setListaProdutos] = useState<Partial<ArrayProps>>({ descricao: "" })
+    const [listaProduto, setListaProdutos] = useState<Partial<ArrayProps>>({ descricao_item: "" })
     const [arrayProdutos, setArrayProdutos] = useState<Array<Partial<ArrayProps>>>([]);
     const [checkList, setCheckList] = useState<Array<CheckListProps>>([])
     const [selectProdutos, setselectProdutos] = useState<Array<ListaProdutos>>([])
     const [total, setTotal] = useState<number>()
     const [obitoCadastro,setDadoObito]=useState<Partial<ObitoProps>>({hr_sepultamento:new Date(),end_hora_falecimento:new Date(),end_hora_informaram:new Date()})
-
+    
 
 
 
@@ -206,13 +205,15 @@ export default function GerarOS() {
 
 
     useEffect(() => {
-        setListaProdutos({ acrescimo: null, desconto: null, descricao: "", quantidade: 1, valor_total: null, valor_unit: null })
+        setListaProdutos({ acrescimo: null, desconto: null, descricao_item: "", quantidade: 1, valor_total: null, valor_unit: null })
         const Total = arrayProdutos.reduce((total, item) => total = total + (item.valor_total ?? 0), 0)
         setTotal(Total)
+        
 
     }, [arrayProdutos])
 
     useEffect(() => {
+        setarDadosObitos({hr_velorio:new Date().toLocaleTimeString('pt-BR',{timeZone:'America/Fortaleza'})})
         try {
             listarProdutos()
             carregarCheckList()
@@ -232,13 +233,17 @@ export default function GerarOS() {
     }
 
     async function cadastrarObito(){
-        if(obitoCadastro.nome_falecido||!obitoCadastro.rd_nome){
+        const [hours, minutes] =(obitoCadastro.hr_velorio??'').split(':');
+        const newDate = new Date();
+        newDate.setHours(parseInt(hours));
+        newDate.setMinutes(parseInt(minutes));
+        if(!obitoCadastro.nome_falecido||!obitoCadastro.rd_nome){
             toast.info("Preencha todos os campos obrigatórios");
             return;
         }
         const response =await toast.promise(
             api.post("/obitos/adicionarObito",{
-                    ...obitoCadastro
+                    ...obitoCadastro,hr_velorio:newDate, obito_itens:arrayProdutos
             }),
             {
                 error:'Erro ao Realizar Cadastro',
@@ -600,9 +605,9 @@ export default function GerarOS() {
                         <div className="flex flex-row text-white gap-6 w-full">
                             <div>
                                 <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">Descrição</label>
-                                <select defaultValue={listaProduto.descricao ? listaProduto.descricao : ''} onChange={e => {
+                                <select defaultValue={listaProduto.descricao_item ? listaProduto.descricao_item : ''} onChange={e => {
                                     const item = selectProdutos.find((item) => item.id_produto === Number(e.target.value))
-                                    setarProdutos({ descricao: item?.descricao, valor_unit: item?.valor_venda, id_produto: item?.id_produto })
+                                    setarProdutos({ descricao_item: item?.descricao, valor_unit: item?.valor_venda, id_produto: item?.id_produto })
 
                                 }} className="block w-full pb-1 pt-1 pr-2 pl-2 appearance-none text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                     <option value={''}></option>
@@ -685,7 +690,7 @@ export default function GerarOS() {
 
                                         return (<tr key={index} className={`border-b bg-gray-800 border-gray-700  hover:bg-gray-600`}>
                                             <td className="px-2 py-1">
-                                                {item.descricao}
+                                                {item.descricao_item}
                                             </td>
                                             <td className="px-4 py-1">
                                                 R${item.valor_unit}
@@ -762,19 +767,12 @@ export default function GerarOS() {
                             <div className="flex flex-col">
                                 <label className="block  text-xs font-medium  text-white">Hora de Saída</label>
                                
-      
-       
             <InputMask
-                mask={"99:99:99"} 
-                value={new Date().toLocaleDateString()}
+                mask={"99:99"} 
+                value={obitoCadastro.hr_velorio}
                 onChange={e=>{
-                    const { value } = e.target;
-                    // Dividindo o valor do InputMask em horas e minutos
-                    const [hours, minutes] = value.split(':');
-                    const newDate = new Date();
-                    newDate.setHours(parseInt(hours));
-                    newDate.setMinutes(parseInt(minutes));
-                    setarDadosObitos({...obitoCadastro,hr_velorio:newDate})}}
+                   setarDadosObitos({hr_velorio:e.target.value}) 
+                }}
                 className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs bg-transparent border-0 border-b-2 appearance-none text-white border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             />
       

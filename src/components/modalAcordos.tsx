@@ -153,7 +153,7 @@ export function ModalAcordos(){
         <form>
         <div className="p-2  border-b border-gray-600 grid mt-2 gap-2 grid-flow-row-dense grid-cols-4">
         <div className="grid grid-cols-subgrid gap-4 col-span-4">
-<label className="flex flex-row justify-center col-start-1 font-semibold  gap-2 text-white">ADMINISTRAR ACORDO</label>
+<label className="flex flex-row pl-2  border-b-[1px]  text-lg col-start-1 font-semibold  gap-2 text-white">ADMINISTRAR ACORDO</label>
 </div>
 
 <div className="mb-1 col-span-1">
