@@ -174,7 +174,7 @@ async function contagem() {
     </button>
     <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isServicosOpen && "hidden"}`}>
     <li>
-            <Link href='/servicos/gerarOS' onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Óbitos</Link>
+            <Link href='/servicos/listarObitos' onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Óbitos</Link>
         </li>
         <li>
             <Link href='/servicos/gerarOS' onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Gerar OS</Link>
