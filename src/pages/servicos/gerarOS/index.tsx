@@ -669,20 +669,20 @@ export default function GerarOS() {
                         <div className="flex flex-row gap-x-4 col-span-1 ">
                             <div className="flex flex-col">
                                 <label className="block  text-xs font-medium  text-white">Data de Retorno</label>
-                                <input className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
+                                <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"}  selected={servico.dt_retorno} onChange={e=>e && setarServico({dt_retorno:e})} className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></DatePicker>
                             </div>
                             <div className="flex flex-col">
                                 <label className="block  text-xs font-medium  text-white">Hora de Retorno</label>
-                                <input className="whitespace-nowrap uppercase py-1  px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
+                                <input  className="whitespace-nowrap uppercase py-1  px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
                             </div>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Copeira</label>
-                            <input className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
+                            <input  value={servico.copeira} onChange={e=>setarServico({copeira:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Enfermeira</label>
-                            <input className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
+                            <input value={servico.enfermeira} onChange={e=>setarServico({enfermeira:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Veiculo Retirada</label>
