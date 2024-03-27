@@ -1,5 +1,7 @@
+import { AuthContext } from "@/contexts/AuthContext";
 import { api } from "@/services/apiClient"
-import { useEffect, useState } from "react"
+import Link from "next/link";
+import { useContext, useEffect, useState } from "react"
 import { FaExternalLinkAlt } from "react-icons/fa";
 
 
@@ -12,6 +14,7 @@ interface CheckListProps {
     status: boolean
 }
 interface ObitoProps {
+    id_obitos:number,
     id_contrato: number,
     id_contrato_st: string,
     id_titular: number,
@@ -112,12 +115,24 @@ interface ObitoProps {
     nb_aposentado: string,
     certidao_casado: string,
     status: string,
+    obito_itens:Array<ArrayProdutoProps>
     listacheckida: Array<CheckListProps>,
     listacheckvolta: Array<CheckListProps>,
 }
 
+interface ArrayProdutoProps {
+    id_produto:number | null,
+    descricao_item: string;
+    valor_unit: number | null,
+    quantidade: number | null,
+    desconto: number | null,
+    acrescimo: number | null,
+    valor_total: number | null
+}
+
 
 export default function ListarObitos() {
+    const {servico,setarServico} =useContext(AuthContext)
     const [listaServicos, setServicos] = useState<Array<ObitoProps>>([])
 
 
@@ -223,7 +238,7 @@ export default function ListarObitos() {
                                         {item.vl_total && `R$${item.vl_total}`}
                                     </td>
                                     <td className="px-4 py-1 text-center">
-                                       <button className="hover:text-blue-600"><FaExternalLinkAlt size={16}/></button>
+                                       <Link href="/servicos/gerarOS"  onClick={()=>setarServico({...item})} className="hover:text-blue-600" ><FaExternalLinkAlt size={17}/></Link>
                                     </td>
                                 </tr>)
                             })}

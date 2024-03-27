@@ -1,6 +1,6 @@
 
 import { api } from "@/services/apiClient";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import { AuthContext } from "@/contexts/AuthContext";
 import { IoMdSearch } from "react-icons/io";
@@ -12,9 +12,10 @@ import { ModalBusca } from "@/components/modal";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
+import { useRouter } from "next/router";
 
 interface ArrayProps {
-    id_produto:number,
+    id_produto:number ,
     descricao_item: string;
     valor_unit: number | null,
     quantidade: number | null,
@@ -48,115 +49,12 @@ interface ListaProdutos {
     taxa_conval: number
 }
 
-interface ObitoProps{
-    id_contrato: number,
-    id_contrato_st: string,
-    id_titular: number,
-    plano: string,
-    atendente: string,
-    tipo_atendimento: string,
-    situacao_contrato: string,
-    dec_obito_num:string,
-    falecido: string,
-    nome_falecido: string,
-    data_nascimento: Date,
-    religiao: string,
-    naturalidade: string,
-    uf_naturalidade: string,
-    profissao: string,
-    nacionalidade: string,
-    nome_pai: string,
-    nome_mae: string,
-    pai_vivo: string,
-    mae_vivo: string,
-    endereco_pais: string,
-    endereco_mae: string,
-    profissao_pai: string,
-    profissao_mae: string,
-    estadocivil_pai: string,
-    estadocivil_mae: string,
-    estado_civil: string,
-    caracterista_corporal: string,
-    cor: string,
-    sexo: string,
-    rg: string
-    cpf: string,
-    conjuge: string,
-    t_eleitor_perg: string,
-    t_eleitor: string,
-    zona_seccao: string,
-    secao: string,
-    cidade_eleitor: string,
-    cemiterio: string,
-    endereco_cemiterio: string,
-    end_rua: string,
-    end_numero: string,
-    end_bairro: string,
-    end_cidade: string,
-    end_uf: string,
-    end_telefone: string,
-    end_celular: string
-    end_data_falecimento: Date,
-    end_local_falecimento: string,
-    end_hora_falecimento: Date,
-    end_hora_informaram: Date,
-    end_decl_obito: string,
-    dc_laudo_med: string,
-    dc_nome_medico: string,
-    dc_crm: string
-    rd_nome: string,
-    rd_endereco: string,
-    rd_numero: string,
-    rd_complemento: string,
-    rd_bairro: string,
-    rd_cidade: string,
-    rd_uf: string,
-    rd_telefone: string,
-    rd_celular: string,
-    rd_parentesco: string,
-    rd_rg: string,
-    rd_profissao: string,
-    custo: number
-    vl_avista: number,
-    vl_aprazo: number,
-    vl_comissao: number,
-    vl_total: number,
-    saldo: number,
-    cpf_cnpj: string,
-    vl_servicos: number,
-    vl_recebimentos: number,
-    vl_saldo: number,
-    vl_produtos: number,
-    dt_sepultamento: Date,
-    hr_sepultamento: Date,
-    jazigo: string,
-    local_velorio: string,
-    dt_velorio: Date,
-    hr_velorio: string,
-    ct_nome: string,
-    ct_livro: string,
-    ct_folha: string,
-    ct_termo: string,
-    ct_comarca: string,
-    ct_dtreg: Date,
-    ct_end: string
-    ct_bairro: string,
-    ct_munic: string,
-    ct_tel: string,
-    ct_compet: string,
-    deixa_bens: string,
-    deixa_testamento: string,
-    nb_aposentado: string,
-    certidao_casado: string,
-    status:string,
-    listacheckida: Array<CheckListProps>,
-    listacheckvolta:Array<CheckListProps>,
-}
+
 
 
 export default function GerarOS() {
 
-    const { usuario, data, closeModa } = useContext(AuthContext)
+    const { usuario,data, closeModa,setarServico,servico } = useContext(AuthContext)
     const [plano, setPlano] = useState(true)
     const [falecido, setFalecido] = useState(false);
     const [declarante, setDeclarante] = useState(false);
@@ -165,12 +63,11 @@ export default function GerarOS() {
     const [velorio, setVelorio] = useState(false);
     const [checagem, setChecagem] = useState(false);
     const [listaProduto, setListaProdutos] = useState<Partial<ArrayProps>>({ descricao_item: "" })
-    const [arrayProdutos, setArrayProdutos] = useState<Array<Partial<ArrayProps>>>([]);
-    const [checkList, setCheckList] = useState<Array<CheckListProps>>([])
     const [selectProdutos, setselectProdutos] = useState<Array<ListaProdutos>>([])
     const [total, setTotal] = useState<number>()
-    const [obitoCadastro,setDadoObito]=useState<Partial<ObitoProps>>({hr_sepultamento:new Date(),end_hora_falecimento:new Date(),end_hora_informaram:new Date()})
     
+  
+   
 
 
 
@@ -188,32 +85,22 @@ export default function GerarOS() {
     }
 
 
-    function setarDadosObitos(fields: Partial<ObitoProps>) {
-        setDadoObito((prev: Partial<ObitoProps>) => {
-            if (prev) {
-                return { ...prev, ...fields }
-            }
-            else {
-                return { ...fields }
-            }
-
-        })
-
-    }
+ 
 
 
 
 
     useEffect(() => {
         setListaProdutos({ acrescimo: null, desconto: null, descricao_item: "", quantidade: 1, valor_total: null, valor_unit: null })
-        const Total = arrayProdutos.reduce((total, item) => total = total + (item.valor_total ?? 0), 0)
+        const Total = servico.obito_itens?.reduce((total, item) => total = total + Number(item.valor_total), 0)
         setTotal(Total)
         
 
-    }, [arrayProdutos])
+    }, [servico.obito_itens])
 
     useEffect(() => {
-        setarDadosObitos({hr_velorio:new Date().toLocaleTimeString('pt-BR',{timeZone:'America/Fortaleza'})})
+  
+   //   hr_velorio:new Date().toLocaleTimeString('pt-BR',{timeZone:'America/Fortaleza'})
         try {
             listarProdutos()
             carregarCheckList()
@@ -233,17 +120,17 @@ export default function GerarOS() {
     }
 
     async function cadastrarObito(){
-        const [hours, minutes] =(obitoCadastro.hr_velorio??'').split(':');
+        const [hours, minutes] =(servico.hr_velorio??'').split(':');
         const newDate = new Date();
         newDate.setHours(parseInt(hours));
         newDate.setMinutes(parseInt(minutes));
-        if(!obitoCadastro.nome_falecido||!obitoCadastro.rd_nome){
+        if(!servico.nome_falecido||!servico.rd_nome){
             toast.info("Preencha todos os campos obrigatórios");
             return;
         }
         const response =await toast.promise(
             api.post("/obitos/adicionarObito",{
-                    ...obitoCadastro,hr_velorio:newDate, obito_itens:arrayProdutos
+                    ...servico,hr_velorio:newDate, obito_itens:servico.obito_itens
             }),
             {
                 error:'Erro ao Realizar Cadastro',
@@ -256,31 +143,36 @@ export default function GerarOS() {
 
     async function carregarCheckList() {
         const response = await api.get("/obitos/listarCheckList")
-        setarDadosObitos({...obitoCadastro, listacheckida:response.data})
-        setarDadosObitos({...obitoCadastro,listacheckvolta:response.data})
+        setarServico({...servico, listacheckida:response.data,listacheckvolta:response.data})
+       
     }
 
 
     function deletarProduto(index: number) {
-        arrayProdutos.splice(index, 1)
-        setArrayProdutos([...arrayProdutos])
+        if(servico.obito_itens){
+            const novoArray = [...servico.obito_itens];
+            novoArray.splice(index, 1);
+            setarServico({...servico,obito_itens:novoArray})
+
+        }
+       
     }
 
     function alterCheckListIda(index: number) {
-        if(obitoCadastro.listacheckida){
-            const novoArray = [...obitoCadastro.listacheckida];
+        if(servico.listacheckida){
+            const novoArray = [...servico.listacheckida];
             novoArray[index].status = !novoArray[index].status
-            setarDadosObitos({listacheckida:novoArray})
+            setarServico({listacheckida:novoArray})
         }
        
     }
 
 
     function alterCheckListVolta(index: number) {
-        if(obitoCadastro.listacheckvolta){
-            const novoArray = [...obitoCadastro.listacheckvolta];
+        if(servico.listacheckvolta){
+            const novoArray = [...servico.listacheckvolta];
             novoArray[index].status = !novoArray[index].status
-            setarDadosObitos({listacheckvolta:novoArray})
+            setarServico({listacheckvolta:novoArray})
         }
        
     }
@@ -300,6 +192,7 @@ export default function GerarOS() {
         <>
             {data.closeModalPlano && <ModalBusca />}
             <div className="flex flex-col w-full pl-10 pr-10 pt-4">
+              
                 <div className="flex flex-row p-2 border-b-[1px] border-gray-600">
                     <h1 className="flex w-full  text-gray-300 font-semibold text-2xl ">Gerar Ordem de Serviço</h1>
                    
@@ -397,57 +290,57 @@ export default function GerarOS() {
                     {falecido && <div className="rounded-lg p-6 grid grid-flow-row-dense max-h-[calc(100vh-200px)] grid-cols-4 gap-5">
                         <div className="flex flex-col col-span-1">
                             <label className="block  text-xs font-medium  text-white">Nome do Falecido</label>
-                            <input value={obitoCadastro.nome_falecido} onChange={e=>setarDadosObitos({nome_falecido:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.nome_falecido} onChange={e=>setarServico({nome_falecido:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Data Nascimento</label>
-                            <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={obitoCadastro.data_nascimento} onChange={e=>e && setarDadosObitos({data_nascimento:e})}  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</DatePicker>
+                            <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={servico.data_nascimento} onChange={e=>e && setarServico({data_nascimento:e})}  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</DatePicker>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Religião</label>
-                            <select value={obitoCadastro.religiao} onChange={e=>setarDadosObitos({religiao:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs bg-[#0f172a] border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >
+                            <select value={servico.religiao} onChange={e=>setarServico({religiao:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs bg-[#0f172a] border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >
                                 <option value="CATÓLICA">CATÓLICA</option>
                                 <option value="EVANGÉLICA">EVANGÉLICA</option>
                             </select>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Sexo</label>
-                            <input value={obitoCadastro.sexo} onChange={e=>setarDadosObitos({sexo:e.target.value})}    className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.sexo} onChange={e=>setarServico({sexo:e.target.value})}    className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">RG</label>
-                            <input value={obitoCadastro.rg} onChange={e=>setarDadosObitos({rg:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.rg} onChange={e=>setarServico({rg:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">CPF</label>
-                            <input value={obitoCadastro.cpf} onChange={e=>setarDadosObitos({cpf:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.cpf} onChange={e=>setarServico({cpf:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Estado Civil</label>
-                            <select value={obitoCadastro.estado_civil} onChange={e=>setarDadosObitos({estado_civil:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >
+                            <select value={servico.estado_civil} onChange={e=>setarServico({estado_civil:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >
                                 <option value="SOLTEIRO(A)">SOLTEIRO(A)</option>
                                 <option value="CASADO(A)">CASADO(A)</option>
                             </select>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Certidão de Casamento</label>
-                            <input value={obitoCadastro.certidao_casado} onChange={e=>setarDadosObitos({certidao_casado:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.certidao_casado} onChange={e=>setarServico({certidao_casado:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Conjuge</label>
-                            <input value={obitoCadastro.conjuge} onChange={e=>setarDadosObitos({conjuge:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.conjuge} onChange={e=>setarServico({conjuge:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Naturalidade</label>
-                            <input value={obitoCadastro.naturalidade} onChange={e=>setarDadosObitos({naturalidade:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.naturalidade} onChange={e=>setarServico({naturalidade:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Profissão</label>
-                            <input value={obitoCadastro.profissao} onChange={e=>setarDadosObitos({profissao:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.profissao} onChange={e=>setarServico({profissao:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Nacionalidade</label>
-                            <input value={obitoCadastro.nacionalidade} onChange={e=>setarDadosObitos({nacionalidade:e.target.value})}  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.nacionalidade} onChange={e=>setarServico({nacionalidade:e.target.value})}  className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Tipo de Inumado</label>
@@ -455,11 +348,11 @@ export default function GerarOS() {
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Cemitério</label>
-                            <input value={obitoCadastro.cemiterio} onChange={e=>setarDadosObitos({cemiterio:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.cemiterio} onChange={e=>setarServico({cemiterio:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Endereço do Cemitério</label>
-                            <input value={obitoCadastro.endereco_cemiterio} onChange={e=>setarDadosObitos({endereco_cemiterio:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.endereco_cemiterio} onChange={e=>setarServico({endereco_cemiterio:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
 
@@ -467,24 +360,24 @@ export default function GerarOS() {
 
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Endereço</label>
-                            <input value={obitoCadastro.end_rua} onChange={e=>setarDadosObitos({end_rua:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.end_rua} onChange={e=>setarServico({end_rua:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Número</label>
-                            <input value={obitoCadastro.end_numero} onChange={e=>setarDadosObitos({end_numero:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.end_numero} onChange={e=>setarServico({end_numero:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Bairro</label>
-                            <input value={obitoCadastro.end_bairro} onChange={e=>setarDadosObitos({end_bairro:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.end_bairro} onChange={e=>setarServico({end_bairro:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-row gap-x-4 col-span-1 ">
                             <div className="flex flex-col">
                                 <label className="block  text-xs font-medium  text-white">Cidade</label>
-                                <input value={obitoCadastro.end_cidade} onChange={e=>setarDadosObitos({end_cidade:e.target.value})} className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                <input value={servico.end_cidade} onChange={e=>setarServico({end_cidade:e.target.value})} className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                             </div>
                             <div className="flex flex-col">
                                 <label className="block  text-xs font-medium  text-white">UF</label>
-                                <input value={obitoCadastro.end_uf} onChange={e=>setarDadosObitos({end_uf:e.target.value})} className="whitespace-nowrap uppercase py-1  px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                <input value={servico.end_uf} onChange={e=>setarServico({end_uf:e.target.value})} className="whitespace-nowrap uppercase py-1  px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                             </div>
 
                         </div>
@@ -496,43 +389,43 @@ export default function GerarOS() {
                     {declarante && <div className="rounded-lg p-6 grid grid-flow-row-dense grid-cols-4 gap-5">
                         <div className="flex flex-col col-span-1">
                             <label className="block  text-xs font-medium  text-white">Nome do Declarante</label>
-                            <input value={obitoCadastro.rd_nome} onChange={e=>setarDadosObitos({rd_nome:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.rd_nome} onChange={e=>setarServico({rd_nome:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">CPF/CNPJ</label>
-                            <input value={obitoCadastro.cpf_cnpj} onChange={e=>setarDadosObitos({cpf_cnpj:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.cpf_cnpj} onChange={e=>setarServico({cpf_cnpj:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
 
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">RG</label>
-                            <input value={obitoCadastro.rd_rg} onChange={e=>setarDadosObitos({rd_rg:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.rd_rg} onChange={e=>setarServico({rd_rg:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
 
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Endereço</label>
-                            <input value={obitoCadastro.rd_endereco} onChange={e=>setarDadosObitos({rd_endereco:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.rd_endereco} onChange={e=>setarServico({rd_endereco:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
 
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Numero</label>
-                            <input value={obitoCadastro.rd_numero} onChange={e=>setarDadosObitos({rd_numero:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.rd_numero} onChange={e=>setarServico({rd_numero:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Bairro</label>
-                            <input value={obitoCadastro.rd_bairro} onChange={e=>setarDadosObitos({rd_bairro:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.rd_bairro} onChange={e=>setarServico({rd_bairro:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Complemento</label>
-                            <input value={obitoCadastro.rd_complemento} onChange={e=>setarDadosObitos({rd_complemento:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <input value={servico.rd_complemento} onChange={e=>setarServico({rd_complemento:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                         </div>
                         <div className="flex flex-row gap-x-4 col-span-1 ">
                             <div className="flex flex-col">
                                 <label className="block  text-xs font-medium  text-white">Cidade</label>
-                                <input value={obitoCadastro.rd_cidade} onChange={e=>setarDadosObitos({rd_cidade:e.target.value})} className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                <input value={servico.rd_cidade} onChange={e=>setarServico({rd_cidade:e.target.value})} className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                             </div>
                             <div className="flex flex-col">
                                 <label className="block  text-xs font-medium  text-white">UF</label>
-                                <input value={obitoCadastro.rd_uf} onChange={e=>setarDadosObitos({rd_uf:e.target.value})} className="whitespace-nowrap uppercase py-1  px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                <input value={servico.rd_uf} onChange={e=>setarServico({rd_uf:e.target.value})} className="whitespace-nowrap uppercase py-1  px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                             </div>
 
                         </div>
@@ -543,11 +436,11 @@ export default function GerarOS() {
                     {dadosObito && <div className="rounded-lg p-6 grid grid-flow-row-dense grid-cols-4 gap-5">
                         <div className="flex flex-col col-span-1">
                             <label className="block  text-xs font-medium  text-white">Data do Falecimento</label>
-                            <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={obitoCadastro.end_data_falecimento} onChange={e=>e && setarDadosObitos({end_data_falecimento:e})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></DatePicker>
+                            <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={servico.end_data_falecimento} onChange={e=>e && setarServico({end_data_falecimento:e})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></DatePicker>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Local do Falecimento</label>
-                            <input value={obitoCadastro.end_local_falecimento} onChange={e=>setarDadosObitos({end_local_falecimento:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
+                            <input value={servico.end_local_falecimento} onChange={e=>setarServico({end_local_falecimento:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
                         </div>
 
                         <div className="flex flex-col col-span-1 ">
@@ -562,26 +455,26 @@ export default function GerarOS() {
 
                         <div className="flex flex-col col-span-3 ">
                             <label className="block  text-xs font-medium  text-white">Laudo Médico (Causa Morte)</label>
-                            <input value={obitoCadastro.dc_laudo_med} onChange={e=>setarDadosObitos({dc_laudo_med:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
+                            <input value={servico.dc_laudo_med} onChange={e=>setarServico({dc_laudo_med:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Número da D.O.</label>
-                            <input value={obitoCadastro.dec_obito_num} onChange={e=>setarDadosObitos({dec_obito_num:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
+                            <input value={servico.dec_obito_num} onChange={e=>setarServico({dec_obito_num:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Nome do Médico</label>
-                            <input value={obitoCadastro.dc_nome_medico} onChange={e=>setarDadosObitos({dc_nome_medico:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
+                            <input value={servico.dc_nome_medico} onChange={e=>setarServico({dc_nome_medico:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">CRM</label>
-                            <input value={obitoCadastro.dc_crm} onChange={e=>setarDadosObitos({dc_crm:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
+                            <input value={servico.dc_crm} onChange={e=>setarServico({dc_crm:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
                         </div>
 
 
                         <div className="flex flex-row gap-x-4 col-span-1 ">
                             <div className="flex flex-col">
                                 <label className="block  text-xs font-medium  text-white">Data Sepultamento</label>
-                                <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={obitoCadastro.dt_sepultamento} onChange={e=>e && setarDadosObitos({dt_sepultamento:e})} className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></DatePicker>
+                                <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={servico.dt_sepultamento} onChange={e=>e && setarServico({dt_sepultamento:e})} className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></DatePicker>
                             </div>
                             <div className="flex flex-col">
                                 <label className="block  text-xs font-medium  text-white">Hora Sepultamento</label>
@@ -590,13 +483,13 @@ export default function GerarOS() {
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Tipo</label>
-                            <input value={obitoCadastro.jazigo} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
+                            <input value={servico.jazigo} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
                         </div>
 
                    
                         <div className="flex flex-col col-span-3 ">
                             <label className="block  text-xs font-medium  p-1 text-white">Observações</label>
-                            <textarea value={obitoCadastro.caracterista_corporal} onChange={e=>setarDadosObitos({caracterista_corporal:e.target.value})} rows={3} className="whitespace-nowrap uppercase rounded-lg  py-1 px-2 w-full text-xs  bg-transparent border-2   text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></textarea>
+                            <textarea value={servico.caracterista_corporal} onChange={e=>setarServico({caracterista_corporal:e.target.value})} rows={3} className="whitespace-nowrap uppercase rounded-lg  py-1 px-2 w-full text-xs  bg-transparent border-2   text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></textarea>
                         </div>
                     </div>}
 
@@ -645,11 +538,10 @@ export default function GerarOS() {
                             </div>
                             <div className="flex items-end">
                                 <button onClick={() => {
-
-                                    const novoArray = [...arrayProdutos];
+                                    const novoArray =servico.obito_itens ?[...servico.obito_itens]:[];
                                     novoArray.push(listaProduto)
-                                    setArrayProdutos(novoArray)
-                                }}
+                                    setarServico({obito_itens:novoArray})}
+                                }
                                     className="flex bg-blue-600 p-1 pl-2 pr-2 rounded-lg ">Adicionar</button>
                             </div>
 
@@ -684,7 +576,7 @@ export default function GerarOS() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {arrayProdutos?.map((item, index) => {
+                                    {servico.obito_itens?.map((item, index) => {
 
 
                                         return (<tr key={index} className={`border-b bg-gray-800 border-gray-700  hover:bg-gray-600`}>
@@ -732,7 +624,7 @@ export default function GerarOS() {
                     {velorio && <div className="rounded-lg p-6 grid grid-flow-row-dense grid-cols-4 gap-5  h-full">
                         <div className="flex flex-col col-span-1">
                             <label className="block  text-xs font-medium  text-white">Endereço do Velório</label>
-                            <input value={obitoCadastro.local_velorio} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
+                            <input value={servico.local_velorio} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Número</label>
@@ -761,16 +653,16 @@ export default function GerarOS() {
                         <div className="flex flex-row gap-x-4 col-span-1 ">
                             <div className="flex flex-col">
                                 <label className="block  text-xs font-medium  text-white">Data de Saída</label>
-                                <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={obitoCadastro.dt_velorio} onChange={e=>e && setarDadosObitos({dt_velorio:e})} className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</DatePicker>
+                                <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={servico.dt_velorio} onChange={e=>e && setarServico({dt_velorio:e})} className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</DatePicker>
                             </div>
                             <div className="flex flex-col">
                                 <label className="block  text-xs font-medium  text-white">Hora de Saída</label>
                                
             <InputMask
                 mask={"99:99"} 
-                value={obitoCadastro.hr_velorio}
+                value={servico.hr_velorio}
                 onChange={e=>{
-                   setarDadosObitos({hr_velorio:e.target.value}) 
+                   setarServico({hr_velorio:e.target.value}) 
                 }}
                 className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs bg-transparent border-0 border-b-2 appearance-none text-white border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             />
@@ -813,7 +705,7 @@ export default function GerarOS() {
                     {checagem && <div className="flex flex-row w-full justify-around rounded-lg p-2   gap-6">    <div className="flex flex-col overflow-y-auto w-1/3 text-white p-2 gap-2 rounded-md bg-gray-600 mt-1 mb-1 max-h-[calc(100vh-250px)] ">
                         <h1 className="border-b-[1px] border-gray-500">Checklist Saída</h1>
                         <ul className="flex flex-col gap-2">
-                            {obitoCadastro.listacheckida?.map((item, index) => {
+                            {servico.listacheckida?.map((item, index) => {
                                 return (
                                     <li className="flex items-center ">
                                         <input checked={item.status} onChange={() => alterCheckListIda(index)} type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
@@ -828,7 +720,7 @@ export default function GerarOS() {
                         <div className="flex flex-col overflow-y-auto w-1/3 text-white p-2 gap-2 rounded-md bg-gray-600 mt-1 mb-1 max-h-[calc(100vh-250px)] ">
                             <h1 className="border-b-[1px] border-gray-500">Checklist Retorno</h1>
                             <ul className="flex flex-col gap-2">
-                                {obitoCadastro?.listacheckvolta?.map((item, index) => {
+                                {servico?.listacheckvolta?.map((item, index) => {
                                     return (
                                         <li className="flex items-center ">
                                             <input checked={item.status} onChange={() => alterCheckListVolta(index)} type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
