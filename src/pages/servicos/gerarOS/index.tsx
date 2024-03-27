@@ -337,11 +337,15 @@ export default function GerarOS() {
                             <button type="button" onClick={() => { setFalecido(false), setDeclarante(false), setObito(false), setProdutos(false), setVelorio(true), setChecagem(false),setPlano(false) }} className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Velório</button>
                         </li>
                         <li className="me-2">
-                            <button type="button" onClick={() => { setFalecido(false), setDeclarante(false), setObito(false), setProdutos(false), setVelorio(false), setChecagem(true) }} className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">CheckLists</button>
+                            <button type="button" onClick={() => { setFalecido(false), setDeclarante(false), setObito(false), setProdutos(false), setVelorio(false), setChecagem(true),setPlano(false) }} className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">CheckLists</button>
+                        </li>
+                        <li className="me-2">
+                            <button type="button" onClick={() => { setFalecido(false), setDeclarante(false), setObito(false), setProdutos(false), setVelorio(false), setChecagem(false),setPlano(false) }} className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Documentação</button>
                         </li>
                         <li className="ml-auto flex items-center mr-2">
                         <button  type="button" onClick={()=>cadastrarObito()}  className="inline-flex p-2 text-white font-semibold rounded-lg bg-green-600 gap-1">Salvar<HiOutlineSave size={22}/></button>
                         </li>
+                        
                     </ul>
 
 

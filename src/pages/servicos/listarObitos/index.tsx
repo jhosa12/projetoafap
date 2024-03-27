@@ -225,8 +225,6 @@ export default function ListarObitos() {
                                     <td className="px-4 py-1 text-center">
                                        <button className="hover:text-blue-600"><FaExternalLinkAlt size={16}/></button>
                                     </td>
-
-
                                 </tr>)
                             })}
 
