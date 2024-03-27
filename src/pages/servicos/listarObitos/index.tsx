@@ -1,6 +1,6 @@
 import { api } from "@/services/apiClient"
 import { useEffect, useState } from "react"
-
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 
 
@@ -11,7 +11,7 @@ interface CheckListProps {
     descricao: string,
     status: boolean
 }
-interface ObitoProps{
+interface ObitoProps {
     id_contrato: number,
     id_contrato_st: string,
     id_titular: number,
@@ -19,7 +19,7 @@ interface ObitoProps{
     atendente: string,
     tipo_atendimento: string,
     situacao_contrato: string,
-    dec_obito_num:string,
+    dec_obito_num: string,
     falecido: string,
     nome_falecido: string,
     data_nascimento: Date,
@@ -111,129 +111,136 @@ interface ObitoProps{
     deixa_testamento: string,
     nb_aposentado: string,
     certidao_casado: string,
-    status:string,
+    status: string,
     listacheckida: Array<CheckListProps>,
-    listacheckvolta:Array<CheckListProps>,
+    listacheckvolta: Array<CheckListProps>,
 }
 
 
-export default function ListarObitos(){
-    const [listaServicos,setServicos]=useState<Array<ObitoProps>>([])
+export default function ListarObitos() {
+    const [listaServicos, setServicos] = useState<Array<ObitoProps>>([])
 
 
-    useEffect(()=>{
-        try{
-           listar()
+    useEffect(() => {
+       
+        try {
+            listar()
 
-        }catch(err){
+        } catch (err) {
             console.log(err)
         }
 
 
-    },[])
+    }, [])
 
     async function listar() {
-        
+
         const response = await api.get("/obitos/listarServicos")
         console.log(response.data)
         setServicos(response.data)
-        
+
     }
-    return(
+    return (
         <>
-        <div className="flex flex-col w-full pl-10 pr-10 pt-4">
+            <div className="flex flex-col w-full pl-10 pr-10 pt-4">
                 <div className="flex flex-row p-2 border-b-[1px] border-gray-600">
                     <h1 className="flex w-full  text-gray-300 font-semibold text-2xl ">Histórico de O.S's</h1>
-                    </div>
-                <div className="p-1">{/*DIV DA TABELA*/}
-                <table
-                                className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
-                                <thead className="sticky top-0 text-sm  uppercase bg-gray-700 text-gray-400">
-                                    <tr>
-                                        <th scope="col" className=" px-2 py-1">
-                                           Tipo
-                                        </th>
+                </div>
+                <div className="flex p-1 max-h-[calc(100vh-150px)]">{/*DIV DA TABELA*/}
+                    <table
+                        className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
+                        <thead className="sticky top-0 text-sm  uppercase bg-gray-700 text-gray-400">
+                            <tr>
+                                <th scope="col" className=" px-2 py-1">
+                                    Tipo
+                                </th>
 
-                                        <th scope="col" className="px-4 py-1">
-                                            Data Falecimento
-                                        </th>
-                                        <th scope="col" className="px-4 py-1">
-                                           Contrato
-                                        </th>
-                                        <th scope="col" className="px-4 py-1">
-                                            Nome Declarante
-                                        </th>
-                                        <th scope="col" className="px-4 py-1">
-                                            CPF/CNPJ
-                                        </th>
-                                        <th scope="col" className="px-4 py-1">
-                                            Nome Falecido
-                                        </th>
-                                        <th scope="col" className="px-4 py-1">
-                                            <span >Situação Contrato</span>
-                                        </th>
-                                        <th scope="col" className="px-4 py-1">
-                                            <span >Falecido</span>
-                                        </th>
-                                        <th scope="col" className="px-4 py-1">
-                                            <span >Data Nascimento</span>
-                                        </th>
-                                        <th scope="col" className="px-4 py-1">
-                                            <span >Valor Total</span>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {listaServicos?.map((item, index) => {
+                                <th scope="col" className="px-4 py-1">
+                                    Data Fal.
+                                </th>
+                                <th scope="col" className="px-4 py-1">
+                                    Contrato
+                                </th>
+                                <th scope="col" className="px-4 py-1">
+                                    Nome Decl.
+                                </th>
+                                <th scope="col" className="px-4 py-1">
+                                    CPF/CNPJ
+                                </th>
+                                <th scope="col" className="px-4 py-1">
+                                    Nome Falecido
+                                </th>
+                                <th scope="col" className="px-4 py-1">
+                                    <span >Situação Cont.</span>
+                                </th>
+                                <th scope="col" className="px-4 py-1">
+                                    <span >Falecido</span>
+                                </th>
+                                <th scope="col" className="px-4 py-1">
+                                    <span >Data Nasc.</span>
+                                </th>
+                                <th scope="col" className="px-4 py-1">
+                                    <span >Valor Total</span>
+                                </th>
+                                <th scope="col" className="px-4 py-1">
+                                    <span >Ações</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {listaServicos?.map((item, index) => {
 
 
-                                        return (<tr key={index} className={`border-b bg-gray-800 border-gray-700  hover:bg-gray-600`}>
-                                            <td className="px-2 py-1">
-                                                {item.tipo_atendimento}
-                                            </td>
-                                            <td className="px-4 py-1">
-                                                {new Date(item.end_data_falecimento).toLocaleDateString()}
-                                            </td>
-                                            <td className="px-4 py-1">
-                                                {item.id_contrato}
-                                            </td>
-                                            <td className="px-4 py-1">
-                                                {item.rd_nome}
-                                            </td>
-                                            <td className="px-4 py-1">
-                                                {item.cpf_cnpj}
-                                            </td>
-                                            <td className="px-4 py-1">
-                                                {item.nome_falecido}
-                                            </td>
-                                            <td className="px-4 py-1">
-                                                {item.id_contrato_st}
-                                            </td>
-                                            <td className="px-4 py-1">
-                                                {item.falecido}
-                                            </td>
-                                            <td className="px-4 py-1">
-                                                {new Date(item.data_nascimento).toLocaleDateString()}
-                                            </td>
-                                            <td className="px-4 py-1">
-                                                {item.vl_total && `R$${item.vl_total}`}
-                                            </td>
-                                         
+                                return (<tr key={index} className={`border-b bg-gray-800 border-gray-700  hover:bg-gray-600`}>
+                                    <td className="px-2 py-1">
+                                        {item.tipo_atendimento}
+                                    </td>
+                                    <td className="px-4 py-1">
+                                        {new Date(item.end_data_falecimento).toLocaleDateString()}
+                                    </td>
+                                    <td className="px-4 py-1">
+                                        {item.id_contrato}
+                                    </td>
+                                    <td className="px-4 py-1">
+                                        {item.rd_nome}
+                                    </td>
+                                    <td className="px-4 py-1">
+                                        {item.cpf_cnpj}
+                                    </td>
+                                    <td className="px-4 py-1">
+                                        {item.nome_falecido}
+                                    </td>
+                                    <td className="px-4 py-1">
+                                        {item.id_contrato_st}
+                                    </td>
+                                    <td className="px-4 py-1">
+                                        {item.falecido}
+                                    </td>
+                                    <td className="px-4 py-1">
+                                        {new Date(item.data_nascimento).toLocaleDateString()}
+                                    </td>
+                                    <td className="px-4 py-1">
+                                        {item.vl_total && `R$${item.vl_total}`}
+                                    </td>
+                                    <td className="px-4 py-1 text-center">
+                                       <button className="hover:text-blue-600"><FaExternalLinkAlt size={16}/></button>
+                                    </td>
 
-                                        </tr>)
-                                    })}
 
-                                </tbody>
+                                </tr>)
+                            })}
 
-                          
+                        </tbody>
 
-                            </table>
+
+
+                    </table>
 
 
 
                 </div>
 
-                    </div>
+            </div>
         </>
 
     )

@@ -34,7 +34,8 @@ export function MenuLateral(){
 
   
   useEffect(() => {
-   if(!usuario){ 
+    const user = !!usuario
+   if(!user){ 
       signOut()
   }
    socket.on('connect', () => {
@@ -60,7 +61,7 @@ export function MenuLateral(){
      });
    }
 
-}, [usuario?.id]);
+}, [usuario]);
 
 
 async function contagem() {
