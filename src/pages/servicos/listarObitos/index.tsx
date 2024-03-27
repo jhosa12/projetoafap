@@ -1,3 +1,5 @@
+import { api } from "@/services/apiClient"
+import { useEffect, useState } from "react"
 
 
 
@@ -116,14 +118,34 @@ interface ObitoProps{
 
 
 export default function ListarObitos(){
+    const [listaServicos,setServicos]=useState<Array<ObitoProps>>([])
 
+
+    useEffect(()=>{
+        try{
+           listar()
+
+        }catch(err){
+            console.log(err)
+        }
+
+
+    },[])
+
+    async function listar() {
+        
+        const response = await api.get("/obitos/listarServicos")
+        console.log(response.data)
+        setServicos(response.data)
+        
+    }
     return(
         <>
         <div className="flex flex-col w-full pl-10 pr-10 pt-4">
                 <div className="flex flex-row p-2 border-b-[1px] border-gray-600">
                     <h1 className="flex w-full  text-gray-300 font-semibold text-2xl ">Histórico de O.S's</h1>
                     </div>
-                <div>{/*DIV DA TABELA*/}
+                <div className="p-1">{/*DIV DA TABELA*/}
                 <table
                                 className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
                                 <thead className="sticky top-0 text-sm  uppercase bg-gray-700 text-gray-400">
@@ -161,7 +183,47 @@ export default function ListarObitos(){
                                         </th>
                                     </tr>
                                 </thead>
-                              
+                                <tbody>
+                                    {listaServicos?.map((item, index) => {
+
+
+                                        return (<tr key={index} className={`border-b bg-gray-800 border-gray-700  hover:bg-gray-600`}>
+                                            <td className="px-2 py-1">
+                                                {item.tipo_atendimento}
+                                            </td>
+                                            <td className="px-4 py-1">
+                                                {new Date(item.end_data_falecimento).toLocaleDateString()}
+                                            </td>
+                                            <td className="px-4 py-1">
+                                                {item.id_contrato}
+                                            </td>
+                                            <td className="px-4 py-1">
+                                                {item.rd_nome}
+                                            </td>
+                                            <td className="px-4 py-1">
+                                                {item.cpf_cnpj}
+                                            </td>
+                                            <td className="px-4 py-1">
+                                                {item.nome_falecido}
+                                            </td>
+                                            <td className="px-4 py-1">
+                                                {item.id_contrato_st}
+                                            </td>
+                                            <td className="px-4 py-1">
+                                                {item.falecido}
+                                            </td>
+                                            <td className="px-4 py-1">
+                                                {new Date(item.data_nascimento).toLocaleDateString()}
+                                            </td>
+                                            <td className="px-4 py-1">
+                                                {item.vl_total && `R$${item.vl_total}`}
+                                            </td>
+                                         
+
+                                        </tr>)
+                                    })}
+
+                                </tbody>
 
                           
 

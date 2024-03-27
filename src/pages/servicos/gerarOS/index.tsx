@@ -390,11 +390,6 @@ export default function GerarOS() {
                         </div>
                     </div>}
 
-
-
-
-
-
                     {falecido && <div className="rounded-lg p-6 grid grid-flow-row-dense max-h-[calc(100vh-200px)] grid-cols-4 gap-5">
                         <div className="flex flex-col col-span-1">
                             <label className="block  text-xs font-medium  text-white">Nome do Falecido</label>
