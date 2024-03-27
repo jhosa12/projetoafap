@@ -307,11 +307,6 @@ interface ArrayProdutoProps {
 }
 
 
-
-
-
-
-
 export const AuthContext = createContext({} as AuthContextData)
 export function signOut() {
     try {

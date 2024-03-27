@@ -23,11 +23,7 @@ interface ArrayProps {
     acrescimo: number | null,
     valor_total: number | null
 }
-interface CheckListProps {
-    id_check: number,
-    descricao: string,
-    status: boolean
-}
+
 interface ListaProdutos {
 
     id_produto: number,
@@ -66,11 +62,6 @@ export default function GerarOS() {
     const [selectProdutos, setselectProdutos] = useState<Array<ListaProdutos>>([])
     const [total, setTotal] = useState<number>()
     
-  
-   
-
-
-
     function setarProdutos(fields: Partial<ArrayProps>) {
         setListaProdutos((prev: Partial<ArrayProps>) => {
             if (prev) {
@@ -103,7 +94,10 @@ export default function GerarOS() {
    //   hr_velorio:new Date().toLocaleTimeString('pt-BR',{timeZone:'America/Fortaleza'})
         try {
             listarProdutos()
-            carregarCheckList()
+            if(!servico.id_obitos){
+                carregarCheckList()
+            }
+           
 
         } catch (err) {
             toast.error('Erro ao Listar CheckList')
@@ -143,7 +137,10 @@ export default function GerarOS() {
 
     async function carregarCheckList() {
         const response = await api.get("/obitos/listarCheckList")
-        setarServico({...servico, listacheckida:response.data,listacheckvolta:response.data})
+        setarServico({...servico,listacheckida:response.data})
+        setarServico({...servico,listacheckvolta:response.data})
+       
+        
        
     }
 
@@ -153,16 +150,15 @@ export default function GerarOS() {
             const novoArray = [...servico.obito_itens];
             novoArray.splice(index, 1);
             setarServico({...servico,obito_itens:novoArray})
-
         }
        
     }
 
     function alterCheckListIda(index: number) {
         if(servico.listacheckida){
-            const novoArray = [...servico.listacheckida];
-            novoArray[index].status = !novoArray[index].status
-            setarServico({listacheckida:novoArray})
+            const novoArra = [...servico.listacheckida];
+            novoArra[index].status = !novoArra[index].status;
+            setarServico({...servico,listacheckida:novoArra})
         }
        
     }
@@ -172,7 +168,7 @@ export default function GerarOS() {
         if(servico.listacheckvolta){
             const novoArray = [...servico.listacheckvolta];
             novoArray[index].status = !novoArray[index].status
-            setarServico({listacheckvolta:novoArray})
+            setarServico({...servico,listacheckvolta:novoArray})
         }
        
     }
@@ -559,7 +555,7 @@ export default function GerarOS() {
                                             Valor Unit.
                                         </th>
                                         <th scope="col" className="px-4 py-1">
-                                            Quantidade
+                                            Quant.
                                         </th>
                                         <th scope="col" className="px-4 py-1">
                                             Desconto
@@ -705,11 +701,11 @@ export default function GerarOS() {
                     {checagem && <div className="flex flex-row w-full justify-around rounded-lg p-2   gap-6">    <div className="flex flex-col overflow-y-auto w-1/3 text-white p-2 gap-2 rounded-md bg-gray-600 mt-1 mb-1 max-h-[calc(100vh-250px)] ">
                         <h1 className="border-b-[1px] border-gray-500">Checklist Saída</h1>
                         <ul className="flex flex-col gap-2">
-                            {servico.listacheckida?.map((item, index) => {
+                            {servico.listacheckida?.map((it, index) => {
                                 return (
                                     <li className="flex items-center ">
-                                        <input checked={item.status} onChange={() => alterCheckListIda(index)} type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                                        <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">{item.descricao}</label>
+                                        <input checked={it.status} onChange={() => alterCheckListIda(index)} type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                                        <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">{it.descricao}</label>
                                     </li>
                                 )
                             })}
@@ -720,10 +716,10 @@ export default function GerarOS() {
                         <div className="flex flex-col overflow-y-auto w-1/3 text-white p-2 gap-2 rounded-md bg-gray-600 mt-1 mb-1 max-h-[calc(100vh-250px)] ">
                             <h1 className="border-b-[1px] border-gray-500">Checklist Retorno</h1>
                             <ul className="flex flex-col gap-2">
-                                {servico?.listacheckvolta?.map((item, index) => {
+                                {servico?.listacheckvolta?.map((item, i) => {
                                     return (
                                         <li className="flex items-center ">
-                                            <input checked={item.status} onChange={() => alterCheckListVolta(index)} type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                                            <input checked={item.status} onChange={() => alterCheckListVolta(i)} type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                                             <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">{item.descricao}</label>
                                         </li>
                                     )
