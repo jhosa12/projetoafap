@@ -61,6 +61,8 @@ export default function GerarOS() {
     const [listaProduto, setListaProdutos] = useState<Partial<ArrayProps>>({ descricao_item: "" })
     const [selectProdutos, setselectProdutos] = useState<Array<ListaProdutos>>([])
     const [total, setTotal] = useState<number>()
+    const [titular,setTitular] =useState(false)
+    const [dependente,setDependente]=useState(false)
     
     function setarProdutos(fields: Partial<ArrayProps>) {
         setListaProdutos((prev: Partial<ArrayProps>) => {
@@ -238,52 +240,56 @@ export default function GerarOS() {
                     </ul>
 
 
-                    {plano && <div className="rounded-lg p-6 grid grid-flow-row-dense grid-cols-4 gap-6">
-                        <div className="flex flex-col col-span-1">
-                            <label className="block  text-xs font-medium  text-white">Nome do Declarante</label>
-                            <input className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
-                        </div>
-                        <div className="flex flex-col col-span-1 ">
-                            <label className="block  text-xs font-medium  text-white">CPF/CNPJ</label>
-                            <input className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
-                        </div>
-
-                        <div className="flex flex-col col-span-1 ">
-                            <label className="block  text-xs font-medium  text-white">RG</label>
-                            <input className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
-                        </div>
-
-                        <div className="flex flex-col col-span-1 ">
-                            <label className="block  text-xs font-medium  text-white">Endereço</label>
-                            <input className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
-                        </div>
-
-                        <div className="flex flex-col col-span-1 ">
-                            <label className="block  text-xs font-medium  text-white">Numero</label>
-                            <input className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
-                        </div>
-                        <div className="flex flex-col col-span-1 ">
-                            <label className="block  text-xs font-medium  text-white">Bairro</label>
-                            <input className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
-                        </div>
-                        <div className="flex flex-col col-span-1 ">
-                            <label className="block  text-xs font-medium  text-white">Complemento</label>
-                            <input className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
-                        </div>
-                        <div className="flex flex-row gap-x-4 col-span-1 ">
-                            <div className="flex flex-col">
-                                <label className="block  text-xs font-medium  text-white">Cidade</label>
-                                <input className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                    {plano && <div className="flex text-white flex-col w-full rounded-lg p-4">
+                       
+                            <h1 className="text-lg">1293 - JOSÉ HENRIQUE BATISTA DE FREITAS / CATEGORIA:  PLANO "A"</h1>
+                            <h3 className="text-sm">SITUAÇÃO: ATIVO</h3>
+                            <div>
+                            <span className="text-xs">OBSERVAÇÕES:</span>
+                            <ul className="pl-4 text-xs list-disc">
+                                <li>Contrato Possui Convalescencia</li>
+                                <li>Contrato Possui 2 mensalidades vencidas</li>
+                                <li>Contrato em Carência</li>
+                            </ul>
                             </div>
-                            <div className="flex flex-col">
-                                <label className="block  text-xs font-medium  text-white">UF</label>
-                                <input className="whitespace-nowrap uppercase py-1  px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                            <div className=" mt-2 p-2 bg-gray-600 rounded-lg inline-block max-w-max">
+                            <h2>BENEFÍCIOS DO PLANO</h2>
+                            <ul className="list-decimal p-2 pl-4 text-sm">
+                                <li>ASSISTÊNCIA DE VELÓRIO</li>
+                                <li>ASSISTÊNCIA DE VELÓRIO</li>
+                                <li>ASSISTÊNCIA DE VELÓRIO</li>
+                                <li>ASSISTÊNCIA DE VELÓRIO</li>
+                                <li>ASSISTÊNCIA DE VELÓRIO</li>
+                                <li>ASSISTÊNCIA DE VELÓRIO</li>
+                                <li>ASSISTÊNCIA DE VELÓRIO</li>
+                                <li>ASSISTÊNCIA DE VELÓRIO</li>
+                                <li>ASSISTÊNCIA DE VELÓRIO</li>
+                                <li>ASSISTÊNCIA DE VELÓRIO</li>
+                                <li>ASSISTÊNCIA DE VELÓRIO</li>
+                            </ul>
                             </div>
+                           
+                            
+                      
+                    
+                        
+                           
 
-                        </div>
+                       
                     </div>}
 
-                    {falecido && <div className="rounded-lg p-6 grid grid-flow-row-dense max-h-[calc(100vh-200px)] grid-cols-4 gap-5">
+                    {falecido &&<>
+                    <div className="inline-flex gap-8 pl-4 pt-1">
+                        <div className="flex items-center ">
+                            <input type="checkbox" checked={titular} onClick={()=>{setTitular(!titular),setDependente(false)}} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                            <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">TITULAR</label>
+                        </div>
+                        <div className="flex items-center ">
+                            <input type="checkbox"  onClick={()=>{setDependente(!dependente),setTitular(false)}}  checked={dependente} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                            <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">DEPENDENTE</label>
+                        </div>
+                        </div>
+                     <div className="rounded-lg p-6 grid grid-flow-row-dense max-h-[calc(100vh-200px)] grid-cols-4 gap-5">
                         <div className="flex flex-col col-span-1">
                             <label className="block  text-xs font-medium  text-white">Nome do Falecido</label>
                             <input value={servico.nome_falecido} onChange={e=>setarServico({nome_falecido:e.target.value})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
@@ -378,7 +384,7 @@ export default function GerarOS() {
 
                         </div>
 
-                    </div>}
+                    </div></>}
 
 
 
@@ -663,7 +669,6 @@ export default function GerarOS() {
                 className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs bg-transparent border-0 border-b-2 appearance-none text-white border-gray-600 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             />
       
-   
                             </div>
                         </div>
                         <div className="flex flex-row gap-x-4 col-span-1 ">

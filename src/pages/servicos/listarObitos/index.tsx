@@ -3,9 +3,11 @@ import { api } from "@/services/apiClient"
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react"
 import { FaExternalLinkAlt } from "react-icons/fa";
-
-
-
+import { RiAddCircleFill } from "react-icons/ri";
+import { MdDeleteForever } from "react-icons/md";
+import { TbAlertTriangle } from "react-icons/tb";
+import { IoIosClose } from "react-icons/io";
+import { toast } from "react-toastify";
 
 
 interface CheckListProps {
@@ -145,6 +147,37 @@ interface ArrayProdutoProps {
 export default function ListarObitos() {
     const {servico,setarServico} =useContext(AuthContext)
     const [listaServicos, setServicos] = useState<Array<ObitoProps>>([])
+    const[excluirObito,setExcluirObito]=useState(false)
+
+
+
+
+    async function deletarObito() {
+
+        if(!servico.id_obitos){
+            toast.warn("Selecione o registro");
+            return;
+        }
+        await toast.promise(
+            api.delete("/obitos/deletar",{
+                data:{
+                    id_obitos:servico.id_obitos
+                }
+              
+            }
+           
+            ),
+           
+            {
+              error:'Erro ao excluir',
+              pending:'Deletando.....',
+              success:'Deletado com sucesso!'  
+            }
+        )
+      await  listar()
+        setExcluirObito(false)
+        
+    }
 
 
     useEffect(() => {
@@ -171,6 +204,52 @@ export default function ListarObitos() {
             <div className="flex flex-col w-full pl-10 pr-10 pt-4">
                 <div className="flex flex-row p-2 border-b-[1px] border-gray-600">
                     <h1 className="flex w-full  text-gray-300 font-semibold text-2xl ">Histórico de O.S's</h1>
+                    <div className="inline-flex rounded-md shadow-sm mb-1" role="group" >
+  <Link href="/servicos/gerarOS" onClick={()=>setarServico({atendente:undefined,bairro_velorio:undefined,caracterista_corporal:undefined,cemiterio:undefined,certidao_casado:undefined,cidade_eleitor:undefined,cidade_velorio:undefined,
+  complemento:undefined,conjuge:undefined,copeira:undefined,cpf:undefined,cpf_cnpj:undefined,ct_bairro:undefined,ct_comarca:undefined,ct_compet:undefined,ct_dtreg:undefined,ct_end:undefined,
+  ct_folha:undefined,ct_livro:undefined,ct_munic:undefined,ct_nome:undefined,ct_tel:undefined,ct_termo:undefined,custo:0,data_nascimento:undefined,dc_crm:"",dc_laudo_med:undefined,
+  dc_nome_medico:undefined,dec_obito_num:undefined,deixa_bens:undefined,deixa_testamento:undefined,dt_retorno:undefined,dt_sepultamento:undefined,dt_velorio:undefined,
+  end_bairro:undefined,end_celular:undefined,end_cidade:undefined,end_data_falecimento:undefined,end_decl_obito:undefined,end_hora_falecimento:undefined,end_hora_informaram:undefined,
+  end_local_falecimento:undefined,end_numero:undefined,end_rua:undefined,end_telefone:undefined,end_uf:undefined,endereco_cemiterio:undefined,endereco_mae:undefined,endereco_pais:undefined,enfermeira:undefined,estado_civil:undefined,estadocivil_mae:undefined,estadocivil_pai:undefined,
+  falecido:undefined,hr_retorno:undefined,hr_sepultamento:undefined,hr_velorio:undefined,id_contrato:undefined,id_contrato_st:undefined,id_obitos:undefined,id_titular:undefined,jazigo:undefined,local_velorio:undefined,mae_vivo:undefined,nacionalidade:undefined,naturalidade:undefined,nb_aposentado:undefined,nome_falecido:undefined,nome_mae:undefined,nome_pai:undefined,numero_velorio:undefined,
+  obito_itens:undefined,pai_vivo:undefined,plano:undefined,profissao:undefined,profissao_mae:undefined,profissao_pai:undefined,rd_bairro:undefined,rd_celular:undefined,rd_cidade:undefined,rd_complemento:undefined,rd_endereco:undefined,rd_nome:undefined,rd_numero:undefined,
+  rd_parentesco:undefined,rd_profissao:undefined,rd_rg:undefined,rd_telefone:undefined,rd_uf:undefined,religiao:undefined,rg:undefined,saldo:undefined,secao:undefined,sexo:undefined,situacao_contrato:undefined,status:undefined,t_eleitor:undefined,t_eleitor_perg:undefined,tipo_atendimento:undefined,
+  uf_naturalidade:undefined,uf_velorio:undefined,veiculo_cortejo:undefined,veiculo_retirada:undefined,vl_aprazo:undefined,vl_avista:undefined,vl_comissao:undefined,vl_produtos:undefined,vl_recebimentos:undefined,
+   vl_saldo:undefined,vl_servicos:undefined,vl_total:undefined,zona_seccao:undefined    
+  })} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border  rounded-s-lg  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+ <RiAddCircleFill size={20}/>
+    Adicionar
+  </Link>
+  <button type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+    Settings
+  </button>
+  <button onClick={()=>setExcluirObito(!excluirObito)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2   bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+   <MdDeleteForever size={20}/>
+    Excluir
+  </button>
+  {excluirObito?( <div  className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div className="flex items-center justify-center p-2 w-full h-full">
+        <div className="relative rounded-lg shadow bg-gray-800">
+            <button type="button" onClick={()=>setExcluirObito(!excluirObito)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+             <button  type="button" onClick={()=>{}} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                    <IoIosClose size={30}/>
+                </button>
+            </button>
+            <div className="p-4 md:p-5 text-center">
+                <div className="flex w-full justify-center items-center">
+                  <TbAlertTriangle className='text-gray-400' size={60}/>
+                </div>
+                <h3 className="mb-3 text-lg font-normal  text-gray-400">{`Realmente deseja deletar?`}</h3>
+               
+                <button onClick={()=>deletarObito()} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+                    Sim, tenho certeza
+                </button>
+                <button onClick={()=>setExcluirObito(!excluirObito)}  type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>):''}
+</div>
                 </div>
                 <div className="flex p-1 max-h-[calc(100vh-150px)]">{/*DIV DA TABELA*/}
                     <table
@@ -215,9 +294,8 @@ export default function ListarObitos() {
                         </thead>
                         <tbody>
                             {listaServicos?.map((item, index) => {
-
-
-                                return (<tr key={index} className={`border-b bg-gray-800 border-gray-700  hover:bg-gray-600`}>
+                                return (
+                                <tr onClick={()=>setarServico({id_obitos:item.id_obitos})} key={index} className={`border-b  border-gray-700 ${item.id_obitos===servico.id_obitos?"bg-gray-600":"bg-gray-800"} hover:bg-gray-600`}>
                                     <td className="px-2 py-1">
                                         {item.tipo_atendimento}
                                     </td>
