@@ -12,7 +12,7 @@ import { ModalBusca } from "@/components/modal";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { useRouter } from "next/router";
+
 
 interface ArrayProps {
     id_produto:number ,
@@ -50,7 +50,7 @@ interface ListaProdutos {
 
 export default function GerarOS() {
 
-    const { usuario,data, closeModa,setarServico,servico } = useContext(AuthContext)
+    const {data, closeModa,setarServico,dadosassociado,carregarDados,servico } = useContext(AuthContext)
     const [plano, setPlano] = useState(true)
     const [falecido, setFalecido] = useState(false);
     const [declarante, setDeclarante] = useState(false);
@@ -63,6 +63,7 @@ export default function GerarOS() {
     const [total, setTotal] = useState<number>()
     const [titular,setTitular] =useState(false)
     const [dependente,setDependente]=useState(false)
+    const [componenteMounted,setMounted]=useState(false)
     
     function setarProdutos(fields: Partial<ArrayProps>) {
         setListaProdutos((prev: Partial<ArrayProps>) => {
@@ -77,10 +78,10 @@ export default function GerarOS() {
 
     }
 
-
- 
-
-
+    useEffect(() => {
+    componenteMounted && carregarDados();
+    setMounted(true)
+      }, [data.id_associado])
 
 
     useEffect(() => {
@@ -186,6 +187,8 @@ export default function GerarOS() {
             setarProdutos({ valor_total: listaProduto.valor_unit * listaProduto.quantidade + (listaProduto.acrescimo ?? 0) - (listaProduto.desconto ?? 0) })
         }
     }, [listaProduto.quantidade, listaProduto.valor_unit, listaProduto.acrescimo, listaProduto.desconto])
+    
+
     return (
         <>
             {data.closeModalPlano && <ModalBusca />}
@@ -242,8 +245,8 @@ export default function GerarOS() {
 
                     {plano && <div className="flex text-white flex-col w-full rounded-lg p-4">
                        
-                            <h1 className="text-lg">1293 - JOSÉ HENRIQUE BATISTA DE FREITAS / CATEGORIA:  PLANO "A"</h1>
-                            <h3 className="text-sm">SITUAÇÃO: ATIVO</h3>
+                            <h1 className="text-lg">{dadosassociado?.contrato.id_contrato} - {dadosassociado?.nome}:  PLANO "A"</h1>
+                            <h3 className="text-sm">SITUAÇÃO: {dadosassociado?.contrato.situacao}</h3>
                             <div>
                             <span className="text-xs">OBSERVAÇÕES:</span>
                             <ul className="pl-4 text-xs list-disc">
