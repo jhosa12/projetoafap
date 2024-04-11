@@ -218,14 +218,14 @@ export default function GerarOS() {
   
                 <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-10 bg-gray-50 ">
                   
-                    <div className="fixed flex flex-col p-4   rounded-lg shadow bg-gray-700">
+                    <div className="fixed flex flex-col p-4 max-h-96  rounded-lg shadow bg-gray-700">
                         <div className="inline-flex border-b-[1px] text-white">
                         <h1>SELECIONE O DEPENDENTE</h1>
                         <button  type="button" onClick={()=>setModalDependente(false)} className="text-gray-400 bg-transparent rounded-lg text-sm h-4 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
                     <IoIosClose size={30}/>
                 </button>
                         </div>
-                        <ul className="flex flex-col pt-2 text-gray-300 gap-2 ">
+                        <ul className="flex flex-col pt-2 overflow-y-auto text-gray-300 gap-2 ">
                         {dadosassociado?.dependentes.map((item,index)=>{
                             return(
                                 <li onClick={()=>setarFalecidoDependente({nome:item.nome,data_nasc:item.data_nasc})} className="flex cursor-pointer hover:bg-gray-700 bg-gray-600 p-1 pl-2 pr-2 rounded-lg ">
