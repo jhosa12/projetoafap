@@ -6,6 +6,7 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { IoMdSearch } from "react-icons/io";
 import { MdClose } from "react-icons/md";
 import { HiOutlineSave } from "react-icons/hi";
+import { IoIosClose } from "react-icons/io";
 import { IoIosSave } from "react-icons/io";
 import InputMask from 'react-input-mask'
 import { ModalBusca } from "@/components/modal";
@@ -63,6 +64,7 @@ export default function GerarOS() {
     const [total, setTotal] = useState<number>()
     const [titular,setTitular] =useState(false)
     const [dependente,setDependente]=useState(false)
+    const [modalDependente,setModalDependente]=useState(false)
     const [componenteMounted,setMounted]=useState(false)
     
     function setarProdutos(fields: Partial<ArrayProps>) {
@@ -77,6 +79,29 @@ export default function GerarOS() {
         })
 
     }
+
+    useEffect(()=>{
+
+        if(titular){
+            setarServico({nome_falecido:dadosassociado?.nome,
+                data_nascimento:dadosassociado?.data_nasc,
+                end_rua:dadosassociado?.endereco,
+                end_bairro:dadosassociado?.bairro,
+                end_numero:String(dadosassociado?.numero),
+                end_cidade:dadosassociado?.cidade
+            })
+           
+        }
+
+    },[titular])
+
+   function setarFalecidoDependente({nome,data_nasc}:{nome:string,data_nasc:Date}){
+    setarServico({nome_falecido:nome,
+        data_nascimento:data_nasc,
+    });
+    setModalDependente(false);
+
+   }
 
     useEffect(() => {
     componenteMounted && carregarDados();
@@ -100,20 +125,15 @@ export default function GerarOS() {
             if(!servico.id_obitos){
                 carregarCheckList()
             }
-           
-
         } catch (err) {
             toast.error('Erro ao Listar CheckList')
         }
     }, [])
 
-
-
     async function listarProdutos() {
         const response = await api.get("/obitos/listarProdutos")
        
         setselectProdutos(response.data)
-
     }
 
     async function cadastrarObito(){
@@ -192,6 +212,36 @@ export default function GerarOS() {
     return (
         <>
             {data.closeModalPlano && <ModalBusca />}
+
+            {modalDependente && dependente && (
+                <div  className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+  
+                <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-10 bg-gray-50 ">
+                  
+                    <div className="fixed flex flex-col p-4   rounded-lg shadow bg-gray-700">
+                        <div className="inline-flex border-b-[1px] text-white">
+                        <h1>SELECIONE O DEPENDENTE</h1>
+                        <button  type="button" onClick={()=>setModalDependente(false)} className="text-gray-400 bg-transparent rounded-lg text-sm h-4 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                    <IoIosClose size={30}/>
+                </button>
+                        </div>
+                        <ul className="flex flex-col pt-2 text-gray-300 gap-2 ">
+                        {dadosassociado?.dependentes.map((item,index)=>{
+                            return(
+                                <li onClick={()=>setarFalecidoDependente({nome:item.nome,data_nasc:item.data_nasc})} className="flex cursor-pointer hover:bg-gray-700 bg-gray-600 p-1 pl-2 pr-2 rounded-lg ">
+                                    {item.nome}
+                                    
+                                </li>
+                            )
+
+                        })}
+                        </ul>
+                      
+
+                </div>
+                </div>
+                </div>
+            )}
             <div className="flex flex-col w-full pl-10 pr-10 pt-4">
               
                 <div className="flex flex-row p-2 border-b-[1px] border-gray-600">
@@ -288,7 +338,7 @@ export default function GerarOS() {
                             <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">TITULAR</label>
                         </div>
                         <div className="flex items-center ">
-                            <input type="checkbox"  onClick={()=>{setDependente(!dependente),setTitular(false)}}  checked={dependente} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                            <input type="checkbox"  onClick={()=>{setDependente(!dependente),setTitular(false),setModalDependente(true)}}  checked={dependente} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                             <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">DEPENDENTE</label>
                         </div>
                         </div>
