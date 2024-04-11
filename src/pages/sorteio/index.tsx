@@ -1,7 +1,7 @@
 import React from 'react';
 import SorteioButton from '../../components/sorteador';
 
-const numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // ou qualquer outra lista de números
+const numeros = [10,11,12,13,14,15,16,17,18,19]; // ou qualquer outra lista de números
 
 export default function Sorteios(){
   return (
