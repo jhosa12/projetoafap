@@ -52,8 +52,8 @@ interface ListaProdutos {
 export default function GerarOS() {
 
     const {data, closeModa,setarServico,dadosassociado,carregarDados,servico } = useContext(AuthContext)
-    const [plano, setPlano] = useState(true)
-    const [falecido, setFalecido] = useState(false);
+    const [plano, setPlano] = useState(false)
+    const [falecido, setFalecido] = useState(true);
     const [declarante, setDeclarante] = useState(false);
     const [dadosObito, setObito] = useState(false);
     const [produtos, setProdutos] = useState(false);
@@ -66,6 +66,7 @@ export default function GerarOS() {
     const [dependente,setDependente]=useState(false)
     const [modalDependente,setModalDependente]=useState(false)
     const [componenteMounted,setMounted]=useState(false)
+    const [particular,setParticular] =useState(false)
     
     function setarProdutos(fields: Partial<ArrayProps>) {
         setListaProdutos((prev: Partial<ArrayProps>) => {
@@ -105,6 +106,7 @@ export default function GerarOS() {
 
     useEffect(() => {
     componenteMounted && carregarDados();
+    setParticular(false);
     setMounted(true)
       }, [data.id_associado])
 
@@ -249,7 +251,7 @@ export default function GerarOS() {
                    
                     <div className="flex flex-row gap-8">
                         <div className="flex items-center ">
-                            <input type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                            <input type="checkbox" checked={particular} onChange={()=>setParticular(!particular)} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                             <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
                         </div>
                         <button onClick={() => closeModa({ closeModalPlano: true })} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
@@ -262,9 +264,9 @@ export default function GerarOS() {
 
                     <ul className="flex flex-wrap w-full text-sm font-medium text-center  border-b   rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800" role="tablist">
 
-                        <li className="me-2">
+                      {!particular &&  <li className="me-2">
                             <button type="button" onClick={() => { setFalecido(false), setDeclarante(false), setObito(false), setProdutos(false), setVelorio(false), setChecagem(false), setPlano(true) }} className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Plano</button>
-                        </li>
+                        </li>}
                         <li className="me-2">
                             <button type="button" onClick={() => { setFalecido(true), setDeclarante(false), setObito(false), setProdutos(false), setVelorio(false), setChecagem(false),setPlano(false) }} className="inline-block p-4 font-semibold rounded-ss-lg  bg-gray-800 hover:bg-gray-700 text-blue-500">Falecido</button>
                         </li>
@@ -293,7 +295,7 @@ export default function GerarOS() {
                     </ul>
 
 
-                    {plano && <div className="flex text-white flex-col w-full rounded-lg p-4">
+                    {plano && !particular && <div className="flex text-white flex-col w-full rounded-lg p-4">
                        
                             <h1 className="text-lg">{dadosassociado?.contrato.id_contrato} - {dadosassociado?.nome}:  PLANO "A"</h1>
                             <h3 className="text-sm">SITUAÇÃO: {dadosassociado?.contrato.situacao}</h3>
@@ -332,7 +334,7 @@ export default function GerarOS() {
                     </div>}
 
                     {falecido &&<>
-                    <div className="inline-flex gap-8 pl-4 pt-1">
+                {!particular &&    <div className="inline-flex gap-8 pl-4 pt-1">
                         <div className="flex items-center ">
                             <input type="checkbox" checked={titular} onClick={()=>{setTitular(!titular),setDependente(false)}} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                             <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">TITULAR</label>
@@ -341,7 +343,7 @@ export default function GerarOS() {
                             <input type="checkbox"  onClick={()=>{setDependente(!dependente),setTitular(false),setModalDependente(true)}}  checked={dependente} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                             <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">DEPENDENTE</label>
                         </div>
-                        </div>
+                        </div>}
                      <div className="rounded-lg p-6 grid grid-flow-row-dense max-h-[calc(100vh-200px)] grid-cols-4 gap-5">
                         <div className="flex flex-col col-span-1">
                             <label className="block  text-xs font-medium  text-white">Nome do Falecido</label>
@@ -670,7 +672,12 @@ export default function GerarOS() {
                                 </tfoot>
 
                             </table>
+                          
                         </div>
+                        <div className="flex justify-end w-full">
+                        {total!==undefined && total>0 && <button className="flex bg-gray-600 rounded-lg p-2 text-white">Confirmar Pagamento</button>}
+                        </div>
+                        
                     </div>
 
                     }
