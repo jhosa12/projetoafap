@@ -182,6 +182,9 @@ async function contagem() {
             <Link href='/servicos/gerarOS' onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Gerar OS</Link>
         </li>
         <li>
+            <Link href='/servicos/convalescencia' onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Convalescência</Link>
+        </li>
+        <li>
             <a href="#" className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Relatórios</a>
         </li>
       

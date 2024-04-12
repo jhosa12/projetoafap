@@ -115,7 +115,7 @@ return(
 
 
 <div className="flex w-full justify-center p-4">
-<div className="flex flex-col w-11/12 border  rounded-lg shadow  border-gray-700 ">
+<div className="flex flex-col w-full border  rounded-lg shadow  border-gray-700 ">
     <div className="text-gray-300 bg-gray-800 rounded-t-lg inline-flex items-center p-2 justify-between">
     <h1 className=" text-lg  pl-3 font-medium">Movimentação de Caixa</h1>
    
