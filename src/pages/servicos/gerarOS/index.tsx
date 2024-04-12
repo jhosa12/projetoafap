@@ -230,7 +230,7 @@ export default function GerarOS() {
                         <ul className="flex flex-col pt-2 overflow-y-auto text-gray-300 gap-2 ">
                         {dadosassociado?.dependentes.map((item,index)=>{
                             return(
-                                <li onClick={()=>setarFalecidoDependente({nome:item.nome,data_nasc:item.data_nasc})} className="flex cursor-pointer hover:bg-gray-700 bg-gray-600 p-1 pl-2 pr-2 rounded-lg ">
+                            item.excluido!==true && <li onClick={()=>setarFalecidoDependente({nome:item.nome,data_nasc:item.data_nasc})} className="flex cursor-pointer hover:bg-gray-700 bg-gray-600 p-1 pl-2 pr-2 rounded-lg ">
                                     {item.nome}
                                     
                                 </li>
