@@ -145,7 +145,7 @@ interface ArrayProdutoProps {
 
 
 export default function ListarObitos() {
-    const {servico,setarServico} =useContext(AuthContext)
+    const {servico,setarServico,usuario,signOut} =useContext(AuthContext)
     const [listaServicos, setServicos] = useState<Array<ObitoProps>>([])
     const[excluirObito,setExcluirObito]=useState(false)
 
@@ -181,6 +181,10 @@ export default function ListarObitos() {
 
 
     useEffect(() => {
+        const user = !!usuario
+        if(!user){ 
+           signOut()
+       }
        
         try {
             listar()
@@ -190,7 +194,7 @@ export default function ListarObitos() {
         }
 
 
-    }, [])
+    }, [usuario])
 
     async function listar() {
 

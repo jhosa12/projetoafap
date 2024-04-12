@@ -17,16 +17,21 @@ interface NotifyProps{
 
 export default function Notificacoes(){
     const[notificacoes,setNotify] = useState<Array<NotifyProps>>([])
-    const {usuario}= useContext(AuthContext)
+    const {usuario,signOut}= useContext(AuthContext)
 
     useEffect(()=>{
+        const user = !!usuario
+        if(!user){ 
+           signOut()
+           return;
+       }
         try{
          
            listarNotificacoes()
         }catch(err){
            toast.error('Erro ao Listar Notificações')
         }
-     },[])
+     },[usuario])
 
      async function listarNotificacoes() {
         const response = await api.post('/notification/listar',

@@ -42,7 +42,7 @@ export default function CaixaMovimentar(){
     const[despesas,setDespesas]=useState(0);
     const[IsModalOpen,setIsModalOpen] =useState(false);
     const [planos,setPlanos]=useState([]);
-    const {caixaMovimentacao,usuario} =useContext(AuthContext);
+    const {caixaMovimentacao,usuario,signOut} =useContext(AuthContext);
     const[visible,setVisible] = useState(false)
     
    
@@ -54,8 +54,13 @@ export default function CaixaMovimentar(){
  
 
     useEffect(()=>{
+        const user = !!usuario
+        if(!user){ 
+           signOut()
+           return;
+       }
       listarLancamentos()
-    },[])
+    },[usuario])
 
     async function listarLancamentos() {
         try{

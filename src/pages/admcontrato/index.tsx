@@ -106,6 +106,7 @@ if(item.status ==='E'){
 
    useEffect(()=>{
    
+   
     async function listaCadastro() {
         const response = await api.get('/listarDadosCadastro')
         closeModa({cidades:response.data.cidades,planos:response.data.planos})
@@ -147,6 +148,11 @@ async function atualizarObs() {
       
     }
   useEffect(() => {
+    const user = !!usuario
+    if(!user){ 
+       signOut()
+       return;
+   }
  
     const carregarDadosAsync = async () => {
       try {

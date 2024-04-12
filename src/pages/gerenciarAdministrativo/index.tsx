@@ -76,6 +76,11 @@ const setarConv =(conv:Array<ConvProps>)=>{
 }
    
 useEffect(() => {
+    const user = !!usuario
+    if(!user){ 
+       signOut()
+       return;
+   }
   
     try {
         carregarDados();
@@ -83,7 +88,7 @@ useEffect(() => {
         toast.error('Erro ao Carregar Dados')
     }
     
-}, []);
+}, [usuario]);
 
 
 

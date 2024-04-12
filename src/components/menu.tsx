@@ -37,6 +37,7 @@ export function MenuLateral(){
     const user = !!usuario
    if(!user){ 
       signOut()
+      return;
   }
    socket.on('connect', () => {
       socket.emit('userId', usuario?.id.toString());

@@ -13,6 +13,7 @@ import { ModalBusca } from "@/components/modal";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
+import { Item } from "@/components/dadosTitular";
 
 
 interface ArrayProps {
@@ -51,7 +52,7 @@ interface ListaProdutos {
 
 export default function GerarOS() {
 
-    const {data, closeModa,setarServico,dadosassociado,carregarDados,servico } = useContext(AuthContext)
+    const {usuario,data, closeModa,setarServico,dadosassociado,carregarDados,servico,signOut } = useContext(AuthContext)
     const [plano, setPlano] = useState(false)
     const [falecido, setFalecido] = useState(true);
     const [declarante, setDeclarante] = useState(false);
@@ -120,7 +121,11 @@ export default function GerarOS() {
     }, [servico.obito_itens])
 
     useEffect(() => {
-  
+        const user = !!usuario
+        if(!user){ 
+           signOut()
+           return;
+       }
    //   hr_velorio:new Date().toLocaleTimeString('pt-BR',{timeZone:'America/Fortaleza'})
         try {
             listarProdutos()
@@ -130,7 +135,7 @@ export default function GerarOS() {
         } catch (err) {
             toast.error('Erro ao Listar CheckList')
         }
-    }, [])
+    }, [usuario])
 
     async function listarProdutos() {
         const response = await api.get("/obitos/listarProdutos")
@@ -149,7 +154,7 @@ export default function GerarOS() {
         }
         const response =await toast.promise(
             api.post("/obitos/adicionarObito",{
-                    ...servico,hr_velorio:newDate, obito_itens:servico.obito_itens
+                    ...servico,hr_velorio:newDate, obito_itens:servico.obito_itens,tipo_atendimento:particular?'PARTICULAR':'ASSOCIADO'
             }),
             {
                 error:'Erro ao Realizar Cadastro',
@@ -210,7 +215,37 @@ export default function GerarOS() {
         }
     }, [listaProduto.quantidade, listaProduto.valor_unit, listaProduto.acrescimo, listaProduto.desconto])
     
-
+    async function lancarCaixa(){
+        const descricoes =servico?.obito_itens?.map(item=>`${item.descricao_item} QUANT.: ${item.quantidade}  VALOR: R$${item.valor_total}`);
+        const descricaoCompleta = descricoes?.join(' / ')
+        try {
+            await toast.promise(
+                api.post("/obitos/lancarCaixa",{
+                    conta:"1.03.006",
+                    data:new Date(),
+                    datalanc:new Date(),
+                    conta_n:"1.03.006",
+                    descricao:"ENTRADAS DE OUTRAS AGENCIAS AFAP",
+                    historico:`REFERENTE A COMPRA DE: ${descricaoCompleta}`,
+                    tipo:'RECEITA',
+                    usuario:usuario?.nome,
+                    valor:total,
+                    ccustos_id:2
+                }),
+                {
+                    error:'Erro ao Confirmar Pagamento',
+                    pending:'Realizando Recebimento em Caixa',
+                    success:'Recebido com sucesso'
+                }
+            )
+    
+            
+        } catch (error) {
+            console.log(error)
+            
+        }
+        
+    }
     return (
         <>
             {data.closeModalPlano && <ModalBusca />}
@@ -232,7 +267,6 @@ export default function GerarOS() {
                             return(
                             item.excluido!==true && <li onClick={()=>setarFalecidoDependente({nome:item.nome,data_nasc:item.data_nasc})} className="flex cursor-pointer hover:bg-gray-700 bg-gray-600 p-1 pl-2 pr-2 rounded-lg ">
                                     {item.nome}
-                                    
                                 </li>
                             )
 
@@ -297,7 +331,7 @@ export default function GerarOS() {
 
                     {plano && !particular && <div className="flex text-white flex-col w-full rounded-lg p-4">
                        
-                            <h1 className="text-lg">{dadosassociado?.contrato.id_contrato} - {dadosassociado?.nome}:  PLANO "A"</h1>
+                            {dadosassociado?.id_associado && (<><h1 className="text-lg">{dadosassociado?.contrato.id_contrato} - {dadosassociado?.nome} - CATEGORIA: {dadosassociado?.contrato.plano}</h1>
                             <h3 className="text-sm">SITUAÇÃO: {dadosassociado?.contrato.situacao}</h3>
                             <div>
                             <span className="text-xs">OBSERVAÇÕES:</span>
@@ -323,9 +357,11 @@ export default function GerarOS() {
                                 <li>ASSISTÊNCIA DE VELÓRIO</li>
                             </ul>
                             </div>
+                            </>
+                            )
                            
                             
-                      
+                      }
                     
                         
                            
@@ -675,7 +711,7 @@ export default function GerarOS() {
                           
                         </div>
                         <div className="flex justify-end w-full">
-                        {total!==undefined && total>0 && <button className="flex bg-gray-600 rounded-lg p-2 text-white">Confirmar Pagamento</button>}
+                        {total!==undefined && total>0 && <button onClick={()=>lancarCaixa()} className="flex bg-gray-600 rounded-lg p-2 text-white">Confirmar Pagamento</button>}
                         </div>
                         
                     </div>
