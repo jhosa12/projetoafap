@@ -168,6 +168,8 @@ type AuthContextData = {
     data: Partial<DadosCadastro>,
     dadosassociado: AssociadoProps | undefined,
     carregarDados: () => Promise<void>
+    setarListaConv:(fields:Partial<ConvProps>)=>void;
+    listaConv:Partial<ConvProps>
     // user:()=>void
 }
 
@@ -316,7 +318,39 @@ interface ArrayProdutoProps {
     acrescimo: number | null,
     valor_total: number | null
 }
-
+interface ConvProps {
+    id_conv: number,
+    id_contrato: number,
+    id_associado: number,
+    id_contrato_st: number,
+    tipo_entrada: number,
+    nome: string,
+    cpf_cnpj: string,
+    data: Date,
+    status: string,
+    forma_pag: string,
+    logradouro: string,
+    numero: number,
+    complemento: string,
+    bairro: string,
+    cep: string,
+    cidade: string,
+    uf: string,
+    subtotal: number,
+    descontos: number,
+    total: number,
+    logradouro_r: string,
+    numero_r: number,
+    complemento_r: string,
+    bairro_r: string,
+    cep_r: string,
+    cidade_r: string,
+    uf_r: string,
+    data_inc: Date,
+    hora_inc: Date,
+    usuario: string,
+    obs: string
+}
 
 export const AuthContext = createContext({} as AuthContextData)
 export function signOut() {
@@ -331,6 +365,7 @@ export function signOut() {
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [usuario, setUser] = useState<UserProps>()
     const isAuthenticated = !!usuario;
+    const [listaConv,setLista] = useState<Partial<ConvProps>>({})
     const [dadosassociado, setDadosAssociado] = useState<AssociadoProps>()
     const [data, setData] = useState<Partial<DadosCadastro>>({})
     const [mov, setMov] = useState<Partial<CaixaProps>>({})
@@ -358,8 +393,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         }
     }
-    function closeModa(fields: Partial<DadosCadastro>) {
-        setData((prev: Partial<DadosCadastro>) => {
+    function closeModa(fields:Partial<DadosCadastro>) {
+        setData((prev:Partial<DadosCadastro>) => {
             if (prev) {
                 return { ...prev, ...fields };
             } else {
@@ -379,6 +414,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
 
+    function setarListaConv(fields:Partial<ConvProps>){
+
+        setLista((prev:Partial<ConvProps>)=>{
+            if(prev){
+                return {...prev,...fields};
+            }
+            else{
+                return {...fields};
+            }
+
+        })
+
+    }
     /* function user(){
         const cookies = parseCookies();
         if(cookies['@nextauth.token']){
@@ -410,7 +458,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setDadosAssociado(response.data);
     }
     return (
-        <AuthContext.Provider value={{ usuario, isAuthenticated, sign, signOut, data, closeModa, dadosassociado, carregarDados, caixaMovimentacao, mov,setarServico,servico }}>
+        <AuthContext.Provider value={{ usuario, isAuthenticated, sign, signOut, data, closeModa, dadosassociado, carregarDados, caixaMovimentacao, mov,setarServico,servico,listaConv,setarListaConv }}>
             {children}
         </AuthContext.Provider>
     )
