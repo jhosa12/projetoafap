@@ -4,6 +4,9 @@ import { useContext, useEffect, useState } from "react"
 import { LuFolderEdit } from "react-icons/lu";
 import { MdDeleteOutline } from "react-icons/md";
 import { RiUserReceived2Line } from "react-icons/ri";
+import { IoIosClose } from "react-icons/io";
+import { toast } from "react-toastify";
+import { TbAlertTriangle } from "react-icons/tb";
 interface ConvProps {
     id_conv: number,
     id_contrato: number,
@@ -44,6 +47,7 @@ export default function Convalescente() {
     const [criterio,setCriterio]=useState("Contrato")
     const [input,setInput] =useState('')
     const {listaConv,setarListaConv,usuario}= useContext(AuthContext)
+    const [excluir,setExcluir]=useState(false)
 
 
 
@@ -62,13 +66,40 @@ export default function Convalescente() {
         setConv(response.data)
 
     }
+
+    async function deletarConv() {
+      await toast.promise(
+        api.delete("/convalescencia/deletar",{
+            data:{
+                id_conv:listaConv.id_conv
+            }
+        }),
+        {
+            error:'Erro ao deletar lançamento',
+            pending:'Efetuando Exclusão',
+            success:'Excluido com sucesso!'
+            
+        }
+      )
+     await listarConv()
+     setExcluir(false)
+        
+    }
     return (
         <div className="flex flex-col w-full pl-10 pr-10 pt-4">
 
             <div className="flex flex-row w-full p-2 border-b-[1px]  border-gray-600">
                 <h1 className="flex w-full items-end  text-gray-300 font-semibold text-2xl ">Controle Convalescente</h1>
-                <div className="flex justify-end items-end w-full">
-                <form onSubmit={()=>{}} className="flex w-2/3">
+                <div className="flex justify-end items-end w-full gap-8">
+                <div className="flex items-center ">
+                            <input type="checkbox" checked onChange={()=>{}} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                            <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">ABERTO</label>
+                        </div>
+                        <div className="flex items-center ">
+                            <input type="checkbox" checked onChange={()=>{}} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                            <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">ENTREGUE</label>
+                        </div>
+                <form onSubmit={()=>{}} className="flex w-4/5">
     <button onClick={()=>setDrop(!dropOpen)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-s-lg focus:outline-none  bg-gray-600 hover:bg-gray-600 focus:ring-gray-700 text-white border-gray-600" type="button">{criterio} 
     <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
@@ -99,6 +130,29 @@ export default function Convalescente() {
         </div>
         </form>
     </div>
+
+    {excluir?(<div  className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div className="flex items-center justify-center p-2 w-full h-full">
+        <div className="relative rounded-lg shadow bg-gray-800">
+            <button type="button" onClick={()=>setExcluir(!excluir)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+             <button  type="button" onClick={()=>{}} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                    <IoIosClose size={30}/>
+                </button>
+            </button>
+            <div className="p-4 md:p-5 text-center">
+                <div className="flex w-full justify-center items-center">
+                  <TbAlertTriangle className='text-gray-400' size={60}/>
+                </div>
+                <h3 className="mb-5 text-lg font-normal  text-gray-400">Realmente deseja deletar esse lançamento?</h3>
+               
+                <button onClick={()=>deletarConv()} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+                    Sim, tenho certeza
+                </button>
+                <button onClick={()=>setExcluir(!excluir)}  type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>):''}
 
 
 
@@ -159,7 +213,7 @@ export default function Convalescente() {
                                             <button className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
                                             <RiUserReceived2Line size={18} />
                                             </button>
-                                            <button className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
+                                            <button onClick={()=>{setExcluir(true);setarListaConv({id_conv:item.id_conv})}} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
                                                 <MdDeleteOutline size={18} />
                                             </button>
                                             
