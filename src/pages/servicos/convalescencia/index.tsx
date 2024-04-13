@@ -3,7 +3,7 @@ import { api } from "@/services/apiClient"
 import { useContext, useEffect, useState } from "react"
 import { LuFolderEdit } from "react-icons/lu";
 import { MdDeleteOutline } from "react-icons/md";
-
+import { RiUserReceived2Line } from "react-icons/ri";
 interface ConvProps {
     id_conv: number,
     id_contrato: number,
@@ -65,10 +65,10 @@ export default function Convalescente() {
     return (
         <div className="flex flex-col w-full pl-10 pr-10 pt-4">
 
-            <div className="flex flex-row w-full p-2 border-b-[1px] gap-40 border-gray-600">
-                <h1 className="flex   text-gray-300 font-semibold text-2xl ">Controle Convalescente</h1>
-                <form onSubmit={()=>{}} className="flex w-2/5 justify-end">
-    <div className="flex w-full">
+            <div className="flex flex-row w-full p-2 border-b-[1px]  border-gray-600">
+                <h1 className="flex w-full items-end  text-gray-300 font-semibold text-2xl ">Controle Convalescente</h1>
+                <div className="flex justify-end items-end w-full">
+                <form onSubmit={()=>{}} className="flex w-2/3">
     <button onClick={()=>setDrop(!dropOpen)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-s-lg focus:outline-none  bg-gray-600 hover:bg-gray-600 focus:ring-gray-700 text-white border-gray-600" type="button">{criterio} 
     <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
@@ -97,8 +97,9 @@ export default function Convalescente() {
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
   </svg></button>
         </div>
+        </form>
     </div>
-</form>
+
 
 
 
@@ -155,9 +156,13 @@ export default function Convalescente() {
                                             <button className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white">
                                                 <LuFolderEdit size={18} />
                                             </button>
+                                            <button className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
+                                            <RiUserReceived2Line size={18} />
+                                            </button>
                                             <button className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
                                                 <MdDeleteOutline size={18} />
                                             </button>
+                                            
                                         </div>
                                     </td>
 
