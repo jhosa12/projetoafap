@@ -7,6 +7,9 @@ import { RiUserReceived2Line } from "react-icons/ri";
 import { IoIosClose } from "react-icons/io";
 import { toast } from "react-toastify";
 import { TbAlertTriangle } from "react-icons/tb";
+
+import { Tooltip } from 'react-tooltip';
+
 interface ConvProps {
     id_conv: number,
     id_contrato: number,
@@ -48,12 +51,12 @@ export default function Convalescente() {
     const [input,setInput] =useState('')
     const {listaConv,setarListaConv,usuario}= useContext(AuthContext)
     const [excluir,setExcluir]=useState(false)
-
-
-
+    const [aberto,setAberto] =useState(true)
+    const [entregue,setEntregue] =useState(true)
 
     useEffect(() => {
         try {
+           
             listarConv()
 
         } catch (error) {
@@ -62,9 +65,11 @@ export default function Convalescente() {
         }
     }, [])
     async function listarConv() {
-        const response = await api.get("/convalescencia/listar")
-        setConv(response.data)
-
+        if(!input){
+            const response = await api.get("/convalescencia/listar")
+            setConv(response.data)
+        }
+        
     }
 
     async function deletarConv() {
@@ -87,6 +92,7 @@ export default function Convalescente() {
     }
     return (
         <div className="flex flex-col w-full pl-10 pr-10 pt-4">
+            <Tooltip className="z-20" id="toolId"/>
 
             <div className="flex flex-row w-full p-2 border-b-[1px]  border-gray-600">
                 <h1 className="flex w-full items-end  text-gray-300 font-semibold text-2xl ">Controle Convalescente</h1>
@@ -207,13 +213,13 @@ export default function Convalescente() {
                                     </td>
                                     <td className="px-8 py-1">
                                         <div className="flex flex-row w-full gap-2">
-                                            <button className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white">
+                                            <button data-tooltip-id="toolId" data-tooltip-content={'Editar Dados'} className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white">
                                                 <LuFolderEdit size={18} />
                                             </button>
-                                            <button className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
+                                            <button data-tooltip-id="toolId" data-tooltip-content={'Receber Devolução'} className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
                                             <RiUserReceived2Line size={18} />
                                             </button>
-                                            <button onClick={()=>{setExcluir(true);setarListaConv({id_conv:item.id_conv})}} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
+                                            <button data-tooltip-id="toolId" data-tooltip-content={'Excluir'} onClick={()=>{setExcluir(true);setarListaConv({id_conv:item.id_conv})}} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
                                                 <MdDeleteOutline size={18} />
                                             </button>
                                             
