@@ -1,6 +1,6 @@
 import { AuthContext } from "@/contexts/AuthContext";
 import { api } from "@/services/apiClient"
-import { useContext, useEffect, useState } from "react"
+import { FormEvent, useContext, useEffect, useState } from "react"
 import { LuFolderEdit } from "react-icons/lu";
 import { MdDeleteOutline } from "react-icons/md";
 import { RiUserReceived2Line } from "react-icons/ri";
@@ -57,7 +57,7 @@ export default function Convalescente() {
     useEffect(() => {
         try {
            
-            listarConv()
+      listarConv()
 
         } catch (error) {
 
@@ -65,11 +65,24 @@ export default function Convalescente() {
         }
     }, [])
     async function listarConv() {
+     
         if(!input){
-            const response = await api.get("/convalescencia/listar")
+            const response = await api.post("/convalescencia/listar")
             setConv(response.data)
         }
-        
+        else if(criterio==='Contrato'){
+            const response = await api.post("/convalescencia/listar",{
+                id_contrato:Number(input)
+            })
+            setConv(response.data)
+        }
+     
+        else if(criterio==='Usuario'){
+            const response = await api.post("/convalescencia/listar",{
+                nome:input
+            })
+            setConv(response.data)
+        }
     }
 
     async function deletarConv() {
@@ -86,14 +99,13 @@ export default function Convalescente() {
             
         }
       )
-     await listarConv()
+     listarConv()
      setExcluir(false)
         
     }
     return (
         <div className="flex flex-col w-full pl-10 pr-10 pt-4">
             <Tooltip className="z-20" id="toolId"/>
-
             <div className="flex flex-row w-full p-2 border-b-[1px]  border-gray-600">
                 <h1 className="flex w-full items-end  text-gray-300 font-semibold text-2xl ">Controle Convalescente</h1>
                 <div className="flex justify-end items-end w-full gap-8">
@@ -105,23 +117,21 @@ export default function Convalescente() {
                             <input type="checkbox" checked onChange={()=>{}} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                             <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">ENTREGUE</label>
                         </div>
-                <form onSubmit={()=>{}} className="flex w-4/5">
+                <form  className="flex w-4/5">
     <button onClick={()=>setDrop(!dropOpen)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-s-lg focus:outline-none  bg-gray-600 hover:bg-gray-600 focus:ring-gray-700 text-white border-gray-600" type="button">{criterio} 
     <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-  </svg></button>
- 
+  </svg>
+  </button>
       {dropOpen && (
           <div className="absolute top-[134px] divide-gray-100 z-20 rounded-lg shadow  bg-gray-700">
           <ul className="py-2 text-sm text-gray-200">
           <li >
               <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setCriterio('Contrato'),setDrop(false)}}>Contrato</a>
           </li>
+         
           <li>
-              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setCriterio('Titular'),setDrop(false)}}>Titular</a>
-          </li>
-          <li>
-              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setCriterio('Dependente'),setDrop(false)}}>Usuário</a>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setCriterio('Usuario'),setDrop(false)}}>Usuário</a>
           </li>
          
           </ul>
@@ -129,7 +139,7 @@ export default function Convalescente() {
       )}
         <div className="relative  w-full">
             <input   value={input} onChange={e=>setInput(e.target.value)} type={criterio==="Contrato"?"number":"search"} autoComplete="off"  className="uppercase flex justify-center  p-2.5 w-full z-20 text-sm  rounded-e-lg rounded-s-gray-100 rounded-s-2 border bg-gray-700 border-gray-600 placeholder-gray-400 text-white " placeholder="Buscar Lançamento" required/>
-            <button type="submit" className="absolute top-0 end-0 p-2.5 h-full text-sm font-medium text-white  rounded-e-lg border border-blue-700 focus:ring-4 focus:outline-none  bg-blue-600 hover:bg-blue-700 ">
+            <button onClick={()=>listarConv()}  type="button" className="absolute top-0 end-0 p-2.5 h-full text-sm font-medium text-white  rounded-e-lg border border-blue-700 focus:ring-4 focus:outline-none  bg-blue-600 hover:bg-blue-700 ">
                 <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
   </svg></button>
@@ -167,8 +177,8 @@ export default function Convalescente() {
 
             <div className="flex w-full justify-center p-1 max-h-[calc(100vh-150px)]">{/*DIV DA TABELA*/}
                 <table
-                    className="block w-full  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
-                    <thead className="sticky w-full top-0 text-sm  uppercase bg-gray-700 text-gray-400">
+                    className="block overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
+                    <thead className="sticky  top-0 text-sm  uppercase bg-gray-700 text-gray-400">
                         <tr>
                             <th scope="col" className=" px-4 py-1">
                                 Contrato
