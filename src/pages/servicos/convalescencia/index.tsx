@@ -110,11 +110,11 @@ export default function Convalescente() {
                 <h1 className="flex w-full items-end  text-gray-300 font-semibold text-2xl ">Controle Convalescente</h1>
                 <div className="flex justify-end items-end w-full gap-8">
                 <div className="flex items-center ">
-                            <input type="checkbox" checked onChange={()=>{}} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                            <input type="checkbox" checked={aberto} onChange={()=>{setAberto(!aberto)}} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                             <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">ABERTO</label>
                         </div>
                         <div className="flex items-center ">
-                            <input type="checkbox" checked onChange={()=>{}} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                            <input type="checkbox" checked={entregue} onChange={()=>{setEntregue(!entregue)}} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                             <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">ENTREGUE</label>
                         </div>
                 <form  className="flex w-4/5">
