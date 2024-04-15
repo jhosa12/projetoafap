@@ -7,8 +7,11 @@ import { RiUserReceived2Line } from "react-icons/ri";
 import { IoIosClose } from "react-icons/io";
 import { toast } from "react-toastify";
 import { TbAlertTriangle } from "react-icons/tb";
+import { IoMdCheckmarkCircle } from "react-icons/io";
+import { MdAdd } from "react-icons/md";
 
 import { Tooltip } from 'react-tooltip';
+import Link from "next/link";
 
 interface ConvProps {
     id_conv: number,
@@ -76,14 +79,15 @@ export default function Convalescente() {
      
         if(!input){
             const response = await api.post("/convalescencia/listar")
-            setConv(response.data)
+           setConv(response.data)
             console.log(response.data)
         }
         else if(criterio==='Contrato'){
-            const response = await api.post("/convalescencia/listar",{
-                id_contrato:Number(input)
-            })
-            setConv(response.data)
+         const response = await api.post("/convalescencia/listar",{
+             id_contrato:Number(input)}
+            )
+           setConv(response.data)
+           
         }
         else if(criterio==='Titular'){
             const response = await api.post("/convalescencia/listar",{
@@ -118,6 +122,28 @@ export default function Convalescente() {
      setExcluir(false)
         
     }
+
+async function receberDevolucao(id_conv:number){
+
+    await toast.promise(
+        api.put("/convalescencia/receber",
+            {
+                id_conv,
+                status:"ENTREGUE"
+            }
+        ),
+        {error:"Erro na Requisição",
+            pending:"Realizando Devolução",
+            success:"Produto devolvido com Sucesso"
+        }
+        
+    )
+    setInput('')
+    listarConv()
+}
+
+
+
     return (
         <div className="flex flex-col w-full pl-10 pr-10 pt-4">
             <Tooltip className="z-20" id="toolId"/>
@@ -163,8 +189,10 @@ export default function Convalescente() {
   </svg></button>
         </div>
         </form>
+         <Link className="inline-flex justify-center items-center text-white bg-green-600 p-1 px-2 rounded-lg" href='/servicos/convalescencia/novoregistro'>
+         <MdAdd size={22}/>Add
+         </Link>  
     </div>
-
     {excluir?(<div  className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div className="flex items-center justify-center p-2 w-full h-full">
         <div className="relative rounded-lg shadow bg-gray-800">
@@ -223,7 +251,7 @@ export default function Convalescente() {
                         {arrayConv?.map((item, index) => {
                             return (
 
-                        item.status==="ABERTO" && aberto ? <tr key={index} className={`border-b  border-gray-700 "bg-gray-600":"bg-gray-800"} hover:bg-gray-600`}>
+                        item.status==="ABERTO" && aberto && !entregue ? <tr key={index} className={`border-b  border-gray-700 "bg-gray-600":"bg-gray-800"} hover:bg-gray-600`}>
                                     <td className="px-4 py-1">
                                         {item.id_contrato}
                                     </td>
@@ -237,7 +265,7 @@ export default function Convalescente() {
                                     <td className="px-8 py-1">
                                         {new Date(item.data).toLocaleDateString()}
                                     </td>
-                                    <td className="px-8 py-1">
+                                    <td className="px-8 py-1 text-yellow-500">
                                     {item.status}
                                     </td>
                                     <td className="px-8 py-1">
@@ -245,7 +273,7 @@ export default function Convalescente() {
                                             <button data-tooltip-id="toolId" data-tooltip-content={'Editar Dados'} className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white">
                                                 <LuFolderEdit size={18} />
                                             </button>
-                                            <button data-tooltip-id="toolId" data-tooltip-content={'Receber Devolução'} className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
+                                            <button onClick={()=>receberDevolucao(item.id_conv)} data-tooltip-id="toolId" data-tooltip-content={'Receber Devolução'} className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
                                             <RiUserReceived2Line size={18} />
                                             </button>
                                             <button data-tooltip-id="toolId" data-tooltip-content={'Excluir'} onClick={()=>{setExcluir(true);setarListaConv({id_conv:item.id_conv})}} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
@@ -256,7 +284,7 @@ export default function Convalescente() {
                                     </td>
 
                                 </tr>:
-                                item.status==="ENTREGUE" && entregue ? <tr key={index} className={`border-b  border-gray-700 "bg-gray-600":"bg-gray-800"} hover:bg-gray-600`}>
+                                item.status==="ENTREGUE" && !aberto && entregue ? <tr key={index} className={`border-b  border-gray-700 "bg-gray-600":"bg-gray-800"} hover:bg-gray-600`}>
                                     <td className="px-4 py-1">
                                         {item.id_contrato}
                                     </td>
@@ -270,7 +298,7 @@ export default function Convalescente() {
                                     <td className="px-8 py-1">
                                         {new Date(item.data).toLocaleDateString()}
                                     </td>
-                                    <td className="px-8 py-1">
+                                    <td className="px-8 py-1 text-green-600 font-semibold">
                                     {item.status}
                                     </td>
                                     <td className="px-8 py-1">
@@ -278,8 +306,8 @@ export default function Convalescente() {
                                             <button data-tooltip-id="toolId" data-tooltip-content={'Editar Dados'} className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white">
                                                 <LuFolderEdit size={18} />
                                             </button>
-                                            <button data-tooltip-id="toolId" data-tooltip-content={'Receber Devolução'} className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
-                                            <RiUserReceived2Line size={18} />
+                                            <button disabled data-tooltip-id="toolId" data-tooltip-content={'Material Devolvido'} className="text-green-500  p-1 rounded-lg ">
+                                            <IoMdCheckmarkCircle size={19} />
                                             </button>
                                             <button data-tooltip-id="toolId" data-tooltip-content={'Excluir'} onClick={()=>{setExcluir(true);setarListaConv({id_conv:item.id_conv})}} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
                                                 <MdDeleteOutline size={18} />
@@ -302,7 +330,7 @@ export default function Convalescente() {
                                     <td className="px-8 py-1">
                                         {new Date(item.data).toLocaleDateString()}
                                     </td>
-                                    <td className="px-8 py-1">
+                                    <td className={`px-8 py-1 font-semibold ${item.status==="ABERTO"?"text-yellow-500":"text-green-600"}`}>
                                     {item.status}
                                     </td>
                                     <td className="px-8 py-1">
@@ -310,9 +338,11 @@ export default function Convalescente() {
                                             <button data-tooltip-id="toolId" data-tooltip-content={'Editar Dados'} className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white">
                                                 <LuFolderEdit size={18} />
                                             </button>
-                                            <button data-tooltip-id="toolId" data-tooltip-content={'Receber Devolução'} className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
+                                           {item.status ==="ABERTO"? <button onClick={()=>receberDevolucao(item.id_conv)} data-tooltip-id="toolId" data-tooltip-content={'Receber Devolução'} className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
                                             <RiUserReceived2Line size={18} />
-                                            </button>
+                                            </button>:  <button disabled data-tooltip-id="toolId" data-tooltip-content={'Material Devolvido'} className="text-green-500  p-1 rounded-lg ">
+                                            <IoMdCheckmarkCircle size={19} />
+                                            </button>}
                                             <button data-tooltip-id="toolId" data-tooltip-content={'Excluir'} onClick={()=>{setExcluir(true);setarListaConv({id_conv:item.id_conv})}} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
                                                 <MdDeleteOutline size={18} />
                                             </button>
