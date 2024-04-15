@@ -127,7 +127,8 @@ type AcordoProps = {
     dt_pgto: Date,
     mensalidade: Array<Partial<MensalidadeProps>>,
     status: string,
-    descricao: string
+    descricao: string,
+    metodo:string
     closeAcordo: boolean,
     id_acordo: number,
     visibilidade: boolean
@@ -358,6 +359,23 @@ interface ConvProps {
         }
 
     }
+    convalescenca_prod:Array<Partial<{
+        id_conv:number,
+        id_produto:number,
+        descricao:string,
+        unidade:string,
+        grupo:string,
+        data:Date,
+        data_dev:Date,
+        quantidade:number,
+        valor:number,
+        descontos:number,
+        total:number,
+        hora:Date,
+        cortesia:string,
+        retornavel :string,
+        status :string
+    }>>
 }
 
 export const AuthContext = createContext({} as AuthContextData)

@@ -63,6 +63,7 @@ export function ModalAcordos(){
                     total_acordo:data.acordo?.total_acordo,
                     realizado_por:data.acordo?.realizado_por ,
                     descricao:data.acordo.descricao,
+                    metodo:data.acordo.metodo,
                     dt_criacao:new Date() ,
                     user_criacao:usuario?.nome,
                     mensalidades:novasMensalidades
@@ -174,9 +175,13 @@ export function ModalAcordos(){
 </div>
 
 
-<div className="mb-1 col-span-4">
+<div className="mb-1 col-span-3">
     <label  className="block mb-1 text-xs font-medium  text-white">DESCRIÇÃO</label>
     <input value={data.acordo?.descricao} onChange={e=>closeModa({acordo:{...data.acordo,descricao:e.target.value}})} type="text" placeholder="Descreva aqui todos os detalhes do acordo" className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+</div>
+<div className="mb-1 col-span-1">
+    <label  className="block mb-1 text-xs font-medium  text-white">MÉTODO</label>
+    <input type="text" value={data.acordo?.metodo} onChange={e=>closeModa({acordo:{...data.acordo,metodo:e.target.value}})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
 <div className=" gap-2 col-span-4  flex flex-row justify-end">
 {!data.acordo?.visibilidade?(

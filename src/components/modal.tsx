@@ -76,11 +76,11 @@ export function ModalBusca(){
     }
     
     return(
-        <div  className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div  className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%)] max-h-full">
   
     <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-10 bg-gray-50 ">
       
-        <div className="fixed flex flex-col  w-2/4 h-4/5 rounded-lg shadow bg-gray-700">
+        <div className="fixed flex flex-col  w-2/4 max-h-[500px] min-h-min rounded-lg shadow bg-gray-700">
             <div className="flex w-full items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-600">
             <form onSubmit={onSubmit} className="flex w-3/4">
     <div className="flex w-full">
@@ -123,7 +123,7 @@ export function ModalBusca(){
                     <IoIosClose size={30}/>
                 </button>
             </div>
-            {loading?((<div className="flex flex-col h-full justify-center items-center"><AiOutlineLoading3Quarters color='white' size={40} className="animate-spin"/></div>)):(
+            {loading?((<div className="flex flex-col h-full justify-center items-center p-2"><AiOutlineLoading3Quarters color='white' size={40} className="animate-spin"/></div>)):(
                 <div className="flex flex-col overflow-y-auto mb-1 p-2 md:p-2">
                 <p className="text-gray-400 mb-2">Selecione o Contrato:</p>
                 <ul className="overflow-y-visible space-y-2 mb-2">
