@@ -41,7 +41,15 @@ interface ConvProps {
     data_inc: Date,
     hora_inc: Date,
     usuario: string,
-    obs: string
+    obs: string,
+    contrato:{
+        situacao:string,
+        carencia:string,
+        associado:{
+            nome:string
+        }
+
+    }
 }
 
 export default function Convalescente() {
@@ -69,6 +77,7 @@ export default function Convalescente() {
         if(!input){
             const response = await api.post("/convalescencia/listar")
             setConv(response.data)
+            console.log(response.data)
         }
         else if(criterio==='Contrato'){
             const response = await api.post("/convalescencia/listar",{
@@ -76,10 +85,16 @@ export default function Convalescente() {
             })
             setConv(response.data)
         }
+        else if(criterio==='Titular'){
+            const response = await api.post("/convalescencia/listar",{
+                titular:input.toUpperCase()
+            })
+            setConv(response.data)
+        }
      
         else if(criterio==='Usuario'){
             const response = await api.post("/convalescencia/listar",{
-                nome:input
+                nome:input.toUpperCase()
             })
             setConv(response.data)
         }
@@ -128,6 +143,9 @@ export default function Convalescente() {
           <ul className="py-2 text-sm text-gray-200">
           <li >
               <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setCriterio('Contrato'),setDrop(false)}}>Contrato</a>
+          </li>
+          <li>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setCriterio('Titular'),setDrop(false)}}>Titular</a>
           </li>
          
           <li>
@@ -204,12 +222,13 @@ export default function Convalescente() {
                     <tbody>
                         {arrayConv?.map((item, index) => {
                             return (
-                                <tr key={index} className={`border-b  border-gray-700 "bg-gray-600":"bg-gray-800"} hover:bg-gray-600`}>
+
+                        item.status==="ABERTO" && aberto ? <tr key={index} className={`border-b  border-gray-700 "bg-gray-600":"bg-gray-800"} hover:bg-gray-600`}>
                                     <td className="px-4 py-1">
                                         {item.id_contrato}
                                     </td>
                                     <td className="px-8 py-1">
-                                        {item.nome}
+                                        {item.contrato?.associado.nome}
                                     </td>
                                     <td className="px-8 py-1">
                                         {item.nome}
@@ -236,7 +255,77 @@ export default function Convalescente() {
                                         </div>
                                     </td>
 
-                                </tr>)
+                                </tr>:
+                                item.status==="ENTREGUE" && entregue ? <tr key={index} className={`border-b  border-gray-700 "bg-gray-600":"bg-gray-800"} hover:bg-gray-600`}>
+                                    <td className="px-4 py-1">
+                                        {item.id_contrato}
+                                    </td>
+                                    <td className="px-8 py-1">
+                                        {item.contrato?.associado.nome}
+                                    </td>
+                                    <td className="px-8 py-1">
+                                        {item.nome}
+                                    </td>
+
+                                    <td className="px-8 py-1">
+                                        {new Date(item.data).toLocaleDateString()}
+                                    </td>
+                                    <td className="px-8 py-1">
+                                    {item.status}
+                                    </td>
+                                    <td className="px-8 py-1">
+                                        <div className="flex flex-row w-full gap-2">
+                                            <button data-tooltip-id="toolId" data-tooltip-content={'Editar Dados'} className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white">
+                                                <LuFolderEdit size={18} />
+                                            </button>
+                                            <button data-tooltip-id="toolId" data-tooltip-content={'Receber Devolução'} className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
+                                            <RiUserReceived2Line size={18} />
+                                            </button>
+                                            <button data-tooltip-id="toolId" data-tooltip-content={'Excluir'} onClick={()=>{setExcluir(true);setarListaConv({id_conv:item.id_conv})}} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
+                                                <MdDeleteOutline size={18} />
+                                            </button>
+                                            
+                                        </div>
+                                    </td>
+
+                                </tr>:aberto && entregue && <tr key={index} className={`border-b  border-gray-700 "bg-gray-600":"bg-gray-800"} hover:bg-gray-600`}>
+                                    <td className="px-4 py-1">
+                                        {item.id_contrato}
+                                    </td>
+                                    <td className="px-8 py-1">
+                                        {item.contrato?.associado.nome}
+                                    </td>
+                                    <td className="px-8 py-1">
+                                        {item.nome}
+                                    </td>
+
+                                    <td className="px-8 py-1">
+                                        {new Date(item.data).toLocaleDateString()}
+                                    </td>
+                                    <td className="px-8 py-1">
+                                    {item.status}
+                                    </td>
+                                    <td className="px-8 py-1">
+                                        <div className="flex flex-row w-full gap-2">
+                                            <button data-tooltip-id="toolId" data-tooltip-content={'Editar Dados'} className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white">
+                                                <LuFolderEdit size={18} />
+                                            </button>
+                                            <button data-tooltip-id="toolId" data-tooltip-content={'Receber Devolução'} className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
+                                            <RiUserReceived2Line size={18} />
+                                            </button>
+                                            <button data-tooltip-id="toolId" data-tooltip-content={'Excluir'} onClick={()=>{setExcluir(true);setarListaConv({id_conv:item.id_conv})}} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
+                                                <MdDeleteOutline size={18} />
+                                            </button>
+                                            
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            
+                            
+                            
+                            
+                            )
                         })}
 
                     </tbody>

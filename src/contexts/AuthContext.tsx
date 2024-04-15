@@ -349,7 +349,15 @@ interface ConvProps {
     data_inc: Date,
     hora_inc: Date,
     usuario: string,
-    obs: string
+    obs: string,
+    contrato:{
+        situacao:string,
+        carencia:string,
+        associado:{
+            nome:string
+        }
+
+    }
 }
 
 export const AuthContext = createContext({} as AuthContextData)
