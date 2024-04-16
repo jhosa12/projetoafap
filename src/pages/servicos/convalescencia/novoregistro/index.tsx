@@ -62,6 +62,54 @@ export default function GerarOS() {
 
 
 
+
+async function adicionarNovoRegistro() {
+
+await toast.promise(
+    api.post('/convalescencia/novo',{
+        id_contrato:dadosassociado?.contrato.id_contrato,
+        id_associado:dadosassociado?.id_associado,
+        id_contrato_st:listaConv.id_contrato_st,
+        tipo_entrada:listaConv.tipo_entrada,
+        nome:listaConv.nome,
+        cpf_cnpj:listaConv.cpf_cnpj,
+        data:listaConv.data,
+        status:listaConv.status,
+        forma_pag:listaConv.forma_pag,
+        logradouro:listaConv.logradouro,
+        numero:listaConv.numero,
+        complemento:listaConv.complemento,
+        bairro:listaConv.bairro,
+        cep:listaConv.cep,
+        cidade:listaConv.cidade,
+        uf:listaConv.uf,
+        subtotal:listaConv.subtotal,
+        descontos:listaConv.descontos,
+        total:listaConv.total,
+        logradouro_r:listaConv.logradouro_r,
+        numero_r:listaConv.numero_r,
+        complemento_r:listaConv.complemento_r,
+        bairro_r:listaConv.bairro_r,
+        cep_r:listaConv.cep_r,
+        cidade_r:listaConv.cidade_r,
+        uf_r:listaConv.uf_r,
+        data_inc:listaConv.data_inc,
+        hora_inc:listaConv.hora_inc,
+        usuario:usuario?.nome,
+        obs:listaConv.obs,
+        convalescenca_prod:listaConv.convalescenca_prod
+
+    }),
+    {
+        error:'Erro ao cadastrar',
+        pending:'Salvando Dados',
+        success:'Dados Registrados com Sucesso'
+    }
+)
+    
+}
+
+
     useEffect(() => {
         if(data.id_associado && componenteMounted){
             carregarDados();
@@ -175,7 +223,7 @@ export default function GerarOS() {
                             <button type="button" onClick={() => { setUsuarioMaterial(false), setDeclarante(false), setObito(false) }} className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Documentação</button>
                         </li>
                         <li className="ml-auto flex items-center mr-2">
-                        <button  type="button" onClick={()=>{}}  className="inline-flex p-2 text-white font-semibold rounded-lg bg-green-600 gap-1">Salvar<HiOutlineSave size={22}/></button>
+                        <button  type="button" onClick={()=>adicionarNovoRegistro()}  className="inline-flex p-2 text-white font-semibold rounded-lg bg-green-600 gap-1">Salvar<HiOutlineSave size={22}/></button>
                         </li>
                         
                     </ul>
@@ -302,7 +350,7 @@ export default function GerarOS() {
                             <div className="flex items-end">
                                 <button onClick={() => {
                                     const novoArray =listaConv.convalescenca_prod ?[...listaConv.convalescenca_prod]:[];
-                                    novoArray.push(listaMaterial)
+                                    novoArray.push({...listaMaterial, status:'ABERTO', data:new Date()})
                                     setarListaConv({convalescenca_prod:novoArray})}
                                 }
                                     className="flex bg-blue-600 p-1 pl-2 pr-2 rounded-lg ">Adicionar</button>
