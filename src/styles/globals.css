@@ -12,6 +12,13 @@ body{
     overflow: hidden;
 }
 
+@media print {
+    /* Ocultar a barra de endereço durante a impressão */
+    #site-header {
+      display: none !important;
+    }
+  }
+
 /* width */
 ::-webkit-scrollbar {
     width: 10px;
