@@ -14,7 +14,8 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { Item } from "@/components/dadosTitular";
-import PrintButton from "@/Documents/convalescenca/contrato/PrintButton";
+import PrintButtonContrato from "@/Documents/convalescenca/contrato/PrintButton";
+import PrintButtonComprovante from "@/Documents/convalescenca/comprovante/PrintButton";
 
 
 
@@ -162,7 +163,7 @@ async function editarRegistro() {
             return;
         }
 try {
-    await toast.promise(
+  const response = await toast.promise(
         api.post('/convalescencia/novo', {
             id_contrato: dadosassociado?.contrato.id_contrato,
             id_associado: dadosassociado?.id_associado,
@@ -171,7 +172,7 @@ try {
             nome: listaConv.nome,
             cpf_cnpj: listaConv.cpf_cnpj,
             data: listaConv.data,
-            status: listaConv.status,
+            status: "ABERTO",
             forma_pag: listaConv.forma_pag,
             logradouro: listaConv.logradouro,
             numero: listaConv.numero,
@@ -204,7 +205,8 @@ try {
         }
     )
 
-    
+    setarListaConv({...listaConv,id_conv:response.data.id_conv})
+    console.log(response.data.id_conv)
 } catch (error) {
     console.log(error)
 }
@@ -547,7 +549,20 @@ try {
 
 {documento && <div className="flex flex-col w-full rounded-lg p-6   gap-5">
                         <div className="flex flex-row text-white gap-6 w-full">
-                        <PrintButton
+                        <PrintButtonContrato
+                         nome ={listaConv.nome ?? ''}
+                         cpf={listaConv.cpf_cnpj?? ''}
+                         rg={listaConv.cpf_cnpj??''}
+                         logradouro={listaConv.logradouro??''}
+                         bairro={listaConv.bairro??''}
+                         cidade={listaConv.cidade??''}
+                         uf={listaConv.uf??''}
+                         telefone={''}
+                         contrato={Number(listaConv.id_contrato)}
+                         material ={(listaConv.convalescenca_prod??[]).map(item=>item.descricao).join(', ')}
+                         
+                        />
+                         <PrintButtonComprovante
                          nome ={listaConv.nome ?? ''}
                          cpf={listaConv.cpf_cnpj?? ''}
                          rg={listaConv.cpf_cnpj??''}
