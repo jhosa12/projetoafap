@@ -4,6 +4,10 @@
 import React, { useRef } from 'react';
 import ReactToPrint from 'react-to-print';
 import DocumentTemplate from './DocumentTemplate';
+import { LiaFileContractSolid } from "react-icons/lia";
+
+
+
 
 interface DadosProps{
     nome:string, 
@@ -34,7 +38,12 @@ interface DadosProps{
   return (
     <div>
       <ReactToPrint
-        trigger={() => <button className='text-white'>Gerar Contrato de Compromisso</button>}
+        trigger={() =>   <div className="relative inline-flex  w-full">
+        <span   className="uppercase flex justify-center  p-2 w-full z-20 text-sm  rounded-s-lg rounded-s-gray-100 rounded-s-2 border bg-gray-700 border-gray-600 placeholder-gray-400 text-white " ><LiaFileContractSolid size={20}/></span>
+        <button type="button" className="absolute  flex justify-center items-center top-0 start-10 p-2 h-full text-sm font-medium text-white  rounded-e-lg border border-blue-700 focus:ring-4 focus:outline-none  bg-blue-600 hover:bg-blue-700 ">
+         CONTRATO
+    </button>
+    </div>}
         content={() => componentRef.current}
       />
       <div className='text-white' style={{ display: 'none' }}>
