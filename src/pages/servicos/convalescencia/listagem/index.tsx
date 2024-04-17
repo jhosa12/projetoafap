@@ -17,8 +17,8 @@ interface ConvProps {
     id_conv: number,
     id_contrato: number,
     id_associado: number,
-    id_contrato_st: number,
-    tipo_entrada: number,
+    id_contrato_st: string,
+    tipo_entrada: string,
     nome: string,
     cpf_cnpj: string,
     data: Date,
@@ -52,6 +52,24 @@ interface ConvProps {
             nome:string
         }
 
+    },
+    convalescenca_prod:{
+        id_conv_prod:number,
+        id_conv:number,
+        id_produto:number,
+        descricao:string,
+        unidade:string,
+        grupo:string,
+        data:Date,
+        data_dev:Date,
+        quantidade:number,
+        valor:number,
+        descontos:number,
+        total:number,
+        hora:Date,
+        cortesia:string,
+        retornavel :string,
+        status :string
     }
 }
 
@@ -80,7 +98,8 @@ export default function Convalescente() {
         if(!input){
             const response = await api.post("/convalescencia/listar")
            setConv(response.data)
-            console.log(response.data)
+           console.log(response.data)
+            
         }
         else if(criterio==='Contrato'){
          const response = await api.post("/convalescencia/listar",{
@@ -119,6 +138,7 @@ export default function Convalescente() {
         }
       )
      listarConv()
+     setarListaConv({id_conv:null})
      setExcluir(false)
         
     }
@@ -189,7 +209,44 @@ async function receberDevolucao(id_conv:number){
   </svg></button>
         </div>
         </form>
-         <Link className="inline-flex justify-center items-center text-white bg-green-600 p-1 px-2 rounded-lg" href='/servicos/convalescencia/novoregistro'>
+         <Link 
+         onClick={()=>setarListaConv({
+            bairro:'',
+            bairro_r:'',
+            cep:'',
+            cep_r:'',
+            cidade:'',
+            cidade_r:'',
+            complemento:'',
+            complemento_r:'',
+            contrato:{associado:{nome:''},carencia:'',situacao:''},
+            convalescenca_prod:[],
+            cpf_cnpj:'',
+            data:new Date(''),
+            data_inc:new Date(''),
+            descontos:null,
+            forma_pag:'',
+            hora_inc:new Date(''),
+            id_associado:null,
+            id_contrato:null,
+            id_contrato_st:'',
+            id_conv:null,
+            logradouro:'',
+            logradouro_r:'',
+            nome:'',
+            numero:null,
+            numero_r:null,
+            obs:'',
+            status:'',
+            subtotal:null,
+            tipo_entrada:'',
+            total:null,
+            uf:'',
+            uf_r:'',
+            usuario:''
+                 })}
+         className="inline-flex justify-center items-center text-white bg-green-600 p-1 px-2 rounded-lg"
+          href='/servicos/convalescencia/novoregistro'>
          <MdAdd size={22}/>Add
          </Link>  
     </div>
@@ -270,9 +327,16 @@ async function receberDevolucao(id_conv:number){
                                     </td>
                                     <td className="px-8 py-1">
                                         <div className="flex flex-row w-full gap-2">
-                                            <button data-tooltip-id="toolId" data-tooltip-content={'Editar Dados'} className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white">
+                                            <Link
+                                            onClick={()=>setarListaConv({
+                                               ...item,convalescenca_prod:[{...item.convalescenca_prod}]
+                                            })}
+                                             data-tooltip-id="toolId"
+                                              data-tooltip-content={'Editar Dados'} 
+                                              className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white"
+                                              href='/servicos/convalescencia/novoregistro'>
                                                 <LuFolderEdit size={18} />
-                                            </button>
+                                            </Link>
                                             <button onClick={()=>receberDevolucao(item.id_conv)} data-tooltip-id="toolId" data-tooltip-content={'Receber Devolução'} className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
                                             <RiUserReceived2Line size={18} />
                                             </button>
@@ -303,9 +367,16 @@ async function receberDevolucao(id_conv:number){
                                     </td>
                                     <td className="px-8 py-1">
                                         <div className="flex flex-row w-full gap-2">
-                                            <button data-tooltip-id="toolId" data-tooltip-content={'Editar Dados'} className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white">
+                                        <Link
+                                            onClick={()=>setarListaConv({
+                                               ...item,convalescenca_prod:[{...item.convalescenca_prod}]
+                                            })}
+                                             data-tooltip-id="toolId"
+                                              data-tooltip-content={'Editar Dados'} 
+                                              className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white"
+                                              href='/servicos/convalescencia/novoregistro'>
                                                 <LuFolderEdit size={18} />
-                                            </button>
+                                            </Link>
                                             <button disabled data-tooltip-id="toolId" data-tooltip-content={'Material Devolvido'} className="text-green-500  p-1 rounded-lg ">
                                             <IoMdCheckmarkCircle size={19} />
                                             </button>
@@ -335,9 +406,16 @@ async function receberDevolucao(id_conv:number){
                                     </td>
                                     <td className="px-8 py-1">
                                         <div className="flex flex-row w-full gap-2">
-                                            <button data-tooltip-id="toolId" data-tooltip-content={'Editar Dados'} className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white">
+                                        <Link
+                                            onClick={()=>setarListaConv({
+                                               ...item,convalescenca_prod:[{...item.convalescenca_prod}]
+                                            })}
+                                             data-tooltip-id="toolId"
+                                              data-tooltip-content={'Editar Dados'} 
+                                              className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white"
+                                              href='/servicos/convalescencia/novoregistro'>
                                                 <LuFolderEdit size={18} />
-                                            </button>
+                                            </Link>
                                            {item.status ==="ABERTO"? <button onClick={()=>receberDevolucao(item.id_conv)} data-tooltip-id="toolId" data-tooltip-content={'Receber Devolução'} className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
                                             <RiUserReceived2Line size={18} />
                                             </button>:  <button disabled data-tooltip-id="toolId" data-tooltip-content={'Material Devolvido'} className="text-green-500  p-1 rounded-lg ">

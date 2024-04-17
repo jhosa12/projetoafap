@@ -14,7 +14,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { Item } from "@/components/dadosTitular";
-import PrintButton from "@/components/testePrint/PrintButton";
+import PrintButton from "@/Documents/convalescenca/contrato/PrintButton";
 
 
 
@@ -285,7 +285,7 @@ export default function GerarOS() {
                             </div>
                             <div className="flex flex-col col-span-1 ">
                                 <label className="block  text-xs font-medium  text-white">Número</label>
-                                <input value={listaConv.numero} onChange={e => setarListaConv({ numero: Number(e.target.value) })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                <input value={listaConv.numero??''} onChange={e => setarListaConv({ numero: Number(e.target.value) })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                             </div>
                             <div className="flex flex-col col-span-1 ">
                                 <label className="block  text-xs font-medium  text-white">Complemento</label>
@@ -323,7 +323,7 @@ export default function GerarOS() {
                             </div>
                             <div className="flex flex-col col-span-1 ">
                                 <label className="block  text-xs font-medium  text-white">Número</label>
-                                <input value={listaConv.numero_r} onChange={e => setarListaConv({ numero_r: Number(e.target.value) })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                <input value={listaConv.numero_r??''} onChange={e => setarListaConv({ numero_r: Number(e.target.value) })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                             </div>
                             <div className="flex flex-col col-span-1 ">
                                 <label className="block  text-xs font-medium  text-white">Bairro</label>
