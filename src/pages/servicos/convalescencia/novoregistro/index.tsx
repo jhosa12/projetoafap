@@ -73,7 +73,83 @@ export default function GerarOS() {
 
 
 
+async function editarRegistro() {
+    if (!listaConv.nome || !listaConv.logradouro) {
+        toast.info('Preencha os campos obrigatórios');
+        return;
+    }
 
+    if (listaConv.convalescenca_prod && listaConv.convalescenca_prod.length === 0) {
+        toast.info('Adicione o Produto Desejado!');
+        return;
+    }
+ const produto = listaConv.convalescenca_prod && listaConv.convalescenca_prod[0]
+ console.log(produto)
+    
+    await toast.promise(
+       
+        api.put('/convalescencia/editar', {
+         
+            id_conv:listaConv.id_conv,
+            id_contrato: listaConv.id_contrato,
+            id_associado: listaConv.id_associado,
+            id_contrato_st: listaConv.id_contrato_st,
+            tipo_entrada: listaConv.tipo_entrada,
+            nome: listaConv.nome,
+            cpf_cnpj: listaConv.cpf_cnpj,
+            data: new Date(listaConv.data??''),
+            status: listaConv.status,
+            forma_pag: listaConv.forma_pag,
+            logradouro: listaConv.logradouro,
+            numero: listaConv.numero,
+            complemento: listaConv.complemento,
+            bairro: listaConv.bairro,
+            cep: listaConv.cep,
+            cidade: listaConv.cidade,
+            uf: listaConv.uf,
+            subtotal: listaConv.subtotal,
+            descontos: listaConv.descontos,
+            total: listaConv.total,
+            logradouro_r: listaConv.logradouro_r,
+            numero_r: listaConv.numero_r,
+            complemento_r: listaConv.complemento_r,
+            bairro_r: listaConv.bairro_r,
+            cep_r: listaConv.cep_r,
+            cidade_r: listaConv.cidade_r,
+            uf_r: listaConv.uf_r,
+            data_inc:listaConv.data && new Date(listaConv.data_inc??''),
+            hora_inc: new Date(listaConv.hora_inc??''),
+            usuario: listaConv.usuario,
+            obs: listaConv.obs,
+            convalescenca_prod: {
+                
+                id_produto:produto?.id_produto,
+                descricao:produto?.descricao,
+                unidade:produto?.unidade,
+                grupo:produto?.grupo,
+                data:new Date(produto?.data??''),
+                data_dev:new Date(produto?.data_dev??''),
+                quantidade:produto?.quantidade,
+                valor:produto?.valor,
+                descontos:produto?.descontos,
+                total:produto?.total,
+                hora:new Date(produto?.hora??''),
+                cortesia:produto?.cortesia,
+                retornavel :produto?.retornavel,
+                status :produto?.status
+}
+          
+           
+        }),
+        {
+            error: 'Erro ao atualizar dados',
+            pending: 'Atualizando Dados',
+            success: 'Dados Atualizados com Sucesso'
+        }
+    )
+
+    
+}
 
     async function adicionarNovoRegistro() {
         if (!listaConv.nome || !listaConv.logradouro) {
@@ -85,49 +161,54 @@ export default function GerarOS() {
             toast.info('Adicione o Produto Desejado!');
             return;
         }
+try {
+    await toast.promise(
+        api.post('/convalescencia/novo', {
+            id_contrato: dadosassociado?.contrato.id_contrato,
+            id_associado: dadosassociado?.id_associado,
+            id_contrato_st: listaConv.id_contrato_st,
+            tipo_entrada: listaConv.tipo_entrada,
+            nome: listaConv.nome,
+            cpf_cnpj: listaConv.cpf_cnpj,
+            data: listaConv.data,
+            status: listaConv.status,
+            forma_pag: listaConv.forma_pag,
+            logradouro: listaConv.logradouro,
+            numero: listaConv.numero,
+            complemento: listaConv.complemento,
+            bairro: listaConv.bairro,
+            cep: listaConv.cep,
+            cidade: listaConv.cidade,
+            uf: listaConv.uf,
+            subtotal: listaConv.subtotal,
+            descontos: listaConv.descontos,
+            total: listaConv.total,
+            logradouro_r: listaConv.logradouro_r,
+            numero_r: listaConv.numero_r,
+            complemento_r: listaConv.complemento_r,
+            bairro_r: listaConv.bairro_r,
+            cep_r: listaConv.cep_r,
+            cidade_r: listaConv.cidade_r,
+            uf_r: listaConv.uf_r,
+            data_inc: listaConv.data_inc,
+            hora_inc: listaConv.hora_inc,
+            usuario: usuario?.nome,
+            obs: listaConv.obs,
+            convalescenca_prod: listaConv.convalescenca_prod 
 
-        await toast.promise(
-            api.post('/convalescencia/novo', {
-                id_contrato: dadosassociado?.contrato.id_contrato,
-                id_associado: dadosassociado?.id_associado,
-                id_contrato_st: listaConv.id_contrato_st,
-                tipo_entrada: listaConv.tipo_entrada,
-                nome: listaConv.nome,
-                cpf_cnpj: listaConv.cpf_cnpj,
-                data: listaConv.data,
-                status: listaConv.status,
-                forma_pag: listaConv.forma_pag,
-                logradouro: listaConv.logradouro,
-                numero: listaConv.numero,
-                complemento: listaConv.complemento,
-                bairro: listaConv.bairro,
-                cep: listaConv.cep,
-                cidade: listaConv.cidade,
-                uf: listaConv.uf,
-                subtotal: listaConv.subtotal,
-                descontos: listaConv.descontos,
-                total: listaConv.total,
-                logradouro_r: listaConv.logradouro_r,
-                numero_r: listaConv.numero_r,
-                complemento_r: listaConv.complemento_r,
-                bairro_r: listaConv.bairro_r,
-                cep_r: listaConv.cep_r,
-                cidade_r: listaConv.cidade_r,
-                uf_r: listaConv.uf_r,
-                data_inc: listaConv.data_inc,
-                hora_inc: listaConv.hora_inc,
-                usuario: usuario?.nome,
-                obs: listaConv.obs,
-                convalescenca_prod: listaConv.convalescenca_prod
+        }),
+        {
+            error: 'Erro ao cadastrar',
+            pending: 'Salvando Dados',
+            success: 'Dados Registrados com Sucesso'
+        }
+    )
 
-            }),
-            {
-                error: 'Erro ao cadastrar',
-                pending: 'Salvando Dados',
-                success: 'Dados Registrados com Sucesso'
-            }
-        )
-
+    
+} catch (error) {
+    console.log(error)
+}
+      
     }
 
 
@@ -246,9 +327,11 @@ export default function GerarOS() {
                         <li className="me-2">
                             <button type="button" onClick={() => { setUsuarioMaterial(false), setMaterialUsuario(false), setDocumento(true) }} className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Documentação</button>
                         </li>
-                        <li className="ml-auto flex items-center mr-2">
-                            <button type="button" onClick={() => adicionarNovoRegistro()} className="inline-flex p-2 text-white font-semibold rounded-lg bg-green-600 gap-1">Salvar<HiOutlineSave size={22} /></button>
-                        </li>
+                       {!listaConv.editar ? <li className="ml-auto flex items-center mr-2">
+                            <button type="button" onClick={() => adicionarNovoRegistro()} className="inline-flex p-2 text-white font-semibold rounded-lg uppercase bg-green-600 gap-1">Salvar<HiOutlineSave size={22} /></button>
+                        </li>:<li className="ml-auto flex items-center mr-2">
+                            <button type="button" onClick={() => editarRegistro()} className="inline-flex p-2 text-white font-semibold rounded-lg uppercase bg-yellow-600 gap-1">Gravar Alterações<HiOutlineSave size={22} /></button>
+                        </li>}
                     </ul>
                     {usuarioMaterial && <>
                         {dadosassociado?.id_associado && <div className="flex w-full p-2  text-lg  text-white">

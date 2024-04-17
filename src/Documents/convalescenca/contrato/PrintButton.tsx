@@ -8,8 +8,6 @@ import { LiaFileContractSolid } from "react-icons/lia";
 import { AuthContext } from '@/contexts/AuthContext';
 
 
-
-
 interface DadosProps{
     nome:string, 
     cpf:string,

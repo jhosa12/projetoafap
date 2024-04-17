@@ -54,7 +54,6 @@ interface ConvProps {
 
     },
     convalescenca_prod:{
-        id_conv_prod:number,
         id_conv:number,
         id_produto:number,
         descricao:string,
@@ -243,7 +242,8 @@ async function receberDevolucao(id_conv:number){
             total:null,
             uf:'',
             uf_r:'',
-            usuario:''
+            usuario:'',
+            editar:false
                  })}
          className="inline-flex justify-center items-center text-white bg-green-600 p-1 px-2 rounded-lg"
           href='/servicos/convalescencia/novoregistro'>
@@ -329,7 +329,7 @@ async function receberDevolucao(id_conv:number){
                                         <div className="flex flex-row w-full gap-2">
                                             <Link
                                             onClick={()=>setarListaConv({
-                                               ...item,convalescenca_prod:[{...item.convalescenca_prod}]
+                                               ...item,convalescenca_prod:[{...item.convalescenca_prod}],editar:true
                                             })}
                                              data-tooltip-id="toolId"
                                               data-tooltip-content={'Editar Dados'} 
@@ -369,7 +369,7 @@ async function receberDevolucao(id_conv:number){
                                         <div className="flex flex-row w-full gap-2">
                                         <Link
                                             onClick={()=>setarListaConv({
-                                               ...item,convalescenca_prod:[{...item.convalescenca_prod}]
+                                               ...item,convalescenca_prod:[{...item.convalescenca_prod}],editar:true
                                             })}
                                              data-tooltip-id="toolId"
                                               data-tooltip-content={'Editar Dados'} 
@@ -408,7 +408,7 @@ async function receberDevolucao(id_conv:number){
                                         <div className="flex flex-row w-full gap-2">
                                         <Link
                                             onClick={()=>setarListaConv({
-                                               ...item,convalescenca_prod:[{...item.convalescenca_prod}]
+                                               ...item,convalescenca_prod:[{...item.convalescenca_prod}],editar:true
                                             })}
                                              data-tooltip-id="toolId"
                                               data-tooltip-content={'Editar Dados'} 

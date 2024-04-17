@@ -320,6 +320,7 @@ interface ArrayProdutoProps {
     valor_total: number | null
 }
 interface ConvProps {
+    editar:boolean
     id_conv: number | null,
     id_contrato: number|null,
     id_associado: number|null,
