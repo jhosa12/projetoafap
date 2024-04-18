@@ -205,7 +205,7 @@ try {
         }
     )
 
-    setarListaConv({...listaConv,id_conv:response.data.id_conv})
+  
     console.log(response.data.id_conv)
 } catch (error) {
     console.log(error)
