@@ -25,7 +25,7 @@ import { FaHandshake } from "react-icons/fa";
 import { MenuLateral } from "@/components/menu";
 import { canSRRAuth } from "@/utils/canSSRAuth";
 import Head from "next/head";
-
+import PrintButtonContrato from "@/Documents/contratoAdesão/PrintButton";
 
 
 interface MensalidadeProps{
@@ -52,6 +52,7 @@ export default function AdmContrato(){
   const [dados,setDados] =useState(true)
   const [historico,setHistorico] = useState(false)
   const [dependentes,setDependentes] =useState(false)
+  const[documentos,setDocumentos] = useState(false)
   const [checkMensal,setCheck] = useState(false)
   const [checkDependente,setCheckDependente] = useState(false)
     const tabelaRef = useRef<HTMLTableElement>(null)
@@ -348,19 +349,22 @@ async function atualizarObs() {
 <div className="flex-col w-full border  rounded-lg shadow  border-gray-700">
     <ul className="flex flex-wrap text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800"  role="tablist">
         <li className="me-2">
-            <button  type="button" onClick={()=>{setDados(true),setDependentes(false),setHistorico(false)}}   className="inline-block p-4 font-semibold rounded-ss-lg  bg-gray-800 hover:bg-gray-700 text-blue-500">Dados</button>
+            <button  type="button" onClick={()=>{setDados(true),setDependentes(false),setHistorico(false),setDocumentos(false)}}   className="inline-block p-4 font-semibold rounded-ss-lg  bg-gray-800 hover:bg-gray-700 text-blue-500">Dados</button>
         </li>
         <li className="me-2">
             <button type="button" onClick={()=>mensalidadeSet()}    className="inline-block p-4  hover:bg-gray-700 hover:text-gray-300">Histórico/Movimentação</button>
         </li>
         <li className="me-2">
-            <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Dependentes</button>
+            <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false),setDocumentos(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Dependentes</button>
         </li>
         <li className="me-2">
-            <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Carteiras</button>
+            <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false),setDocumentos(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Carteiras</button>
         </li>
         <li className="me-2">
-            <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Óbitos</button>
+            <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false),setDocumentos(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Óbitos</button>
+        </li>
+        <li className="me-2">
+            <button type="button" onClick={()=>{setDados(false),setDependentes(false),setHistorico(false),setDocumentos(true)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Documentos</button>
         </li>
     </ul>
     <div className="flex flex-col">
@@ -513,7 +517,6 @@ async function atualizarObs() {
    </div>
 )}
 
-
         {historico && (
            
 <div   className="flex flex-col rounded-lg  max-h-[calc(100vh-220px)]  p-2 shadow-md sm:rounded-lg">
@@ -609,7 +612,7 @@ async function atualizarObs() {
         </thead>
         <tbody  >
      
-      
+        
           {dadosassociado?.mensalidade.map((item, index) => {
 
 const idAcordoMudou = currentAcordoId !== item.status;
@@ -1046,8 +1049,22 @@ currentAcordoId = item.status;
     
     </table>
 </div>)}
+
+{
+    documentos && <div className="flex flex-col w-full rounded-lg p-6   gap-5">
+    <div className="flex flex-row text-white gap-6 w-full">
+    <PrintButtonContrato/>
+    
     </div>
-</div> 
+
+    </div>
+}
+
+
+
+
+    </div>
+</div>
         </div>
         </div>
         </>

@@ -564,14 +564,7 @@ try {
                         />
                          <PrintButtonComprovante
                          nome ={listaConv.nome ?? ''}
-                         cpf={listaConv.cpf_cnpj?? ''}
-                         rg={listaConv.cpf_cnpj??''}
-                         logradouro={listaConv.logradouro??''}
-                         bairro={listaConv.bairro??''}
-                         cidade={listaConv.cidade??''}
-                         uf={listaConv.uf??''}
-                         telefone={''}
-                         contrato={Number(listaConv.id_contrato)}
+                        condicao=""
                          material ={(listaConv.convalescenca_prod??[]).map(item=>item.descricao).join(', ')}
                          
                         />

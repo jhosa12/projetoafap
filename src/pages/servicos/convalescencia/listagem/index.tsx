@@ -12,7 +12,7 @@ import { MdAdd } from "react-icons/md";
 
 import { Tooltip } from 'react-tooltip';
 import Link from "next/link";
-
+import PrintButtonComprovante from "@/Documents/convalescenca/comprovante/PrintButton";
 interface ConvProps {
     id_conv: number,
     id_contrato: number,
@@ -81,6 +81,7 @@ export default function Convalescente() {
     const [excluir,setExcluir]=useState(false)
     const [aberto,setAberto] =useState(true)
     const [entregue,setEntregue] =useState(true)
+    const [modalComprovante,setComprovante] =useState(false)
 
     useEffect(() => {
         try {
@@ -97,7 +98,7 @@ export default function Convalescente() {
         if(!input){
             const response = await api.post("/convalescencia/listar")
            setConv(response.data)
-           console.log(response.data)
+         
             
         }
         else if(criterio==='Contrato'){
@@ -144,7 +145,7 @@ export default function Convalescente() {
 
 async function receberDevolucao(id_conv:number){
 
-    await toast.promise(
+  const response  = await toast.promise(
         api.put("/convalescencia/receber",
             {
                 id_conv,
@@ -157,6 +158,12 @@ async function receberDevolucao(id_conv:number){
         }
         
     )
+    console.log(response.data)
+    if(response){
+        setComprovante(true)
+
+    }
+   
     setInput('')
     listarConv()
 }
@@ -272,12 +279,35 @@ async function receberDevolucao(id_conv:number){
         </div>
     </div>
 </div>):''}
-
-
-
-
             </div>
-
+            {modalComprovante?(<div  className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div className="flex items-center justify-center p-2 w-full h-full">
+        <div className="relative rounded-lg shadow bg-gray-800">
+            <button type="button" onClick={()=>setComprovante(!modalComprovante)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+             <button  type="button" onClick={()=>{}} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                    <IoIosClose size={30}/>
+                </button>
+            </button>
+            <div className="p-4 md:p-5 text-center">
+                <div className="flex w-full justify-center items-center">
+                  <TbAlertTriangle className='text-gray-400' size={60}/>
+                </div>
+                <h3 className="mb-5 text-lg font-normal  text-gray-400">Deseja Imprimir Comprovante?</h3>
+               <div className="flex flex-row gap-6 ">
+                <PrintButtonComprovante
+                         nome ={listaConv.nome ?? ''}
+                        condicao=""
+                         material ={(listaConv.convalescenca_prod??[]).map(item=>item.descricao).join(', ')}
+                         
+                        />
+                <button onClick={()=>setComprovante(!modalComprovante)}  type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
+           
+                </div>
+           
+            </div>
+        </div>
+    </div>
+</div>):''}
             <div className="flex w-full justify-center p-1 max-h-[calc(100vh-150px)]">{/*DIV DA TABELA*/}
                 <table
                     className="block overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
@@ -337,7 +367,9 @@ async function receberDevolucao(id_conv:number){
                                               href='/servicos/convalescencia/novoregistro'>
                                                 <LuFolderEdit size={18} />
                                             </Link>
-                                            <button onClick={()=>receberDevolucao(item.id_conv)} data-tooltip-id="toolId" data-tooltip-content={'Receber Devolução'} className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
+                                            <button onClick={()=>{setarListaConv({
+                                               ...item,convalescenca_prod:[{...item.convalescenca_prod}],editar:true
+                                            }), receberDevolucao(item.id_conv)}} data-tooltip-id="toolId" data-tooltip-content={'Receber Devolução'} className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
                                             <RiUserReceived2Line size={18} />
                                             </button>
                                             <button data-tooltip-id="toolId" data-tooltip-content={'Excluir'} onClick={()=>{setExcluir(true);setarListaConv({id_conv:item.id_conv})}} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
@@ -416,7 +448,9 @@ async function receberDevolucao(id_conv:number){
                                               href='/servicos/convalescencia/novoregistro'>
                                                 <LuFolderEdit size={18} />
                                             </Link>
-                                           {item.status ==="ABERTO"? <button onClick={()=>receberDevolucao(item.id_conv)} data-tooltip-id="toolId" data-tooltip-content={'Receber Devolução'} className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
+                                           {item.status ==="ABERTO"?     <button onClick={()=>{setarListaConv({
+                                               ...item,convalescenca_prod:[{...item.convalescenca_prod}],editar:true
+                                            }), receberDevolucao(item.id_conv)}} data-tooltip-id="toolId" data-tooltip-content={'Receber Devolução'} className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
                                             <RiUserReceived2Line size={18} />
                                             </button>:  <button disabled data-tooltip-id="toolId" data-tooltip-content={'Material Devolvido'} className="text-green-500  p-1 rounded-lg ">
                                             <IoMdCheckmarkCircle size={19} />

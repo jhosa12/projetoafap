@@ -6,31 +6,15 @@ import logo from "../../../../public/logoafap.png"
 import React from 'react';
 interface DadosProps{
     nome:string, 
-    cpf:string,
-    rg:string,
-    logradouro:string,
-    bairro:string,
-    cidade:string,
-    uf:string,
-    telefone:string,
-    contrato:number,
-    material:string
+    material:string,
+    condicao:string
 }
 
 
 class DocumentTemplate extends React.Component<DadosProps> {
    
   render() {
-    const {  nome, 
-        cpf,
-        rg,
-        logradouro,
-        bairro,
-        cidade,
-        uf,
-        telefone,
-        contrato,
-        material } = this.props;
+    const {  nome, material,condicao } = this.props;
 
    
          
@@ -41,21 +25,27 @@ class DocumentTemplate extends React.Component<DadosProps> {
         <Image className="flex w-1/2 h-16  " src={logo} alt="" />
         </div>
         <h2 className='text-xl text-center font-semibold mt-2'>COMPROVANTE</h2>
-        <span className="px-2 pt-2" >Data de Devolução:</span>
+        <span className="px-2 pt-2" >Nome do Cliente:{nome}</span>
+        <span className="px-2 pt-2" >Data de Devolução:{new Date().toLocaleDateString('pt-BR')}</span>
         <span className="px-2 pt-2 mx-5">Itens Devolvidos:</span>
         <ul className="list-item px-2 mx-3 font-semibold">
-          <li className="p-2 mx-2 ">CADEIRA DE RODAS</li>
+          <li className="p-2 mx-2 ">{material}</li>
 
         </ul>
-        <span className="p-2">Condição do(s) Item(s):</span>
+        <span className="p-2">Condição do(s) Item(s):{condicao}</span>
         <span className="pt-2 px-2 text-center">Assinatura do Recebedor</span>
         <div className="flex  w-full py-2 justify-center items-center  ">
           <span className="flex w-10/12 border-b-[1px] p-2 border-black"></span>
         </div>
-        <span className="p-2">Cedro - {new Date().toLocaleDateString('pt-BR',{month:'long'})}</span>
-        <p className=" mx-5 p-2 text-justify">Este comprovante confirma a devolução dos itens listados acima pelo paciente mencionado
+       
+        <p className=" mx-5 p-2 text-justify">Este comprovante confirma a devolução dos itens listados acima pelo cliente mencionado
            na data indicada. Os itens foram verificados quanto à sua condição e quantidade conforme
             mencionado acima.</p>
+            <span className="p-2 text-center">Cedro - {new Date().toLocaleDateString('pt-BR',{
+           weekday: 'long', // Dia da semana por extenso
+            year: 'numeric', // Ano completo
+            month: 'long', // Mês por extenso
+            day: 'numeric'})}</span>
       </div>
     );
   }
