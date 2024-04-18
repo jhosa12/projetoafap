@@ -116,7 +116,9 @@ type ContratoProps = {
     data_vencimento: Date,
     n_parcelas: number,
     origem: string,
-    supervisor: string
+    supervisor: string,
+    convalescencia:Array<ConvProps>
+
 
 }
 type AcordoProps = {
@@ -154,7 +156,7 @@ type AssociadoProps = {
     contrato: ContratoProps,
     dependentes: Array<DependentesProps>
     acordo: Array<AcordoProps>
-
+   
 }
 type AuthContextData = {
     usuario: UserProps | undefined,
@@ -481,7 +483,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const response = await api.post('/associado', {
             id_associado: Number(data.id_associado)
         })
-
+       
         setDadosAssociado(response.data);
     }
     return (
