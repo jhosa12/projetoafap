@@ -373,18 +373,23 @@ async function atualizarObs() {
               <h2 className="inline-flex gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">
                 {dadosassociado?.contrato.id_contrato}-{dadosassociado?.nome}
                  <span>PLANO:
-                {dadosassociado.contrato.convalescencia.map(item=>item.convalescenca_prod.descricao)}
-                <span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato.plano}
-                </span>
+               
+                <span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato.plano}</span>
                 </span>
               
             <span className={`inline-flex items-center  text-sm font-medium px-2.5 py-0.5 rounded-full ${dadosassociado?.contrato.situacao==='ATIVO'?"bg-green-900 text-green-300":"bg-red-900 text-red-300"}`}>
             <span className={`w-2 h-2 me-1 ${dadosassociado?.contrato.situacao==='ATIVO'?"bg-green-500 ":"bg-red-500"}  rounded-full`}></span>
             {dadosassociado?.contrato.situacao}
             </span>
-            <button data-tooltip-id="my-tooltip" data-tooltip-content="Possui Convalescente"className="text-yellow-500">
+
+            {dadosassociado.contrato.convalescencia.map(item=>(
+                <>
+                {!item.id_dependente || item.id_dependente===null &&<button data-tooltip-id="my-tooltip" data-tooltip-content="Possui Convalescente"className="text-yellow-500">
                                 <TbWheelchair size={20} />
-                                </button>
+                                </button>}
+                                </>
+            ))}
+            
                 </h2>
           <div className="flex w-full flex-row gap-2">
            
@@ -1047,9 +1052,9 @@ currentAcordoId = item.status;
                                     }
                                 })}} className="font-medium  text-blue-500 hover:underline">Edit</button>
 
-                                <button data-tooltip-id="id_dependente" data-tooltip-content="Possui Convalescente"className="text-yellow-500">
+                               {item.convalescenca?.convalescenca_prod && <button data-tooltip-id="id_dependente" data-tooltip-content="Possui Convalescente"className="text-yellow-500">
                                 <TbWheelchair size={19} />
-                                </button>
+                                </button>}
                                 </div>
              </td>
             </tr>
