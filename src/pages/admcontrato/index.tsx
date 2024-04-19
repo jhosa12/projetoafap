@@ -26,7 +26,7 @@ import { MenuLateral } from "@/components/menu";
 import { canSRRAuth } from "@/utils/canSSRAuth";
 import Head from "next/head";
 import PrintButtonContrato from "@/Documents/contratoAdesão/PrintButton";
-
+import { TbWheelchair } from "react-icons/tb";
 
 interface MensalidadeProps{
     parcela_n:number,
@@ -188,10 +188,9 @@ async function atualizarObs() {
         toast.warn(`Possui ${x} mensalidades Vencidas`);
       }
 
-      if (tabelaRef.current) {
-        // Ajusta o scrollTop para a altura total da tabela
-        tabelaRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-      }
+    if(dadosassociado?.contrato.convalescencia){
+        toast.info('Possui Material Convalescente!')
+    }
 
       setLinhasSelecionadas([])
     // Marcar o componente como desmontado quando ele for desmontado
@@ -374,7 +373,9 @@ async function atualizarObs() {
               <h2 className="inline-flex gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">
                 {dadosassociado?.contrato.id_contrato}-{dadosassociado?.nome}
                  <span>PLANO:
-                
+                {dadosassociado.contrato.convalescencia.map(item=>item.convalescenca_prod.descricao
+                   
+                )}
                 <span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato.plano}
                 </span>
                 </span>
@@ -383,6 +384,9 @@ async function atualizarObs() {
             <span className={`w-2 h-2 me-1 ${dadosassociado?.contrato.situacao==='ATIVO'?"bg-green-500 ":"bg-red-500"}  rounded-full`}></span>
             {dadosassociado?.contrato.situacao}
             </span>
+            <button data-tooltip-id="my-tooltip" data-tooltip-content="Possui Convalescente"className="text-yellow-500">
+                                <TbWheelchair size={20} />
+                                </button>
                 </h2>
           <div className="flex w-full flex-row gap-2">
            
@@ -437,7 +441,7 @@ async function atualizarObs() {
         referencia:dadosassociado.guia_rua,
         uf:dadosassociado.uf
         })}} className="absolute -right-1 -top-1 text-blue-400 "><FaEdit size={16}/></button>
-       <Tooltip id="my-tooltip"/>
+       <Tooltip className="z-30" id="my-tooltip"/>
     </div>
     <div className="flex relative  w-1/2 text-white flex-col p-4 text-sm border  rounded-lg shadow bg-gray-800 border-gray-700">
     <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO PLANO</h2>
@@ -870,6 +874,9 @@ currentAcordoId = item.status;
         <label className="relative inline-flex w-[150px] justify-center  items-center mb-1 cursor-pointer">
   <input checked={checkDependente} onChange={()=>setCheckDependente(!checkDependente)} type="checkbox" value="2" className="sr-only peer"/>
   <div className="w-9 h-5 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[7px] after:start-[5px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
+ 
+  <Tooltip className="z-30" id="id_dependente"/>
+ 
   <span className="ms-2 text-sm font-medium whitespace-nowrap text-gray-300">Exibir Excluidos</span>
 </label>
         <div className="inline-flex rounded-md shadow-sm mb-1" role="group" >
@@ -927,8 +934,8 @@ currentAcordoId = item.status;
                 <th scope="col" className="px-12 py-1">
                     PARENTESCO
                 </th> 
-                <th scope="col" className="px-[42px] py-1">
-                    <span className="sr-only">Edit</span>
+                <th scope="col" className="px-4 py-1">
+                    <span className="">Ações</span>
                 </th>
             </tr>):(
                   <tr>
@@ -954,7 +961,7 @@ currentAcordoId = item.status;
                       USUÁRIO
                   </th> 
                   <th scope="col" className="px-4 py-1">
-                      <span className="sr-only">Edit</span>
+                      <span className="">Ações</span>
                   </th>
               </tr>
             )}
@@ -1023,6 +1030,7 @@ currentAcordoId = item.status;
             
              
              <td className="px-3 py-1 ">
+                <div className="inline-flex gap-3">
                  <button onClick={(event)=>{
                                 event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                                 closeModa(
@@ -1040,6 +1048,11 @@ currentAcordoId = item.status;
                                        
                                     }
                                 })}} className="font-medium  text-blue-500 hover:underline">Edit</button>
+
+                                <button data-tooltip-id="id_dependente" data-tooltip-content="Possui Convalescente"className="text-yellow-500">
+                                <TbWheelchair size={19} />
+                                </button>
+                                </div>
              </td>
             </tr>
            ):''

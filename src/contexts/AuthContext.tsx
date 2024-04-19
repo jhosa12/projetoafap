@@ -3,6 +3,7 @@ import { api } from "../services/apiClient"
 import { destroyCookie, setCookie, parseCookies } from "nookies"
 import Router from 'next/router';
 import { decode } from 'jsonwebtoken'
+import { toast } from 'react-toastify';
 
 type CidadesProps = {
     id_cidade: number,
@@ -362,7 +363,7 @@ interface ConvProps {
         }
 
     }
-    convalescenca_prod:Array<Partial<{
+    convalescenca_prod:{
         id_conv:number,
         id_produto:number,
         descricao:string,
@@ -378,7 +379,7 @@ interface ConvProps {
         cortesia:string,
         retornavel :string,
         status :string
-    }>>
+    }
 }
 
 export const AuthContext = createContext({} as AuthContextData)
@@ -394,7 +395,7 @@ export function signOut() {
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [usuario, setUser] = useState<UserProps>()
     const isAuthenticated = !!usuario;
-    const [listaConv,setLista] = useState<Partial<ConvProps>>({convalescenca_prod:[]})
+    const [listaConv,setLista] = useState<Partial<ConvProps>>({})
     const [dadosassociado, setDadosAssociado] = useState<AssociadoProps>()
     const [data, setData] = useState<Partial<DadosCadastro>>({})
     const [mov, setMov] = useState<Partial<CaixaProps>>({})
@@ -480,11 +481,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
     async function carregarDados() {
-        const response = await api.post('/associado', {
-            id_associado: Number(data.id_associado)
-        })
-       
-        setDadosAssociado(response.data);
+        try {
+            const response = await api.post('/associado', {
+                id_associado: Number(data.id_associado)
+            })
+           
+            setDadosAssociado(response.data);
+            console.log(response.data)
+            
+        } catch (error) {
+            toast.error('Erro na requisição')
+        }
+     
     }
     return (
         <AuthContext.Provider value={{ usuario, isAuthenticated, sign, signOut, data, closeModa, dadosassociado, carregarDados, caixaMovimentacao, mov,setarServico,servico,listaConv,setarListaConv }}>
