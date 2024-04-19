@@ -327,6 +327,7 @@ interface ConvProps {
     id_conv: number | null,
     id_contrato: number|null,
     id_associado: number|null,
+    id_dependente:number|null,
     id_contrato_st:string,
     tipo_entrada: string,
     nome: string,

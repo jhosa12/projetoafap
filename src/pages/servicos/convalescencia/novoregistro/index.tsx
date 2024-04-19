@@ -70,7 +70,10 @@ export default function GerarOS() {
     const [modalDependente, setModalDependente] = useState(false)
     const [listaMaterial, setMaterial] = useState<Partial<Array<Partial<ListaMaterial>>>>([])
     const [selectProdutos, setSelect] = useState<Array<SelectProps>>([])
-    const [idDependente,setId] = useState<number | null >(null)
+  
+
+
+
 
 
 
@@ -139,6 +142,8 @@ export default function GerarOS() {
     }
 
     async function adicionarNovoRegistro() {
+
+        console.log(listaConv)
         if (!listaConv.nome || !listaConv.logradouro) {
             toast.info('Preencha os campos obrigatórios');
             return;
@@ -153,6 +158,7 @@ export default function GerarOS() {
                 api.post('/convalescencia/novo', {
                     id_contrato: dadosassociado?.contrato.id_contrato,
                     id_associado: dadosassociado?.id_associado,
+                    id_dependente:listaConv.id_dependente,
                     id_contrato_st: listaConv.id_contrato_st,
                     tipo_entrada: listaConv.tipo_entrada,
                     nome: listaConv.nome,
@@ -244,12 +250,13 @@ export default function GerarOS() {
 
         if (titular) {
             setarListaConv({
-                nome: dadosassociado?.nome,
-                data: dadosassociado?.data_nasc,
-                logradouro: dadosassociado?.endereco,
-                bairro: dadosassociado?.bairro,
-                numero: dadosassociado?.numero,
-                cidade: dadosassociado?.cidade
+                nome: dadosassociado?.nome??'',
+                data: dadosassociado?.data_nasc??new Date(),
+                logradouro: dadosassociado?.endereco??'',
+                bairro: dadosassociado?.bairro??'',
+                numero: dadosassociado?.numero??null,
+                cidade: dadosassociado?.cidade??'',
+                id_dependente:null
             })
 
         }
@@ -278,7 +285,7 @@ export default function GerarOS() {
                             <ul className="flex flex-col pt-2 overflow-y-auto text-gray-300 gap-2 ">
                                 {dadosassociado?.dependentes.map((item, index) => {
                                     return (
-                                        item.excluido !== true && <li onClick={() => { setarListaConv({ nome: item.nome, data: item.data_nasc }); setModalDependente(false) }} className="flex cursor-pointer hover:bg-gray-700 bg-gray-600 p-1 pl-2 pr-2 rounded-lg ">
+                                        item.excluido !== true && <li onClick={() => { setarListaConv({ nome: item.nome, data: item.data_nasc,id_dependente:item.id_dependente }); setModalDependente(false) }} className="flex cursor-pointer hover:bg-gray-700 bg-gray-600 p-1 pl-2 pr-2 rounded-lg ">
                                             {item.nome}
                                         </li>
                                     )
@@ -327,7 +334,7 @@ export default function GerarOS() {
                         </div>}
                         <div className="inline-flex gap-8 pl-4 pt-1">
                             <div className="flex items-center ">
-                                <input type="checkbox" checked={titular} onClick={() => { setTitular(!titular), setDependente(false) }} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                                <input type="checkbox" checked={titular} onClick={() => { setTitular(!titular), setDependente(false)}} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                                 <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">TITULAR</label>
                             </div>
                             <div className="flex items-center ">
