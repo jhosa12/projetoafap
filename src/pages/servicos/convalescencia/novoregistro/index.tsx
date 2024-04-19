@@ -149,7 +149,7 @@ export default function GerarOS() {
             return;
         }
 
-        if (!listaConv.convalescenca_prod ) {
+        if (listaMaterial && listaMaterial.length===0) {
             toast.info('Adicione o Produto Desejado!');
             return;
         }
