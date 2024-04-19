@@ -373,9 +373,7 @@ async function atualizarObs() {
               <h2 className="inline-flex gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">
                 {dadosassociado?.contrato.id_contrato}-{dadosassociado?.nome}
                  <span>PLANO:
-                {dadosassociado.contrato.convalescencia.map(item=>item.convalescenca_prod.descricao
-                   
-                )}
+                {dadosassociado.contrato.convalescencia.map(item=>item.convalescenca_prod.descricao)}
                 <span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato.plano}
                 </span>
                 </span>

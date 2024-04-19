@@ -171,8 +171,8 @@ type AuthContextData = {
     mov: Partial<CaixaProps>,
     data: Partial<DadosCadastro>,
     dadosassociado: AssociadoProps | undefined,
-    carregarDados: () => Promise<void>
-    setarListaConv:(fields:Partial<ConvProps>)=>void;
+    carregarDados: () => Promise<void>,
+    setarListaConv:(fields:Partial<ConvProps>)=>void,
     listaConv:Partial<ConvProps>
     // user:()=>void
 }
@@ -355,15 +355,7 @@ interface ConvProps {
     hora_inc: Date,
     usuario: string,
     obs: string,
-    contrato:{
-        situacao:string,
-        carencia:string,
-        associado:{
-            nome:string
-        }
-
-    }
-    convalescenca_prod:{
+    convalescenca_prod:Partial<{
         id_conv:number,
         id_produto:number,
         descricao:string,
@@ -379,7 +371,16 @@ interface ConvProps {
         cortesia:string,
         retornavel :string,
         status :string
+    }>,
+    contrato:{
+        situacao:string,
+        carencia:string,
+        associado:{
+            nome:string
+        }
+
     }
+
 }
 
 export const AuthContext = createContext({} as AuthContextData)
@@ -395,7 +396,7 @@ export function signOut() {
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [usuario, setUser] = useState<UserProps>()
     const isAuthenticated = !!usuario;
-    const [listaConv,setLista] = useState<Partial<ConvProps>>({})
+    const [listaConv,setLista] = useState<Partial<ConvProps>>({convalescenca_prod:{}})
     const [dadosassociado, setDadosAssociado] = useState<AssociadoProps>()
     const [data, setData] = useState<Partial<DadosCadastro>>({})
     const [mov, setMov] = useState<Partial<CaixaProps>>({})

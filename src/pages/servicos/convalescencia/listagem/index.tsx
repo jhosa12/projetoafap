@@ -226,7 +226,7 @@ async function receberDevolucao(id_conv:number){
             complemento:'',
             complemento_r:'',
             contrato:{associado:{nome:''},carencia:'',situacao:''},
-            convalescenca_prod:[],
+            convalescenca_prod:{},
             cpf_cnpj:'',
             data:undefined,
             data_inc:undefined,
@@ -297,7 +297,7 @@ async function receberDevolucao(id_conv:number){
                 <PrintButtonComprovante
                          nome ={listaConv.nome ?? ''}
                         condicao=""
-                         material ={(listaConv.convalescenca_prod??[]).map(item=>item.descricao).join(', ')}
+                         material ={listaConv.convalescenca_prod?.descricao??''}
                          
                         />
                 <button onClick={()=>setComprovante(!modalComprovante)}  type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
@@ -359,7 +359,7 @@ async function receberDevolucao(id_conv:number){
                                         <div className="flex flex-row w-full gap-2">
                                             <Link
                                             onClick={()=>setarListaConv({
-                                               ...item,convalescenca_prod:[{...item.convalescenca_prod}],editar:true
+                                               ...item,convalescenca_prod:{...item.convalescenca_prod},editar:true
                                             })}
                                              data-tooltip-id="toolId"
                                               data-tooltip-content={'Editar Dados'} 
@@ -368,7 +368,7 @@ async function receberDevolucao(id_conv:number){
                                                 <LuFolderEdit size={18} />
                                             </Link>
                                             <button onClick={()=>{setarListaConv({
-                                               ...item,convalescenca_prod:[{...item.convalescenca_prod}],editar:true
+                                               ...item,convalescenca_prod:{...item.convalescenca_prod},editar:true
                                             }), receberDevolucao(item.id_conv)}} data-tooltip-id="toolId" data-tooltip-content={'Receber Devolução'} className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
                                             <RiUserReceived2Line size={18} />
                                             </button>
@@ -401,7 +401,7 @@ async function receberDevolucao(id_conv:number){
                                         <div className="flex flex-row w-full gap-2">
                                         <Link
                                             onClick={()=>setarListaConv({
-                                               ...item,convalescenca_prod:[{...item.convalescenca_prod}],editar:true
+                                               ...item,convalescenca_prod:{...item.convalescenca_prod},editar:true
                                             })}
                                              data-tooltip-id="toolId"
                                               data-tooltip-content={'Editar Dados'} 
@@ -440,7 +440,7 @@ async function receberDevolucao(id_conv:number){
                                         <div className="flex flex-row w-full gap-2">
                                         <Link
                                             onClick={()=>setarListaConv({
-                                               ...item,convalescenca_prod:[{...item.convalescenca_prod}],editar:true
+                                               ...item,convalescenca_prod:{...item.convalescenca_prod},editar:true
                                             })}
                                              data-tooltip-id="toolId"
                                               data-tooltip-content={'Editar Dados'} 
@@ -449,7 +449,7 @@ async function receberDevolucao(id_conv:number){
                                                 <LuFolderEdit size={18} />
                                             </Link>
                                            {item.status ==="ABERTO"?     <button onClick={()=>{setarListaConv({
-                                               ...item,convalescenca_prod:[{...item.convalescenca_prod}],editar:true
+                                               ...item,convalescenca_prod:{...item.convalescenca_prod},editar:true
                                             }), receberDevolucao(item.id_conv)}} data-tooltip-id="toolId" data-tooltip-content={'Receber Devolução'} className="text-blue-500 hover:bg-blue-500 p-1 rounded-lg hover:text-white">
                                             <RiUserReceived2Line size={18} />
                                             </button>:  <button disabled data-tooltip-id="toolId" data-tooltip-content={'Material Devolvido'} className="text-green-500  p-1 rounded-lg ">
