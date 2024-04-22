@@ -207,6 +207,9 @@ export default function GerarOS() {
 
 
     useEffect(() => {
+        const novoArray = listaMaterial ? [...listaMaterial] : [];
+        novoArray.push({ ...listaConv.convalescenca_prod})
+        setMaterial( novoArray )
         if (!componenteMounted) {
             try {
                 const selectMateriais = async () => {
