@@ -116,8 +116,7 @@ export default function GerarOS() {
         setListaProdutos({ acrescimo: null, desconto: null, descricao_item: "", quantidade: 1, valor_total: null, valor_unit: null })
         const Total = servico.obito_itens?.reduce((total, item) => total = total + Number(item.valor_total), 0)
         setTotal(Total)
-        
-
+    
     }, [servico.obito_itens])
 
     useEffect(() => {
@@ -154,7 +153,8 @@ export default function GerarOS() {
         }
         const response =await toast.promise(
             api.post("/obitos/adicionarObito",{
-                    ...servico,hr_velorio:newDate, obito_itens:servico.obito_itens,tipo_atendimento:particular?'PARTICULAR':'ASSOCIADO'
+                    ...servico,hr_velorio:newDate, obito_itens:servico.obito_itens,tipo_atendimento:particular?'PARTICULAR':'ASSOCIADO',
+                    status:servico.listacheckida?.find(item=>item.status===false) || servico.listacheckvolta?.find(item=>item.status===false)?'PENDENTE':'FECHADO'
             }),
             {
                 error:'Erro ao Realizar Cadastro',
@@ -163,6 +163,139 @@ export default function GerarOS() {
             }
         )
     }
+
+
+
+
+async function editarObito(){
+        await toast.promise(
+            api.put('/obitos/editarObito',{
+        id_obitos:servico.id_obitos,
+        id_contrato:servico.id_contrato,
+        id_contrato_st:servico.id_contrato_st,
+        id_titular:servico.id_titular,
+        plano:servico.plano,
+        atendente:servico.atendente,
+        tipo_atendimento:servico.tipo_atendimento,
+        situacao_contrato:servico.situacao_contrato,
+        dec_obito_num:servico.dec_obito_num,
+        falecido:servico.falecido,
+        nome_falecido:servico.nome_falecido,
+        data_nascimento:servico.data_nascimento,
+        religiao:servico.religiao,
+        naturalidade:servico.naturalidade,
+        uf_naturalidade:servico.uf_naturalidade,
+        profissao:servico.profissao,
+        nacionalidade:servico.nacionalidade,
+        nome_pai:servico.nome_pai,
+        nome_mae:servico.nome_mae,
+        pai_vivo:servico.pai_vivo,
+        mae_vivo:servico.mae_vivo,
+        endereco_pais:servico.endereco_pais,
+        endereco_mae:servico.endereco_mae,
+        profissao_pai:servico.profissao_pai,
+        profissao_mae:servico.profissao_mae,
+        estadocivil_pai:servico.estadocivil_pai,
+        estadocivil_mae:servico.estadocivil_mae,
+        estado_civil:servico.estado_civil,
+        caracterista_corporal:servico.caracterista_corporal,
+        sexo:servico.sexo,
+        rg:servico.rg,
+        cpf:servico.cpf,
+        conjuge:servico.conjuge,
+        t_eleitor_perg:servico.t_eleitor_perg,
+        t_eleitor:servico.t_eleitor,
+        zona_seccao:servico.zona_seccao,
+        secao:servico.secao,
+        cidade_eleitor:servico.cidade_eleitor,
+        cemiterio:servico.cemiterio,
+        endereco_cemiterio:servico.endereco_cemiterio,
+        end_rua:servico.end_rua,
+        end_numero:servico.end_numero,
+        end_bairro:servico.end_bairro,
+        end_cidade:servico.end_cidade,
+        end_uf:servico.end_uf,
+        end_telefone:servico.end_telefone,
+        end_celular:servico.end_celular,
+        end_data_falecimento:servico.end_data_falecimento,
+        end_local_falecimento:servico.end_local_falecimento,
+        end_hora_falecimento:servico.end_hora_falecimento,
+        end_hora_informaram:servico.end_hora_informaram,
+        end_decl_obito:servico.end_decl_obito,
+        dc_laudo_med:servico.dc_laudo_med,
+        dc_nome_medico:servico.dc_nome_medico,
+        dc_crm:servico.dc_crm,
+        rd_nome:servico.rd_nome,
+        rd_endereco:servico.rd_endereco,
+        rd_numero:servico.rd_numero,
+        rd_complemento:servico.rd_complemento,
+        rd_bairro:servico.rd_bairro,
+        rd_cidade:servico.rd_cidade,
+        rd_uf:servico.rd_uf,
+        rd_telefone:servico.rd_telefone,
+        rd_celular:servico.rd_celular,
+        rd_parentesco:servico.rd_parentesco,
+        rd_rg:servico.rd_rg,
+        rd_profissao:servico.rd_profissao,
+        custo:servico.custo,
+        vl_avista:servico.vl_avista,
+        vl_aprazo:servico.vl_aprazo,
+        vl_comissao:servico.vl_comissao,
+        vl_total:servico.vl_total,
+        saldo:servico.saldo,
+        cpf_cnpj:servico.cpf_cnpj,
+        vl_servicos:servico.vl_servicos,
+        vl_recebimentos:servico.vl_recebimentos,
+        vl_saldo:servico.vl_saldo,
+        vl_produtos:servico.vl_produtos,
+        dt_sepultamento:servico.dt_sepultamento,
+        hr_sepultamento:servico.hr_sepultamento,
+        jazigo:servico.jazigo,
+        local_velorio:servico.local_velorio,
+        dt_velorio:servico.dt_velorio,
+        hr_velorio:servico.hr_velorio,
+        numero_velorio:servico.numero_velorio,
+        bairro_velorio:servico.bairro_velorio,
+        complemento:servico.complemento,
+        cidade_velorio:servico.cidade_velorio,
+        uf_velorio:servico.uf_velorio,
+        dt_retorno:servico.dt_retorno,
+        hr_retorno:servico.hr_retorno,
+        copeira:servico.copeira,
+        enfermeira:servico.enfermeira,
+        veiculo_retirada:servico.veiculo_retirada,
+        veiculo_cortejo:servico.veiculo_cortejo,
+        ct_nome:servico.ct_nome,
+        ct_livro:servico.ct_livro,
+        ct_folha:servico.ct_folha,
+        ct_termo:servico.ct_termo,
+        ct_comarca:servico.ct_comarca,
+        ct_dtreg:servico.ct_dtreg,
+        ct_end:servico.ct_end,
+        ct_bairro:servico.ct_bairro,
+        ct_munic:servico.ct_munic,
+        ct_tel:servico.ct_tel,
+        ct_compet:servico.ct_compet,
+        deixa_bens:servico.deixa_bens,
+        deixa_testamento:servico.deixa_testamento,
+        nb_aposentado:servico.nb_aposentado,
+        certidao_casado:servico.certidao_casado,
+        listacheckida:servico.listacheckida,
+        listacheckvolta:servico.listacheckvolta, 
+        status:servico.listacheckida?.find(item=>item.status===false) || servico.listacheckvolta?.find(item=>item.status===false)?'PENDENTE':'FECHADO'
+
+            }),
+            {
+                error:'Erro ao atualizar os dados',
+                pending:'Atualizando dados',
+                success:'Dados atualizados com sucesso'
+            }
+        )
+
+}
+
+
+
 
 
     async function carregarCheckList() {
@@ -323,7 +456,7 @@ export default function GerarOS() {
                             <button type="button" onClick={() => { setFalecido(false), setDeclarante(false), setObito(false), setProdutos(false), setVelorio(false), setChecagem(false),setPlano(false) }} className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Documentação</button>
                         </li>
                         <li className="ml-auto flex items-center mr-2">
-                        <button  type="button" onClick={()=>cadastrarObito()}  className="inline-flex p-2 text-white font-semibold rounded-lg bg-green-600 gap-1">Salvar<HiOutlineSave size={22}/></button>
+                       {servico.id_obitos?<button  type="button" onClick={()=>editarObito()}  className="inline-flex p-2 text-white font-semibold rounded-lg bg-yellow-500 gap-1">Gravar Alterações<HiOutlineSave size={22}/></button> :<button  type="button" onClick={()=>cadastrarObito()}  className="inline-flex p-2 text-white font-semibold rounded-lg bg-green-600 gap-1">Salvar<HiOutlineSave size={22}/></button>}
                         </li>
                         
                     </ul>

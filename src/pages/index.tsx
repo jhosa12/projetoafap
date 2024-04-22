@@ -43,12 +43,13 @@ export default function Home() {
         required
     />
     <input
-        type="password"
+       
         required
         placeholder="Senha"
         value={password}
-        className="border border-black w-full max-w-md h-10 rounded p-2"
+        className="flex border border-black w-full max-w-md h-10 rounded p-2"
         onChange={(e)=>setSenha(e.target.value)}
+        type="password"
     />
     <button type="submit" className={`flex items-center justify-center w-full max-w-md h-12 rounded-lg text-white font-bold bg-[#CA9629]`}>
         {!loading ? "Acessar" : (<AiOutlineLoading3Quarters size={25} className="animate-spin"/>)}
