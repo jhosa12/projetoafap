@@ -460,9 +460,15 @@ export default function GerarOS() {
                                         return;
 
                                     }
-                                  const novoArray = listaMaterial ? [...listaMaterial] : [];
-                                   novoArray.push({ ...listaConv.convalescenca_prod, status: 'ABERTO', data: new Date() })
-                                   setMaterial( novoArray )
+                                    if(listaMaterial.length===0){
+                                        const novoArray = listaMaterial ? [...listaMaterial] : [];
+                                        novoArray.push({ ...listaConv.convalescenca_prod, status: 'ABERTO', data: new Date() })
+                                        setMaterial( novoArray )
+                                    }
+                                    else{
+                                        toast.info('Somente um material por solicitação!')
+                                    }
+                                 
                                 }
                                 }
                                     className="flex bg-blue-600 p-1 pl-2 pr-2 rounded-lg ">Adicionar</button>
@@ -511,9 +517,12 @@ export default function GerarOS() {
                                             </td>
                                             <td className="px-4 py-1 flex justify-center text-center ">
                                                 <button onClick={() => {
-                                                    const novo = listaMaterial && [...listaMaterial]
-                                                    novo?.splice(index, 1)
-                                                    setMaterial( novo )
+                                                   
+                                                        const novo = listaMaterial && [...listaMaterial]
+                                                        novo?.splice(index, 1)
+                                                        setMaterial( novo )
+                                                    
+                                                  
                                                 }} className=" flex justify-center items-center rounded-lg  px-1 py-1 text-white hover:bg-red-600"><MdClose /></button>
                                             </td>
 
