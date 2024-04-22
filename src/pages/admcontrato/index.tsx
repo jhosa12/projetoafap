@@ -188,7 +188,8 @@ async function atualizarObs() {
         toast.warn(`Possui ${x} mensalidades Vencidas`);
       }
 
-    if(dadosassociado?.contrato.convalescencia){
+    if(dadosassociado?.contrato.convalescencia.find(item=>item.status==='ABERTO')){
+
         toast.info('Possui Material Convalescente!')
     }
 
@@ -384,7 +385,7 @@ async function atualizarObs() {
 
             {dadosassociado.contrato.convalescencia.map(item=>(
                 <>
-                {(!item.id_dependente || item.id_dependente===null) &&<button data-tooltip-id="my-tooltip" data-tooltip-content={item.convalescenca_prod?.descricao??''} className="text-yellow-500">
+                {(!item.id_dependente || item.id_dependente===null)&& item.status==='ABERTO' &&<button data-tooltip-id="my-tooltip" data-tooltip-content={item.convalescenca_prod?.descricao??''} className="text-yellow-500">
                                 <TbWheelchair size={20} />
                                 </button>}
                                 </>
@@ -1012,7 +1013,7 @@ currentAcordoId = item.status;
                                        excluido:item.excluido,
                                        exclusao_motivo:item.exclusao_motivo                                   }
                                })}} className="font-medium  text-blue-500 hover:underline">Edit</button>
-                                 {item.convalescenca?.convalescenca_prod && <button data-tooltip-id="id_dependente" data-tooltip-content={item.convalescenca.convalescenca_prod.descricao}  className="text-yellow-500">
+                                 {item.convalescenca?.convalescenca_prod.status==='ABERTO' && <button data-tooltip-id="id_dependente" data-tooltip-content={item.convalescenca.convalescenca_prod.descricao}  className="text-yellow-500">
                                 <TbWheelchair size={19} />
                                 </button>}
             </td>
@@ -1055,7 +1056,7 @@ currentAcordoId = item.status;
                                     }
                                 })}} className="font-medium  text-blue-500 hover:underline">Edit</button>
 
-                               {item.convalescenca?.convalescenca_prod && <button data-tooltip-id="id_dependente" data-tooltip-content={item.convalescenca.convalescenca_prod.descricao}  className="text-yellow-500">
+                               {item.convalescenca?.convalescenca_prod?.status==='ABERTO' && <button data-tooltip-id="id_dependente" data-tooltip-content={item.convalescenca.convalescenca_prod.descricao}  className="text-yellow-500">
                                 <TbWheelchair size={19} />
                                 </button>}
                                 </div>

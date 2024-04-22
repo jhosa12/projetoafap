@@ -8,7 +8,9 @@ import { MdDeleteForever } from "react-icons/md";
 import { TbAlertTriangle } from "react-icons/tb";
 import { IoIosClose } from "react-icons/io";
 import { toast } from "react-toastify";
-
+import { LuFolderEdit } from "react-icons/lu";
+import { MdDeleteOutline } from "react-icons/md";
+import { IoMdCheckmarkCircle } from "react-icons/io";
 
 interface CheckListProps {
     id_check: number,
@@ -255,43 +257,46 @@ export default function ListarObitos() {
 </div>):''}
 </div>
                 </div>
-                <div className="flex p-1 max-h-[calc(100vh-150px)]">{/*DIV DA TABELA*/}
+                <div className="flex p-1 max-h-[calc(100vh-150px)] justify-center">{/*DIV DA TABELA*/}
                     <table
                         className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
-                        <thead className="sticky top-0 text-sm  uppercase bg-gray-700 text-gray-400">
+                        <thead className="sticky top-0 text-xs  uppercase bg-gray-700 text-gray-400">
                             <tr>
                                 <th scope="col" className=" px-2 py-1">
                                     Tipo
                                 </th>
 
-                                <th scope="col" className="px-4 py-1">
+                                <th scope="col" className="px-2 py-1">
                                     Data Fal.
                                 </th>
-                                <th scope="col" className="px-4 py-1">
+                                <th scope="col" className="px-2 py-1">
                                     Contrato
                                 </th>
-                                <th scope="col" className="px-4 py-1">
+                                <th scope="col" className="px-2 py-1">
                                     Nome Decl.
                                 </th>
-                                <th scope="col" className="px-4 py-1">
+                                <th scope="col" className="px-2 py-1">
                                     CPF/CNPJ
                                 </th>
-                                <th scope="col" className="px-4 py-1">
+                                <th scope="col" className="px-2 py-1">
                                     Nome Falecido
                                 </th>
-                                <th scope="col" className="px-4 py-1">
+                                <th scope="col" className="px-2 py-1">
                                     <span >Situação Cont.</span>
                                 </th>
-                                <th scope="col" className="px-4 py-1">
+                                <th scope="col" className="px-2 py-1">
                                     <span >Falecido</span>
                                 </th>
-                                <th scope="col" className="px-4 py-1">
+                                <th scope="col" className="px-2 py-1">
                                     <span >Data Nasc.</span>
                                 </th>
-                                <th scope="col" className="px-4 py-1">
+                                <th scope="col" className="px-2 py-1">
                                     <span >Valor Total</span>
                                 </th>
-                                <th scope="col" className="px-4 py-1">
+                                <th scope="col" className="px-2 py-1">
+                                    <span >STATUS</span>
+                                </th>
+                                <th scope="col" className="px-2 py-1">
                                     <span >Ações</span>
                                 </th>
                             </tr>
@@ -299,51 +304,63 @@ export default function ListarObitos() {
                         <tbody>
                             {listaServicos?.map((item, index) => {
                                 return (
-                                <tr onClick={()=>setarServico({id_obitos:item.id_obitos})} key={index} className={`border-b  border-gray-700 ${item.id_obitos===servico.id_obitos?"bg-gray-600":"bg-gray-800"} hover:bg-gray-600`}>
+                                <tr onClick={()=>setarServico({id_obitos:item.id_obitos})} key={index} className={`border-b  border-gray-700 ${item.id_obitos===servico.id_obitos?"bg-gray-600":"bg-gray-800"} hover:bg-gray-600 text-center`}>
                                     <td className="px-2 py-1">
                                         {item.tipo_atendimento}
                                     </td>
-                                    <td className="px-4 py-1">
+                                    <td className="px-2 py-1">
                                         {new Date(item.end_data_falecimento).toLocaleDateString()}
                                     </td>
-                                    <td className="px-4 py-1">
+                                    <td className="px-2 py-1">
                                         {item.id_contrato}
                                     </td>
-                                    <td className="px-4 py-1">
+                                    <td className="px-2 py-1">
                                         {item.rd_nome}
                                     </td>
-                                    <td className="px-4 py-1">
+                                    <td className="px-2 py-1">
                                         {item.cpf_cnpj}
                                     </td>
-                                    <td className="px-4 py-1">
+                                    <td className="px-2 py-1">
                                         {item.nome_falecido}
                                     </td>
-                                    <td className="px-4 py-1">
+                                    <td className="px-2 py-1">
                                         {item.id_contrato_st}
                                     </td>
-                                    <td className="px-4 py-1">
+                                    <td className="px-2 py-1  ">
                                         {item.falecido}
                                     </td>
-                                    <td className="px-4 py-1">
+                                    <td className="px-2 py-1">
                                         {new Date(item.data_nascimento).toLocaleDateString()}
                                     </td>
-                                    <td className="px-4 py-1">
+                                    <td className="px-2 py-1">
                                         {item.vl_total && `R$${item.vl_total}`}
                                     </td>
-                                    <td className="px-4 py-1 text-center">
-                                       <Link href="/servicos/gerarOS"  onClick={()=>setarServico({...item})} className="hover:text-blue-600" ><FaExternalLinkAlt size={17}/></Link>
+                                    <td className={`px-2 py-1 font-semibold ${item.status ==='PENDENTE'?"text-red-600":"text-green-600"} `}>
+                                        {item.status}
+                                    </td>
+                                    <td className="px-2 py-1 text-center">
+                                    <div className="flex flex-row w-full gap-2">
+                                        <Link
+                                           onClick={()=>setarServico({...item})}
+                                             data-tooltip-id="toolId"
+                                              data-tooltip-content={'Editar Dados'} 
+                                              className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white"
+                                              href='/servicos/gerarOS'>
+                                                <LuFolderEdit size={18} />
+                                            </Link>
+                                            
+                                            <button data-tooltip-id="toolId" data-tooltip-content={'Excluir'} onClick={()=>{}} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
+                                                <MdDeleteOutline size={18} />
+                                            </button>
+                                            
+                                        </div>
+                                    
                                     </td>
                                 </tr>)
                             })}
 
                         </tbody>
-
-
-
                     </table>
-
-
-
                 </div>
 
             </div>
