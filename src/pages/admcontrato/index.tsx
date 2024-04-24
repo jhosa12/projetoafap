@@ -490,12 +490,7 @@ async function atualizarObs() {
        supervisor:dadosassociado.contrato.supervisor,
        valor_mensalidade:dadosassociado.contrato.valor_mensalidade
    },
-<<<<<<< HEAD
-//teste
-=======
- //  planos:usuario?.planos,
-  // cidades:usuario?.cidades,
->>>>>>> dc3e27855ed6fea9632d0334bf217af166253d4e
+
    numero:dadosassociado.numero,
    profissao:dadosassociado.profissao,
    rg:dadosassociado.rg,

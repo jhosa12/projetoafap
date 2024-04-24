@@ -7,7 +7,7 @@ import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { toast } from "react-toastify";
-<<<<<<< HEAD
+
 import { api } from "@/services/apiClient";
 
 
@@ -19,15 +19,11 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
     const [motivoFinanceiro,setMotivoFinanceiro] = useState(false)
     const [motivoNaoLocalizado,setNaoLocalizado]=useState(false)
     const [motivoDesagrado,setMotivoDesagrado] = useState(false)
-=======
 
 
-export function ModalEditarDados({openEdit}:{openEdit:number}){
-    const {closeModa,data,dadosassociado} = useContext(AuthContext)
-    const [mountedComponente,setMounted]= useState(true)
-    const [aba,setAba] = useState(1)
-    const [situacao,setSituaçao]= useState(false)
->>>>>>> dc3e27855ed6fea9632d0334bf217af166253d4e
+
+
+
     
     useEffect(()=>{
       mountedComponente &&  setAba(openEdit)
@@ -37,7 +33,7 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
       }
        
     },[data.contrato?.situacao])
-<<<<<<< HEAD
+
 
 
     async function inativarContrato() {
@@ -107,8 +103,8 @@ useEffect(()=>{
    })
 },[dadosassociado])
 
-=======
->>>>>>> dc3e27855ed6fea9632d0334bf217af166253d4e
+
+
     return(
         <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
        
@@ -268,7 +264,7 @@ useEffect(()=>{
                   <TbAlertTriangle className='text-gray-400' size={60}/>
                 </div>
                 <h3 className="mb-5 text-lg font-normal  text-gray-400">{`Realmente deseja inativar o contrato Nº ${data.contrato?.id_contrato}`}?</h3>
-<<<<<<< HEAD
+
                 <div className="inline-flex gap-8">
                 <div className="flex items-center ">
                             <input type="checkbox" checked={motivoFinanceiro} onClick={()=>{setMotivoFinanceiro(!motivoFinanceiro),closeModa({contrato:{...data.contrato,categoria_inativo:'FINANCEIRO'}})}} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
@@ -288,11 +284,11 @@ useEffect(()=>{
               
                 
                 <input disabled={!motivoDesagrado&&!motivoFinanceiro&&!motivoNaoLocalizado} value={data.contrato?.motivo_inativo} onChange={e=>closeModa({...data,contrato:{...data.contrato,motivo_inativo:e.target.value}})}  placeholder="Informe o motivo da Inativação" autoComplete='off'   type="text" required className="block uppercase w-full mb-2 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-                <button  onClick={()=>inativarContrato()}   data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
-=======
+              
+
                 <input placeholder="Informe o motivo da Inativação" autoComplete='off' value={''}   type="text" required className="block uppercase w-full mb-2 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-                <button onClick={()=>{}} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
->>>>>>> dc3e27855ed6fea9632d0334bf217af166253d4e
+                <button onClick={()=>inativarContrato()} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+
                     Sim, tenho certeza
                 </button>
                 <button onClick={()=>{setSituaçao(!situacao),closeModa({contrato:{...(data.contrato),situacao:dadosassociado?.contrato.situacao}})}}  type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
