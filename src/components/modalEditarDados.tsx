@@ -286,7 +286,7 @@ useEffect(()=>{
                 <input disabled={!motivoDesagrado&&!motivoFinanceiro&&!motivoNaoLocalizado} value={data.contrato?.motivo_inativo} onChange={e=>closeModa({...data,contrato:{...data.contrato,motivo_inativo:e.target.value}})}  placeholder="Informe o motivo da Inativação" autoComplete='off'   type="text" required className="block uppercase w-full mb-2 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
               
 
-                <input placeholder="Informe o motivo da Inativação" autoComplete='off' value={''}   type="text" required className="block uppercase w-full mb-2 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+              
                 <button onClick={()=>inativarContrato()} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
 
                     Sim, tenho certeza

@@ -5,7 +5,7 @@ import logo from "../../../public/logoafap.png"
 
 // DocumentTemplate.js
 
-import React, { useContext } from 'react';
+import React, { useContext,Component } from 'react';
 interface DadosProps{
   nome:string,
   cpf:string,
@@ -40,7 +40,7 @@ interface DadosProps{
 
 
 
-class DocumentTemplate extends React.Component<DadosProps> {
+class DocumentTemplate extends Component<DadosProps> {
 
   render() {
     const {

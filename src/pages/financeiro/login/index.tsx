@@ -1,7 +1,8 @@
+import Grafico from "@/components/graficos/primeirografico";
 
 
 export default function LoginFinaceiro(){
     return(
-        <h1>Teste</h1>
+        <Grafico/>
     )
 }
