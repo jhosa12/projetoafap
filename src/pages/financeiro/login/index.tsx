@@ -1,6 +1,6 @@
 
 
-export function LoginFinaceiro(){
+export default function LoginFinaceiro(){
     return(
         <h1>Teste</h1>
     )
