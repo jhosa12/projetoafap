@@ -405,6 +405,11 @@ async function editarObito(){
 
                         })}
                         </ul>
+<<<<<<< HEAD
+=======
+                      
+
+>>>>>>> dc3e27855ed6fea9632d0334bf217af166253d4e
                 </div>
                 </div>
                 </div>
@@ -456,6 +461,10 @@ async function editarObito(){
                         <li className="ml-auto flex items-center mr-2">
                        {servico.id_obitos?<button  type="button" onClick={()=>editarObito()}  className="inline-flex p-2 text-white font-semibold rounded-lg bg-yellow-500 gap-1">Gravar Alterações<HiOutlineSave size={22}/></button> :<button  type="button" onClick={()=>cadastrarObito()}  className="inline-flex p-2 text-white font-semibold rounded-lg bg-green-600 gap-1">Salvar<HiOutlineSave size={22}/></button>}
                         </li>
+<<<<<<< HEAD
+=======
+                        
+>>>>>>> dc3e27855ed6fea9632d0334bf217af166253d4e
                     </ul>
 
 
@@ -493,6 +502,13 @@ async function editarObito(){
                             
                       }
                     
+<<<<<<< HEAD
+=======
+                        
+                           
+
+                       
+>>>>>>> dc3e27855ed6fea9632d0334bf217af166253d4e
                     </div>}
 
                     {falecido &&<>

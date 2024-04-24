@@ -137,11 +137,17 @@ type ContratoProps = {
     n_parcelas: number,
     origem: string,
     supervisor: string,
+<<<<<<< HEAD
     convalescencia:Array<ConvProps>,
     categoria_inativo:string,
     motivo_inativo:string,
     dt_cancelamento:true,
                 
+=======
+    convalescencia:Array<ConvProps>
+
+
+>>>>>>> dc3e27855ed6fea9632d0334bf217af166253d4e
 }
 type AcordoProps = {
     total_acordo: number,
