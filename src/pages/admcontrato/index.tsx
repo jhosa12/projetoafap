@@ -490,7 +490,7 @@ async function atualizarObs() {
        supervisor:dadosassociado.contrato.supervisor,
        valor_mensalidade:dadosassociado.contrato.valor_mensalidade
    },
-
+//teste
    numero:dadosassociado.numero,
    profissao:dadosassociado.profissao,
    rg:dadosassociado.rg,
