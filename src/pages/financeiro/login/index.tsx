@@ -1,5 +1,5 @@
 import Grafico from "@/components/graficos/primeirografico";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GiExpense } from "react-icons/gi";
 import { GiReceiveMoney } from "react-icons/gi";
 import { BiTransferAlt } from "react-icons/bi";
@@ -7,9 +7,108 @@ import { FaBalanceScale } from "react-icons/fa";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
+import { api } from "@/services/apiClient";
+import { toast } from "react-toastify";
+import { Calculator } from "lucide-react";
+
+
+
+interface LancamentosProps{
+			conta: string,
+			descricao: string,
+			historico:  string ,
+			tipo: string,
+			valor: number,
+			datalanc: Date,
+			
+}
+
+interface PlanoContasProps{
+ 
+   conta:string,
+   id_grupo: number,
+   descricao:string,
+   tipo:string,
+   saldo: number,
+   perm_lanc:string,
+   data: Date,
+   hora: Date,
+   usuario:string,
+   contaf:string
+
+}
+
+
+
+
+
+
+
 
 export default function LoginFinaceiro(){
     const [dropEmpresa,setDropEmpresa] =useState(false)
+    const [listaLancamentos,setLancamentos] =useState<Array<LancamentosProps>>([])
+    const[nomesPlanos,setNomePlanos] = useState<Array<PlanoContasProps>>([])
+    const [despesas,setDespesas] = useState<number>(0)
+    const [receitas,setReceitas] = useState<number>(0)
+    const [remessa,setRemessa] = useState<number>(0)
+    
+    
+
+
+  useEffect(()=>{
+    try {
+      listarDados()
+    
+     
+      
+    } catch (error) {
+      toast.error('Erro ao requitar dados!')
+      
+    }
+
+  },[])
+
+
+  async function listarDados() {
+  const response =  await api.get('/financeiro/lancamentos');
+  setLancamentos(response.data.lancamentos);
+
+  setNomePlanos(response.data.planosdeContas)
+  
+  }
+
+  useEffect(()=>{
+    const calcDespesas = listaLancamentos.reduce((acumulador,atual)=>{
+      
+      if(atual.tipo==='DESPESA'){
+        return Number(acumulador)+Number(atual.valor)
+      }
+      else{return acumulador} },0 )
+
+setDespesas(calcDespesas)
+
+const calcReceitas = listaLancamentos.reduce((acumulador,atual)=>{
+  if(atual.tipo==='RECEITA'){
+    return Number(acumulador)+Number(atual.valor)
+  }else{
+    return acumulador
+  }
+ 
+
+},0)
+
+setReceitas(calcReceitas)
+
+
+
+
+  },[listaLancamentos])
+
+
+
+
+
     return(
         <>
 <div className="flex">
@@ -60,29 +159,28 @@ export default function LoginFinaceiro(){
             <div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-sm min-w-[180px]">
 
                 <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense  size={32}/></div>
-                <h2 className="flex flex-col" >DESPESAS <span>R$ 4000</span></h2>
+                <h2 className="flex flex-col" >DESPESAS <span>R$ {despesas}</span></h2>
             </div>
             <div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-sm min-w-[180px]">
-
 <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiReceiveMoney size={32}/></div>
-<h2 className="flex flex-col" >RECEITAS <span>R$ 4000</span></h2>
+<h2 className="flex flex-col" >RECEITAS <span>R$ {receitas}</span></h2>
 </div>
 <div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-sm min-w-[180px]">
 
 <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><BiTransferAlt  size={32}/></div>
-<h2 className="flex flex-col" >REMESSA + RECEITA <span>R$ 4000</span></h2>
+<h2 className="flex flex-col" >REMESSA + RECEITA <span>R$ {remessa}</span></h2>
 </div>
 <div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-sm min-w-[180px]">
 
 <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><FaBalanceScale  size={32}/></div>
-<h2 className="flex flex-col" >SALDO <span>R$ 4000</span></h2>
+<h2 className={`flex flex-col`} >SALDO <span className={`font-semibold  ${(receitas-despesas)<0?"text-red-600":"text-white"}`}>R$ {receitas-despesas}</span></h2>
 </div>
 
         </div>
-<div className="flex flex-col p-2 ml-2 text-white bg-[#2b2e3b] rounded-lg w-fit">
+<div className="flex flex-col p-2 ml-2  overflow-y-auto max-h-[520px] text-white bg-[#2b2e3b] rounded-lg w-fit">
     <h2 className="pl-2 text-lg font-semibold">Teste</h2>
 
-<Grafico/>
+{listaLancamentos.length>0 && <Grafico lancamentos={listaLancamentos}/>}
 </div>
         
 
