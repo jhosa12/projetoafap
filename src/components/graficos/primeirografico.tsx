@@ -39,14 +39,14 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
   },[] as Array<LancamentosProps>)
   console.log(resultado)
 
-  const  arrayDeValores = resultado.map(item=>{return{x:item.descricao,y:Number(item.valor) }});
-//  goals: [ -- dentro do array de valores
-  //  {
-  //    name: 'Expected',
-    //  value: 550,
-   //   strokeColor: '#B32824'
-  //  }
-//  ]
+  const  arrayDeValores = resultado.map(item=>{return{x:item.descricao,y:Number(item.valor), goals: [
+    {
+       name: 'Expected',
+      value: 550,
+       strokeColor: '#B32824'
+     }
+    ] }});
+
     // Configuração das opções do gráfico
     const chartOptions = {
      // plotOptions: {
@@ -59,7 +59,7 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
     },
     theme:{
       mode:'dark',
-      palette1:'palette2'
+      palette1:'palette1'
     },
       tooltip:{
         theme:'dark',
@@ -68,21 +68,7 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
       },
       chart: {
         type:'bar',
-        zoom: {
-          enabled: true,
-          type: 'x',
-          resetIcon: {
-              offsetX: -10,
-              offsetY: 0,
-              fillColor: '#fff',
-             
-          },
-          selection: {
-              background: '#90CAF9',
-              border: '#0D47A1'
-          }    
-      }
-      
+        background:'#2b2e3b'
        
       },
      // xaxis: {
@@ -126,7 +112,9 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
               options={options}
               series={series}
               type="bar"
-              width="800"
+              width="1000"
+              height='400'
+            
             
             />
           </div>
