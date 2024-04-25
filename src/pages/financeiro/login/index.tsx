@@ -1,14 +1,20 @@
 import Grafico from "@/components/graficos/primeirografico";
 import { useState } from "react";
 import { GiExpense } from "react-icons/gi";
+import { GiReceiveMoney } from "react-icons/gi";
+import { BiTransferAlt } from "react-icons/bi";
+import { FaBalanceScale } from "react-icons/fa";
+import DatePicker,{registerLocale} from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import pt from 'date-fns/locale/pt-BR';
 
 export default function LoginFinaceiro(){
     const [dropEmpresa,setDropEmpresa] =useState(false)
     return(
         <>
 <div className="flex">
-    <div className="text-white p-2 pt-4 rounded-sm bg-[#2b2e3b] h-full">
-        <h1>Opções</h1>
+    <div className="flex flex-col text-white p-6 pt-4 rounded-sm bg-[#2b2e3b] h-full">
+        <h1>Filtros</h1>
         
 <button  onClick={()=>setDropEmpresa(!dropEmpresa)} className=" text-white whitespace-nowrap  font-medium rounded-lg text-sm px-5 py-2.5 mb-1 text-center inline-flex items-center bg-[#343747] hover:bg-blue-700 focus:ring-blue-800" type="button">Selecione a Empresa<svg className="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
@@ -40,8 +46,14 @@ export default function LoginFinaceiro(){
     </ul>
 </div>}
 
-        
-
+<DatePicker dateFormat={"dd/MM/yyyy"} placeholderText="Data Inicio"  onChange={()=>{}} locale={"pt"} required className="block mb-2 mt-1 uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>  
+<DatePicker dateFormat={"dd/MM/yyyy"} placeholderText="Data Fim"  onChange={()=>{}} locale={"pt"} required className="block mb-2 uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>  
+     
+<button  onClick={()=>setDropEmpresa(!dropEmpresa)} className=" text-white whitespace-nowrap  font-medium rounded-lg text-sm px-5 py-2.5 mb-1 text-center inline-flex items-center bg-[#343747] hover:bg-blue-700 focus:ring-blue-800" type="button">Plano de Contas<svg className="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+</svg>
+</button>
+   
     </div>
 <div className="flex flex-col p-2 w-full ">
      <div className="flex flex-row w-full  justify-between p-2">
@@ -52,17 +64,17 @@ export default function LoginFinaceiro(){
             </div>
             <div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-sm min-w-[180px]">
 
-<div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense  size={32}/></div>
+<div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiReceiveMoney size={32}/></div>
 <h2 className="flex flex-col" >RECEITAS <span>R$ 4000</span></h2>
 </div>
 <div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-sm min-w-[180px]">
 
-<div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense  size={32}/></div>
+<div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><BiTransferAlt  size={32}/></div>
 <h2 className="flex flex-col" >REMESSA + RECEITA <span>R$ 4000</span></h2>
 </div>
 <div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-sm min-w-[180px]">
 
-<div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense  size={32}/></div>
+<div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><FaBalanceScale  size={32}/></div>
 <h2 className="flex flex-col" >SALDO <span>R$ 4000</span></h2>
 </div>
 
