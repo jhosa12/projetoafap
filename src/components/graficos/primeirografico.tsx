@@ -54,6 +54,13 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
      //     distributed: true
       //  }
     //  } ,
+    title:{
+      text:'GRAFICO TESTE'
+    },
+    theme:{
+      mode:'dark',
+      palette1:'palette2'
+    },
       tooltip:{
         theme:'dark',
       
@@ -61,24 +68,39 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
       },
       chart: {
         type:'bar',
+        zoom: {
+          enabled: true,
+          type: 'x',
+          resetIcon: {
+              offsetX: -10,
+              offsetY: 0,
+              fillColor: '#fff',
+             
+          },
+          selection: {
+              background: '#90CAF9',
+              border: '#0D47A1'
+          }    
+      }
+      
        
       },
-      xaxis: {
-        categories:[],
-        labels: {
-          style: {
-            colors: "#B32824", // Define a cor dos anos aqui
-          },
-        },
-      },
-      yaxis: {
-        labels: {
-          style: {
-            colors: "#B32824", // Define a cor do texto no eixo Y aqui
-          },
-        },
-      },
-    };
+     // xaxis: {
+      //  categories:[],
+      //  labels: {
+      //    style: {
+      //      colors: "#B32824", // Define a cor dos anos aqui
+      //    },
+     //   },
+    //  },
+    //  yaxis: {
+    //    labels: {
+      //    style: {
+       //     colors: "#B32824", // Define a cor do texto no eixo Y aqui
+        //  },
+       // },
+     // },
+   };
 
     // Configuração da série de dados do gráfico
     const chartSeries = [
@@ -105,6 +127,7 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
               series={series}
               type="bar"
               width="800"
+            
             />
           </div>
         </div>
