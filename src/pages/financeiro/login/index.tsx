@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
-import { Calculator } from "lucide-react";
+import { IoIosArrowDown } from "react-icons/io";
 
 
 
@@ -52,6 +52,16 @@ export default function LoginFinaceiro(){
     const [despesas,setDespesas] = useState<number>(0)
     const [receitas,setReceitas] = useState<number>(0)
     const [remessa,setRemessa] = useState<number>(0)
+    const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
+
+
+    const toogleAberto = (index:number)=>{
+      setAbertos((prev)=>({
+        ...prev,
+        [index]:!prev[index]
+      }))
+
+    }
     
     
 
@@ -176,11 +186,37 @@ setReceitas(calcReceitas)
 <h2 className={`flex flex-col`} >SALDO <span className={`font-semibold  ${(receitas-despesas)<0?"text-red-600":"text-white"}`}>R$ {receitas-despesas}</span></h2>
 </div>
 
-        </div>
-<div className="flex flex-col p-2 ml-2  overflow-y-auto max-h-[520px] text-white bg-[#2b2e3b] rounded-lg w-fit">
-    <h2 className="pl-2 text-lg font-semibold">Teste</h2>
-
+</div>
+{/*<div className="flex flex-col p-2 ml-2  overflow-y-auto max-h-[520px] text-white bg-[#2b2e3b] rounded-lg w-fit">
 {listaLancamentos.length>0 && <Grafico lancamentos={listaLancamentos}/>}
+    </div>*/}
+    <div className="flex flex-col p-2 ml-2 w-full overflow-y-auto max-h-[400px] text-white bg-[#2b2e3b] rounded-lg ">
+      <ul className="flex flex-col p-2 gap-2">
+        {
+          nomesPlanos.map((nome,index)=>{
+            const soma = listaLancamentos.reduce((total,item)=>{
+              if(item.conta===nome.conta){
+                return total+Number(item.valor)
+              }
+              else{
+                return total
+              }
+            },0)
+        
+            return(
+              <li onClick={()=>toogleAberto(index)} className=" flex flex-col p-2 pl-4 rounded-lg bg-slate-700 uppercase cursor-pointer"><div className="inline-flex justify-between items-center"><span>{nome.descricao}</span> <span>R$ {soma}</span>  <IoIosArrowDown/></div> 
+             {abertos[index]&& <ul className="flex flex-col w-full ml-6 list-decimal">
+              {listaLancamentos.map((item,idx)=>{
+                return(
+                 item.conta===nome.conta && <li className="flex text-xs gap-2"><span>{item.historico}</span> Valor: R$ {item.valor}</li>
+                )
+              })}
+              </ul>}
+              </li>
+            )
+          })
+        }
+      </ul>
 </div>
         
 

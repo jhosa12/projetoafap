@@ -113,7 +113,7 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
               series={series}
               type="bar"
               width="1000"
-              height='400'
+              height='380'
             
             
             />
