@@ -24,7 +24,7 @@ interface LancamentosProps{
 }
 
 interface PlanoContasProps{
- 
+
    conta:string,
    id_grupo: number,
    descricao:string,
@@ -34,8 +34,8 @@ interface PlanoContasProps{
    data: Date,
    hora: Date,
    usuario:string,
-   contaf:string
-
+   contaf:string,
+   limite:number
 }
 
 
@@ -167,7 +167,6 @@ setReceitas(calcReceitas)
 <div className="flex flex-col p-2 w-full ">
      <div className="flex flex-row w-full text-sm justify-between p-2">
             <div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
-
                 <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense  size={32}/></div>
                 <h2 className="flex flex-col" >DESPESAS <span>R$ {despesas}</span></h2>
             </div>
@@ -189,7 +188,7 @@ setReceitas(calcReceitas)
 </div>
 {/*<div className="flex flex-col p-2 ml-2  overflow-y-auto max-h-[520px] text-white bg-[#2b2e3b] rounded-lg w-fit">
 {listaLancamentos.length>0 && <Grafico lancamentos={listaLancamentos}/>}
-    </div>*/}
+    </div>*/} 
     <div className="flex flex-col p-2 ml-2 w-full overflow-y-auto max-h-[400px] text-white bg-[#2b2e3b] rounded-lg ">
       <ul className="flex flex-col w-full p-2 gap-2 text-sm">
         {
@@ -202,10 +201,19 @@ setReceitas(calcReceitas)
                 return total
               }
             },0)
-        
+            let porc;
+            if (soma === 0 || nome.limite === 0 || soma===null || nome.limite===null || isNaN(Number(nome.limite))) {
+              porc = 0;
+            } else {
+              porc = (soma * 100) / Number(nome.limite);
+            }
             return(
               <li onClick={()=>toogleAberto(index)} className=" flex flex-col w-full p-2 pl-4 rounded-lg bg-slate-700 uppercase cursor-pointer"><div className="inline-flex w-full items-center"><span className="flex w-full">{nome.descricao}</span> 
-              <span className="flex w-full gap-8 justify-end items-center">R$ {soma} <IoIosArrowDown/></span> 
+              <div className="flex w-full gap-8 justify-end items-center">
+               <span>CONSUMO: R$ {soma}</span>  
+               <span>Limite de Gastos: R$ {nome.limite}</span>
+               <span>Porc.: {!Number.isNaN(porc) ? porc + '%' : '0%'}</span>
+                <IoIosArrowDown/></div> 
                </div> 
              {abertos[index]&& <ul className="flex flex-col w-full gap-2  ml-6 ">
               {listaLancamentos.map((item,idx)=>{
