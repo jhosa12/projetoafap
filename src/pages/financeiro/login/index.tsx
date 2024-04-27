@@ -212,13 +212,13 @@ setReceitas(calcReceitas)
               <div className="flex w-full gap-8 justify-end items-center">
                <span>CONSUMO: R$ {soma}</span>  
                <span>Limite de Gastos: R$ {nome.limite}</span>
-               <span>Porc.: {!Number.isNaN(porc) ? porc + '%' : '0%'}</span>
+              <span className="rounded-lg bg-red-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span>
                 <IoIosArrowDown/></div> 
                </div> 
              {abertos[index]&& <ul className="flex flex-col w-full gap-2  ml-6 ">
               {listaLancamentos.map((item,idx)=>{
                 return(
-                 item.conta===nome.conta && <li className="flex text-xs gap-2"><span>{item.historico}</span> Valor: R$ {item.valor}</li>
+                 item.conta===nome.conta && <li className="flex text-xs gap-2 "><span>{item.historico}</span> Valor: R$ {item.valor}</li>
                 )
               })}
               </ul>}

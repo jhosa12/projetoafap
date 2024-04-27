@@ -19,7 +19,8 @@ interface PlanoContas{
     data: Date,
     hora: Date,
     usuario: string,
-    contaf: string
+    contaf: string,
+    limite:number
 }
 interface GruposProps{
     id_grupo:number,
