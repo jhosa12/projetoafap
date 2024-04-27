@@ -122,7 +122,7 @@ setReceitas(calcReceitas)
     return(
         <>
 <div className="flex">
-    <div className="flex flex-col text-white p-6 pt-4 rounded-sm bg-[#2b2e3b] h-full">
+    {/*<div className="flex flex-col text-white p-6 pt-4 rounded-sm bg-[#2b2e3b] h-full">
         <h1>Filtros</h1>
         
 <button  onClick={()=>setDropEmpresa(!dropEmpresa)} className=" text-white whitespace-nowrap  font-medium rounded-lg text-sm px-5 py-2.5 mb-1 text-center inline-flex items-center bg-[#343747] hover:bg-blue-700 focus:ring-blue-800" type="button">Selecione a Empresa<svg className="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -163,24 +163,24 @@ setReceitas(calcReceitas)
 </svg>
 </button>
    
-    </div>
+    </div>*/}
 <div className="flex flex-col p-2 w-full ">
-     <div className="flex flex-row w-full  justify-between p-2">
-            <div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-sm min-w-[180px]">
+     <div className="flex flex-row w-full text-sm justify-between p-2">
+            <div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
 
                 <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense  size={32}/></div>
                 <h2 className="flex flex-col" >DESPESAS <span>R$ {despesas}</span></h2>
             </div>
-            <div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-sm min-w-[180px]">
+            <div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
 <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiReceiveMoney size={32}/></div>
 <h2 className="flex flex-col" >RECEITAS <span>R$ {receitas}</span></h2>
 </div>
-<div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-sm min-w-[180px]">
+<div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
 
 <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><BiTransferAlt  size={32}/></div>
 <h2 className="flex flex-col" >REMESSA + RECEITA <span>R$ {remessa}</span></h2>
 </div>
-<div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-sm min-w-[180px]">
+<div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
 
 <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><FaBalanceScale  size={32}/></div>
 <h2 className={`flex flex-col`} >SALDO <span className={`font-semibold  ${(receitas-despesas)<0?"text-red-600":"text-white"}`}>R$ {receitas-despesas}</span></h2>
@@ -191,7 +191,7 @@ setReceitas(calcReceitas)
 {listaLancamentos.length>0 && <Grafico lancamentos={listaLancamentos}/>}
     </div>*/}
     <div className="flex flex-col p-2 ml-2 w-full overflow-y-auto max-h-[400px] text-white bg-[#2b2e3b] rounded-lg ">
-      <ul className="flex flex-col p-2 gap-2">
+      <ul className="flex flex-col w-full p-2 gap-2 text-sm">
         {
           nomesPlanos.map((nome,index)=>{
             const soma = listaLancamentos.reduce((total,item)=>{
@@ -204,8 +204,10 @@ setReceitas(calcReceitas)
             },0)
         
             return(
-              <li onClick={()=>toogleAberto(index)} className=" flex flex-col p-2 pl-4 rounded-lg bg-slate-700 uppercase cursor-pointer"><div className="inline-flex justify-between items-center"><span>{nome.descricao}</span> <span>R$ {soma}</span>  <IoIosArrowDown/></div> 
-             {abertos[index]&& <ul className="flex flex-col w-full ml-6 list-decimal">
+              <li onClick={()=>toogleAberto(index)} className=" flex flex-col w-full p-2 pl-4 rounded-lg bg-slate-700 uppercase cursor-pointer"><div className="inline-flex w-full items-center"><span className="flex w-full">{nome.descricao}</span> 
+              <span className="flex w-full gap-8 justify-end items-center">R$ {soma} <IoIosArrowDown/></span> 
+               </div> 
+             {abertos[index]&& <ul className="flex flex-col w-full gap-2  ml-6 ">
               {listaLancamentos.map((item,idx)=>{
                 return(
                  item.conta===nome.conta && <li className="flex text-xs gap-2"><span>{item.historico}</span> Valor: R$ {item.valor}</li>
