@@ -19,7 +19,7 @@ interface PlanoContas{
     hora: Date,
     usuario: string,
     contaf: string,
-    limite:number
+  
 }
 interface GruposProps{
     id_grupo:number,
@@ -60,11 +60,7 @@ export function PlanoContas({carregarDados,arrayPlanoContas,arraygrupos,setarDad
         setarDados(arrayPlanoContas,newgrupo)
     }
 
-    const handleLimiteChange=(index:number,event:React.ChangeEvent<HTMLInputElement>)=>{
-        const newPlanoContas = [...arrayPlanoContas];
-        newPlanoContas[index].limite =Number(event.target.value);
-        setarDados(newPlanoContas,arraygrupos)
-    }
+ 
 
     const editarPlanoConta = async(index:number)=>{
         const conta = arrayPlanoContas[index]
@@ -76,7 +72,7 @@ export function PlanoContas({carregarDados,arrayPlanoContas,arraygrupos,setarDad
                 tipo: conta.tipo,
                 perm_lanc:conta.perm_lanc,
                 data: conta.data, 
-                limite:conta.limite
+               
 
             }),
             {
@@ -286,9 +282,6 @@ const adicionarPlanoContas = async()=>{
                         TIPO
                     </th> 
                     <th scope="col" className="px-10 py-1">
-                        LIMITE DE GASTOS
-                    </th>
-                    <th scope="col" className="px-10 py-1">
                         AÇÕES
                     </th>
                 </tr> 
@@ -308,9 +301,7 @@ const adicionarPlanoContas = async()=>{
                         <option className="bg-transparent" value={"DESPESA"}>DESPESA</option>
                     </select>
                 </td>
-                <td className="px-10 py-1 w-full whitespace-nowrap">
-                    <input onChange={(event)=>handleLimiteChange(index,event)} value={item.limite} className="flex bg-transparent w-full " type="text" />
-                </td>
+             
                 <td className="px-10 py-1 inline-flex text-right gap-2">
                     <button onClick={()=>editarPlanoConta(index)} className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"><RiSaveFill size={17}/></button>
                     <button onClick={()=>deletarPlanoConta(item.conta)} className=" rounded-lg bg-red-600 px-1 py-1 text-white hover:underline"><MdDelete size={17}/></button>

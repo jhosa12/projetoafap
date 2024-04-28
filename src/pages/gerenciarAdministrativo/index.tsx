@@ -1,4 +1,5 @@
 import { GerenciarConvalescenca } from "@/components/gerenciarAdm/convalescencia";
+import { GerenciarMetas } from "@/components/gerenciarAdm/metas";
 import { PlanoContas } from "@/components/gerenciarAdm/planoContas";
 import { GerenciarPlanos } from "@/components/gerenciarAdm/planos";
 import { AuthContext } from "@/contexts/AuthContext";
@@ -7,7 +8,15 @@ import Head from "next/head"
 import React, {useContext, useEffect, useState } from "react"
 import { toast } from "react-toastify";
 
-
+interface MetasProps{
+    id_meta:number,
+    id_conta:string,
+    id_grupo :number,
+    descricao:string,
+    valor:number,
+    date:Date,
+    grupo:GruposProps
+}
 
 interface PlanoContas{
     conta: string,
@@ -20,7 +29,7 @@ interface PlanoContas{
     hora: Date,
     usuario: string,
     contaf: string,
-    limite:number
+  
 }
 interface GruposProps{
     id_grupo:number,
@@ -55,14 +64,20 @@ status: string
 
 export default function gerenciarAdministrativo(){
     const [PlanosContas,setPlanosContas] =useState(true)
+    const [metas,setMetas]=useState(false)
     const [Planos,setPlanos] = useState(false)
     const [Convalescencia,setConv] =useState(false)
     const [arrayPlanoContas,setArrayPlanoContas] = useState<Array<PlanoContas>>([])
     const [arraygrupos,setArrayGrupos] = useState<Array<GruposProps>>([])
     const [arrayPlanos,setArrayPlanos]= useState<Array<PlanosProps>>([])
     const [arrayConv,setArrayConv]= useState<Array<ConvProps>>([])
+    const [arrayMetas,setArrayMetas]=useState<Array<MetasProps>>([])
     const [tipo,setTipo]=useState('')
     const {usuario,signOut} = useContext(AuthContext)
+
+
+
+
 const setarDados =(planoContas:Array<PlanoContas>,grupos:Array<GruposProps>)=>{
     setArrayPlanoContas(planoContas)
     setArrayGrupos(grupos)
@@ -73,6 +88,10 @@ const setarPlanos =(planos:Array<PlanosProps>)=>{
 }
 const setarConv =(conv:Array<ConvProps>)=>{
     setArrayConv(conv)
+
+}
+const setarMetas = (met:Array<MetasProps>)=>{
+    setArrayMetas(met)
 
 }
    
@@ -101,9 +120,7 @@ async function carregarDados() {
     setarDados(response.data.plano_contas,response.data.grupos)
     setArrayPlanos(response.data.planos)
     setArrayConv(response.data.convalescenca)
-  
-    
-    
+    setArrayMetas(response.data.metas)
 }
 
     return(
@@ -116,13 +133,16 @@ async function carregarDados() {
 <div className="flex-col w-full p-2 mt-2 border  rounded-lg shadow  border-gray-700">
     <ul className="flex flex-wrap text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 "  >
         <li className="me-2">
-            <button  type="button" onClick={()=>{setPlanos(false);setPlanosContas(true),setConv(false)}}    className={`inline-block p-2  rounded-t-lg hover:bg-gray-700 ${PlanosContas && "text-blue-500"} hover:text-gray-300  `}>Plano de Contas</button>
+            <button  type="button" onClick={()=>{setPlanos(false);setPlanosContas(true),setConv(false),setMetas(false)}}    className={`inline-block p-2  rounded-t-lg hover:bg-gray-700 ${PlanosContas && "text-blue-500"} hover:text-gray-300  `}>Plano de Contas</button>
         </li>
         <li className="me-2">
-            <button type="button"  onClick={()=>{setPlanos(true);setPlanosContas(false),setConv(false)}}   className={`inline-block p-2  rounded-t-lg hover:bg-gray-700 ${Planos && "text-blue-500"} hover:text-gray-300  `}>Planos</button>
+            <button  type="button" onClick={()=>{setPlanos(false);setPlanosContas(false),setConv(false),setMetas(true)}}    className={`inline-block p-2  rounded-t-lg hover:bg-gray-700 ${metas && "text-blue-500"} hover:text-gray-300  `}>Metas</button>
         </li>
         <li className="me-2">
-            <button type="button"  onClick={()=>{setPlanos(false);setPlanosContas(false),setConv(true)}}  className={`inline-block p-2  rounded-t-lg hover:bg-gray-700 ${Convalescencia && "text-blue-500"} hover:text-gray-300  `}>Convalescencia</button>
+            <button type="button"  onClick={()=>{setPlanos(true);setPlanosContas(false),setConv(false),setMetas(false)}}   className={`inline-block p-2  rounded-t-lg hover:bg-gray-700 ${Planos && "text-blue-500"} hover:text-gray-300  `}>Planos</button>
+        </li>
+        <li className="me-2">
+            <button type="button"  onClick={()=>{setPlanos(false);setPlanosContas(false),setConv(true),setMetas(false)}}  className={`inline-block p-2  rounded-t-lg hover:bg-gray-700 ${Convalescencia && "text-blue-500"} hover:text-gray-300  `}>Convalescencia</button>
         </li>
 
     </ul>
@@ -130,8 +150,8 @@ async function carregarDados() {
  {PlanosContas && <PlanoContas carregarDados={carregarDados} arrayPlanoContas={arrayPlanoContas} arraygrupos={arraygrupos} setarDados={setarDados}/>}
  {Planos && <GerenciarPlanos carregarDados={carregarDados}  setarPlanos={setarPlanos} arrayPlanos={arrayPlanos}/>}
  {Convalescencia && <GerenciarConvalescenca carregarDados={carregarDados}  setarConv={setarConv} arrayConv={arrayConv}/>}
+ {metas && <GerenciarMetas carregarDados={carregarDados} setarMetas={setarMetas} arrayMetas={arrayMetas} arraygrupos={arraygrupos}/>}
 </div>
 </div>
-</>
-    )
+</>)
 }
