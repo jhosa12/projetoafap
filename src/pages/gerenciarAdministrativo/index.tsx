@@ -150,7 +150,7 @@ async function carregarDados() {
  {PlanosContas && <PlanoContas carregarDados={carregarDados} arrayPlanoContas={arrayPlanoContas} arraygrupos={arraygrupos} setarDados={setarDados}/>}
  {Planos && <GerenciarPlanos carregarDados={carregarDados}  setarPlanos={setarPlanos} arrayPlanos={arrayPlanos}/>}
  {Convalescencia && <GerenciarConvalescenca carregarDados={carregarDados}  setarConv={setarConv} arrayConv={arrayConv}/>}
- {metas && <GerenciarMetas carregarDados={carregarDados} setarMetas={setarMetas} arrayMetas={arrayMetas} arraygrupos={arraygrupos}/>}
+ {metas && <GerenciarMetas carregarDados={carregarDados} setarMetas={setarMetas} arrayMetas={arrayMetas} arraygrupos={arraygrupos} arrayPlanoContas={arrayPlanoContas}/>}
 </div>
 </div>
 </>)

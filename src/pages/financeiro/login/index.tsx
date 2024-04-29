@@ -13,15 +13,7 @@ import { IoIosArrowDown } from "react-icons/io";
 
 
 
-interface LancamentosProps{
-			conta: string,
-			descricao: string,
-			historico:  string ,
-			tipo: string,
-			valor: number,
-			datalanc: Date,
-			
-}
+
 
 interface PlanoContasProps{
 
@@ -35,7 +27,26 @@ interface PlanoContasProps{
    hora: Date,
    usuario:string,
    contaf:string,
-   limite:number
+   lancamentos: Array<{
+    conta: string,
+    descricao: string,
+    historico:  string ,
+    tipo: string,
+    valor: number,
+    datalanc: Date,  
+}>,
+metas:Array<{
+  id_meta:number,
+  id_conta:string,
+  id_grupo :number,
+  descricao:string,
+  valor:number,
+  date:Date,
+  grupo:{
+      id_grupo:number,
+      descricao:string
+  }
+  }>
 }
 
 
@@ -47,8 +58,7 @@ interface PlanoContasProps{
 
 export default function LoginFinaceiro(){
     const [dropEmpresa,setDropEmpresa] =useState(false)
-    const [listaLancamentos,setLancamentos] =useState<Array<LancamentosProps>>([])
-    const[nomesPlanos,setNomePlanos] = useState<Array<PlanoContasProps>>([])
+    const [listaLancamentos,setLancamentos] =useState<Array<PlanoContasProps>>([])
     const [despesas,setDespesas] = useState<number>(0)
     const [receitas,setReceitas] = useState<number>(0)
     const [remessa,setRemessa] = useState<number>(0)
@@ -82,29 +92,31 @@ export default function LoginFinaceiro(){
 
   async function listarDados() {
   const response =  await api.get('/financeiro/lancamentos');
-  setLancamentos(response.data.lancamentos);
+  setLancamentos(response.data);
 
-  setNomePlanos(response.data.planosdeContas)
+ 
   
   }
 
   useEffect(()=>{
-    const calcDespesas = listaLancamentos.reduce((acumulador,atual)=>{
-      
-      if(atual.tipo==='DESPESA'){
-        return Number(acumulador)+Number(atual.valor)
-      }
-      else{return acumulador} },0 )
-
+   const calcDespesas = listaLancamentos.reduce((acumuladorP,atualP)=>{
+      const total =  atualP.lancamentos.reduce((acumulador,atual)=>{
+          if(atual.tipo==='DESPESA'){
+            return Number(acumulador)+Number(atual.valor)
+          }
+          else{return acumulador}
+        },0)
+        return acumuladorP + total
+      } ,0)
 setDespesas(calcDespesas)
-
-const calcReceitas = listaLancamentos.reduce((acumulador,atual)=>{
-  if(atual.tipo==='RECEITA'){
-    return Number(acumulador)+Number(atual.valor)
-  }else{
-    return acumulador
-  }
- 
+const calcReceitas = listaLancamentos.reduce((acumuladorP,atualP)=>{
+  const total =  atualP.lancamentos.reduce((acumulador,atual)=>{
+    if(atual.tipo==='RECEITA'){
+      return Number(acumulador)+Number(atual.valor)
+    }
+    else{return acumulador}
+  },0)
+  return acumuladorP + total
 
 },0)
 
@@ -189,11 +201,11 @@ setReceitas(calcReceitas)
 {/*<div className="flex flex-col p-2 ml-2  overflow-y-auto max-h-[520px] text-white bg-[#2b2e3b] rounded-lg w-fit">
 {listaLancamentos.length>0 && <Grafico lancamentos={listaLancamentos}/>}
     </div>*/} 
-    <div className="flex flex-col p-2 ml-2 w-full overflow-y-auto max-h-[400px] text-white bg-[#2b2e3b] rounded-lg ">
+    <div className="flex flex-col p-2 ml-2 w-full overflow-y-auto max-h-[calc(100vh-150px)] text-white bg-[#2b2e3b] rounded-lg ">
       <ul className="flex flex-col w-full p-2 gap-2 text-sm">
         {
-          nomesPlanos.map((nome,index)=>{
-            const soma = listaLancamentos.reduce((total,item)=>{
+         listaLancamentos?.map((nome,index)=>{
+            const soma = nome.lancamentos.reduce((total,item)=>{
               if(item.conta===nome.conta){
                 return total+Number(item.valor)
               }
@@ -202,25 +214,27 @@ setReceitas(calcReceitas)
               }
             },0)
             let porc;
-            if (soma === 0 || nome.limite === 0 || soma===null || nome.limite===null || isNaN(Number(nome.limite))) {
-              porc = 0;
-            } else {
-              porc = (soma * 100) / Number(nome.limite);
-            }
+           if (soma === 0 || nome.metas[0]?.valor === 0 || soma===null || nome.metas[0]?.valor===null || isNaN(Number(nome.metas[0]?.valor))) {
+             porc = 0;
+           } else {
+             porc = (soma * 100) / Number(nome.metas[0].valor);
+           }
             return(
               <li onClick={()=>toogleAberto(index)} className=" flex flex-col w-full p-2 pl-4 rounded-lg bg-slate-700 uppercase cursor-pointer"><div className="inline-flex w-full items-center"><span className="flex w-full">{nome.descricao}</span> 
               <div className="flex w-full gap-8 justify-end items-center">
                <span>CONSUMO: R$ {soma}</span>  
-               <span>Limite de Gastos: R$ {nome.limite}</span>
+               <span>Limite de Gastos: R$ {nome.metas[0]?.valor??0}</span>
               <span className="rounded-lg bg-red-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span>
                 <IoIosArrowDown/></div> 
                </div> 
              {abertos[index]&& <ul className="flex flex-col w-full gap-2  ml-6 ">
-              {listaLancamentos.map((item,idx)=>{
+              {nome.lancamentos.map((lancamento,index)=>{
                 return(
-                 item.conta===nome.conta && <li className="flex text-xs gap-2 "><span>{item.historico}</span> Valor: R$ {item.valor}</li>
-                )
-              })}
+                   <li className="flex text-xs gap-2 "><span>{lancamento.historico}</span> Valor: R$ {lancamento.valor}</li>
+                 )
+                })
+              
+              }
               </ul>}
               </li>
             )
