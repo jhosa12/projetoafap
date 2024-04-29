@@ -90,6 +90,8 @@ export function ModalAcordos(){
             const response = await toast.promise(
                 api.put('/editarAcordo',{
                id_acordo:data.acordo?.id_acordo,
+               id_usuario:usuario?.id,
+               id_contrato:dadosassociado?.contrato.id_contrato,
                 status:'P',
                 dt_pgto:new Date(),
                 mensalidade:novasMensalidades

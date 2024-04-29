@@ -64,7 +64,15 @@ type DependentesProps = {
     }
 }
 type MensalidadeProps = {
-
+    id_usuario:number,
+    id_contrato:number,
+    estorno_dt:Date,
+    estorno_user:string,
+    dt_exclusao:Date,
+  exclusao_motivo:string,
+  user_exclusao:string,
+  associado:string,
+  n_doc:string,
     parcela_n: number,
     vencimento: Date,
     cobranca: Date,
