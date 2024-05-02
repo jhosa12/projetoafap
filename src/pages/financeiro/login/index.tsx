@@ -45,6 +45,10 @@ metas:Array<{
   }
   }>
 }
+interface GruposProps{
+  id_grupo:number,
+  descricao:string
+}
 
 
 
@@ -60,8 +64,10 @@ export default function LoginFinaceiro(){
     const [receitas,setReceitas] = useState<number>(0)
     const [remessa,setRemessa] = useState<number>(0)
     const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
+    const [grupos,setGrupos] = useState<Array<GruposProps>>()
 
-
+    const [startDate, setStartDate] = useState(new Date("2014/02/08"));
+    const [endDate, setEndDate] = useState(new Date("2014/02/10"));
     const toogleAberto = (index:number)=>{
       setAbertos((prev)=>({
         ...prev,
@@ -89,7 +95,9 @@ export default function LoginFinaceiro(){
 
   async function listarDados() {
   const response =  await api.get('/financeiro/lancamentos');
-  setLancamentos(response.data);
+  setLancamentos(response.data.planosdeContas);
+  setGrupos(response.data.grupos)
+  
 
  
   
@@ -130,7 +138,7 @@ setReceitas(calcReceitas)
 
     return(
         <>
-<div className="flex">
+<div className="flex text-white">
     {/*<div className="flex flex-col text-white p-6 pt-4 rounded-sm bg-[#2b2e3b] h-full">
         <h1>Filtros</h1>
         
@@ -173,24 +181,26 @@ setReceitas(calcReceitas)
 </button>
    
     </div>*/}
-<div className="flex flex-col p-2 w-full ">
-     <div className="flex flex-row w-full text-sm justify-between p-2">
-            <div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
-                <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense  size={32}/></div>
+
+  
+<div className="flex flex-col p-2 px-4 w-full ">
+     <div className="flex flex-row w-full text-sm justify-between  mb-1">
+            <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
+                <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense  size={25}/></div>
                 <h2 className="flex flex-col" >DESPESAS <span>R$ {despesas}</span></h2>
             </div>
-            <div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
-<div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiReceiveMoney size={32}/></div>
+            <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
+<div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiReceiveMoney size={25}/></div>
 <h2 className="flex flex-col" >RECEITAS <span>R$ {receitas}</span></h2>
 </div>
-<div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
+<div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
 
-<div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><BiTransferAlt  size={32}/></div>
+<div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><BiTransferAlt  size={25}/></div>
 <h2 className="flex flex-col" >REMESSA + RECEITA <span>R$ {remessa}</span></h2>
 </div>
-<div className=" inline-flex text-white p-3 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
+<div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
 
-<div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><FaBalanceScale  size={32}/></div>
+<div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><FaBalanceScale  size={25}/></div>
 <h2 className={`flex flex-col`} >SALDO <span className={`font-semibold  ${(receitas-despesas)<0?"text-red-600":"text-white"}`}>R$ {receitas-despesas}</span></h2>
 </div>
 
@@ -198,7 +208,54 @@ setReceitas(calcReceitas)
 {/*<div className="flex flex-col p-2 ml-2  overflow-y-auto max-h-[520px] text-white bg-[#2b2e3b] rounded-lg w-fit">
 {listaLancamentos.length>0 && <Grafico lancamentos={listaLancamentos}/>}
     </div>*/} 
-    <div className="flex flex-col p-2 ml-2 w-full overflow-y-auto max-h-[calc(100vh-165px)] text-white bg-[#2b2e3b] rounded-lg ">
+
+<div className="flex w-full bg-[#2b2e3b] px-4 mb-1 py-1 text-sm items-center gap-3 rounded-sm  "> 
+      <label className="bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
+     
+   
+    <select  value={''} onChange={e=>{
+        }} className="flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+    <option value={''}>SETOR</option>
+      
+              {grupos?.map((item,index)=>(
+                <option key={index}  value={item.id_grupo}>{item.descricao}</option>
+
+              ))}
+    </select>
+
+    <select  value={''} onChange={e=>{
+        }} className="flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+    <option value={''}>PLANO DE CONTAS</option>
+      
+              {grupos?.map((item,index)=>(
+                <option key={index}  value={item.id_grupo}>{item.descricao}</option>
+
+              ))}
+    </select>
+    <DatePicker
+        selected={startDate}
+        onChange={(date) =>date && setStartDate(date)}
+        selectsStart
+        startDate={startDate}
+        endDate={endDate}
+        className="flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+      />
+      <DatePicker
+        selected={endDate}
+        onChange={(date) =>date && setEndDate(date)}
+        selectsEnd
+        startDate={startDate}
+        endDate={endDate}
+        minDate={startDate}
+        className=" flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+      />
+
+
+
+    </div>
+
+
+    <div className="flex flex-col p-2 px-4 w-full overflow-y-auto max-h-[calc(100vh-188px)] text-white bg-[#2b2e3b] rounded-lg ">
       <ul className="flex flex-col w-full p-2 gap-2 text-sm">
         {
          listaLancamentos?.map((nome,index)=>{

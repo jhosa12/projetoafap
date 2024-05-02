@@ -56,8 +56,6 @@ export default function CaixaMovimentar(){
         setIsModalOpen(false)
     }
 
- 
-
     useEffect(()=>{
         const user = !!usuario
         if(!user){ 
