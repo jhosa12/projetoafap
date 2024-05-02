@@ -227,8 +227,8 @@ setReceitas(calcReceitas)
         }} className="flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
     <option value={''}>PLANO DE CONTAS</option>
       
-              {grupos?.map((item,index)=>(
-                <option key={index}  value={item.id_grupo}>{item.descricao}</option>
+              {listaLancamentos?.map((item,index)=>(
+                <option key={index}  value={item.conta}>{item.descricao}</option>
 
               ))}
     </select>
@@ -238,7 +238,7 @@ setReceitas(calcReceitas)
         selectsStart
         startDate={startDate}
         endDate={endDate}
-        className="flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+        className="flex py-1 pl-2  border rounded-lg text-sm  bg-gray-700 border-gray-600  text-white"
       />
       <DatePicker
         selected={endDate}
@@ -247,7 +247,7 @@ setReceitas(calcReceitas)
         startDate={startDate}
         endDate={endDate}
         minDate={startDate}
-        className=" flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+        className=" flex py-1 pl-2  border rounded-lg  bg-gray-700 border-gray-600  text-white "
       />
 
 
