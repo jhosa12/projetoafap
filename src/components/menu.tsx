@@ -24,7 +24,7 @@ import { RxDrawingPinFilled } from "react-icons/rx";
 export function MenuLateral(){
    const socket = io("https://apiafap.onrender.com");
     const [isOpen,setIsOpen]=useState(false);
-    const {signOut,usuario}= useContext(AuthContext);
+    const {usuario,signOut,user}= useContext(AuthContext);
     const [isAdmOpen,setIsAdmOpen]= useState(false );
     const [isCaixaOpen,setIsCaixaOpen] = useState(false);
     const [isServicosOpen,setIsServicosOpen] =useState(false);
@@ -34,11 +34,10 @@ export function MenuLateral(){
 
   
   useEffect(() => {
-    const user = !!usuario
-   if(!user){ 
-      signOut()
-      return;
-  }
+    if(!usuario){
+        user();
+    }
+  
    socket.on('connect', () => {
       socket.emit('userId', usuario?.id.toString());
    });

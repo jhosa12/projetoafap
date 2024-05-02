@@ -12,9 +12,6 @@ import { toast } from "react-toastify";
 import { IoIosArrowDown } from "react-icons/io";
 
 
-
-
-
 interface PlanoContasProps{
 
    conta:string,
@@ -220,7 +217,7 @@ setReceitas(calcReceitas)
              porc = (soma * 100) / Number(nome.metas[0].valor);
            }
             return(
-              <li onClick={()=>toogleAberto(index)} className=" flex flex-col w-full p-2 pl-4 rounded-lg bg-slate-700 uppercase cursor-pointer"><div className="inline-flex w-full items-center"><span className="flex w-full">{nome.descricao}</span> 
+              <li onClick={()=>toogleAberto(index)} className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index%2===0?"bg-slate-700":"bg-slate-600"} uppercase cursor-pointer`}><div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">{nome.descricao}</span> 
               <div className="flex w-full gap-8 justify-end items-center">
                <span>CONSUMO: R$ {soma}</span>  
                <span>Limite de Gastos: R$ {nome.metas[0]?.valor??0}</span>

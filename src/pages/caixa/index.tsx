@@ -30,6 +30,10 @@ interface LancamentosProps{
     datalanc:Date,
     usuario:string
 }
+interface GrupoPrps{
+    id_grupo:number,
+    descricao:string
+}
 
 
 export default function CaixaMovimentar(){
@@ -38,6 +42,7 @@ export default function CaixaMovimentar(){
     const[dataFinal,setDataFinal] =useState<Date>(new Date());
     const[descricao,setDescricao] =useState('');
     const[saldo,setSaldo]=useState(0);
+    const[grupos,setGrupos] = useState<Array<GrupoPrps>>([])
     const[saldoInicial,setSaldoInicial]=useState(0);
     const[despesas,setDespesas]=useState(0);
     const[IsModalOpen,setIsModalOpen] =useState(false);
@@ -76,6 +81,7 @@ export default function CaixaMovimentar(){
             setLancamentos(response.data.lista)
             setSaldoInicial(response.data.dif)
             setPlanos(response.data.plano_de_contas)
+            setGrupos(response.data.grupos)
           
             
             
@@ -111,7 +117,7 @@ export default function CaixaMovimentar(){
 return(
 <>
 
-{IsModalOpen && <ModalLancamentosCaixa listarLancamentos={listarLancamentos} planos={planos} closeModal={closeModal}/>}
+{IsModalOpen && <ModalLancamentosCaixa listarLancamentos={listarLancamentos} planos={planos} closeModal={closeModal} grupo={grupos}/>}
 
 
 <div className="flex w-full justify-center p-4">

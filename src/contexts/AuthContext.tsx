@@ -4,6 +4,7 @@ import { destroyCookie, setCookie, parseCookies } from "nookies"
 import Router from 'next/router';
 import { decode } from 'jsonwebtoken'
 import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
 
 type CidadesProps = {
     id_cidade: number,
@@ -21,7 +22,8 @@ type CaixaProps = {
     ccustos_desc: string,
     valor: number | null,
     usuario: string,
-    data: Date
+    data: Date,
+    id_grupo:number|null,
     tipo: string,
     datalanc: Date,
     notafiscal: string
@@ -207,8 +209,8 @@ type AuthContextData = {
     dadosassociado: AssociadoProps | undefined,
     carregarDados: () => Promise<void>,
     setarListaConv:(fields:Partial<ConvProps>)=>void,
-    listaConv:Partial<ConvProps>
-    // user:()=>void
+    listaConv:Partial<ConvProps>,
+     user:()=>void
 }
 
 type SignInProps = {
@@ -419,14 +421,7 @@ interface ConvProps {
 }
 
 export const AuthContext = createContext({} as AuthContextData)
-export function signOut() {
-    try {
-        destroyCookie(undefined, '@nextauth.token')
-        Router.push('/')
-    } catch (err) {
-        console.log("erro ao deslogar")
-    }
-}
+
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [usuario, setUser] = useState<UserProps>()
@@ -436,9 +431,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [data, setData] = useState<Partial<DadosCadastro>>({})
     const [mov, setMov] = useState<Partial<CaixaProps>>({})
     const [servico,setServico] = useState<Partial<ObitoProps>>({hr_sepultamento:new Date(),end_hora_falecimento:new Date(),end_hora_informaram:new Date()})
+    
+    
+    
+    
+    
+    
     async function sign({ user, password }: SignInProps) {
+        let response
         try {
-            const response = await api.post('/session', {
+            response = await api.post('/session', {
                 usuario: user,
                 password
             })
@@ -454,11 +456,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             //redirecionar o user para /dashboard
             Router.push("/admcontrato")
 
-        } catch (err) {
-            console.log("Erro ao acessar", err)
+        } catch (err:any) {
+toast.error(err.response.data.error)
 
         }
     }
+
+
+    const signOut = ()=> {
+        try {
+            destroyCookie(undefined, '@nextauth.token')
+            Router.push('/')
+        } catch (err) {
+            console.log("erro ao deslogar")
+        }
+    };
+
     function closeModa(fields:Partial<DadosCadastro>) {
         setData((prev:Partial<DadosCadastro>) => {
             if (prev) {
@@ -493,17 +506,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         })
 
     }
-    /* function user(){
+     function user(){
         const cookies = parseCookies();
-        if(cookies['@nextauth.token']){
-            const token = cookies['@nextauth.token'];
-            const decodeToken = decode(token);
-            if(decodeToken && typeof decodeToken === 'object'){
-                const {nome,sub,dir,cargo} = decodeToken;
-                setUser({id:String(sub),nome:nome.toUpperCase(),cargo,dir})
+        try {
+            if(cookies['@nextauth.token']){
+                const token = cookies['@nextauth.token'];
+                const decodeToken = decode(token);
+                if(decodeToken && typeof decodeToken === 'object'){
+                    const {nome,sub,dir,cargo} = decodeToken;
+                    setUser({id:String(sub),nome:nome.toUpperCase(),cargo,dir})
+                }
             }
+            
+        } catch (error) {
+            toast.error('Erro ao captar Usuário')
+            
         }
-     }*/
+     
+     }
 
     function caixaMovimentacao(fields: Partial<CaixaProps>) {
         setMov((prev: Partial<CaixaProps>) => {
@@ -531,7 +551,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
      
     }
     return (
-        <AuthContext.Provider value={{ usuario, isAuthenticated, sign, signOut, data, closeModa, dadosassociado, carregarDados, caixaMovimentacao, mov,setarServico,servico,listaConv,setarListaConv }}>
+        <AuthContext.Provider value={{user, usuario, isAuthenticated, sign, signOut, data, closeModa, dadosassociado, carregarDados, caixaMovimentacao, mov,setarServico,servico,listaConv,setarListaConv }}>
             {children}
         </AuthContext.Provider>
     )

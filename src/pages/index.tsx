@@ -46,10 +46,12 @@ export default function Home() {
        
         required
         placeholder="Senha"
+        autoComplete="current-password"
         value={password}
         className="flex border border-black w-full max-w-md h-10 rounded p-2"
         onChange={(e)=>setSenha(e.target.value)}
         type="password"
+        
     />
     <button type="submit" className={`flex items-center justify-center w-full max-w-md h-12 rounded-lg text-white font-bold bg-[#CA9629]`}>
         {!loading ? "Acessar" : (<AiOutlineLoading3Quarters size={25} className="animate-spin"/>)}

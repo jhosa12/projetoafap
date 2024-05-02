@@ -16,6 +16,7 @@ interface ModalProps{
     closeModal:()=>void;
     planos:Array<PlanosProps>
     listarLancamentos:()=>Promise<void>
+    grupo:Array<GruposProps>
 
 }
 interface PlanosProps{
@@ -24,10 +25,15 @@ interface PlanosProps{
     tipo:string,
     perm_lanc:string,
 }
-export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:ModalProps){
+interface GruposProps{
+    id_grupo:number|null,
+    descricao:string
+}
+export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos,grupo}:ModalProps){
     const {usuario,mov}=useContext(AuthContext)
     const [descricao,setDescricao]=useState('');
     const[conta,setConta] =useState('');
+    const [idSetor,setSetor] = useState('')
     const[tipo,setTipo]=useState<string>('');
     const[datalanc,setData] =useState(new Date());
     const[historico,setHistorico]= useState('');
@@ -70,6 +76,11 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
 
      async function lancarMovimentacao() {
 
+        if(!descricao||!idSetor||!historico){
+            toast.warn('Preencha todos os campos obrigatórios')
+            return;
+        }
+
         if(descricao==='SANGRIA'){
             await toast.promise(
                 api.post('/notification/adicionar',{
@@ -93,6 +104,7 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
         await toast.promise(
             api.post('/novoLancamento',{
             id_usuario:Number(usuario?.id),
+            id_grupo:Number(idSetor),
             datalanc:new Date(),
             conta,
             conta_n:conta,
@@ -109,7 +121,8 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
                 success:'Lançado com sucesso!'
             }
         )
-        listarLancamentos()
+      await listarLancamentos()
+        closeModal()
         
      }
 
@@ -129,10 +142,31 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos}:Moda
 <label  className="block mb-1 text-xs font-medium  text-white">DATA</label>
 <DatePicker  selected={datalanc} onChange={e=>e && setData(e)}  dateFormat={"dd/MM/yyyy"} locale={"pt"}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
 </div>
-<div className="mb-1  col-span-1">
+<div className=" mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-white">USUÁRIO</label>
     <input required type="text" disabled value={usuario?.nome}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
 </div>
+
+<div className="mb-1 col-span-2">
+    <label  className="block mb-1 text-xs font-medium  text-white">SETOR</label>
+    <select  value={idSetor} onChange={e=>{
+       setSetor(e.target.value)
+    
+       
+        }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+    <option value={''}></option>
+        {grupo.map((item,index)=>
+            
+            (
+                <option key={index} value={item.id_grupo?.toString()}>{item.descricao.toUpperCase()}</option>
+            )
+        )}
+
+    </select>
+
+</div>
+
+
 </div>
 
         <div className="p-2   grid mt-2 gap-2 grid-flow-row-dense grid-cols-4">

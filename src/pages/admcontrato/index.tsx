@@ -5,7 +5,7 @@ import {ModalBusca} from '../../components/modal'
 import Teste from '@/pages/teste/index';
 import React,{ useState,useContext, useEffect, useRef } from "react";
 import { RiFileAddLine } from "react-icons/ri";
-import {AuthContext, signOut} from "../../contexts/AuthContext"
+import {AuthContext} from "../../contexts/AuthContext"
 import { toast } from "react-toastify";
 import { ModalMensalidade } from "@/components/modalmensalidade";
 import { RiAddCircleFill } from "react-icons/ri";
@@ -105,7 +105,10 @@ if(item.status ==='E'){
    }
    }
 
+
+
    useEffect(()=>{
+
    
    
     async function listaCadastro() {
@@ -149,11 +152,7 @@ async function atualizarObs() {
       
     }
   useEffect(() => {
-    const user = !!usuario
-    if(!user){ 
-       signOut()
-       return;
-   }
+
  
     const carregarDadosAsync = async () => {
       try {
