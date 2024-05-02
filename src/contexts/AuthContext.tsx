@@ -421,7 +421,14 @@ interface ConvProps {
 }
 
 export const AuthContext = createContext({} as AuthContextData)
-
+export  const signOut = ()=> {
+    try {
+        destroyCookie(undefined, '@nextauth.token')
+        Router.push('/')
+    } catch (err) {
+        console.log("erro ao deslogar")
+    }
+};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [usuario, setUser] = useState<UserProps>()
@@ -463,14 +470,7 @@ toast.error(err.response.data.error)
     }
 
 
-    const signOut = ()=> {
-        try {
-            destroyCookie(undefined, '@nextauth.token')
-            Router.push('/')
-        } catch (err) {
-            console.log("erro ao deslogar")
-        }
-    };
+
 
     function closeModa(fields:Partial<DadosCadastro>) {
         setData((prev:Partial<DadosCadastro>) => {

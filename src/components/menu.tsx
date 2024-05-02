@@ -4,7 +4,7 @@ import { MdManageAccounts } from "react-icons/md";
 import logo from '../../public/logoafap.png'
 import fototeste from '../../public/fototeste.jpeg'
 import { MdLogout } from "react-icons/md";
-import { AuthContext } from '@/contexts/AuthContext';
+import { AuthContext,signOut } from '@/contexts/AuthContext';
 import { Tooltip } from 'react-tooltip';
 import { IoIosClose } from "react-icons/io";
 import { FaAngleDown } from "react-icons/fa";
@@ -24,7 +24,7 @@ import { RxDrawingPinFilled } from "react-icons/rx";
 export function MenuLateral(){
    const socket = io("https://apiafap.onrender.com");
     const [isOpen,setIsOpen]=useState(false);
-    const {usuario,signOut,user}= useContext(AuthContext);
+    const {usuario,user}= useContext(AuthContext);
     const [isAdmOpen,setIsAdmOpen]= useState(false );
     const [isCaixaOpen,setIsCaixaOpen] = useState(false);
     const [isServicosOpen,setIsServicosOpen] =useState(false);
