@@ -201,7 +201,7 @@ setReceitas(calcReceitas)
 {/*<div className="flex flex-col p-2 ml-2  overflow-y-auto max-h-[520px] text-white bg-[#2b2e3b] rounded-lg w-fit">
 {listaLancamentos.length>0 && <Grafico lancamentos={listaLancamentos}/>}
     </div>*/} 
-    <div className="flex flex-col p-2 ml-2 w-full overflow-y-auto max-h-[calc(100vh-150px)] text-white bg-[#2b2e3b] rounded-lg ">
+    <div className="flex flex-col p-2 ml-2 w-full overflow-y-auto max-h-[calc(100vh-165px)] text-white bg-[#2b2e3b] rounded-lg ">
       <ul className="flex flex-col w-full p-2 gap-2 text-sm">
         {
          listaLancamentos?.map((nome,index)=>{
