@@ -286,7 +286,24 @@ export default function LoginFinaceiro() {
     </div>*/}
 
 
-        <div className="flex flex-col p-2 px-4 w-full ">
+        <div className="flex flex-col  px-4 w-full ">
+        <ul className="flex flex-wrap mb-1 text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 "  >
+        <li className="me-2">
+            <button  type="button" onClick={()=>{}}    className={`inline-block p-2 border-blue-600 rounded-t-lg hover:border-b-[1px]  hover:text-gray-300  `}>Plano de Contas</button>
+        </li>
+        <li className="me-2">
+            <button  type="button" onClick={()=>{}}    className={`inline-block p-2 border-blue-600  hover:border-b-[1px]  rounded-t-lg   hover:text-gray-300  `}>Mensalidade</button>
+        </li>
+        <li className="me-2">
+            <button type="button"  onClick={()=>{}}   className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Planos</button>
+        </li>
+        <li className="me-2">
+            <button type="button"  onClick={()=>{}}  className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Convalescencia</button>
+        </li>
+
+    </ul>
+
+    <div>
           <div className="flex flex-row w-full text-xs justify-between  mb-1">
             <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
               <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense size={25} /></div>
@@ -372,7 +389,7 @@ export default function LoginFinaceiro() {
 
             </div>
           </div>
-          <div className="flex flex-col  px-4 w-full overflow-y-auto max-h-[calc(100vh-188px)] text-white bg-[#2b2e3b] rounded-lg ">
+          <div className="flex flex-col  px-4 w-full overflow-y-auto max-h-[calc(100vh-210px)] text-white bg-[#2b2e3b] rounded-lg ">
             <ul className="flex flex-col w-full p-2 gap-1 text-sm">
               <li className="flex flex-col w-full  text-xs pl-4 border-b-[1px] ">
                 <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">DESCRIÇÃO</span>
@@ -431,7 +448,7 @@ export default function LoginFinaceiro() {
 
         </div>
       </div>
-
+      </div>
 
     </>
 
