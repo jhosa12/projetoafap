@@ -318,21 +318,16 @@ export default function LoginFinaceiro() {
             />
 
                         </div>
-         
-
-
-
           </div>
-
-
           <div className="flex flex-col p-2 px-4 w-full overflow-y-auto max-h-[calc(100vh-188px)] text-white bg-[#2b2e3b] rounded-lg ">
-            <ul className="flex flex-col w-full p-2 gap-2 text-sm">
-              <li className="flex flex-col w-full p-1 text-sm pl-4 rounded-lg">
+            <ul className="flex flex-col w-full p-2 gap-1 text-sm">
+              <li className="flex flex-col w-full  text-sm pl-4 border-b-[1px] ">
               <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">DESCRIÇÃO</span>
                       <div className="flex w-full gap-8  items-center">
-                        <span className="flex w-full text-start whitespace-nowrap font-semibold">CONSUMO</span>
-                        <span className="flex w-full text-start whitespace-nowrap font-semibold">LIM. DE GASTOS</span>
-                        <span className=" text-start whitespace-nowrap ">META</span>
+                        <span className="flex w-full text-start whitespace-nowrap ">CONSUMO</span>
+                        <span className="flex w-full text-start whitespace-nowrap">LIM. DE GASTOS</span>
+                        <span className="flex w-full text-start whitespace-nowrap ">META</span>
+                        <span className="flex w-full text-start whitespace-nowrap ">EQV. DE DESPESAS</span>
                         <span className="flex w-full justify-end  "></span>
                         </div>
                     </div>
@@ -359,7 +354,9 @@ export default function LoginFinaceiro() {
                       <div className="flex w-full gap-8  items-center">
                         <span className="flex w-full text-start whitespace-nowrap font-semibold">R$ {soma}</span>
                         <span className="flex w-full text-start whitespace-nowrap font-semibold">R$ {nome?.metas[0]?.valor ?? 0}</span>
-                        <span className=" text-start whitespace-nowrap rounded-lg bg-red-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span>
+                        <span className="flex w-full text-start whitespace-nowrap "><span className="rounded-lg bg-red-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span></span>
+                        <span className="flex w-full text-start whitespace-nowrap 
+                        "><span className="rounded-lg bg-red-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span></span>
                         <span className="flex w-full justify-end  "><IoIosArrowDown /></span>
                         </div>
                     </div>
