@@ -83,10 +83,10 @@ export default function LoginFinaceiro() {
   }
 
   useEffect(() => {
-    if (setorSelect === 0 && !planoSelect) {
+    if (setorSelect === 0 && !planoSelect && todoPerido) {
       setLancamentos(arraygeral)
     }
-    else if (setorSelect !== 0 && !planoSelect) {
+    else if (setorSelect !== 0 && !planoSelect && todoPerido) {
       const novoArray = arraygeral.map(item => {
         return {
           ...item,
@@ -96,7 +96,7 @@ export default function LoginFinaceiro() {
 
       setLancamentos(novoArray)
     }
-    else if (setorSelect !== 0 && planoSelect) {
+    else if (setorSelect !== 0 && planoSelect && todoPerido) {
       const novoArray = arraygeral.map(item => {
         if (item.conta === planoSelect) {
           return {
@@ -110,7 +110,7 @@ export default function LoginFinaceiro() {
 
       setLancamentos(novoArrayFiltrado)
     }
-    else if (setorSelect === 0 && planoSelect) {
+    else if (setorSelect === 0 && planoSelect && todoPerido) {
       const novoArray = arraygeral.filter(item => {
         if (item.conta === planoSelect) {
           return {
@@ -122,10 +122,62 @@ export default function LoginFinaceiro() {
       });
 
       setLancamentos(novoArray)
+    }//AQUI INICIO
+
+    else if (setorSelect === 0 && !planoSelect && !todoPerido) {
+      const novoArray = arraygeral.map(item => {
+        return {
+          ...item,
+          lancamentos: item.lancamentos.filter(dado => new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
+        }
+      });
+
+      setLancamentos(novoArray)
+    }
+
+    else if (setorSelect !== 0 && !planoSelect && !todoPerido) {
+      const novoArray = arraygeral.map(item => {
+        return {
+          ...item,
+          lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect && new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
+        }
+      });
+
+      setLancamentos(novoArray)
+    }
+    else if (setorSelect !== 0 && planoSelect && !todoPerido) {
+      const novoArray = arraygeral.map(item => {
+        if (item.conta === planoSelect) {
+          return {
+            ...item,
+            lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect && new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
+          }
+        } else { return null; }
+
+      }).filter(item => item !== null) as PlanoContasProps[];
+      const novoArrayFiltrado = novoArray.filter(item => item !== null);
+
+      setLancamentos(novoArrayFiltrado)
+    }
+    else if (setorSelect === 0 && planoSelect && !todoPerido) {
+      const novoArray = arraygeral.map(item => {
+        if (item.conta === planoSelect) {
+          return {
+            ...item,
+            lancamentos: item.lancamentos.filter(dado =>new Date(dado.datalanc) >= new Date(startDate) && new Date(dado.datalanc) <= new Date(endDate))
+          }
+        }else{
+          return null
+        };
+
+      }).filter(item => item !==null) as PlanoContasProps[];
+      const novoArrayFiltrado = novoArray.filter(item => item !== null);
+
+      setLancamentos(novoArrayFiltrado)
     }
 
 
-  }, [setorSelect, planoSelect])
+  }, [setorSelect, planoSelect, startDate, endDate, todoPerido])
 
 
   useEffect(() => {
@@ -285,52 +337,53 @@ export default function LoginFinaceiro() {
 
               ))}
             </select>
-           
 
-                        <div className="inline-flex items-center gap-3">
-                        <div className="flex items-center ">
-                            <input type="checkbox" checked={todoPerido} onChange={()=>setPeriodo(!todoPerido)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                            <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODO PERÍODO</label>
-                        </div>
-                        <DatePicker
-              disabled={todoPerido}
-              dateFormat={"dd/MM/yyyy"}
-              locale={pt}
-              selected={startDate}
-              onChange={(date) => date && setStartDate(date)}
-              selectsStart
-              startDate={startDate}
-              endDate={endDate}
-              className="flex py-1 pl-2  border rounded-lg text-sm  bg-gray-700 border-gray-600  text-white"
-            />
-            <span> até </span>
-            <DatePicker
-            disabled={todoPerido}
-              dateFormat={"dd/MM/yyyy"}
-              locale={pt}
-              selected={endDate}
-              onChange={(date) => date && setEndDate(date)}
-              selectsEnd
-              startDate={startDate}
-              endDate={endDate}
-              minDate={startDate}
-              className=" flex py-1 pl-2  border rounded-lg  bg-gray-700 border-gray-600  text-white "
-            />
 
-                        </div>
+            <div className="inline-flex  items-center  gap-3">
+              <div className="flex items-center ">
+                <input type="checkbox" checked={todoPerido} onChange={() => setPeriodo(!todoPerido)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODO PERÍODO</label>
+              </div>
+              <DatePicker
+                disabled={todoPerido}
+                dateFormat={"dd/MM/yyyy"}
+                locale={pt}
+                selected={startDate}
+                onChange={(date) => date && setStartDate(date)}
+                selectsStart
+                startDate={startDate}
+                endDate={endDate}
+                className="flex py-1 pl-2 border rounded-lg text-sm  bg-gray-700 border-gray-600  text-white"
+              />
+              <span> até </span>
+
+              <DatePicker
+                disabled={todoPerido}
+                dateFormat={"dd/MM/yyyy"}
+                locale={pt}
+                selected={endDate}
+                onChange={(date) => date && setEndDate(date)}
+                selectsEnd
+                startDate={startDate}
+                endDate={endDate}
+                minDate={startDate}
+                className=" flex py-1 pl-2  border rounded-lg  bg-gray-700 border-gray-600  text-white "
+              />
+
+            </div>
           </div>
-          <div className="flex flex-col p-2 px-4 w-full overflow-y-auto max-h-[calc(100vh-188px)] text-white bg-[#2b2e3b] rounded-lg ">
+          <div className="flex flex-col  px-4 w-full overflow-y-auto max-h-[calc(100vh-188px)] text-white bg-[#2b2e3b] rounded-lg ">
             <ul className="flex flex-col w-full p-2 gap-1 text-sm">
               <li className="flex flex-col w-full  text-sm pl-4 border-b-[1px] ">
-              <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">DESCRIÇÃO</span>
-                      <div className="flex w-full gap-8  items-center">
-                        <span className="flex w-full text-start whitespace-nowrap ">CONSUMO</span>
-                        <span className="flex w-full text-start whitespace-nowrap">LIM. DE GASTOS</span>
-                        <span className="flex w-full text-start whitespace-nowrap ">META</span>
-                        <span className="flex w-full text-start whitespace-nowrap ">EQV. DE DESPESAS</span>
-                        <span className="flex w-full justify-end  "></span>
-                        </div>
-                    </div>
+                <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">DESCRIÇÃO</span>
+                  <div className="flex w-full gap-8  items-center">
+                    <span className="flex w-full text-start whitespace-nowrap ">CONSUMO</span>
+                    <span className="flex w-full text-start whitespace-nowrap">LIM. DE GASTOS</span>
+                    <span className="flex w-full text-start whitespace-nowrap ">META</span>
+                    <span className="flex w-full text-start whitespace-nowrap ">EQV. DE DESPESAS</span>
+                    <span className="flex w-full justify-end  "></span>
+                  </div>
+                </div>
               </li>
               {
                 listaLancamentos?.map((nome, index) => {
@@ -351,16 +404,16 @@ export default function LoginFinaceiro() {
                   return (
                     <li onClick={() => toogleAberto(index)} className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
                       <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">{nome?.descricao}</span>
-                      <div className="flex w-full gap-8  items-center">
-                        <span className="flex w-full text-start whitespace-nowrap font-semibold">R$ {soma}</span>
-                        <span className="flex w-full text-start whitespace-nowrap font-semibold">R$ {nome?.metas[0]?.valor ?? 0}</span>
-                        <span className="flex w-full text-start whitespace-nowrap "><span className="rounded-lg bg-red-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span></span>
-                        <span className="flex w-full text-start whitespace-nowrap 
+                        <div className="flex w-full gap-8  items-center">
+                          <span className="flex w-full text-start whitespace-nowrap font-semibold">R$ {soma}</span>
+                          <span className="flex w-full text-start whitespace-nowrap font-semibold">R$ {nome?.metas[0]?.valor ?? 0}</span>
+                          <span className="flex w-full text-start whitespace-nowrap "><span className="rounded-lg bg-red-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span></span>
+                          <span className="flex w-full text-start whitespace-nowrap 
                         "><span className="rounded-lg bg-red-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span></span>
-                        <span className="flex w-full justify-end  "><IoIosArrowDown /></span>
+                          <span className="flex w-full justify-end  "><IoIosArrowDown /></span>
                         </div>
-                    </div>
-                      {abertos[index] && <ul className="flex flex-col w-full gap-2  ml-6 ">
+                      </div>
+                      {abertos[index] && <ul className="flex flex-col w-full gap-1  ml-6 ">
                         {nome.lancamentos.map((lancamento, index) => {
                           return (
                             <li className="flex text-xs gap-2 "><span>{lancamento.historico}</span> Valor: R$ {lancamento.valor}</li>

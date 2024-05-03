@@ -421,7 +421,7 @@ interface ConvProps {
 }
 
 export const AuthContext = createContext({} as AuthContextData)
-export  const signOut = ()=> {
+export  function signOut(){
     try {
         destroyCookie(undefined, '@nextauth.token')
         Router.push('/')
