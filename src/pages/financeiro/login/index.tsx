@@ -287,7 +287,7 @@ export default function LoginFinaceiro() {
 
 
         <div className="flex flex-col p-2 px-4 w-full ">
-          <div className="flex flex-row w-full text-sm justify-between  mb-1">
+          <div className="flex flex-row w-full text-xs justify-between  mb-1">
             <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
               <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense size={25} /></div>
               <h2 className="flex flex-col" >DESPESAS <span>R$ {despesas}</span></h2>
@@ -312,28 +312,28 @@ export default function LoginFinaceiro() {
 {listaLancamentos.length>0 && <Grafico lancamentos={listaLancamentos}/>}
     </div>*/}
 
-          <div className="flex w-full bg-[#2b2e3b] px-4 mb-1 py-1 text-sm items-center justify-between rounded-sm  ">
+          <div className="flex w-full bg-[#2b2e3b] px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
             <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
 
 
             <select value={setorSelect} onChange={e => {
               setSetor(Number(e.target.value))
-            }} className="flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+            }} className="flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
               <option value={0}>SETOR (TODOS)</option>
 
               {grupos?.map((item, index) => (
-                <option key={index} value={item.id_grupo}>{item.descricao}</option>
+                <option className="text-xs" key={index} value={item.id_grupo}>{item.descricao}</option>
 
               ))}
             </select>
 
             <select value={planoSelect} onChange={e => {
               setPlano(e.target.value)
-            }} className="flex  pt-1 pb-1 pl-2 pr-2 uppercase border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+            }} className="flex  pt-1 pb-1 pl-2 pr-2 uppercase border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
               <option value={''}>PLANO DE CONTAS (TODOS)</option>
 
               {arraygeral?.map((item, index) => (
-                <option key={index} value={item?.conta}>{item?.descricao}</option>
+                <option className="text-xs" key={index} value={item?.conta}>{item?.descricao}</option>
 
               ))}
             </select>
@@ -353,7 +353,7 @@ export default function LoginFinaceiro() {
                 selectsStart
                 startDate={startDate}
                 endDate={endDate}
-                className="flex py-1 pl-2 border rounded-lg text-sm  bg-gray-700 border-gray-600  text-white"
+                className="flex py-1 pl-2 text-xs  border rounded-lg   bg-gray-700 border-gray-600  text-white"
               />
               <span> até </span>
 
@@ -367,14 +367,14 @@ export default function LoginFinaceiro() {
                 startDate={startDate}
                 endDate={endDate}
                 minDate={startDate}
-                className=" flex py-1 pl-2  border rounded-lg  bg-gray-700 border-gray-600  text-white "
+                className=" flex py-1 pl-2 text-xs  border rounded-lg  bg-gray-700 border-gray-600  text-white "
               />
 
             </div>
           </div>
           <div className="flex flex-col  px-4 w-full overflow-y-auto max-h-[calc(100vh-188px)] text-white bg-[#2b2e3b] rounded-lg ">
             <ul className="flex flex-col w-full p-2 gap-1 text-sm">
-              <li className="flex flex-col w-full  text-sm pl-4 border-b-[1px] ">
+              <li className="flex flex-col w-full  text-xs pl-4 border-b-[1px] ">
                 <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">DESCRIÇÃO</span>
                   <div className="flex w-full gap-8  items-center">
                     <span className="flex w-full text-start whitespace-nowrap ">CONSUMO</span>
@@ -407,9 +407,8 @@ export default function LoginFinaceiro() {
                         <div className="flex w-full gap-8  items-center">
                           <span className="flex w-full text-start whitespace-nowrap font-semibold">R$ {soma}</span>
                           <span className="flex w-full text-start whitespace-nowrap font-semibold">R$ {nome?.metas[0]?.valor ?? 0}</span>
-                          <span className="flex w-full text-start whitespace-nowrap "><span className="rounded-lg bg-red-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span></span>
-                          <span className="flex w-full text-start whitespace-nowrap 
-                        "><span className="rounded-lg bg-red-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span></span>
+                          <span className="flex w-full text-start whitespace-nowrap"><span className="rounded-lg bg-red-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span></span>
+                          <span className="flex w-full text-start whitespace-nowrap"><span className="rounded-lg bg-blue-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span></span>
                           <span className="flex w-full justify-end  "><IoIosArrowDown /></span>
                         </div>
                       </div>
