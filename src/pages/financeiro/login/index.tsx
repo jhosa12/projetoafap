@@ -25,6 +25,7 @@ interface PlanoContasProps{
    usuario:string,
    contaf:string,
    lancamentos: Array<{
+    id_grupo:number,
     conta: string,
     descricao: string,
     historico:  string ,
@@ -65,9 +66,15 @@ export default function LoginFinaceiro(){
     const [remessa,setRemessa] = useState<number>(0)
     const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
     const [grupos,setGrupos] = useState<Array<GruposProps>>()
+    const [setorSelect,setSetor] = useState<number>(0)
+    const [planoSelect,setPlano] = useState('')
+    const[startDate,setStartDate] =useState(new Date())
+    const [endDate,setEndDate] = useState(new Date())
+    const [arraygeral,setArrayGeral] = useState<Array<PlanoContasProps>>([])
 
-    const [startDate, setStartDate] = useState(new Date("2014/02/08"));
-    const [endDate, setEndDate] = useState(new Date("2014/02/10"));
+ 
+   
+   
     const toogleAberto = (index:number)=>{
       setAbertos((prev)=>({
         ...prev,
@@ -75,6 +82,53 @@ export default function LoginFinaceiro(){
       }))
 
     }
+
+    useEffect(()=>{
+      if(setorSelect===0 && !planoSelect){
+        setLancamentos(arraygeral)
+      }
+      else if(setorSelect!==0 && !planoSelect){
+        const novoArray = arraygeral.map(item => {
+          return {
+              ...item,
+              lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect)
+          };
+      });
+       
+       setLancamentos(novoArray)
+      }
+      else if(setorSelect!==0 && planoSelect){
+        const novoArray = arraygeral.map(item => {
+        if ( item.conta===planoSelect){
+          return {
+            ...item,
+            lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect)
+        }
+        }else {return null;}
+       
+      }).filter(item=>item !==null) as PlanoContasProps[];
+      const novoArrayFiltrado = novoArray.filter(item => item !== null);
+       
+       setLancamentos(novoArrayFiltrado)
+      }
+      else if(setorSelect===0 && planoSelect){
+        const novoArray = arraygeral.filter(item => {
+        if ( item.conta===planoSelect){
+          return {
+            ...item,
+           
+        }
+        };
+       
+      });
+       
+       setLancamentos(novoArray)
+      }
+
+
+    },[setorSelect,planoSelect])
+
+  
     
     
 
@@ -95,8 +149,10 @@ export default function LoginFinaceiro(){
 
   async function listarDados() {
   const response =  await api.get('/financeiro/lancamentos');
+  setArrayGeral(response.data.planosdeContas);
   setLancamentos(response.data.planosdeContas);
   setGrupos(response.data.grupos)
+ 
   
 
  
@@ -104,20 +160,20 @@ export default function LoginFinaceiro(){
   }
 
   useEffect(()=>{
-   const calcDespesas = listaLancamentos.reduce((acumuladorP,atualP)=>{
-      const total =  atualP.lancamentos.reduce((acumulador,atual)=>{
-          if(atual.tipo==='DESPESA'){
-            return Number(acumulador)+Number(atual.valor)
+   const calcDespesas = listaLancamentos?.reduce((acumuladorP,atualP)=>{
+      const total =  atualP?.lancamentos?.reduce((acumulador,atual)=>{
+          if(atual?.tipo==='DESPESA'){
+            return Number(acumulador)+Number(atual?.valor)
           }
           else{return acumulador}
         },0)
         return acumuladorP + total
       } ,0)
 setDespesas(calcDespesas)
-const calcReceitas = listaLancamentos.reduce((acumuladorP,atualP)=>{
-  const total =  atualP.lancamentos.reduce((acumulador,atual)=>{
-    if(atual.tipo==='RECEITA'){
-      return Number(acumulador)+Number(atual.valor)
+const calcReceitas = listaLancamentos?.reduce((acumuladorP,atualP)=>{
+  const total =  atualP?.lancamentos.reduce((acumulador,atual)=>{
+    if(atual?.tipo==='RECEITA'){
+      return Number(acumulador)+Number(atual?.valor)
     }
     else{return acumulador}
   },0)
@@ -213,9 +269,9 @@ setReceitas(calcReceitas)
       <label className="bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
      
    
-    <select  value={''} onChange={e=>{
+    <select  value={setorSelect} onChange={e=>{setSetor(Number(e.target.value))
         }} className="flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-    <option value={''}>SETOR</option>
+    <option value={0}>SETOR (TODOS)</option>
       
               {grupos?.map((item,index)=>(
                 <option key={index}  value={item.id_grupo}>{item.descricao}</option>
@@ -223,16 +279,18 @@ setReceitas(calcReceitas)
               ))}
     </select>
 
-    <select  value={''} onChange={e=>{
-        }} className="flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-    <option value={''}>PLANO DE CONTAS</option>
+    <select  value={planoSelect} onChange={e=>{setPlano(e.target.value)
+        }} className="flex pt-1 pb-1 pl-2 pr-2 uppercase border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+    <option value={''}>PLANO DE CONTAS (TODOS)</option>
       
-              {listaLancamentos?.map((item,index)=>(
-                <option key={index}  value={item.conta}>{item.descricao}</option>
+              {arraygeral?.map((item,index)=>(
+                <option  key={index}  value={item?.conta}>{item?.descricao}</option>
 
               ))}
     </select>
     <DatePicker
+        dateFormat={"dd/MM/yyyy"}
+        locale={pt}
         selected={startDate}
         onChange={(date) =>date && setStartDate(date)}
         selectsStart
@@ -241,6 +299,8 @@ setReceitas(calcReceitas)
         className="flex py-1 pl-2  border rounded-lg text-sm  bg-gray-700 border-gray-600  text-white"
       />
       <DatePicker
+      dateFormat={"dd/MM/yyyy"}
+      locale={pt}
         selected={endDate}
         onChange={(date) =>date && setEndDate(date)}
         selectsEnd
@@ -259,7 +319,7 @@ setReceitas(calcReceitas)
       <ul className="flex flex-col w-full p-2 gap-2 text-sm">
         {
          listaLancamentos?.map((nome,index)=>{
-            const soma = nome.lancamentos.reduce((total,item)=>{
+            const soma = nome?.lancamentos?.reduce((total,item)=>{
               if(item.conta===nome.conta){
                 return total+Number(item.valor)
               }
@@ -268,16 +328,16 @@ setReceitas(calcReceitas)
               }
             },0)
             let porc;
-           if (soma === 0 || nome.metas[0]?.valor === 0 || soma===null || nome.metas[0]?.valor===null || isNaN(Number(nome.metas[0]?.valor))) {
+           if (soma === 0 || nome?.metas[0]?.valor === 0 || soma===null || nome?.metas[0]?.valor===null || isNaN(Number(nome?.metas[0]?.valor))) {
              porc = 0;
            } else {
-             porc = (soma * 100) / Number(nome.metas[0].valor);
+             porc = (soma * 100) / Number(nome?.metas[0].valor);
            }
             return(
-              <li onClick={()=>toogleAberto(index)} className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index%2===0?"bg-slate-700":"bg-slate-600"} uppercase cursor-pointer`}><div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">{nome.descricao}</span> 
+              <li onClick={()=>toogleAberto(index)} className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index%2===0?"bg-slate-700":"bg-slate-600"} uppercase cursor-pointer`}><div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">{nome?.descricao}</span> 
               <div className="flex w-full gap-8 justify-end items-center">
                <span>CONSUMO: R$ {soma}</span>  
-               <span>Limite de Gastos: R$ {nome.metas[0]?.valor??0}</span>
+               <span>Limite de Gastos: R$ {nome?.metas[0]?.valor??0}</span>
               <span className="rounded-lg bg-red-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span>
                 <IoIosArrowDown/></div> 
                </div> 
