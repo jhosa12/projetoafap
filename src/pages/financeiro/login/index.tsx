@@ -327,6 +327,16 @@ export default function LoginFinaceiro() {
 
           <div className="flex flex-col p-2 px-4 w-full overflow-y-auto max-h-[calc(100vh-188px)] text-white bg-[#2b2e3b] rounded-lg ">
             <ul className="flex flex-col w-full p-2 gap-2 text-sm">
+              <li className="flex flex-col w-full p-1 text-sm pl-4 rounded-lg">
+              <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">DESCRIÇÃO</span>
+                      <div className="flex w-full gap-8  items-center">
+                        <span className="flex w-full text-start whitespace-nowrap font-semibold">CONSUMO</span>
+                        <span className="flex w-full text-start whitespace-nowrap font-semibold">LIM. DE GASTOS</span>
+                        <span className=" text-start whitespace-nowrap ">META</span>
+                        <span className="flex w-full justify-end  "></span>
+                        </div>
+                    </div>
+              </li>
               {
                 listaLancamentos?.map((nome, index) => {
                   const soma = nome?.lancamentos?.reduce((total, item) => {
@@ -344,10 +354,11 @@ export default function LoginFinaceiro() {
                     porc = (soma * 100) / Number(nome?.metas[0].valor);
                   }
                   return (
-                    <li onClick={() => toogleAberto(index)} className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}><div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">{nome?.descricao}</span>
+                    <li onClick={() => toogleAberto(index)} className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
+                      <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">{nome?.descricao}</span>
                       <div className="flex w-full gap-8  items-center">
-                        <span className="flex w-full text-start whitespace-nowrap font-semibold">CONSUMO: R$ {soma}</span>
-                        <span className="flex w-full text-start whitespace-nowrap font-semibold">Limite de Gastos: R$ {nome?.metas[0]?.valor ?? 0}</span>
+                        <span className="flex w-full text-start whitespace-nowrap font-semibold">R$ {soma}</span>
+                        <span className="flex w-full text-start whitespace-nowrap font-semibold">R$ {nome?.metas[0]?.valor ?? 0}</span>
                         <span className=" text-start whitespace-nowrap rounded-lg bg-red-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span>
                         <span className="flex w-full justify-end  "><IoIosArrowDown /></span>
                         </div>
