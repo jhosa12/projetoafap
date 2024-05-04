@@ -56,6 +56,34 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
      //     distributed: true
       //  }
     //  } ,
+    responsive: [{
+      breakpoint: 480,
+      options: {
+        legend: {
+          position: 'bottom',
+          offsetX: -10,
+          offsetY: 0
+        }
+      }
+    }],
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        borderRadius: 10,
+        borderRadiusApplication: 'end', // 'around', 'end'
+        borderRadiusWhenStacked: 'last', // 'all', 'last'
+        dataLabels: {
+          total: {
+            enabled: true,
+            style: {
+              color: "#B32824",
+              fontSize: '23px',
+             
+            }
+          }
+        }
+      },
+    },
     
     title:{
       text:'GRAFICO TESTE'
@@ -72,6 +100,7 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
       chart: {
         type:'bar',
         background:'#2b2e3b',
+      
         toolbar: {
           show: true
         },
@@ -80,32 +109,23 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
         }
        
       },
-      responsive: [{
-        breakpoint: 480,
-        options: {
-          legend: {
-            position: 'bottom',
-            offsetX: -10,
-            offsetY: 0
-          }
-        }
-      }],
+     
      xaxis: {
        categories:lancamentos.map(item=>{return new Date(item.datalanc).toDateString()}),
-      
+        type:'datetime',
         labels: {
          style: {
         colors: "#B32824", // Define a cor dos anos aqui
         },
       }
       },
-     yaxis: {
-      labels: {
-         style: {
-           colors: "#B32824", // Define a cor do texto no eixo Y aqui
-         },
-        },
-      },
+   //  yaxis: {
+   //   labels: {
+    //     style: {
+      //     colors: "#B32824", // Define a cor do texto no eixo Y aqui
+      //   },
+     //   },
+    //  },
    };
 
     // Configuração da série de dados do gráfico
