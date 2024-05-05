@@ -24,23 +24,26 @@ interface DataProps{
 export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
   const [options, setOptions] = useState({}); // Estado para opções do gráfico
   const [series, setSeries] = useState<{ name: string; data:Array<DataProps >  }[]>([]); // Estado para série de dados do gráfico
-  const [seriesmensal,setSeriesMensal]=useState<{name: string; data:Array<number>}[]>([]);
+  const [seriesmensal,setSeriesMensal]=useState<{name:string,data:Array<number>}[]>([]);
   useEffect(() => {
  
   const resultado = lancamentos.reduce((acumulador,atual)=>{
-    const itemExistente = acumulador.find(item=>item.descricao===atual.descricao);
+    const itemExistente = acumulador.find(item=>new Date(item.datalanc).toLocaleDateString()===new Date(atual.datalanc).toLocaleDateString());
 
     if(itemExistente){
       itemExistente.valor=Number(itemExistente.valor)+Number(atual.valor);
     }else{
-      acumulador.push({descricao:atual.descricao,valor:atual.valor,conta:atual.conta,datalanc:atual.datalanc,historico:atual.historico,tipo:atual.tipo,id_grupo:atual.id_grupo})
+      acumulador.push({descricao:atual.descricao,valor:Number(atual.valor),conta:atual.conta,datalanc:atual.datalanc,historico:atual.historico,tipo:atual.tipo,id_grupo:atual.id_grupo})
     }
     return acumulador
   },[] as Array<LancamentosProps>)
 
 
-  const  arrayDeValores = resultado.map(item=>{return{x:item.descricao,y:Number(item.valor),}});
-    
+  const  arrayDeValores = resultado.map(item=>{return Number(item.valor)});
+  const teste = resultado.map(item=>{return new Date(item.datalanc).toLocaleDateString('en-US')+' '+'GMT'})
+  console.log(arrayDeValores)
+  console.log(teste)
+ 
    /* goals: [
       {
          name: 'Expected',
@@ -111,7 +114,7 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
       },
      
      xaxis: {
-       categories:lancamentos.map(item=>{return new Date(item.datalanc).toDateString()}),
+       categories:teste,
         type:'datetime',
         labels: {
          style: {
@@ -133,7 +136,7 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
    
       {
         name: "Afap Cedro",
-        data: lancamentos.map(item=>{return Number(item.valor)}),
+        data: arrayDeValores,
       },
   
     ];
