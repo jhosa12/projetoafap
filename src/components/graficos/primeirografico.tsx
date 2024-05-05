@@ -18,9 +18,6 @@ interface DataProps{
   x:string
 }
 
-
-
-
 export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
   const [options, setOptions] = useState({}); // Estado para opções do gráfico
   const [series, setSeries] = useState<{ name: string; data:Array<DataProps >  }[]>([]); // Estado para série de dados do gráfico
@@ -81,8 +78,6 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
        // }
       },
     },
- 
-    
  
     title:{
       text:'GRAFICO TESTE'
