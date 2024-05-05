@@ -59,35 +59,31 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
      //     distributed: true
       //  }
     //  } ,
-    responsive: [{
-      breakpoint: 480,
-      options: {
-        legend: {
-          position: 'bottom',
-          offsetX: -10,
-          offsetY: 0
-        }
-      }
-    }],
+  
     plotOptions: {
       bar: {
         horizontal: false,
         borderRadius: 10,
+      
+          columnWidth: '50%',
+       
         borderRadiusApplication: 'end', // 'around', 'end'
         borderRadiusWhenStacked: 'last', // 'all', 'last'
-        dataLabels: {
-          total: {
-            enabled: true,
-            style: {
-              color: "#B32824",
-              fontSize: '23px',
+      //  dataLabels: {
+        //  total: {
+        //    enabled: true,
+         //   style: {
+          //    color: "#B32824",
+           //   fontSize: '23px',
              
-            }
-          }
-        }
+          //  }
+         // }
+       // }
       },
     },
+ 
     
+ 
     title:{
       text:'GRAFICO TESTE'
     },
@@ -102,21 +98,40 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
       },
       chart: {
         type:'bar',
+      
         background:'#2b2e3b',
       
         toolbar: {
           show: true
         },
-        zoom: {
-          enabled: true
-        }
+
+        zoom:{
+          enabled: true,
+          type: 'x',  
+          autoScaleXaxis: false,  
+          zoomedArea: {
+            fill: {
+              color: '#90CAF9',
+              opacity: 0.6
+            },
+            stroke: {
+              color: '#0D47A1',
+              opacity: 0.4,
+              width: 2
+            }
+          }
+          },
+      
        
       },
+    
      
      xaxis: {
        categories:teste,
+      
         type:'datetime',
         labels: {
+         
          style: {
         colors: "#B32824", // Define a cor dos anos aqui
         },
