@@ -14,8 +14,6 @@ export default function Vendas(){
                     <div className="inline-flex rounded-t-lg   w-1/3 h-2/3 bg-yellow-600"> </div>
                     <div className="inline-flex rounded-t-lg   w-1/3 h-1/3 bg-teal-600"> </div>
 
-                   
-
                 </div>
                 <div className="flex flex-col w-2/3 bg-gray-800 rounded-lg">
 

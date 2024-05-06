@@ -13,6 +13,8 @@ interface LancamentosProps{
   
 }
 
+
+
 interface DataProps{
   y:number,
   x:string
@@ -25,19 +27,23 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
   useEffect(() => {
  
   const resultado = lancamentos.reduce((acumulador,atual)=>{
-    const itemExistente = acumulador.find(item=>new Date(item.datalanc).toLocaleDateString()===new Date(atual.datalanc).toLocaleDateString());
-
+    const dataLancamento = new Date(atual.datalanc).toLocaleDateString('en-US');
+    const itemExistente = acumulador.find(item=>item.x===dataLancamento);
+   
     if(itemExistente){
-      itemExistente.valor=Number(itemExistente.valor)+Number(atual.valor);
+      itemExistente.y=Number(itemExistente.y) +Number(atual.valor);
     }else{
-      acumulador.push({descricao:atual.descricao,valor:Number(atual.valor),conta:atual.conta,datalanc:atual.datalanc,historico:atual.historico,tipo:atual.tipo,id_grupo:atual.id_grupo})
+      acumulador.push({x:dataLancamento,y:atual.valor})
     }
     return acumulador
-  },[] as Array<LancamentosProps>)
+  },[] as DataProps[])
 
 
-  const  arrayDeValores = resultado.map(item=>{return Number(item.valor)});
-  const teste = resultado.map(item=>{return new Date(item.datalanc).toLocaleDateString('en-US')+' '+'GMT'})
+  const  arrayDeValores = resultado.map(item=>{return Number(item.y)});
+  const teste = resultado.map(item=>{return new Date(item.x).toLocaleDateString('en-US')+' '+'GMT'})
+  const dates = resultado.map((item) => {
+    return item.x; // Usando as datas diretamente
+  });
   console.log(arrayDeValores)
   console.log(teste)
  
@@ -48,7 +54,7 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
          strokeColor: '#B32824'
        }
       ] */ 
-   
+      resultado.sort((a, b) => new Date(a.x).getTime() - new Date(b.x).getTime());
     // Configuração das opções do gráfico
     const chartOptions = {
      // plotOptions: {
@@ -62,7 +68,7 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
         horizontal: false,
         borderRadius: 10,
       
-          columnWidth: '50%',
+      
        
         borderRadiusApplication: 'end', // 'around', 'end'
         borderRadiusWhenStacked: 'last', // 'all', 'last'
@@ -122,10 +128,13 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
     
      
      xaxis: {
-       categories:teste,
+       categories:resultado.map(item => item.x),
       
-        type:'datetime',
+        type:'category',
         labels: {
+          formatter: function (val:string) {
+            return new Date(val).toLocaleDateString(); // Formatando as datas
+          },
          
          style: {
         colors: "#B32824", // Define a cor dos anos aqui
