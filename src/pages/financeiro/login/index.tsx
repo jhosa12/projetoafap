@@ -462,8 +462,47 @@ export default function LoginFinaceiro() {
 
           </div>}
 
-          {   mensalidadeButton && <div className="flex flex-col p-2 ml-2  overflow-y-auto max-h-[520px] text-white bg-[#2b2e3b] rounded-lg w-fit">
-{listaLancamentos.length>0 && <Grafico lancamentos={arrayGraficoMensalidade}/>}
+          {   mensalidadeButton && <div className="flex flex-col p-2 ml-2 w-full overflow-y-auto h-[calc(100vh-120px)] text-white bg-[#2b2e3b] rounded-lg ">
+          <div className="flex w-full bg-[#2b2e3b] px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
+              <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
+
+              <div className="inline-flex  items-center  gap-3">
+                <div className="flex items-center ">
+                  <input type="checkbox" checked={todoPerido} onChange={() => setPeriodo(!todoPerido)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODO PERÍODO</label>
+                </div>
+                <DatePicker
+                  disabled={todoPerido}
+                  dateFormat={"dd/MM/yyyy"}
+                  locale={pt}
+                  selected={startDate}
+                  onChange={(date) => date && setStartDate(date)}
+                  selectsStart
+                  startDate={startDate}
+                  endDate={endDate}
+                  className="flex py-1 pl-2 text-xs  border rounded-lg   bg-gray-700 border-gray-600  text-white"
+                />
+                <span> até </span>
+
+                <DatePicker
+                  disabled={todoPerido}
+                  dateFormat={"dd/MM/yyyy"}
+                  locale={pt}
+                  selected={endDate}
+                  onChange={(date) => date && setEndDate(date)}
+                  selectsEnd
+                  startDate={startDate}
+                  endDate={endDate}
+                  minDate={startDate}
+                  className=" flex py-1 pl-2 text-xs  border rounded-lg  bg-gray-700 border-gray-600  text-white "
+                />
+
+              </div>
+            </div>
+            <div className="flex flex-col h-full justify-center w-full">
+            {listaLancamentos.length>0 && <Grafico lancamentos={arrayGraficoMensalidade}/>}
+            </div>
+
        </div>}
         </div>
       </div>

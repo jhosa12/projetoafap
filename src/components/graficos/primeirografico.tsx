@@ -86,7 +86,7 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
     },
  
     title:{
-      text:'GRAFICO TESTE'
+      text:'MENSALIDADES'
     },
     theme:{
       mode:'dark',
@@ -99,9 +99,7 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
       },
       chart: {
         type:'bar',
-      
         background:'#2b2e3b',
-      
         toolbar: {
           show: true
         },
@@ -113,12 +111,12 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
           zoomedArea: {
             fill: {
               color: '#90CAF9',
-              opacity: 0.6
+              opacity: 0.4
             },
             stroke: {
               color: '#0D47A1',
               opacity: 0.4,
-              width: 2
+              width: 4
             }
           }
           },
@@ -175,10 +173,9 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
               options={options}
               series={seriesmensal}
               type="bar"
-              width="1000"
-              height='380'
-            
-            
+              width={'100%'}
+              height={500}
+
             />
           </div>
         </div>
