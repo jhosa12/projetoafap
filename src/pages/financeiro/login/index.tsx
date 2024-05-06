@@ -83,7 +83,10 @@ export default function LoginFinaceiro() {
     valor: number,
     datalanc: Date,
   }>>([])
-
+const [filtro,setFiltro] =useState('')
+const [escalaDia,setDia] =useState(false)
+const [escalaMes,setMes]= useState(true)
+const [escalaAno,setAno] = useState(false)
 
   const toogleAberto = (index: number) => {
     setAbertos((prev) => ({
@@ -466,7 +469,7 @@ export default function LoginFinaceiro() {
           <div className="flex w-full bg-[#2b2e3b] px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
               <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
 
-              <div className="inline-flex  items-center  gap-3">
+              <div className="inline-flex  items-center w-full justify-end mr-4 gap-3">
                 <div className="flex items-center ">
                   <input type="checkbox" checked={todoPerido} onChange={() => setPeriodo(!todoPerido)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                   <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODO PERÍODO</label>
@@ -498,9 +501,24 @@ export default function LoginFinaceiro() {
                 />
 
               </div>
+              <div className="inline-flex gap-4">
+                ESCALA:
+                <div className="flex items-center ">
+                  <input type="checkbox" checked={escalaDia} onChange={() => {setDia(true),setMes(false),setAno(false)}} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">DIA</label>
+                </div>
+                <div className="flex items-center ">
+                  <input type="checkbox" checked={escalaMes} onChange={() => {setDia(false),setMes(true),setAno(false)}} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">MÊS</label>
+                </div>
+                <div className="flex items-center ">
+                  <input type="checkbox" checked={escalaAno} onChange={() => {setDia(false),setMes(false),setAno(true)}} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">ANO</label>
+                </div>
+              </div>
             </div>
             <div className="flex flex-col h-full justify-center w-full">
-            {listaLancamentos.length>0 && <Grafico lancamentos={arrayGraficoMensalidade}/>}
+            {listaLancamentos.length>0 && <Grafico filtro='' lancamentos={arrayGraficoMensalidade}/>}
             </div>
 
        </div>}

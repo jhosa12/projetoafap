@@ -17,35 +17,34 @@ interface LancamentosProps{
 
 interface DataProps{
   y:number,
-  x:string
+  x:string,
+  z:number
 }
 
-export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
+export function Grafico({lancamentos,filtro}:{lancamentos:Array<LancamentosProps>,filtro:string}) {
   const [options, setOptions] = useState({}); // Estado para opções do gráfico
   const [series, setSeries] = useState<{ name: string; data:Array<DataProps >  }[]>([]); // Estado para série de dados do gráfico
   const [seriesmensal,setSeriesMensal]=useState<{name:string,data:Array<number>}[]>([]);
+  
   useEffect(() => {
- 
+ let contador =1
   const resultado = lancamentos.reduce((acumulador,atual)=>{
     const dataLancamento = new Date(atual.datalanc).toLocaleDateString('en-US');
     const itemExistente = acumulador.find(item=>item.x===dataLancamento);
-   
+    
     if(itemExistente){
       itemExistente.y=Number(itemExistente.y) +Number(atual.valor);
+      itemExistente.z+=1
     }else{
-      acumulador.push({x:dataLancamento,y:atual.valor})
+      acumulador.push({x:dataLancamento,y:atual.valor,z:1})
+     
     }
     return acumulador
   },[] as DataProps[])
 
 
-  const  arrayDeValores = resultado.map(item=>{return Number(item.y)});
-  const teste = resultado.map(item=>{return new Date(item.x).toLocaleDateString('en-US')+' '+'GMT'})
-  const dates = resultado.map((item) => {
-    return item.x; // Usando as datas diretamente
-  });
-  console.log(arrayDeValores)
-  console.log(teste)
+  
+
  
    /* goals: [
       {
@@ -54,7 +53,7 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
          strokeColor: '#B32824'
        }
       ] */ 
-      resultado.sort((a, b) => new Date(a.x).getTime() - new Date(b.x).getTime());
+    
     // Configuração das opções do gráfico
     const chartOptions = {
      // plotOptions: {
@@ -100,25 +99,13 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
       chart: {
         type:'bar',
         background:'#2b2e3b',
+        stacked: true,
         toolbar: {
           show: true
         },
 
         zoom:{
-          enabled: true,
-          type: 'x',  
-          autoScaleXaxis: false,  
-          zoomedArea: {
-            fill: {
-              color: '#90CAF9',
-              opacity: 0.4
-            },
-            stroke: {
-              color: '#0D47A1',
-              opacity: 0.4,
-              width: 4
-            }
-          }
+          enabled: true
           },
       
        
@@ -135,9 +122,19 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
           },
          
          style: {
-        colors: "#B32824", // Define a cor dos anos aqui
+       // colors: "#B32824", // Define a cor dos anos aqui
         },
-      }
+      },
+      responsive: [{
+        breakpoint: 480,
+        options: {
+          legend: {
+            position: 'bottom',
+            offsetX: -10,
+            offsetY: 0
+          }
+        }
+      }],
       },
    //  yaxis: {
    //   labels: {
@@ -152,8 +149,12 @@ export function Grafico({lancamentos}:{lancamentos:Array<LancamentosProps>}) {
     const chartSeries = [
    
       {
-        name: "Afap Cedro",
-        data: arrayDeValores,
+        name: "RECEITA",
+        data: resultado.map(item=>item.y),
+      },
+      {
+        name: "QUANTIDADE",
+        data: resultado.map(item=>item.z),
       },
   
     ];
