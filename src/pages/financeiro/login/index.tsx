@@ -70,7 +70,7 @@ export default function LoginFinaceiro() {
   const [planoSelect, setPlano] = useState('')
   const [startDate, setStartDate] = useState(new Date())
   const [endDate, setEndDate] = useState(new Date())
-  const [todoPerido, setPeriodo] = useState(true)
+  const [todoPerido, setPeriodo] = useState(false)
   const [arraygeral, setArrayGeral] = useState<Array<PlanoContasProps>>([])
   const [planoContasButton, setPlanoButton] = useState(true)
   const [mensalidadeButton, setMensalidadeButton] = useState(false)
@@ -84,8 +84,8 @@ export default function LoginFinaceiro() {
     datalanc: Date,
   }>>([])
 const [filtro,setFiltro] =useState('')
-const [escalaDia,setDia] =useState(false)
-const [escalaMes,setMes]= useState(true)
+const [escalaDia,setDia] =useState(true)
+const [escalaMes,setMes]= useState(false)
 const [escalaAno,setAno] = useState(false)
 
   const toogleAberto = (index: number) => {
@@ -518,7 +518,7 @@ const [escalaAno,setAno] = useState(false)
               </div>
             </div>
             <div className="flex flex-col h-full justify-center w-full">
-            {listaLancamentos.length>0 && <Grafico filtro='' lancamentos={arrayGraficoMensalidade}/>}
+            {listaLancamentos.length>0 && <Grafico filtroDia={escalaDia} filtroAno={escalaAno} filtroMes={escalaMes} todoPeriodo={todoPerido} lancamentos={arrayGraficoMensalidade} startDate={startDate} endDate={endDate}/>}
             </div>
 
        </div>}

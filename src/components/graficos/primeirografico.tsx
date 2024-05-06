@@ -21,23 +21,64 @@ interface DataProps{
   z:number
 }
 
-export function Grafico({lancamentos,filtro}:{lancamentos:Array<LancamentosProps>,filtro:string}) {
+export function Grafico({lancamentos,filtroDia,filtroMes,filtroAno,todoPeriodo, startDate,endDate}:{lancamentos:Array<LancamentosProps>,filtroDia:boolean,filtroMes:boolean,filtroAno:boolean,todoPeriodo:boolean,startDate:Date,endDate:Date}) {
   const [options, setOptions] = useState({}); // Estado para opções do gráfico
   const [series, setSeries] = useState<{ name: string; data:Array<DataProps >  }[]>([]); // Estado para série de dados do gráfico
   const [seriesmensal,setSeriesMensal]=useState<{name:string,data:Array<number>}[]>([]);
   
   useEffect(() => {
- let contador =1
+let dataLancamento:string
+//let itemExistente:DataProps | undefined ={x:'',y:0,z:0}
   const resultado = lancamentos.reduce((acumulador,atual)=>{
-    const dataLancamento = new Date(atual.datalanc).toLocaleDateString('en-US');
-    const itemExistente = acumulador.find(item=>item.x===dataLancamento);
+
+ if(filtroDia){
+  dataLancamento = new Date(atual.datalanc).toLocaleDateString('pt-BR', {
+      
+    year: 'numeric', // Ano completo
+    month: 'long', // Mês por extenso
+    day: 'numeric'});
+ }
     
-    if(itemExistente){
-      itemExistente.y=Number(itemExistente.y) +Number(atual.valor);
-      itemExistente.z+=1
-    }else{
-      acumulador.push({x:dataLancamento,y:atual.valor,z:1})
-     
+    else if(filtroMes){
+      dataLancamento = new Date(atual.datalanc).toLocaleDateString('pt-BR', {
+      
+        year: 'numeric', // Ano completo
+        month: 'long', // Mês por extenso
+      
+      });
+    }
+    else if(filtroAno){
+      dataLancamento = new Date(atual.datalanc).toLocaleDateString('pt-BR', {
+      
+        year: 'numeric', // Ano completo
+       
+      
+      });
+
+    }
+    if (
+     ! todoPeriodo &&
+      (new Date(atual.datalanc).toLocaleDateString() >= new Date(startDate).toLocaleDateString() &&
+        new Date(atual.datalanc).toLocaleDateString() <= new Date(endDate).toLocaleDateString())
+    ) {
+      const itemExistente = acumulador.find((item) => item.x === dataLancamento);
+
+      if (itemExistente) {
+        itemExistente.y =Number( itemExistente.y)+ Number(atual.valor);
+        itemExistente.z += 1;
+      } else {
+        acumulador.push({ x: dataLancamento, y: atual.valor, z: 1 });
+      }
+    }
+    else if(todoPeriodo){
+      const itemExistente = acumulador.find((item) => item.x === dataLancamento);
+      if (itemExistente) {
+        itemExistente.y =Number( itemExistente.y)+ Number(atual.valor);
+        itemExistente.z += 1;
+      } else {
+        acumulador.push({ x: dataLancamento, y: atual.valor, z: 1 });
+      }
+
     }
     return acumulador
   },[] as DataProps[])
@@ -117,9 +158,7 @@ export function Grafico({lancamentos,filtro}:{lancamentos:Array<LancamentosProps
       
         type:'category',
         labels: {
-          formatter: function (val:string) {
-            return new Date(val).toLocaleDateString(); // Formatando as datas
-          },
+      
          
          style: {
        // colors: "#B32824", // Define a cor dos anos aqui
@@ -162,7 +201,7 @@ export function Grafico({lancamentos,filtro}:{lancamentos:Array<LancamentosProps
     setOptions(chartOptions); // Define as opções do gráfico no estado
    // setSeries(chartSeries); // Define a série de dados do gráfico no estado
    setSeriesMensal(chartSeries)
-  }, []); // Executa apenas uma vez quando o componente é montado
+  }, [filtroDia,filtroMes,filtroAno,startDate,endDate,todoPeriodo]); // Executa apenas uma vez quando o componente é montado
 
   // Renderiza o gráfico somente se as opções e a série de dados estiverem disponíveis
   return (
