@@ -465,8 +465,8 @@ const [escalaAno,setAno] = useState(false)
 
           </div>}
 
-          {   mensalidadeButton && <div className="flex flex-col p-2 ml-2 w-full overflow-y-auto h-[calc(100vh-120px)] text-white bg-[#2b2e3b] rounded-lg ">
-          <div className="flex w-full bg-[#2b2e3b] px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
+          {   mensalidadeButton && <div className="flex flex-col p-2 bg-[#2b2e3b]  ml-2 w-full overflow-y-auto h-[calc(100vh-120px)] text-white  rounded-lg ">
+          <div className="flex w-full border-b-[1px] border-gray-500 px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
               <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
 
               <div className="inline-flex  items-center w-full justify-end mr-4 gap-3">
@@ -475,6 +475,9 @@ const [escalaAno,setAno] = useState(false)
                   <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODO PERÍODO</label>
                 </div>
                 <DatePicker
+               
+                showMonthDropdown
+                showYearDropdown
                   disabled={todoPerido}
                   dateFormat={"dd/MM/yyyy"}
                   locale={pt}
@@ -488,6 +491,8 @@ const [escalaAno,setAno] = useState(false)
                 <span> até </span>
 
                 <DatePicker
+                 showMonthDropdown
+                 showYearDropdown
                   disabled={todoPerido}
                   dateFormat={"dd/MM/yyyy"}
                   locale={pt}
