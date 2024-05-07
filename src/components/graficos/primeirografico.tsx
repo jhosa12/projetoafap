@@ -214,7 +214,7 @@ let dataLancamento:string
               series={seriesmensal}
               type="bar"
               width={'100%'}
-              height={500}
+              height={400}
 
             />
           </div>
