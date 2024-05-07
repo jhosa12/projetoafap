@@ -13,15 +13,29 @@ interface LancamentosProps{
   
 }
 
-
+interface ContratosGeral{
+  dt_adesao:Date,
+  dt_cancelamento:Date
+}
 
 interface DataProps{
   y:number,
   x:string,
-  z:number
+  z:number,
+  c:number
 }
 
-export function Grafico({lancamentos,filtroDia,filtroMes,filtroAno,todoPeriodo, startDate,endDate}:{lancamentos:Array<LancamentosProps>,filtroDia:boolean,filtroMes:boolean,filtroAno:boolean,todoPeriodo:boolean,startDate:Date,endDate:Date}) {
+export function Grafico({lancamentos,filtroDia,filtroMes,filtroAno,todoPeriodo, startDate,endDate,contratosGeral,contratosInativos}:
+  {lancamentos:Array<LancamentosProps>,
+    filtroDia:boolean,
+    filtroMes:boolean,
+    filtroAno:boolean,
+    todoPeriodo:boolean,
+    startDate:Date,
+    endDate:Date
+    contratosGeral:Array<ContratosGeral>
+    contratosInativos:Array<ContratosGeral>
+  }) {
   const [options, setOptions] = useState({}); // Estado para opções do gráfico
   const [series, setSeries] = useState<{ name: string; data:Array<DataProps >  }[]>([]); // Estado para série de dados do gráfico
   const [seriesmensal,setSeriesMensal]=useState<{name:string,data:Array<number>}[]>([]);
@@ -56,34 +70,91 @@ let dataLancamento:string
       });
 
     }
+var startNoTime = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(),0,0,0);
+var endNoTime = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(),0,0,0);
+var atualDateNoTime = new Date(new Date(atual.datalanc).getFullYear(), new Date(atual.datalanc).getMonth(), new Date(atual.datalanc).getDate(),0,0,0);
     if (
-     ! todoPeriodo &&
-      (new Date(atual.datalanc).toLocaleDateString() >= new Date(startDate).toLocaleDateString() &&
-        new Date(atual.datalanc).toLocaleDateString() <= new Date(endDate).toLocaleDateString())
+     !todoPeriodo &&
+      ((new Date(atualDateNoTime) >= new Date(startNoTime)) &&
+      (  new Date(atualDateNoTime) <= new Date(endNoTime)))
     ) {
       const itemExistente = acumulador.find((item) => item.x === dataLancamento);
 
       if (itemExistente) {
         itemExistente.y =Number( itemExistente.y)+ Number(atual.valor);
         itemExistente.z += 1;
+
       } else {
-        acumulador.push({ x: dataLancamento, y: atual.valor, z: 1 });
+        let contratosG
+        let contratosIN
+       
+        if(filtroMes){
+          contratosG = contratosGeral.reduce((soma,it)=>{
+            var dt_adesaoTime = new Date(new Date(it.dt_adesao).getFullYear(), new Date(it.dt_adesao).getMonth(), new Date(it.dt_adesao).getDate(),0,0,0);
+            if(new Date(atualDateNoTime).getMonth()===new Date(dt_adesaoTime).getMonth() && new Date(atualDateNoTime).getFullYear()===new Date(dt_adesaoTime).getFullYear() ){
+              soma+=1
+             
+            }
+            return soma
+          
+          },0)
+
+          contratosIN  = contratosInativos.reduce((soma,it)=>{
+            var dt_cancelamento = new Date(new Date(it.dt_cancelamento).getFullYear(), new Date(it.dt_cancelamento).getMonth(), new Date(it.dt_cancelamento).getDate(),0,0,0); 
+            if(new Date(atualDateNoTime).getMonth()===new Date(dt_cancelamento).getMonth() && new Date(atualDateNoTime).getFullYear()===new Date(dt_cancelamento).getFullYear() ){
+              soma+=1
+             
+            }
+            return soma
+         
+         
+          },0)
+        }
+       else if(filtroAno){
+          contratosG = contratosGeral.reduce((soma,it)=>{
+            var dt_adesaoTime = new Date(new Date(it.dt_adesao).getFullYear(), new Date(it.dt_adesao).getMonth(), new Date(it.dt_adesao).getDate(),0,0,0);
+            if( new Date(atualDateNoTime).getFullYear()===new Date(dt_adesaoTime).getFullYear() ){
+              soma+=1
+             
+            }
+            return soma
+          
+          },0)
+
+          contratosIN  = contratosInativos.reduce((soma,it)=>{
+            var dt_cancelamento = new Date(new Date(it.dt_cancelamento).getFullYear(), new Date(it.dt_cancelamento).getMonth(), new Date(it.dt_cancelamento).getDate(),0,0,0); 
+            if(new Date(atualDateNoTime).getMonth()===new Date(dt_cancelamento).getMonth() && new Date(atualDateNoTime).getFullYear()===new Date(dt_cancelamento).getFullYear() ){
+              soma+=1
+             
+            }
+            return soma
+         
+         
+          },0)
+
+        }else{
+           contratosG =0
+        }
+     
+      
+        acumulador.push({ x: dataLancamento, y: atual.valor, z: 1,c:Number(contratosG)-Number(contratosIN )});
       }
     }
-    else if(todoPeriodo){
+    if(todoPeriodo){
       const itemExistente = acumulador.find((item) => item.x === dataLancamento);
       if (itemExistente) {
         itemExistente.y =Number( itemExistente.y)+ Number(atual.valor);
         itemExistente.z += 1;
       } else {
-        acumulador.push({ x: dataLancamento, y: atual.valor, z: 1 });
+      
+        acumulador.push({ x: dataLancamento, y: atual.valor, z: 1,c:0 });
       }
 
     }
     return acumulador
   },[] as DataProps[])
 
-
+console.log(resultado)
   
 
  
@@ -185,18 +256,42 @@ let dataLancamento:string
    };
 
     // Configuração da série de dados do gráfico
-    const chartSeries = [
+    let chartSeries
+    if(filtroMes || filtroAno){
+      chartSeries = [
    
-      {
-        name: "RECEITA",
-        data: resultado.map(item=>item.y),
-      },
-      {
-        name: "QUANTIDADE",
-        data: resultado.map(item=>item.z),
-      },
-  
-    ];
+        {
+          name: "RECEITA",
+          data: resultado.map(item=>item.y),
+        },
+        {
+          name: "QUANTIDADE",
+          data: resultado.map(item=>item.z),
+        },
+        {
+          name: "ATIVOS",
+          data: resultado.map(item=>item.c),
+        },
+    
+      ];
+
+    }else{
+      chartSeries = [
+   
+        {
+          name: "RECEITA",
+          data: resultado.map(item=>item.y),
+        },
+        {
+          name: "QUANTIDADE",
+          data: resultado.map(item=>item.z),
+        },
+    
+      ];
+
+
+    }
+    
 
     setOptions(chartOptions); // Define as opções do gráfico no estado
    // setSeries(chartSeries); // Define a série de dados do gráfico no estado

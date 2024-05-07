@@ -52,7 +52,10 @@ interface GruposProps {
 }
 
 
-
+interface ContratosProps {
+  dt_adesao: Date,
+  dt_cancelamento: Date
+}
 
 
 
@@ -74,7 +77,7 @@ export default function LoginFinaceiro() {
   const [arraygeral, setArrayGeral] = useState<Array<PlanoContasProps>>([])
   const [planoContasButton, setPlanoButton] = useState(true)
   const [mensalidadeButton, setMensalidadeButton] = useState(false)
-  const [arrayGraficoMensalidade,setArrayGrafico] =useState<Array<{
+  const [arrayGraficoMensalidade, setArrayGrafico] = useState<Array<{
     id_grupo: number,
     conta: string,
     descricao: string,
@@ -83,10 +86,12 @@ export default function LoginFinaceiro() {
     valor: number,
     datalanc: Date,
   }>>([])
-const [filtro,setFiltro] =useState('')
-const [escalaDia,setDia] =useState(true)
-const [escalaMes,setMes]= useState(false)
-const [escalaAno,setAno] = useState(false)
+  const [contratosGeral, setContratosGeral] = useState<Array<ContratosProps>>([])
+  const [contratosInativos, setContratosInativos] = useState<Array<ContratosProps>>([])
+  const [filtro, setFiltro] = useState('')
+  const [escalaDia, setDia] = useState(true)
+  const [escalaMes, setMes] = useState(false)
+  const [escalaAno, setAno] = useState(false)
 
   const toogleAberto = (index: number) => {
     setAbertos((prev) => ({
@@ -213,19 +218,22 @@ const [escalaAno,setAno] = useState(false)
     setArrayGeral(response.data.planosdeContas);
     setLancamentos(response.data.planosdeContas);
     setGrupos(response.data.grupos)
+    setContratosGeral(response.data.contratosGeral)
+    setContratosInativos(response.data.contratosInativos)
+   
   }
 
 
 
-  useEffect(()=>{
-    const novoArray= arraygeral.flatMap(item=>item.lancamentos)
-    const arrayMensal = novoArray.filter(item=>item.conta==='1.01.002')
-   setArrayGrafico(arrayMensal)
- 
-    
-    
+  useEffect(() => {
+    const novoArray = arraygeral.flatMap(item => item.lancamentos)
+    const arrayMensal = novoArray.filter(item => item.conta === '1.01.002')
+    setArrayGrafico(arrayMensal)
 
-  },[arraygeral])
+
+
+
+  }, [arraygeral])
 
 
 
@@ -308,10 +316,10 @@ const [escalaAno,setAno] = useState(false)
         <div className="flex flex-col  px-4 w-full ">
           <ul className="flex flex-wrap mb-1 text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 "  >
             <li className="me-2">
-              <button type="button" onClick={() => {setPlanoButton(true),setMensalidadeButton(false)}} className={`inline-block p-2 border-blue-600 rounded-t-lg hover:border-b-[1px]  hover:text-gray-300  `}>Plano de Contas</button>
+              <button type="button" onClick={() => { setPlanoButton(true), setMensalidadeButton(false) }} className={`inline-block p-2 border-blue-600 rounded-t-lg hover:border-b-[1px]  hover:text-gray-300  `}>Plano de Contas</button>
             </li>
             <li className="me-2">
-              <button type="button" onClick={() => {setPlanoButton(false),setMensalidadeButton(true)}} className={`inline-block p-2 border-blue-600  hover:border-b-[1px]  rounded-t-lg   hover:text-gray-300  `}>Mensalidade</button>
+              <button type="button" onClick={() => { setPlanoButton(false), setMensalidadeButton(true) }} className={`inline-block p-2 border-blue-600  hover:border-b-[1px]  rounded-t-lg   hover:text-gray-300  `}>Mensalidade</button>
             </li>
             <li className="me-2">
               <button type="button" onClick={() => { }} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Planos</button>
@@ -322,7 +330,7 @@ const [escalaAno,setAno] = useState(false)
 
           </ul>
 
-       { planoContasButton &&  <div>
+          {planoContasButton && <div>
             <div className="flex flex-row w-full text-xs justify-between  mb-1">
               <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
                 <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense size={25} /></div>
@@ -344,7 +352,7 @@ const [escalaAno,setAno] = useState(false)
               </div>
 
             </div>
-    
+
 
             <div className="flex w-full bg-[#2b2e3b] px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
               <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
@@ -465,8 +473,8 @@ const [escalaAno,setAno] = useState(false)
 
           </div>}
 
-          {   mensalidadeButton && <div className="flex flex-col p-2 bg-[#2b2e3b]  ml-2 w-full overflow-y-auto h-[calc(100vh-120px)] text-white  rounded-lg ">
-          <div className="flex w-full border-b-[1px] border-gray-500 px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
+          {mensalidadeButton && <div className="flex flex-col p-2 bg-[#2b2e3b]  ml-2 w-full overflow-y-auto h-[calc(100vh-120px)] text-white  rounded-lg ">
+            <div className="flex w-full border-b-[1px] border-gray-500 px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
               <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
 
               <div className="inline-flex  items-center w-full justify-end mr-4 gap-3">
@@ -475,9 +483,9 @@ const [escalaAno,setAno] = useState(false)
                   <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODO PERÍODO</label>
                 </div>
                 <DatePicker
-               
-                showMonthDropdown
-                showYearDropdown
+
+                  showMonthDropdown
+                  showYearDropdown
                   disabled={todoPerido}
                   dateFormat={"dd/MM/yyyy"}
                   locale={pt}
@@ -491,8 +499,8 @@ const [escalaAno,setAno] = useState(false)
                 <span> até </span>
 
                 <DatePicker
-                 showMonthDropdown
-                 showYearDropdown
+                  showMonthDropdown
+                  showYearDropdown
                   disabled={todoPerido}
                   dateFormat={"dd/MM/yyyy"}
                   locale={pt}
@@ -509,24 +517,35 @@ const [escalaAno,setAno] = useState(false)
               <div className="inline-flex gap-4">
                 ESCALA:
                 <div className="flex items-center ">
-                  <input type="checkbox" checked={escalaDia} onChange={() => {setDia(true),setMes(false),setAno(false)}} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                  <input type="checkbox" checked={escalaDia} onChange={() => { setDia(true), setMes(false), setAno(false) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                   <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">DIA</label>
                 </div>
                 <div className="flex items-center ">
-                  <input type="checkbox" checked={escalaMes} onChange={() => {setDia(false),setMes(true),setAno(false)}} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                  <input type="checkbox" checked={escalaMes} onChange={() => { setDia(false), setMes(true), setAno(false) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                   <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">MÊS</label>
                 </div>
                 <div className="flex items-center ">
-                  <input type="checkbox" checked={escalaAno} onChange={() => {setDia(false),setMes(false),setAno(true)}} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                  <input type="checkbox" checked={escalaAno} onChange={() => { setDia(false), setMes(false), setAno(true) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                   <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">ANO</label>
                 </div>
               </div>
             </div>
             <div className="flex flex-col h-full justify-center w-full">
-            {listaLancamentos.length>0 && <Grafico filtroDia={escalaDia} filtroAno={escalaAno} filtroMes={escalaMes} todoPeriodo={todoPerido} lancamentos={arrayGraficoMensalidade} startDate={startDate} endDate={endDate}/>}
+              {listaLancamentos.length > 0 && <Grafico
+                filtroDia={escalaDia}
+                filtroAno={escalaAno}
+                filtroMes={escalaMes}
+                todoPeriodo={todoPerido}
+                lancamentos={arrayGraficoMensalidade}
+                startDate={startDate}
+                endDate={endDate}
+                contratosGeral={contratosGeral}
+                contratosInativos={contratosInativos}
+                 />}
+               
             </div>
 
-       </div>}
+          </div>}
         </div>
       </div>
 
