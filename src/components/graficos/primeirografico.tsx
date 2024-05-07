@@ -91,7 +91,7 @@ var atualDateNoTime = new Date(new Date(atual.datalanc).getFullYear(), new Date(
         if(filtroMes){
           contratosG = contratosGeral.reduce((soma,it)=>{
             var dt_adesaoTime = new Date(new Date(it.dt_adesao).getFullYear(), new Date(it.dt_adesao).getMonth(), new Date(it.dt_adesao).getDate(),0,0,0);
-            if(new Date(startNoTime).getMonth()===new Date(dt_adesaoTime).getMonth() && new Date(startNoTime).getFullYear()===new Date(dt_adesaoTime).getFullYear() ){
+            if(new Date(atualDateNoTime).getMonth()>=new Date(dt_adesaoTime).getMonth() && new Date(atualDateNoTime ).getFullYear()>=new Date(dt_adesaoTime).getFullYear() ){
               soma+=1
              
             }
@@ -101,7 +101,7 @@ var atualDateNoTime = new Date(new Date(atual.datalanc).getFullYear(), new Date(
 
           contratosIN  = contratosGeral.reduce((soma,it)=>{
             var dt_cancelamento = new Date(new Date(it.dt_cancelamento).getFullYear(), new Date(it.dt_cancelamento).getMonth(), new Date(it.dt_cancelamento).getDate(),0,0,0); 
-            if(new Date(atualDateNoTime).getMonth()===new Date(dt_cancelamento).getMonth() && new Date(atualDateNoTime).getFullYear()===new Date(dt_cancelamento).getFullYear() ){
+            if(it.dt_cancelamento!==null && new Date(atualDateNoTime).getMonth()>=new Date(dt_cancelamento).getMonth() && new Date(atualDateNoTime).getFullYear()>=new Date(dt_cancelamento).getFullYear() ){
               soma+=1
              
             }
@@ -113,7 +113,7 @@ var atualDateNoTime = new Date(new Date(atual.datalanc).getFullYear(), new Date(
        else if(filtroAno){
           contratosG = contratosGeral.reduce((soma,it)=>{
             var dt_adesaoTime = new Date(new Date(it.dt_adesao).getFullYear(), new Date(it.dt_adesao).getMonth(), new Date(it.dt_adesao).getDate(),0,0,0);
-            if( new Date(atualDateNoTime).getFullYear()===new Date(dt_adesaoTime).getFullYear() ){
+            if( new Date(atualDateNoTime).getFullYear()<=new Date(dt_adesaoTime).getFullYear() ){
               soma+=1
              
             }
@@ -126,7 +126,7 @@ var atualDateNoTime = new Date(new Date(atual.datalanc).getFullYear(), new Date(
            
           
         
-            if(new Date(startNoTime).getMonth()===new Date(dt_cancelamento).getMonth() && new Date(startNoTime).getFullYear()===new Date(dt_cancelamento).getFullYear() ){
+            if(it.dt_cancelamento!==null && new Date(atualDateNoTime).getFullYear()<=new Date(dt_cancelamento).getFullYear() ){
               soma+=1
              
             }
