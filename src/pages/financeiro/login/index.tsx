@@ -87,7 +87,7 @@ export default function LoginFinaceiro() {
     datalanc: Date,
   }>>([])
   const [contratosGeral, setContratosGeral] = useState<Array<ContratosProps>>([])
-  const [contratosInativos, setContratosInativos] = useState<Array<ContratosProps>>([])
+
   const [filtro, setFiltro] = useState('')
   const [escalaDia, setDia] = useState(true)
   const [escalaMes, setMes] = useState(false)
@@ -219,7 +219,7 @@ export default function LoginFinaceiro() {
     setLancamentos(response.data.planosdeContas);
     setGrupos(response.data.grupos)
     setContratosGeral(response.data.contratosGeral)
-    setContratosInativos(response.data.contratosInativos)
+   
    
   }
 
@@ -540,7 +540,7 @@ export default function LoginFinaceiro() {
                 startDate={startDate}
                 endDate={endDate}
                 contratosGeral={contratosGeral}
-                contratosInativos={contratosInativos}
+               
                  />}
                
             </div>

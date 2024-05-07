@@ -25,7 +25,7 @@ interface DataProps{
   c:number
 }
 
-export function Grafico({lancamentos,filtroDia,filtroMes,filtroAno,todoPeriodo, startDate,endDate,contratosGeral,contratosInativos}:
+export function Grafico({lancamentos,filtroDia,filtroMes,filtroAno,todoPeriodo, startDate,endDate,contratosGeral}:
   {lancamentos:Array<LancamentosProps>,
     filtroDia:boolean,
     filtroMes:boolean,
@@ -34,7 +34,7 @@ export function Grafico({lancamentos,filtroDia,filtroMes,filtroAno,todoPeriodo, 
     startDate:Date,
     endDate:Date
     contratosGeral:Array<ContratosGeral>
-    contratosInativos:Array<ContratosGeral>
+   
   }) {
   const [options, setOptions] = useState({}); // Estado para opções do gráfico
   const [series, setSeries] = useState<{ name: string; data:Array<DataProps >  }[]>([]); // Estado para série de dados do gráfico
@@ -91,7 +91,7 @@ var atualDateNoTime = new Date(new Date(atual.datalanc).getFullYear(), new Date(
         if(filtroMes){
           contratosG = contratosGeral.reduce((soma,it)=>{
             var dt_adesaoTime = new Date(new Date(it.dt_adesao).getFullYear(), new Date(it.dt_adesao).getMonth(), new Date(it.dt_adesao).getDate(),0,0,0);
-            if(new Date(atualDateNoTime).getMonth()===new Date(dt_adesaoTime).getMonth() && new Date(atualDateNoTime).getFullYear()===new Date(dt_adesaoTime).getFullYear() ){
+            if(new Date(startNoTime).getMonth()===new Date(dt_adesaoTime).getMonth() && new Date(startNoTime).getFullYear()===new Date(dt_adesaoTime).getFullYear() ){
               soma+=1
              
             }
@@ -99,7 +99,7 @@ var atualDateNoTime = new Date(new Date(atual.datalanc).getFullYear(), new Date(
           
           },0)
 
-          contratosIN  = contratosInativos.reduce((soma,it)=>{
+          contratosIN  = contratosGeral.reduce((soma,it)=>{
             var dt_cancelamento = new Date(new Date(it.dt_cancelamento).getFullYear(), new Date(it.dt_cancelamento).getMonth(), new Date(it.dt_cancelamento).getDate(),0,0,0); 
             if(new Date(atualDateNoTime).getMonth()===new Date(dt_cancelamento).getMonth() && new Date(atualDateNoTime).getFullYear()===new Date(dt_cancelamento).getFullYear() ){
               soma+=1
@@ -121,9 +121,12 @@ var atualDateNoTime = new Date(new Date(atual.datalanc).getFullYear(), new Date(
           
           },0)
 
-          contratosIN  = contratosInativos.reduce((soma,it)=>{
+          contratosIN  = contratosGeral.reduce((soma,it)=>{
             var dt_cancelamento = new Date(new Date(it.dt_cancelamento).getFullYear(), new Date(it.dt_cancelamento).getMonth(), new Date(it.dt_cancelamento).getDate(),0,0,0); 
-            if(new Date(atualDateNoTime).getMonth()===new Date(dt_cancelamento).getMonth() && new Date(atualDateNoTime).getFullYear()===new Date(dt_cancelamento).getFullYear() ){
+           
+          
+        
+            if(new Date(startNoTime).getMonth()===new Date(dt_cancelamento).getMonth() && new Date(startNoTime).getFullYear()===new Date(dt_cancelamento).getFullYear() ){
               soma+=1
              
             }
