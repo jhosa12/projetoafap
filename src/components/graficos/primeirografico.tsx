@@ -1,305 +1,287 @@
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic"; // Importa o dynamic para importações dinâmicas
+import { getDate } from "date-fns";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false }); // Importa o Chart de forma dinâmica e desativa o SSR
 
-interface LancamentosProps{
+interface LancamentosProps {
   conta: string,
   descricao: string,
-  id_grupo:number,
-  historico:  string ,
+  id_grupo: number,
+  historico: string,
   tipo: string,
   valor: number,
   datalanc: Date,
-  
+
 }
 
-interface ContratosGeral{
-  dt_adesao:Date,
-  dt_cancelamento:Date
+interface ContratosGeral {
+  dt_adesao: Date,
+  dt_cancelamento: Date
 }
 
-interface DataProps{
-  y:number,
-  x:string,
-  z:number,
-  c:number
+interface DataProps {
+  y: number,
+  x: string,
+  dt:Date
+  z: number,
+  c: number
 }
 
-export function Grafico({lancamentos,filtroDia,filtroMes,filtroAno,todoPeriodo, startDate,endDate,contratosGeral}:
-  {lancamentos:Array<LancamentosProps>,
-    filtroDia:boolean,
-    filtroMes:boolean,
-    filtroAno:boolean,
-    todoPeriodo:boolean,
-    startDate:Date,
-    endDate:Date
-    contratosGeral:Array<ContratosGeral>
-   
+export function Grafico({ lancamentos, filtroDia, filtroMes, filtroAno, todoPeriodo, startDate, endDate, contratosGeral }:
+  {
+    lancamentos: Array<LancamentosProps>,
+    filtroDia: boolean,
+    filtroMes: boolean,
+    filtroAno: boolean,
+    todoPeriodo: boolean,
+    startDate: Date,
+    endDate: Date
+    contratosGeral: Array<ContratosGeral>
+
   }) {
   const [options, setOptions] = useState({}); // Estado para opções do gráfico
-  const [series, setSeries] = useState<{ name: string; data:Array<DataProps >  }[]>([]); // Estado para série de dados do gráfico
-  const [seriesmensal,setSeriesMensal]=useState<{name:string,data:Array<number>}[]>([]);
-  
+  const [series, setSeries] = useState<{ name: string; data: Array<DataProps> }[]>([]); // Estado para série de dados do gráfico
+  const [seriesmensal, setSeriesMensal] = useState<{ name: string, data: Array<number>,color:string }[]>([]);
+
   useEffect(() => {
-let dataLancamento:string
-//let itemExistente:DataProps | undefined ={x:'',y:0,z:0}
-  const resultado = lancamentos.reduce((acumulador,atual)=>{
+    let dataLancamento: string
+    //let itemExistente:DataProps | undefined ={x:'',y:0,z:0}
+    const resultado = lancamentos.reduce((acumulador, atual) => {
 
- if(filtroDia){
-  dataLancamento = new Date(atual.datalanc).toLocaleDateString('pt-BR', {
-      
-    year: 'numeric', // Ano completo
-    month: 'long', // Mês por extenso
-    day: 'numeric'});
- }
-    
-    else if(filtroMes){
-      dataLancamento = new Date(atual.datalanc).toLocaleDateString('pt-BR', {
-      
-        year: 'numeric', // Ano completo
-        month: 'long', // Mês por extenso
-      
-      });
-    }
-    else if(filtroAno){
-      dataLancamento = new Date(atual.datalanc).toLocaleDateString('pt-BR', {
-      
-        year: 'numeric', // Ano completo
-       
-      
-      });
+      if (filtroDia) {
+        dataLancamento = new Date(atual.datalanc).toLocaleDateString('pt-BR', {
 
-    }
-var startNoTime = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(),0,0,0);
-var endNoTime = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(),0,0,0);
-var atualDateNoTime = new Date(new Date(atual.datalanc).getFullYear(), new Date(atual.datalanc).getMonth(), new Date(atual.datalanc).getDate(),0,0,0);
-    if (
-     !todoPeriodo &&
-      ((new Date(atualDateNoTime) >= new Date(startNoTime)) &&
-      (  new Date(atualDateNoTime) <= new Date(endNoTime)))
-    ) {
-      const itemExistente = acumulador.find((item) => item.x === dataLancamento);
+          year: 'numeric', // Ano completo
+          month: 'long', // Mês por extenso
+          day: 'numeric'
+        });
+      }
 
-      if (itemExistente) {
-        itemExistente.y =Number( itemExistente.y)+ Number(atual.valor);
-        itemExistente.z += 1;
+      else if (filtroMes) {
+        dataLancamento = new Date(atual.datalanc).toLocaleDateString('pt-BR', {
 
-      } else {
-        let contratosG
-        let contratosIN
-       
-        if(filtroMes){
-          contratosG = contratosGeral.reduce((soma,it)=>{
-            var dt_adesaoTime = new Date(new Date(it.dt_adesao).getFullYear(), new Date(it.dt_adesao).getMonth(), new Date(it.dt_adesao).getDate(),0,0,0);
-            if(new Date(atualDateNoTime).getMonth()>=new Date(dt_adesaoTime).getMonth() && new Date(atualDateNoTime ).getFullYear()>=new Date(dt_adesaoTime).getFullYear() ){
-              soma+=1
-             
-            }
-            return soma
-          
-          },0)
+          year: 'numeric', // Ano completo
+          month: 'long', // Mês por extenso
 
-          contratosIN  = contratosGeral.reduce((soma,it)=>{
-            var dt_cancelamento = new Date(new Date(it.dt_cancelamento).getFullYear(), new Date(it.dt_cancelamento).getMonth(), new Date(it.dt_cancelamento).getDate(),0,0,0); 
-            if(it.dt_cancelamento!==null && new Date(atualDateNoTime).getMonth()>=new Date(dt_cancelamento).getMonth() && new Date(atualDateNoTime).getFullYear()>=new Date(dt_cancelamento).getFullYear() ){
-              soma+=1
-             
-            }
-            return soma
-         
-         
-          },0)
-        }
-       else if(filtroAno){
-          contratosG = contratosGeral.reduce((soma,it)=>{
-            var dt_adesaoTime = new Date(new Date(it.dt_adesao).getFullYear(), new Date(it.dt_adesao).getMonth(), new Date(it.dt_adesao).getDate(),0,0,0);
-            if( new Date(atualDateNoTime).getFullYear()<=new Date(dt_adesaoTime).getFullYear() ){
-              soma+=1
-             
-            }
-            return soma
-          
-          },0)
+        });
+      }
+      else if (filtroAno) {
+        dataLancamento = new Date(atual.datalanc).toLocaleDateString('pt-BR', {
 
-          contratosIN  = contratosGeral.reduce((soma,it)=>{
-            var dt_cancelamento = new Date(new Date(it.dt_cancelamento).getFullYear(), new Date(it.dt_cancelamento).getMonth(), new Date(it.dt_cancelamento).getDate(),0,0,0); 
-           
-          
+          year: 'numeric', // Ano completo
+
+
+        });
+
+      }
+      var startNoTime = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0);
+      var endNoTime = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 0, 0, 0);
+      var atualDateNoTime = new Date(new Date(atual.datalanc).getFullYear(), new Date(atual.datalanc).getMonth(), new Date(atual.datalanc).getDate(), 0, 0, 0);
+      if (
+        !todoPeriodo &&
+        ((new Date(atualDateNoTime) >= new Date(startNoTime)) &&
+          (new Date(atualDateNoTime) <= new Date(endNoTime)))
+      ) {
+        const itemExistente = acumulador.find((item) => item.x === dataLancamento);
+
+        if (itemExistente) {
+          itemExistente.y = Number(itemExistente.y) + Number(atual.valor);
+          itemExistente.z += 1;
+
+        } else {
         
-            if(it.dt_cancelamento!==null && new Date(atualDateNoTime).getFullYear()<=new Date(dt_cancelamento).getFullYear() ){
-              soma+=1
-             
-            }
-            return soma
-         
-         
-          },0)
 
-        }else{
-           contratosG =0
+          acumulador.push({ x: dataLancamento, y: atual.valor, z: 1, c:0,dt:new Date(atual.datalanc) });
         }
-     
-      
-        acumulador.push({ x: dataLancamento, y: atual.valor, z: 1,c:Number(contratosG)-Number(contratosIN )});
       }
-    }
-    if(todoPeriodo){
-      const itemExistente = acumulador.find((item) => item.x === dataLancamento);
-      if (itemExistente) {
-        itemExistente.y =Number( itemExistente.y)+ Number(atual.valor);
-        itemExistente.z += 1;
-      } else {
-      
-        acumulador.push({ x: dataLancamento, y: atual.valor, z: 1,c:0 });
+      if (todoPeriodo) {
+        const itemExistente = acumulador.find((item) => item.x === dataLancamento);
+        if (itemExistente) {
+          itemExistente.y = Number(itemExistente.y) + Number(atual.valor);
+          itemExistente.z += 1;
+        } else {
+
+          acumulador.push({ x: dataLancamento, y: atual.valor, z: 1, c: 0,dt:new Date(atual.datalanc) });
+        }
+
       }
+      return acumulador
+    }, [] as DataProps[])
 
-    }
-    return acumulador
-  },[] as DataProps[])
 
-console.log(resultado)
-  
+      const teste = resultado.reduce((acumulador,atual)=>{
+         const mesExistente = acumulador.find(item=>new Date(item.dt).getMonth()===new Date(atual.dt).getMonth()&&new Date(item.dt).getFullYear()===new Date(atual.dt).getFullYear())
+     //
+         if(!mesExistente){
+        const  contratosG = contratosGeral.filter((item) => {
+    const anoContrato =  new Date(new Date(item.dt_adesao).getFullYear(),new Date(item.dt_adesao).getMonth(),1);
+    const anoAtual = new Date(new Date(atual.dt).getFullYear(),new Date(atual.dt).getMonth(),1);
 
- 
-   /* goals: [
-      {
-         name: 'Expected',
-        value: 550,
-         strokeColor: '#B32824'
-       }
-      ] */ 
-    
+    return anoContrato <= anoAtual;
+           
+            
+          },0)
+          const contratosIN = contratosGeral.filter((item)=>{
+            const anoContrato =  new Date(new Date(item.dt_cancelamento).getFullYear(),new Date(item.dt_cancelamento).getMonth(),1);
+            const anoAtual = new Date(new Date(atual.dt).getFullYear(),new Date(atual.dt).getMonth(),1);
+            return item.dt_cancelamento!==null && anoContrato<=anoAtual;
+          })
+         
+          acumulador.push({x: atual.x, y: atual.y, z: atual.z, c: contratosG.length-contratosIN.length ,dt:atual.dt })
+         }
+         else{
+          acumulador.push({x: atual.x, y: atual.y, z: atual.z, c: 0,dt:atual.dt })
+         }
+        
+
+return acumulador
+
+},[]as DataProps[])
+
+    /* goals: [
+       {
+          name: 'Expected',
+         value: 550,
+          strokeColor: '#B32824'
+        }
+       ] */
+
     // Configuração das opções do gráfico
     const chartOptions = {
-     // plotOptions: {
-     //   bar: {
-     //     distributed: true
+      // plotOptions: {
+      //   bar: {
+      //     distributed: true
       //  }
-    //  } ,
-  
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        borderRadius: 10,
-      
-      
-       
-        borderRadiusApplication: 'end', // 'around', 'end'
-        borderRadiusWhenStacked: 'last', // 'all', 'last'
-      //  dataLabels: {
-        //  total: {
-        //    enabled: true,
-         //   style: {
+      //  } ,
+
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          borderRadius: 10,
+
+
+
+          borderRadiusApplication: 'end', // 'around', 'end'
+          borderRadiusWhenStacked: 'last', // 'all', 'last'
+          //  dataLabels: {
+          //  total: {
+          //    enabled: true,
+          //   style: {
           //    color: "#B32824",
-           //   fontSize: '23px',
-             
+          //   fontSize: '23px',
+
           //  }
-         // }
-       // }
+          // }
+          // }
+        },
       },
-    },
- 
-    title:{
-      text:'MENSALIDADES'
-    },
-    theme:{
-      mode:'dark',
-      palette1:'palette1'
-    },
-      tooltip:{
-        theme:'dark',
-      
+
+      title: {
+        text: 'MENSALIDADES'
+      },
+      theme: {
+        mode: 'dark',
+        palette1: 'palette1'
+      },
+      tooltip: {
+        theme: 'dark',
+
 
       },
       chart: {
-        type:'bar',
-        background:'#2b2e3b',
-        stacked: true,
+        type: 'bar',
+        background: '#2b2e3b',
+       // stacked: true,
         toolbar: {
           show: true
         },
 
-        zoom:{
+        zoom: {
           enabled: true
-          },
-      
-       
-      },
-    
-     
-     xaxis: {
-       categories:resultado.map(item => item.x),
-      
-        type:'category',
-        labels: {
-      
-         
-         style: {
-       // colors: "#B32824", // Define a cor dos anos aqui
         },
+
+
       },
-      responsive: [{
-        breakpoint: 480,
-        options: {
-          legend: {
-            position: 'bottom',
-            offsetX: -10,
-            offsetY: 0
+
+
+      xaxis: {
+        categories:teste.map(item => item.x),
+
+        type: 'category',
+        labels: {
+
+
+          style: {
+            // colors: "#B32824", // Define a cor dos anos aqui
+          },
+        },
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            legend: {
+              position: 'bottom',
+              offsetX: -10,
+              offsetY: 0
+            }
           }
-        }
-      }],
+        }],
       },
-   //  yaxis: {
-   //   labels: {
-    //     style: {
+      //  yaxis: {
+      //   labels: {
+      //     style: {
       //     colors: "#B32824", // Define a cor do texto no eixo Y aqui
       //   },
-     //   },
-    //  },
-   };
+      //   },
+      //  },
+    };
 
     // Configuração da série de dados do gráfico
     let chartSeries
-    if(filtroMes || filtroAno){
+    if (filtroMes || filtroAno) {
       chartSeries = [
-   
+
         {
           name: "RECEITA",
-          data: resultado.map(item=>item.y),
+          data: teste.map(item => item.y),
+          color:'#B32824'
         },
         {
           name: "QUANTIDADE",
-          data: resultado.map(item=>item.z),
+          data: teste.map(item => item.z),
+          color:'#2c9171'
         },
         {
           name: "ATIVOS",
-          data: resultado.map(item=>item.c),
+          data: teste.map(item => item.c),
+          color:'#fede72'
         },
-    
+
       ];
 
-    }else{
+    } else {
       chartSeries = [
-   
+
         {
           name: "RECEITA",
-          data: resultado.map(item=>item.y),
+          data: teste.map(item => item.y),
+          color:'#B32824'
         },
         {
           name: "QUANTIDADE",
-          data: resultado.map(item=>item.z),
+          data: teste.map(item => item.z),
+          color:'#2c9171'
         },
-    
+
       ];
 
 
     }
-    
+
 
     setOptions(chartOptions); // Define as opções do gráfico no estado
-   // setSeries(chartSeries); // Define a série de dados do gráfico no estado
-   setSeriesMensal(chartSeries)
-  }, [filtroDia,filtroMes,filtroAno,startDate,endDate,todoPeriodo]); // Executa apenas uma vez quando o componente é montado
+    // setSeries(chartSeries); // Define a série de dados do gráfico no estado
+    setSeriesMensal(chartSeries)
+  }, [filtroDia, filtroMes, filtroAno, startDate, endDate, todoPeriodo]); // Executa apenas uma vez quando o componente é montado
 
   // Renderiza o gráfico somente se as opções e a série de dados estiverem disponíveis
   return (

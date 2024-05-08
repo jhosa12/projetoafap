@@ -71,9 +71,10 @@ export default function LoginFinaceiro() {
   const [grupos, setGrupos] = useState<Array<GruposProps>>()
   const [setorSelect, setSetor] = useState<number>(0)
   const [planoSelect, setPlano] = useState('')
-  const [startDate, setStartDate] = useState(new Date())
+  const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(),new Date().getMonth(),1))
   const [endDate, setEndDate] = useState(new Date())
-  const [todoPerido, setPeriodo] = useState(false)
+  const [todoPeriodo, setPeriodo] = useState(true)
+  const [todoPeriodoMensalidade, setPeriodoMensalidade] = useState(false)
   const [arraygeral, setArrayGeral] = useState<Array<PlanoContasProps>>([])
   const [planoContasButton, setPlanoButton] = useState(true)
   const [mensalidadeButton, setMensalidadeButton] = useState(false)
@@ -102,10 +103,13 @@ export default function LoginFinaceiro() {
   }
 
   useEffect(() => {
-    if (setorSelect === 0 && !planoSelect && todoPerido) {
+   /// const diaAtual = new Date()
+   // setStartDate(new Date(diaAtual.getFullYear(),diaAtual.getMonth(),1))
+
+    if (setorSelect === 0 && !planoSelect && todoPeriodo) {
       setLancamentos(arraygeral)
     }
-    else if (setorSelect !== 0 && !planoSelect && todoPerido) {
+    else if (setorSelect !== 0 && !planoSelect && todoPeriodo) {
       const novoArray = arraygeral.map(item => {
         return {
           ...item,
@@ -115,7 +119,7 @@ export default function LoginFinaceiro() {
 
       setLancamentos(novoArray)
     }
-    else if (setorSelect !== 0 && planoSelect && todoPerido) {
+    else if (setorSelect !== 0 && planoSelect && todoPeriodo) {
       const novoArray = arraygeral.map(item => {
         if (item.conta === planoSelect) {
           return {
@@ -129,7 +133,7 @@ export default function LoginFinaceiro() {
 
       setLancamentos(novoArrayFiltrado)
     }
-    else if (setorSelect === 0 && planoSelect && todoPerido) {
+    else if (setorSelect === 0 && planoSelect && todoPeriodo) {
       const novoArray = arraygeral.filter(item => {
         if (item.conta === planoSelect) {
           return {
@@ -143,7 +147,7 @@ export default function LoginFinaceiro() {
       setLancamentos(novoArray)
     }
 
-    else if (setorSelect === 0 && !planoSelect && !todoPerido) {
+    else if (setorSelect === 0 && !planoSelect && !todoPeriodo) {
       const novoArray = arraygeral.map(item => {
         return {
           ...item,
@@ -154,7 +158,7 @@ export default function LoginFinaceiro() {
       setLancamentos(novoArray)
     }
 
-    else if (setorSelect !== 0 && !planoSelect && !todoPerido) {
+    else if (setorSelect !== 0 && !planoSelect && !todoPeriodo) {
       const novoArray = arraygeral.map(item => {
         return {
           ...item,
@@ -164,7 +168,7 @@ export default function LoginFinaceiro() {
 
       setLancamentos(novoArray)
     }
-    else if (setorSelect !== 0 && planoSelect && !todoPerido) {
+    else if (setorSelect !== 0 && planoSelect && !todoPeriodo) {
       const novoArray = arraygeral.map(item => {
         if (item.conta === planoSelect) {
           return {
@@ -178,7 +182,7 @@ export default function LoginFinaceiro() {
 
       setLancamentos(novoArrayFiltrado)
     }
-    else if (setorSelect === 0 && planoSelect && !todoPerido) {
+    else if (setorSelect === 0 && planoSelect && !todoPeriodo) {
       const novoArray = arraygeral.map(item => {
         if (item.conta === planoSelect) {
           return {
@@ -196,7 +200,7 @@ export default function LoginFinaceiro() {
     }
 
 
-  }, [setorSelect, planoSelect, startDate, endDate, todoPerido])
+  }, [setorSelect, planoSelect, startDate, endDate, todoPeriodo])
 
 
   useEffect(() => {
@@ -383,11 +387,11 @@ export default function LoginFinaceiro() {
 
               <div className="inline-flex  items-center  gap-3">
                 <div className="flex items-center ">
-                  <input type="checkbox" checked={todoPerido} onChange={() => setPeriodo(!todoPerido)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                  <input type="checkbox" checked={todoPeriodo} onChange={() => setPeriodo(!todoPeriodo)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                   <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODO PERÍODO</label>
                 </div>
                 <DatePicker
-                  disabled={todoPerido}
+                  disabled={todoPeriodo}
                   dateFormat={"dd/MM/yyyy"}
                   locale={pt}
                   selected={startDate}
@@ -400,7 +404,7 @@ export default function LoginFinaceiro() {
                 <span> até </span>
 
                 <DatePicker
-                  disabled={todoPerido}
+                  disabled={todoPeriodo}
                   dateFormat={"dd/MM/yyyy"}
                   locale={pt}
                   selected={endDate}
@@ -479,14 +483,13 @@ export default function LoginFinaceiro() {
 
               <div className="inline-flex  items-center w-full justify-end mr-4 gap-3">
                 <div className="flex items-center ">
-                  <input type="checkbox" checked={todoPerido} onChange={() => setPeriodo(!todoPerido)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                  <input type="checkbox" checked={todoPeriodoMensalidade} onChange={() => setPeriodoMensalidade(!todoPeriodoMensalidade)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                   <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODO PERÍODO</label>
                 </div>
                 <DatePicker
-
                   showMonthDropdown
                   showYearDropdown
-                  disabled={todoPerido}
+                  disabled={todoPeriodoMensalidade}
                   dateFormat={"dd/MM/yyyy"}
                   locale={pt}
                   selected={startDate}
@@ -501,7 +504,7 @@ export default function LoginFinaceiro() {
                 <DatePicker
                   showMonthDropdown
                   showYearDropdown
-                  disabled={todoPerido}
+                  disabled={todoPeriodoMensalidade}
                   dateFormat={"dd/MM/yyyy"}
                   locale={pt}
                   selected={endDate}
@@ -535,7 +538,7 @@ export default function LoginFinaceiro() {
                 filtroDia={escalaDia}
                 filtroAno={escalaAno}
                 filtroMes={escalaMes}
-                todoPeriodo={todoPerido}
+                todoPeriodo={todoPeriodoMensalidade}
                 lancamentos={arrayGraficoMensalidade}
                 startDate={startDate}
                 endDate={endDate}
