@@ -24,7 +24,8 @@ interface DataProps {
   x: string,
   dt:Date
   z: number,
-  c: number
+  c: number,
+  cancelamentos:number
 }
 
 export function Grafico({ lancamentos, filtroDia, filtroMes, filtroAno, todoPeriodo, startDate, endDate, contratosGeral }:
@@ -91,7 +92,7 @@ export function Grafico({ lancamentos, filtroDia, filtroMes, filtroAno, todoPeri
         } else {
         
 
-          acumulador.push({ x: dataLancamento, y: atual.valor, z: 1, c:0,dt:new Date(atual.datalanc) });
+          acumulador.push({ x: dataLancamento, y: atual.valor, z: 1, c:0,dt:new Date(atual.datalanc),cancelamentos:0 });
         }
       }
       if (todoPeriodo) {
@@ -101,7 +102,7 @@ export function Grafico({ lancamentos, filtroDia, filtroMes, filtroAno, todoPeri
           itemExistente.z += 1;
         } else {
 
-          acumulador.push({ x: dataLancamento, y: atual.valor, z: 1, c: 0,dt:new Date(atual.datalanc) });
+          acumulador.push({ x: dataLancamento, y: atual.valor, z: 1, c: 0,dt:new Date(atual.datalanc),cancelamentos:0 });
         }
 
       }
@@ -126,11 +127,16 @@ export function Grafico({ lancamentos, filtroDia, filtroMes, filtroAno, todoPeri
             const anoAtual = new Date(new Date(atual.dt).getFullYear(),new Date(atual.dt).getMonth(),1);
             return item.dt_cancelamento!==null && anoContrato<=anoAtual;
           })
+          const cancelamentosMes = contratosGeral.filter(item=>{
+            const anoContrato =  new Date(new Date(item.dt_cancelamento).getFullYear(),new Date(item.dt_cancelamento).getMonth(),1);
+            const anoAtual = new Date(new Date(atual.dt).getFullYear(),new Date(atual.dt).getMonth(),1);
+            return anoContrato.toLocaleDateString()===anoAtual.toLocaleDateString()
+          })
          
-          acumulador.push({x: atual.x, y: atual.y, z: atual.z, c: contratosG.length-contratosIN.length ,dt:atual.dt })
+          acumulador.push({x: atual.x, y: atual.y, z: atual.z, c: contratosG.length-contratosIN.length ,dt:atual.dt,cancelamentos:cancelamentosMes.length })
          }
          else{
-          acumulador.push({x: atual.x, y: atual.y, z: atual.z, c: 0,dt:atual.dt })
+          acumulador.push({x: atual.x, y: atual.y, z: atual.z, c: 0,dt:atual.dt,cancelamentos:atual.cancelamentos })
          }
         
 
@@ -243,17 +249,23 @@ return acumulador
         {
           name: "RECEITA COM MENSALIDADES",
           data: teste.map(item => item.y),
-          color:'#B32824'
+          color:'#1056b5'
         },
         {
           name: "QUANT. MENSALIDADES",
           data: teste.map(item => item.z),
-          color:'#2c9171'
+          color:'#fede72'
+          
         },
         {
           name: "CONTRATOS ATIVOS",
           data: teste.map(item => item.c),
-          color:'#fede72'
+          color:'#2c9171'
+        },
+        {
+          name: "CANCELAMENTOS",
+          data: teste.map(item => item.cancelamentos),
+          color:'#B32824'
         },
 
       ];
