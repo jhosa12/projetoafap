@@ -241,17 +241,17 @@ return acumulador
       chartSeries = [
 
         {
-          name: "RECEITA",
+          name: "RECEITA COM MENSALIDADES",
           data: teste.map(item => item.y),
           color:'#B32824'
         },
         {
-          name: "QUANTIDADE",
+          name: "QUANT. MENSALIDADES",
           data: teste.map(item => item.z),
           color:'#2c9171'
         },
         {
-          name: "ATIVOS",
+          name: "CONTRATOS ATIVOS",
           data: teste.map(item => item.c),
           color:'#fede72'
         },
