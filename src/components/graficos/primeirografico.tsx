@@ -183,7 +183,7 @@ return acumulador
       },
 
       title: {
-        text: 'MENSALIDADES'
+        text: 'MENSAL./QUANT./ATIVOS/CANCELAMENTOS'
       },
       theme: {
         mode: 'dark',
