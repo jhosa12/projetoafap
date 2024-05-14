@@ -57,6 +57,10 @@ interface ContratosProps {
   dt_cancelamento: Date
 }
 
+interface SomaValorConta {
+  _sum :{valor:number},
+  conta:string
+}
 
 
 
@@ -93,7 +97,7 @@ export default function LoginFinaceiro() {
   const [escalaDia, setDia] = useState(true)
   const [escalaMes, setMes] = useState(false)
   const [escalaAno, setAno] = useState(false)
-
+  const [somaPorConta,setSomaConta] = useState<Array<SomaValorConta>>([])
   const toogleAberto = (index: number) => {
     setAbertos((prev) => ({
       ...prev,
@@ -223,16 +227,16 @@ export default function LoginFinaceiro() {
     setLancamentos(response.data.planosdeContas);
     setGrupos(response.data.grupos)
     setContratosGeral(response.data.contratosGeral)
-   
-   
+    setSomaConta(response.data.somaPorConta)
+    console.log(response.data.somaPorConta)
   }
 
 
 
   useEffect(() => {
     const novoArray = arraygeral.flatMap(item => item.lancamentos)
-    const arrayMensal = novoArray.filter(item => item.conta === '1.01.002')
-    setArrayGrafico(arrayMensal)
+  //  const arrayMensal = novoArray.filter(item => item.conta === '1.01.002')
+ //   setArrayGrafico(arrayMensal)
 
 
 
@@ -242,17 +246,17 @@ export default function LoginFinaceiro() {
 
 
   useEffect(() => {
-    const calcDespesas = listaLancamentos?.reduce((acumuladorP, atualP) => {
-      const total = atualP?.lancamentos?.reduce((acumulador, atual) => {
-        if (atual?.tipo === 'DESPESA') {
-          return Number(acumulador) + Number(atual?.valor)
-        }
-        else { return acumulador }
-      }, 0)
-      return acumuladorP + total
-    }, 0)
-    setDespesas(calcDespesas)
-    const calcReceitas = listaLancamentos?.reduce((acumuladorP, atualP) => {
+  //  const calcDespesas = listaLancamentos?.reduce((acumuladorP, atualP) => {
+    //  const total = atualP?.lancamentos?.reduce((acumulador, atual) => {
+     //   if (atual?.tipo === 'DESPESA') {
+      //    return Number(acumulador) + Number(atual?.valor)
+     //   }
+    //    else { return acumulador }
+   //   }, 0)
+    //  return acumuladorP + total
+ //   }, 0)
+  //  setDespesas(calcDespesas)
+  /*  const calcReceitas = listaLancamentos?.reduce((acumuladorP, atualP) => {
       const total = atualP?.lancamentos.reduce((acumulador, atual) => {
         if (atual?.tipo === 'RECEITA') {
           return Number(acumulador) + Number(atual?.valor)
@@ -263,7 +267,7 @@ export default function LoginFinaceiro() {
 
     }, 0)
 
-    setReceitas(calcReceitas)
+    setReceitas(calcReceitas)*/
   }, [listaLancamentos])
 
 
@@ -451,7 +455,7 @@ export default function LoginFinaceiro() {
                       <li onClick={() => toogleAberto(index)} className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
                         <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">{nome?.descricao}</span>
                           <div className="flex w-full gap-8  items-center">
-                            <span className="flex w-full text-start whitespace-nowrap font-semibold">R$ {soma}</span>
+                            <span className="flex w-full text-start whitespace-nowrap font-semibold">R$ {somaPorConta.map((item,ind)=>{if(item.conta===nome.conta){return item._sum.valor}})}</span>
                             <span className="flex w-full text-start whitespace-nowrap font-semibold">R$ {nome?.metas[0]?.valor ?? 0}</span>
                             <span className="flex w-full text-start whitespace-nowrap"><span className="rounded-lg bg-red-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span></span>
                             <span className="flex w-full text-start whitespace-nowrap"><span className="rounded-lg bg-blue-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span></span>

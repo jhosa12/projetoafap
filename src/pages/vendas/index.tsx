@@ -5,6 +5,12 @@ import { useContext } from 'react';
 import fototeste from '../../../public/fototeste.jpeg'
 export default function Vendas() {
     const { usuario } = useContext(AuthContext)
+
+
+
+
+
+    
     return (
         <>
             <div className="flex flex-col w-full text-white p-4">

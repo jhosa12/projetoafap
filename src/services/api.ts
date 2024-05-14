@@ -7,7 +7,7 @@ export function setupAPIClient(ctx =undefined){
 let cookies =parseCookies(ctx)
 
 const api =axios.create({
-    baseURL:"https://apiafap.onrender.com",
+    baseURL:"https://apiafap-production.up.railway.app",
     headers:{
         Authorization:`Bearer ${cookies['@nextauth.token']}`
     }
