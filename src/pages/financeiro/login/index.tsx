@@ -10,7 +10,7 @@ import pt from 'date-fns/locale/pt-BR';
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
 import { IoIosArrowDown } from "react-icons/io";
-
+import { IoSearch } from "react-icons/io5";
 
 interface PlanoContasProps {
 
@@ -109,100 +109,106 @@ export default function LoginFinaceiro() {
   useEffect(() => {
    /// const diaAtual = new Date()
    // setStartDate(new Date(diaAtual.getFullYear(),diaAtual.getMonth(),1))
+try {
+  if (setorSelect === 0 && !planoSelect && todoPeriodo) {
+    setLancamentos(arraygeral)
+  }
+  else if (setorSelect !== 0 && !planoSelect && todoPeriodo) {
+    const novoArray = arraygeral.map(item => {
+      return {
+        ...item,
+        lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect)
+      };
+    });
 
-    if (setorSelect === 0 && !planoSelect && todoPeriodo) {
-      setLancamentos(arraygeral)
-    }
-    else if (setorSelect !== 0 && !planoSelect && todoPeriodo) {
-      const novoArray = arraygeral.map(item => {
+    setLancamentos(novoArray)
+  }
+  else if (setorSelect !== 0 && planoSelect && todoPeriodo) {
+    const novoArray = arraygeral.map(item => {
+      if (item.conta === planoSelect) {
         return {
           ...item,
           lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect)
-        };
-      });
+        }
+      } else { return null; }
 
-      setLancamentos(novoArray)
-    }
-    else if (setorSelect !== 0 && planoSelect && todoPeriodo) {
-      const novoArray = arraygeral.map(item => {
-        if (item.conta === planoSelect) {
-          return {
-            ...item,
-            lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect)
-          }
-        } else { return null; }
+    }).filter(item => item !== null) as PlanoContasProps[];
+    const novoArrayFiltrado = novoArray.filter(item => item !== null);
 
-      }).filter(item => item !== null) as PlanoContasProps[];
-      const novoArrayFiltrado = novoArray.filter(item => item !== null);
-
-      setLancamentos(novoArrayFiltrado)
-    }
-    else if (setorSelect === 0 && planoSelect && todoPeriodo) {
-      const novoArray = arraygeral.filter(item => {
-        if (item.conta === planoSelect) {
-          return {
-            ...item,
-
-          }
-        };
-
-      });
-
-      setLancamentos(novoArray)
-    }
-
-    else if (setorSelect === 0 && !planoSelect && !todoPeriodo) {
-      const novoArray = arraygeral.map(item => {
+    setLancamentos(novoArrayFiltrado)
+  }
+  else if (setorSelect === 0 && planoSelect && todoPeriodo) {
+    const novoArray = arraygeral.filter(item => {
+      if (item.conta === planoSelect) {
         return {
           ...item,
-          lancamentos: item.lancamentos.filter(dado => new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
+
         }
-      });
+      };
 
-      setLancamentos(novoArray)
-    }
+    });
 
-    else if (setorSelect !== 0 && !planoSelect && !todoPeriodo) {
-      const novoArray = arraygeral.map(item => {
+    setLancamentos(novoArray)
+  }
+
+  else if (setorSelect === 0 && !planoSelect && !todoPeriodo) {
+    const novoArray = arraygeral.map(item => {
+      return {
+        ...item,
+        lancamentos: item.lancamentos.filter(dado => new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
+      }
+    });
+
+    setLancamentos(novoArray)
+  }
+
+  else if (setorSelect !== 0 && !planoSelect && !todoPeriodo) {
+    const novoArray = arraygeral.map(item => {
+      return {
+        ...item,
+        lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect && new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
+      }
+    });
+
+    setLancamentos(novoArray)
+  }
+  else if (setorSelect !== 0 && planoSelect && !todoPeriodo) {
+    const novoArray = arraygeral.map(item => {
+      if (item.conta === planoSelect) {
         return {
           ...item,
           lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect && new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
         }
-      });
+      } else { return null; }
 
-      setLancamentos(novoArray)
-    }
-    else if (setorSelect !== 0 && planoSelect && !todoPeriodo) {
-      const novoArray = arraygeral.map(item => {
-        if (item.conta === planoSelect) {
-          return {
-            ...item,
-            lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect && new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
-          }
-        } else { return null; }
+    }).filter(item => item !== null) as PlanoContasProps[];
+    const novoArrayFiltrado = novoArray.filter(item => item !== null);
 
-      }).filter(item => item !== null) as PlanoContasProps[];
-      const novoArrayFiltrado = novoArray.filter(item => item !== null);
+    setLancamentos(novoArrayFiltrado)
+  }
+  else if (setorSelect === 0 && planoSelect && !todoPeriodo) {
+    const novoArray = arraygeral.map(item => {
+      if (item.conta === planoSelect) {
+        return {
+          ...item,
+          lancamentos: item.lancamentos.filter(dado => new Date(dado.datalanc) >= new Date(startDate) && new Date(dado.datalanc) <= new Date(endDate))
+        }
+      } else {
+        return null
+      };
 
-      setLancamentos(novoArrayFiltrado)
-    }
-    else if (setorSelect === 0 && planoSelect && !todoPeriodo) {
-      const novoArray = arraygeral.map(item => {
-        if (item.conta === planoSelect) {
-          return {
-            ...item,
-            lancamentos: item.lancamentos.filter(dado => new Date(dado.datalanc) >= new Date(startDate) && new Date(dado.datalanc) <= new Date(endDate))
-          }
-        } else {
-          return null
-        };
+    }).filter(item => item !== null) as PlanoContasProps[];
+    const novoArrayFiltrado = novoArray.filter(item => item !== null);
 
-      }).filter(item => item !== null) as PlanoContasProps[];
-      const novoArrayFiltrado = novoArray.filter(item => item !== null);
+    setLancamentos(novoArrayFiltrado)
+  }
 
-      setLancamentos(novoArrayFiltrado)
-    }
-
+  
+} catch (error) {
+  toast.info('ERRO DE FILTRAGEM')
+  
+}
+   
 
   }, [setorSelect, planoSelect, startDate, endDate, todoPeriodo])
 
@@ -421,6 +427,7 @@ export default function LoginFinaceiro() {
                 />
 
               </div>
+              <button className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCAR<IoSearch size={18}/></button>
             </div>
             <div className="flex flex-col  px-4 w-full overflow-y-auto max-h-[calc(100vh-210px)] text-white bg-[#2b2e3b] rounded-lg ">
               <ul className="flex flex-col w-full p-2 gap-1 text-sm">
