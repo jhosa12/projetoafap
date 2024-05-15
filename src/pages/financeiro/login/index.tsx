@@ -11,7 +11,7 @@ import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
-
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 interface PlanoContasProps {
 
   conta: string,
@@ -98,6 +98,7 @@ export default function LoginFinaceiro() {
   const [escalaMes, setMes] = useState(false)
   const [escalaAno, setAno] = useState(false)
   const [somaPorConta,setSomaConta] = useState<Array<SomaValorConta>>([])
+  const [loading,setLoading]= useState(false)
   const toogleAberto = (index: number) => {
     setAbertos((prev) => ({
       ...prev,
@@ -110,10 +111,10 @@ export default function LoginFinaceiro() {
    /// const diaAtual = new Date()
    // setStartDate(new Date(diaAtual.getFullYear(),diaAtual.getMonth(),1))
 try {
-  if (setorSelect === 0 && !planoSelect && todoPeriodo) {
+  if (setorSelect === 0 && !planoSelect) {
     setLancamentos(arraygeral)
   }
-  else if (setorSelect !== 0 && !planoSelect && todoPeriodo) {
+  else if (setorSelect !== 0 && !planoSelect ) {
     const novoArray = arraygeral.map(item => {
       return {
         ...item,
@@ -123,7 +124,7 @@ try {
 
     setLancamentos(novoArray)
   }
-  else if (setorSelect !== 0 && planoSelect && todoPeriodo) {
+  else if (setorSelect !== 0 && planoSelect ) {
     const novoArray = arraygeral.map(item => {
       if (item.conta === planoSelect) {
         return {
@@ -137,7 +138,7 @@ try {
 
     setLancamentos(novoArrayFiltrado)
   }
-  else if (setorSelect === 0 && planoSelect && todoPeriodo) {
+  else if (setorSelect === 0 && planoSelect) {
     const novoArray = arraygeral.filter(item => {
       if (item.conta === planoSelect) {
         return {
@@ -208,6 +209,7 @@ try {
   toast.info('ERRO DE FILTRAGEM')
   
 }
+
    
 
   }, [setorSelect, planoSelect, startDate, endDate, todoPeriodo])
@@ -228,14 +230,22 @@ try {
 
 
   async function listarDados() {
-    const response = await api.get('/financeiro/lancamentos');
+    setLoading(true)
+    const response = await api.post('/financeiro/lancamentos',{
+      dataInicial:startDate,
+      dataFinal:endDate,
+      conta:'1.0',
+      todoPeriodo:todoPeriodo
+    });
     setArrayGeral(response.data.planosdeContas);
     setLancamentos(response.data.planosdeContas);
     setGrupos(response.data.grupos)
     setContratosGeral(response.data.contratosGeral)
     setSomaConta(response.data.somaPorConta)
     console.log(response.data.somaPorConta)
+    setLoading(false)
   }
+
 
 
 
@@ -378,7 +388,9 @@ try {
                 <option value={0}>SETOR (TODOS)</option>
 
                 {grupos?.map((item, index) => (
-                  <option className="text-xs" key={index} value={item.id_grupo}>{item.descricao}</option>
+                  <option className="text-xs" key={index} value={item.id_grupo}>
+                  <input checked className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox" value={item.descricao}/> 
+                    </option>
 
                 ))}
               </select>
@@ -427,7 +439,9 @@ try {
                 />
 
               </div>
-              <button className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCAR<IoSearch size={18}/></button>
+           { !loading ? <button onClick={()=>listarDados()} className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCAR<IoSearch size={18}/></button>:
+            <button className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCANDO..<AiOutlineLoading3Quarters size={20} className="animate-spin"/></button>
+           }
             </div>
             <div className="flex flex-col  px-4 w-full overflow-y-auto max-h-[calc(100vh-210px)] text-white bg-[#2b2e3b] rounded-lg ">
               <ul className="flex flex-col w-full p-2 gap-1 text-sm">
