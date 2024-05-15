@@ -12,6 +12,8 @@ import { toast } from "react-toastify";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { Currency } from "lucide-react";
+import { PlanoContas } from "@/components/gerenciarAdm/planoContas";
 interface PlanoContasProps {
 
   conta: string,
@@ -24,6 +26,7 @@ interface PlanoContasProps {
   hora: Date,
   usuario: string,
   contaf: string,
+  check:boolean
   lancamentos: Array<{
     id_grupo: number,
     conta: string,
@@ -58,8 +61,9 @@ interface ContratosProps {
 }
 
 interface SomaValorConta {
-  _sum :{valor:number},
-  conta:string
+  _sum: { valor: number },
+  conta: string,
+  tipo:string
 }
 
 
@@ -75,7 +79,7 @@ export default function LoginFinaceiro() {
   const [grupos, setGrupos] = useState<Array<GruposProps>>()
   const [setorSelect, setSetor] = useState<number>(0)
   const [planoSelect, setPlano] = useState('')
-  const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(),new Date().getMonth(),1))
+  const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
   const [endDate, setEndDate] = useState(new Date())
   const [todoPeriodo, setPeriodo] = useState(true)
   const [todoPeriodoMensalidade, setPeriodoMensalidade] = useState(false)
@@ -97,8 +101,9 @@ export default function LoginFinaceiro() {
   const [escalaDia, setDia] = useState(true)
   const [escalaMes, setMes] = useState(false)
   const [escalaAno, setAno] = useState(false)
-  const [somaPorConta,setSomaConta] = useState<Array<SomaValorConta>>([])
-  const [loading,setLoading]= useState(false)
+  const [somaPorConta, setSomaConta] = useState<Array<SomaValorConta>>([])
+  const [loading, setLoading] = useState(false)
+  const [todos,setTodos] =useState(true)
   const toogleAberto = (index: number) => {
     setAbertos((prev) => ({
       ...prev,
@@ -107,110 +112,115 @@ export default function LoginFinaceiro() {
 
   }
 
+  let formatter = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  });
+
   useEffect(() => {
-   /// const diaAtual = new Date()
-   // setStartDate(new Date(diaAtual.getFullYear(),diaAtual.getMonth(),1))
-try {
-  if (setorSelect === 0 && !planoSelect) {
-    setLancamentos(arraygeral)
-  }
-  else if (setorSelect !== 0 && !planoSelect ) {
-    const novoArray = arraygeral.map(item => {
-      return {
-        ...item,
-        lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect)
-      };
-    });
-
-    setLancamentos(novoArray)
-  }
-  else if (setorSelect !== 0 && planoSelect ) {
-    const novoArray = arraygeral.map(item => {
-      if (item.conta === planoSelect) {
-        return {
-          ...item,
-          lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect)
-        }
-      } else { return null; }
-
-    }).filter(item => item !== null) as PlanoContasProps[];
-    const novoArrayFiltrado = novoArray.filter(item => item !== null);
-
-    setLancamentos(novoArrayFiltrado)
-  }
-  else if (setorSelect === 0 && planoSelect) {
-    const novoArray = arraygeral.filter(item => {
-      if (item.conta === planoSelect) {
-        return {
-          ...item,
-
-        }
-      };
-
-    });
-
-    setLancamentos(novoArray)
-  }
-
-  else if (setorSelect === 0 && !planoSelect && !todoPeriodo) {
-    const novoArray = arraygeral.map(item => {
-      return {
-        ...item,
-        lancamentos: item.lancamentos.filter(dado => new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
+    /// const diaAtual = new Date()
+    // setStartDate(new Date(diaAtual.getFullYear(),diaAtual.getMonth(),1))
+    try {
+      if (setorSelect === 0 && !planoSelect) {
+        setLancamentos(arraygeral)
       }
-    });
+      else if (setorSelect !== 0 && !planoSelect) {
+        const novoArray = arraygeral.map(item => {
+          return {
+            ...item,
+            lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect)
+          };
+        });
 
-    setLancamentos(novoArray)
-  }
-
-  else if (setorSelect !== 0 && !planoSelect && !todoPeriodo) {
-    const novoArray = arraygeral.map(item => {
-      return {
-        ...item,
-        lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect && new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
+        setLancamentos(novoArray)
       }
-    });
+      else if (setorSelect !== 0 && planoSelect) {
+        const novoArray = arraygeral.map(item => {
+          if (item.conta === planoSelect) {
+            return {
+              ...item,
+              lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect)
+            }
+          } else { return null; }
 
-    setLancamentos(novoArray)
-  }
-  else if (setorSelect !== 0 && planoSelect && !todoPeriodo) {
-    const novoArray = arraygeral.map(item => {
-      if (item.conta === planoSelect) {
-        return {
-          ...item,
-          lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect && new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
-        }
-      } else { return null; }
+        }).filter(item => item !== null) as PlanoContasProps[];
+        const novoArrayFiltrado = novoArray.filter(item => item !== null);
 
-    }).filter(item => item !== null) as PlanoContasProps[];
-    const novoArrayFiltrado = novoArray.filter(item => item !== null);
+        setLancamentos(novoArrayFiltrado)
+      }
+      else if (setorSelect === 0 && planoSelect) {
+        const novoArray = arraygeral.filter(item => {
+          if (item.conta === planoSelect) {
+            return {
+              ...item,
 
-    setLancamentos(novoArrayFiltrado)
-  }
-  else if (setorSelect === 0 && planoSelect && !todoPeriodo) {
-    const novoArray = arraygeral.map(item => {
-      if (item.conta === planoSelect) {
-        return {
-          ...item,
-          lancamentos: item.lancamentos.filter(dado => new Date(dado.datalanc) >= new Date(startDate) && new Date(dado.datalanc) <= new Date(endDate))
-        }
-      } else {
-        return null
-      };
+            }
+          };
 
-    }).filter(item => item !== null) as PlanoContasProps[];
-    const novoArrayFiltrado = novoArray.filter(item => item !== null);
+        });
 
-    setLancamentos(novoArrayFiltrado)
-  }
+        setLancamentos(novoArray)
+      }
 
-  
-} catch (error) {
-  toast.info('ERRO DE FILTRAGEM')
-  
-}
+      else if (setorSelect === 0 && !planoSelect && !todoPeriodo) {
+        const novoArray = arraygeral.map(item => {
+          return {
+            ...item,
+            lancamentos: item.lancamentos.filter(dado => new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
+          }
+        });
 
-   
+        setLancamentos(novoArray)
+      }
+
+      else if (setorSelect !== 0 && !planoSelect && !todoPeriodo) {
+        const novoArray = arraygeral.map(item => {
+          return {
+            ...item,
+            lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect && new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
+          }
+        });
+
+        setLancamentos(novoArray)
+      }
+      else if (setorSelect !== 0 && planoSelect && !todoPeriodo) {
+        const novoArray = arraygeral.map(item => {
+          if (item.conta === planoSelect) {
+            return {
+              ...item,
+              lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect && new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
+            }
+          } else { return null; }
+
+        }).filter(item => item !== null) as PlanoContasProps[];
+        const novoArrayFiltrado = novoArray.filter(item => item !== null);
+
+        setLancamentos(novoArrayFiltrado)
+      }
+      else if (setorSelect === 0 && planoSelect && !todoPeriodo) {
+        const novoArray = arraygeral.map(item => {
+          if (item.conta === planoSelect) {
+            return {
+              ...item,
+              lancamentos: item.lancamentos.filter(dado => new Date(dado.datalanc) >= new Date(startDate) && new Date(dado.datalanc) <= new Date(endDate))
+            }
+          } else {
+            return null
+          };
+
+        }).filter(item => item !== null) as PlanoContasProps[];
+        const novoArrayFiltrado = novoArray.filter(item => item !== null);
+
+        setLancamentos(novoArrayFiltrado)
+      }
+
+
+    } catch (error) {
+      toast.info('ERRO DE FILTRAGEM')
+
+    }
+
+
 
   }, [setorSelect, planoSelect, startDate, endDate, todoPeriodo])
 
@@ -231,18 +241,19 @@ try {
 
   async function listarDados() {
     setLoading(true)
-    const response = await api.post('/financeiro/lancamentos',{
-      dataInicial:startDate,
-      dataFinal:endDate,
-      conta:'1.0',
-      todoPeriodo:todoPeriodo
+    const response = await api.post('/financeiro/lancamentos', {
+      dataInicial: startDate,
+      dataFinal: endDate,
+      conta: '1.0',
+      todoPeriodo: todoPeriodo
     });
-    setArrayGeral(response.data.planosdeContas);
+    const novoArray = response.data.planosdeContas.map((item:PlanoContasProps)=>{return{...item,check:true}})
+    setArrayGeral(novoArray);
     setLancamentos(response.data.planosdeContas);
     setGrupos(response.data.grupos)
     setContratosGeral(response.data.contratosGeral)
     setSomaConta(response.data.somaPorConta)
-    console.log(response.data.somaPorConta)
+    
     setLoading(false)
   }
 
@@ -250,44 +261,113 @@ try {
 
 
   useEffect(() => {
-    const novoArray = arraygeral.flatMap(item => item.lancamentos)
-  //  const arrayMensal = novoArray.filter(item => item.conta === '1.01.002')
- //   setArrayGrafico(arrayMensal)
+   // const novoArray = arraygeral.flatMap(item => item.lancamentos)
+    //  const arrayMensal = novoArray.filter(item => item.conta === '1.01.002')
+    //   setArrayGrafico(arrayMensal)
 
+ if(!todos){
+   const lancamentosFiltrados = arraygeral.filter((item) => item.check);
+  setLancamentos(lancamentosFiltrados)
 
+ }
+ else{
+  setLancamentos(arraygeral)
+ }
+ 
+
+   
 
 
   }, [arraygeral])
 
+useEffect(()=>{
+  if(!todos){
+    const novoArray = arraygeral.map(item=>{return{...item,check:false}})
+    setArrayGeral(novoArray)
 
+  }
+  else{
+      const novoArray = arraygeral.map(item=>{return{...item,check:true}})
+    setArrayGeral(novoArray)
+
+  
+  }
+
+},[todos])
 
   useEffect(() => {
-  //  const calcDespesas = listaLancamentos?.reduce((acumuladorP, atualP) => {
+   const receitasMap= listaLancamentos.reduce((acumulador,atual)=>{
+   const itemexistente = somaPorConta.find(item=>item.conta===atual?.conta && item.tipo==='RECEITA')
+   if(itemexistente){
+      return acumulador + Number(itemexistente._sum.valor)
+    
+   }
+   else{
+    return acumulador
+   }
+ 
+
+   },0)
+  
+    setReceitas(receitasMap)
+
+
+    const despesasMap= listaLancamentos.reduce((acumulador,atual)=>{
+      const itemexistente = somaPorConta.find(item=>item.conta===atual?.conta && item.tipo==='DESPESA')
+      if(itemexistente){
+         return acumulador + Number(itemexistente._sum.valor)
+       
+      }
+      else{
+       return acumulador
+      }
+    
+   
+      },0)
+     
+       setDespesas(despesasMap)
+
+
+
+
+
+    //  const calcDespesas = listaLancamentos?.reduce((acumuladorP, atualP) => {
     //  const total = atualP?.lancamentos?.reduce((acumulador, atual) => {
-     //   if (atual?.tipo === 'DESPESA') {
-      //    return Number(acumulador) + Number(atual?.valor)
-     //   }
+    //   if (atual?.tipo === 'DESPESA') {
+    //    return Number(acumulador) + Number(atual?.valor)
+    //   }
     //    else { return acumulador }
-   //   }, 0)
+    //   }, 0)
     //  return acumuladorP + total
- //   }, 0)
-  //  setDespesas(calcDespesas)
-  /*  const calcReceitas = listaLancamentos?.reduce((acumuladorP, atualP) => {
-      const total = atualP?.lancamentos.reduce((acumulador, atual) => {
-        if (atual?.tipo === 'RECEITA') {
-          return Number(acumulador) + Number(atual?.valor)
-        }
-        else { return acumulador }
+    //   }, 0)
+    //  setDespesas(calcDespesas)
+    /*  const calcReceitas = listaLancamentos?.reduce((acumuladorP, atualP) => {
+        const total = atualP?.lancamentos.reduce((acumulador, atual) => {
+          if (atual?.tipo === 'RECEITA') {
+            return Number(acumulador) + Number(atual?.valor)
+          }
+          else { return acumulador }
+        }, 0)
+        return acumuladorP + total
+  
       }, 0)
-      return acumuladorP + total
-
-    }, 0)
-
-    setReceitas(calcReceitas)*/
+  
+      setReceitas(calcReceitas)*/
   }, [listaLancamentos])
 
 
-
+  function handleOptionChange(conta: string) {
+    const novoLancamentos = arraygeral.map((item) => {
+      if (item.conta === conta) {
+        return { ...item, check: !item.check }; // Alternando o valor de check
+      }
+      return item;
+    });
+  setArrayGeral(novoLancamentos)
+    // Filtrando apenas os itens com check verdadeiro
+  
+  
+  }
 
 
   return (
@@ -358,11 +438,11 @@ try {
             <div className="flex flex-row w-full text-xs justify-between  mb-1">
               <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
                 <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense size={25} /></div>
-                <h2 className="flex flex-col" >DESPESAS <span>R$ {despesas}</span></h2>
+                <h2 className="flex flex-col" >DESPESAS <span>{formatter.format(despesas)}</span></h2>
               </div>
               <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
                 <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiReceiveMoney size={25} /></div>
-                <h2 className="flex flex-col" >RECEITAS <span>R$ {receitas}</span></h2>
+                <h2 className="flex flex-col" >RECEITAS <span>{formatter.format(receitas)}</span></h2>
               </div>
               <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
 
@@ -372,15 +452,28 @@ try {
               <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
 
                 <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><FaBalanceScale size={25} /></div>
-                <h2 className={`flex flex-col`} >SALDO <span className={`font-semibold  ${(receitas - despesas) < 0 ? "text-red-600" : "text-white"}`}>R$ {receitas - despesas}</span></h2>
+                <h2 className={`flex flex-col`} >SALDO <span className={`font-semibold  ${(receitas - despesas) < 0 ? "text-red-600" : "text-white"}`}>{formatter.format(receitas - despesas)}</span></h2>
               </div>
 
             </div>
 
 
-            <div className="flex w-full bg-[#2b2e3b] px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
+            <div className="flex relative w-full bg-[#2b2e3b] px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
               <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
-
+              <ul className="absolute  top-9 left-80 max-h-64 overflow-y-auto  bg-gray-600 p-1 rounded-lg">
+                <li className="flex items-center px-2 py-1">
+                <input onChange={()=>setTodos(!todos)} type="checkbox" checked={todos}  />
+                      <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODOS</label>
+                </li>
+                {arraygeral.map((item,index)=>{
+                  return (
+                    <li className="flex items-center px-2 py-1">
+                      <input onChange={()=>handleOptionChange(item?.conta)} type="checkbox" checked={item?.check} value={item?.conta} />
+                      <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">{item?.descricao.toUpperCase()}</label>
+                    </li>
+                  )
+                })}
+              </ul>
 
               <select value={setorSelect} onChange={e => {
                 setSetor(Number(e.target.value))
@@ -389,8 +482,8 @@ try {
 
                 {grupos?.map((item, index) => (
                   <option className="text-xs" key={index} value={item.id_grupo}>
-                  <input checked className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox" value={item.descricao}/> 
-                    </option>
+                    <input checked className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox" value={item.descricao} />
+                  </option>
 
                 ))}
               </select>
@@ -439,9 +532,9 @@ try {
                 />
 
               </div>
-           { !loading ? <button onClick={()=>listarDados()} className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCAR<IoSearch size={18}/></button>:
-            <button className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCANDO..<AiOutlineLoading3Quarters size={20} className="animate-spin"/></button>
-           }
+              {!loading ? <button onClick={() => listarDados()} className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCAR<IoSearch size={18} /></button> :
+                <button className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCANDO..<AiOutlineLoading3Quarters size={20} className="animate-spin" /></button>
+              }
             </div>
             <div className="flex flex-col  px-4 w-full overflow-y-auto max-h-[calc(100vh-210px)] text-white bg-[#2b2e3b] rounded-lg ">
               <ul className="flex flex-col w-full p-2 gap-1 text-sm">
@@ -472,11 +565,16 @@ try {
                     } else {
                       porc = (soma * 100) / Number(nome?.metas[0].valor);
                     }
+                 
                     return (
                       <li onClick={() => toogleAberto(index)} className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
                         <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">{nome?.descricao}</span>
                           <div className="flex w-full gap-8  items-center">
-                            <span className="flex w-full text-start whitespace-nowrap font-semibold">R$ {somaPorConta.map((item,ind)=>{if(item.conta===nome.conta){return item._sum.valor}})}</span>
+                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{somaPorConta.map((item, ind) => {
+                              if (item.conta == nome?.conta && item.tipo!==null ) {
+                                return formatter.format(Number(item._sum.valor))
+                              }
+                            })}</span>
                             <span className="flex w-full text-start whitespace-nowrap font-semibold">R$ {nome?.metas[0]?.valor ?? 0}</span>
                             <span className="flex w-full text-start whitespace-nowrap"><span className="rounded-lg bg-red-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span></span>
                             <span className="flex w-full text-start whitespace-nowrap"><span className="rounded-lg bg-blue-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span></span>
@@ -568,9 +666,9 @@ try {
                 startDate={startDate}
                 endDate={endDate}
                 contratosGeral={contratosGeral}
-               
-                 />}
-               
+
+              />}
+
             </div>
 
           </div>}
