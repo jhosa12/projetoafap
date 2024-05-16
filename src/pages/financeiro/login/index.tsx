@@ -14,6 +14,7 @@ import { IoSearch } from "react-icons/io5";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { Currency } from "lucide-react";
 import { PlanoContas } from "@/components/gerenciarAdm/planoContas";
+
 interface PlanoContasProps {
 
   conta: string,
@@ -104,6 +105,7 @@ export default function LoginFinaceiro() {
   const [somaPorConta, setSomaConta] = useState<Array<SomaValorConta>>([])
   const [loading, setLoading] = useState(false)
   const [todos,setTodos] =useState(true)
+  const [dropPlanos,setDropPlanos] = useState(false)
   const toogleAberto = (index: number) => {
     setAbertos((prev) => ({
       ...prev,
@@ -222,7 +224,7 @@ export default function LoginFinaceiro() {
 
 
 
-  }, [setorSelect, planoSelect, startDate, endDate, todoPeriodo])
+  }, [setorSelect, planoSelect, startDate, endDate])
 
 
   useEffect(() => {
@@ -253,7 +255,7 @@ export default function LoginFinaceiro() {
     setGrupos(response.data.grupos)
     setContratosGeral(response.data.contratosGeral)
     setSomaConta(response.data.somaPorConta)
-    
+    console.log(response.data.planosSomados)
     setLoading(false)
   }
 
@@ -458,22 +460,9 @@ useEffect(()=>{
             </div>
 
 
-            <div className="flex relative w-full bg-[#2b2e3b] px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
+            <div className="flex  w-full bg-[#2b2e3b] px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
               <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
-              <ul className="absolute  top-9 left-80 max-h-64 overflow-y-auto  bg-gray-600 p-1 rounded-lg">
-                <li className="flex items-center px-2 py-1">
-                <input onChange={()=>setTodos(!todos)} type="checkbox" checked={todos}  />
-                      <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODOS</label>
-                </li>
-                {arraygeral.map((item,index)=>{
-                  return (
-                    <li className="flex items-center px-2 py-1">
-                      <input onChange={()=>handleOptionChange(item?.conta)} type="checkbox" checked={item?.check} value={item?.conta} />
-                      <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">{item?.descricao.toUpperCase()}</label>
-                    </li>
-                  )
-                })}
-              </ul>
+           
 
               <select value={setorSelect} onChange={e => {
                 setSetor(Number(e.target.value))
@@ -487,18 +476,36 @@ useEffect(()=>{
 
                 ))}
               </select>
+              <div className="flex h-full relative w-1/4">
+              <div onClick={()=>setDropPlanos(!dropPlanos)}
+               className="flex w-full h-full justify-between items-center py-1.5 pl-2 pr-2 uppercase border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+         
+                {todos?'TODOS':'PERSONALIZADO'}
+                <IoIosArrowDown/>
+          
+                
+              </div>
 
-              <select value={planoSelect} onChange={e => {
-                setPlano(e.target.value)
-              }} className="flex  pt-1 pb-1 pl-2 pr-2 uppercase border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                <option value={''}>PLANO DE CONTAS (TODOS)</option>
+              {  dropPlanos && <ul className="absolute  top-7 -left-1 max-h-64 overflow-y-auto  bg-gray-600 p-1 rounded-lg">
+                <li className="flex items-center px-2 py-1">
+                <input onChange={()=>setTodos(!todos)} type="checkbox" checked={todos}  />
+                      <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODOS</label>
+                </li>
+                {arraygeral.map((item,index)=>{
+                  return (
+                    <li className="flex items-center px-2 py-1">
+                      <input onChange={()=>handleOptionChange(item?.conta)} type="checkbox" checked={item?.check} value={item?.conta} />
+                      <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">{item?.descricao.toUpperCase()}</label>
+                    </li>
+                  )
+                })}
+              </ul>}
 
-                {arraygeral?.map((item, index) => (
-                  <option className="text-xs" key={index} value={item?.conta}>{item?.descricao}</option>
 
-                ))}
-              </select>
 
+              </div>
+        
+             
 
               <div className="inline-flex  items-center  gap-3">
                 <div className="flex items-center ">
