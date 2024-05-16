@@ -28,15 +28,7 @@ interface PlanoContasProps {
   usuario: string,
   contaf: string,
   check:boolean
-  lancamentos: Array<{
-    id_grupo: number,
-    conta: string,
-    descricao: string,
-    historico: string,
-    tipo: string,
-    valor: number,
-    datalanc: Date,
-  }>,
+
   metas: Array<{
     id_meta: number,
     id_conta: string,
@@ -55,7 +47,13 @@ interface GruposProps {
   descricao: string
 }
 
+interface LancamentoProps{
 
+    id_grupo: number,
+    historico: string,
+    valor: number,
+ 
+}
 interface ContratosProps {
   dt_adesao: Date,
   dt_cancelamento: Date
@@ -73,6 +71,7 @@ interface SomaValorConta {
 export default function LoginFinaceiro() {
   const [dropEmpresa, setDropEmpresa] = useState(false)
   const [listaLancamentos, setLancamentos] = useState<Array<PlanoContasProps>>([])
+  const [subListaLanc,setSubLista] = useState<Array<LancamentoProps>>()
   const [despesas, setDespesas] = useState<number>(0)
   const [receitas, setReceitas] = useState<number>(0)
   const [remessa, setRemessa] = useState<number>(0)
@@ -107,12 +106,36 @@ export default function LoginFinaceiro() {
   const [todos,setTodos] =useState(true)
   const [dropPlanos,setDropPlanos] = useState(false)
   const toogleAberto = (index: number) => {
-    setAbertos((prev) => ({
-      ...prev,
+    setAbertos((prev: { [key: number]: boolean }) => ({
+      ...Object.keys(prev).reduce((acc, key) => {
+        acc[Number(key)] = false;
+        return acc;
+      }, {} as { [key: number]: boolean }),
       [index]: !prev[index]
-    }))
+    }));
+  };
+  
 
-  }
+
+   async function handleListaLanc(conta:string,index:number){
+    setSubLista([])
+    if(!abertos[index]){
+      try {
+        const response =   await api.post('/financeiro/listaLancamentos',{
+              todoPeriodo:false,
+              startDate:new Date(),
+              endDate:new Date(),
+              conta:conta
+            })
+            setSubLista(response.data)
+          } catch (error) {
+            console.log(error)
+            
+          }
+
+    }
+
+   }
 
   let formatter = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -122,60 +145,11 @@ export default function LoginFinaceiro() {
   useEffect(() => {
     /// const diaAtual = new Date()
     // setStartDate(new Date(diaAtual.getFullYear(),diaAtual.getMonth(),1))
-    try {
-      if (setorSelect === 0 && !planoSelect) {
+   /* try {
+      if (setorSelect === 0) {
         setLancamentos(arraygeral)
       }
-      else if (setorSelect !== 0 && !planoSelect) {
-        const novoArray = arraygeral.map(item => {
-          return {
-            ...item,
-            lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect)
-          };
-        });
-
-        setLancamentos(novoArray)
-      }
-      else if (setorSelect !== 0 && planoSelect) {
-        const novoArray = arraygeral.map(item => {
-          if (item.conta === planoSelect) {
-            return {
-              ...item,
-              lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect)
-            }
-          } else { return null; }
-
-        }).filter(item => item !== null) as PlanoContasProps[];
-        const novoArrayFiltrado = novoArray.filter(item => item !== null);
-
-        setLancamentos(novoArrayFiltrado)
-      }
-      else if (setorSelect === 0 && planoSelect) {
-        const novoArray = arraygeral.filter(item => {
-          if (item.conta === planoSelect) {
-            return {
-              ...item,
-
-            }
-          };
-
-        });
-
-        setLancamentos(novoArray)
-      }
-
-      else if (setorSelect === 0 && !planoSelect && !todoPeriodo) {
-        const novoArray = arraygeral.map(item => {
-          return {
-            ...item,
-            lancamentos: item.lancamentos.filter(dado => new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
-          }
-        });
-
-        setLancamentos(novoArray)
-      }
-
-      else if (setorSelect !== 0 && !planoSelect && !todoPeriodo) {
+       if (setorSelect !== 0 ) {
         const novoArray = arraygeral.map(item => {
           return {
             ...item,
@@ -185,36 +159,8 @@ export default function LoginFinaceiro() {
 
         setLancamentos(novoArray)
       }
-      else if (setorSelect !== 0 && planoSelect && !todoPeriodo) {
-        const novoArray = arraygeral.map(item => {
-          if (item.conta === planoSelect) {
-            return {
-              ...item,
-              lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect && new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
-            }
-          } else { return null; }
-
-        }).filter(item => item !== null) as PlanoContasProps[];
-        const novoArrayFiltrado = novoArray.filter(item => item !== null);
-
-        setLancamentos(novoArrayFiltrado)
-      }
-      else if (setorSelect === 0 && planoSelect && !todoPeriodo) {
-        const novoArray = arraygeral.map(item => {
-          if (item.conta === planoSelect) {
-            return {
-              ...item,
-              lancamentos: item.lancamentos.filter(dado => new Date(dado.datalanc) >= new Date(startDate) && new Date(dado.datalanc) <= new Date(endDate))
-            }
-          } else {
-            return null
-          };
-
-        }).filter(item => item !== null) as PlanoContasProps[];
-        const novoArrayFiltrado = novoArray.filter(item => item !== null);
-
-        setLancamentos(novoArrayFiltrado)
-      }
+     
+  
 
 
     } catch (error) {
@@ -222,9 +168,9 @@ export default function LoginFinaceiro() {
 
     }
 
+*/
 
-
-  }, [setorSelect, planoSelect, startDate, endDate])
+  }, [setorSelect])
 
 
   useEffect(() => {
@@ -558,23 +504,23 @@ useEffect(()=>{
                 </li>
                 {
                   listaLancamentos?.map((nome, index) => {
-                    const soma = nome?.lancamentos?.reduce((total, item) => {
-                      if (item.conta === nome.conta) {
-                        return total + Number(item.valor)
-                      }
-                      else {
-                        return total
-                      }
-                    }, 0)
-                    let porc;
-                    if (soma === 0 || nome?.metas[0]?.valor === 0 || soma === null || nome?.metas[0]?.valor === null || isNaN(Number(nome?.metas[0]?.valor))) {
-                      porc = 0;
-                    } else {
-                      porc = (soma * 100) / Number(nome?.metas[0].valor);
-                    }
+                 //   const soma = nome?.lancamentos?.reduce((total, item) => {
+                   //   if (item.conta === nome.conta) {
+                   //     return total + Number(item.valor)
+                   //   }
+                   //   else {
+                   //     return total
+                   //   }
+                 //   }, 0)
+                   // let porc;
+                  //  if (soma === 0 || nome?.metas[0]?.valor === 0 || soma === null || nome?.metas[0]?.valor === null || isNaN(Number(nome?.metas[0]?.valor))) {
+                  //    porc = 0;
+                  //  } else {
+                  //    porc = (soma * 100) / Number(nome?.metas[0].valor);
+                  //  }
                  
                     return (
-                      <li onClick={() => toogleAberto(index)} className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
+                      <li onClick={() => {handleListaLanc(nome.conta,index) ,toogleAberto(index)}} className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
                         <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">{nome?.descricao}</span>
                           <div className="flex w-full gap-8  items-center">
                             <span className="flex w-full text-start whitespace-nowrap font-semibold">{somaPorConta.map((item, ind) => {
@@ -583,13 +529,13 @@ useEffect(()=>{
                               }
                             })}</span>
                             <span className="flex w-full text-start whitespace-nowrap font-semibold">R$ {nome?.metas[0]?.valor ?? 0}</span>
-                            <span className="flex w-full text-start whitespace-nowrap"><span className="rounded-lg bg-red-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span></span>
-                            <span className="flex w-full text-start whitespace-nowrap"><span className="rounded-lg bg-blue-500  p-1">{!Number.isNaN(porc) ? porc + '%' : '0%'}</span></span>
+                            <span className="flex w-full text-start whitespace-nowrap"><span className="rounded-lg bg-red-500  p-1">{/*!Number.isNaN(porc) ? porc + '%' : '0%'*/}</span></span>
+                            <span className="flex w-full text-start whitespace-nowrap"><span className="rounded-lg bg-blue-500  p-1">{/*!Number.isNaN(porc) ? porc + '%' : '0%'*/}</span></span>
                             <span className="flex w-full justify-end  "><IoIosArrowDown /></span>
                           </div>
                         </div>
-                        {abertos[index] && <ul className="flex flex-col w-full gap-1  ml-6 ">
-                          {nome.lancamentos.map((lancamento, index) => {
+                      {  abertos[index] && <ul className="flex flex-col w-full gap-1  ml-6 ">
+                          {subListaLanc?.map((lancamento, index) => {
                             return (
                               <li className="flex text-xs gap-2 "><span>{lancamento.historico}</span> Valor: R$ {lancamento.valor}</li>
                             )
