@@ -122,9 +122,9 @@ export default function LoginFinaceiro() {
     if(!abertos[index]){
       try {
         const response =   await api.post('/financeiro/listaLancamentos',{
-              todoPeriodo:false,
-              startDate:new Date(),
-              endDate:new Date(),
+              todoPeriodo:todoPeriodo,
+              startDate:startDate,
+              endDate:endDate,
               conta:conta
             })
             setSubLista(response.data)
