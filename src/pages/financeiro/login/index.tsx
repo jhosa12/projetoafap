@@ -87,13 +87,10 @@ export default function LoginFinaceiro() {
   const [planoContasButton, setPlanoButton] = useState(true)
   const [mensalidadeButton, setMensalidadeButton] = useState(false)
   const [arrayGraficoMensalidade, setArrayGrafico] = useState<Array<{
-    id_grupo: number,
-    conta: string,
-    descricao: string,
-    historico: string,
-    tipo: string,
-    valor: number,
-    datalanc: Date,
+    datalanc:Date
+    _sum:{valor:number},
+    _count:{datalanc:number}
+    
   }>>([])
   const [contratosGeral, setContratosGeral] = useState<Array<ContratosProps>>([])
 
@@ -128,12 +125,15 @@ export default function LoginFinaceiro() {
               conta:conta
             })
             setSubLista(response.data)
+         
           } catch (error) {
             console.log(error)
+           
             
           }
 
     }
+    return true
 
    }
 
@@ -201,7 +201,8 @@ export default function LoginFinaceiro() {
     setGrupos(response.data.grupos)
     setContratosGeral(response.data.contratosGeral)
     setSomaConta(response.data.somaPorConta)
-    console.log(response.data.planosSomados)
+    
+    setArrayGrafico(response.data.mensalidade)
     setLoading(false)
   }
 
@@ -518,9 +519,9 @@ useEffect(()=>{
                   //  } else {
                   //    porc = (soma * 100) / Number(nome?.metas[0].valor);
                   //  }
-                 
+                    
                     return (
-                      <li onClick={() => {handleListaLanc(nome.conta,index) ,toogleAberto(index)}} className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
+                      <li onClick={() => { handleListaLanc(nome.conta,index) ,toogleAberto(index)}} className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
                         <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">{nome?.descricao}</span>
                           <div className="flex w-full gap-8  items-center">
                             <span className="flex w-full text-start whitespace-nowrap font-semibold">{somaPorConta.map((item, ind) => {

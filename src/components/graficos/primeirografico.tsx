@@ -4,14 +4,10 @@ import { getDate } from "date-fns";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false }); // Importa o Chart de forma dinâmica e desativa o SSR
 
 interface LancamentosProps {
-  conta: string,
-  descricao: string,
-  id_grupo: number,
-  historico: string,
-  tipo: string,
-  valor: number,
-  datalanc: Date,
-
+  datalanc:Date
+  _sum:{valor:number},
+  _count:{datalanc:number}
+  
 }
 
 interface ContratosGeral {
@@ -86,23 +82,23 @@ export function Grafico({ lancamentos, filtroDia, filtroMes, filtroAno, todoPeri
         const itemExistente = acumulador.find((item) => item.x === dataLancamento);
 
         if (itemExistente) {
-          itemExistente.y = Number(itemExistente.y) + Number(atual.valor);
-          itemExistente.z += 1;
+          itemExistente.y = Number(itemExistente.y) + Number(atual._sum.valor);
+          itemExistente.z += atual._count.datalanc;
 
         } else {
         
 
-          acumulador.push({ x: dataLancamento, y: atual.valor, z: 1, c:0,dt:new Date(atual.datalanc),cancelamentos:0 });
+          acumulador.push({ x: dataLancamento, y: atual._sum.valor, z: 0, c:0,dt:new Date(atual.datalanc),cancelamentos:0 });
         }
       }
       if (todoPeriodo) {
         const itemExistente = acumulador.find((item) => item.x === dataLancamento);
         if (itemExistente) {
-          itemExistente.y = Number(itemExistente.y) + Number(atual.valor);
-          itemExistente.z += 1;
+          itemExistente.y = Number(itemExistente.y) + Number(atual._sum.valor);
+          itemExistente.z += atual._count.datalanc;
         } else {
 
-          acumulador.push({ x: dataLancamento, y: atual.valor, z: 1, c: 0,dt:new Date(atual.datalanc),cancelamentos:0 });
+          acumulador.push({ x: dataLancamento, y: Number(atual._sum.valor), z: 0, c: 0,dt:new Date(atual.datalanc),cancelamentos:0 });
         }
 
       }
@@ -248,7 +244,7 @@ return acumulador
 
         {
           name: "RECEITA COM MENSALIDADES",
-          data: teste.map(item => item.y),
+          data: teste.map(item =>Number(item.y.toFixed(2))),
           color:'#1056b5'
         },
         {
@@ -275,7 +271,7 @@ return acumulador
 
         {
           name: "RECEITA",
-          data: teste.map(item => item.y),
+          data: teste.map(item => Number(item.y.toFixed(2))),
           color:'#B32824'
         },
         {
