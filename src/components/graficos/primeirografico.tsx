@@ -30,6 +30,7 @@ export function Grafico({ lancamentos, filtroDia, filtroMes, filtroAno, todoPeri
     filtroDia: boolean,
     filtroMes: boolean,
     filtroAno: boolean,
+
     todoPeriodo: boolean,
     startDate: Date,
     endDate: Date
@@ -39,7 +40,10 @@ export function Grafico({ lancamentos, filtroDia, filtroMes, filtroAno, todoPeri
   const [options, setOptions] = useState({}); // Estado para opções do gráfico
   const [series, setSeries] = useState<{ name: string; data: Array<DataProps> }[]>([]); // Estado para série de dados do gráfico
   const [seriesmensal, setSeriesMensal] = useState<{ name: string, data: Array<number>,color:string }[]>([]);
-
+  let formatter = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  });
   useEffect(() => {
     let dataLancamento: string
     //let itemExistente:DataProps | undefined ={x:'',y:0,z:0}
@@ -158,13 +162,14 @@ return acumulador
 
       plotOptions: {
         bar: {
+          
           horizontal: false,
           borderRadius: 10,
-
-
-
+          columnWidth: '60%',
           borderRadiusApplication: 'end', // 'around', 'end'
-          borderRadiusWhenStacked: 'last', // 'all', 'last'
+          borderRadiusWhenStacked: 'last',
+         // distributed:true,
+         // stacked: false, // 'all', 'last'
           //  dataLabels: {
           //  total: {
           //    enabled: true,
@@ -175,8 +180,16 @@ return acumulador
           //  }
           // }
           // }
+
+          dataLabels: {
+            position: 'top', // top, center, bottom
+          },
         },
       },
+      dataLabels:{
+        offsetY:-20
+      },
+    
 
       title: {
         text: 'MENSAL./QUANT./ATIVOS/CANCELAMENTOS'
@@ -187,13 +200,20 @@ return acumulador
       },
       tooltip: {
         theme: 'dark',
+        y: {
+          formatter: function(value:number) {
+        return Number(value)
+          }
+        }
+        
 
 
       },
       chart: {
         type: 'bar',
         background: '#2b2e3b',
-       // stacked: true,
+     // stacked: true,
+     
         toolbar: {
           show: true
         },
@@ -228,13 +248,15 @@ return acumulador
           }
         }],
       },
-      //  yaxis: {
-      //   labels: {
-      //     style: {
-      //     colors: "#B32824", // Define a cor do texto no eixo Y aqui
-      //   },
-      //   },
-      //  },
+      yaxis: {
+        labels: {
+          formatter: function (value:number) {
+            return formatter.format(value);
+          }
+        },
+      },
+  
+     
     };
 
     // Configuração da série de dados do gráfico
