@@ -4,9 +4,9 @@ import { getDate } from "date-fns";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false }); // Importa o Chart de forma dinâmica e desativa o SSR
 
 interface LancamentosProps {
-  datalanc:Date
+  data:Date,
   _sum:{valor:number},
-  _count:{datalanc:number}
+  _count:{data:number}
   
 }
 
@@ -40,17 +40,18 @@ export function Grafico({ lancamentos, filtroDia, filtroMes, filtroAno, todoPeri
   const [options, setOptions] = useState({}); // Estado para opções do gráfico
   const [series, setSeries] = useState<{ name: string; data: Array<DataProps> }[]>([]); // Estado para série de dados do gráfico
   const [seriesmensal, setSeriesMensal] = useState<{ name: string, data: Array<number>,color:string }[]>([]);
-  let formatter = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL'
-  });
+ // let formatter = new Intl.NumberFormat('pt-BR', {
+ //   style: 'currency',
+ //   currency: 'BRL'
+//  });
+   
   useEffect(() => {
     let dataLancamento: string
     //let itemExistente:DataProps | undefined ={x:'',y:0,z:0}
     const resultado = lancamentos.reduce((acumulador, atual) => {
 
       if (filtroDia) {
-        dataLancamento = new Date(atual.datalanc).toLocaleDateString('pt-BR', {
+        dataLancamento = new Date(atual.data).toLocaleDateString('pt-BR', {
 
           year: 'numeric', // Ano completo
           month: 'long', // Mês por extenso
@@ -59,7 +60,7 @@ export function Grafico({ lancamentos, filtroDia, filtroMes, filtroAno, todoPeri
       }
 
       else if (filtroMes) {
-        dataLancamento = new Date(atual.datalanc).toLocaleDateString('pt-BR', {
+        dataLancamento = new Date(atual.data).toLocaleDateString('pt-BR', {
 
           year: 'numeric', // Ano completo
           month: 'long', // Mês por extenso
@@ -67,7 +68,7 @@ export function Grafico({ lancamentos, filtroDia, filtroMes, filtroAno, todoPeri
         });
       }
       else if (filtroAno) {
-        dataLancamento = new Date(atual.datalanc).toLocaleDateString('pt-BR', {
+        dataLancamento = new Date(atual.data).toLocaleDateString('pt-BR', {
 
           year: 'numeric', // Ano completo
 
@@ -75,43 +76,50 @@ export function Grafico({ lancamentos, filtroDia, filtroMes, filtroAno, todoPeri
         });
 
       }
-      var startNoTime = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0);
-      var endNoTime = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 0, 0, 0);
-      var atualDateNoTime = new Date(new Date(atual.datalanc).getFullYear(), new Date(atual.datalanc).getMonth(), new Date(atual.datalanc).getDate(), 0, 0, 0);
+     // const startNoTime = new Date(startDate)
+//const endNoTime = new Date(endDate)
+      const atualDateNoTime = new Date(new Date(atual.data).getUTCFullYear(),new Date(atual.data).getUTCMonth(),new Date(atual.data).getUTCDate())
+      
+      console.log(startDate)
+    
+   
       if (
-        !todoPeriodo &&
-        ((new Date(atualDateNoTime) >= new Date(startNoTime)) &&
-          (new Date(atualDateNoTime) <= new Date(endNoTime)))
+        !todoPeriodo && atualDateNoTime >=startDate && atualDateNoTime <= endDate
       ) {
         const itemExistente = acumulador.find((item) => item.x === dataLancamento);
 
         if (itemExistente) {
+        // itemExistente.y+=Number(atual._sum.valor)
           itemExistente.y = Number(itemExistente.y) + Number(atual._sum.valor);
-          itemExistente.z += atual._count.datalanc;
-
+          itemExistente.z += atual._count.data;
+        
+       
         } else {
         
 
-          acumulador.push({ x: dataLancamento, y: atual._sum.valor, z: 0, c:0,dt:new Date(atual.datalanc),cancelamentos:0 });
+          acumulador.push({ x: dataLancamento, y: Number(atual._sum.valor), z: atual._count.data, c:0,dt:atual.data,cancelamentos:0 });
+          
         }
       }
-      if (todoPeriodo) {
-        const itemExistente = acumulador.find((item) => item.x === dataLancamento);
-        if (itemExistente) {
-          itemExistente.y = Number(itemExistente.y) + Number(atual._sum.valor);
-          itemExistente.z += atual._count.datalanc;
-        } else {
+    //  if (todoPeriodo) {
+    //    const itemExistente = acumulador.find((item) => item.x == dataLancamento);
+   //     if (itemExistente) {
+   //       itemExistente.y = Number(itemExistente.y) + Number(atual._sum.valor);
+   //       itemExistente.z += atual._count.data;
+        
+  //     } else {
 
-          acumulador.push({ x: dataLancamento, y: Number(atual._sum.valor), z: 0, c: 0,dt:new Date(atual.datalanc),cancelamentos:0 });
-        }
+   //       acumulador.push({ x: dataLancamento, y: Number(atual._sum.valor), z: 0, c: 0,dt:atual.data,cancelamentos:0 });
+   //     }
 
-      }
+  //    }
       return acumulador
+     
     }, [] as DataProps[])
 
 
       const teste = resultado.reduce((acumulador,atual)=>{
-         const mesExistente = acumulador.find(item=>new Date(item.dt).getMonth()===new Date(atual.dt).getMonth()&&new Date(item.dt).getFullYear()===new Date(atual.dt).getFullYear())
+         const mesExistente = acumulador.find(item=>new Date(item.dt).getMonth()===new Date(atual.dt).getMonth() && new Date(item.dt).getFullYear()===new Date(atual.dt).getFullYear())
      //
          if(!mesExistente){
         const  contratosG = contratosGeral.filter((item) => {
@@ -200,11 +208,11 @@ return acumulador
       },
       tooltip: {
         theme: 'dark',
-        y: {
-          formatter: function(value:number) {
-        return Number(value)
-          }
-        }
+      //  y: {
+     //     formatter: function(value:number) {
+       // return Number(value)
+        //  }
+     //   }
         
 
 
@@ -233,9 +241,9 @@ return acumulador
         labels: {
 
 
-          style: {
+        //  style: {
             // colors: "#B32824", // Define a cor dos anos aqui
-          },
+         // },
         },
         responsive: [{
           breakpoint: 480,
@@ -248,13 +256,13 @@ return acumulador
           }
         }],
       },
-      yaxis: {
-        labels: {
-          formatter: function (value:number) {
-            return formatter.format(value);
-          }
-        },
-      },
+     // yaxis: {
+      //  labels: {
+       //   formatter: function (value:number) {
+        //    return formatter.format(value);
+        //  }
+      //  },
+    //  },
   
      
     };
@@ -266,7 +274,7 @@ return acumulador
 
         {
           name: "RECEITA COM MENSALIDADES",
-          data: teste.map(item =>Number(item.y.toFixed(2))),
+          data: teste.map(item =>item.y),
           color:'#1056b5'
         },
         {
@@ -293,7 +301,7 @@ return acumulador
 
         {
           name: "RECEITA",
-          data: teste.map(item => Number(item.y.toFixed(2))),
+          data: teste.map(item => item.y),
           color:'#B32824'
         },
         {

@@ -87,16 +87,16 @@ export default function LoginFinaceiro() {
   const [planoContasButton, setPlanoButton] = useState(true)
   const [mensalidadeButton, setMensalidadeButton] = useState(false)
   const [arrayGraficoMensalidade, setArrayGrafico] = useState<Array<{
-    datalanc:Date
+    data:Date
     _sum:{valor:number},
-    _count:{datalanc:number}
+    _count:{data:number}
     
   }>>([])
   const [contratosGeral, setContratosGeral] = useState<Array<ContratosProps>>([])
 
   const [filtro, setFiltro] = useState('')
-  const [escalaDia, setDia] = useState(true)
-  const [escalaMes, setMes] = useState(false)
+  const [escalaDia, setDia] = useState(false)
+  const [escalaMes, setMes] = useState(true)
   const [escalaAno, setAno] = useState(false)
   const [somaPorConta, setSomaConta] = useState<Array<SomaValorConta>>([])
   const [loading, setLoading] = useState(false)
@@ -201,7 +201,7 @@ export default function LoginFinaceiro() {
     setGrupos(response.data.grupos)
     setContratosGeral(response.data.contratosGeral)
     setSomaConta(response.data.somaPorConta)
-    
+    console.log(response.data.somaPorConta)
     setArrayGrafico(response.data.mensalidade)
     setLoading(false)
   }
@@ -538,7 +538,7 @@ useEffect(()=>{
                       {  abertos[index] && <ul className="flex flex-col w-full gap-1  ml-6 ">
                           {subListaLanc?.map((lancamento, index) => {
                             return (
-                              <li className="flex text-xs gap-2 "><span>{lancamento.historico}</span> Valor: R$ {lancamento.valor}</li>
+                              <li className="flex text-xs gap-2 "><span>{lancamento.historico}</span> Valor: R$ {lancamento.valor} / {subListaLanc.length}</li>
                             )
                           })
 
@@ -611,11 +611,11 @@ useEffect(()=>{
               </div>
             </div>
             <div className="flex flex-col h-full justify-center w-full">
-              {listaLancamentos.length > 0 && <Grafico
+              {arrayGraficoMensalidade.length > 0 && <Grafico
                 filtroDia={escalaDia}
                 filtroAno={escalaAno}
                 filtroMes={escalaMes}
-                todoPeriodo={todoPeriodoMensalidade}
+                todoPeriodo={false}
                 lancamentos={arrayGraficoMensalidade}
                 startDate={startDate}
                 endDate={endDate}
