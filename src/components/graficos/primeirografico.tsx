@@ -67,15 +67,17 @@ export function Grafico({ lancamentos, filtroDia, filtroMes, filtroAno, todoPeri
       const atualDate = dataLancTeste
       const start = new Date(new Date(startDate).getUTCFullYear(),new Date(startDate).getUTCMonth(),new Date(startDate).getUTCDate())
       const end =new Date(new Date(endDate).getUTCFullYear(),new Date(endDate).getUTCMonth(),new Date(endDate).getUTCDate())
-
+      const valor = Number(atual._sum.valor)
       if (!todoPeriodo && atualDate>=start && atualDate<=end) {
         const itemExistente = acumulador.find((item) => item.x === dataLancamento);
 
         if (itemExistente) {
-          itemExistente.y += Number(atual._sum.valor);
+          if (typeof valor === 'number') {
+            itemExistente.y += Number(valor.toFixed(2));
+        }
           itemExistente.z += atual._count.data;
         } else {
-          acumulador.push({ x: dataLancamento, y: Number(atual._sum.valor), z: atual._count.data, c: 0, dt: dataLancTeste, cancelamentos: 0 });
+          acumulador.push({ x: dataLancamento, y: Number(valor.toFixed(2)), z: atual._count.data, c: 0, dt: dataLancTeste, cancelamentos: 0 });
         }
       }
 
@@ -169,7 +171,7 @@ export function Grafico({ lancamentos, filtroDia, filtroMes, filtroAno, todoPeri
       chartSeries = [
         {
           name: "RECEITA COM MENSALIDADES",
-          data: teste.map(item => item.y),
+          data: teste.map(item =>  Number(item.y.toFixed(2))),
           color: '#1056b5'
         },
         {
@@ -192,7 +194,7 @@ export function Grafico({ lancamentos, filtroDia, filtroMes, filtroAno, todoPeri
       chartSeries = [
         {
           name: "RECEITA",
-          data: teste.map(item => item.y),
+          data: teste.map(item =>  Number(item.y.toFixed(2))),
           color: '#B32824'
         },
         {
