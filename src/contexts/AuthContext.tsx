@@ -4,7 +4,7 @@ import { destroyCookie, setCookie, parseCookies } from "nookies"
 import Router from 'next/router';
 import { decode } from 'jsonwebtoken'
 import { toast } from 'react-toastify';
-import { AxiosError } from 'axios';
+
 
 type CidadesProps = {
     id_cidade: number,

@@ -72,12 +72,12 @@ export function Grafico({ lancamentos, filtroDia, filtroMes, filtroAno, todoPeri
         const itemExistente = acumulador.find((item) => item.x === dataLancamento);
 
         if (itemExistente) {
-          if (typeof valor === 'number') {
+          
             itemExistente.y += Number(valor.toFixed(2));
-        }
-          itemExistente.z += atual._count.data;
-        } else {
-          acumulador.push({ x: dataLancamento, y: Number(valor.toFixed(2)), z: atual._count.data, c: 0, dt: dataLancTeste, cancelamentos: 0 });
+       
+          itemExistente.z +=Number( atual._count.data);
+        } else  {
+          acumulador.push({ x: dataLancamento, y: Number(valor.toFixed(2)), z: Number(atual._count.data), c: 0, dt: dataLancTeste, cancelamentos: 0 });
         }
       }
 

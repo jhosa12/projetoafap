@@ -2,7 +2,6 @@ import { FormEvent, useEffect, useState,useContext} from "react"
 import { AuthContext } from "@/contexts/AuthContext";
 import { IoIosClose } from "react-icons/io";
 import { api } from "@/services/apiClient";
-import {toast} from 'react-toastify';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 interface ContratoProps{
     id_contrato:number
