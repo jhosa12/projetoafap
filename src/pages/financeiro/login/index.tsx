@@ -144,22 +144,22 @@ export default function LoginFinaceiro() {
           _count: { data: number }
       
         }) => {
-         
+          const dataLanc =new Date(new Date(atual.data).getUTCFullYear(),new Date(atual.data).getUTCMonth(),new Date(atual.data).getUTCDate())
       
           if (escalaDia) {
-            dataLancamento = new Date(atual.data).toLocaleDateString('pt-BR', {
+            dataLancamento = dataLanc.toLocaleDateString('pt-BR', {
               year: 'numeric',
               month: 'numeric',
               day: "numeric"
             });
           } else if (escalaMes) {
-            dataLancamento = new Date(atual.data).toLocaleDateString('pt-BR', {
+            dataLancamento = dataLanc.toLocaleDateString('pt-BR', {
               year: 'numeric',
               month: 'numeric',
       
             });
           } else if (escalaAno) {
-            dataLancamento =new Date(atual.data).toLocaleDateString('pt-BR', {
+            dataLancamento =dataLanc.toLocaleDateString('pt-BR', {
               year: 'numeric',
       
             });
