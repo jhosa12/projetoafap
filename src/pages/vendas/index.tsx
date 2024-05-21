@@ -12,7 +12,7 @@ import { FaPercentage } from "react-icons/fa";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-
+import { IoIosClose } from "react-icons/io";
 interface VendasProps {
     consultor: string,
     _sum: { valor_mensalidade: number },
@@ -25,6 +25,7 @@ export default function Vendas() {
     const [endDate, setEndDate] = useState(new Date())
     const [todoPeriodo, setPeriodo] = useState(true)
     const [somaVendas,setSomaVendas] =useState<number>(0)
+    const [aba,setAba] = useState(1)
 
     async function dadosVendas() {
         try {
@@ -48,9 +49,28 @@ export default function Vendas() {
     return (
         <>
         {
-            <div className='flex flex-row w-full h-[100vh]' id='MODAL METAS MENSALIDADE'>
-            
-            </div>
+          <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
+       
+          <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-30 bg-gray-300 ">
+              
+  <div className="w-8/12 relative max-w-full bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+      <ul className=" text-sm font-medium text-center text-gray-500 divide-x divide-gray-200 rounded-lg sm:flex dark:divide-gray-600 dark:text-gray-400 rtl:divide-x-reverse" id="fullWidthTab" data-tabs-toggle="#fullWidthTabContent" role="tablist">
+          <li className="w-full">
+              <button onClick={()=>setAba(1)}  type="button"  aria-selected="true" className="inline-block w-full p-4 rounded-ss-lg bg-gray-50 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600">TITULAR</button>
+          </li>
+          <li className="w-full">
+              <button onClick={()=>setAba(2)} type="button" aria-controls="about" aria-selected="false" className="inline-block w-full p-4 bg-gray-50 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600">CONTRATO/PLANO</button>
+          </li>
+          <li className="w-full">
+              <button onClick={()=>setAba(3)}   data-tabs-target="#faq" type="button" role="tab" aria-controls="faq" aria-selected="false" className="inline-block w-full p-4 rounded-se-lg bg-gray-50 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600">DEPENDENTES</button>
+          </li>
+      </ul>
+      <button onClick={()=>{}} className="absolute top-0 right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto  hover:bg-gray-600 hover:text-white"><IoIosClose size={30}/></button>
+     
+  </div>
+  
+              </div>
+              </div>
         }
             <div className="flex flex-col w-full text-white p-2">
                 <div className='inline-flex w-full mb-1'>
