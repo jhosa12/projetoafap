@@ -24,6 +24,7 @@ export default function Vendas() {
     const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
     const [endDate, setEndDate] = useState(new Date())
     const [todoPeriodo, setPeriodo] = useState(true)
+    const [somaVendas,setSomaVendas] =useState<number>(0)
 
     async function dadosVendas() {
         try {
@@ -42,9 +43,15 @@ export default function Vendas() {
     useEffect(() => {
         dadosVendas()
     }, [])
+    
 
     return (
         <>
+        {
+            <div className='flex flex-row w-full h-[100vh]' id='MODAL METAS MENSALIDADE'>
+            
+            </div>
+        }
             <div className="flex flex-col w-full text-white p-2">
                 <div className='inline-flex w-full mb-1'>
                     <h1 className="font-semibold text-lg">ACOMPANHAMENTO DE VENDAS</h1>
@@ -107,7 +114,7 @@ export default function Vendas() {
                         <GiStairsGoal size={30} />
                         <div className='flex flex-col '>
                             <span className='leading-none text-xs'>PRODUZIDO</span>
-                            <span className='leading-none'>R$ 1000</span>
+                            <span className='leading-none'>R$ {dados.reduce((acumulador,atual)=>acumulador+=Number(atual._sum.valor_mensalidade),0)}/{dados.reduce((acumulador,atual)=>acumulador+=Number(atual._count.dt_adesao),0)}</span>
 
                         </div>
                     </div>

@@ -130,7 +130,6 @@ export default function LoginFinaceiro() {
           escalaDia,
           escalaMes,
           escalaAno,
-          
         })
         console.log(response.data)
         const timezone = 'America/Distrito_Federal';
