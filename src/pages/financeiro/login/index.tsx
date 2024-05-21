@@ -14,6 +14,18 @@ import { IoSearch } from "react-icons/io5";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { Currency } from "lucide-react";
 import { PlanoContas } from "@/components/gerenciarAdm/planoContas";
+import moment from 'moment-timezone';
+import { Data } from "@react-google-maps/api";
+
+
+interface DataProps {
+  y: number,
+  x: string,
+  dt: Date
+  z: number,
+  c: number,
+  cancelamentos: number
+}
 
 interface PlanoContasProps {
 
@@ -27,7 +39,7 @@ interface PlanoContasProps {
   hora: Date,
   usuario: string,
   contaf: string,
-  check:boolean
+  check: boolean
 
   metas: Array<{
     id_meta: number,
@@ -47,12 +59,12 @@ interface GruposProps {
   descricao: string
 }
 
-interface LancamentoProps{
+interface LancamentoProps {
 
-    id_grupo: number,
-    historico: string,
-    valor: number,
- 
+  id_grupo: number,
+  historico: string,
+  valor: number,
+
 }
 interface ContratosProps {
   dt_adesao: Date,
@@ -62,7 +74,7 @@ interface ContratosProps {
 interface SomaValorConta {
   _sum: { valor: number },
   conta: string,
-  tipo:string
+  tipo: string
 }
 
 
@@ -71,7 +83,7 @@ interface SomaValorConta {
 export default function LoginFinaceiro() {
   const [dropEmpresa, setDropEmpresa] = useState(false)
   const [listaLancamentos, setLancamentos] = useState<Array<PlanoContasProps>>([])
-  const [subListaLanc,setSubLista] = useState<Array<LancamentoProps>>()
+  const [subListaLanc, setSubLista] = useState<Array<LancamentoProps>>()
   const [despesas, setDespesas] = useState<number>(0)
   const [receitas, setReceitas] = useState<number>(0)
   const [remessa, setRemessa] = useState<number>(0)
@@ -86,12 +98,14 @@ export default function LoginFinaceiro() {
   const [arraygeral, setArrayGeral] = useState<Array<PlanoContasProps>>([])
   const [planoContasButton, setPlanoButton] = useState(true)
   const [mensalidadeButton, setMensalidadeButton] = useState(false)
-  const [arrayGraficoMensalidade, setArrayGrafico] = useState<Array<{
-    data:Date
-    _sum:{valor:number},
-    _count:{data:number}
-    
-  }>>([])
+ // const [arrayGraficoMensalidade, setArrayGrafico] = useState<Array<{
+ //   data: Date
+ //   _sum: { valor: number },
+ //   _count: { data: number }
+
+ // }>>([])
+
+  const [lancamentoFiltroMensalidade, setFiltroMensalidade] = useState<Array<DataProps>>([])
   const [contratosGeral, setContratosGeral] = useState<Array<ContratosProps>>([])
 
   const [filtro, setFiltro] = useState('')
@@ -100,8 +114,8 @@ export default function LoginFinaceiro() {
   const [escalaAno, setAno] = useState(false)
   const [somaPorConta, setSomaConta] = useState<Array<SomaValorConta>>([])
   const [loading, setLoading] = useState(false)
-  const [todos,setTodos] =useState(true)
-  const [dropPlanos,setDropPlanos] = useState(false)
+  const [todos, setTodos] = useState(true)
+  const [dropPlanos, setDropPlanos] = useState(false)
   const toogleAberto = (index: number) => {
     setAbertos((prev: { [key: number]: boolean }) => ({
       ...Object.keys(prev).reduce((acc, key) => {
@@ -111,31 +125,135 @@ export default function LoginFinaceiro() {
       [index]: !prev[index]
     }));
   };
-  
 
 
-   async function handleListaLanc(conta:string,index:number){
-    setSubLista([])
-    if(!abertos[index]){
-      try {
-        const response =   await api.post('/financeiro/listaLancamentos',{
-              todoPeriodo:todoPeriodo,
-              startDate:startDate,
-              endDate:endDate,
-              conta:conta
-            })
-            setSubLista(response.data)
+  const filtroMensalidade =async()=>{
+      try{
+        setLoading(true)
+     const response =   await api.post("/financeiro/filtroMensalidade",{
+          dataInicial:startDate,
+          dataFinal:endDate,
+          todoPeriodo:false
+        })
+        const timezone = 'America/Distrito_Federal';
+        let dataLancamento: string;
+      
+        const resultado = response.data?.reduce((acumulador:Array<DataProps>, atual:{
+          data: Date
+          _sum: { valor: number },
+          _count: { data: number }
+      
+        }) => {
          
-          } catch (error) {
-            console.log(error)
-           
-            
+      
+          if (escalaDia) {
+            dataLancamento = new Date(atual.data).toLocaleDateString('pt-BR', {
+              year: 'numeric',
+              month: 'numeric',
+              day: "numeric"
+            });
+          } else if (escalaMes) {
+            dataLancamento = new Date(atual.data).toLocaleDateString('pt-BR', {
+              year: 'numeric',
+              month: 'numeric',
+      
+            });
+          } else if (escalaAno) {
+            dataLancamento =new Date(atual.data).toLocaleDateString('pt-BR', {
+              year: 'numeric',
+      
+            });
           }
+      
+         // const atualDate = dataLancTeste
+         // const start = new Date(new Date(startDate).getUTCFullYear(), new Date(startDate).getUTCMonth(), new Date(startDate).getUTCDate())
+         // const end = new Date(new Date(endDate).getUTCFullYear(), new Date(endDate).getUTCMonth(), new Date(endDate).getUTCDate())
+          const valor = Number(atual._sum.valor)
+          //&& dataLancTeste >= start && dataLancTeste <= end
+          if (!todoPeriodoMensalidade) {
+            const itemExistente = acumulador.find((item) => item.x === dataLancamento);
+      
+            if (itemExistente) {
+      
+              itemExistente.y += Number(valor.toFixed(2));
+      
+              itemExistente.z += Number(atual._count.data);
+            } else {
+              acumulador.push({ x: dataLancamento, y: Number(valor.toFixed(2)), z: Number(atual._count.data), c: 0, dt: atual.data, cancelamentos: 0 });
+            }
+          }
+      
+          return acumulador;
+        }, [] as DataProps[]);
+      
+      /*  const teste = resultado?.reduce((acumulador:Array<DataProps>, atual:DataProps) => {
+          const mesExistente = acumulador.find(item => moment(item.dt).isSame(atual.dt, 'month'));
+      
+          if (!mesExistente) {
+            const contratosG = contratosGeral.filter((item) => {
+              const anoContrato = moment(item.dt_adesao).tz(timezone).startOf('month');
+              const anoAtual = moment(atual.dt).tz(timezone).startOf('month');
+              return anoContrato.isSameOrBefore(anoAtual);
+            });
+      
+            const contratosIN = contratosGeral.filter((item) => {
+              const anoContrato = moment(item.dt_cancelamento).tz(timezone).startOf('month');
+              const anoAtual = moment(atual.dt).tz(timezone).startOf('month');
+              return item.dt_cancelamento !== null && anoContrato.isSameOrBefore(anoAtual);
+            });
+      
+            const cancelamentosMes = contratosGeral.filter(item => {
+              const anoContrato = moment(item.dt_cancelamento).tz(timezone).startOf('month');
+              const anoAtual = moment(atual.dt).tz(timezone).startOf('month');
+              return anoContrato.isSame(anoAtual);
+            });
+      
+            acumulador.push({ x: atual.x, y: atual.y, z: atual.z, c: contratosG.length - contratosIN.length, dt: atual.dt, cancelamentos: cancelamentosMes.length });
+          } else {
+         acumulador.push({ x: atual.x, y: atual.y, z: atual.z, c: 0, dt: atual.dt, cancelamentos: atual.cancelamentos });
+        }
+      
+          return acumulador;
+       }, [] as DataProps[])*/
+      
+        setFiltroMensalidade(resultado)
+        setLoading(false)
+      
+       
+      
+
+  }catch(err){
+    toast.error("erro")
+
+  }
+
+  }
+
+ 
+ 
+
+  async function handleListaLanc(conta: string, index: number) {
+    setSubLista([])
+    if (!abertos[index]) {
+      try {
+        const response = await api.post('/financeiro/listaLancamentos', {
+          todoPeriodo: todoPeriodo,
+          startDate: startDate,
+          endDate: endDate,
+          conta: conta
+        })
+        setSubLista(response.data)
+
+      } catch (error) {
+        console.log(error)
+
+
+      }
 
     }
     return true
 
-   }
+  }
 
   let formatter = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -145,30 +263,30 @@ export default function LoginFinaceiro() {
   useEffect(() => {
     /// const diaAtual = new Date()
     // setStartDate(new Date(diaAtual.getFullYear(),diaAtual.getMonth(),1))
-   /* try {
-      if (setorSelect === 0) {
-        setLancamentos(arraygeral)
-      }
-       if (setorSelect !== 0 ) {
-        const novoArray = arraygeral.map(item => {
-          return {
-            ...item,
-            lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect && new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
-          }
-        });
-
-        setLancamentos(novoArray)
-      }
-     
-  
-
-
-    } catch (error) {
-      toast.info('ERRO DE FILTRAGEM')
-
-    }
-
-*/
+    /* try {
+       if (setorSelect === 0) {
+         setLancamentos(arraygeral)
+       }
+        if (setorSelect !== 0 ) {
+         const novoArray = arraygeral.map(item => {
+           return {
+             ...item,
+             lancamentos: item.lancamentos.filter(dado => dado.id_grupo === setorSelect && new Date(dado.datalanc) >= startDate && new Date(dado.datalanc) <= endDate)
+           }
+         });
+ 
+         setLancamentos(novoArray)
+       }
+      
+   
+ 
+ 
+     } catch (error) {
+       toast.info('ERRO DE FILTRAGEM')
+ 
+     }
+ 
+ */
 
   }, [setorSelect])
 
@@ -195,14 +313,14 @@ export default function LoginFinaceiro() {
       conta: '1.0',
       todoPeriodo: todoPeriodo
     });
-    const novoArray = response.data.planosdeContas.map((item:PlanoContasProps)=>{return{...item,check:true}})
+    const novoArray = response.data.planosdeContas.map((item: PlanoContasProps) => { return { ...item, check: true } })
     setArrayGeral(novoArray);
     setLancamentos(response.data.planosdeContas);
     setGrupos(response.data.grupos)
     setContratosGeral(response.data.contratosGeral)
     setSomaConta(response.data.somaPorConta)
-    console.log(response.data.somaPorConta)
-    setArrayGrafico(response.data.mensalidade)
+
+    
     setLoading(false)
   }
 
@@ -210,71 +328,71 @@ export default function LoginFinaceiro() {
 
 
   useEffect(() => {
-   // const novoArray = arraygeral.flatMap(item => item.lancamentos)
+    // const novoArray = arraygeral.flatMap(item => item.lancamentos)
     //  const arrayMensal = novoArray.filter(item => item.conta === '1.01.002')
     //   setArrayGrafico(arrayMensal)
 
- if(!todos){
-   const lancamentosFiltrados = arraygeral.filter((item) => item.check);
-  setLancamentos(lancamentosFiltrados)
+    if (!todos) {
+      const lancamentosFiltrados = arraygeral.filter((item) => item.check);
+      setLancamentos(lancamentosFiltrados)
 
- }
- else{
-  setLancamentos(arraygeral)
- }
- 
+    }
+    else {
+      setLancamentos(arraygeral)
+    }
 
-   
+
+
 
 
   }, [arraygeral])
 
-useEffect(()=>{
-  if(!todos){
-    const novoArray = arraygeral.map(item=>{return{...item,check:false}})
-    setArrayGeral(novoArray)
+  useEffect(() => {
+    if (!todos) {
+      const novoArray = arraygeral.map(item => { return { ...item, check: false } })
+      setArrayGeral(novoArray)
 
-  }
-  else{
-      const novoArray = arraygeral.map(item=>{return{...item,check:true}})
-    setArrayGeral(novoArray)
+    }
+    else {
+      const novoArray = arraygeral.map(item => { return { ...item, check: true } })
+      setArrayGeral(novoArray)
 
-  
-  }
 
-},[todos])
+    }
+
+  }, [todos])
 
   useEffect(() => {
-   const receitasMap= listaLancamentos.reduce((acumulador,atual)=>{
-   const itemexistente = somaPorConta.find(item=>item.conta===atual?.conta && item.tipo==='RECEITA')
-   if(itemexistente){
-      return acumulador + Number(itemexistente._sum.valor)
-    
-   }
-   else{
-    return acumulador
-   }
- 
+    const receitasMap = listaLancamentos.reduce((acumulador, atual) => {
+      const itemexistente = somaPorConta.find(item => item.conta === atual?.conta && item.tipo === 'RECEITA')
+      if (itemexistente) {
+        return acumulador + Number(itemexistente._sum.valor)
 
-   },0)
-  
+      }
+      else {
+        return acumulador
+      }
+
+
+    }, 0)
+
     setReceitas(receitasMap)
 
 
-    const despesasMap= listaLancamentos.reduce((acumulador,atual)=>{
-      const itemexistente = somaPorConta.find(item=>item.conta===atual?.conta && item.tipo==='DESPESA')
-      if(itemexistente){
-         return acumulador + Number(itemexistente._sum.valor)
-       
+    const despesasMap = listaLancamentos.reduce((acumulador, atual) => {
+      const itemexistente = somaPorConta.find(item => item.conta === atual?.conta && item.tipo === 'DESPESA')
+      if (itemexistente) {
+        return acumulador + Number(itemexistente._sum.valor)
+
       }
-      else{
-       return acumulador
+      else {
+        return acumulador
       }
-    
-   
-      },0)
-     
-       setDespesas(despesasMap)
+
+
+    }, 0)
+
+    setDespesas(despesasMap)
 
 
 
@@ -312,10 +430,10 @@ useEffect(()=>{
       }
       return item;
     });
-  setArrayGeral(novoLancamentos)
+    setArrayGeral(novoLancamentos)
     // Filtrando apenas os itens com check verdadeiro
-  
-  
+
+
   }
 
 
@@ -409,7 +527,7 @@ useEffect(()=>{
 
             <div className="flex  w-full bg-[#2b2e3b] px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
               <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
-           
+
 
               <select value={setorSelect} onChange={e => {
                 setSetor(Number(e.target.value))
@@ -424,35 +542,35 @@ useEffect(()=>{
                 ))}
               </select>
               <div className="flex h-full relative w-1/4">
-              <div onClick={()=>setDropPlanos(!dropPlanos)}
-               className="flex w-full h-full justify-between items-center py-1.5 pl-2 pr-2 uppercase border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-         
-                {todos?'TODOS':'PERSONALIZADO'}
-                <IoIosArrowDown/>
-          
-                
+                <div onClick={() => setDropPlanos(!dropPlanos)}
+                  className="flex w-full h-full justify-between items-center py-1.5 pl-2 pr-2 uppercase border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+
+                  {todos ? 'TODOS' : 'PERSONALIZADO'}
+                  <IoIosArrowDown />
+
+
+                </div>
+
+                {dropPlanos && <ul className="absolute  top-7 -left-1 max-h-64 overflow-y-auto  bg-gray-600 p-1 rounded-lg">
+                  <li className="flex items-center px-2 py-1">
+                    <input onChange={() => setTodos(!todos)} type="checkbox" checked={todos} />
+                    <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODOS</label>
+                  </li>
+                  {arraygeral.map((item, index) => {
+                    return (
+                      <li className="flex items-center px-2 py-1">
+                        <input onChange={() => handleOptionChange(item?.conta)} type="checkbox" checked={item?.check} value={item?.conta} />
+                        <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">{item?.descricao.toUpperCase()}</label>
+                      </li>
+                    )
+                  })}
+                </ul>}
+
+
+
               </div>
 
-              {  dropPlanos && <ul className="absolute  top-7 -left-1 max-h-64 overflow-y-auto  bg-gray-600 p-1 rounded-lg">
-                <li className="flex items-center px-2 py-1">
-                <input onChange={()=>setTodos(!todos)} type="checkbox" checked={todos}  />
-                      <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODOS</label>
-                </li>
-                {arraygeral.map((item,index)=>{
-                  return (
-                    <li className="flex items-center px-2 py-1">
-                      <input onChange={()=>handleOptionChange(item?.conta)} type="checkbox" checked={item?.check} value={item?.conta} />
-                      <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">{item?.descricao.toUpperCase()}</label>
-                    </li>
-                  )
-                })}
-              </ul>}
 
-
-
-              </div>
-        
-             
 
               <div className="inline-flex  items-center  gap-3">
                 <div className="flex items-center ">
@@ -505,27 +623,27 @@ useEffect(()=>{
                 </li>
                 {
                   listaLancamentos?.map((nome, index) => {
-                 //   const soma = nome?.lancamentos?.reduce((total, item) => {
-                   //   if (item.conta === nome.conta) {
-                   //     return total + Number(item.valor)
-                   //   }
-                   //   else {
-                   //     return total
-                   //   }
-                 //   }, 0)
-                   // let porc;
-                  //  if (soma === 0 || nome?.metas[0]?.valor === 0 || soma === null || nome?.metas[0]?.valor === null || isNaN(Number(nome?.metas[0]?.valor))) {
-                  //    porc = 0;
-                  //  } else {
-                  //    porc = (soma * 100) / Number(nome?.metas[0].valor);
-                  //  }
-                    
+                    //   const soma = nome?.lancamentos?.reduce((total, item) => {
+                    //   if (item.conta === nome.conta) {
+                    //     return total + Number(item.valor)
+                    //   }
+                    //   else {
+                    //     return total
+                    //   }
+                    //   }, 0)
+                    // let porc;
+                    //  if (soma === 0 || nome?.metas[0]?.valor === 0 || soma === null || nome?.metas[0]?.valor === null || isNaN(Number(nome?.metas[0]?.valor))) {
+                    //    porc = 0;
+                    //  } else {
+                    //    porc = (soma * 100) / Number(nome?.metas[0].valor);
+                    //  }
+
                     return (
-                      <li onClick={() => { handleListaLanc(nome.conta,index) ,toogleAberto(index)}} className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
+                      <li onClick={() => { handleListaLanc(nome.conta, index), toogleAberto(index) }} className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
                         <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">{nome?.descricao}</span>
                           <div className="flex w-full gap-8  items-center">
                             <span className="flex w-full text-start whitespace-nowrap font-semibold">{somaPorConta.map((item, ind) => {
-                              if (item.conta == nome?.conta && item.tipo!==null ) {
+                              if (item.conta == nome?.conta && item.tipo !== null) {
                                 return formatter.format(Number(item._sum.valor))
                               }
                             })}</span>
@@ -535,7 +653,7 @@ useEffect(()=>{
                             <span className="flex w-full justify-end  "><IoIosArrowDown /></span>
                           </div>
                         </div>
-                      {  abertos[index] && <ul className="flex flex-col w-full gap-1  ml-6 ">
+                        {abertos[index] && <ul className="flex flex-col w-full gap-1  ml-6 ">
                           {subListaLanc?.map((lancamento, index) => {
                             return (
                               <li className="flex text-xs gap-2 "><span>{lancamento.historico}</span> Valor: R$ {lancamento.valor} / {subListaLanc.length}</li>
@@ -595,7 +713,7 @@ useEffect(()=>{
 
               </div>
               <div className="inline-flex gap-4">
-                ESCALA:
+               <span className="flex items-center">ESCALA:</span> 
                 <div className="flex items-center ">
                   <input type="checkbox" checked={escalaDia} onChange={() => { setDia(true), setMes(false), setAno(false) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                   <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">DIA</label>
@@ -608,19 +726,16 @@ useEffect(()=>{
                   <input type="checkbox" checked={escalaAno} onChange={() => { setDia(false), setMes(false), setAno(true) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                   <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">ANO</label>
                 </div>
+                {!loading ? <button onClick={() => filtroMensalidade()} className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCAR<IoSearch size={18} /></button> :
+                <button className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCANDO..<AiOutlineLoading3Quarters size={20} className="animate-spin" /></button>
+              }
+               
               </div>
             </div>
             <div className="flex flex-col h-full justify-center w-full">
-              {arrayGraficoMensalidade.length > 0 && <Grafico
-                filtroDia={escalaDia}
-                filtroAno={escalaAno}
-                filtroMes={escalaMes}
-                todoPeriodo={false}
-                lancamentos={arrayGraficoMensalidade}
-                startDate={startDate}
-                endDate={endDate}
+              {lancamentoFiltroMensalidade?.length > 0 && <Grafico
+                lancamentos={lancamentoFiltroMensalidade}
                 contratosGeral={contratosGeral}
-
               />}
 
             </div>

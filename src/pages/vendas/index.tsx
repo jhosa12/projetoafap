@@ -27,7 +27,7 @@ export default function Vendas() {
 
     async function dadosVendas() {
         try {
-            const response = await api.post('vendas/filtro',
+            const response = await api.post('/vendas/filtro',
                 {
                     dataInicio: startDate,
                     dataFim: endDate
@@ -78,7 +78,7 @@ export default function Vendas() {
                             minDate={startDate}
                             className=" flex py-1 pl-2 text-xs  border rounded-sm  bg-gray-700 border-gray-600  text-white "
                         />
-                        <button className='text-xs bg-green-700 rounded-lg p-1'> Buscar</button>
+                        <button onClick={()=>dadosVendas()} className='text-xs bg-green-700 rounded-lg p-1'> Buscar</button>
 
                     </div>
                     <button className='bg-gray-600 p-1 rounded-lg text-sm ml-auto'>NOVA META</button>
