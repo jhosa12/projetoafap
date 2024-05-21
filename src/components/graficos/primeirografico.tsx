@@ -26,75 +26,85 @@ interface DataProps {
 export function Grafico({lancamentos, contratosGeral }:
   {
     lancamentos: Array<DataProps>,
-   
     contratosGeral: Array<ContratosGeral>
   }) {
   const [options, setOptions] = useState({}); // Estado para opções do gráfico
-  const [series, setSeries] = useState<{ name: string; data: Array<DataProps> }[]>([]); // Estado para série de dados do gráfico
-  const [seriesmensal, setSeriesMensal] = useState<{ name: string, data: Array<number>, color: string }[]>([]);
+  const [series, setSeries] = useState<{ name: string; data: Array<number>; color: string }[]>([]); // Estado para série de dados do gráfico
 
+  useEffect(()=>{
+    const datas= lancamentos.map(item => item.x);
+    const receitaMensalidade = lancamentos.map(item => Number(item.y.toFixed(2)));
+    const quantMensal = lancamentos.map(item => item.z);
+    const ativos= lancamentos.map(item => item.c);
+    const cancel =  lancamentos.map(item => item.cancelamentos);
 
-useEffect(()=>{
-  const datas= lancamentos.map(item => item.x)
-  const receitaMensalidade =lancamentos.map(item =>  Number(item.y.toFixed(2)))
-  const quantMensal =lancamentos.map(item => item.z)
-  const ativos= lancamentos.map(item => item.c)
-  const cancel =  lancamentos.map(item => item.cancelamentos)
-  const chartOptions = {
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        borderRadius: 10,
-        columnWidth: '60%',
-        borderRadiusApplication: 'end',
-        borderRadiusWhenStacked: 'last',
-        dataLabels: {
-          position: 'top',
+    const chartOptions = {
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          borderRadius: 10,
+          columnWidth: '60%',
+          borderRadiusApplication: 'end',
+          borderRadiusWhenStacked: 'last',
+          dataLabels: {
+            position: 'top',
+          },
         },
       },
-    },
-    dataLabels: {
-      offsetY: -20
-    },
-    title: {
-      text: 'MENSAL./QUANT./ATIVOS/CANCELAMENTOS'
-    },
-    theme: {
-      mode: 'dark',
-      palette1: 'palette1'
-    },
-    tooltip: {
-      theme: 'dark',
-    },
-    chart: {
-      type: 'bar',
-      background: '#2b2e3b',
-      toolbar: {
-        show: true
+      dataLabels: {
+        offsetY: -20,
+        formatter: function (value:number, { seriesIndex }:{seriesIndex:number}) {
+          if (seriesIndex === 0) {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+          }
+          return value;
+        },
       },
-      zoom: {
-        enabled: true
+      title: {
+        text: 'MENSAL./QUANT./ATIVOS/CANCELAMENTOS'
       },
-    },
-    xaxis: {
-      categories: datas,
-      type: 'category',
-      responsive: [{
-        breakpoint: 480,
-        options: {
-          legend: {
-            position: 'bottom',
-            offsetX: -10,
-            offsetY: 0
+      theme: {
+        mode: 'dark',
+        palette: 'palette1'
+      },
+      tooltip: {
+        theme: 'dark',
+        y: {
+          formatter: function (value:number, { seriesIndex }:{seriesIndex:number}) {
+            if (seriesIndex === 0) {
+              return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+            }
+            return value;
           }
         }
-      }],
-    },
-  };
+      },
+      chart: {
+        type: 'bar',
+        background: '#2b2e3b',
+        toolbar: {
+          show: true
+        },
+        zoom: {
+          enabled: true
+        },
+      },
+      xaxis: {
+        categories: datas,
+        type: 'category',
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            legend: {
+              position: 'bottom',
+              offsetX: -10,
+              offsetY: 0
+            }
+          }
+        }],
+      },
+    };
 
-
-
-   const chartSeries = [
+    const chartSeries = [
       {
         name: "RECEITA COM MENSALIDADES",
         data: receitaMensalidade,
@@ -112,35 +122,31 @@ useEffect(()=>{
       },
       {
         name: "CANCELAMENTOS",
-        data:cancel,
+        data: cancel,
         color: '#B32824'
       },
     ];
 
-  setOptions(chartOptions); // Define as opções do gráfico no estado
-  setSeriesMensal(chartSeries); // Define a série de dados do gráfico no estado
-// Executa apenas uma vez quando o componente é montado
+    setOptions(chartOptions); // Define as opções do gráfico no estado
+    setSeries(chartSeries); // Define a série de dados do gráfico no estado
 
-},[lancamentos])
+  },[lancamentos]);
   
-
   // Renderiza o gráfico somente se as opções e a série de dados estiverem disponíveis
   return (
-     (
-      <div className="app">
-        <div className="row">
-          <div className="mixed-chart">
-            <Chart
-              options={options}
-              series={seriesmensal}
-              type="bar"
-              width={'100%'}
-              height={400}
-            />
-          </div>
+    <div className="app">
+      <div className="row">
+        <div className="mixed-chart">
+          <Chart
+            options={options}
+            series={series}
+            type="bar"
+            width={'100%'}
+            height={400}
+          />
         </div>
       </div>
-    )
+    </div>
   );
 }
 

@@ -94,20 +94,13 @@ export default function LoginFinaceiro() {
   const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
   const [endDate, setEndDate] = useState(new Date())
   const [todoPeriodo, setPeriodo] = useState(true)
-  const [todoPeriodoMensalidade, setPeriodoMensalidade] = useState(false)
+ 
   const [arraygeral, setArrayGeral] = useState<Array<PlanoContasProps>>([])
   const [planoContasButton, setPlanoButton] = useState(true)
   const [mensalidadeButton, setMensalidadeButton] = useState(false)
- // const [arrayGraficoMensalidade, setArrayGrafico] = useState<Array<{
- //   data: Date
- //   _sum: { valor: number },
- //   _count: { data: number }
-
- // }>>([])
-
+  const [filtroatee,setFiltroAteE]=useState<number>(0)
   const [lancamentoFiltroMensalidade, setFiltroMensalidade] = useState<Array<DataProps>>([])
   const [contratosGeral, setContratosGeral] = useState<Array<ContratosProps>>([])
-
   const [filtro, setFiltro] = useState('')
   const [escalaDia, setDia] = useState(false)
   const [escalaMes, setMes] = useState(true)
@@ -133,8 +126,9 @@ export default function LoginFinaceiro() {
      const response =   await api.post("/financeiro/filtroMensalidade",{
           dataInicial:startDate,
           dataFinal:endDate,
-          todoPeriodo:false
+          filtroateE:filtroatee
         })
+        console.log(response.data)
         const timezone = 'America/Distrito_Federal';
         let dataLancamento: string;
       
@@ -170,7 +164,7 @@ export default function LoginFinaceiro() {
          // const end = new Date(new Date(endDate).getUTCFullYear(), new Date(endDate).getUTCMonth(), new Date(endDate).getUTCDate())
           const valor = Number(atual._sum.valor)
           //&& dataLancTeste >= start && dataLancTeste <= end
-          if (!todoPeriodoMensalidade) {
+         
             const itemExistente = acumulador.find((item) => item.x === dataLancamento);
       
             if (itemExistente) {
@@ -181,7 +175,7 @@ export default function LoginFinaceiro() {
             } else {
               acumulador.push({ x: dataLancamento, y: Number(valor.toFixed(2)), z: Number(atual._count.data), c: 0, dt: atual.data, cancelamentos: 0 });
             }
-          }
+          
       
           return acumulador;
         }, [] as DataProps[]);
@@ -588,7 +582,7 @@ export default function LoginFinaceiro() {
                   endDate={endDate}
                   className="flex py-1 pl-2 text-xs  border rounded-lg   bg-gray-700 border-gray-600  text-white"
                 />
-                <span> até </span>
+               <span>até</span>
 
                 <DatePicker
                   disabled={todoPeriodo}
@@ -677,14 +671,10 @@ export default function LoginFinaceiro() {
               <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
 
               <div className="inline-flex  items-center w-full justify-end mr-4 gap-3">
-                <div className="flex items-center ">
-                  <input type="checkbox" checked={todoPeriodoMensalidade} onChange={() => setPeriodoMensalidade(!todoPeriodoMensalidade)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODO PERÍODO</label>
-                </div>
+              
                 <DatePicker
                   showMonthDropdown
                   showYearDropdown
-                  disabled={todoPeriodoMensalidade}
                   dateFormat={"dd/MM/yyyy"}
                   locale={pt}
                   selected={startDate}
@@ -694,12 +684,20 @@ export default function LoginFinaceiro() {
                   endDate={endDate}
                   className="flex py-1 pl-2 text-xs  border rounded-lg   bg-gray-700 border-gray-600  text-white"
                 />
-                <span> até </span>
+
+                 <div className="flex items-center ">
+                  <input type="checkbox" checked={filtroatee===0} onChange={() =>filtroatee===0?setFiltroAteE(1):setFiltroAteE(0)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">ATÉ</label>
+                </div>
+                <span>/</span>
+                <div className="flex items-center ">
+                  <input type="checkbox" checked={filtroatee===1} onChange={() =>filtroatee===1?setFiltroAteE(0):setFiltroAteE(1)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">E</label>
+                </div>
 
                 <DatePicker
                   showMonthDropdown
                   showYearDropdown
-                  disabled={todoPeriodoMensalidade}
                   dateFormat={"dd/MM/yyyy"}
                   locale={pt}
                   selected={endDate}
