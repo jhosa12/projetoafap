@@ -126,7 +126,11 @@ export default function LoginFinaceiro() {
      const response =   await api.post("/financeiro/filtroMensalidade",{
           dataInicial:startDate,
           dataFinal:endDate,
-          filtroateE:filtroatee
+          filtroAteE:filtroatee,
+          escalaDia,
+          escalaMes,
+          escalaAno,
+          
         })
         console.log(response.data)
         const timezone = 'America/Distrito_Federal';

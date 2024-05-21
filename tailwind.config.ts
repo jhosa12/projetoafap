@@ -1,4 +1,4 @@
-import {nextui} from '@nextui-org/theme';
+//import {nextui} from '@nextui-org/theme';
 import type { Config } from 'tailwindcss'
 // tailwind.config.js
 
@@ -56,7 +56,7 @@ const config: Config = {
     }
   }
   },
-  plugins: [nextui()],
+ // plugins: [nextui()],
 }
 
 export default config
