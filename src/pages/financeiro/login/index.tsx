@@ -69,6 +69,10 @@ interface LancamentoProps {
 interface ContratosProps {
   dt_adesao: Date,
   dt_cancelamento: Date
+  _count:{
+  dt_adesao: number,
+  dt_cancelamento: number
+  }
 }
 
 interface SomaValorConta {
@@ -76,7 +80,15 @@ interface SomaValorConta {
   conta: string,
   tipo: string
 }
-
+interface ResponseProps{
+  mensalidade:Array<MensalidadeProps>
+  contratosGeral:Array<ContratosProps>
+}
+type MensalidadeProps = {
+  data: Date;
+  _sum: { valor: number };
+  _count: { data: number };
+};
 
 
 
@@ -100,6 +112,7 @@ export default function LoginFinaceiro() {
   const [mensalidadeButton, setMensalidadeButton] = useState(false)
   const [filtroatee,setFiltroAteE]=useState<number>(0)
   const [lancamentoFiltroMensalidade, setFiltroMensalidade] = useState<Array<DataProps>>([])
+  const [lancamentoFiltroAtivos, setFiltroAtivos] = useState<Array<DataProps>>([])
   const [contratosGeral, setContratosGeral] = useState<Array<ContratosProps>>([])
   const [filtro, setFiltro] = useState('')
   const [escalaDia, setDia] = useState(false)
@@ -121,9 +134,9 @@ export default function LoginFinaceiro() {
 
 
   const filtroMensalidade =async()=>{
-      try{
+     // try{
         setLoading(true)
-     const response =   await api.post("/financeiro/filtroMensalidade",{
+     const response =   await api.post<ResponseProps>("/financeiro/filtroMensalidade",{
           dataInicial:startDate,
           dataFinal:endDate,
           filtroAteE:filtroatee,
@@ -131,16 +144,13 @@ export default function LoginFinaceiro() {
           escalaMes,
           escalaAno,
         })
-        console.log(response.data)
+
+        const {mensalidade,contratosGeral}=response.data
+      
         const timezone = 'America/Distrito_Federal';
         let dataLancamento: string;
       
-        const resultado = response.data?.reduce((acumulador:Array<DataProps>, atual:{
-          data: Date
-          _sum: { valor: number },
-          _count: { data: number }
-      
-        }) => {
+        const resultado = mensalidade?.reduce((acumulador, atual) => {
           const dataLanc =new Date(new Date(atual.data).getUTCFullYear(),new Date(atual.data).getUTCMonth(),new Date(atual.data).getUTCDate())
       
           if (escalaDia) {
@@ -167,7 +177,10 @@ export default function LoginFinaceiro() {
          // const end = new Date(new Date(endDate).getUTCFullYear(), new Date(endDate).getUTCMonth(), new Date(endDate).getUTCDate())
           const valor = Number(atual._sum.valor)
           //&& dataLancTeste >= start && dataLancTeste <= end
-         
+      
+       
+      
+            
             const itemExistente = acumulador.find((item) => item.x === dataLancamento);
       
             if (itemExistente) {
@@ -175,54 +188,126 @@ export default function LoginFinaceiro() {
               itemExistente.y += Number(valor.toFixed(2));
       
               itemExistente.z += Number(atual._count.data);
+           
+          
+              
             } else {
-              acumulador.push({ x: dataLancamento, y: Number(valor.toFixed(2)), z: Number(atual._count.data), c: 0, dt: atual.data, cancelamentos: 0 });
+              acumulador.push({ x: dataLancamento, y: Number(valor.toFixed(2)), z: Number(atual._count.data),c:0, dt: atual.data, cancelamentos:0});
             }
           
       
           return acumulador;
         }, [] as DataProps[]);
+
+       
+
+
+
+     
+             let cumulativeSum = 0;
+        const newArray = contratosGeral.map(item => {
+            cumulativeSum += item._count.dt_adesao-item._count.dt_cancelamento;
+            const data = new Date(item.dt_adesao)
+            const novaDate = new Date(data.getUTCFullYear(),data.getUTCMonth(),data.getUTCDate())
+            return { ...item,_count:{...item._count,dt_adesao:cumulativeSum},dt_adesao:novaDate };
+          });
+
+        const resultadoAtivos = newArray?.reduce((acumulador, atual) => {
+          const dataLanc =new Date(new Date(atual.dt_adesao).getUTCFullYear(),new Date(atual.dt_adesao).getUTCMonth(),new Date(atual.dt_adesao).getUTCDate())
       
-      /*  const teste = resultado?.reduce((acumulador:Array<DataProps>, atual:DataProps) => {
+          if (escalaDia) {
+            dataLancamento = dataLanc.toLocaleDateString('pt-BR', {
+              year: 'numeric',
+              month: 'numeric',
+              day: "numeric"
+            });
+          } else if (escalaMes) {
+            dataLancamento = dataLanc.toLocaleDateString('pt-BR', {
+              year: 'numeric',
+              month: 'numeric',
+      
+            });
+          } else if (escalaAno) {
+            dataLancamento =dataLanc.toLocaleDateString('pt-BR', {
+              year: 'numeric',
+      
+            });
+          }
+      
+         // const atualDate = dataLancTeste
+         // const start = new Date(new Date(startDate).getUTCFullYear(), new Date(startDate).getUTCMonth(), new Date(startDate).getUTCDate())
+         // const end = new Date(new Date(endDate).getUTCFullYear(), new Date(endDate).getUTCMonth(), new Date(endDate).getUTCDate())
+         
+      
+      
+      
+            
+            const itemExistente = acumulador.find((item) => item.x === dataLancamento);
+      
+            if (itemExistente) {
+      
+              //itemExistente.y += Number(valor.toFixed(2));
+      
+              itemExistente.z += 0;
+              itemExistente.cancelamentos+=atual._count.dt_cancelamento
+            itemExistente.c=atual._count.dt_adesao
+              
+            } else if(new Date(new Date(atual.dt_adesao).getUTCFullYear(),new Date(atual.dt_adesao).getUTCMonth(),new Date(atual.dt_adesao).getUTCDate())>=new Date(new Date(startDate).getUTCFullYear(),new Date(startDate).getUTCMonth(),new Date(startDate).getUTCDate())) {
+              acumulador.push({ x: dataLancamento, y: 0, z:0, c:atual._count.dt_adesao, dt: atual.dt_adesao, cancelamentos: atual._count.dt_cancelamento});
+            }
+          
+      
+          return acumulador;
+        }, [] as DataProps[]);
+
+       
+
+        
+
+
+      
+    /*   const resultadoFinal = resultado?.reduce((acumulador:Array<DataProps>, atual:DataProps) => {
+         
           const mesExistente = acumulador.find(item => moment(item.dt).isSame(atual.dt, 'month'));
       
           if (!mesExistente) {
-            const contratosG = contratosGeral.filter((item) => {
+            const contratosG = response.data.contratosGeral.filter((item:ContratosProps) => {
               const anoContrato = moment(item.dt_adesao).tz(timezone).startOf('month');
               const anoAtual = moment(atual.dt).tz(timezone).startOf('month');
               return anoContrato.isSameOrBefore(anoAtual);
             });
       
-            const contratosIN = contratosGeral.filter((item) => {
+            const contratosIN = response.data.contratosGeral.filter((item:ContratosProps) => {
               const anoContrato = moment(item.dt_cancelamento).tz(timezone).startOf('month');
               const anoAtual = moment(atual.dt).tz(timezone).startOf('month');
               return item.dt_cancelamento !== null && anoContrato.isSameOrBefore(anoAtual);
             });
       
-            const cancelamentosMes = contratosGeral.filter(item => {
-              const anoContrato = moment(item.dt_cancelamento).tz(timezone).startOf('month');
-              const anoAtual = moment(atual.dt).tz(timezone).startOf('month');
-              return anoContrato.isSame(anoAtual);
+            const cancelamentosMes = response.data.contratosGeral.reduce((acumulador:number,atual:ContratosProps) => {
+            
+              return acumulador+=Number(atual._count.dt_cancelamento)
             });
       
             acumulador.push({ x: atual.x, y: atual.y, z: atual.z, c: contratosG.length - contratosIN.length, dt: atual.dt, cancelamentos: cancelamentosMes.length });
           } else {
-         acumulador.push({ x: atual.x, y: atual.y, z: atual.z, c: 0, dt: atual.dt, cancelamentos: atual.cancelamentos });
+         acumulador.push({ x: atual.x, y: atual.y, z: atual.z, c: , dt: atual.dt, cancelamentos: atual.cancelamentos });
         }
       
           return acumulador;
        }, [] as DataProps[])*/
+       
       
         setFiltroMensalidade(resultado)
+        setFiltroAtivos(resultadoAtivos)
         setLoading(false)
       
        
       
 
-  }catch(err){
-    toast.error("erro")
+ // }catch(err){
+   // toast.error(err)
 
-  }
+  //}
 
   }
 
@@ -314,7 +399,8 @@ export default function LoginFinaceiro() {
     setArrayGeral(novoArray);
     setLancamentos(response.data.planosdeContas);
     setGrupos(response.data.grupos)
-    setContratosGeral(response.data.contratosGeral)
+   // setContratosGeral(response.data.contratosGeral)
+  
     setSomaConta(response.data.somaPorConta)
 
     
@@ -733,11 +819,25 @@ export default function LoginFinaceiro() {
                
               </div>
             </div>
-            <div className="flex flex-col h-full justify-center w-full">
-              {lancamentoFiltroMensalidade?.length > 0 && <Grafico
+            <div className="flex flex-row h-full justify-center w-full">
+            <div  className="flex flex-col h-full justify-center w-1/2">
+            {lancamentoFiltroMensalidade?.length > 0 && <Grafico
                 lancamentos={lancamentoFiltroMensalidade}
-                contratosGeral={contratosGeral}
+                completo={true}
               />}
+              </div> 
+              <div className="flex flex-col h-full justify-center w-1/2">
+              {
+                lancamentoFiltroAtivos?.length > 0 && <Grafico
+                lancamentos={lancamentoFiltroAtivos}
+                completo={false}
+                
+                />
+
+              }
+
+              </div>
+           
 
             </div>
 

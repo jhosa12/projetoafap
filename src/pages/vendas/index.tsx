@@ -48,7 +48,7 @@ export default function Vendas() {
 
     return (
         <>
-        {
+      { /*
           <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
        
           <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-30 bg-gray-300 ">
@@ -71,7 +71,7 @@ export default function Vendas() {
   
               </div>
               </div>
-        }
+        */}
             <div className="flex flex-col w-full text-white p-2">
                 <div className='inline-flex w-full mb-1'>
                     <h1 className="font-semibold text-lg">ACOMPANHAMENTO DE VENDAS</h1>

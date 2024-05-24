@@ -23,10 +23,10 @@ interface DataProps {
   cancelamentos: number
 }
 
-export function Grafico({lancamentos, contratosGeral }:
+export function Grafico({lancamentos,completo }:
   {
     lancamentos: Array<DataProps>,
-    contratosGeral: Array<ContratosGeral>
+   completo:boolean
   }) {
   const [options, setOptions] = useState({}); // Estado para opções do gráfico
   const [series, setSeries] = useState<{ name: string; data: Array<number>; color: string }[]>([]); // Estado para série de dados do gráfico
@@ -55,13 +55,16 @@ export function Grafico({lancamentos, contratosGeral }:
         offsetY: -20,
         formatter: function (value:number, { seriesIndex }:{seriesIndex:number}) {
           if (seriesIndex === 0) {
-            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+            if(completo){
+              return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+            }
+           
           }
           return value;
         },
       },
       title: {
-        text: 'MENSAL./QUANT./ATIVOS/CANCELAMENTOS'
+        text: completo?'MENSALIDADE/QUANTIDADE':'ATIVOS/CANCELAMENTOS'
       },
       theme: {
         mode: 'dark',
@@ -70,9 +73,13 @@ export function Grafico({lancamentos, contratosGeral }:
       tooltip: {
         theme: 'dark',
         y: {
-          formatter: function (value:number, { seriesIndex }:{seriesIndex:number}) {
+         formatter:completo &&  function (value:number, { seriesIndex }:{seriesIndex:number}) {
             if (seriesIndex === 0) {
-              return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+
+              if(completo){
+                return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+              }
+              
             }
             return value;
           }
@@ -103,29 +110,43 @@ export function Grafico({lancamentos, contratosGeral }:
         }],
       },
     };
+    let chartSeries
+    
+if(completo){
+  chartSeries = [
+    {
+      name: "RECEITA COM MENSALIDADES",
+      data: receitaMensalidade,
+      color: '#1056b5'
+    },
+    {
+      name: "QUANT. MENSALIDADES",
+      data: quantMensal,
+      color: '#fede72'
+    },
 
-    const chartSeries = [
-      {
-        name: "RECEITA COM MENSALIDADES",
-        data: receitaMensalidade,
-        color: '#1056b5'
-      },
-      {
-        name: "QUANT. MENSALIDADES",
-        data: quantMensal,
-        color: '#fede72'
-      },
-      {
-        name: "CONTRATOS ATIVOS",
-        data: ativos,
-        color: '#2c9171'
-      },
-      {
-        name: "CANCELAMENTOS",
-        data: cancel,
-        color: '#B32824'
-      },
-    ];
+    
+  ];
+
+
+}else{
+
+  chartSeries = [
+
+    {
+      name: "CONTRATOS ATIVOS",
+      data: ativos,
+      color: '#2c9171'
+    },
+    {
+      name: "CANCELAMENTOS",
+      data: cancel,
+      color: '#B32824'
+    },
+  ];
+
+}
+  
 
     setOptions(chartOptions); // Define as opções do gráfico no estado
     setSeries(chartSeries); // Define a série de dados do gráfico no estado
