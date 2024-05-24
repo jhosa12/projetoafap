@@ -166,7 +166,7 @@ export default function Vendas() {
                                 <span>{dados[1]?.consultor}</span>
                                 <span>Prod.: R$ {dados[1]?._sum.valor_mensalidade}</span>
                                 <span>Quant.: R$ {dados[1]?._count.dt_adesao}</span>
-                                <span>TKM.: R$ {dados[1]?._sum.valor_mensalidade / dados[1]?._count.dt_adesao}</span>
+                                <span>TKM.: R$ {(dados[1]?._sum.valor_mensalidade / dados[1]?._count.dt_adesao).toFixed(2)}</span>
 
                             </div>
                         </div>
@@ -181,7 +181,7 @@ export default function Vendas() {
                                 <span>{dados[0]?.consultor}</span>
                                 <span>Prod.:  {dados[0]?._sum.valor_mensalidade}</span>
                                 <span>Quant.: {dados[0]?._count.dt_adesao}</span>
-                                <span>TKM.:R$ {dados[0]?._sum.valor_mensalidade / dados[0]?._count.dt_adesao}</span>
+                                <span>TKM.:R$ {(dados[0]?._sum.valor_mensalidade / dados[0]?._count.dt_adesao).toFixed(2)}</span>
 
                             </div>
                         </div>
@@ -194,15 +194,15 @@ export default function Vendas() {
                                 <span>{dados[2]?.consultor}</span>
                                 <span>Prod.:  {dados[2]?._sum.valor_mensalidade}</span>
                                 <span>Quant.:  {dados[2]?._count.dt_adesao}</span>
-                                <span>TKM.: R$  {dados[2]?._sum.valor_mensalidade / dados[2]?._count.dt_adesao}</span>
+                                <span>TKM.: R$  {(dados[2]?._sum.valor_mensalidade / dados[2]?._count.dt_adesao).toFixed(2)}</span>
                             </div></div>
 
                     </div>
-                    <div className="flex flex-col w-2/3 bg-gray-800 rounded-lg">
-                        <ul className=' flex flex-col pt-4'>
+                    <div className="flex flex-col w-2/3 bg-gray-800 rounded-lg overflow-y-auto max-h-[calc(100vh-180px)]  ">
+                        <ul className=' flex flex-col pt-4  '>
                             <li className='flex flex-col w-full  text-base px-4'>
                                 <div className="flex w-full px-2 gap-8  items-center">
-                                    <span className="flex w-full text-start whitespace-nowrap ">#</span>
+                                    <span className="flex w-2/12 text-start whitespace-nowrap ">#</span>
                                     <span className="flex w-full text-start whitespace-nowrap ">CONSULTOR</span>
                                     <span className="flex w-full text-start whitespace-nowrap">PROD.</span>
                                     <span className="flex w-full text-start whitespace-nowrap ">QUANT</span>
@@ -215,7 +215,7 @@ export default function Vendas() {
                                 return (
                                     <li className='flex flex-col w-full py-2  text-base px-4 '>
                                         <div className="flex w-full gap-8 px-2 items-center py-1.5 rounded-lg bg-slate-600">
-                                            <span className="flex w-full text-start whitespace-nowrap ">{index + 1}</span>
+                                            <span className="flex w-2/12 text-start whitespace-nowrap ">{index + 1}</span>
                                             <span className="flex w-full text-start gap-2 whitespace-nowrap ">
                                                 <img className="w-[26px] h-[26px] rounded-full" src="/fototeste.jpeg" alt="Rounded avatar"></img>
                                                 {item.consultor}

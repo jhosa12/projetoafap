@@ -16,6 +16,7 @@ import { Currency } from "lucide-react";
 import { PlanoContas } from "@/components/gerenciarAdm/planoContas";
 import moment from 'moment-timezone';
 import { Data } from "@react-google-maps/api";
+import { Item } from "@/components/dadosTitular";
 
 
 interface DataProps {
@@ -203,17 +204,23 @@ export default function LoginFinaceiro() {
 
 
 
-     
-             let cumulativeSum = 0;
+     const dataInicial= new Date(startDate.getUTCFullYear(),startDate.getUTCMonth(),startDate.getUTCDate());
+     const dataFinal= new Date(endDate.getUTCFullYear(),endDate.getUTCMonth(),endDate.getUTCDate());
+      let cumulativeSum = 0;
         const newArray = contratosGeral.map(item => {
             cumulativeSum += item._count.dt_adesao-item._count.dt_cancelamento;
             const data = new Date(item.dt_adesao)
             const novaDate = new Date(data.getUTCFullYear(),data.getUTCMonth(),data.getUTCDate())
-            return { ...item,_count:{...item._count,dt_adesao:cumulativeSum},dt_adesao:novaDate };
-          });
+           
+              return { ...item,_count:{...item._count,dt_adesao:cumulativeSum},dt_adesao:novaDate };
+
+            
+           
+          }).filter(item=>item.dt_adesao>=dataInicial&& item.dt_adesao<=dataFinal)
+         // const novoArray = newArray.filter(item=>item.dt_adesao>=dataInicial&& item.dt_adesao<=dataFinal)
 
         const resultadoAtivos = newArray?.reduce((acumulador, atual) => {
-          const dataLanc =new Date(new Date(atual.dt_adesao).getUTCFullYear(),new Date(atual.dt_adesao).getUTCMonth(),new Date(atual.dt_adesao).getUTCDate())
+          const dataLanc =new Date(new Date(atual?.dt_adesao).getUTCFullYear(),new Date(atual?.dt_adesao).getUTCMonth(),new Date(atual?.dt_adesao).getUTCDate())
       
           if (escalaDia) {
             dataLancamento = dataLanc.toLocaleDateString('pt-BR', {
@@ -249,11 +256,11 @@ export default function LoginFinaceiro() {
               //itemExistente.y += Number(valor.toFixed(2));
       
               itemExistente.z += 0;
-              itemExistente.cancelamentos+=atual._count.dt_cancelamento
-            itemExistente.c=atual._count.dt_adesao
+              itemExistente.cancelamentos+=atual?._count.dt_cancelamento
+              itemExistente.c=atual?._count.dt_adesao
               
-            } else if(new Date(new Date(atual.dt_adesao).getUTCFullYear(),new Date(atual.dt_adesao).getUTCMonth(),new Date(atual.dt_adesao).getUTCDate())>=new Date(new Date(startDate).getUTCFullYear(),new Date(startDate).getUTCMonth(),new Date(startDate).getUTCDate())) {
-              acumulador.push({ x: dataLancamento, y: 0, z:0, c:atual._count.dt_adesao, dt: atual.dt_adesao, cancelamentos: atual._count.dt_cancelamento});
+            } else  {
+              acumulador.push({ x: dataLancamento, y: 0, z:0, c:atual?._count.dt_adesao, dt: atual?.dt_adesao, cancelamentos: atual?._count.dt_cancelamento});
             }
           
       
