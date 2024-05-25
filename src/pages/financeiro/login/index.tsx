@@ -94,7 +94,6 @@ type MensalidadeProps = {
 
 
 export default function LoginFinaceiro() {
-  const [dropEmpresa, setDropEmpresa] = useState(false)
   const [listaLancamentos, setLancamentos] = useState<Array<PlanoContasProps>>([])
   const [subListaLanc, setSubLista] = useState<Array<LancamentoProps>>()
   const [despesas, setDespesas] = useState<number>(0)
@@ -103,19 +102,14 @@ export default function LoginFinaceiro() {
   const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
   const [grupos, setGrupos] = useState<Array<GruposProps>>()
   const [setorSelect, setSetor] = useState<number>(0)
-  const [planoSelect, setPlano] = useState('')
   const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
   const [endDate, setEndDate] = useState(new Date())
   const [todoPeriodo, setPeriodo] = useState(true)
- 
+  const [menuIndex,setMenuIndex] = useState(1)
   const [arraygeral, setArrayGeral] = useState<Array<PlanoContasProps>>([])
-  const [planoContasButton, setPlanoButton] = useState(true)
-  const [mensalidadeButton, setMensalidadeButton] = useState(false)
   const [filtroatee,setFiltroAteE]=useState<number>(0)
   const [lancamentoFiltroMensalidade, setFiltroMensalidade] = useState<Array<DataProps>>([])
   const [lancamentoFiltroAtivos, setFiltroAtivos] = useState<Array<DataProps>>([])
-  const [contratosGeral, setContratosGeral] = useState<Array<ContratosProps>>([])
-  const [filtro, setFiltro] = useState('')
   const [escalaDia, setDia] = useState(false)
   const [escalaMes, setMes] = useState(true)
   const [escalaAno, setAno] = useState(false)
@@ -199,11 +193,6 @@ export default function LoginFinaceiro() {
       
           return acumulador;
         }, [] as DataProps[]);
-
-       
-
-
-
      const dataInicial= new Date(startDate.getUTCFullYear(),startDate.getUTCMonth(),startDate.getUTCDate());
      const dataFinal= new Date(endDate.getUTCFullYear(),endDate.getUTCMonth(),endDate.getUTCDate());
       let cumulativeSum = 0;
@@ -214,8 +203,6 @@ export default function LoginFinaceiro() {
            
               return { ...item,_count:{...item._count,dt_adesao:cumulativeSum},dt_adesao:novaDate };
 
-            
-           
           }).filter(item=>item.dt_adesao>=dataInicial&& item.dt_adesao<=dataFinal)
          // const novoArray = newArray.filter(item=>item.dt_adesao>=dataInicial&& item.dt_adesao<=dataFinal)
 
@@ -245,10 +232,6 @@ export default function LoginFinaceiro() {
          // const start = new Date(new Date(startDate).getUTCFullYear(), new Date(startDate).getUTCMonth(), new Date(startDate).getUTCDate())
          // const end = new Date(new Date(endDate).getUTCFullYear(), new Date(endDate).getUTCMonth(), new Date(endDate).getUTCDate())
          
-      
-      
-      
-            
             const itemExistente = acumulador.find((item) => item.x === dataLancamento);
       
             if (itemExistente) {
@@ -268,11 +251,6 @@ export default function LoginFinaceiro() {
         }, [] as DataProps[]);
 
        
-
-        
-
-
-      
     /*   const resultadoFinal = resultado?.reduce((acumulador:Array<DataProps>, atual:DataProps) => {
          
           const mesExistente = acumulador.find(item => moment(item.dt).isSame(atual.dt, 'month'));
@@ -308,9 +286,6 @@ export default function LoginFinaceiro() {
         setFiltroAtivos(resultadoAtivos)
         setLoading(false)
       
-       
-      
-
  // }catch(err){
    // toast.error(err)
 
@@ -318,8 +293,6 @@ export default function LoginFinaceiro() {
 
   }
 
- 
- 
 
   async function handleListaLanc(conta: string, index: number) {
     setSubLista([])
@@ -577,21 +550,21 @@ export default function LoginFinaceiro() {
         <div className="flex flex-col  px-4 w-full ">
           <ul className="flex flex-wrap mb-1 text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 "  >
             <li className="me-2">
-              <button type="button" onClick={() => { setPlanoButton(true), setMensalidadeButton(false) }} className={`inline-block p-2 border-blue-600 rounded-t-lg hover:border-b-[1px]  hover:text-gray-300  `}>Plano de Contas</button>
+              <button type="button" onClick={() => setMenuIndex(1) } className={`inline-block p-2 border-blue-600 rounded-t-lg hover:border-b-[1px]  hover:text-gray-300  `}>Plano de Contas</button>
             </li>
             <li className="me-2">
-              <button type="button" onClick={() => { setPlanoButton(false), setMensalidadeButton(true) }} className={`inline-block p-2 border-blue-600  hover:border-b-[1px]  rounded-t-lg   hover:text-gray-300  `}>Mensalidade</button>
+              <button type="button" onClick={() =>  setMenuIndex(2)} className={`inline-block p-2 border-blue-600  hover:border-b-[1px]  rounded-t-lg   hover:text-gray-300  `}>Gráficos</button>
             </li>
             <li className="me-2">
-              <button type="button" onClick={() => { }} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Planos</button>
+              <button type="button" onClick={() => setMenuIndex(3)} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Contas a Pagar/Receber</button>
             </li>
             <li className="me-2">
-              <button type="button" onClick={() => { }} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Convalescencia</button>
+              <button type="button" onClick={() =>setMenuIndex(4)} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Convalescencia</button>
             </li>
 
           </ul>
 
-          {planoContasButton && <div>
+          {menuIndex===1 && <div>
             <div className="flex flex-row w-full text-xs justify-between  mb-1">
               <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
                 <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense size={25} /></div>
@@ -762,7 +735,7 @@ export default function LoginFinaceiro() {
 
           </div>}
 
-          {mensalidadeButton && <div className="flex flex-col p-2 bg-[#2b2e3b]  ml-2 w-full overflow-y-auto h-[calc(100vh-120px)] text-white  rounded-lg ">
+          {menuIndex===2 && <div className="flex flex-col p-2 bg-[#2b2e3b]  ml-2 w-full overflow-y-auto h-[calc(100vh-120px)] text-white  rounded-lg ">
             <div className="flex w-full border-b-[1px] border-gray-500 px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
               <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
 
@@ -847,6 +820,113 @@ export default function LoginFinaceiro() {
            
 
             </div>
+
+          </div>}
+
+          {menuIndex===3 && <div className="flex flex-col px-2  gap-2 w-full overflow-y-auto h-[calc(100vh-120px)] text-white  rounded-lg ">
+            <div className="flex flex-row gap-10 text-sm w-full px-2 justify-between  " id="Area Resumo/Filtro">
+            <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
+                <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense size={25} /></div>
+                <h2 className="flex flex-col" >TOTAL A PAGAR <span>{formatter.format(despesas)}</span></h2>
+              </div>
+
+              <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
+                <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense size={25} /></div>
+                <h2 className="flex flex-col" >TOTAL A RECEBER <span>{formatter.format(despesas)}</span></h2>
+              </div>
+
+              <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
+                <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense size={25} /></div>
+                <h2 className="flex flex-col" >REAGENDADOS<span>{formatter.format(despesas)}</span></h2>
+              </div>
+
+
+              </div>
+
+              <div className="flex  w-full bg-[#2b2e3b] px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
+              <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
+
+
+              <select value={setorSelect} onChange={e => {
+                setSetor(Number(e.target.value))
+              }} className="flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+                <option value={0}>SETOR (TODOS)</option>
+
+                {grupos?.map((item, index) => (
+                  <option className="text-xs" key={index} value={item.id_grupo}>
+                    <input checked className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox" value={item.descricao} />
+                  </option>
+
+                ))}
+              </select>
+              <div className="flex h-full relative w-1/4">
+                <div onClick={() => setDropPlanos(!dropPlanos)}
+                  className="flex w-full h-full justify-between items-center py-1.5 pl-2 pr-2 uppercase border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+
+                  {todos ? 'TODOS' : 'PERSONALIZADO'}
+                  <IoIosArrowDown />
+
+
+                </div>
+
+                {dropPlanos && <ul className="absolute  top-7 -left-1 max-h-64 overflow-y-auto  bg-gray-600 p-1 rounded-lg">
+                  <li className="flex items-center px-2 py-1">
+                    <input onChange={() => setTodos(!todos)} type="checkbox" checked={todos} />
+                    <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODOS</label>
+                  </li>
+                  {arraygeral.map((item, index) => {
+                    return (
+                      <li className="flex items-center px-2 py-1">
+                        <input onChange={() => handleOptionChange(item?.conta)} type="checkbox" checked={item?.check} value={item?.conta} />
+                        <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">{item?.descricao.toUpperCase()}</label>
+                      </li>
+                    )
+                  })}
+                </ul>}
+
+
+
+              </div>
+
+
+
+              <div className="inline-flex  items-center  gap-3">
+                <div className="flex items-center ">
+                  <input type="checkbox" checked={todoPeriodo} onChange={() => setPeriodo(!todoPeriodo)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODO PERÍODO</label>
+                </div>
+                <DatePicker
+                  disabled={todoPeriodo}
+                  dateFormat={"dd/MM/yyyy"}
+                  locale={pt}
+                  selected={startDate}
+                  onChange={(date) => date && setStartDate(date)}
+                  selectsStart
+                  startDate={startDate}
+                  endDate={endDate}
+                  className="flex py-1 pl-2 text-xs  border rounded-lg   bg-gray-700 border-gray-600  text-white"
+                />
+               <span>até</span>
+
+                <DatePicker
+                  disabled={todoPeriodo}
+                  dateFormat={"dd/MM/yyyy"}
+                  locale={pt}
+                  selected={endDate}
+                  onChange={(date) => date && setEndDate(date)}
+                  selectsEnd
+                  startDate={startDate}
+                  endDate={endDate}
+                  minDate={startDate}
+                  className=" flex py-1 pl-2 text-xs  border rounded-lg  bg-gray-700 border-gray-600  text-white "
+                />
+
+              </div>
+              {!loading ? <button onClick={() => listarDados()} className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCAR<IoSearch size={18} /></button> :
+                <button className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCANDO..<AiOutlineLoading3Quarters size={20} className="animate-spin" /></button>
+              }
+            </div>
+            
 
           </div>}
         </div>

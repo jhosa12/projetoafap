@@ -170,8 +170,6 @@ export default function Vendas() {
 
                             </div>
                         </div>
-
-
                         <div className="flex flex-col w-1/3 h-full  items-center justify-end gap-2">
                             <div className=" rounded-full overflow-hidden border-[2px] border-yellow-600 ">
                                 <img className="w-[74px] h-[74px] rounded-full" src="/fototeste.jpeg" alt="Rounded avatar"></img>
@@ -208,7 +206,6 @@ export default function Vendas() {
                                     <span className="flex w-full text-start whitespace-nowrap ">QUANT</span>
                                     <span className="flex w-full text-start whitespace-nowrap ">META</span>
                                     <span className="flex w-full text-start whitespace-nowrap ">PERCENTUAL</span>
-
                                 </div>
                             </li>
                             {dados.map((item, index) => {
