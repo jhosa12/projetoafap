@@ -18,6 +18,7 @@ import { IoIosClose } from "react-icons/io";
 import { GoArrowDownLeft } from "react-icons/go";
 import { GoArrowUpRight } from "react-icons/go";
 import { MdDelete } from "react-icons/md";
+import { MdModeEditOutline } from "react-icons/md";
 
 
 interface DataProps {
@@ -97,8 +98,8 @@ interface ContaProps{
   dataprev:Date,
   dataLanc:Date,
   datapag:Date,
+  dataReag:Date,
   tipo:string,
-  titulo:string,
   descricao:string,
   valor:number,
   parcela:number
@@ -133,6 +134,7 @@ export default function LoginFinaceiro() {
   const [modalButton, setModal] = useState(false)
   const [dadosConta,setDadosConta] =useState<Partial<ContaProps>>({})
   const [listaContas,setListaContas] = useState<Array<Partial<ContaProps>>>([])
+  const [abertoFinalizado,setAbertoFinalizado] = useState<number>(1)
   const toogleAberto = (index: number) => {
     setAbertos((prev: { [key: number]: boolean }) => ({
       ...Object.keys(prev).reduce((acc, key) => {
@@ -375,14 +377,15 @@ export default function LoginFinaceiro() {
 
 
   async function contasReq() {
-      toast.promise(
+     await toast.promise(
         api.post('/conta/adicionar',{
           dataLanc:new Date(),
           dataprev:dadosConta.dataprev,
           descricao:dadosConta.descricao,
           tipo:dadosConta.tipo,
           valor:dadosConta.valor,
-          titulo:dadosConta.titulo
+          parcelas:dadosConta.parcela
+         
         }),
         {
           error:'Erro ao realizar requisição',
@@ -391,6 +394,24 @@ export default function LoginFinaceiro() {
         }
       )
       listarContasReq()
+    
+  }
+  async function contaDelete(id_conta:number){
+   await toast.promise(
+      api.delete('/conta/deletar',{
+        data:{
+          id_conta:id_conta
+
+        }
+        
+      }),
+      {
+        error:'Erro ao Deletar',
+        pending:'Deletando Dados...',
+        success:'Dados Deletados com sucesso'
+      }
+    )
+    listarContasReq()
     
   }
   async function listarContasReq() {
@@ -896,53 +917,19 @@ export default function LoginFinaceiro() {
               <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
 
 
-              <select value={setorSelect} onChange={e => {
-                setSetor(Number(e.target.value))
-              }} className="flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                <option value={0}>SETOR (TODOS)</option>
-
-                {grupos?.map((item, index) => (
-                  <option className="text-xs" key={index} value={item.id_grupo}>
-                    <input checked className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox" value={item.descricao} />
-                  </option>
-
-                ))}
-              </select>
-              <div className="flex h-full relative w-1/4">
-                <div onClick={() => setDropPlanos(!dropPlanos)}
-                  className="flex w-full h-full justify-between items-center py-1.5 pl-2 pr-2 uppercase border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-
-                  {todos ? 'TODOS' : 'PERSONALIZADO'}
-                  <IoIosArrowDown />
-
-
-                </div>
-
-                {dropPlanos && <ul className="absolute  top-7 -left-1 max-h-64 overflow-y-auto  bg-gray-600 p-1 rounded-lg">
-                  <li className="flex items-center px-2 py-1">
-                    <input onChange={() => setTodos(!todos)} type="checkbox" checked={todos} />
-                    <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODOS</label>
-                  </li>
-                  {arraygeral.map((item, index) => {
-                    return (
-                      <li className="flex items-center px-2 py-1">
-                        <input onChange={() => handleOptionChange(item?.conta)} type="checkbox" checked={item?.check} value={item?.conta} />
-                        <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">{item?.descricao.toUpperCase()}</label>
-                      </li>
-                    )
-                  })}
-                </ul>}
-
-
-
-              </div>
+          
+              
 
 
 
               <div className="inline-flex  items-center  gap-3">
                 <div className="flex items-center ">
-                  <input type="checkbox" checked={todoPeriodo} onChange={() => setPeriodo(!todoPeriodo)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODO PERÍODO</label>
+                  <input type="checkbox" checked={abertoFinalizado===1} onChange={() => {abertoFinalizado===1?setAbertoFinalizado(0):setAbertoFinalizado(1)}} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">ABERTO</label>
+                </div>
+                <div className="flex items-center ">
+                  <input type="checkbox" checked={abertoFinalizado===2} onChange={() => {abertoFinalizado===2?setAbertoFinalizado(0):setAbertoFinalizado(2)}} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">FINALIZADO</label>
                 </div>
                 <DatePicker
                   disabled={todoPeriodo}
@@ -980,11 +967,17 @@ export default function LoginFinaceiro() {
             <div className="flex flex-col  px-4 w-full overflow-y-auto max-h-[calc(100vh-210px)] text-white bg-[#2b2e3b] rounded-lg ">
               <ul className="flex flex-col w-full p-2 gap-1 text-sm">
                 <li className="flex flex-col w-full  text-xs pl-4 border-b-[1px] ">
-                  <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">DESCRIÇÃO</span>
+                  <div className="inline-flex w-full items-center">
+                 
                     <div className="flex w-full gap-8  items-center">
+                    <span className="flex w-full font-semibold">DESCRIÇÃO</span>
                       <span className="flex w-full text-start whitespace-nowrap ">TIPO</span>
                       <span className="flex w-full text-start whitespace-nowrap">VALOR</span>
                       <span className="flex w-full text-start whitespace-nowrap ">DATA PREVISTA</span>
+                      <span className="flex w-full text-start whitespace-nowrap ">REAGENDADO PARA</span>
+                      <span className="flex w-full text-start whitespace-nowrap ">DATA PAG.</span>
+                      <span className="flex w-full text-start whitespace-nowrap ">STATUS</span>
+                      
                       <span className="flex w-full text-start whitespace-nowrap justify-end ">AÇÕES</span>
                      
                     </div>
@@ -1009,14 +1002,20 @@ export default function LoginFinaceiro() {
 
                     return (
                       <li className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
-                        <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">{item.descricao}</span>
+                        <div className="inline-flex w-full items-center">
                           <div className="flex w-full gap-8  items-center">
+                          <span className="flex w-full font-semibold">{item.descricao}</span>
                           <span className="inline-flex w-full text-start whitespace-nowrap"><span className={`inline-flex  rounded-lg ${item.tipo=='PAGAR'?"bg-red-500":"bg-green-500"}   p-1`}>{item.tipo}</span></span>
                             <span className="flex w-full text-start whitespace-nowrap font-semibold">{formatter.format(Number(item.valor))}</span>
                             <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.dataprev && new Date(item.dataprev).toLocaleDateString()}</span>
+                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.dataReag && new Date(item.dataReag).toLocaleDateString()}</span>
+                               <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.datapag && new Date(item.datapag).toLocaleDateString()}</span>
+                               <span className="inline-flex w-full text-start whitespace-nowrap"><span className={`inline-flex  rounded-lg ${item.tipo=='PAGAR'?"bg-red-500":"bg-green-500"}   p-1`}>{item.tipo}</span></span>
+                              
                          
-                            <div className="flex w-full text-start justify-end whitespace-nowrap">
-                              <button className="rounded-lg text-red-600 hover:bg-gray-300 p-1"><MdDelete size={16}/></button>
+                            <div className="inline-flex w-full text-start justify-end whitespace-nowrap">
+                              <button onClick={()=>contaDelete(Number(item.id_conta))} className="rounded-lg text-red-600 hover:bg-gray-300 p-1"><MdDelete size={16}/></button>
+                              <button className="rounded-lg text-blue-500 hover:bg-gray-300 p-1"><MdModeEditOutline size={16}/></button>
                               </div>
                            
                           </div>
@@ -1060,6 +1059,7 @@ export default function LoginFinaceiro() {
                         <div className="mb-1  col-span-1 w-full ">
                           <label className="block  mb-1 text-xs font-medium  text-white">PARCELAS</label>
                           <select defaultValue={dadosConta.parcela} onChange={e => setarDadosConta({...dadosConta,parcela:Number(e.target.value)})} className="block w-full pt-1 pb-1.5 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+                          <option value={''}></option>
                               <option value={1}>1</option>
                             <option value={2}>2</option>
                             <option value={3}>3</option>
@@ -1075,10 +1075,7 @@ export default function LoginFinaceiro() {
                           </select>
 
                         </div>
-                        <div className="mb-1 col-span-2">
-                          <label className="block mb-1 text-xs font-medium  text-white">TITULO</label>
-                          <input type="text" value={dadosConta.titulo} onChange={e => setarDadosConta({...dadosConta,titulo:e.target.value})} className="block w-full  pt-1.5 pb-1.5 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
-                        </div>
+                        
                       
                         <div className="mb-1 col-span-2">
                           <label className="block mb-1 text-xs font-medium  text-white">DESCRIÇÃO</label>
