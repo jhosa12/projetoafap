@@ -18,6 +18,19 @@ interface VendasProps {
     _sum: { valor_mensalidade: number },
     _count: { dt_adesao: number }
 }
+interface MetasProps{
+    id_meta:number,
+    id_grupo:number,
+    id_conta:string,
+    valor:number,
+    descricao:string,
+    date:Date,
+    dateFimMeta:Date
+}
+interface ResponseProps{
+    grupos:Array<VendasProps>,
+    metas:Array<MetasProps>
+}
 export default function Vendas() {
     const { usuario } = useContext(AuthContext)
     const [dados, setDados] = useState<Array<VendasProps>>([])
@@ -26,6 +39,7 @@ export default function Vendas() {
     const [todoPeriodo, setPeriodo] = useState(true)
     const [somaVendas,setSomaVendas] =useState<number>(0)
     const [aba,setAba] = useState(1)
+    const [arrayMetas,setMetas]=useState<Array<MetasProps>>([])
 
     async function dadosVendas() {
         try {
@@ -35,7 +49,9 @@ export default function Vendas() {
                     dataFim: endDate
                 }
             )
-            setDados(response.data)
+            const {grupos,metas} =response.data;
+            setDados(grupos)
+            setMetas(metas)
         } catch (error) {
 
         }
@@ -134,7 +150,7 @@ export default function Vendas() {
                         <GiStairsGoal size={30} />
                         <div className='flex flex-col '>
                             <span className='leading-none text-xs'>PRODUZIDO</span>
-                            <span className='leading-none'>R$ {dados.reduce((acumulador,atual)=>acumulador+=Number(atual._sum.valor_mensalidade),0)}/{dados.reduce((acumulador,atual)=>acumulador+=Number(atual._count.dt_adesao),0)}</span>
+                            <span className='leading-none'>R$ {dados?.reduce((acumulador,atual)=>acumulador+=Number(atual._sum.valor_mensalidade),0)}/{dados?.reduce((acumulador,atual)=>acumulador+=Number(atual._count.dt_adesao),0)}</span>
 
                         </div>
                     </div>
@@ -208,7 +224,7 @@ export default function Vendas() {
                                     <span className="flex w-full text-start whitespace-nowrap ">PERCENTUAL</span>
                                 </div>
                             </li>
-                            {dados.map((item, index) => {
+                            {dados?.map((item, index) => {
                                 return (
                                     <li className='flex flex-col w-full py-2  text-base px-4 '>
                                         <div className="flex w-full gap-8 px-2 items-center py-1.5 rounded-lg bg-slate-600">
@@ -240,10 +256,80 @@ export default function Vendas() {
 
                         </ul>
                     </div>
-
-
                 </div>
+                       { <div className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
+                <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
+                  <div className="fixed flex flex-col  w-2/4 p-4 rounded-lg  shadow bg-gray-800">
+                  <button type="button" onClick={() => {}} className="absolute cursor-pointer top-0 right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                      <IoIosClose size={30} />
+                    </button>
+                 
 
+<label className="flex flex-row justify-start mb-4 border-b-[1px] text-lg border-gray-500 font-semibold mt-2 gap-2 text-white">METAS</label>
+<div className="flex-col overflow-auto w-full justify-center items-center max-h-[350px] bg-gray-800 rounded-lg mb-4 pl-2 pr-2">
+    <table 
+    className="flex-col w-full p-2 overflow-y-auto overflow-x-auto  text-xs text-center rtl:text-center border-collapse  rounded-lg text-gray-400">
+    <thead className=" text-xs uppercase bg-gray-700 text-gray-400">
+            <tr >
+                <th scope="col" className="px-2 py-1">
+                    NP
+                </th>
+                <th scope="col" className=" px-2 py-1">
+                    DATA VENC.
+                </th>
+                <th scope="col" className=" px-2 py-1">
+                    REF
+                </th>
+                <th scope="col" className="px-4 py-1">
+                    DATA AGEND.
+                </th>
+                <th scope="col" className="px-2 py-1">
+                    VALOR
+                </th>
+                <th scope="col" className="px-2 py-1">
+                    status
+                </th>
+            </tr>
+        </thead>
+        <tbody  >
+            {arrayMetas.map((item,index)=>(  
+                <tr key={index} 
+                className={` border-b "bg-gray-800"} border-gray-700 `}>
+                <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
+                    {item.id_meta}
+                </th>
+                <td className={`px-2 py-1 `}>
+                   {new Date(item.date || '').toLocaleDateString()}
+                   
+                </td>
+                <td className="px-2 py-1">
+                   {item.descricao}
+                </td>
+                <td className="px-5 py-1">
+                {new Date(item.dateFimMeta || '').toLocaleDateString()}
+                </td>
+                <td className="px-3 py-1">
+               {`R$${item.valor}`}
+                </td>
+                <td className={`px-4 py-1 font-bold text-red-600`}>
+                  {item.id_grupo}
+                </td>
+
+            </tr>
+                
+            ))}
+            
+        </tbody>
+    
+    </table>
+    </div>
+
+                  </div>
+                  </div>
+                  </div>
+                  
+                  
+                  }
             </div>
         </>
     )
