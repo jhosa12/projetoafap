@@ -118,6 +118,8 @@ export default function LoginFinaceiro() {
   const [setorSelect, setSetor] = useState<number>(0)
   const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
   const [endDate, setEndDate] = useState(new Date())
+  const [startDateContas, setStartDateContas] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
+  const [endDateContas, setEndDateContas] = useState(new Date())
   const [todoPeriodo, setPeriodo] = useState(true)
   const [menuIndex, setMenuIndex] = useState(1)
   const [arraygeral, setArrayGeral] = useState<Array<PlanoContasProps>>([])
@@ -415,7 +417,10 @@ export default function LoginFinaceiro() {
     
   }
   async function listarContasReq() {
-    const response = await api.get('/conta/listarContas')
+    const response = await api.post('/conta/listarContas',{
+      dataInicial:startDate,
+      dataFinal:endDate
+    })
     setListaContas(response.data)
 
     
@@ -917,11 +922,7 @@ export default function LoginFinaceiro() {
               <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
 
 
-          
-              
-
-
-
+        
               <div className="inline-flex  items-center  gap-3">
                 <div className="flex items-center ">
                   <input type="checkbox" checked={abertoFinalizado===1} onChange={() => {abertoFinalizado===1?setAbertoFinalizado(0):setAbertoFinalizado(1)}} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
@@ -1053,7 +1054,7 @@ export default function LoginFinaceiro() {
                         </div>
                         <div className="ml-2 justify-start ">
                           <label className="block w-full mb-1 text-xs font-medium  text-white">DATA PREVISTA</label>
-                          <DatePicker selected={dadosConta.dataprev} onChange={e => e && setarDadosConta({...dadosConta,dataprev:e})} dateFormat={"dd/MM/yyyy"} locale={"pt"} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+                          <DatePicker selected={dadosConta.dataprev} onChange={e => e && setarDadosConta({...dadosConta,dataprev:e})} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
                         </div>
 
                         <div className="mb-1  col-span-1 w-full ">
@@ -1077,7 +1078,7 @@ export default function LoginFinaceiro() {
                         </div>
                         
                       
-                        <div className="mb-1 col-span-2">
+                        <div className="mb-1 col-span-4">
                           <label className="block mb-1 text-xs font-medium  text-white">DESCRIÇÃO</label>
                           <input type="text" value={dadosConta.descricao} onChange={e => setarDadosConta({...dadosConta,descricao:e.target.value})} className="block w-full  pt-1.5 pb-1.5 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                         </div>
