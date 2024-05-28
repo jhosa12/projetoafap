@@ -74,7 +74,7 @@ export function ModalMensalidade(){
             return
         }
         try{
-            const response = await  toast.promise(
+             await  toast.promise(
                 api.put('/mensalidade',{
                     id_usuario:Number(usuario?.id),
                     id_mensalidade:data.mensalidade?.id_mensalidade,

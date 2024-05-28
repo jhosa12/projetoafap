@@ -118,7 +118,7 @@ export default function LoginFinaceiro() {
   const [setorSelect, setSetor] = useState<number>(0)
   const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
   const [endDate, setEndDate] = useState(new Date())
-  const [startDateContas, setStartDateContas] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
+  const [startDateContas, setStartDateContas] = useState(new Date())
   const [endDateContas, setEndDateContas] = useState(new Date())
   const [todoPeriodo, setPeriodo] = useState(true)
   const [menuIndex, setMenuIndex] = useState(1)
@@ -418,8 +418,8 @@ export default function LoginFinaceiro() {
   }
   async function listarContasReq() {
     const response = await api.post('/conta/listarContas',{
-      dataInicial:startDate,
-      dataFinal:endDate
+      dataInicial:new Date(startDateContas),
+      dataFinal:new Date(endDateContas)
     })
     setListaContas(response.data)
 
@@ -936,11 +936,11 @@ export default function LoginFinaceiro() {
                   disabled={todoPeriodo}
                   dateFormat={"dd/MM/yyyy"}
                   locale={pt}
-                  selected={startDate}
-                  onChange={(date) => date && setStartDate(date)}
+                  selected={startDateContas}
+                  onChange={(date) => date && setStartDateContas(date)}
                   selectsStart
-                  startDate={startDate}
-                  endDate={endDate}
+                  startDate={startDateContas}
+                  endDate={endDateContas}
                   className="flex py-1 pl-2 text-xs  border rounded-lg   bg-gray-700 border-gray-600  text-white"
                 />
                 <span>até</span>
@@ -949,12 +949,12 @@ export default function LoginFinaceiro() {
                   disabled={todoPeriodo}
                   dateFormat={"dd/MM/yyyy"}
                   locale={pt}
-                  selected={endDate}
-                  onChange={(date) => date && setEndDate(date)}
+                  selected={endDateContas}
+                  onChange={(date) => date && setEndDateContas(date)}
                   selectsEnd
-                  startDate={startDate}
-                  endDate={endDate}
-                  minDate={startDate}
+                  startDate={startDateContas}
+                  endDate={endDateContas}
+                  minDate={startDateContas}
                   className=" flex py-1 pl-2 text-xs  border rounded-lg  bg-gray-700 border-gray-600  text-white "
                 />
 
@@ -1008,9 +1008,9 @@ export default function LoginFinaceiro() {
                           <span className="flex w-full font-semibold">{item.descricao}</span>
                           <span className="inline-flex w-full text-start whitespace-nowrap"><span className={`inline-flex  rounded-lg ${item.tipo=='PAGAR'?"bg-red-500":"bg-green-500"}   p-1`}>{item.tipo}</span></span>
                             <span className="flex w-full text-start whitespace-nowrap font-semibold">{formatter.format(Number(item.valor))}</span>
-                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.dataprev && new Date(item.dataprev).toLocaleDateString()}</span>
-                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.dataReag && new Date(item.dataReag).toLocaleDateString()}</span>
-                               <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.datapag && new Date(item.datapag).toLocaleDateString()}</span>
+                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.dataprev && new Date(new Date(item.dataprev).getUTCFullYear(),new Date(item.dataprev).getUTCMonth(),new Date(item.dataprev).getUTCDate()).toLocaleDateString('pt-BR')}</span>
+                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.dataReag && new Date(new Date(item.dataReag).getUTCFullYear(),new Date(item.dataReag).getUTCMonth(),new Date(item.dataReag).getUTCDate()).toLocaleDateString('pt-BR')}</span>
+                               <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.datapag && new Date(new Date(item.datapag).getUTCFullYear(),new Date(item.datapag).getUTCMonth(),new Date(item.datapag).getUTCDate()).toLocaleDateString('pt-BR')}</span>
                                <span className="inline-flex w-full text-start whitespace-nowrap"><span className={`inline-flex  rounded-lg ${item.tipo=='PAGAR'?"bg-red-500":"bg-green-500"}   p-1`}>{item.tipo}</span></span>
                               
                          
