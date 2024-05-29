@@ -1,5 +1,5 @@
 import Grafico from "@/components/graficos/primeirografico";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GiExpense } from "react-icons/gi";
 import { GiReceiveMoney } from "react-icons/gi";
 import { BiTransferAlt } from "react-icons/bi";
@@ -15,12 +15,11 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { IoIosAddCircle } from "react-icons/io";
 import { MdSaveAlt } from "react-icons/md";
 import { IoIosClose } from "react-icons/io";
-import { GoArrowDownLeft } from "react-icons/go";
-import { GoArrowUpRight } from "react-icons/go";
 import { MdDelete } from "react-icons/md";
 import { MdModeEditOutline } from "react-icons/md";
 import { IoCheckmarkDoneCircleSharp } from "react-icons/io5";
-
+import { AuthContext } from "@/contexts/AuthContext";
+import { TbAlertTriangle } from "react-icons/tb";
 
 interface DataProps {
   y: number,
@@ -94,22 +93,30 @@ type MensalidadeProps = {
   _count: { data: number };
 };
 
-interface ContaProps{
-  id_conta:number,
-  dataprev:Date,
-  dataLanc:Date,
-  datapag:Date,
-  dataReag:Date,
-  tipo:string,
-  status:string,
-  descricao:string,
-  valor:number,
-  parcela:number
+interface ContaProps {
+  id_conta: number,
+  dataprev: Date,
+  dataLanc: Date,
+  datapag: Date,
+  dataReag: Date,
+  tipo: string,
+  status: string,
+  descricao: string,
+  valor: number,
+  parcela: number,
+  id_grupo: number,
+  descricao_grupo: string,
+  conta: string,
+  descricao_conta: string
+  tipo_conta: string
 }
 
 
 
 export default function LoginFinaceiro() {
+  const { usuario } = useContext(AuthContext)
+  const [excluir, setExcluir] = useState<number>(0)
+  const [lancar, setLancar] = useState<boolean>()
   const [listaLancamentos, setLancamentos] = useState<Array<PlanoContasProps>>([])
   const [subListaLanc, setSubLista] = useState<Array<LancamentoProps>>()
   const [despesas, setDespesas] = useState<number>(0)
@@ -136,9 +143,10 @@ export default function LoginFinaceiro() {
   const [todos, setTodos] = useState(true)
   const [dropPlanos, setDropPlanos] = useState(false)
   const [modalButton, setModal] = useState(false)
-  const [dadosConta,setDadosConta] =useState<Partial<ContaProps>>({})
-  const [listaContas,setListaContas] = useState<Array<Partial<ContaProps>>>([])
-  const [abertoFinalizado,setAbertoFinalizado] = useState<number>(1)
+  const [dadosConta, setDadosConta] = useState<Partial<ContaProps>>({})
+  const [listaContas, setListaContas] = useState<Array<Partial<ContaProps>>>([])
+  const [abertoFinalizado, setAbertoFinalizado] = useState<number>(1)
+
   const toogleAberto = (index: number) => {
     setAbertos((prev: { [key: number]: boolean }) => ({
       ...Object.keys(prev).reduce((acc, key) => {
@@ -149,16 +157,18 @@ export default function LoginFinaceiro() {
     }));
   };
 
-  const setarDadosConta = (fields:Partial<ContaProps>)=>{
-    setDadosConta((prev:Partial<ContaProps>)=>{
-      if(prev){
-        return{...prev,...fields}
+  const setarDadosConta = (fields: Partial<ContaProps>) => {
+    setDadosConta((prev: Partial<ContaProps>) => {
+      if (prev) {
+        return { ...prev, ...fields }
       }
-      else{
-        return {...fields}
+      else {
+        return { ...fields }
       }
     })
   }
+
+
 
 
   const filtroMensalidade = async () => {
@@ -381,51 +391,51 @@ export default function LoginFinaceiro() {
 
 
   async function contasReq() {
-     await toast.promise(
-        api.post('/conta/adicionar',{
-          dataLanc:new Date(),
-          dataprev:dadosConta.dataprev,
-          descricao:dadosConta.descricao,
-          tipo:dadosConta.tipo,
-          valor:dadosConta.valor,
-          parcelas:dadosConta.parcela
-         
-        }),
-        {
-          error:'Erro ao realizar requisição',
-          pending:'Salvando Dados...',
-          success:'Dados salvos com sucesso'
-        }
-      )
-      listarContasReq()
-    
-  }
-  async function contaDelete(id_conta:number){
-   await toast.promise(
-      api.delete('/conta/deletar',{
-        data:{
-          id_conta:id_conta
+    await toast.promise(
+      api.post('/conta/adicionar', {
+        dataLanc: new Date(),
+        dataprev: dadosConta.dataprev,
+        descricao: dadosConta.descricao,
+        tipo: dadosConta.tipo,
+        valor: dadosConta.valor,
+        parcelas: dadosConta.parcela
 
-        }
-        
       }),
       {
-        error:'Erro ao Deletar',
-        pending:'Deletando Dados...',
-        success:'Dados Deletados com sucesso'
+        error: 'Erro ao realizar requisição',
+        pending: 'Salvando Dados...',
+        success: 'Dados salvos com sucesso'
       }
     )
     listarContasReq()
-    
+
+  }
+  async function contaDelete() {
+    await toast.promise(
+      api.delete('/conta/deletar', {
+        data: {
+          id_conta: dadosConta.id_conta
+
+        }
+
+      }),
+      {
+        error: 'Erro ao Deletar',
+        pending: 'Deletando Dados...',
+        success: 'Dados Deletados com sucesso'
+      }
+    )
+    listarContasReq()
+
   }
   async function listarContasReq() {
-    const response = await api.post('/conta/listarContas',{
-      dataInicial:new Date(startDateContas),
-      dataFinal:new Date(endDateContas)
+    const response = await api.post('/conta/listarContas', {
+      dataInicial: new Date(startDateContas),
+      dataFinal: new Date(endDateContas)
     })
     setListaContas(response.data)
 
-    
+
   }
 
 
@@ -501,6 +511,65 @@ export default function LoginFinaceiro() {
     }
 
   }, [todos])
+
+
+
+  async function lancarMovimentacao() {
+
+    if (!dadosConta.descricao || !dadosConta.id_grupo || !dadosConta.conta) {
+      toast.warn('Preencha todos os campos obrigatórios')
+      return;
+    }
+
+try {
+  const contaAtualizada = await api.put('/conta/editar',{
+    id_conta:Number(dadosConta.id_conta),
+    dataLanc:dadosConta.dataLanc,
+    dataReag:dadosConta.dataReag,
+    dataprev:dadosConta.dataprev,
+    descricao:dadosConta.descricao,
+    tipo:dadosConta.tipo,
+    status:'FINALIZADO',
+    valor:dadosConta.valor,
+    parcelas:dadosConta.parcela,
+  })
+  if(contaAtualizada){
+    await toast.promise(
+      api.post('/novoLancamento', {
+        id_usuario: Number(usuario?.id),
+        id_grupo: Number(dadosConta.id_grupo),
+        datalanc: new Date(),
+        conta: dadosConta.conta,
+        conta_n: dadosConta.conta,
+        descricao: dadosConta.descricao_conta,
+        historico: dadosConta.descricao.toUpperCase(),
+        valor: dadosConta.valor,
+        usuario: usuario?.nome.toUpperCase(),
+        data: new Date(),
+        tipo: dadosConta.tipo_conta
+      }),
+      {
+        error: 'Erro realizar Lançamento',
+        pending: 'Realizando Lançamento',
+        success: 'Lançado com sucesso!'
+      }
+    )
+
+  }
+ 
+  
+} catch (error) {
+  
+}
+
+    await listarContasReq()
+
+
+  }
+
+
+
+
 
   useEffect(() => {
     const receitasMap = listaLancamentos.reduce((acumulador, atual) => {
@@ -675,8 +744,8 @@ export default function LoginFinaceiro() {
                 <option value={0}>SETOR (TODOS)</option>
 
                 {grupos?.map((item, index) => (
-                  <option className="text-xs" key={index} value={item.id_grupo}>
-                    <input checked className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox" value={item.descricao} />
+                  <option className="text-xs text-white" key={index} value={item.id_grupo}>
+                    {item.descricao}
                   </option>
 
                 ))}
@@ -924,14 +993,14 @@ export default function LoginFinaceiro() {
               <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
 
 
-        
+
               <div className="inline-flex  items-center  gap-3">
                 <div className="flex items-center ">
-                  <input type="checkbox" checked={abertoFinalizado===1} onChange={() => {abertoFinalizado===1?setAbertoFinalizado(0):setAbertoFinalizado(1)}} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                  <input type="checkbox" checked={abertoFinalizado === 1} onChange={() => { abertoFinalizado === 1 ? setAbertoFinalizado(0) : setAbertoFinalizado(1) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                   <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">ABERTO</label>
                 </div>
                 <div className="flex items-center ">
-                  <input type="checkbox" checked={abertoFinalizado===2} onChange={() => {abertoFinalizado===2?setAbertoFinalizado(0):setAbertoFinalizado(2)}} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                  <input type="checkbox" checked={abertoFinalizado === 2} onChange={() => { abertoFinalizado === 2 ? setAbertoFinalizado(0) : setAbertoFinalizado(2) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                   <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">FINALIZADO</label>
                 </div>
                 <DatePicker
@@ -965,24 +1034,107 @@ export default function LoginFinaceiro() {
                 !loading ? <button onClick={() => listarDados()} className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCAR<IoSearch size={18} /></button> :
                   <button className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCANDO..<AiOutlineLoading3Quarters size={20} className="animate-spin" /></button>
               }
-              <button onClick={()=>setModal(true)} className="inline-flex p-1 gap-1 items-center bg-green-600 rounded-lg" ><IoIosAddCircle size={20} /> NOVO</button>
+              <button onClick={() => setModal(true)} className="inline-flex p-1 gap-1 items-center bg-green-600 rounded-lg" ><IoIosAddCircle size={20} /> NOVO</button>
             </div>
+            {excluir === 1 && (<div id="excluir lancamento" className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+              <div className="flex items-center justify-center p-2 w-full h-full">
+                <div className="relative rounded-lg shadow bg-gray-800">
+                  <button type="button" onClick={() => setExcluir(0)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                    <button type="button" onClick={() => setExcluir(0)} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                      <IoIosClose size={30} />
+                    </button>
+                  </button>
+                  <div className="p-4 md:p-5 text-center">
+                    <div className="flex w-full justify-center items-center">
+                      <TbAlertTriangle className='text-gray-400' size={60} />
+                    </div>
+                    <h3 className="mb-5 text-lg font-normal  text-gray-400">Realmente deseja deletar esse lançamento ?</h3>
+
+                    <button onClick={() => contaDelete()} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+                      Sim, tenho certeza
+                    </button>
+                    <button onClick={() => setExcluir(0)} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
+                  </div>
+                </div>
+              </div>
+            </div>)}
+
+
+
+            {excluir === 2 && (<div id="Lançar conta no caixa" className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+              <div className="flex items-center justify-center p-2 w-full h-full">
+                <div className="relative rounded-lg shadow bg-gray-800">
+                  <button type="button" onClick={() => setExcluir(0)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                    <button type="button" onClick={() => setExcluir(0)} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                      <IoIosClose size={30} />
+                    </button>
+                  </button>
+                  <div className="p-4 md:p-5 text-center">
+                    <div className="flex w-full justify-center items-center">
+                      <TbAlertTriangle className='text-gray-400' size={60} />
+                    </div>
+                    <h3 className="mb-5 text-lg font-normal  text-gray-400">Selecione os detalhes do lancamento</h3>
+                    <div className="flex flex-col w-full gap-3 mb-2">
+
+
+                      <select defaultValue={dadosConta.id_grupo} onChange={e => {
+                        const item = grupos?.find(item => item.id_grupo === Number(e.target.value))
+
+                        setarDadosConta({ ...dadosConta, id_grupo: Number(item?.id_grupo), descricao_grupo: item?.descricao })
+                      }
+
+                      } className="block  pt-1 pb-1.5 w-full pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+                        <option value={''}>SETOR</option>
+                        {grupos?.map((item, index) => (
+                          <option key={index} value={item.id_grupo}>{item.descricao}</option>
+
+                        ))
+                        }
+
+
+                      </select>
+
+
+
+
+                      <select defaultValue={dadosConta.descricao_conta} onChange={e => {
+                        const item = arraygeral.find(item => item.conta === e.target.value)
+
+
+                        setarDadosConta({ ...dadosConta, conta: item?.conta, descricao_conta: item?.descricao, tipo_conta: item?.tipo })
+                      }} className="block  pt-1 pb-1.5 w-full pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+                        <option value={''}>PLANO DE CONTA</option>
+                        {arraygeral?.map((item, index) => (
+                          <option key={index} value={item.conta}>{item.descricao}</option>
+                        ))}
+                      </select>
+
+
+                    </div>
+
+
+                    <button onClick={() => lancarMovimentacao()} data-modal-hide="popup-modal" type="button" className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+                      LANÇAR
+                    </button>
+                    <button onClick={() => setExcluir(0)} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
+                  </div>
+                </div>
+              </div>
+            </div>)}
+
             <div className="flex flex-col  px-4 w-full overflow-y-auto max-h-[calc(100vh-210px)] text-white bg-[#2b2e3b] rounded-lg ">
               <ul className="flex flex-col w-full p-2 gap-1 text-sm">
                 <li className="flex flex-col w-full  text-xs pl-4 border-b-[1px] ">
                   <div className="inline-flex w-full items-center">
-                 
                     <div className="flex w-full gap-8  items-center">
-                    <span className="flex w-full font-semibold">DESCRIÇÃO</span>
+                      <span className="flex w-full font-semibold">DESCRIÇÃO</span>
                       <span className="flex w-full text-start whitespace-nowrap ">TIPO</span>
                       <span className="flex w-full text-start whitespace-nowrap">VALOR</span>
                       <span className="flex w-full text-start whitespace-nowrap ">DATA PREVISTA</span>
                       <span className="flex w-full text-start whitespace-nowrap ">REAGENDADO PARA</span>
                       <span className="flex w-full text-start whitespace-nowrap ">DATA PAG.</span>
                       <span className="flex w-full text-start whitespace-nowrap ">STATUS</span>
-                      
                       <span className="flex w-full text-start whitespace-nowrap justify-end ">AÇÕES</span>
-                     
                     </div>
                   </div>
                 </li>
@@ -1007,22 +1159,38 @@ export default function LoginFinaceiro() {
                       <li className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
                         <div className="inline-flex w-full items-center">
                           <div className="flex w-full gap-8  items-center">
-                          <span className="flex w-full font-semibold">{item.descricao}</span>
-                          <span className="inline-flex w-full text-start whitespace-nowrap"><span className={`inline-flex  rounded-lg ${item.tipo=='PAGAR'?"bg-red-500":"bg-green-500"}   p-1`}>{item.tipo}</span></span>
+                            <span className="flex w-full font-semibold">{item.descricao}</span>
+                            <span className="inline-flex w-full text-start whitespace-nowrap"><span className={`inline-flex  rounded-lg ${item.tipo == 'PAGAR' ? "bg-red-500" : "bg-green-500"}   p-1`}>{item.tipo}</span></span>
                             <span className="flex w-full text-start whitespace-nowrap font-semibold">{formatter.format(Number(item.valor))}</span>
-                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.dataprev && new Date(new Date(item.dataprev).getUTCFullYear(),new Date(item.dataprev).getUTCMonth(),new Date(item.dataprev).getUTCDate()).toLocaleDateString('pt-BR')}</span>
-                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.dataReag && new Date(new Date(item.dataReag).getUTCFullYear(),new Date(item.dataReag).getUTCMonth(),new Date(item.dataReag).getUTCDate()).toLocaleDateString('pt-BR')}</span>
-                               <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.datapag && new Date(new Date(item.datapag).getUTCFullYear(),new Date(item.datapag).getUTCMonth(),new Date(item.datapag).getUTCDate()).toLocaleDateString('pt-BR')}</span>
-                               <span className="inline-flex w-full text-start whitespace-nowrap"><span className={`inline-flex  rounded-lg ${item.status=='ABERTO'?"bg-yellow-500":"bg-green-500"}   p-1`}>{item.status}</span></span>
+                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.dataprev && new Date(new Date(item.dataprev).getUTCFullYear(), new Date(item.dataprev).getUTCMonth(), new Date(item.dataprev).getUTCDate()).toLocaleDateString('pt-BR')}</span>
+                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.dataReag && new Date(new Date(item.dataReag).getUTCFullYear(), new Date(item.dataReag).getUTCMonth(), new Date(item.dataReag).getUTCDate()).toLocaleDateString('pt-BR')}</span>
+                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.datapag && new Date(new Date(item.datapag).getUTCFullYear(), new Date(item.datapag).getUTCMonth(), new Date(item.datapag).getUTCDate()).toLocaleDateString('pt-BR')}</span>
+                            <span className="inline-flex w-full text-start whitespace-nowrap"><span className={`inline-flex  rounded-lg ${item.status == 'ABERTO' ? "bg-yellow-500" : "bg-green-500"}   p-1`}>{item.status}</span></span>
                             <div className="inline-flex w-full text-start justify-end whitespace-nowrap">
-                              <button onClick={()=>contaDelete(Number(item.id_conta))} className="rounded-lg text-red-600 hover:bg-gray-300 p-1"><MdDelete size={16}/></button>
-                              <button className="rounded-lg text-blue-500 hover:bg-gray-300 p-1"><MdModeEditOutline size={16}/></button>
-                              <button className="rounded-lg text-green-500 hover:bg-gray-300 p-1"><IoCheckmarkDoneCircleSharp size={16}/></button>
-                              </div>
-                           
+                              <button onClick={() => { setDadosConta({ id_conta: item.id_conta }), setExcluir(1) }} className="rounded-lg text-red-600 hover:bg-gray-300 p-1"><MdDelete size={18} /></button>
+                              <button className="rounded-lg text-blue-500 hover:bg-gray-300 p-1"><MdModeEditOutline size={18} /></button>
+                              <button onClick={() => {
+                                setarDadosConta({
+                                  ...dadosConta,
+                                  dataLanc: item.dataLanc,
+                                  descricao: item.descricao,
+                                  tipo: item.tipo,
+                                  status: item.status,
+                                  valor: item.valor,
+                                  id_conta:item.id_conta,
+                                  dataprev:item.dataprev,
+                                  dataReag:item.dataReag
+                                })
+                                setExcluir(2)
+                              }}
+                                className="rounded-lg text-green-500 hover:bg-gray-300 p-1">
+                                <IoCheckmarkDoneCircleSharp size={18} />
+                              </button>
+                            </div>
+
                           </div>
                         </div>
-                      
+
                       </li>
                     )
                   })
@@ -1041,13 +1209,13 @@ export default function LoginFinaceiro() {
                     <form>
 
                       <label className="flex flex-row justify-start mb-4 border-b-[1px] text-lg border-gray-500 font-semibold mt-2 gap-2 text-white">NOVO LANÇAMENTO</label>
-                    
+
 
                       <div className="p-2   grid mt-2 w-full gap-2 grid-flow-row-dense grid-cols-4">
-                      <div className="mb-1  col-span-1 w-full ">
+                        <div className="mb-1  col-span-1 w-full ">
                           <label className="block  mb-1 text-xs font-medium  text-white">TIPO</label>
-                          <select value={dadosConta.tipo} onChange={e =>setarDadosConta({...dadosConta,tipo:e.target.value})} className="block  pt-1 pb-1.5 w-full pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                          <option value={''}></option>
+                          <select value={dadosConta.tipo} onChange={e => setarDadosConta({ ...dadosConta, tipo: e.target.value })} className="block  pt-1 pb-1.5 w-full pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+                            <option value={''}></option>
                             <option value={'PAGAR'}>PAGAR</option>
                             <option value={'RECEBER'}>RECEBER</option>
                           </select>
@@ -1055,14 +1223,14 @@ export default function LoginFinaceiro() {
                         </div>
                         <div className="ml-2 justify-start ">
                           <label className="block w-full mb-1 text-xs font-medium  text-white">DATA PREVISTA</label>
-                          <DatePicker selected={dadosConta.dataprev} onChange={e => e && setarDadosConta({...dadosConta,dataprev:e})} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+                          <DatePicker selected={dadosConta.dataprev} onChange={e => e && setarDadosConta({ ...dadosConta, dataprev: e })} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
                         </div>
 
                         <div className="mb-1  col-span-1 w-full ">
                           <label className="block  mb-1 text-xs font-medium  text-white">PARCELAS</label>
-                          <select defaultValue={dadosConta.parcela} onChange={e => setarDadosConta({...dadosConta,parcela:Number(e.target.value)})} className="block w-full pt-1 pb-1.5 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                          <option value={''}></option>
-                              <option value={1}>1</option>
+                          <select defaultValue={dadosConta.parcela} onChange={e => setarDadosConta({ ...dadosConta, parcela: Number(e.target.value) })} className="block w-full pt-1 pb-1.5 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+                            <option value={''}></option>
+                            <option value={1}>1</option>
                             <option value={2}>2</option>
                             <option value={3}>3</option>
                             <option value={4}>4</option>
@@ -1077,15 +1245,15 @@ export default function LoginFinaceiro() {
                           </select>
 
                         </div>
-                        
-                      
+
+
                         <div className="mb-1 col-span-4">
                           <label className="block mb-1 text-xs font-medium  text-white">DESCRIÇÃO</label>
-                          <input type="text" value={dadosConta.descricao} onChange={e => setarDadosConta({...dadosConta,descricao:e.target.value})} className="block w-full  pt-1.5 pb-1.5 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                          <input type="text" value={dadosConta.descricao} onChange={e => setarDadosConta({ ...dadosConta, descricao: e.target.value })} className="block w-full  pt-1.5 pb-1.5 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                         </div>
                         <div className="mb-1 col-span-1">
                           <label className="block mb-1 text-xs font-medium  text-white">VALOR</label>
-                          <input value={dadosConta.valor} onChange={e =>{setarDadosConta({...dadosConta,valor:Number(e.target.value)})}} type="number" inputMode="decimal" className="block w-full  pt-1.5 pb-1.5 pl-2 pr-2 border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                          <input value={dadosConta.valor} onChange={e => { setarDadosConta({ ...dadosConta, valor: Number(e.target.value) }) }} type="number" inputMode="decimal" className="block w-full  pt-1.5 pb-1.5 pl-2 pr-2 border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                         </div>
                         <div className=" gap-2 col-span-4  flex flex-row justify-end">
 
