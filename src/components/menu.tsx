@@ -16,11 +16,6 @@ import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import { RxDrawingPinFilled } from "react-icons/rx";
 
-
-
-
-
-
 export function MenuLateral(){
    const socket = io("https://apiafap.onrender.com");
     const [isOpen,setIsOpen]=useState(false);
@@ -28,11 +23,10 @@ export function MenuLateral(){
     const [isAdmOpen,setIsAdmOpen]= useState(false );
     const [isCaixaOpen,setIsCaixaOpen] = useState(false);
     const [isServicosOpen,setIsServicosOpen] =useState(false);
+    const [isComercialOpen,setIsComercialOpen] = useState(false)
     const[notifyCount,setCount] = useState<number>();
     
  
-
-  
   useEffect(() => {
     if(!usuario){
         user();
@@ -73,14 +67,9 @@ async function contagem() {
    
 }
 
-
-
-
   return (
-
-   
+ 
     <div className='flex flex-col w-full'>
-
     <header className='border-b-[1px] border-gray-500'>
 <nav className="border-gray-200 px-4 lg:px-6 py-2.5  " >
     <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
@@ -88,7 +77,6 @@ async function contagem() {
             <Image onClick={()=>setIsOpen(!isOpen)}  src={logo}  className="cursor-pointer w-full mr-2 h-8 sm:h-11" alt="Flowbite Logo" />
             <span className="inline-flex whitespace-nowrap w-full text-xl font-semibold  text-white">SISTEMA DE GERENCIAMENTO AFAP</span>
         </div>
-       
         <div className="flex relative items-center gap-4">
   <div className="relative">      
 <Link href={"/notifications"}   className="relative inline-flex items-center p-1 text-sm font-medium text-center text-white  rounded-lg  hover:bg-gray-700 ">
@@ -134,6 +122,23 @@ async function contagem() {
         <li>
             <Link href="/admcontrato" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Adm Contrato</Link>
         </li>
+        
+        <li >
+    <button type="button" className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsCaixaOpen(!isCaixaOpen)}>
+      <FaMoneyBillTransfer  size={23}/>
+        <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Caixa</span>
+        <FaAngleDown size={18}/>
+    </button>
+    <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isCaixaOpen && "hidden"}`}>
+        <li>
+            <Link href='/caixa' onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-16 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Movimentar</Link>
+        </li>
+        <li>
+            <a href="#" className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-16 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Relatórios</a>
+        </li>
+      
+    </ul>
+</li>
         <li>
             <Link href="/gerenciarAdministrativo" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Gerenciar</Link>
         </li>
@@ -143,22 +148,22 @@ async function contagem() {
         </li>
     </ul>
 </li>
-         <li >
-    <button type="button" className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsCaixaOpen(!isCaixaOpen)}>
-      <FaMoneyBillTransfer  size={23}/>
-        <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Caixa</span>
-        <FaAngleDown size={18}/>
+<li >
+    <button type="button" className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsComercialOpen(!isComercialOpen)}>
+    <MdManageAccounts size={25}/>
+        <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Comercial</span>
+            <FaAngleDown size={18}/>
     </button>
-    <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isCaixaOpen && "hidden"}`}>
+    <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isComercialOpen && "hidden"}`}>
         <li>
-            <Link href='/caixa' onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Movimentar</Link>
+            <Link href="/vendas" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Vendas</Link>
         </li>
-        <li>
-            <a href="#" className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Relatórios</a>
-        </li>
-      
+        
+     
     </ul>
 </li>
+
+
          <li>
             <Link href="/notifications" onClick={()=>setIsOpen(false)} className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -185,8 +190,6 @@ async function contagem() {
         <li>
             <a href="#" className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Relatórios</a>
         </li>
-       
-      
     </ul>
 </li>
          <li>
