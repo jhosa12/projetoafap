@@ -19,6 +19,7 @@ import { GoArrowDownLeft } from "react-icons/go";
 import { GoArrowUpRight } from "react-icons/go";
 import { MdDelete } from "react-icons/md";
 import { MdModeEditOutline } from "react-icons/md";
+import { IoCheckmarkDoneCircleSharp } from "react-icons/io5";
 
 
 interface DataProps {
@@ -100,6 +101,7 @@ interface ContaProps{
   datapag:Date,
   dataReag:Date,
   tipo:string,
+  status:string,
   descricao:string,
   valor:number,
   parcela:number
@@ -1011,10 +1013,11 @@ export default function LoginFinaceiro() {
                             <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.dataprev && new Date(new Date(item.dataprev).getUTCFullYear(),new Date(item.dataprev).getUTCMonth(),new Date(item.dataprev).getUTCDate()).toLocaleDateString('pt-BR')}</span>
                             <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.dataReag && new Date(new Date(item.dataReag).getUTCFullYear(),new Date(item.dataReag).getUTCMonth(),new Date(item.dataReag).getUTCDate()).toLocaleDateString('pt-BR')}</span>
                                <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.datapag && new Date(new Date(item.datapag).getUTCFullYear(),new Date(item.datapag).getUTCMonth(),new Date(item.datapag).getUTCDate()).toLocaleDateString('pt-BR')}</span>
-                               <span className="inline-flex w-full text-start whitespace-nowrap"><span className={`inline-flex  rounded-lg ${item.tipo=='PAGAR'?"bg-red-500":"bg-green-500"}   p-1`}>{item.tipo}</span></span>
+                               <span className="inline-flex w-full text-start whitespace-nowrap"><span className={`inline-flex  rounded-lg ${item.status=='ABERTO'?"bg-yellow-500":"bg-green-500"}   p-1`}>{item.status}</span></span>
                             <div className="inline-flex w-full text-start justify-end whitespace-nowrap">
                               <button onClick={()=>contaDelete(Number(item.id_conta))} className="rounded-lg text-red-600 hover:bg-gray-300 p-1"><MdDelete size={16}/></button>
                               <button className="rounded-lg text-blue-500 hover:bg-gray-300 p-1"><MdModeEditOutline size={16}/></button>
+                              <button className="rounded-lg text-green-500 hover:bg-gray-300 p-1"><IoCheckmarkDoneCircleSharp size={16}/></button>
                               </div>
                            
                           </div>

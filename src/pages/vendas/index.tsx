@@ -13,6 +13,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { IoIosClose } from "react-icons/io";
+import { IoAddCircle } from "react-icons/io5";
 interface VendasProps {
     consultor: string,
     _sum: { valor_mensalidade: number },
@@ -40,6 +41,7 @@ export default function Vendas() {
     const [somaVendas,setSomaVendas] =useState<number>(0)
     const [aba,setAba] = useState(1)
     const [arrayMetas,setMetas]=useState<Array<MetasProps>>([])
+    const [modalMetas,setModalMetas] = useState<boolean>(false)
 
     async function dadosVendas() {
         try {
@@ -124,7 +126,7 @@ export default function Vendas() {
                         <button onClick={()=>dadosVendas()} className='text-xs bg-green-700 rounded-lg p-1'> Buscar</button>
 
                     </div>
-                    <button className='bg-gray-600 p-1 rounded-lg text-sm ml-auto'>NOVA META</button>
+                    <button onClick={()=>setModalMetas(true)} className='bg-gray-600 p-1 rounded-lg text-sm ml-auto'>NOVA META</button>
                 </div>
 
 
@@ -257,37 +259,69 @@ export default function Vendas() {
                         </ul>
                     </div>
                 </div>
-                       { <div className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
+                       {modalMetas && <div className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
                 <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
                   <div className="fixed flex flex-col  w-2/4 p-4 rounded-lg  shadow bg-gray-800">
-                  <button type="button" onClick={() => {}} className="absolute cursor-pointer top-0 right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                  <button type="button" onClick={() =>setModalMetas(!modalMetas)} className="absolute cursor-pointer top-0 right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
                       <IoIosClose size={30} />
                     </button>
                  
 
 <label className="flex flex-row justify-start mb-4 border-b-[1px] text-lg border-gray-500 font-semibold mt-2 gap-2 text-white">METAS</label>
+<div className='flex flex-row gap-2 items-end ml-auto'>
+<div className="mb-1 ">
+                          <label className="block w-full mb-1 text-xs font-medium  text-white">DATA FIM</label>
+                        
+              <select value={''} onChange={e => {
+              }} className="flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+                <option value={0}>SETOR (TODOS)</option>  
+
+                {arrayMetas?.map((item, index) => (
+                  <option className="text-xs" key={index} value={item.id_grupo}>
+                    <input checked className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox" value={item.descricao} />
+                  </option>
+
+                ))}
+              </select>
+                        </div>
+
+         <div className="mb-1 ">
+                          <label className="block w-full mb-1 text-xs font-medium  text-white">DATA INICIO</label>
+                          <DatePicker selected={new Date()} onChange={e => {}} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase  w-full pb-1 pt-1 pr-2 pl-2 text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+                        </div>
+                        <div className="mb-1 ">
+                          <label className="block w-full mb-1 text-xs font-medium  text-white">DATA FIM</label>
+                          <DatePicker selected={new Date()} onChange={e => {}} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase  w-full pb-1 pt-1 pr-2 pl-2 text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+                        </div>
+
+                        <div className="mb-1 ">
+        <label className="block mb-1 text-xs font-medium  text-white">VALOR</label>
+         <input type="text" value={''} onChange={e => {}} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+         </div>
+         <button className='flex   pb-1.5'><IoAddCircle size={23}/></button>
+         
+</div>
+
 <div className="flex-col overflow-auto w-full justify-center items-center max-h-[350px] bg-gray-800 rounded-lg mb-4 pl-2 pr-2">
     <table 
     className="flex-col w-full p-2 overflow-y-auto overflow-x-auto  text-xs text-center rtl:text-center border-collapse  rounded-lg text-gray-400">
     <thead className=" text-xs uppercase bg-gray-700 text-gray-400">
             <tr >
-                <th scope="col" className="px-2 py-1">
-                    NP
+              
+                <th scope="col" className=" px-2 py-1">
+                    DESCRIÇÃO
                 </th>
                 <th scope="col" className=" px-2 py-1">
-                    DATA VENC.
-                </th>
-                <th scope="col" className=" px-2 py-1">
-                    REF
+                    DATA INICIO
                 </th>
                 <th scope="col" className="px-4 py-1">
-                    DATA AGEND.
+                    DATA FIM.
                 </th>
                 <th scope="col" className="px-2 py-1">
                     VALOR
                 </th>
                 <th scope="col" className="px-2 py-1">
-                    status
+                   AÇÕES	
                 </th>
             </tr>
         </thead>
@@ -295,16 +329,14 @@ export default function Vendas() {
             {arrayMetas.map((item,index)=>(  
                 <tr key={index} 
                 className={` border-b "bg-gray-800"} border-gray-700 `}>
-                <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
-                    {item.id_meta}
-                </th>
+                <td className="px-2 py-1">
+                   {item.descricao}
+                </td>
                 <td className={`px-2 py-1 `}>
                    {new Date(item.date || '').toLocaleDateString()}
                    
                 </td>
-                <td className="px-2 py-1">
-                   {item.descricao}
-                </td>
+               
                 <td className="px-5 py-1">
                 {new Date(item.dateFimMeta || '').toLocaleDateString()}
                 </td>
