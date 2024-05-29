@@ -524,6 +524,7 @@ export default function LoginFinaceiro() {
 try {
   const contaAtualizada = await api.put('/conta/editar',{
     id_conta:Number(dadosConta.id_conta),
+    datapag:new Date(),
     dataLanc:dadosConta.dataLanc,
     dataReag:dadosConta.dataReag,
     dataprev:dadosConta.dataprev,
