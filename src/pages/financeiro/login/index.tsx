@@ -558,14 +558,10 @@ try {
 
   }
  
-  
 } catch (error) {
   
 }
-
     await listarContasReq()
-
-
   }
 
 

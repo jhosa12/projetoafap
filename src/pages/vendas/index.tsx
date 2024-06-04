@@ -14,6 +14,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { IoIosClose } from "react-icons/io";
 import { IoAddCircle } from "react-icons/io5";
+import { toast } from 'react-toastify';
 interface VendasProps {
     consultor: string,
     _sum: { valor_mensalidade: number },
@@ -26,11 +27,17 @@ interface MetasProps{
     valor:number,
     descricao:string,
     date:Date,
-    dateFimMeta:Date
+    dateFimMeta:Date,
+    descricao_grupo:string
+}
+interface SetorProps{
+    id_grupo:number,
+    descricao:string
 }
 interface ResponseProps{
     grupos:Array<VendasProps>,
     metas:Array<MetasProps>
+    setor:Array<SetorProps>
 }
 export default function Vendas() {
     const { usuario } = useContext(AuthContext)
@@ -41,7 +48,22 @@ export default function Vendas() {
     const [somaVendas,setSomaVendas] =useState<number>(0)
     const [aba,setAba] = useState(1)
     const [arrayMetas,setMetas]=useState<Array<MetasProps>>([])
+    const [arraySetores,setSetores]=useState<Array<SetorProps>>([])
     const [modalMetas,setModalMetas] = useState<boolean>(false)
+    const [dadosMetas,setDadosMetas]=useState<Partial<MetasProps>>({})
+
+
+    const setarDadosMetas = (fields:Partial<MetasProps>)=>{
+        setDadosMetas((prev:Partial<MetasProps>)=>{
+            if(prev){
+                return {...prev,...fields}
+            }
+            else{
+                return {...fields}
+            }
+
+        })
+    }
 
     async function dadosVendas() {
         try {
@@ -51,9 +73,10 @@ export default function Vendas() {
                     dataFim: endDate
                 }
             )
-            const {grupos,metas} =response.data;
+            const {grupos,metas,setores} =response.data;
             setDados(grupos)
             setMetas(metas)
+            setSetores(setores)
         } catch (error) {
 
         }
@@ -62,6 +85,30 @@ export default function Vendas() {
     useEffect(() => {
         dadosVendas()
     }, [])
+
+
+    async function novaMeta() {
+        try {
+             await toast.promise(
+                api.post('/vendas/novaMeta',{
+                    id_grupo:dadosMetas.id_grupo,
+                    date:dadosMetas.date,
+                    dateFimMeta:dadosMetas.dateFimMeta,
+                    valor:dadosMetas.valor,
+                    descricao:`META SETOR ${dadosMetas.descricao_grupo}`
+                }),
+                {
+                    error:'Erro ao salvar dados',
+                    pending:'Salvando Dados....',
+                    success:'Dados Savos com Sucesso'
+                }
+            )
+        } catch (error) {
+            toast.error('Erro')
+            
+        }
+        
+    }
     
 
     return (
@@ -272,13 +319,16 @@ export default function Vendas() {
 <div className="mb-1 ">
                           <label className="block w-full mb-1 text-xs font-medium  text-white">DATA FIM</label>
                         
-              <select value={''} onChange={e => {
+              <select value={dadosMetas.id_grupo} onChange={e => {
+                const item = arraySetores.find(item=>item.id_grupo===Number(e.target.value))
+                setarDadosMetas({...dadosMetas,id_grupo:item?.id_grupo,descricao_grupo:item?.descricao})
+
               }} className="flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
                 <option value={0}>SETOR (TODOS)</option>  
 
-                {arrayMetas?.map((item, index) => (
+                {arraySetores?.map((item, index) => (
                   <option className="text-xs" key={index} value={item.id_grupo}>
-                    <input checked className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox" value={item.descricao} />
+                     {item.descricao} 
                   </option>
 
                 ))}
@@ -287,18 +337,18 @@ export default function Vendas() {
 
          <div className="mb-1 ">
                           <label className="block w-full mb-1 text-xs font-medium  text-white">DATA INICIO</label>
-                          <DatePicker selected={new Date()} onChange={e => {}} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase  w-full pb-1 pt-1 pr-2 pl-2 text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+                          <DatePicker selected={dadosMetas.date} onChange={e =>{e && setarDadosMetas({...dadosMetas,date:e})}} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase  w-full pb-1 pt-1 pr-2 pl-2 text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
                         </div>
                         <div className="mb-1 ">
                           <label className="block w-full mb-1 text-xs font-medium  text-white">DATA FIM</label>
-                          <DatePicker selected={new Date()} onChange={e => {}} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase  w-full pb-1 pt-1 pr-2 pl-2 text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+                          <DatePicker selected={dadosMetas.dateFimMeta} onChange={e => {e && setarDadosMetas({...dadosMetas,dateFimMeta:e})}} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase  w-full pb-1 pt-1 pr-2 pl-2 text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
                         </div>
 
                         <div className="mb-1 ">
         <label className="block mb-1 text-xs font-medium  text-white">VALOR</label>
-         <input type="text" value={''} onChange={e => {}} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+         <input type="text" value={dadosMetas.valor} onChange={e => setarDadosMetas({...dadosMetas,valor:Number(e.target.value)})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
          </div>
-         <button className='flex   pb-1.5'><IoAddCircle size={23}/></button>
+         <button onClick={()=>novaMeta()} className='flex   pb-1.5'><IoAddCircle size={23}/></button>
          
 </div>
 
