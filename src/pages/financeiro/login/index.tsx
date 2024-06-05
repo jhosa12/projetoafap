@@ -519,51 +519,59 @@ export default function LoginFinaceiro() {
 
   async function lancarMovimentacao() {
 
-    if (!dadosConta.descricao || !dadosConta.id_grupo || !dadosConta.conta) {
+    if (dadosConta.status === 'FINALIZADO' && (!dadosConta.descricao || !dadosConta.id_grupo || !dadosConta.conta)) {
       toast.warn('Preencha todos os campos obrigatórios')
       return;
     }
 
-try {
-  const contaAtualizada = await api.put('/conta/editar',{
-    id_conta:Number(dadosConta.id_conta),
-    datapag:dadosConta.status==='FINALIZADO'?new Date():null,
-    dataLanc:dadosConta.dataLanc,
-    dataReag:dadosConta.dataReag,
-    dataprev:dadosConta.dataprev,
-    descricao:dadosConta.descricao,
-    tipo:dadosConta.tipo,
-    status:dadosConta.status,
-    valor:dadosConta.valor,
-    parcelas:dadosConta.parcela,
-  })
-  if(contaAtualizada){
-    await toast.promise(
-      api.post('/novoLancamento', {
-        id_usuario: Number(usuario?.id),
-        id_grupo: Number(dadosConta.id_grupo),
-        datalanc: new Date(),
-        conta: dadosConta.conta,
-        conta_n: dadosConta.conta,
-        descricao: dadosConta.descricao_conta,
-        historico: dadosConta.descricao.toUpperCase(),
-        valor: dadosConta.valor,
-        usuario: usuario?.nome.toUpperCase(),
-        data: new Date(),
-        tipo: dadosConta.tipo_conta
-      }),
-      {
-        error: 'Erro realizar Lançamento',
-        pending: 'Realizando Lançamento',
-        success: 'Lançado com sucesso!'
-      }
-    )
+    try {
+      const contaAtualizada = await toast.promise(
+        api.put('/conta/editar', {
+          id_conta: Number(dadosConta.id_conta),
+          datapag: dadosConta.status === 'FINALIZADO' ? new Date() : null,
+          dataLanc: dadosConta.dataLanc,
+          dataReag: dadosConta.dataReag,
+          dataprev: dadosConta.dataprev,
+          descricao: dadosConta.descricao,
+          tipo: dadosConta.tipo,
+          status: dadosConta.status,
+          valor: dadosConta.valor,
+          parcelas: dadosConta.parcela,
+        }),
+        {
+          error:'Erro ao alterar conta',
+          pending:'Alterando conta..',
+          success:'Conta alterada com sucesso!'
+        }
+      ) 
+      if (contaAtualizada && dadosConta.status === 'FINALIZADO') {
+        await toast.promise(
+          api.post('/novoLancamento', {
+            id_usuario: Number(usuario?.id),
+            id_grupo: Number(dadosConta.id_grupo),
+            datalanc: new Date(),
+            conta: dadosConta.conta,
+            conta_n: dadosConta.conta,
+            descricao: dadosConta.descricao_conta,
+            historico: dadosConta.descricao?.toUpperCase(),
+            valor: dadosConta.valor,
+            usuario: usuario?.nome.toUpperCase(),
+            data: new Date(),
+            tipo: dadosConta.tipo_conta,
+            cod_conta: dadosConta.id_conta
+          }),
+          {
+            error: 'Erro realizar Lançamento no Caixa',
+            pending: 'Realizando Lançamento no Caixa',
+            success: 'Lançado com sucesso!'
+          }
+        )
 
-  }
- 
-} catch (error) {
-  
-}
+      }
+
+    } catch (error) {
+
+    }
     await listarContasReq()
   }
 
@@ -991,9 +999,6 @@ try {
 
             <div className="flex  w-full bg-[#2b2e3b] px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
               <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
-
-
-
               <div className="inline-flex  items-center  gap-3">
                 <div className="flex items-center ">
                   <input type="checkbox" checked={abertoFinalizado === 1} onChange={() => { abertoFinalizado === 1 ? setAbertoFinalizado(0) : setAbertoFinalizado(1) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
@@ -1071,8 +1076,8 @@ try {
                     <div className="flex w-full justify-center items-center">
                       <TbAlertTriangle className='text-gray-400' size={60} />
                     </div>
-                    <h3 className="mb-5 text-lg font-normal  text-gray-400">Selecione os detalhes do lancamento</h3>
-                    <div className="flex flex-col w-full gap-3 mb-2">
+                    <h3 className="mb-5 text-lg font-normal  text-gray-400">{dadosConta.status==='FINALIZADO'?'SELECIONE OS DETALHES DO LANÇAMENTO':'REALMENTE DESEJA REALIZAR O ESTORNO ?'}</h3>
+                   {dadosConta.status ==='FINALIZADO' && <div className="flex flex-col w-full gap-3 mb-2">
 
 
                       <select defaultValue={dadosConta.id_grupo} onChange={e => {
@@ -1092,13 +1097,8 @@ try {
 
                       </select>
 
-
-
-
                       <select defaultValue={dadosConta.descricao_conta} onChange={e => {
                         const item = arraygeral.find(item => item.conta === e.target.value)
-
-
                         setarDadosConta({ ...dadosConta, conta: item?.conta, descricao_conta: item?.descricao, tipo_conta: item?.tipo })
                       }} className="block  pt-1 pb-1.5 w-full pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
                         <option value={''}>PLANO DE CONTA</option>
@@ -1108,11 +1108,11 @@ try {
                       </select>
 
 
-                    </div>
+                    </div>}
 
 
                     <button onClick={() => lancarMovimentacao()} data-modal-hide="popup-modal" type="button" className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
-                      LANÇAR
+                      {dadosConta.status==='FINALIZADO'?'LANÇAR':'Sim, tenho certeza'}
                     </button>
                     <button onClick={() => setExcluir(0)} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
                   </div>
@@ -1138,21 +1138,6 @@ try {
                 </li>
                 {
                   listaContas?.map((item, index) => {
-                    //   const soma = nome?.lancamentos?.reduce((total, item) => {
-                    //   if (item.conta === nome.conta) {
-                    //     return total + Number(item.valor)
-                    //   }
-                    //   else {
-                    //     return total
-                    //   }
-                    //   }, 0)
-                    // let porc;
-                    //  if (soma === 0 || nome?.metas[0]?.valor === 0 || soma === null || nome?.metas[0]?.valor === null || isNaN(Number(nome?.metas[0]?.valor))) {
-                    //    porc = 0;
-                    //  } else {
-                    //    porc = (soma * 100) / Number(nome?.metas[0].valor);
-                    //  }
-
                     return (
                       <li className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
                         <div className="inline-flex w-full items-center">
@@ -1167,7 +1152,7 @@ try {
                             <div className="inline-flex w-full text-start justify-end whitespace-nowrap">
                               <button onClick={() => { setDadosConta({ id_conta: item.id_conta }), setExcluir(1) }} className="rounded-lg text-red-600 hover:bg-gray-300 p-1"><MdDelete size={18} /></button>
                               <button className="rounded-lg text-blue-500 hover:bg-gray-300 p-1"><MdModeEditOutline size={18} /></button>
-                             {item.status==='FINALIZADO'? <button onClick={() => {
+                              {item.status === 'FINALIZADO' ? <button onClick={() => {
                                 setarDadosConta({
                                   ...dadosConta,
                                   dataLanc: item.dataLanc,
@@ -1175,15 +1160,18 @@ try {
                                   tipo: item.tipo,
                                   status: 'ABERTO',
                                   valor: item.valor,
-                                  id_conta:item.id_conta,
-                                  dataprev:item.dataprev,
-                                  dataReag:item.dataReag
-                                })
-                                setExcluir(2)
+                                  id_conta: item.id_conta,
+                                  dataprev: item.dataprev,
+                                  dataReag: item.dataReag
+                                });
+                                 setExcluir(2)
+                              
+
                               }}
                                 className="rounded-lg text-yellow-500 hover:bg-gray-300 p-1">
-                                <FaRepeat size={16} />
-                              </button>:<button onClick={() => {
+                                <FaRepeat size={15} />
+                              </button> :
+                               <button onClick={() => {
                                 setarDadosConta({
                                   ...dadosConta,
                                   dataLanc: item.dataLanc,
@@ -1191,9 +1179,9 @@ try {
                                   tipo: item.tipo,
                                   status: 'FINALIZADO',
                                   valor: item.valor,
-                                  id_conta:item.id_conta,
-                                  dataprev:item.dataprev,
-                                  dataReag:item.dataReag
+                                  id_conta: item.id_conta,
+                                  dataprev: item.dataprev,
+                                  dataReag: item.dataReag
                                 })
                                 setExcluir(2)
                               }}
