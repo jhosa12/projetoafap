@@ -20,56 +20,60 @@ interface VendasProps {
     consultor: string,
     _sum: { valor_mensalidade: number },
     _count: { dt_adesao: number },
-    situacao:string
+    situacao: string
 }
-interface MetasProps{
-    id_meta:number,
-    id_grupo:number,
-    id_conta:string,
-    valor:number,
-    descricao:string,
-    date:Date,
-    dateFimMeta:Date,
-    descricao_grupo:string
+interface MetasProps {
+    id_meta: number,
+    id_grupo: number,
+    id_conta: string,
+    valor: number,
+    descricao: string,
+    date: Date,
+    dateFimMeta: Date,
+    descricao_grupo: string
 }
-interface SetorProps{
-    id_grupo:number,
-    descricao:string
+interface SetorProps {
+    id_grupo: number,
+    descricao: string
 }
-interface ConsultoresProps{
-    funcao:string,
-    nome:string,
-    id_consultor:number
-    
+interface ConsultoresProps {
+    funcao: string,
+    nome: string,
+    id_consultor: number
+
 }
-interface ResponseProps{
-    grupos:Array<VendasProps>,
-    metas:Array<MetasProps>
-    setores:Array<SetorProps>
-    consultores:Array<ConsultoresProps>
+interface ResponseProps {
+    grupos: Array<VendasProps>,
+    metas: Array<MetasProps>
+    setores: Array<SetorProps>
+    consultores: Array<ConsultoresProps>
 }
+let formatter = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+});
 
 export default function Vendas() {
     const { usuario } = useContext(AuthContext)
     const [dados, setDados] = useState<Array<VendasProps>>([])
     const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
     const [endDate, setEndDate] = useState(new Date())
-    const [somaVendas,setSomaVendas] =useState<number>(0)
-    const [aba,setAba] = useState(1)
-    const [arrayMetas,setMetas]=useState<Array<MetasProps>>([])
-    const [arraySetores,setSetores]=useState<Array<SetorProps>>([])
-    const [modalMetas,setModalMetas] = useState<boolean>(false)
-    const [dadosMetas,setDadosMetas]=useState<Partial<MetasProps>>({})
-    const [consultores,setConsultores] = useState<Array<ConsultoresProps>>()
-    const [meta,setMeta] = useState<number>()
+    const [somaVendas, setSomaVendas] = useState<number>(0)
+    const [aba, setAba] = useState(1)
+    const [arrayMetas, setMetas] = useState<Array<MetasProps>>([])
+    const [arraySetores, setSetores] = useState<Array<SetorProps>>([])
+    const [modalMetas, setModalMetas] = useState<boolean>(false)
+    const [dadosMetas, setDadosMetas] = useState<Partial<MetasProps>>({})
+    const [consultores, setConsultores] = useState<Array<ConsultoresProps>>()
+    const [meta, setMeta] = useState<number>()
 
-    const setarDadosMetas = (fields:Partial<MetasProps>)=>{
-        setDadosMetas((prev:Partial<MetasProps>)=>{
-            if(prev){
-                return {...prev,...fields}
+    const setarDadosMetas = (fields: Partial<MetasProps>) => {
+        setDadosMetas((prev: Partial<MetasProps>) => {
+            if (prev) {
+                return { ...prev, ...fields }
             }
-            else{
-                return {...fields}
+            else {
+                return { ...fields }
             }
 
         })
@@ -83,17 +87,25 @@ export default function Vendas() {
                     dataFim: endDate
                 }
             )
-         
-            const {grupos,metas,setores,consultores}:ResponseProps =response.data;
-       const consultoresArray = consultores.reduce((acumulador,item)=>{
-                const itemExistente = acumulador.find(it=>it.nome===item.nome)
-                if(!itemExistente){
+
+            const { grupos, metas, setores, consultores }: ResponseProps = response.data;
+            const consultoresArray = consultores.reduce((acumulador, item) => {
+                const itemExistente = acumulador.find(it => it.nome === item.nome)
+                if (!itemExistente) {
                     acumulador.push(item)
                 }
                 return acumulador
-       },[] as ConsultoresProps[])
-        const metaAtual = metas.find(item=>new Date(item.date)>=new Date(startDate)&& new Date(item.dateFimMeta)<=new Date(endDate))
-        console.log(metaAtual)
+            }, [] as ConsultoresProps[])
+            const metaAtual = metas.reduce((acumulador, item) => {
+                if (new Date(item.date) >= new Date(startDate) && new Date(item.dateFimMeta) <= new Date(endDate)) {
+                    return acumulador += Number(item.valor)
+                }
+                return acumulador
+
+            }, 0)
+            setMeta(metaAtual)
+            console.log(consultoresArray)
+            console.log(metaAtual)
             setConsultores(consultoresArray)
             setDados(grupos)
             setMetas(metas)
@@ -110,33 +122,33 @@ export default function Vendas() {
 
     async function novaMeta() {
         try {
-             await toast.promise(
-                api.post('/vendas/novaMeta',{
-                    id_grupo:dadosMetas.id_grupo,
-                    date:dadosMetas.date,
-                    dateFimMeta:dadosMetas.dateFimMeta,
-                    valor:dadosMetas.valor,
-                    descricao:`META SETOR ${dadosMetas.descricao_grupo}`
+            await toast.promise(
+                api.post('/vendas/novaMeta', {
+                    id_grupo: dadosMetas.id_grupo,
+                    date: dadosMetas.date,
+                    dateFimMeta: dadosMetas.dateFimMeta,
+                    valor: dadosMetas.valor,
+                    descricao: `META SETOR ${dadosMetas.descricao_grupo}`
                 }),
                 {
-                    error:'Erro ao salvar dados',
-                    pending:'Salvando Dados....',
-                    success:'Dados Savos com Sucesso'
+                    error: 'Erro ao salvar dados',
+                    pending: 'Salvando Dados....',
+                    success: 'Dados Savos com Sucesso'
                 }
             )
         } catch (error) {
             toast.error('Erro')
-            
+
         }
 
         dadosVendas()
-        
+
     }
-    
+
 
     return (
         <>
-      { /*
+            { /*
           <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
        
           <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-30 bg-gray-300 ">
@@ -164,9 +176,9 @@ export default function Vendas() {
                 <div className='inline-flex w-full mb-1'>
                     <h1 className="font-semibold text-lg">ACOMPANHAMENTO DE VENDAS</h1>
                     <div id='FILTER' className='inline-flex ml-auto gap-2'>
-                       
+
                         <DatePicker
-                           
+
                             dateFormat={"dd/MM/yyyy"}
                             locale={pt}
                             selected={startDate}
@@ -179,7 +191,7 @@ export default function Vendas() {
                         <span> até </span>
 
                         <DatePicker
-                            
+
                             dateFormat={"dd/MM/yyyy"}
                             locale={pt}
                             selected={endDate}
@@ -190,10 +202,10 @@ export default function Vendas() {
                             minDate={startDate}
                             className=" flex py-1 pl-2 text-xs  border rounded-sm  bg-gray-700 border-gray-600  text-white "
                         />
-                        <button onClick={()=>dadosVendas()} className='text-xs bg-green-700 rounded-lg p-1'> Buscar</button>
+                        <button onClick={() => dadosVendas()} className='text-xs bg-green-700 rounded-lg p-1'> Buscar</button>
 
                     </div>
-                    <button onClick={()=>setModalMetas(true)} className='bg-gray-600 p-1 rounded-lg text-sm ml-auto'>NOVA META</button>
+                    <button onClick={() => setModalMetas(true)} className='bg-gray-600 p-1 rounded-lg text-sm ml-auto'>NOVA META</button>
                 </div>
 
 
@@ -202,7 +214,7 @@ export default function Vendas() {
                         <GoGoal size={30} />
                         <div className='flex flex-col '>
                             <span className='leading-none text-xs'>META</span>
-                            <span className='leading-none'>R$ 1000</span>
+                            <span className='leading-none'>{formatter.format(meta && consultores ? meta * consultores?.length : 0)}</span>
 
                         </div>
                     </div>
@@ -210,7 +222,7 @@ export default function Vendas() {
                         <FaPercentage size={30} />
                         <div className='flex flex-col '>
                             <span className='leading-none text-xs'>PERCENTUAL</span>
-                            <span className='leading-none'>10%</span>
+                            <span className='leading-none'>{((dados?.reduce((acumulador, atual) => acumulador += Number(atual._sum.valor_mensalidade), 0) * 100) / (meta && consultores ? meta * consultores?.length : 0)).toFixed(2)}%</span>
 
                         </div>
                     </div>
@@ -219,7 +231,7 @@ export default function Vendas() {
                         <GiStairsGoal size={30} />
                         <div className='flex flex-col '>
                             <span className='leading-none text-xs'>PRODUZIDO</span>
-                            <span className='leading-none'>R$ {dados?.reduce((acumulador,atual)=>acumulador+=Number(atual._sum.valor_mensalidade),0)}/{dados?.reduce((acumulador,atual)=>acumulador+=Number(atual._count.dt_adesao),0)}</span>
+                            <span className='leading-none'>{formatter.format(dados?.reduce((acumulador, atual) => acumulador += Number(atual._sum.valor_mensalidade), 0))}/{dados?.reduce((acumulador, atual) => acumulador += Number(atual._count.dt_adesao), 0)}</span>
 
                         </div>
                     </div>
@@ -227,7 +239,7 @@ export default function Vendas() {
                         <FaHandshake size={30} />
                         <div className='flex flex-col '>
                             <span className='leading-none text-xs'>PROSPECÇÕES</span>
-                            <span className='leading-none'>1000</span>
+                            <span className='leading-none'>0</span>
 
                         </div>
                     </div>
@@ -235,7 +247,7 @@ export default function Vendas() {
                         <GiRotaryPhone size={30} />
                         <div className='flex flex-col '>
                             <span className='leading-none text-xs'>LEADS</span>
-                            <span className='leading-none'>1000</span>
+                            <span className='leading-none'>0</span>
 
                         </div>
                     </div>
@@ -305,14 +317,14 @@ export default function Vendas() {
                                             </span>
                                             <span className="flex w-full text-start whitespace-nowrap">R$ {item._sum.valor_mensalidade}</span>
                                             <span className="flex w-full text-start whitespace-nowrap ">{item._count.dt_adesao}</span>
-                                            <span className="flex w-full text-start whitespace-nowrap ">100</span>
+                                            <span className="flex w-full text-start whitespace-nowrap ">{meta}</span>
                                             <div className='flex flex-col w-full leading-none'>
                                                 <div className="flex justify-between mb-1 leading-none">
 
-                                                    <span className="text-sm font-medium text-blue-700 dark:text-white leading-none">45%</span>
+                                                    <span className="text-sm font-medium text-blue-700 dark:text-white leading-none">{meta &&((item._sum.valor_mensalidade*100)/meta).toFixed(2)}%</span>
                                                 </div>
                                                 <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                                                    <div style={{ width: '45%' }} className="bg-blue-600 h-2.5 rounded-full" ></div>
+                                                    <div style={{ width:`${(meta &&((item._sum.valor_mensalidade*100)/meta).toFixed(2))}%` }} className="bg-blue-600 h-2.5 rounded-full" ></div>
                                                 </div>
 
                                             </div>
@@ -326,112 +338,112 @@ export default function Vendas() {
                         </ul>
                     </div>
                 </div>
-                       {modalMetas && <div className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
-                <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
-                  <div className="fixed flex flex-col  w-2/4 p-4 rounded-lg  shadow bg-gray-800">
-                  <button type="button" onClick={() =>setModalMetas(!modalMetas)} className="absolute cursor-pointer top-0 right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                      <IoIosClose size={30} />
-                    </button>
-                 
+                {modalMetas && <div className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
+                    <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
+                        <div className="fixed flex flex-col  w-2/4 p-4 rounded-lg  shadow bg-gray-800">
+                            <button type="button" onClick={() => setModalMetas(!modalMetas)} className="absolute cursor-pointer top-0 right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                                <IoIosClose size={30} />
+                            </button>
 
-<label className="flex flex-row justify-start mb-4 border-b-[1px] text-lg border-gray-500 font-semibold mt-2 gap-2 text-white">METAS</label>
-<div className='flex flex-row gap-2 items-end ml-auto'>
-<div className="mb-1 ">
-                          <label className="block w-full mb-1 text-xs font-medium  text-white">DATA FIM</label>
-                        
-              <select value={dadosMetas.id_grupo} onChange={e => {
-                const item = arraySetores.find(item=>item.id_grupo===Number(e.target.value))
-                setarDadosMetas({...dadosMetas,id_grupo:item?.id_grupo,descricao_grupo:item?.descricao})
 
-              }} className="flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                <option value={0}>SETOR (TODOS)</option>  
+                            <label className="flex flex-row justify-start mb-4 border-b-[1px] text-lg border-gray-500 font-semibold mt-2 gap-2 text-white">METAS</label>
+                            <div className='flex flex-row gap-2 items-end ml-auto'>
+                                <div className="mb-1 ">
+                                    <label className="block w-full mb-1 text-xs font-medium  text-white">DATA FIM</label>
 
-                {arraySetores?.map((item, index) => (
-                  <option className="text-xs" key={index} value={item.id_grupo}>
-                     {item.descricao} 
-                  </option>
+                                    <select value={dadosMetas.id_grupo} onChange={e => {
+                                        const item = arraySetores.find(item => item.id_grupo === Number(e.target.value))
+                                        setarDadosMetas({ ...dadosMetas, id_grupo: item?.id_grupo, descricao_grupo: item?.descricao })
 
-                ))}
-              </select>
+                                    }} className="flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+                                        <option value={0}>SETOR (TODOS)</option>
+
+                                        {arraySetores?.map((item, index) => (
+                                            <option className="text-xs" key={index} value={item.id_grupo}>
+                                                {item.descricao}
+                                            </option>
+
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="mb-1 ">
+                                    <label className="block w-full mb-1 text-xs font-medium  text-white">DATA INICIO</label>
+                                    <DatePicker selected={dadosMetas.date} onChange={e => { e && setarDadosMetas({ ...dadosMetas, date: e }) }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase  w-full pb-1 pt-1 pr-2 pl-2 text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+                                </div>
+                                <div className="mb-1 ">
+                                    <label className="block w-full mb-1 text-xs font-medium  text-white">DATA FIM</label>
+                                    <DatePicker selected={dadosMetas.dateFimMeta} onChange={e => { e && setarDadosMetas({ ...dadosMetas, dateFimMeta: e }) }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase  w-full pb-1 pt-1 pr-2 pl-2 text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+                                </div>
+
+                                <div className="mb-1 ">
+                                    <label className="block mb-1 text-xs font-medium  text-white">VALOR</label>
+                                    <input type="text" value={dadosMetas.valor} onChange={e => setarDadosMetas({ ...dadosMetas, valor: Number(e.target.value) })} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                                </div>
+                                <button onClick={() => novaMeta()} className='flex   pb-1.5'><IoAddCircle size={23} /></button>
+
+                            </div>
+
+                            <div className="flex-col overflow-auto w-full justify-center items-center max-h-[350px] bg-gray-800 rounded-lg mb-4 pl-2 pr-2">
+                                <table
+                                    className="flex-col w-full p-2 overflow-y-auto overflow-x-auto  text-xs text-center rtl:text-center border-collapse  rounded-lg text-gray-400">
+                                    <thead className=" text-xs uppercase bg-gray-700 text-gray-400">
+                                        <tr >
+
+                                            <th scope="col" className=" px-2 py-1">
+                                                DESCRIÇÃO
+                                            </th>
+                                            <th scope="col" className=" px-2 py-1">
+                                                DATA INICIO
+                                            </th>
+                                            <th scope="col" className="px-4 py-1">
+                                                DATA FIM.
+                                            </th>
+                                            <th scope="col" className="px-2 py-1">
+                                                VALOR
+                                            </th>
+                                            <th scope="col" className="px-2 py-1">
+                                                AÇÕES
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody  >
+                                        {arrayMetas.map((item, index) => (
+                                            <tr key={index}
+                                                className={` border-b "bg-gray-800"} border-gray-700 `}>
+                                                <td className="px-2 py-1">
+                                                    {item.descricao}
+                                                </td>
+                                                <td className={`px-2 py-1 `}>
+                                                    {new Date(item.date || '').toLocaleDateString()}
+
+                                                </td>
+
+                                                <td className="px-5 py-1">
+                                                    {new Date(item.dateFimMeta || '').toLocaleDateString()}
+                                                </td>
+                                                <td className="px-3 py-1">
+                                                    {`R$${item.valor}`}
+                                                </td>
+                                                <td className={`px-4 py-1 font-bold text-red-600`}>
+                                                    {item.id_grupo}
+                                                </td>
+
+                                            </tr>
+
+                                        ))}
+
+                                    </tbody>
+
+                                </table>
+                            </div>
+
                         </div>
+                    </div>
+                </div>
 
-         <div className="mb-1 ">
-                          <label className="block w-full mb-1 text-xs font-medium  text-white">DATA INICIO</label>
-                          <DatePicker selected={dadosMetas.date} onChange={e =>{e && setarDadosMetas({...dadosMetas,date:e})}} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase  w-full pb-1 pt-1 pr-2 pl-2 text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
-                        </div>
-                        <div className="mb-1 ">
-                          <label className="block w-full mb-1 text-xs font-medium  text-white">DATA FIM</label>
-                          <DatePicker selected={dadosMetas.dateFimMeta} onChange={e => {e && setarDadosMetas({...dadosMetas,dateFimMeta:e})}} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase  w-full pb-1 pt-1 pr-2 pl-2 text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
-                        </div>
 
-                        <div className="mb-1 ">
-        <label className="block mb-1 text-xs font-medium  text-white">VALOR</label>
-         <input type="text" value={dadosMetas.valor} onChange={e => setarDadosMetas({...dadosMetas,valor:Number(e.target.value)})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
-         </div>
-         <button onClick={()=>novaMeta()} className='flex   pb-1.5'><IoAddCircle size={23}/></button>
-         
-</div>
-
-<div className="flex-col overflow-auto w-full justify-center items-center max-h-[350px] bg-gray-800 rounded-lg mb-4 pl-2 pr-2">
-    <table 
-    className="flex-col w-full p-2 overflow-y-auto overflow-x-auto  text-xs text-center rtl:text-center border-collapse  rounded-lg text-gray-400">
-    <thead className=" text-xs uppercase bg-gray-700 text-gray-400">
-            <tr >
-              
-                <th scope="col" className=" px-2 py-1">
-                    DESCRIÇÃO
-                </th>
-                <th scope="col" className=" px-2 py-1">
-                    DATA INICIO
-                </th>
-                <th scope="col" className="px-4 py-1">
-                    DATA FIM.
-                </th>
-                <th scope="col" className="px-2 py-1">
-                    VALOR
-                </th>
-                <th scope="col" className="px-2 py-1">
-                   AÇÕES	
-                </th>
-            </tr>
-        </thead>
-        <tbody  >
-            {arrayMetas.map((item,index)=>(  
-                <tr key={index} 
-                className={` border-b "bg-gray-800"} border-gray-700 `}>
-                <td className="px-2 py-1">
-                   {item.descricao}
-                </td>
-                <td className={`px-2 py-1 `}>
-                   {new Date(item.date || '').toLocaleDateString()}
-                   
-                </td>
-               
-                <td className="px-5 py-1">
-                {new Date(item.dateFimMeta || '').toLocaleDateString()}
-                </td>
-                <td className="px-3 py-1">
-               {`R$${item.valor}`}
-                </td>
-                <td className={`px-4 py-1 font-bold text-red-600`}>
-                  {item.id_grupo}
-                </td>
-
-            </tr>
-                
-            ))}
-            
-        </tbody>
-    
-    </table>
-    </div>
-
-                  </div>
-                  </div>
-                  </div>
-                  
-                  
-                  }
+                }
             </div>
         </>
     )
