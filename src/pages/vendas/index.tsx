@@ -15,10 +15,12 @@ import pt from 'date-fns/locale/pt-BR';
 import { IoIosClose } from "react-icons/io";
 import { IoAddCircle } from "react-icons/io5";
 import { toast } from 'react-toastify';
+import { Item } from '@/components/dadosTitular';
 interface VendasProps {
     consultor: string,
     _sum: { valor_mensalidade: number },
-    _count: { dt_adesao: number }
+    _count: { dt_adesao: number },
+    situacao:string
 }
 interface MetasProps{
     id_meta:number,
@@ -34,24 +36,32 @@ interface SetorProps{
     id_grupo:number,
     descricao:string
 }
+interface ConsultoresProps{
+    funcao:string,
+    nome:string,
+    id_consultor:number
+    
+}
 interface ResponseProps{
     grupos:Array<VendasProps>,
     metas:Array<MetasProps>
-    setor:Array<SetorProps>
+    setores:Array<SetorProps>
+    consultores:Array<ConsultoresProps>
 }
+
 export default function Vendas() {
     const { usuario } = useContext(AuthContext)
     const [dados, setDados] = useState<Array<VendasProps>>([])
     const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
     const [endDate, setEndDate] = useState(new Date())
-    const [todoPeriodo, setPeriodo] = useState(true)
     const [somaVendas,setSomaVendas] =useState<number>(0)
     const [aba,setAba] = useState(1)
     const [arrayMetas,setMetas]=useState<Array<MetasProps>>([])
     const [arraySetores,setSetores]=useState<Array<SetorProps>>([])
     const [modalMetas,setModalMetas] = useState<boolean>(false)
     const [dadosMetas,setDadosMetas]=useState<Partial<MetasProps>>({})
-
+    const [consultores,setConsultores] = useState<Array<ConsultoresProps>>()
+    const [meta,setMeta] = useState<number>()
 
     const setarDadosMetas = (fields:Partial<MetasProps>)=>{
         setDadosMetas((prev:Partial<MetasProps>)=>{
@@ -73,7 +83,18 @@ export default function Vendas() {
                     dataFim: endDate
                 }
             )
-            const {grupos,metas,setores} =response.data;
+         
+            const {grupos,metas,setores,consultores}:ResponseProps =response.data;
+       const consultoresArray = consultores.reduce((acumulador,item)=>{
+                const itemExistente = acumulador.find(it=>it.nome===item.nome)
+                if(!itemExistente){
+                    acumulador.push(item)
+                }
+                return acumulador
+       },[] as ConsultoresProps[])
+        const metaAtual = metas.find(item=>new Date(item.date)>=new Date(startDate)&& new Date(item.dateFimMeta)<=new Date(endDate))
+        console.log(metaAtual)
+            setConsultores(consultoresArray)
             setDados(grupos)
             setMetas(metas)
             setSetores(setores)
@@ -107,6 +128,8 @@ export default function Vendas() {
             toast.error('Erro')
             
         }
+
+        dadosVendas()
         
     }
     
@@ -141,12 +164,9 @@ export default function Vendas() {
                 <div className='inline-flex w-full mb-1'>
                     <h1 className="font-semibold text-lg">ACOMPANHAMENTO DE VENDAS</h1>
                     <div id='FILTER' className='inline-flex ml-auto gap-2'>
-                        <div className="flex items-center  ">
-                            <input type="checkbox" checked={todoPeriodo} onChange={() => setPeriodo(!todoPeriodo)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                            <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODO PERÍODO</label>
-                        </div>
+                       
                         <DatePicker
-                            disabled={todoPeriodo}
+                           
                             dateFormat={"dd/MM/yyyy"}
                             locale={pt}
                             selected={startDate}
@@ -159,7 +179,7 @@ export default function Vendas() {
                         <span> até </span>
 
                         <DatePicker
-                            disabled={todoPeriodo}
+                            
                             dateFormat={"dd/MM/yyyy"}
                             locale={pt}
                             selected={endDate}
