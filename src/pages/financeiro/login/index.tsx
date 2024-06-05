@@ -20,6 +20,7 @@ import { MdModeEditOutline } from "react-icons/md";
 import { IoCheckmarkDoneCircleSharp } from "react-icons/io5";
 import { AuthContext } from "@/contexts/AuthContext";
 import { TbAlertTriangle } from "react-icons/tb";
+import { FaRepeat } from "react-icons/fa6";
 
 interface DataProps {
   y: number,
@@ -429,11 +430,13 @@ export default function LoginFinaceiro() {
 
   }
   async function listarContasReq() {
+    setLoading(true)
     const response = await api.post('/conta/listarContas', {
       dataInicial: new Date(startDateContas),
       dataFinal: new Date(endDateContas)
     })
     setListaContas(response.data)
+    setLoading(false)
 
 
   }
@@ -524,13 +527,13 @@ export default function LoginFinaceiro() {
 try {
   const contaAtualizada = await api.put('/conta/editar',{
     id_conta:Number(dadosConta.id_conta),
-    datapag:new Date(),
+    datapag:dadosConta.status==='FINALIZADO'?new Date():null,
     dataLanc:dadosConta.dataLanc,
     dataReag:dadosConta.dataReag,
     dataprev:dadosConta.dataprev,
     descricao:dadosConta.descricao,
     tipo:dadosConta.tipo,
-    status:'FINALIZADO',
+    status:dadosConta.status,
     valor:dadosConta.valor,
     parcelas:dadosConta.parcela,
   })
@@ -1001,7 +1004,6 @@ try {
                   <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">FINALIZADO</label>
                 </div>
                 <DatePicker
-                  disabled={todoPeriodo}
                   dateFormat={"dd/MM/yyyy"}
                   locale={pt}
                   selected={startDateContas}
@@ -1014,7 +1016,6 @@ try {
                 <span>até</span>
 
                 <DatePicker
-                  disabled={todoPeriodo}
                   dateFormat={"dd/MM/yyyy"}
                   locale={pt}
                   selected={endDateContas}
@@ -1028,7 +1029,7 @@ try {
 
               </div>
               {
-                !loading ? <button onClick={() => listarDados()} className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCAR<IoSearch size={18} /></button> :
+                !loading ? <button onClick={() => listarContasReq()} className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCAR<IoSearch size={18} /></button> :
                   <button className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCANDO..<AiOutlineLoading3Quarters size={20} className="animate-spin" /></button>
               }
               <button onClick={() => setModal(true)} className="inline-flex p-1 gap-1 items-center bg-green-600 rounded-lg" ><IoIosAddCircle size={20} /> NOVO</button>
@@ -1166,13 +1167,29 @@ try {
                             <div className="inline-flex w-full text-start justify-end whitespace-nowrap">
                               <button onClick={() => { setDadosConta({ id_conta: item.id_conta }), setExcluir(1) }} className="rounded-lg text-red-600 hover:bg-gray-300 p-1"><MdDelete size={18} /></button>
                               <button className="rounded-lg text-blue-500 hover:bg-gray-300 p-1"><MdModeEditOutline size={18} /></button>
-                              <button onClick={() => {
+                             {item.status==='FINALIZADO'? <button onClick={() => {
                                 setarDadosConta({
                                   ...dadosConta,
                                   dataLanc: item.dataLanc,
                                   descricao: item.descricao,
                                   tipo: item.tipo,
-                                  status: item.status,
+                                  status: 'ABERTO',
+                                  valor: item.valor,
+                                  id_conta:item.id_conta,
+                                  dataprev:item.dataprev,
+                                  dataReag:item.dataReag
+                                })
+                                setExcluir(2)
+                              }}
+                                className="rounded-lg text-yellow-500 hover:bg-gray-300 p-1">
+                                <FaRepeat size={16} />
+                              </button>:<button onClick={() => {
+                                setarDadosConta({
+                                  ...dadosConta,
+                                  dataLanc: item.dataLanc,
+                                  descricao: item.descricao,
+                                  tipo: item.tipo,
+                                  status: 'FINALIZADO',
                                   valor: item.valor,
                                   id_conta:item.id_conta,
                                   dataprev:item.dataprev,
@@ -1182,7 +1199,7 @@ try {
                               }}
                                 className="rounded-lg text-green-500 hover:bg-gray-300 p-1">
                                 <IoCheckmarkDoneCircleSharp size={18} />
-                              </button>
+                              </button>}
                             </div>
 
                           </div>

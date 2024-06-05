@@ -96,6 +96,8 @@ export default function Vendas() {
                 }
                 return acumulador
             }, [] as ConsultoresProps[])
+
+            const ativosInativos = grupos.map(item=>{})
             const metaAtual = metas.reduce((acumulador, item) => {
                 if (new Date(item.date) >= new Date(startDate) && new Date(item.dateFimMeta) <= new Date(endDate)) {
                     return acumulador += Number(item.valor)
@@ -315,7 +317,7 @@ export default function Vendas() {
                                                 {item.consultor}
 
                                             </span>
-                                            <span className="flex w-full text-start whitespace-nowrap">R$ {item._sum.valor_mensalidade}</span>
+                                            <span className="flex w-full text-start whitespace-nowrap">{formatter.format(item._sum.valor_mensalidade)}</span>
                                             <span className="flex w-full text-start whitespace-nowrap ">{item._count.dt_adesao}</span>
                                             <span className="flex w-full text-start whitespace-nowrap ">{meta}</span>
                                             <div className='flex flex-col w-full leading-none'>
@@ -324,7 +326,7 @@ export default function Vendas() {
                                                     <span className="text-sm font-medium text-blue-700 dark:text-white leading-none">{meta &&((item._sum.valor_mensalidade*100)/meta).toFixed(2)}%</span>
                                                 </div>
                                                 <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                                                    <div style={{ width:`${(meta &&((item._sum.valor_mensalidade*100)/meta).toFixed(2))}%` }} className="bg-blue-600 h-2.5 rounded-full" ></div>
+                                                    <div style={{ width:`${(meta && ((item._sum.valor_mensalidade*100)/meta)>100?'100':meta && ((item._sum.valor_mensalidade*100)/meta))}%` }} className="bg-blue-600 h-2.5 rounded-full" ></div>
                                                 </div>
 
                                             </div>
