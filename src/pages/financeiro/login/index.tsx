@@ -21,6 +21,7 @@ import { IoCheckmarkDoneCircleSharp } from "react-icons/io5";
 import { AuthContext } from "@/contexts/AuthContext";
 import { TbAlertTriangle } from "react-icons/tb";
 import { FaRepeat } from "react-icons/fa6";
+import RelatorioVendas from "./relatorioVendas";
 
 interface DataProps {
   y: number,
@@ -713,7 +714,7 @@ export default function LoginFinaceiro() {
               <button type="button" onClick={() => setMenuIndex(3)} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Contas a Pagar/Receber</button>
             </li>
             <li className="me-2">
-              <button type="button" onClick={() => setMenuIndex(4)} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Convalescencia</button>
+              <button type="button" onClick={() => setMenuIndex(4)} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Relatório Vendas</button>
             </li>
 
           </ul>
@@ -1272,6 +1273,7 @@ export default function LoginFinaceiro() {
 
 
           </>}
+          {menuIndex===4 && <RelatorioVendas/>}
         </div>
       </div>
 
