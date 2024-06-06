@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import Image from 'next/image';
 import { MdManageAccounts } from "react-icons/md";
-import logo from '../../public/logoafap.png'
+import logo from '../../public/novaLogo.png'
 import fototeste from '../../public/fototeste.jpeg'
 import { MdLogout } from "react-icons/md";
 import { AuthContext,signOut } from '@/contexts/AuthContext';
@@ -75,7 +75,7 @@ async function contagem() {
     <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
         <div className="flex items-center">
             <Image onClick={()=>setIsOpen(!isOpen)}  src={logo}  className="cursor-pointer w-full mr-2 h-8 sm:h-11" alt="Flowbite Logo" />
-            <span className="inline-flex whitespace-nowrap w-full text-xl font-semibold  text-white">SISTEMA DE GERENCIAMENTO AFAP</span>
+            <h1 className="whitespace-nowrap pt-4 w-full text-xl font-semibold  text-white">SISTEMA DE GERENCIAMENTO AFAP</h1>
         </div>
         <div className="flex relative items-center gap-4">
   <div className="relative">      

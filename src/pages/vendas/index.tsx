@@ -15,7 +15,7 @@ import pt from 'date-fns/locale/pt-BR';
 import { IoIosClose } from "react-icons/io";
 import { IoAddCircle } from "react-icons/io5";
 import { toast } from 'react-toastify';
-import { Item } from '@/components/dadosTitular';
+
 interface VendasProps {
     consultor: string,
     _sum: { valor_mensalidade: number },
@@ -106,8 +106,6 @@ export default function Vendas() {
 
             }, 0)
             setMeta(metaAtual)
-            console.log(consultoresArray)
-            console.log(metaAtual)
             setConsultores(consultoresArray)
             setDados(grupos)
             setMetas(metas)
@@ -152,9 +150,7 @@ export default function Vendas() {
         <>
             { /*
           <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
-       
-          <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-30 bg-gray-300 ">
-              
+          <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-30 bg-gray-300 ">    
   <div className="w-8/12 relative max-w-full bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <ul className=" text-sm font-medium text-center text-gray-500 divide-x divide-gray-200 rounded-lg sm:flex dark:divide-gray-600 dark:text-gray-400 rtl:divide-x-reverse" id="fullWidthTab" data-tabs-toggle="#fullWidthTabContent" role="tablist">
           <li className="w-full">
@@ -170,7 +166,6 @@ export default function Vendas() {
       <button onClick={()=>{}} className="absolute top-0 right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto  hover:bg-gray-600 hover:text-white"><IoIosClose size={30}/></button>
      
   </div>
-  
               </div>
               </div>
         */}
