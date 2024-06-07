@@ -12,9 +12,9 @@ import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { IoNotifications } from "react-icons/io5";
 import { io } from 'socket.io-client';
 import Link from "next/link";
-import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import { RxDrawingPinFilled } from "react-icons/rx";
+import { GrConfigure } from "react-icons/gr";
 
 export function MenuLateral(){
    const socket = io("https://apiafap.onrender.com");
@@ -222,9 +222,18 @@ async function contagem() {
                 <RxDrawingPinFilled size={23}/>
                <span className="flex-1 ms-3 whitespace-nowrap">Sortear</span>
             </Link>
-            <Link href="/financeiro/login" onClick={()=>setIsOpen(false)} className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+        
+         </li>
+         <li>
+         <Link href="/financeiro/login" onClick={()=>setIsOpen(false)} className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                 <RxDrawingPinFilled size={23}/>
                <span className="flex-1 ms-3 whitespace-nowrap">DashBoard Financeiro</span>
+            </Link>
+         </li>
+         <li>
+         <Link href="/configuracoes" onClick={()=>setIsOpen(false)} className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                <GrConfigure size={22}/>
+               <span className="flex-1 ms-3 whitespace-nowrap">Configurações</span>
             </Link>
          </li>
       </ul>
