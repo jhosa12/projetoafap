@@ -3,6 +3,11 @@ import { getURL } from "next/dist/shared/lib/utils"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import fototeste from '../../../../public/fototeste.jpeg'
+import { FaLockOpen } from "react-icons/fa";
+import { BiSolidLockOpenAlt } from "react-icons/bi";
+import { MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
+import ModalNovoUsuario from "./modalNovoUsuario"
 
 interface PermissionsProps{
     button:string
@@ -19,6 +24,11 @@ interface UsersProps{
 
 export default function Usuario() {
     const [userDados,setUserDados]= useState<Array<UsersProps>>()
+    const [modalEditar,setModalEditar]=useState<boolean>(false)
+
+    const setarModalEditar =()=>{
+        setModalEditar(!modalEditar)
+    }
 
     useEffect(()=>{
         getUsers()
@@ -44,12 +54,12 @@ export default function Usuario() {
               <ul className="flex flex-col w-full p-2 gap-1 text-sm">
                 <li className="flex flex-col w-full  text-xs pl-4 border-b-[1px] ">
                   <div className="inline-flex w-full items-center">
-                    <span className="flex w-40 me-2 text-start font-semibold">#</span>
-                    <span className="flex w-full text-start font-semibold">USUÁRIO</span>
+                    <span className="flex w-40 me-2 justify-center font-semibold">#</span>
+                    <span className="flex w-full text-start font-semibold">NOME</span>
                       <span className="flex w-full text-start whitespace-nowrap ">CARGO</span>
                       <span className="flex w-full text-start whitespace-nowrap">E-MAIL</span>
                       <span className="flex w-full text-start whitespace-nowrap ">TELEFONE</span>
-                      <span className="flex w-full text-start whitespace-nowrap ">PERMISSÕES</span>
+                      <span className="flex w-full justify-center whitespace-nowrap ">PERMISSÕES</span>
                       <span className="flex w-full justify-end  "></span>
                    
                   </div>
@@ -79,9 +89,21 @@ export default function Usuario() {
                             <span className="flex w-full text-start font-semibold">{item.cargo}</span>
                             <span className="flex w-full text-start font-semibold">{item.email}</span>
                             <span className="flex w-full text-start ">{item.telefone}</span>
-                            <span className="flex w-full text-start "><span className="rounded-lg bg-blue-500  p-1">{/*!Number.isNaN(porc) ? porc + '%' : '0%'*/}</span></span>
-                            <span className="flex w-full text-end "><span className=" rounded-lg bg-blue-500  p-1">{/*!Number.isNaN(porc) ? porc + '%' : '0%'*/}</span></span>
-                           
+                            <div className="flex w-full justify-center text-orange-400 ">
+                                <button className="hover:bg-gray-500 p-1 rounded-lg " >
+                                <BiSolidLockOpenAlt size={17} />
+                                </button>
+                                
+                            </div>
+                            <div className="flex w-full justify-end gap-2 ">
+                                <button onClick={()=>setModalEditar(true)} className="hover:bg-gray-500 p-1 text-blue-500 rounded-lg ">
+                                <MdEdit size={17}/>
+                                </button>
+                                <button className="hover:bg-gray-500 p-1 rounded-lg text-red-500 ">
+                                <MdDelete size={17}/>
+                                </button>
+                            </div>
+                        
                          
                         </div>
                    
@@ -90,6 +112,7 @@ export default function Usuario() {
                   })
                 }
               </ul>
+              {modalEditar && <ModalNovoUsuario setarModalEditar={setarModalEditar}/> }
             </div>
 
             
