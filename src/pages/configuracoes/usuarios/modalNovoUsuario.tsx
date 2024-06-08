@@ -52,7 +52,7 @@ if(image.type==='image/jpeg' || image.type==='image/png'){
                     <button type="button" onClick={() => setarModalEditar()} className="absolute cursor-pointer top-0 right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
                         <IoIosClose size={30} />
                     </button>
-                    <h1 className="flex flex-row justify-start mb-4 border-b-[1px] text-lg border-gray-500 font-semibold mt-2 gap-2 text-white">EDITAR DADOS</h1>
+                    <h1 className="flex flex-row justify-start mb-4 border-b-[1px] text-lg border-gray-500 font-semibold mt-2 gap-2 text-white">EDITAR DADOS DO USUÁRIO</h1>
 
                     <form >
                         <div className="inline-flex w-full gap-2 ">
@@ -65,21 +65,27 @@ if(image.type==='image/jpeg' || image.type==='image/png'){
 
                             </label>
                         <div className="grid  grid-cols-2 gap-2  w-full">
+                        <div className=" col-span-1">
+                                <label className="block  text-xs font-medium  text-white">NOME</label>
+                                <input type="text" value={''} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                            </div>
                          
                             <div className=" col-span-1">
-                                <label className="block  text-xs font-medium  text-white">NOME</label>
+                                <label className="block  text-xs font-medium  text-white">USUÁRIO</label>
                                 <input type="text" value={''} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                             </div>
                             <div className=" col-span-1">
                                 <label className="block  text-xs font-medium  text-white">CARGO</label>
                                 <input type="text" value={''} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                             </div>
+                           
+                          
                             <div className=" col-span-1">
-                                <label className="block text-xs font-medium  text-white">E-MAIL</label>
+                                <label className="block  text-xs font-medium  text-white">SENHA</label>
                                 <input type="text" value={''} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                             </div>
                             <div className=" col-span-1">
-                                <label className="block  text-xs font-medium  text-white">TELEFFONE</label>
+                                <label className="block  text-xs font-medium  text-white">REPITA A SENHA</label>
                                 <input type="text" value={''} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                             </div>
 
