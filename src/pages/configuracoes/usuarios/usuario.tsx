@@ -8,6 +8,9 @@ import { BiSolidLockOpenAlt } from "react-icons/bi";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import ModalNovoUsuario from "./modalNovoUsuario"
+import { IoIosAddCircle } from "react-icons/io";
+import MenuMultiStep from "../multiStep/multStep"
+
 
 interface PermissionsProps{
     button:string
@@ -50,7 +53,11 @@ export default function Usuario() {
 
     return (
         <div className="ms-2 me-2">
+          <div className="flex w-full justify-end">
+            <button onClick={()=>setModalEditar(!modalEditar)} className="inline-flex justify-items-center gap-1 p-1 bg-green-500 rounded-lg mb-1 font-semibold text-sm"><IoIosAddCircle size={20}/>ADD</button>
+            </div>
              <div className="flex flex-col  px-4 w-full overflow-y-auto max-h-[calc(100vh-210px)] text-white bg-[#2b2e3b] rounded-lg ">
+              
               <ul className="flex flex-col w-full p-2 gap-1 text-sm">
                 <li className="flex flex-col w-full  text-xs pl-4 border-b-[1px] ">
                   <div className="inline-flex w-full items-center">
@@ -112,7 +119,7 @@ export default function Usuario() {
                   })
                 }
               </ul>
-              {modalEditar && <ModalNovoUsuario setarModalEditar={setarModalEditar}/> }
+              {modalEditar && <MenuMultiStep setarModalEditar={setarModalEditar}/> }
             </div>
 
             
