@@ -4,25 +4,18 @@ interface PermissoesProps {
    nome:string,
    val:boolean,
    tela:string
-
-
-
 }
-export default function ModalPermissoes() {
+
+interface ModalProps{
+    setarDadosPermissoes:(permissoes:Array<PermissoesProps>)=>void,
+    dadosPermissoes:Array<PermissoesProps>
+}
+export default function ModalPermissoes({setarDadosPermissoes,dadosPermissoes}:ModalProps) {
     const [index, setIndex] = useState<number>(1)
-    const [dados, setDados] = useState<Array<PermissoesProps>>([
-    
-           { nome: "ALTERAR DADOS TITULAR", val: false,tela:'admContDados' }, { nome: "ALTERAR CARÊNCIA", val: false,tela:'admContDados' }, { nome: "ALTERAR ADESÃO", val: false,tela:'admContDados'}, { nome: "ALTERAR VENCIMENTO", val: false,tela:'admContDados' }, { nome: "ALTERAR CATEGORIA", val: false,tela:'admContDados' }, { nome: "ALTERAR CONSULTOR", val: false,tela:'admContDados' }, { nome: "ALTERAR COBRADOR", val: false,tela:'admContDados' }, { nome: "INATIVAR PLANO", val: false,tela:'admContDados'},{ nome: "ADICIONAR MENSALIDADE", val: false,tela:'admContMensal' }, { nome: "REALIZAR ACORDO", val: false,tela:'admContMensal' }, { nome: 'EXCLUIR MENSALIDADE', val: false,tela:'admContMensal' },{nome:"ADICIONAR DEPENDENTE", val:false,tela:'admContDep'},{nome:"EXCLUIR DEPENDENTE", val:false,tela:'admContDep'},
-           {nome:"EXIBIR EXCLUIDOS", val:false,tela:'admContDep'}
-        
-    ])
-
     function handleCheckBox(index:number){
-        const novoArray = [...dados]
-        novoArray[index].val = !dados[index].val
-        setDados(novoArray)
-        
-
+        const novoArray = [...dadosPermissoes]
+        novoArray[index].val = !dadosPermissoes[index].val
+        setarDadosPermissoes(novoArray)
     }
 
     return (
@@ -54,7 +47,7 @@ export default function ModalPermissoes() {
                     <div className="flex flex-col ">
                         <label htmlFor="" className=" text-sm pl-2">DADOS TITULAR/PLANO</label>
                         <div className="grid grid-cols-5 gap-3">
-                            {dados?.map((item, index) =>  (
+                            {dadosPermissoes?.map((item, index) =>  (
                               item.tela==='admContDados' &&  <div key={index} className="flex items-center ">
                                     <input type="checkbox" checked={item.val} onChange={()=>handleCheckBox(Number(index))} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                                     <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">{item.nome}</label>
@@ -67,7 +60,7 @@ export default function ModalPermissoes() {
                     <div className="flex flex-col">
                         <label htmlFor="" className="pl-2 text-sm">HISTÓRICO/MENSALIDADE</label>
                         <div className="grid grid-cols-5 gap-3">
-                            {dados.map((item, index) => (
+                            {dadosPermissoes.map((item, index) => (
                               item.tela=== 'admContMensal' &&  <div key={index}  className="flex items-center ">
                                     <input type="checkbox" checked={item.val} onChange={()=>handleCheckBox(Number(index))} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                                     <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">{item.nome}</label>
@@ -79,7 +72,7 @@ export default function ModalPermissoes() {
                     <div className="flex flex-col">
                         <label htmlFor="" className="pl-2 text-sm">DEPENDENTES</label>
                         <div className="grid grid-cols-5 gap-3">
-                            {dados.map((item, index) => (
+                            {dadosPermissoes.map((item, index) => (
                               item.tela=== 'admContDep' &&  <div key={index}  className="flex items-center ">
                                     <input type="checkbox" checked={item.val} onChange={()=>handleCheckBox(Number(index))} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                                     <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">{item.nome}</label>

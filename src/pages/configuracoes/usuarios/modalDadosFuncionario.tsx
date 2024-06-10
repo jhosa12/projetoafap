@@ -1,9 +1,42 @@
 
 
 
+interface FuncionarioProps{
+    nomeCompleto:string,
+    cpf:string,
+    rg:string,
+    nascimento:Date,
+    cep:string,
+    endereco:string,
+    numero:string,
+    bairro:string,
+    cidade:string,
+    uf:string,
+    telefone:string,
+    email:string,
+    dataAdmissao:Date,
+    CNH_categoria:string,
+    titulo_eleitor:string,
+    zona:number,
+    secao:number,
+    PIS_PASEP:string,
+    escolaridade:string,
+    nome_conjuge:string,
+    n_dep:number,
+    n_dep14:number,
+    caso_emergencia:string,
+    salario:number,
+    contrato_exp:number,
+    prorrogacao:number,
+    situacao:string,
+  
+}
+interface ModalProps{
+    setarDadosFuncionario:(fields:Partial<FuncionarioProps>)=>void,
+    dadosFuncionario:Partial<FuncionarioProps>
+}
 
-
-export default function ModalDadosFuncionario() {
+export default function ModalDadosFuncionario({setarDadosFuncionario,dadosFuncionario}:ModalProps) {
     return (
         <div className=" flex flex-col  p-4 rounded-lg  shadow bg-gray-800">
 

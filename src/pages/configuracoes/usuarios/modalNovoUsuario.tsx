@@ -5,24 +5,34 @@ import { MdOutlineFileUpload } from "react-icons/md";
 
 
 
-interface PermissionsProps{
-    button:string
-}
-interface UsuarioProps{
+interface PermissoesProps {
+    nome:string,
+    val:boolean,
+    tela:string
+  }
+interface Usuario{
     nome:string,
     usuario:string,
     password:string,
     id:number,
     cargo:string,
-    email:string,
-    telefone:string,
-    permissoes:PermissionsProps
+  
+  }
+interface UsuarioProps{
+    setarDadosUsuario : (fields:Partial<Usuario>)=>void,
+    dadosUser:Partial<Usuario>
+
 }
 
 
-export default function ModalNovoUsuario() {
+
+
+export default function ModalNovoUsuario({setarDadosUsuario,dadosUser}:UsuarioProps) {
     const [avatarURL,setAvatarURL] = useState('');
     const  [imageAvatar,setImageAvatar] = useState<File>();
+   
+
+
 
     const handleFile = (e:ChangeEvent<HTMLInputElement>)=>{
         if(!e.target.files){
@@ -62,7 +72,7 @@ if(image.type==='image/jpeg' || image.type==='image/png'){
                         <div className="grid  grid-cols-2 gap-2  w-full">
                         <div className=" col-span-1">
                                 <label className="block  text-xs font-medium  text-white">NOME</label>
-                                <input  type="text" value={''} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                                <input  type="text" value={dadosUser.nome} onChange={e => setarDadosUsuario({nome:e.target.value})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                             </div>
                          
                             <div className=" col-span-1">
