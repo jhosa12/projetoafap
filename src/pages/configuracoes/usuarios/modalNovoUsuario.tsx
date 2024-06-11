@@ -27,7 +27,7 @@ interface UsuarioProps{
 
 
 
-export default function ModalNovoUsuario({setarDadosUsuario,dadosUser}:UsuarioProps) {
+export function ModalNovoUsuario({setarDadosUsuario,dadosUser}:UsuarioProps) {
     const [avatarURL,setAvatarURL] = useState('');
     const  [imageAvatar,setImageAvatar] = useState<File>();
    

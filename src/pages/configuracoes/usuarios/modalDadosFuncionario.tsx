@@ -36,7 +36,7 @@ interface ModalProps{
     dadosFuncionario:Partial<FuncionarioProps>
 }
 
-export default function ModalDadosFuncionario({setarDadosFuncionario,dadosFuncionario}:ModalProps) {
+export  function ModalDadosFuncionario({setarDadosFuncionario,dadosFuncionario}:ModalProps) {
     return (
         <div className=" flex flex-col  p-4 rounded-lg  shadow bg-gray-800">
 

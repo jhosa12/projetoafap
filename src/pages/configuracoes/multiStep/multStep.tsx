@@ -9,9 +9,9 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { MdSaveAlt } from "react-icons/md";
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
-import ModalDadosFuncionario from "../usuarios/modalDadosFuncionario";
-import ModalNovoUsuario from "../usuarios/modalNovoUsuario";
-import ModalPermissoes from "../usuarios/modalPermissoes";
+import {ModalDadosFuncionario} from "../usuarios/modalDadosFuncionario";
+import{ ModalNovoUsuario} from "../usuarios/modalNovoUsuario";
+import {ModalPermissoes} from "../usuarios/modalPermissoes";
 
 interface PermissoesProps {
   nome:string,

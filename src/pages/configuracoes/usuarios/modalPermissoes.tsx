@@ -10,7 +10,7 @@ interface ModalProps{
     setarDadosPermissoes:(permissoes:Array<PermissoesProps>)=>void,
     dadosPermissoes:Array<PermissoesProps>
 }
-export default function ModalPermissoes({setarDadosPermissoes,dadosPermissoes}:ModalProps) {
+export  function ModalPermissoes({setarDadosPermissoes,dadosPermissoes}:ModalProps) {
     const [index, setIndex] = useState<number>(1)
     function handleCheckBox(index:number){
         const novoArray = [...dadosPermissoes]
