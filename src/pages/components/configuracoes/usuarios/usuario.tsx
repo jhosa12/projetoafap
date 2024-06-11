@@ -7,7 +7,6 @@ import { FaLockOpen } from "react-icons/fa";
 import { BiSolidLockOpenAlt } from "react-icons/bi";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
-import{ ModalNovoUsuario }from "./modalNovoUsuario"
 import { IoIosAddCircle } from "react-icons/io";
 import {MenuMultiStep} from "../multiStep/multStep"
 

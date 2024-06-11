@@ -1,5 +1,5 @@
 import { useState } from "react"
-import {Usuario} from "./usuarios/usuario"
+import {Usuario} from "../components/configuracoes/usuarios/usuario"
 
 export default function UsuarioConfig() {
     const [menuIndex, setMenuIndex] = useState(1)
