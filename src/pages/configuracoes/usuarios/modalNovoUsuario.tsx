@@ -66,7 +66,7 @@ if(image.type==='image/jpeg' || image.type==='image/png'){
                                     <MdOutlineFileUpload size={25}/>
                                 </span>
                                 <input  className="hidden" onChange={handleFile} type="file" accept="image/png,image/jpeg"></input>
-                                {avatarURL && <img src={avatarURL} alt="" width={150} height={100}></img>}
+                                {avatarURL && <img className="w-full h-full object-cover rounded-lg" src={avatarURL} alt="" width={150} height={100}></img>}
 
                             </label>
                         <div className="grid  grid-cols-2 gap-2  w-full">
