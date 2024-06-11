@@ -63,7 +63,7 @@ interface FuncionarioProps{
  
 }
 
-export default function MenuMultiStep({ setarModalEditar }: ModalProps) {
+export  function MenuMultiStep({ setarModalEditar }: ModalProps) {
   const { usuario, data, closeModa, carregarDados } = useContext(AuthContext)
   const [dadosUser,setDadosUser] = useState<Partial<UsuarioProps>>({})
   const [dadosFuncionario,setDadosFuncionario]=useState<Partial<FuncionarioProps>>({})

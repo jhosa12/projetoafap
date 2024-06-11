@@ -7,9 +7,9 @@ import { FaLockOpen } from "react-icons/fa";
 import { BiSolidLockOpenAlt } from "react-icons/bi";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
-import ModalNovoUsuario from "./modalNovoUsuario"
+import{ ModalNovoUsuario }from "./modalNovoUsuario"
 import { IoIosAddCircle } from "react-icons/io";
-import MenuMultiStep from "../multiStep/multStep"
+import {MenuMultiStep} from "../multiStep/multStep"
 
 
 interface PermissionsProps{
@@ -25,7 +25,7 @@ interface UsersProps{
     permissoes:Partial<PermissionsProps>,
 }
 
-export default function Usuario() {
+export function Usuario() {
     const [userDados,setUserDados]= useState<Array<UsersProps>>()
     const [modalEditar,setModalEditar]=useState<boolean>(false)
 
