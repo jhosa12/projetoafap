@@ -26,10 +26,12 @@ interface UsuarioProps{
   cargo:string,
   file:File,
   avatarUrl:string
+  repSenha:string,
 }
 interface ModalProps {
 
-  setarModalEditar: () => void
+  setarModalEditar: () => void,
+  getUsers:()=>void
 
 }
 
@@ -65,7 +67,7 @@ interface FuncionarioProps{
  
 }
 
-export  function MenuMultiStep({ setarModalEditar }: ModalProps) {
+export  function MenuMultiStep({ setarModalEditar,getUsers }: ModalProps) {
   const { usuario } = useContext(AuthContext)
   const [dadosUser,setDadosUser] = useState<Partial<UsuarioProps>>({})
   const [dadosFuncionario,setDadosFuncionario]=useState<Partial<FuncionarioProps>>({})
@@ -111,6 +113,10 @@ const setarDadosFuncionario = (fields:Partial<FuncionarioProps>)=>{
 
   function onSubmit(e: FormEvent) {
     e.preventDefault()
+    if(dadosUser.password!==dadosUser.repSenha){
+      toast.error('Senhas não coincidem !')
+      return
+    }
     next()
   }
 
@@ -168,7 +174,7 @@ const setarDadosFuncionario = (fields:Partial<FuncionarioProps>)=>{
       console.log(error)
       
     }
-
+   getUsers()
     
   }
 

@@ -22,6 +22,7 @@ interface UsersProps{
     nome:string,
     id:number,
     permissoes:Partial<PermissionsProps>,
+    repSenha:string
 }
 
 export function Usuario() {
@@ -118,7 +119,7 @@ export function Usuario() {
                   })
                 }
               </ul>
-              {modalEditar && <MenuMultiStep setarModalEditar={setarModalEditar}/> }
+              {modalEditar && <MenuMultiStep setarModalEditar={setarModalEditar} getUsers={getUsers}/> }
             </div>
 
             
