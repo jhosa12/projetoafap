@@ -24,7 +24,8 @@ interface UsuarioProps{
   password:string,
   id:number,
   cargo:string,
-  file:File
+  file:File,
+  avatarUrl:string
 }
 interface ModalProps {
 
@@ -65,7 +66,7 @@ interface FuncionarioProps{
 }
 
 export  function MenuMultiStep({ setarModalEditar }: ModalProps) {
-  const { usuario, data, closeModa, carregarDados } = useContext(AuthContext)
+  const { usuario } = useContext(AuthContext)
   const [dadosUser,setDadosUser] = useState<Partial<UsuarioProps>>({})
   const [dadosFuncionario,setDadosFuncionario]=useState<Partial<FuncionarioProps>>({})
   const [dadosPermissoes,setDadosPermissoes] = useState<Array<PermissoesProps>>([  { nome: "ALTERAR DADOS TITULAR", val: false,tela:'admContDados' }, { nome: "ALTERAR CARÊNCIA", val: false,tela:'admContDados' }, { nome: "ALTERAR ADESÃO", val: false,tela:'admContDados'}, { nome: "ALTERAR VENCIMENTO", val: false,tela:'admContDados' }, { nome: "ALTERAR CATEGORIA", val: false,tela:'admContDados' }, { nome: "ALTERAR CONSULTOR", val: false,tela:'admContDados' }, { nome: "ALTERAR COBRADOR", val: false,tela:'admContDados' }, { nome: "INATIVAR PLANO", val: false,tela:'admContDados'},{ nome: "ADICIONAR MENSALIDADE", val: false,tela:'admContMensal' }, { nome: "REALIZAR ACORDO", val: false,tela:'admContMensal' }, { nome: 'EXCLUIR MENSALIDADE', val: false,tela:'admContMensal' },{nome:"ADICIONAR DEPENDENTE", val:false,tela:'admContDep'},{nome:"EXCLUIR DEPENDENTE", val:false,tela:'admContDep'},{nome:"EXIBIR EXCLUIDOS", val:false,tela:'admContDep'}])
@@ -123,7 +124,7 @@ const setarDadosFuncionario = (fields:Partial<FuncionarioProps>)=>{
     data.append('nomeCompleto',dadosFuncionario?.nomeCompleto??'');
     data.append( 'cpf',dadosFuncionario.cpf??'');
     data.append( 'rg',dadosFuncionario.rg??'');
-    data.append('nascimento',dadosFuncionario.nascimento?.toLocaleDateString()??'');
+    data.append('nascimento',dadosFuncionario.nascimento?.toString()??'');
     data.append('cep',dadosFuncionario.cep??'');
     data.append( 'endereco',dadosFuncionario.endereco??'');
     data.append('numero',dadosFuncionario.numero??'');
@@ -132,7 +133,7 @@ const setarDadosFuncionario = (fields:Partial<FuncionarioProps>)=>{
     data.append('uf',dadosFuncionario.uf??'');
     data.append('telefone',dadosFuncionario.telefone??'');
     data.append('email',dadosFuncionario.email??'');
-    data.append('dataAdmissao',dadosFuncionario.dataAdmissao?.toLocaleDateString()??'');
+    data.append('dataAdmissao',dadosFuncionario.dataAdmissao?.toString()??'');
     data.append('CNH_categoria',dadosFuncionario.CNH_categoria??'');
     data.append('titulo_eleitor',dadosFuncionario.titulo_eleitor??'');
     data.append('zona',dadosFuncionario.zona?.toString()??'');

@@ -16,7 +16,8 @@ interface Usuario{
     password:string,
     id:number,
     cargo:string,
-    file:File
+    file:File,
+    avataUrl:string
   
   }
 interface UsuarioProps{
@@ -29,7 +30,7 @@ interface UsuarioProps{
 
 
 export function ModalNovoUsuario({setarDadosUsuario,dadosUser}:UsuarioProps) {
-    const [avatarURL,setAvatarURL] = useState('');
+  
     
    
 
@@ -45,8 +46,8 @@ if(!image ){
     return;
 }
 if(image.type==='image/jpeg' || image.type==='image/png'){
-    setarDadosUsuario({...dadosUser,file:image})
-    setAvatarURL(URL.createObjectURL(e.target.files[0]))
+    setarDadosUsuario({...dadosUser,file:image,avataUrl:URL.createObjectURL(e.target.files[0])})
+   
 
 }
 
@@ -67,7 +68,7 @@ if(image.type==='image/jpeg' || image.type==='image/png'){
                                     <MdOutlineFileUpload size={25}/>
                                 </span>
                                 <input  className="hidden" onChange={handleFile} type="file" accept="image/png,image/jpeg"></input>
-                                {avatarURL && <img className="w-full h-full object-cover rounded-lg" src={avatarURL} alt="" width={150} height={100}></img>}
+                                {dadosUser.avataUrl && <img className="w-full h-full object-cover rounded-lg" src={dadosUser.avataUrl} alt="" width={150} height={100}></img>}
 
                             </label>
                         <div className="grid  grid-cols-2 gap-2  w-full">
