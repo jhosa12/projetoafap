@@ -24,6 +24,7 @@ interface UsuarioProps{
   password:string,
   id:number,
   cargo:string,
+  file:File
 }
 interface ModalProps {
 
@@ -36,7 +37,7 @@ interface FuncionarioProps{
   nomeCompleto:string,
   cpf:string,
   rg:string,
-  nascimento:Date,
+  nascimento:Date |null,
   cep:string,
   endereco:string,
   numero:string,
@@ -45,7 +46,7 @@ interface FuncionarioProps{
   uf:string,
   telefone:string,
   email:string,
-  dataAdmissao:Date,
+  dataAdmissao:Date | null,
   CNH_categoria:string,
   titulo_eleitor:string,
   zona:number,
@@ -113,47 +114,60 @@ const setarDadosFuncionario = (fields:Partial<FuncionarioProps>)=>{
   }
 
   async function handleNovoCadastro() {
-    await toast.promise(
-      api.post('/user',{
-        nome:dadosUser.nome,
-        usuario:dadosUser.usuario,
-        password:dadosUser.password,
-        cargo:dadosUser.cargo,
-        nomeCompleto:dadosFuncionario?.nomeCompleto,
-        cpf:dadosFuncionario.cpf,
-        rg:dadosFuncionario.rg,
-        nascimento:dadosFuncionario.nascimento,
-        cep:dadosFuncionario.cep,
-        endereco:dadosFuncionario.endereco,
-        numero:dadosFuncionario.numero,
-        bairro:dadosFuncionario.bairro,
-        cidade:dadosFuncionario.cidade,
-        uf:dadosFuncionario.uf,
-        telefone:dadosFuncionario.telefone,
-        email:dadosFuncionario.email,
-        dataAdmissao:dadosFuncionario.dataAdmissao,
-        CNH_categoria:dadosFuncionario.CNH_categoria,
-        titulo_eleitor:dadosFuncionario.titulo_eleitor,
-        zona:dadosFuncionario.zona,
-        secao:dadosFuncionario.secao,
-        PIS_PASEP:dadosFuncionario.PIS_PASEP,
-        escolaridade:dadosFuncionario.escolaridade,
-        nome_conjuge:dadosFuncionario.nome_conjuge,
-        n_dep:dadosFuncionario.n_dep,
-        n_dep14:dadosFuncionario.n_dep14,
-        caso_emergencia:dadosFuncionario.caso_emergencia,
-        salario:dadosFuncionario.salario,
-        contrato_exp:dadosFuncionario.contrato_exp,
-        prorrogacao:dadosFuncionario.prorrogacao,
-        situacao:dadosFuncionario.situacao,
-        permissoes:dadosPermissoes
+    console.log(dadosUser.file)
+    const data = new FormData();
+    data.append('nome',dadosUser.nome??'');
+    data.append('usuario',dadosUser.usuario??'');
+    data.append('password',dadosUser.password??'');
+    data.append( 'cargo',dadosUser.cargo??'');
+    data.append('nomeCompleto',dadosFuncionario?.nomeCompleto??'');
+    data.append( 'cpf',dadosFuncionario.cpf??'');
+    data.append( 'rg',dadosFuncionario.rg??'');
+    data.append('nascimento',dadosFuncionario.nascimento?.toLocaleDateString()??'');
+    data.append('cep',dadosFuncionario.cep??'');
+    data.append( 'endereco',dadosFuncionario.endereco??'');
+    data.append('numero',dadosFuncionario.numero??'');
+    data.append( 'bairro',dadosFuncionario.bairro??'');
+    data.append('cidade',dadosFuncionario.cidade??'');
+    data.append('uf',dadosFuncionario.uf??'');
+    data.append('telefone',dadosFuncionario.telefone??'');
+    data.append('email',dadosFuncionario.email??'');
+    data.append('dataAdmissao',dadosFuncionario.dataAdmissao?.toLocaleDateString()??'');
+    data.append('CNH_categoria',dadosFuncionario.CNH_categoria??'');
+    data.append('titulo_eleitor',dadosFuncionario.titulo_eleitor??'');
+    data.append('zona',dadosFuncionario.zona?.toString()??'');
+    data.append( 'secao',dadosFuncionario.secao?.toString()??'');
+    data.append('PIS_PASEP',dadosFuncionario.PIS_PASEP??'');
+    data.append('escolaridade',dadosFuncionario.escolaridade??'');
+    data.append('nome_conjuge',dadosFuncionario.nome_conjuge??'');
+    data.append('n_dep',dadosFuncionario.n_dep?.toString()??'');
+    data.append('n_dep14',dadosFuncionario.n_dep14?.toString()??'');
+    data.append('caso_emergencia',dadosFuncionario.caso_emergencia??'');
+    data.append('salario',dadosFuncionario.salario?.toString()??'');
+    data.append('contrato_exp',dadosFuncionario.contrato_exp?.toString()??'');
+    data.append('prorrogacao',dadosFuncionario.prorrogacao?.toString()??'');
+    data.append('situacao',dadosFuncionario.situacao??'');
+    data.append('permissoes',JSON.stringify(dadosPermissoes)??'');
 
-      }),
-      {error:'',
-        pending:'',
-        success:''
-      }
-    )
+    if(dadosUser.file){
+      data.append( 'file',dadosUser.file);
+    }
+   
+
+    try {
+      await toast.promise(
+        api.post('/user',data),
+        {error:'ERRO AO REALIZAR CADASTRO',
+          pending:'CADASTRANDO NOVO FUNCIONÁRIO',
+          success:'FUNCIONÁRIO CADASTRADO COM SUCESSO'
+        }
+      )
+      
+    } catch (error) {
+      console.log(error)
+      
+    }
+
     
   }
 

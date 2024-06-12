@@ -221,7 +221,8 @@ type UserProps = {
     id: string,
     nome: string,
     cargo: string,
-    dir: string
+    dir: string,
+   image:string
 
 }
 interface CheckListProps {
@@ -451,20 +452,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 usuario: user,
                 password
             })
-
-            const { id, token, cargo, dir, nome } = response.data
+                console.log(response.data.image)
+            const { id, token, cargo, dir, nome,image } = response.data
             setCookie(undefined, '@nextauth.token', token, {
                 maxAge: 60 * 60 * 24 * 1, // expirar em 1 dia
                 path: "/" // quais caminhos terão acesso ao cookie
             })
-            setUser({ id, nome: nome.toUpperCase(), cargo, dir })
+            setUser({ id, nome: nome.toUpperCase(), cargo, dir,image })
             // Passar o token para as proximas paginas
             api.defaults.headers["Authorization"] = `Bearer ${token}`
             //redirecionar o user para /dashboard
             Router.push("/admcontrato")
 
-        } catch (err:any) {
-toast.error(err.response.data.error)
+        } catch (err) {
+//toast.error(err.response.data.error)
+toast.error('Erro no Login')
+console.log(err)
+
 
         }
     }
@@ -514,7 +518,7 @@ toast.error(err.response.data.error)
                 const decodeToken = decode(token);
                 if(decodeToken && typeof decodeToken === 'object'){
                     const {nome,sub,dir,cargo} = decodeToken;
-                    setUser({id:String(sub),nome:nome.toUpperCase(),cargo,dir})
+                    setUser({id:String(sub),nome:nome.toUpperCase(),cargo,dir,image:''})
                 }
             }
             

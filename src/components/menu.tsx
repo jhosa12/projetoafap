@@ -28,6 +28,7 @@ export function MenuLateral(){
     
  
   useEffect(() => {
+    console.log(usuario)
     if(!usuario){
         user();
     }
@@ -89,13 +90,13 @@ async function contagem() {
           </button>
           <Tooltip id='logout'/>
           <div className="w-11 h-11 rounded-full overflow-hidden">
-    <Image 
+   {usuario?.image && <img 
         className="object-cover" 
-        src={usuario?.dir ? `${usuario.dir}` : fototeste} 
+        src={ `data:image/jpeg;base64,${usuario.image}` } 
         width={100} 
         height={100} 
         alt=""
-    />
+    />}
 </div>
 <div className  ="font-medium text-white">
     <span>{usuario?.nome}</span>

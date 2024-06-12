@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
-
+import sharp from 'sharp';
 import { MdOutlineFileUpload } from "react-icons/md";
 
 
@@ -16,6 +16,7 @@ interface Usuario{
     password:string,
     id:number,
     cargo:string,
+    file:File
   
   }
 interface UsuarioProps{
@@ -29,7 +30,7 @@ interface UsuarioProps{
 
 export function ModalNovoUsuario({setarDadosUsuario,dadosUser}:UsuarioProps) {
     const [avatarURL,setAvatarURL] = useState('');
-    const  [imageAvatar,setImageAvatar] = useState<File>();
+    
    
 
 
@@ -44,7 +45,7 @@ if(!image ){
     return;
 }
 if(image.type==='image/jpeg' || image.type==='image/png'){
-    setImageAvatar(image);
+    setarDadosUsuario({...dadosUser,file:image})
     setAvatarURL(URL.createObjectURL(e.target.files[0]))
 
 }
@@ -72,22 +73,22 @@ if(image.type==='image/jpeg' || image.type==='image/png'){
                         <div className="grid  grid-cols-2 gap-2  w-full">
                         <div className=" col-span-1">
                                 <label className="block  text-xs font-medium  text-white">NOME</label>
-                                <input  type="text" value={dadosUser.nome} onChange={e => setarDadosUsuario({nome:e.target.value})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                                <input  type="text" value={dadosUser.nome} onChange={e => setarDadosUsuario({...dadosUser,nome:e.target.value})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                             </div>
                          
                             <div className=" col-span-1">
                                 <label className="block  text-xs font-medium  text-white">USUÁRIO</label>
-                                <input  type="text" value={''} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                                <input  type="text" value={dadosUser.usuario} onChange={e => {setarDadosUsuario({...dadosUser,usuario:e.target.value}) }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                             </div>
                             <div className=" col-span-1">
                                 <label className="block  text-xs font-medium  text-white">CARGO</label>
-                                <input  type="text" value={''} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                                <input  type="text" value={dadosUser.cargo} onChange={e => {setarDadosUsuario({...dadosUser,cargo:e.target.value}) }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                             </div>
                            
                           
                             <div className=" col-span-1">
                                 <label className="block  text-xs font-medium  text-white">SENHA</label>
-                                <input  type="text" value={''} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                                <input  type="text" value={dadosUser.password} onChange={e => {setarDadosUsuario({...dadosUser,password:e.target.value}) }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                             </div>
                             <div className=" col-span-1">
                                 <label className="block  text-xs font-medium  text-white">REPITA A SENHA</label>

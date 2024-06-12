@@ -5,7 +5,7 @@ interface FuncionarioProps{
     nomeCompleto:string,
     cpf:string,
     rg:string,
-    nascimento:Date,
+    nascimento:Date|null,
     cep:string,
     endereco:string,
     numero:string,
@@ -14,7 +14,7 @@ interface FuncionarioProps{
     uf:string,
     telefone:string,
     email:string,
-    dataAdmissao:Date,
+    dataAdmissao:Date |null,
     CNH_categoria:string,
     titulo_eleitor:string,
     zona:number,
@@ -44,36 +44,36 @@ export  function ModalDadosFuncionario({setarDadosFuncionario,dadosFuncionario}:
             <div className="grid  grid-cols-4 gap-2  w-full">
                 <div className=" col-span-2">
                     <label className="block  text-xs font-medium  text-white">NOME COMPLETO</label>
-                    <input type="text" value={''} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <input type="text" value={dadosFuncionario.nomeCompleto} onChange={e => {setarDadosFuncionario({...dadosFuncionario,nomeCompleto:e.target.value}) }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
 
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">CPF</label>
-                    <input type="text" value={''} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <input type="text" value={dadosFuncionario.cpf} onChange={e => {setarDadosFuncionario({...dadosFuncionario,cpf:e.target.value}) }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">RG</label>
-                    <input type="text" value={''} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <input type="text" value={dadosFuncionario.rg} onChange={e => {setarDadosFuncionario({...dadosFuncionario,rg:e.target.value}) }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">NASCIMENTO</label>
-                    <input type="text" value={''} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <input type="text" value={dadosFuncionario.nascimento?.toLocaleDateString()} onChange={e => setarDadosFuncionario({...dadosFuncionario,nascimento:new Date(e.target.value)})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">CEP</label>
-                    <input type="text" value={''} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <input type="text" value={dadosFuncionario.cep} onChange={e => setarDadosFuncionario({...dadosFuncionario,cep:e.target.value})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-2">
                     <label className="block  text-xs font-medium  text-white">ENDEREÇO</label>
-                    <input type="text" value={''} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <input type="text" value={dadosFuncionario.endereco} onChange={e => setarDadosFuncionario({...dadosFuncionario,endereco:e.target.value})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">NÚMERO</label>
-                    <input type="text" value={''} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <input type="text" value={dadosFuncionario.numero} onChange={e => setarDadosFuncionario({...dadosFuncionario,numero:e.target.value})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">BAIRRO</label>
-                    <input type="text" value={''} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <input type="text" value={dadosFuncionario.bairro} onChange={e => { }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">CIDADE</label>
