@@ -21,88 +21,63 @@ interface PermissoesProps {
 interface UsuarioProps{
   nome:string,
   usuario:string,
+  image:string,
   password:string,
-  id:number,
+  id:number|null,
   cargo:string,
-  file:File,
+  file:File|null,
   avatarUrl:string
   repSenha:string,
+  editar:boolean
 }
 interface ModalProps {
 
-  setarModalEditar: () => void,
-  getUsers:()=>void
+  setarModalAdicionar: () => void,
+  setarDadosPermissoes:(fields:Array<PermissoesProps>)=>void,
+  setarDadosUsuario:(fields:Partial<UsuarioProps>)=>void,
+  setarDadosFuncionario:(fields:Partial<FuncionarioProps>)=>void,
+  getUsers:()=>void,
+  dadosUser:Partial<UsuarioProps>,
+  dadosFuncionario:Partial<FuncionarioProps>,
+  dadosPermissoes:Array<PermissoesProps>
+
 
 }
 
 interface FuncionarioProps{
-  
-  nomeCompleto:string,
-  cpf:string,
-  rg:string,
-  nascimento:Date |null,
-  cep:string,
-  endereco:string,
-  numero:string,
-  bairro:string,
-  cidade:string,
-  uf:string,
-  telefone:string,
-  email:string,
-  dataAdmissao:Date | null,
-  CNH_categoria:string,
-  titulo_eleitor:string,
-  zona:number,
-  secao:number,
-  PIS_PASEP:string,
-  escolaridade:string,
-  nome_conjuge:string,
-  n_dep:number,
-  n_dep14:number,
-  caso_emergencia:string,
-  salario:number,
-  contrato_exp:number,
-  prorrogacao:number,
-  situacao:string,
+  nome: string,
+  cpf: string,
+  rg: string,
+  data_nascimento: Date | null,
+  cep: string,
+  endereco: string,
+  numero: string,
+  bairro: string,
+  cidade: string,
+  uf: string,
+  telefone: string,
+  email: string,
+  dt_admissao: Date | null,
+  cnh_categoria: string,
+  titulo_eleitor: string,
+  zona: number,
+  secao: number,
+  pis_pasep: string,
+  grau_instrucao: string,
+  nome_conjuge: string,
+  n_dependentes: number,
+  menores_14: number,
+  caso_emergencia: string,
+  salario: number,
+  contrato_exp: number,
+  prorrogacao_cont: number,
+  situacao: string,
  
 }
 
-export  function MenuMultiStep({ setarModalEditar,getUsers }: ModalProps) {
-  const { usuario } = useContext(AuthContext)
-  const [dadosUser,setDadosUser] = useState<Partial<UsuarioProps>>({})
-  const [dadosFuncionario,setDadosFuncionario]=useState<Partial<FuncionarioProps>>({})
-  const [dadosPermissoes,setDadosPermissoes] = useState<Array<PermissoesProps>>([  { nome: "ALTERAR DADOS TITULAR", val: false,tela:'admContDados' }, { nome: "ALTERAR CARÊNCIA", val: false,tela:'admContDados' }, { nome: "ALTERAR ADESÃO", val: false,tela:'admContDados'}, { nome: "ALTERAR VENCIMENTO", val: false,tela:'admContDados' }, { nome: "ALTERAR CATEGORIA", val: false,tela:'admContDados' }, { nome: "ALTERAR CONSULTOR", val: false,tela:'admContDados' }, { nome: "ALTERAR COBRADOR", val: false,tela:'admContDados' }, { nome: "INATIVAR PLANO", val: false,tela:'admContDados'},{ nome: "ADICIONAR MENSALIDADE", val: false,tela:'admContMensal' }, { nome: "REALIZAR ACORDO", val: false,tela:'admContMensal' }, { nome: 'EXCLUIR MENSALIDADE', val: false,tela:'admContMensal' },{nome:"ADICIONAR DEPENDENTE", val:false,tela:'admContDep'},{nome:"EXCLUIR DEPENDENTE", val:false,tela:'admContDep'},{nome:"EXIBIR EXCLUIDOS", val:false,tela:'admContDep'}])
+export  function MenuMultiStep({ setarModalAdicionar,getUsers,setarDadosFuncionario,setarDadosPermissoes,setarDadosUsuario,dadosFuncionario,dadosPermissoes,dadosUser }: ModalProps) {
 
-  const setarDadosPermissoes = (permissoes:Array<PermissoesProps>)=>{
-    setDadosPermissoes(permissoes)
-
-  }
-
-  const setarDadosUsuario = (fields:Partial<UsuarioProps>)=>{
-    setDadosUser((prev:Partial<UsuarioProps>)=>{
-        if(prev){
-            return {...prev,...fields}
-        }
-        else{
-            return {...fields}
-        }
-
-    })
-    
-}
-
-const setarDadosFuncionario = (fields:Partial<FuncionarioProps>)=>{
-  setDadosFuncionario((prev:Partial<FuncionarioProps>)=>{
-      if(prev){
-          return {...prev,...fields}
-      }
-      else{
-          return {...fields}
-      }
-
-  })
-  
-}
+ 
 
   const { steps, currentStepIndex, step, next, back } = MultiStep([
     <ModalNovoUsuario setarDadosUsuario={setarDadosUsuario} dadosUser={dadosUser}  />,
@@ -127,10 +102,10 @@ const setarDadosFuncionario = (fields:Partial<FuncionarioProps>)=>{
     data.append('usuario',dadosUser.usuario??'');
     data.append('password',dadosUser.password??'');
     data.append( 'cargo',dadosUser.cargo??'');
-    data.append('nomeCompleto',dadosFuncionario?.nomeCompleto??'');
+    data.append('nomeCompleto',dadosFuncionario?.nome??'');
     data.append( 'cpf',dadosFuncionario.cpf??'');
     data.append( 'rg',dadosFuncionario.rg??'');
-    data.append('nascimento',dadosFuncionario.nascimento?.toString()??'');
+    data.append('nascimento',dadosFuncionario.data_nascimento?.toString()??'');
     data.append('cep',dadosFuncionario.cep??'');
     data.append( 'endereco',dadosFuncionario.endereco??'');
     data.append('numero',dadosFuncionario.numero??'');
@@ -139,20 +114,20 @@ const setarDadosFuncionario = (fields:Partial<FuncionarioProps>)=>{
     data.append('uf',dadosFuncionario.uf??'');
     data.append('telefone',dadosFuncionario.telefone??'');
     data.append('email',dadosFuncionario.email??'');
-    data.append('dataAdmissao',dadosFuncionario.dataAdmissao?.toString()??'');
-    data.append('CNH_categoria',dadosFuncionario.CNH_categoria??'');
+    data.append('dataAdmissao',dadosFuncionario.dt_admissao?.toString()??'');
+    data.append('CNH_categoria',dadosFuncionario.cnh_categoria??'');
     data.append('titulo_eleitor',dadosFuncionario.titulo_eleitor??'');
     data.append('zona',dadosFuncionario.zona?.toString()??'');
     data.append( 'secao',dadosFuncionario.secao?.toString()??'');
-    data.append('PIS_PASEP',dadosFuncionario.PIS_PASEP??'');
-    data.append('escolaridade',dadosFuncionario.escolaridade??'');
+    data.append('PIS_PASEP',dadosFuncionario.pis_pasep??'');
+    data.append('escolaridade',dadosFuncionario.grau_instrucao??'');
     data.append('nome_conjuge',dadosFuncionario.nome_conjuge??'');
-    data.append('n_dep',dadosFuncionario.n_dep?.toString()??'');
-    data.append('n_dep14',dadosFuncionario.n_dep14?.toString()??'');
+    data.append('n_dep',dadosFuncionario.n_dependentes?.toString()??'');
+    data.append('n_dep14',dadosFuncionario.menores_14?.toString()??'');
     data.append('caso_emergencia',dadosFuncionario.caso_emergencia??'');
     data.append('salario',dadosFuncionario.salario?.toString()??'');
     data.append('contrato_exp',dadosFuncionario.contrato_exp?.toString()??'');
-    data.append('prorrogacao',dadosFuncionario.prorrogacao?.toString()??'');
+    data.append('prorrogacao',dadosFuncionario.prorrogacao_cont?.toString()??'');
     data.append('situacao',dadosFuncionario.situacao??'');
     data.append('permissoes',JSON.stringify(dadosPermissoes)??'');
 
@@ -186,7 +161,7 @@ const setarDadosFuncionario = (fields:Partial<FuncionarioProps>)=>{
           <form onSubmit={onSubmit}>
             <div className="absolute font-bold text-white top-2 right-2">
               {currentStepIndex + 1} / {steps.length}
-              <button onClick={() => setarModalEditar()} type="button" className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+              <button onClick={() => setarModalAdicionar()} type="button" className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
                 <IoIosClose size={30} />
               </button>
             </div>

@@ -2,33 +2,33 @@
 
 
 interface FuncionarioProps{
-    nomeCompleto:string,
-    cpf:string,
-    rg:string,
-    nascimento:Date|null,
-    cep:string,
-    endereco:string,
-    numero:string,
-    bairro:string,
-    cidade:string,
-    uf:string,
-    telefone:string,
-    email:string,
-    dataAdmissao:Date |null,
-    CNH_categoria:string,
-    titulo_eleitor:string,
-    zona:number,
-    secao:number,
-    PIS_PASEP:string,
-    escolaridade:string,
-    nome_conjuge:string,
-    n_dep:number,
-    n_dep14:number,
-    caso_emergencia:string,
-    salario:number,
-    contrato_exp:number,
-    prorrogacao:number,
-    situacao:string,
+    nome: string,
+    cpf: string,
+    rg: string,
+    data_nascimento: Date | null,
+    cep: string,
+    endereco: string,
+    numero: string,
+    bairro: string,
+    cidade: string,
+    uf: string,
+    telefone: string,
+    email: string,
+    dt_admissao: Date | null,
+    cnh_categoria: string,
+    titulo_eleitor: string,
+    zona: number,
+    secao: number,
+    pis_pasep: string,
+    grau_instrucao: string,
+    nome_conjuge: string,
+    n_dependentes: number,
+    menores_14: number,
+    caso_emergencia: string,
+    salario: number,
+    contrato_exp: number,
+    prorrogacao_cont: number,
+    situacao: string,
   
 }
 interface ModalProps{
@@ -45,7 +45,7 @@ export  function ModalDadosFuncionario({setarDadosFuncionario,dadosFuncionario}:
             <div className="grid  grid-cols-4 gap-2  w-full">
                 <div className=" col-span-2">
                     <label className="block  text-xs font-medium  text-white">NOME COMPLETO</label>
-                    <input type="text" value={dadosFuncionario.nomeCompleto} onChange={e => {setarDadosFuncionario({...dadosFuncionario,nomeCompleto:e.target.value}) }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <input type="text" value={dadosFuncionario.nome} onChange={e => {setarDadosFuncionario({...dadosFuncionario,nome:e.target.value}) }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
 
                 <div className=" col-span-1">
@@ -58,7 +58,7 @@ export  function ModalDadosFuncionario({setarDadosFuncionario,dadosFuncionario}:
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">NASCIMENTO</label>
-                    <input type="text" value={dadosFuncionario.nascimento?.toLocaleDateString()} onChange={e => setarDadosFuncionario({...dadosFuncionario,nascimento:new Date(e.target.value)})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <input type="text" value={dadosFuncionario.data_nascimento?.toLocaleDateString()} onChange={e => setarDadosFuncionario({...dadosFuncionario,data_nascimento:new Date(e.target.value)})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">CEP</label>
@@ -94,11 +94,11 @@ export  function ModalDadosFuncionario({setarDadosFuncionario,dadosFuncionario}:
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">DATA ADMISSÃO</label>
-                    <input type="text" value={dadosFuncionario.dataAdmissao?.toLocaleDateString()} onChange={e =>  setarDadosFuncionario({...dadosFuncionario,dataAdmissao:new Date(e.target.value)})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <input type="text" value={dadosFuncionario.dt_admissao?.toLocaleDateString()} onChange={e =>  setarDadosFuncionario({...dadosFuncionario,dt_admissao:new Date(e.target.value)})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">CNH_CATEGORIA</label>
-                    <input type="text" value={dadosFuncionario.CNH_categoria} onChange={e =>  setarDadosFuncionario({...dadosFuncionario,CNH_categoria:e.target.value})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <input type="text" value={dadosFuncionario.cnh_categoria} onChange={e =>  setarDadosFuncionario({...dadosFuncionario,cnh_categoria:e.target.value})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">TITULO ELEITOR</label>
@@ -114,11 +114,11 @@ export  function ModalDadosFuncionario({setarDadosFuncionario,dadosFuncionario}:
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">PIS/PASEP</label>
-                    <input type="text" value={dadosFuncionario.PIS_PASEP} onChange={e =>  setarDadosFuncionario({...dadosFuncionario,PIS_PASEP:e.target.value})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <input type="text" value={dadosFuncionario.pis_pasep} onChange={e =>  setarDadosFuncionario({...dadosFuncionario,pis_pasep:e.target.value})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">ESCOLARIDADE</label>
-                    <input type="text" value={dadosFuncionario.escolaridade} onChange={e =>  setarDadosFuncionario({...dadosFuncionario,escolaridade:e.target.value})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <input type="text" value={dadosFuncionario.grau_instrucao} onChange={e =>  setarDadosFuncionario({...dadosFuncionario,grau_instrucao:e.target.value})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-2">
                     <label className="block  text-xs font-medium  text-white">NOME CONJUGE</label>
@@ -126,11 +126,11 @@ export  function ModalDadosFuncionario({setarDadosFuncionario,dadosFuncionario}:
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">Nº DEPENDENTES TOTAL</label>
-                    <input type="number" value={dadosFuncionario.n_dep} onChange={e =>  setarDadosFuncionario({...dadosFuncionario,n_dep:e.target.valueAsNumber})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <input type="number" value={dadosFuncionario.n_dependentes} onChange={e =>  setarDadosFuncionario({...dadosFuncionario,n_dependentes:e.target.valueAsNumber})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">MENORES DE 14 ANOS</label>
-                    <input type="text" value={dadosFuncionario.n_dep14} onChange={e =>  setarDadosFuncionario({...dadosFuncionario,n_dep14:e.target.valueAsNumber})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <input type="text" value={dadosFuncionario.menores_14} onChange={e =>  setarDadosFuncionario({...dadosFuncionario,menores_14:e.target.valueAsNumber})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">CASO EMERGÊNCIA</label>
@@ -146,7 +146,7 @@ export  function ModalDadosFuncionario({setarDadosFuncionario,dadosFuncionario}:
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">PRORROGAÇÃO CONT.</label>
-                    <input type="number" value={dadosFuncionario.prorrogacao} onChange={e =>  setarDadosFuncionario({...dadosFuncionario,prorrogacao:e.target.valueAsNumber})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <input type="number" value={dadosFuncionario.prorrogacao_cont} onChange={e =>  setarDadosFuncionario({...dadosFuncionario,prorrogacao_cont:e.target.valueAsNumber})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">SITUAÇÃO</label>

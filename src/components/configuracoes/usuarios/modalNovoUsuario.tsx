@@ -14,11 +14,13 @@ interface Usuario{
     nome:string,
     usuario:string,
     password:string,
-    id:number,
+    id:number|null,
     cargo:string,
-    file:File,
+    file:File|null,
     avataUrl:string,
-    repSenha:string
+    repSenha:string,
+    editar:boolean,
+    image:string
   
   }
 interface UsuarioProps{
@@ -47,9 +49,7 @@ if(!image ){
     return;
 }
 if(image.type==='image/jpeg' || image.type==='image/png'){
-    setarDadosUsuario({...dadosUser,file:image,avataUrl:URL.createObjectURL(e.target.files[0])})
-   
-
+    setarDadosUsuario({...dadosUser,file:image,avataUrl:URL.createObjectURL(e.target.files[0]),image:''})
 }
 
 
@@ -69,7 +69,7 @@ if(image.type==='image/jpeg' || image.type==='image/png'){
                                     <MdOutlineFileUpload size={25}/>
                                 </span>
                                 <input  className="hidden" onChange={handleFile} type="file" accept="image/png,image/jpeg"></input>
-                                {dadosUser.avataUrl && <img className="w-full h-full object-cover rounded-lg" src={dadosUser.avataUrl} alt="" width={150} height={100}></img>}
+                                {dadosUser.avataUrl && <img className="w-full h-full object-cover rounded-lg" src={dadosUser.image?`data:image/jpeg;base64,${dadosUser.image}`:dadosUser.avataUrl} alt="fotoUser" width={150} height={100}></img>}
 
                             </label>
                         <div className="grid  grid-cols-2 gap-2  w-full">
