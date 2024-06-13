@@ -9,6 +9,7 @@ import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { IoIosAddCircle } from "react-icons/io";
 import {MenuMultiStep} from "../multiStep/multStep"
+import { toASCII } from "punycode"
 
 
 interface PermissionsProps{
@@ -18,7 +19,8 @@ interface UsersProps{
     cargo:string,
     dir:string,
     email:string,
-    telefone:string
+    telefone:string,
+    image:string
     nome:string,
     id:number,
     permissoes:Partial<PermissionsProps>,
@@ -42,7 +44,7 @@ export function Usuario() {
          const response =   await api.get("/getUser")
          console.log(response.data)
          setUserDados(response.data)
-           
+       
             
         } catch (error) {
             toast.error('ERRO NA REQUISIÇÃO')
@@ -73,6 +75,7 @@ export function Usuario() {
                 </li>
                 {
                   userDados?.map((item, index) => {
+                 
                     //   const soma = nome?.lancamentos?.reduce((total, item) => {
                     //   if (item.conta === nome.conta) {
                     //     return total + Number(item.valor)
@@ -91,7 +94,8 @@ export function Usuario() {
                     return (
                       <li  className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
                         <div className="inline-flex w-full items-center">
-                            <span className="flex w-40 me-2 text-start font-semibold">  <img className="w-[26px] h-[26px] rounded-full" src="/fototeste.jpeg" alt="Rounded avatar"></img></span>
+                            <span className="flex w-40 me-2 text-start font-semibold">
+                               {item.image && <img className="w-[26px] h-[26px] rounded-full" src={`data:image/jpeg;base64,${item.image}`} alt="Rounded avatar"></img>}</span>
                             <span className="flex w-full text-start font-semibold">{item?.nome}</span>
                             <span className="flex w-full text-start font-semibold">{item.cargo}</span>
                             <span className="flex w-full text-start font-semibold">{item.email}</span>
