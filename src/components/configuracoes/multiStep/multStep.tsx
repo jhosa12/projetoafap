@@ -160,14 +160,14 @@ export  function MenuMultiStep({ setarModalAdicionar,getUsers,setarDadosFunciona
 
   async function handleEditarCadastro() {
     if(dadosUser.password && (dadosUser.password!==dadosUser.repSenha)){
-      toast.error('Senhas não coincidem !')
-      return
-    }
+     toast.error('Senhas não coincidem !')
+     return
+  }
 
-    if(dadosUser.senhaAtual && (!dadosUser.password||!dadosUser.repSenha)){
-      toast.info('Insira a nova senha')
-      return ;
-    }
+   if(dadosUser.senhaAtual && (!dadosUser.password||!dadosUser.repSenha)){
+     toast.info('Insira a nova senha')
+     return ;
+   }
     
     const data = new FormData();
     data.append('id',dadosUser.id?.toString()??'');
