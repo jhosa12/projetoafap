@@ -1,7 +1,11 @@
-
+import DatePicker,{registerLocale} from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import pt from 'date-fns/locale/pt-BR';
+import ReactInputMask from "react-input-mask";
 
 
 interface FuncionarioProps{
+    id_consultor:number|null,
     nome: string,
     cpf: string,
     rg: string,
@@ -50,7 +54,7 @@ export  function ModalDadosFuncionario({setarDadosFuncionario,dadosFuncionario}:
 
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">CPF</label>
-                    <input type="text" value={dadosFuncionario.cpf} onChange={e => {setarDadosFuncionario({...dadosFuncionario,cpf:e.target.value}) }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <ReactInputMask mask={'999.999.999-99'} value={dadosFuncionario.cpf} onChange={e => {setarDadosFuncionario({...dadosFuncionario,cpf:e.target.value}) }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">RG</label>
@@ -58,7 +62,7 @@ export  function ModalDadosFuncionario({setarDadosFuncionario,dadosFuncionario}:
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">NASCIMENTO</label>
-                    <input type="text" value={dadosFuncionario.data_nascimento?.toLocaleDateString()} onChange={e => setarDadosFuncionario({...dadosFuncionario,data_nascimento:new Date(e.target.value)})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <DatePicker selected={dadosFuncionario.data_nascimento} dateFormat={"dd/MM/yyyy"} locale={pt} onChange={e => setarDadosFuncionario({...dadosFuncionario,data_nascimento:e})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">CEP</label>
@@ -94,7 +98,7 @@ export  function ModalDadosFuncionario({setarDadosFuncionario,dadosFuncionario}:
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">DATA ADMISSÃO</label>
-                    <input type="text" value={dadosFuncionario.dt_admissao?.toLocaleDateString()} onChange={e =>  setarDadosFuncionario({...dadosFuncionario,dt_admissao:new Date(e.target.value)})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
+                    <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={dadosFuncionario.dt_admissao} onChange={e =>  setarDadosFuncionario({...dadosFuncionario,dt_admissao:e})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className=" col-span-1">
                     <label className="block  text-xs font-medium  text-white">CNH_CATEGORIA</label>

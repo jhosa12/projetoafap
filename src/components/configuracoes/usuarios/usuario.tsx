@@ -22,10 +22,11 @@ interface UsuarioProps {
   nome: string,
   usuario: string,
   password: string,
+  senhaAtual:string,
   image: string,
   id: number|null,
   cargo: string,
-  file: File |null,
+  file: File |undefined,
   avatarUrl: string,
   editar:boolean,
   repSenha: string,
@@ -119,7 +120,7 @@ export function Usuario() {
   async function getUsers() {
     try {
       const response = await api.get("/getUser")
-      console.log(response.data)
+      
       setUserDados(response.data)
 
 
@@ -127,6 +128,7 @@ export function Usuario() {
       toast.error('ERRO NA REQUISIÇÃO')
 
     }
+   
   }
 
 
@@ -144,7 +146,7 @@ password:'',
 usuario:'',
 image:'',
 repSenha:'',
-file:null,
+file:undefined,
 avatarUrl:''
         }),
         setModalAdicionar(!modalAdicionar)}} className="inline-flex justify-items-center gap-1 p-1 bg-green-500 rounded-lg mb-1 font-semibold text-sm"><IoIosAddCircle size={20} />ADD</button>

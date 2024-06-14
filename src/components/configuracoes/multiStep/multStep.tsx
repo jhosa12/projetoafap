@@ -21,11 +21,12 @@ interface PermissoesProps {
 interface UsuarioProps{
   nome:string,
   usuario:string,
+  senhaAtual:string,
   image:string,
   password:string,
   id:number|null,
   cargo:string,
-  file:File|null,
+  file:File|undefined,
   avatarUrl:string
   repSenha:string,
   editar:boolean
@@ -36,7 +37,7 @@ interface ModalProps {
   setarDadosPermissoes:(fields:Array<PermissoesProps>)=>void,
   setarDadosUsuario:(fields:Partial<UsuarioProps>)=>void,
   setarDadosFuncionario:(fields:Partial<FuncionarioProps>)=>void,
-  getUsers:()=>void,
+  getUsers:()=>Promise<void>,
   dadosUser:Partial<UsuarioProps>,
   dadosFuncionario:Partial<FuncionarioProps>,
   dadosPermissoes:Array<PermissoesProps>
@@ -89,15 +90,17 @@ export  function MenuMultiStep({ setarModalAdicionar,getUsers,setarDadosFunciona
 
   function onSubmit(e: FormEvent) {
     e.preventDefault()
-    if(dadosUser.password!==dadosUser.repSenha){
-      toast.error('Senhas não coincidem !')
-      return
-    }
+  
     next()
   }
 
   async function handleNovoCadastro() {
-    console.log(dadosUser.file)
+    if(dadosUser.password!==dadosUser.repSenha){
+      toast.error('Senhas não coincidem !')
+      return
+    }
+    
+    
     const data = new FormData();
     data.append('nome',dadosUser.nome??'');
     data.append('usuario',dadosUser.usuario??'');
@@ -150,17 +153,29 @@ export  function MenuMultiStep({ setarModalAdicionar,getUsers,setarDadosFunciona
       console.log(error)
       
     }
-   getUsers()
+   await getUsers()
     
   }
 
 
   async function handleEditarCadastro() {
-    console.log(dadosUser.file)
+    if(dadosUser.password && (dadosUser.password!==dadosUser.repSenha)){
+      toast.error('Senhas não coincidem !')
+      return
+    }
+
+    if(dadosUser.senhaAtual && (!dadosUser.password||!dadosUser.repSenha)){
+      toast.info('Insira a nova senha')
+      return ;
+    }
+    
     const data = new FormData();
+    data.append('id',dadosUser.id?.toString()??'');
+    data.append('id_consultor',dadosFuncionario.id_consultor?.toString()??'');
     data.append('nome',dadosUser.nome??'');
     data.append('usuario',dadosUser.usuario??'');
     data.append('password',dadosUser.password??'');
+   data.append('senhaAtual',dadosUser.senhaAtual??'');
     data.append( 'cargo',dadosUser.cargo??'');
     data.append('nomeCompleto',dadosFuncionario?.nome??'');
     data.append( 'cpf',dadosFuncionario.cpf??'');
@@ -198,10 +213,10 @@ export  function MenuMultiStep({ setarModalAdicionar,getUsers,setarDadosFunciona
 
     try {
       await toast.promise(
-        api.post('/user',data),
-        {error:'ERRO AO REALIZAR CADASTRO',
-          pending:'CADASTRANDO NOVO FUNCIONÁRIO',
-          success:'FUNCIONÁRIO CADASTRADO COM SUCESSO'
+        api.put('/user/editar',data),
+        {error:'ERRO AO REALIZAR ALTERAÇÃO',
+          pending:'ALTERANDO DADOS',
+          success:'DADOS ALTERADOS COM SUCESSO'
         }
       )
       
@@ -209,14 +224,10 @@ export  function MenuMultiStep({ setarModalAdicionar,getUsers,setarDadosFunciona
       console.log(error)
       
     }
-   getUsers()
+    
+ await getUsers()
     
   }
-
-
-
-
-
 
   return (
 
