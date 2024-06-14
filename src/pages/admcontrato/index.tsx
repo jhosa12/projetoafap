@@ -329,7 +329,7 @@ async function atualizarObs() {
         {data.closeModalCadastro && (<Teste/>)}
         {data.mensalidade?.close && (<ModalMensalidade/>)}
         {data.dependente?.close && <ModalDependentes/>}
-        {data.closeEditarAssociado && <ModalEditarDados openEdit={openEdit}/>}
+        {data.closeEditarAssociado  && <ModalEditarDados openEdit={openEdit}/>}
        {data.acordo?.closeAcordo && (<ModalAcordos />)}
        
         <div className="flex  flex-col p-4  ">

@@ -12,6 +12,11 @@ type CidadesProps = {
     uf: string,
     cidade: string
 }
+interface PermissoesProps{
+    nome:string,
+    val:boolean,
+    tela:string
+}
 
 type CaixaProps = {
     num_seq: number | null,
@@ -222,7 +227,8 @@ type UserProps = {
     nome: string,
     cargo: string,
     dir: string,
-   image:string
+   image:string,
+   permissoes:Array<PermissoesProps>
 
 }
 interface CheckListProps {
@@ -452,13 +458,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 usuario: user,
                 password
             })
-                console.log(response.data.image)
-            const { id, token, cargo, dir, nome,image } = response.data
+                console.log(response.data)
+            const { id, token, cargo, dir, nome,image,permissoes } = response.data
             setCookie(undefined, '@nextauth.token', token, {
                 maxAge: 60 * 60 * 24 * 1, // expirar em 1 dia
                 path: "/" // quais caminhos terão acesso ao cookie
             })
-            setUser({ id, nome: nome.toUpperCase(), cargo, dir,image })
+            setUser({ id, nome: nome.toUpperCase(), cargo, dir,image,permissoes })
+            
             // Passar o token para as proximas paginas
             api.defaults.headers["Authorization"] = `Bearer ${token}`
             //redirecionar o user para /dashboard
@@ -517,8 +524,8 @@ console.log(err)
                 const token = cookies['@nextauth.token'];
                 const decodeToken = decode(token);
                 if(decodeToken && typeof decodeToken === 'object'){
-                    const {nome,sub,dir,cargo} = decodeToken;
-                    setUser({id:String(sub),nome:nome.toUpperCase(),cargo,dir,image:''})
+                    const {nome,sub,dir,cargo,permissoes} = decodeToken;
+                    setUser({id:String(sub),nome:nome.toUpperCase(),cargo,dir,image:'',permissoes})
                 }
             }
             
