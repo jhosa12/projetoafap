@@ -49,7 +49,7 @@ if(!image ){
     return;
 }
 if(image.type==='image/jpeg' || image.type==='image/png'){
-    setarDadosUsuario({...dadosUser,file:image,avataUrl:URL.createObjectURL(e.target.files[0]),image:''})
+    setarDadosUsuario({...dadosUser,file:image,avataUrl:URL.createObjectURL(e.target.files[0])})
 }
 
 

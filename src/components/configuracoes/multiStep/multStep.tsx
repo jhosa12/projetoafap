@@ -45,6 +45,7 @@ interface ModalProps {
 }
 
 interface FuncionarioProps{
+  id_consultor:number|null,
   nome: string,
   cpf: string,
   rg: string,
@@ -153,6 +154,70 @@ export  function MenuMultiStep({ setarModalAdicionar,getUsers,setarDadosFunciona
     
   }
 
+
+  async function handleEditarCadastro() {
+    console.log(dadosUser.file)
+    const data = new FormData();
+    data.append('nome',dadosUser.nome??'');
+    data.append('usuario',dadosUser.usuario??'');
+    data.append('password',dadosUser.password??'');
+    data.append( 'cargo',dadosUser.cargo??'');
+    data.append('nomeCompleto',dadosFuncionario?.nome??'');
+    data.append( 'cpf',dadosFuncionario.cpf??'');
+    data.append( 'rg',dadosFuncionario.rg??'');
+    data.append('nascimento',dadosFuncionario.data_nascimento?.toString()??'');
+    data.append('cep',dadosFuncionario.cep??'');
+    data.append( 'endereco',dadosFuncionario.endereco??'');
+    data.append('numero',dadosFuncionario.numero??'');
+    data.append( 'bairro',dadosFuncionario.bairro??'');
+    data.append('cidade',dadosFuncionario.cidade??'');
+    data.append('uf',dadosFuncionario.uf??'');
+    data.append('telefone',dadosFuncionario.telefone??'');
+    data.append('email',dadosFuncionario.email??'');
+    data.append('dataAdmissao',dadosFuncionario.dt_admissao?.toString()??'');
+    data.append('CNH_categoria',dadosFuncionario.cnh_categoria??'');
+    data.append('titulo_eleitor',dadosFuncionario.titulo_eleitor??'');
+    data.append('zona',dadosFuncionario.zona?.toString()??'');
+    data.append( 'secao',dadosFuncionario.secao?.toString()??'');
+    data.append('PIS_PASEP',dadosFuncionario.pis_pasep??'');
+    data.append('escolaridade',dadosFuncionario.grau_instrucao??'');
+    data.append('nome_conjuge',dadosFuncionario.nome_conjuge??'');
+    data.append('n_dep',dadosFuncionario.n_dependentes?.toString()??'');
+    data.append('n_dep14',dadosFuncionario.menores_14?.toString()??'');
+    data.append('caso_emergencia',dadosFuncionario.caso_emergencia??'');
+    data.append('salario',dadosFuncionario.salario?.toString()??'');
+    data.append('contrato_exp',dadosFuncionario.contrato_exp?.toString()??'');
+    data.append('prorrogacao',dadosFuncionario.prorrogacao_cont?.toString()??'');
+    data.append('situacao',dadosFuncionario.situacao??'');
+    data.append('permissoes',JSON.stringify(dadosPermissoes)??'');
+
+    if(dadosUser.file){
+      data.append( 'file',dadosUser.file);
+    }
+   
+
+    try {
+      await toast.promise(
+        api.post('/user',data),
+        {error:'ERRO AO REALIZAR CADASTRO',
+          pending:'CADASTRANDO NOVO FUNCIONÁRIO',
+          success:'FUNCIONÁRIO CADASTRADO COM SUCESSO'
+        }
+      )
+      
+    } catch (error) {
+      console.log(error)
+      
+    }
+   getUsers()
+    
+  }
+
+
+
+
+
+
   return (
 
     <div tabIndex={-1} aria-hidden="true" className="bg-opacity-5 bg-white overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full">
@@ -168,9 +233,9 @@ export  function MenuMultiStep({ setarModalAdicionar,getUsers,setarDadosFunciona
             {step}
             <div className="flex mt-4 gap-4 justify-end">
               {currentStepIndex !== 0 && (<button type="button" onClick={back}><FaCircleArrowLeft color='blue' style={{ color: '#CA9629' }} size={30} /></button>)}
-              <button type="submit">
-                {steps.length - 1 === currentStepIndex ? (<button onClick={() => handleNovoCadastro()} className="flex flex-row bg-blue-600 rounded-lg p-2 gap-2 text-white" type="button" ><MdSaveAlt size={22} /> SALVAR</button>) : (<FaCircleArrowRight size={30} style={{ color: '#CA9629' }} />)}
-              </button>
+            {steps.length - 1 === currentStepIndex? !dadosUser.editar?<button onClick={() => handleNovoCadastro()} className="flex flex-row bg-blue-600 rounded-lg p-2 gap-2 text-white" type="button" ><MdSaveAlt size={22} /> SALVAR</button>:<button onClick={() => handleEditarCadastro()} className="flex flex-row bg-yellow-600 rounded-lg p-2 gap-2 text-white" type="button" ><MdSaveAlt size={22} />SALVAR ALTERAÇÕES</button>  :<button type="submit">
+                {  (<FaCircleArrowRight size={30} style={{ color: '#CA9629' }} />)}
+              </button>}
             </div>
           </form>
         </div>
