@@ -69,7 +69,9 @@ if(image.type==='image/jpeg' || image.type==='image/png'){
                                     <MdOutlineFileUpload size={25}/>
                                 </span>
                                 <input  className="hidden" onChange={handleFile} type="file" accept="image/png,image/jpeg"></input>
-                                {dadosUser.avataUrl && <img className="w-full h-full object-cover rounded-lg" src={dadosUser.image?`data:image/jpeg;base64,${dadosUser.image}`:dadosUser.avataUrl} alt="fotoUser" width={150} height={100}></img>}
+                                {dadosUser.avataUrl && <img className="w-full h-full object-cover rounded-lg" src={dadosUser.avataUrl} alt="fotoUser" width={150} height={100}></img>}
+
+                                {dadosUser.image && <img className="w-full h-full object-cover rounded-lg" src={`data:image/jpeg;base64,${dadosUser.image}`} alt="fotoUser" width={150} height={100}></img>}
 
                             </label>
                         <div className="grid  grid-cols-2 gap-2  w-full">

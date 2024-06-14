@@ -185,7 +185,7 @@ avatarUrl:''
                     </div>
                     <div className="flex w-full justify-end gap-2 ">
                       <button onClick={() => {setarDadosUsuario({
-                        ...item,password:'',repSenha:'',editar:true,avatarUrl:item.image,image:item.image
+                        ...item,password:'',repSenha:'',editar:true,avatarUrl:''
                       }) 
                       setarDadosFuncionario({...item.consultor[0]})
                       ,setModalAdicionar(true)}} className="hover:bg-gray-500 p-1 text-blue-500 rounded-lg ">
