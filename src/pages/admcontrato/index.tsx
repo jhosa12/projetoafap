@@ -410,7 +410,19 @@ async function atualizarObs() {
          </h5>
   
          <button data-tooltip-id="my-tooltip"
-  data-tooltip-content="Editar Dados do Cliente/Contrato" onClick={()=>{setOpenEdit(1),closeModa({closeEditarAssociado:true,
+        
+  data-tooltip-content="Editar Dados do Cliente/Contrato" onClick={()=>{
+   
+        
+       const alt = usuario?.permissoes.find(item=>item.nome==='ALTERAR DADOS TITULAR');
+       if(alt && alt?.val===false){
+        toast.info('NÃO AUTORIZADO')
+         return;
+       }
+
+
+
+    setOpenEdit(1),closeModa({closeEditarAssociado:true,
          name:dadosassociado.nome,
          nasc:new Date(dadosassociado.data_nasc).toLocaleDateString(),
          bairro:dadosassociado.bairro,

@@ -19,7 +19,7 @@ import { GrConfigure } from "react-icons/gr";
 export function MenuLateral(){
    const socket = io("https://apiafap.onrender.com");
     const [isOpen,setIsOpen]=useState(false);
-    const {usuario,user}= useContext(AuthContext);
+    const {usuario,userToken}= useContext(AuthContext);
     const [isAdmOpen,setIsAdmOpen]= useState(false );
     const [isCaixaOpen,setIsCaixaOpen] = useState(false);
     const [isServicosOpen,setIsServicosOpen] =useState(false);
@@ -30,7 +30,7 @@ export function MenuLateral(){
   useEffect(() => {
     console.log(usuario)
     if(!usuario){
-        user();
+        userToken();
     }
   
    socket.on('connect', () => {

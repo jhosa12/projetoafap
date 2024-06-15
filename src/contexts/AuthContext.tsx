@@ -12,11 +12,6 @@ type CidadesProps = {
     uf: string,
     cidade: string
 }
-interface PermissoesProps{
-    nome:string,
-    val:boolean,
-    tela:string
-}
 
 type CaixaProps = {
     num_seq: number | null,
@@ -28,7 +23,7 @@ type CaixaProps = {
     valor: number | null,
     usuario: string,
     data: Date,
-    id_grupo:number|null,
+    id_grupo: number | null,
     tipo: string,
     datalanc: Date,
     notafiscal: string
@@ -50,36 +45,36 @@ type DependentesProps = {
     dt_exclusao: Date,
     user_exclusao: string,
     exclusao_motivo: string,
-    convalescenca:{
-        convalescenca_prod:Partial<{
-            id_conv:number,
-            id_produto:number,
-            descricao:string,
-            unidade:string,
-            grupo:string,
-            data:Date,
-            data_dev:Date,
-            quantidade:number,
-            valor:number,
-            descontos:number,
-            total:number,
-            hora:Date,
-            cortesia:string,
-            retornavel :string,
-            status :string
+    convalescenca: {
+        convalescenca_prod: Partial<{
+            id_conv: number,
+            id_produto: number,
+            descricao: string,
+            unidade: string,
+            grupo: string,
+            data: Date,
+            data_dev: Date,
+            quantidade: number,
+            valor: number,
+            descontos: number,
+            total: number,
+            hora: Date,
+            cortesia: string,
+            retornavel: string,
+            status: string
         }>,
     }
 }
 type MensalidadeProps = {
-    id_usuario:number,
-    id_contrato:number,
-    estorno_dt:Date,
-    estorno_user:string,
-    dt_exclusao:Date,
-  exclusao_motivo:string,
-  user_exclusao:string,
-  associado:string,
-  n_doc:string,
+    id_usuario: number,
+    id_contrato: number,
+    estorno_dt: Date,
+    estorno_user: string,
+    dt_exclusao: Date,
+    exclusao_motivo: string,
+    user_exclusao: string,
+    associado: string,
+    n_doc: string,
     parcela_n: number,
     vencimento: Date,
     cobranca: Date,
@@ -152,13 +147,13 @@ type ContratoProps = {
     n_parcelas: number,
     origem: string,
     supervisor: string,
-    convalescencia:Array<ConvProps>,
-    categoria_inativo:string,
-    motivo_inativo:string,
-    dt_cancelamento:true,
-                
+    convalescencia: Array<ConvProps>,
+    categoria_inativo: string,
+    motivo_inativo: string,
+    dt_cancelamento: true,
 
-    
+
+
 
 
 
@@ -172,7 +167,7 @@ type AcordoProps = {
     mensalidade: Array<Partial<MensalidadeProps>>,
     status: string,
     descricao: string,
-    metodo:string
+    metodo: string
     closeAcordo: boolean,
     id_acordo: number,
     visibilidade: boolean
@@ -198,7 +193,7 @@ type AssociadoProps = {
     contrato: ContratoProps,
     dependentes: Array<DependentesProps>
     acordo: Array<AcordoProps>
-   
+
 }
 type AuthContextData = {
     usuario: UserProps | undefined,
@@ -206,16 +201,16 @@ type AuthContextData = {
     sign: (credentials: SignInProps) => Promise<void>,
     signOut: () => void,
     closeModa: (fields: Partial<DadosCadastro>) => void,
-    setarServico: (fields:Partial<ObitoProps>) =>void,
-    servico:Partial<ObitoProps>,
+    setarServico: (fields: Partial<ObitoProps>) => void,
+    servico: Partial<ObitoProps>,
     caixaMovimentacao: (fields: Partial<CaixaProps>) => void,
     mov: Partial<CaixaProps>,
     data: Partial<DadosCadastro>,
     dadosassociado: AssociadoProps | undefined,
     carregarDados: () => Promise<void>,
-    setarListaConv:(fields:Partial<ConvProps>)=>void,
-    listaConv:Partial<ConvProps>,
-     user:()=>void
+    setarListaConv: (fields: Partial<ConvProps>) => void,
+    listaConv: Partial<ConvProps>,
+    userToken: () => void
 }
 
 type SignInProps = {
@@ -227,8 +222,8 @@ type UserProps = {
     nome: string,
     cargo: string,
     dir: string,
-   image:string,
-   permissoes:Array<PermissoesProps>
+    image: string,
+    permissoes: Array<{ nome: string, tela: string, val: boolean }>
 
 }
 interface CheckListProps {
@@ -238,7 +233,7 @@ interface CheckListProps {
 }
 
 interface ObitoProps {
-    id_obitos:number,
+    id_obitos: number,
     id_contrato: number,
     id_contrato_st: string,
     id_titular: number,
@@ -352,12 +347,12 @@ interface ObitoProps {
     status: string,
     listacheckida: Array<CheckListProps>,
     listacheckvolta: Array<CheckListProps>,
-    obito_itens:Array<Partial<ArrayProdutoProps>>
+    obito_itens: Array<Partial<ArrayProdutoProps>>
 }
 
 
 interface ArrayProdutoProps {
-    id_produto:number | null,
+    id_produto: number | null,
     descricao_item: string;
     valor_unit: number | null,
     quantidade: number | null,
@@ -366,12 +361,12 @@ interface ArrayProdutoProps {
     valor_total: number | null
 }
 interface ConvProps {
-    editar:boolean
+    editar: boolean
     id_conv: number | null,
-    id_contrato: number|null,
-    id_associado: number|null,
-    id_dependente:number|null,
-    id_contrato_st:string,
+    id_contrato: number | null,
+    id_associado: number | null,
+    id_dependente: number | null,
+    id_contrato_st: string,
     tipo_entrada: string,
     nome: string,
     cpf_cnpj: string,
@@ -379,17 +374,17 @@ interface ConvProps {
     status: string,
     forma_pag: string,
     logradouro: string,
-    numero: number|null,
+    numero: number | null,
     complemento: string,
     bairro: string,
     cep: string,
     cidade: string,
     uf: string,
-    subtotal: number|null,
-    descontos: number|null,
-    total: number|null,
+    subtotal: number | null,
+    descontos: number | null,
+    total: number | null,
     logradouro_r: string,
-    numero_r: number|null,
+    numero_r: number | null,
     complemento_r: string,
     bairro_r: string,
     cep_r: string,
@@ -399,28 +394,28 @@ interface ConvProps {
     hora_inc: Date,
     usuario: string,
     obs: string,
-    convalescenca_prod:Partial<{
-        id_conv:number,
-        id_produto:number,
-        descricao:string,
-        unidade:string,
-        grupo:string,
-        data:Date,
-        data_dev:Date,
-        quantidade:number,
-        valor:number,
-        descontos:number,
-        total:number,
-        hora:Date,
-        cortesia:string,
-        retornavel :string,
-        status :string
+    convalescenca_prod: Partial<{
+        id_conv: number,
+        id_produto: number,
+        descricao: string,
+        unidade: string,
+        grupo: string,
+        data: Date,
+        data_dev: Date,
+        quantidade: number,
+        valor: number,
+        descontos: number,
+        total: number,
+        hora: Date,
+        cortesia: string,
+        retornavel: string,
+        status: string
     }>,
-    contrato:{
-        situacao:string,
-        carencia:string,
-        associado:{
-            nome:string
+    contrato: {
+        situacao: string,
+        carencia: string,
+        associado: {
+            nome: string
         }
 
     }
@@ -428,7 +423,7 @@ interface ConvProps {
 }
 
 export const AuthContext = createContext({} as AuthContextData)
-export  function signOut(){
+export function signOut() {
     try {
         destroyCookie(undefined, '@nextauth.token')
         Router.push('/')
@@ -440,41 +435,46 @@ export  function signOut(){
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [usuario, setUser] = useState<UserProps>()
     const isAuthenticated = !!usuario;
-    const [listaConv,setLista] = useState<Partial<ConvProps>>({convalescenca_prod:{}})
+    const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod: {} })
     const [dadosassociado, setDadosAssociado] = useState<AssociadoProps>()
     const [data, setData] = useState<Partial<DadosCadastro>>({})
     const [mov, setMov] = useState<Partial<CaixaProps>>({})
-    const [servico,setServico] = useState<Partial<ObitoProps>>({hr_sepultamento:new Date(),end_hora_falecimento:new Date(),end_hora_informaram:new Date()})
-    
-    
-    
-    
-    
-    
+    const [servico, setServico] = useState<Partial<ObitoProps>>({ hr_sepultamento: new Date(), end_hora_falecimento: new Date(), end_hora_informaram: new Date() })
+
+
+
+
+
+
     async function sign({ user, password }: SignInProps) {
-        let response
+       
         try {
-            response = await api.post('/session', {
+          const response = await api.post('/session', {
                 usuario: user,
                 password
             })
-                console.log(response.data)
-            const { id, token, cargo, dir, nome,image,permissoes } = response.data
-            setCookie(undefined, '@nextauth.token', token, {
+            const { id, token, cargo, dir, nome, image, permissoes } = response.data
+          
+           
+            if (typeof window !== 'undefined') {
+                localStorage.setItem('@user.image', image);
+            }
+           setCookie(undefined, '@nextauth.token', token, {
                 maxAge: 60 * 60 * 24 * 1, // expirar em 1 dia
                 path: "/" // quais caminhos terão acesso ao cookie
             })
-            setUser({ id, nome: nome.toUpperCase(), cargo, dir,image,permissoes })
-            
+         
+            //   setUser({ id, nome: nome.toUpperCase(), cargo, dir,image,permissoes })
+            await userToken()
             // Passar o token para as proximas paginas
             api.defaults.headers["Authorization"] = `Bearer ${token}`
             //redirecionar o user para /dashboard
             Router.push("/admcontrato")
 
         } catch (err) {
-//toast.error(err.response.data.error)
-toast.error('Erro no Login')
-console.log(err)
+            //toast.error(err.response.data.error)
+            toast.error('Erro no Login')
+            console.log(err)
 
 
         }
@@ -483,8 +483,8 @@ console.log(err)
 
 
 
-    function closeModa(fields:Partial<DadosCadastro>) {
-        setData((prev:Partial<DadosCadastro>) => {
+    function closeModa(fields: Partial<DadosCadastro>) {
+        setData((prev: Partial<DadosCadastro>) => {
             if (prev) {
                 return { ...prev, ...fields };
             } else {
@@ -504,37 +504,41 @@ console.log(err)
     }
 
 
-    function setarListaConv(fields:Partial<ConvProps>){
+    function setarListaConv(fields: Partial<ConvProps>) {
 
-        setLista((prev:Partial<ConvProps>)=>{
-            if(prev){
-                return {...prev,...fields};
+        setLista((prev: Partial<ConvProps>) => {
+            if (prev) {
+                return { ...prev, ...fields };
             }
-            else{
-                return {...fields};
+            else {
+                return { ...fields };
             }
 
         })
 
     }
-     function user(){
+    async function userToken() {
         const cookies = parseCookies();
         try {
-            if(cookies['@nextauth.token']){
+            if (cookies['@nextauth.token']) {
                 const token = cookies['@nextauth.token'];
+                let image;
+                if (typeof window !== 'undefined') {
+                    image = localStorage.getItem('@user.image');
+                }
                 const decodeToken = decode(token);
-                if(decodeToken && typeof decodeToken === 'object'){
-                    const {nome,sub,dir,cargo,permissoes} = decodeToken;
-                    setUser({id:String(sub),nome:nome.toUpperCase(),cargo,dir,image:'',permissoes})
+                if (decodeToken && typeof decodeToken === 'object') {
+                    const { nome, sub, dir, cargo, permissoes } = decodeToken;
+                    setUser({ id: String(sub), nome: nome.toUpperCase(), cargo, dir, image: image??'', permissoes: JSON.parse(permissoes) })
                 }
             }
-            
+
         } catch (error) {
             toast.error('Erro ao captar Usuário')
-            
+
         }
-     
-     }
+
+    }
 
     function caixaMovimentacao(fields: Partial<CaixaProps>) {
         setMov((prev: Partial<CaixaProps>) => {
@@ -552,17 +556,17 @@ console.log(err)
             const response = await api.post('/associado', {
                 id_associado: Number(data.id_associado)
             })
-           
+
             setDadosAssociado(response.data);
             console.log(response.data)
-            
+
         } catch (error) {
             toast.error('Erro na requisição')
         }
-     
+
     }
     return (
-        <AuthContext.Provider value={{user, usuario, isAuthenticated, sign, signOut, data, closeModa, dadosassociado, carregarDados, caixaMovimentacao, mov,setarServico,servico,listaConv,setarListaConv }}>
+        <AuthContext.Provider value={{ userToken, usuario, isAuthenticated, sign, signOut, data, closeModa, dadosassociado, carregarDados, caixaMovimentacao, mov, setarServico, servico, listaConv, setarListaConv }}>
             {children}
         </AuthContext.Provider>
     )
