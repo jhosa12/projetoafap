@@ -12,7 +12,7 @@ import { api } from "@/services/apiClient";
 
 
 export function ModalEditarDados({openEdit}:{openEdit:number}){
-    const {closeModa,data,dadosassociado,carregarDados} = useContext(AuthContext)
+    const {usuario,closeModa,data,dadosassociado,carregarDados} = useContext(AuthContext)
     const [mountedComponente,setMounted]= useState(true)
     const [aba,setAba] = useState(1)
     const [situacao,setSituaçao]= useState(false)
@@ -33,7 +33,6 @@ export function ModalEditarDados({openEdit}:{openEdit:number}){
       }
        
     },[data.contrato?.situacao])
-
 
 
     async function inativarContrato() {
@@ -313,8 +312,10 @@ useEffect(()=>{
     </div>
     <div className="col-span-1">
     <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">PLANO</label>
+    
     <select
    defaultValue ={data.contrato?.plano}
+   disabled={!usuario?.permissoes?.some(item => item.nome === 'ALTERAR CATEGORIA' && item.val)}
 className="block w-full p-1.5 pb-1 pt-1 pr-2 pl-2 sm:text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 onChange={(e) => {
     const selectedPlano = data.planos?.find(item => item.descricao === e.target.value);
@@ -373,15 +374,15 @@ selected={item.descricao === data.contrato?.plano ? true : false}
     </div>
     <div  className="col-span-1">
     <label  className="block mb-1 text-sm font-medium  text-white">VENCIMENTO INICIAL</label>
-    <DatePicker   dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={data.contrato?.data_vencimento} onChange={(e)=>e && closeModa({contrato:{...data.contrato,data_vencimento:e}})}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+    <DatePicker disabled={!usuario?.permissoes?.some(item => item.nome === 'ALTERAR VENCIMENTO' && item.val)}  dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={data.contrato?.data_vencimento} onChange={(e)=>e && closeModa({contrato:{...data.contrato,data_vencimento:e}})}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
     </div>
     <div className="col-span-1">
     <label  className="block mb-1 text-sm font-medium  text-white">DATA DE ADESÃO</label>
-    <DatePicker  dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={data.contrato?.dt_adesao} onChange={e=>e && closeModa({contrato:{...data.contrato,dt_adesao:e}})} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+    <DatePicker disabled={!usuario?.permissoes?.some(item => item.nome === 'ALTERAR ADESÃO' && item.val)}  dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={data.contrato?.dt_adesao} onChange={e=>e && closeModa({contrato:{...data.contrato,dt_adesao:e}})} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
     </div>
     <div className="col-span-1">
     <label  className="block mb-1 text-sm font-medium  text-white">FIM DA CARÊNCIA</label>
-    <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={data.contrato?.dt_carencia} onChange={e=>e && closeModa({contrato:{...data.contrato,dt_carencia:e}})} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+    <DatePicker disabled={!usuario?.permissoes?.some(item => item.nome === 'ALTERAR CARÊNCIA' && item.val)} dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={data.contrato?.dt_carencia} onChange={e=>e && closeModa({contrato:{...data.contrato,dt_carencia:e}})} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
     </div>
    
   </div>

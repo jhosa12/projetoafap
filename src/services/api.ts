@@ -10,7 +10,7 @@ const api =axios.create({
 baseURL:process.env.NEXT_PUBLIC_URL_API,
 //baseURL:"http://localhost:3333",
     headers:{
-        Authorization:`Bearer ${cookies['@nextauth.token']}`
+        Authorization:`Bearer ${cookies[process.env.NEXT_PUBLIC_COOKIE || '']}`
     }
 })
 api.interceptors.response.use(response=>{

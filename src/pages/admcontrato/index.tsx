@@ -65,6 +65,8 @@ export default function AdmContrato(){
     const [linhasSelecionadas, setLinhasSelecionadas] = useState<Array<Partial<MensalidadeProps>>>([]);
     const [showSublinhas, setShowSublinhas] = useState<boolean>(false);
     const [mensalidadeComGrupoE,setMensalidaGrupo] =useState<Array<MensalidadeProps>>([]);
+    const [obitos,setObitos] =useState(false)
+
  
     let currentAcordoId :string;
 
@@ -348,22 +350,22 @@ async function atualizarObs() {
 <div className="flex-col w-full border  rounded-lg shadow  border-gray-700">
     <ul className="flex flex-wrap text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800"  role="tablist">
         <li className="me-2">
-            <button  type="button" onClick={()=>{setDados(true),setDependentes(false),setHistorico(false),setDocumentos(false)}}   className="inline-block p-4 font-semibold rounded-ss-lg  bg-gray-800 hover:bg-gray-700 text-blue-500">Dados</button>
+            <button  type="button" onClick={()=>{setDados(true),setDependentes(false),setHistorico(false),setDocumentos(false)}}   className={`inline-block p-4 font-semibold rounded-ss-lg  bg-gray-800 hover:bg-gray-700 ${dados &&"text-blue-500"} `}>Dados</button>
         </li>
         <li className="me-2">
-            <button type="button" onClick={()=>mensalidadeSet()}    className="inline-block p-4  hover:bg-gray-700 hover:text-gray-300">Histórico/Movimentação</button>
+            <button type="button" onClick={()=>mensalidadeSet()}    className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${historico &&"text-blue-500"}`}>Histórico/Movimentação</button>
         </li>
         <li className="me-2">
             <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false),setDocumentos(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Dependentes</button>
         </li>
         <li className="me-2">
-            <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false),setDocumentos(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Carteiras</button>
+            <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false),setDocumentos(false)}}    className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${dependentes &&"text-blue-500"}`}>Carteiras</button>
         </li>
         <li className="me-2">
-            <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false),setDocumentos(false)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Óbitos</button>
+            <button type="button" onClick={()=>{setDados(false),setDependentes(true),setHistorico(false),setDocumentos(false)}}    className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${obitos &&"text-blue-500"}`}>Óbitos</button>
         </li>
         <li className="me-2">
-            <button type="button" onClick={()=>{setDados(false),setDependentes(false),setHistorico(false),setDocumentos(true)}}   className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Documentos</button>
+            <button type="button" onClick={()=>{setDados(false),setDependentes(false),setHistorico(false),setDocumentos(true)}}    className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${documentos &&"text-blue-500"}`}>Documentos</button>
         </li>
     </ul>
     <div className="flex flex-col">
@@ -414,8 +416,8 @@ async function atualizarObs() {
   data-tooltip-content="Editar Dados do Cliente/Contrato" onClick={()=>{
    
         
-       const alt = usuario?.permissoes.find(item=>item.nome==='ALTERAR DADOS TITULAR');
-       if(alt && alt?.val===false){
+       const alt = usuario?.permissoes?.find(item=>item.nome==='ALTERAR DADOS TITULAR');
+       if(alt?.val===false){
         toast.info('NÃO AUTORIZADO')
          return;
        }

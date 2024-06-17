@@ -22,21 +22,21 @@ interface UsuarioProps {
   nome: string,
   usuario: string,
   password: string,
-  senhaAtual:string,
+  senhaAtual: string,
   image: string,
-  id: number|null,
+  id: number | null,
   cargo: string,
-  file: File |undefined,
+  file: File | undefined,
   avatarUrl: string,
-  editar:boolean,
+  editar: boolean,
   repSenha: string,
-  permissoes:Array<PermissoesProps>,
-  consultor:Array<Partial<FuncionarioProps>>
+  permissoes: Array<PermissoesProps>,
+  consultor: Array<Partial<FuncionarioProps>>
 }
 
 
 interface FuncionarioProps {
-  id_consultor:number|null,
+  id_consultor: number | null,
   nome: string,
   cpf: string,
   rg: string,
@@ -73,7 +73,7 @@ export function Usuario() {
   const [modalAdicionar, setModalAdicionar] = useState<boolean>(false)
   const [dadosUser, setDadosUser] = useState<Partial<UsuarioProps>>({})
   const [dadosFuncionario, setDadosFuncionario] = useState<Partial<FuncionarioProps>>({})
-  const [dadosPermissoes, setDadosPermissoes] = useState<Array<PermissoesProps>>([{ nome: "ALTERAR DADOS TITULAR", val: false, tela: 'admContDados' }, { nome: "ALTERAR CARÊNCIA", val: false, tela: 'admContDados' }, { nome: "ALTERAR ADESÃO", val: false, tela: 'admContDados' }, { nome: "ALTERAR VENCIMENTO", val: false, tela: 'admContDados' }, { nome: "ALTERAR CATEGORIA", val: false, tela: 'admContDados' }, { nome: "ALTERAR CONSULTOR", val: false, tela: 'admContDados' }, { nome: "ALTERAR COBRADOR", val: false, tela: 'admContDados' }, { nome: "INATIVAR PLANO", val: false, tela: 'admContDados' }, { nome: "ADICIONAR MENSALIDADE", val: false, tela: 'admContMensal' }, { nome: "REALIZAR ACORDO", val: false, tela: 'admContMensal' }, { nome: 'EXCLUIR MENSALIDADE', val: false, tela: 'admContMensal' }, { nome: "ADICIONAR DEPENDENTE", val: false, tela: 'admContDep' }, { nome: "EXCLUIR DEPENDENTE", val: false, tela: 'admContDep' }, { nome: "EXIBIR EXCLUIDOS", val: false, tela: 'admContDep' }])
+  const [dadosPermissoes, setDadosPermissoes] = useState<Array<PermissoesProps>>([{ nome: "ALTERAR DADOS TITULAR", val: false, tela: 'admContDados' }, { nome: "ALTERAR CARÊNCIA", val: false, tela: 'admContDados' }, { nome: "ALTERAR ADESÃO", val: false, tela: 'admContDados' }, { nome: "ALTERAR VENCIMENTO", val: false, tela: 'admContDados' }, { nome: "ALTERAR CATEGORIA", val: false, tela: 'admContDados' }, { nome: "ALTERAR CONSULTOR", val: false, tela: 'admContDados' }, { nome: "ALTERAR COBRADOR", val: false, tela: 'admContDados' }, { nome: "INATIVAR PLANO", val: false, tela: 'admContDados' }, { nome: "ADICIONAR MENSALIDADE", val: false, tela: 'admContMensal' }, { nome: "REALIZAR ACORDO", val: false, tela: 'admContMensal' }, { nome: 'EXCLUIR MENSALIDADE', val: false, tela: 'admContMensal' }, { nome: "ADICIONAR DEPENDENTE", val: false, tela: 'admContDep' }, { nome: "EXCLUIR DEPENDENTE", val: false, tela: 'admContDep' }, { nome: "EXIBIR EXCLUIDOS", val: false, tela: 'admContDep' }, { nome: "ADICIONAR OBSERVAÇÃO", val: false, tela: 'admContDados'}])
 
 
 
@@ -120,7 +120,7 @@ export function Usuario() {
   async function getUsers() {
     try {
       const response = await api.get("/getUser")
-      
+
       setUserDados(response.data)
 
 
@@ -128,28 +128,30 @@ export function Usuario() {
       toast.error('ERRO NA REQUISIÇÃO')
 
     }
-   
+
   }
 
 
   return (
     <div className="ms-2 me-2">
       <div className="flex w-full justify-end">
-        <button onClick={() => {setarDadosUsuario({
-cargo:'',
-consultor:[],
-editar:false,
-id:null,
-nome:'',
-permissoes:[],
-password:'',
-usuario:'',
-image:'',
-repSenha:'',
-file:undefined,
-avatarUrl:''
-        }),
-        setModalAdicionar(!modalAdicionar)}} className="inline-flex justify-items-center gap-1 p-1 bg-green-500 rounded-lg mb-1 font-semibold text-sm"><IoIosAddCircle size={20} />ADD</button>
+        <button onClick={() => {
+          setarDadosUsuario({
+            cargo: '',
+            consultor: [],
+            editar: false,
+            id: null,
+            nome: '',
+            permissoes: [],
+            password: '',
+            usuario: '',
+            image: '',
+            repSenha: '',
+            file: undefined,
+            avatarUrl: ''
+          }),
+          setModalAdicionar(!modalAdicionar)
+        }} className="inline-flex justify-items-center gap-1 p-1 bg-green-500 rounded-lg mb-1 font-semibold text-sm"><IoIosAddCircle size={20} />ADD</button>
       </div>
       <div className="flex flex-col  px-4 w-full overflow-y-auto max-h-[calc(100vh-210px)] text-white bg-[#2b2e3b] rounded-lg ">
 
@@ -186,11 +188,15 @@ avatarUrl:''
 
                     </div>
                     <div className="flex w-full justify-end gap-2 ">
-                      <button onClick={() => {setarDadosUsuario({
-                        ...item,password:'',repSenha:'',editar:true,avatarUrl:''
-                      }) 
-                      setarDadosFuncionario({...item.consultor[0]})
-                      ,setModalAdicionar(true)}} className="hover:bg-gray-500 p-1 text-blue-500 rounded-lg ">
+                      <button onClick={() => {
+                        setarDadosUsuario({
+                          ...item, password: '', repSenha: '', editar: true, avatarUrl: ''
+                        }),
+                        setarDadosFuncionario({ ...item.consultor[0] }),
+                        setarDadosPermissoes([...item.permissoes]),
+                        setModalAdicionar(true)
+                      }}
+                        className="hover:bg-gray-500 p-1 text-blue-500 rounded-lg ">
                         <MdEdit size={17} />
                       </button>
                       <button className="hover:bg-gray-500 p-1 rounded-lg text-red-500 ">
