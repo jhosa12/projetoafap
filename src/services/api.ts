@@ -7,10 +7,10 @@ export function setupAPIClient(ctx = undefined) {
     let cookies = parseCookies(ctx)
 
     const api = axios.create({
-        baseURL: process.env.URL_API,
+       baseURL:"https://apiafap.onrender.com",
         //baseURL:"http://localhost:3333",
         headers: {
-            Authorization: `Bearer ${cookies[process.env.NEXT_PUBLIC_COOKIE || '']}`
+            Authorization: `Bearer ${cookies['@nextauth.token']}`
         }
     })
     api.interceptors.response.use(response => {

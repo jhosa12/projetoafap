@@ -425,7 +425,7 @@ interface ConvProps {
 export const AuthContext = createContext({} as AuthContextData)
 export function signOut() {
     try {
-        destroyCookie(undefined, process.env.COOKIE||'')
+        destroyCookie(undefined, '@nextauth.token')
         Router.push('/')
     } catch (err) {
         console.log("erro ao deslogar")
@@ -459,7 +459,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (typeof window !== 'undefined') {
                 localStorage.setItem('@user.image', image);
             }
-           setCookie(undefined, process.env.COOKIE||'', token, {
+           setCookie(undefined, '@nextauth.token', token, {
                 maxAge: 60 * 60 * 24 * 1, // expirar em 1 dia
                 path: "/" // quais caminhos terão acesso ao cookie
             })
@@ -520,8 +520,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async function userToken() {
         const cookies = parseCookies();
         try {
-            if (cookies[process.env.COOKIE||'']) {
-                const token = cookies[process.env.COOKIE||''];
+            if (cookies['@nextauth.token']) {
+                const token = cookies['@nextauth.token'];
                 let image;
                 if (typeof window !== 'undefined') {
                     image = localStorage.getItem('@user.image');
