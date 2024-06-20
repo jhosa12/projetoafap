@@ -48,7 +48,7 @@ interface MensalidadeProps{
 
 export default function AdmContrato(){
    
-    const {data,closeModa,dadosassociado,carregarDados,usuario} = useContext(AuthContext)
+  const {data,closeModa,dadosassociado,carregarDados,usuario} = useContext(AuthContext)
   const [dados,setDados] =useState(true)
   const [historico,setHistorico] = useState(false)
   const [dependentes,setDependentes] =useState(false)

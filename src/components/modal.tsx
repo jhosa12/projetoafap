@@ -25,8 +25,9 @@ export function ModalBusca(){
     const [loading,setLoading] = useState(false)
     const [input,setInput] =useState('')
     const [array,setarray]=useState<DadosProps[]>([])
-    const [dropOpen,setDrop] = useState(false)
+    const [dropOpen,setDrop] = useState(0)
     const [criterio,setCriterio]=useState("Contrato")
+    const [empresa,setEmpresa]=useState('AFAP CEDRO')
     const {data,closeModa,carregarDados} = useContext(AuthContext)
  async function onSubmit(event:FormEvent){
     event.preventDefault()
@@ -44,31 +45,36 @@ export function ModalBusca(){
 
     if(criterio ==="Contrato"){
         const response =  await api.post('/buscar',{
-            id_contrato:Number(input)
+            id_contrato:Number(input),
+            empresa
         })
         setarray(response.data)
       }
       if(criterio ==="Titular"){
         const response =  await api.post('/buscar',{
-            nome:input.toUpperCase()
+            nome:input.toUpperCase(),
+            empresa
         })
         setarray(response.data)
       }
       if(criterio ==="Dependente"){
         const response =  await api.post('/buscar',{
-            dependente:input.toUpperCase()
+            dependente:input.toUpperCase(),
+            empresa
         })
         setarray(response.data)
       }
       if(criterio ==="Endereço"){
         const response =  await api.post('/buscar',{
-            endereco:input.toUpperCase()
+            endereco:input.toUpperCase(),
+            empresa
         })
         setarray(response.data)
       }
       if(criterio ==="Bairro"){
         const response =  await api.post('/buscar',{
-            bairro:input.toUpperCase()
+            bairro:input.toUpperCase(),
+            empresa
         })
         setarray(response.data)
       }
@@ -83,32 +89,67 @@ export function ModalBusca(){
             <div className="flex w-full items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-600">
             <form onSubmit={onSubmit} className="flex w-3/4">
     <div className="flex w-full">
-    <button onClick={()=>setDrop(!dropOpen)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-s-lg focus:outline-none  bg-gray-600 hover:bg-gray-600 focus:ring-gray-700 text-white border-gray-600" type="button">{criterio} 
+    <button onClick={()=>setDrop(1)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-s-lg focus:outline-none border-e-2 border-gray-700  bg-gray-600 hover:bg-gray-600 focus:ring-gray-700 text-white" type="button">{empresa} 
+    <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+  </svg></button>
+    <button onClick={()=>setDrop(2)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center  focus:outline-none  bg-gray-600 hover:bg-gray-600 focus:ring-gray-700 text-white border-gray-600" type="button">{criterio} 
     <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
   </svg></button>
  
-      {dropOpen && (
+      {dropOpen===2 && (
           <div className="absolute top-[80px] divide-gray-100 rounded-lg shadow w-44 bg-gray-700">
           <ul className="py-2 text-sm text-gray-200">
           <li >
-              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setCriterio('Contrato'),setDrop(false)}}>Contrato</a>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setCriterio('Contrato'),setDrop(0)}}>Contrato</a>
           </li>
           <li>
-              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setCriterio('Titular'),setDrop(false)}}>Titular</a>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setCriterio('Titular'),setDrop(0)}}>Titular</a>
           </li>
           <li>
-              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setCriterio('Dependente'),setDrop(false)}}>Dependente</a>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setCriterio('Dependente'),setDrop(0)}}>Dependente</a>
           </li>
           <li>
-              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white"  onClick={()=>{setCriterio('Endereço'),setDrop(false)}}>Endereço</a>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white"  onClick={()=>{setCriterio('Endereço'),setDrop(0)}}>Endereço</a>
           </li>
           <li>
-              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white"  onClick={()=>{setCriterio('Bairro'),setDrop(false)}}>Bairro</a>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white"  onClick={()=>{setCriterio('Bairro'),setDrop(0)}}>Bairro</a>
           </li>
           </ul>
       </div>
       )}
+   {dropOpen ===1 && (
+          <div className="absolute top-[80px] divide-gray-100 rounded-lg shadow w-44 bg-gray-700">
+          <ul className="py-2 text-sm text-gray-200">
+          <li >
+              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setEmpresa('AFAP CEDRO'),setDrop(0)}}>AFAP CEDRO</a>
+          </li>
+          <li>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setEmpresa('AFAP LAVRAS'),setDrop(0)}}>AFAP LAVRAS</a>
+          </li>
+          <li>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setEmpresa('ÓTICA FREITAS'),setDrop(0)}}>ÓTICA FREITAS</a>
+          </li>
+          <li>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white"  onClick={()=>{setEmpresa('AFAP VIVA MAIS'),setDrop(0)}}>AFAP VIVA MAIS</a>
+          </li>
+         
+          </ul>
+      </div>
+      )}
+
+
+
+
+
+
+
+
+
+
+
+
         <div className="relative  w-full">
             <input   value={input} onChange={e=>setInput(e.target.value)} type={criterio==="Contrato"?"number":"search"} autoComplete="off"  className="uppercase flex justify-center  p-2.5 w-full z-20 text-sm  rounded-e-lg rounded-s-gray-100 rounded-s-2 border bg-gray-700 border-gray-600 placeholder-gray-400 text-white " placeholder="Search" required/>
             <button type="submit" className="absolute top-0 end-0 p-2.5 h-full text-sm font-medium text-white  rounded-e-lg border border-blue-700 focus:ring-4 focus:outline-none  bg-blue-600 hover:bg-blue-700 ">
@@ -119,7 +160,7 @@ export function ModalBusca(){
     </div>
 </form>
                 <button  type="button" onClick={()=>closeModa({closeModalPlano:false})} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                    <IoIosClose size={30}/>
+               <IoIosClose size={30}/>
                 </button>
             </div>
             {loading?((<div className="flex flex-col h-full justify-center items-center p-2"><AiOutlineLoading3Quarters color='white' size={40} className="animate-spin"/></div>)):(
