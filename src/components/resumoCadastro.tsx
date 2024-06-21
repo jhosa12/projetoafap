@@ -6,7 +6,7 @@ import { api } from "@/services/apiClient";
 
 
 export function ResumoCadastro(){
-    const {data,closeModa}= useContext(AuthContext)
+    const {data}= useContext(AuthContext)
  
     return(
         <FormWrapper title="Resumo do Cadastro">

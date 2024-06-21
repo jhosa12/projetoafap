@@ -576,10 +576,10 @@ export default function AdmContrato() {
             <div className="flex flex-col w-full mr-2  justify-center">
                 {data.closeModalPlano && (<ModalBusca data={data} closeModa={closeModa} carregarDados={carregarDados} />)}
                 {data.closeModalCadastro && (<Teste />)}
-                {data.mensalidade?.close && (<ModalMensalidade />)}
-                {data.dependente?.close && <ModalDependentes />}
+                {data.mensalidade?.close && (<ModalMensalidade  carregarDados={carregarDados}/>)}
+                {data.dependente?.close && <ModalDependentes carregarDados={carregarDados} />}
                 {data.closeEditarAssociado && <ModalEditarDados carregarDados={carregarDados} openEdit={openEdit} />}
-                {data.acordo?.closeAcordo && (<ModalAcordos />)}
+                {data.acordo?.closeAcordo && (<ModalAcordos carregarDados={carregarDados} />)}
 
                 <div className="flex  flex-col p-4  ">
                     <div className="flex  flex-row justify-start gap-2 items-center w-full mt-2 pb-1">
