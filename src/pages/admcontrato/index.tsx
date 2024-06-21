@@ -43,41 +43,6 @@ interface PlanosProps {
     valor: number
 }
 
-interface DadosCadastro {
-    empresa: string,
-    name: string,
-    nasc: string,
-    sexo: string,
-    cep: string,
-    endereco: string,
-    numero: number,
-    bairro: string,
-    referencia: string,
-    cidade: string,
-    uf: string,
-    email: string,
-    rg: string,
-    cpf: string,
-    closeModalPlano: boolean,
-    closeModalCadastro: boolean
-    arraydep: Array<Partial<DependentesProps>>,
-    dependente: Partial<DependentesProps>,
-    naturalidade: string,
-    celular1: string,
-    celular2: string,
-    telefone: string,
-    contrato: Partial<ContratoProps>,
-    origem: string,
-    profissao: string,
-    planos: Array<Partial<PlanosProps>>
-    cidades: Array<Partial<CidadesProps>>
-    id_associado: number,
-    mensalidade: Partial<MensalidadeProps>
-    mensalidadeAnt: Partial<MensalidadeProps>
-    mensalidadeProx: Partial<MensalidadeProps>,
-    closeEditarAssociado: boolean,
-    acordo: Partial<AcordoProps>
-}
 
 interface MensalidadeProps {
     id_acordo: number,
@@ -259,8 +224,7 @@ interface AssociadoProps {
 
 export default function AdmContrato() {
 
-    const { usuario } = useContext(AuthContext)
-    const [dadosassociado, setDadosAssociado] = useState<AssociadoProps>()
+    const { usuario,data,closeModa,dadosassociado,carregarDados} = useContext(AuthContext)
     const [dados, setDados] = useState(true)
     const [historico, setHistorico] = useState(false)
     const [dependentes, setDependentes] = useState(false)
@@ -277,20 +241,11 @@ export default function AdmContrato() {
     const [showSublinhas, setShowSublinhas] = useState<boolean>(false);
     const [mensalidadeComGrupoE, setMensalidaGrupo] = useState<Array<MensalidadeProps>>([]);
     const [obitos, setObitos] = useState(false)
-    const [data, setData] = useState<Partial<DadosCadastro>>({ empresa: 'AFAP CEDRO' })
+  
 
 
     let currentAcordoId: string;
 
-    function closeModa(fields: Partial<DadosCadastro>) {
-        setData((prev: Partial<DadosCadastro>) => {
-            if (prev) {
-                return { ...prev, ...fields };
-            } else {
-                return { ...fields };
-            }
-        });
-    }
     // Função para adicionar ou remover linhas do array de linhas selecionadas
     const toggleSelecionada = (item: MensalidadeProps) => {
         const index = linhasSelecionadas.findIndex((linha) => linha.id_mensalidade === item.id_mensalidade);
@@ -374,7 +329,7 @@ export default function AdmContrato() {
             setHistorico(true)
 
     }
-    /* useEffect(() => {
+    useEffect(() => {
    
     
        const carregarDadosAsync = async () => {
@@ -389,35 +344,20 @@ export default function AdmContrato() {
         
        };
       componenteMounted && carregarDadosAsync();
+
+      closeModa({...data, closeModalPlano:false })
+
+      setDados(false),
+          setDependentes(false),
+          setHistorico(true)
+      setVerObs(false)
       
        
        
-     }, [data.id_associado]);*/
+     }, [data.id_associado]);
 
 
-    async function carregarDados() {
-        try {
-            const response = await api.post('/associado', {
-                id_associado: Number(data.id_associado),
-                empresa:data.empresa
 
-            })
-
-            setDadosAssociado(response.data);
-            console.log(response.data)
-
-        } catch (error) {
-            toast.error('Erro na requisição')
-        }
-
-        closeModa({...data, closeModalPlano:false })
-
-        setDados(false),
-            setDependentes(false),
-            setHistorico(true)
-        setVerObs(false)
-
-    }
 
 
 
@@ -574,12 +514,12 @@ export default function AdmContrato() {
 
             </Head>
             <div className="flex flex-col w-full mr-2  justify-center">
-                {data.closeModalPlano && (<ModalBusca data={data} closeModa={closeModa} carregarDados={carregarDados} />)}
+                {data.closeModalPlano && (<ModalBusca />)}
                 {data.closeModalCadastro && (<Teste />)}
-                {data.mensalidade?.close && (<ModalMensalidade  carregarDados={carregarDados}/>)}
-                {data.dependente?.close && <ModalDependentes carregarDados={carregarDados} />}
-                {data.closeEditarAssociado && <ModalEditarDados carregarDados={carregarDados} openEdit={openEdit} />}
-                {data.acordo?.closeAcordo && (<ModalAcordos carregarDados={carregarDados} />)}
+                {data.mensalidade?.close && (<ModalMensalidade />)}
+                {data.dependente?.close && <ModalDependentes />}
+                {data.closeEditarAssociado && <ModalEditarDados openEdit={openEdit} />}
+                {data.acordo?.closeAcordo && (<ModalAcordos  />)}
 
                 <div className="flex  flex-col p-4  ">
                     <div className="flex  flex-row justify-start gap-2 items-center w-full mt-2 pb-1">

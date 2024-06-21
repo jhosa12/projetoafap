@@ -7,8 +7,8 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 
-export function ModalMensalidade({carregarDados}:{carregarDados:()=>Promise<void>}){
-    const {closeModa,data,usuario,dadosassociado}=useContext(AuthContext)
+export function ModalMensalidade(){
+    const {closeModa,data,usuario,dadosassociado,carregarDados}=useContext(AuthContext)
     const [desconto,setDesconto] = useState(false)
     const [componentMounted, setComponentMounted] = useState(false);
     const [status,setStatus]=useState('')

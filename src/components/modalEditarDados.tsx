@@ -11,8 +11,8 @@ import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 
 
-export function ModalEditarDados({openEdit,carregarDados}:{openEdit:number,carregarDados:()=>Promise<void>}){
-    const {usuario,closeModa,data,dadosassociado} = useContext(AuthContext)
+export function ModalEditarDados({openEdit}:{openEdit:number}){
+    const {usuario,closeModa,data,dadosassociado,carregarDados} = useContext(AuthContext)
     const [mountedComponente,setMounted]= useState(true)
     const [aba,setAba] = useState(1)
     const [situacao,setSituaçao]= useState(false)

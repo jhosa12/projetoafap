@@ -10,8 +10,8 @@ import DatePicker,{registerLocale, setDefaultLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 registerLocale('pt', pt)
-export function ModalDependentes({carregarDados}:{carregarDados:()=>Promise<void>}){
-    const {closeModa,data,usuario,dadosassociado}=useContext(AuthContext)
+export function ModalDependentes(){
+    const {closeModa,data,usuario,dadosassociado,carregarDados}=useContext(AuthContext)
    
  async function addDependente(){
     const response = await toast.promise(

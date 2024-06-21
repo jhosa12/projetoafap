@@ -5,60 +5,6 @@ import { api } from "@/services/apiClient";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 
-
-
-
-
-
-
-interface CidadesProps {
-    id_cidade: number,
-    estado: number,
-    uf: string,
-    cidade: string
-}
-interface PlanosProps {
-    id_plano: number,
-    descricao: string,
-    valor: number
-}
-
-interface DadosCadastro {
-    empresa:string,
-    name: string,
-    nasc: string,
-    sexo: string,
-    cep: string,
-    endereco: string,
-    numero: number,
-    bairro: string,
-    referencia: string,
-    cidade: string,
-    uf: string,
-    email: string,
-    rg: string,
-    cpf: string,
-    closeModalPlano: boolean,
-    closeModalCadastro: boolean
-    arraydep: Array<Partial<DependentesProps>>,
-    dependente: Partial<DependentesProps>,
-    naturalidade: string,
-    celular1: string,
-    celular2: string,
-    telefone: string,
-    contrato: Partial<ContratoProps>,
-    origem: string,
-    profissao: string,
-    planos: Array<Partial<PlanosProps>>
-    cidades: Array<Partial<CidadesProps>>
-    id_associado: number,
-    mensalidade: Partial<MensalidadeProps>
-    mensalidadeAnt: Partial<MensalidadeProps>
-    mensalidadeProx: Partial<MensalidadeProps>,
-    closeEditarAssociado: boolean,
-    acordo: Partial<AcordoProps>
-}
-
 interface MensalidadeProps{
     id_acordo:number,
     parcela_n:number,
@@ -227,13 +173,9 @@ interface DadosProps{
     dependentes:Array<DependentesProps>
 }
 
-interface AssociadoProps{
-    carregarDados: ()=>Promise<void>
-    closeModa:(fields:Partial<DadosCadastro>)=>void,
-    data:Partial<DadosCadastro>
-}
 
-export function ModalBusca({carregarDados ,data,closeModa}:AssociadoProps){
+export function ModalBusca(){
+    const {carregarDados,data,closeModa}= useContext(AuthContext)
     const [loading,setLoading] = useState(false)
     const [input,setInput] =useState('')
     const [array,setarray]=useState<DadosProps[]>([])

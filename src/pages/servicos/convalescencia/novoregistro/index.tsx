@@ -204,41 +204,7 @@ interface PlanosProps {
     valor: number
 }
 
-interface DadosCadastro {
-    empresa: string,
-    name: string,
-    nasc: string,
-    sexo: string,
-    cep: string,
-    endereco: string,
-    numero: number,
-    bairro: string,
-    referencia: string,
-    cidade: string,
-    uf: string,
-    email: string,
-    rg: string,
-    cpf: string,
-    closeModalPlano: boolean,
-    closeModalCadastro: boolean
-    arraydep: Array<Partial<DependentesProps>>,
-    dependente: Partial<DependentesProps>,
-    naturalidade: string,
-    celular1: string,
-    celular2: string,
-    telefone: string,
-    contrato: Partial<ContratoProps>,
-    origem: string,
-    profissao: string,
-    planos: Array<Partial<PlanosProps>>
-    cidades: Array<Partial<CidadesProps>>
-    id_associado: number,
-    mensalidade: Partial<MensalidadeProps>
-    mensalidadeAnt: Partial<MensalidadeProps>
-    mensalidadeProx: Partial<MensalidadeProps>,
-    closeEditarAssociado: boolean,
-    acordo: Partial<AcordoProps>
-}
+
 
 interface ListaMaterial {
     id_conv: number,
@@ -279,7 +245,7 @@ interface SelectProps {
     taxa_conval: number
 }
 
-export default function ConvalesenciaNovo() {
+export default function ConvalescenciaNovo() {
 
     const { usuario, listaConv, data, closeModa, signOut, setarListaConv } = useContext(AuthContext)
     const [usuarioMaterial, setUsuarioMaterial] = useState(true);
@@ -292,15 +258,13 @@ export default function ConvalesenciaNovo() {
     const [modalDependente, setModalDependente] = useState(false)
     const [listaMaterial, setMaterial] = useState<Partial<Array<Partial<ListaMaterial>>>>([])
     const [selectProdutos, setSelect] = useState<Array<SelectProps>>([])
-    const router = useRouter()
-    const {id_associado} = router.query;
     const [dadosassociado, setDadosAssociado] = useState<AssociadoProps>()
 
     async function carregarDados() {
         try {
             const response = await api.post('/associado', {
                 id_associado: Number(data.id_associado),
-               // empresa: data.empresa
+                empresa: data.empresa
 
             })
 
@@ -463,7 +427,7 @@ export default function ConvalesenciaNovo() {
 
 
         }
-        if (id_associado && componenteMounted) {
+        if (data.id_associado && componenteMounted) {
             carregarDados();
 
         }
@@ -510,7 +474,7 @@ export default function ConvalesenciaNovo() {
 
     return (
         <>
-            {data.closeModalPlano && <ModalBusca data={data} carregarDados={carregarDados} closeModa={closeModa} />}
+            {data.closeModalPlano && <ModalBusca />}
             {modalDependente && dependente && (
                 <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
 
