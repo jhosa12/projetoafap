@@ -15,8 +15,230 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import PrintButtonContrato from "@/Documents/convalescenca/contrato/PrintButton";
 import PrintButtonComprovante from "@/Documents/convalescenca/comprovante/PrintButton";
+import { Router, useRouter } from "next/router";
 
 
+
+interface MensalidadeProps {
+    id_acordo: number,
+    parcela_n: number,
+    vencimento: Date,
+    cobranca: Date,
+    valor_principal: number,
+    close: boolean,
+    status: string,
+    usuario: string,
+    id_mensalidade: number,
+    valor_total: number,
+    motivo_bonus: string,
+    data_pgto: Date,
+    referencia: string,
+    index: number
+}
+
+
+interface ConvProps {
+    editar: boolean
+    id_conv: number | null,
+    id_contrato: number | null,
+    id_associado: number | null,
+    id_dependente: number | null,
+    id_contrato_st: string,
+    tipo_entrada: string,
+    nome: string,
+    cpf_cnpj: string,
+    data: Date,
+    status: string,
+    forma_pag: string,
+    logradouro: string,
+    numero: number | null,
+    complemento: string,
+    bairro: string,
+    cep: string,
+    cidade: string,
+    uf: string,
+    subtotal: number | null,
+    descontos: number | null,
+    total: number | null,
+    logradouro_r: string,
+    numero_r: number | null,
+    complemento_r: string,
+    bairro_r: string,
+    cep_r: string,
+    cidade_r: string,
+    uf_r: string,
+    data_inc: Date,
+    hora_inc: Date,
+    usuario: string,
+    obs: string,
+    convalescenca_prod: Partial<{
+        id_conv: number,
+        id_produto: number,
+        descricao: string,
+        unidade: string,
+        grupo: string,
+        data: Date,
+        data_dev: Date,
+        quantidade: number,
+        valor: number,
+        descontos: number,
+        total: number,
+        hora: Date,
+        cortesia: string,
+        retornavel: string,
+        status: string
+    }>,
+    contrato: {
+        situacao: string,
+        carencia: string,
+        associado: {
+            nome: string
+        }
+
+    }
+
+}
+
+interface ContratoProps {
+    id_contrato: number,
+    plano: string,
+    id_plano: number,
+    valor_mensalidade: number,
+    dt_adesao: Date,
+    dt_carencia: Date,
+    situacao: string,
+    anotacoes: string,
+    consultor: string,
+    cobrador: string,
+    data_vencimento: Date,
+    n_parcelas: number,
+    origem: string,
+    supervisor: string,
+    convalescencia: Array<ConvProps>,
+    categoria_inativo: string,
+    motivo_inativo: string,
+    dt_cancelamento: true,
+}
+interface AcordoProps {
+    total_acordo: number,
+    data_inicio: Date,
+    data_fim: Date,
+    realizado_por: string,
+    dt_pgto: Date,
+    mensalidade: Array<Partial<MensalidadeProps>>,
+    status: string,
+    descricao: string,
+    metodo: string
+    closeAcordo: boolean,
+    id_acordo: number,
+    visibilidade: boolean
+}
+
+interface DependentesProps {
+    nome: string,
+    data_nasc: Date,
+    grau_parentesco: string,
+    data_adesao: Date,
+    carencia: Date,
+    id_dependente: number,
+    cad_dh: Date,
+    close: boolean,
+    sexo: string,
+    saveAdd: boolean,
+    excluido: boolean,
+    dt_exclusao: Date,
+    user_exclusao: string,
+    exclusao_motivo: string,
+    convalescenca: {
+        convalescenca_prod: Partial<{
+            id_conv: number,
+            id_produto: number,
+            descricao: string,
+            unidade: string,
+            grupo: string,
+            data: Date,
+            data_dev: Date,
+            quantidade: number,
+            valor: number,
+            descontos: number,
+            total: number,
+            hora: Date,
+            cortesia: string,
+            retornavel: string,
+            status: string
+        }>,
+    }
+}
+
+interface AssociadoProps {
+    nome: string,
+    data_nasc: Date,
+    sexo: string,
+    celular1: string, celular2: string, telefone: string,
+    id_associado: number,
+    endereco: string,
+    bairro: string,
+    numero: number,
+    cidade: string,
+    cep: string,
+    cpf: string, rg: string
+    email: string,
+    profissao: string,
+    guia_rua: string,
+    uf: string,
+    mensalidade: Array<MensalidadeProps>,
+    contrato: ContratoProps,
+    dependentes: Array<DependentesProps>
+    acordo: Array<AcordoProps>
+
+}
+interface CidadesProps {
+    id_cidade: number,
+    estado: number,
+    uf: string,
+    cidade: string
+}
+interface PlanosProps {
+    id_plano: number,
+    descricao: string,
+    valor: number
+}
+
+interface DadosCadastro {
+    empresa: string,
+    name: string,
+    nasc: string,
+    sexo: string,
+    cep: string,
+    endereco: string,
+    numero: number,
+    bairro: string,
+    referencia: string,
+    cidade: string,
+    uf: string,
+    email: string,
+    rg: string,
+    cpf: string,
+    closeModalPlano: boolean,
+    closeModalCadastro: boolean
+    arraydep: Array<Partial<DependentesProps>>,
+    dependente: Partial<DependentesProps>,
+    naturalidade: string,
+    celular1: string,
+    celular2: string,
+    telefone: string,
+    contrato: Partial<ContratoProps>,
+    origem: string,
+    profissao: string,
+    planos: Array<Partial<PlanosProps>>
+    cidades: Array<Partial<CidadesProps>>
+    id_associado: number,
+    mensalidade: Partial<MensalidadeProps>
+    mensalidadeAnt: Partial<MensalidadeProps>
+    mensalidadeProx: Partial<MensalidadeProps>,
+    closeEditarAssociado: boolean,
+    acordo: Partial<AcordoProps>
+}
 
 interface ListaMaterial {
     id_conv: number,
@@ -57,9 +279,9 @@ interface SelectProps {
     taxa_conval: number
 }
 
-export default function GerarOS() {
+export default function ConvalesenciaNovo() {
 
-    const { usuario, dadosassociado, carregarDados, listaConv, data, closeModa, signOut, setarListaConv } = useContext(AuthContext)
+    const { usuario, listaConv, data, closeModa, signOut, setarListaConv } = useContext(AuthContext)
     const [usuarioMaterial, setUsuarioMaterial] = useState(true);
     const [material, setMaterialUsuario] = useState(false);
     const [documento, setDocumento] = useState(false);
@@ -70,9 +292,25 @@ export default function GerarOS() {
     const [modalDependente, setModalDependente] = useState(false)
     const [listaMaterial, setMaterial] = useState<Partial<Array<Partial<ListaMaterial>>>>([])
     const [selectProdutos, setSelect] = useState<Array<SelectProps>>([])
-  
+    const router = useRouter()
+    const {id_associado} = router.query;
+    const [dadosassociado, setDadosAssociado] = useState<AssociadoProps>()
 
+    async function carregarDados() {
+        try {
+            const response = await api.post('/associado', {
+                id_associado: Number(data.id_associado),
+               // empresa: data.empresa
 
+            })
+
+            setDadosAssociado(response.data);
+            console.log(response.data)
+
+        } catch (error) {
+            toast.error('Erro na requisição')
+        }
+    }
 
 
 
@@ -225,7 +463,7 @@ export default function GerarOS() {
 
 
         }
-        if (data.id_associado && componenteMounted) {
+        if (id_associado && componenteMounted) {
             carregarDados();
 
         }
@@ -272,7 +510,7 @@ export default function GerarOS() {
 
     return (
         <>
-            {data.closeModalPlano && <ModalBusca />}
+            {data.closeModalPlano && <ModalBusca data={data} carregarDados={carregarDados} closeModa={closeModa} />}
             {modalDependente && dependente && (
                 <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
 
