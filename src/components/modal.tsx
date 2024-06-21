@@ -3,6 +3,212 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { IoIosClose } from "react-icons/io";
 import { api } from "@/services/apiClient";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+
+
+
+
+
+
+
+
+interface CidadesProps {
+    id_cidade: number,
+    estado: number,
+    uf: string,
+    cidade: string
+}
+interface PlanosProps {
+    id_plano: number,
+    descricao: string,
+    valor: number
+}
+
+interface DadosCadastro {
+    empresa:string,
+    name: string,
+    nasc: string,
+    sexo: string,
+    cep: string,
+    endereco: string,
+    numero: number,
+    bairro: string,
+    referencia: string,
+    cidade: string,
+    uf: string,
+    email: string,
+    rg: string,
+    cpf: string,
+    closeModalPlano: boolean,
+    closeModalCadastro: boolean
+    arraydep: Array<Partial<DependentesProps>>,
+    dependente: Partial<DependentesProps>,
+    naturalidade: string,
+    celular1: string,
+    celular2: string,
+    telefone: string,
+    contrato: Partial<ContratoProps>,
+    origem: string,
+    profissao: string,
+    planos: Array<Partial<PlanosProps>>
+    cidades: Array<Partial<CidadesProps>>
+    id_associado: number,
+    mensalidade: Partial<MensalidadeProps>
+    mensalidadeAnt: Partial<MensalidadeProps>
+    mensalidadeProx: Partial<MensalidadeProps>,
+    closeEditarAssociado: boolean,
+    acordo: Partial<AcordoProps>
+}
+
+interface MensalidadeProps{
+    id_acordo:number,
+    parcela_n:number,
+    vencimento:Date,
+    cobranca:Date,
+    valor_principal:number,
+    close:boolean,
+    status:string,
+    usuario:string,
+    id_mensalidade:number,
+    valor_total:number,
+    motivo_bonus: string,
+    data_pgto:Date,
+    referencia:string,
+    index:number
+}
+
+
+interface ConvProps {
+    editar: boolean
+    id_conv: number | null,
+    id_contrato: number | null,
+    id_associado: number | null,
+    id_dependente: number | null,
+    id_contrato_st: string,
+    tipo_entrada: string,
+    nome: string,
+    cpf_cnpj: string,
+    data: Date,
+    status: string,
+    forma_pag: string,
+    logradouro: string,
+    numero: number | null,
+    complemento: string,
+    bairro: string,
+    cep: string,
+    cidade: string,
+    uf: string,
+    subtotal: number | null,
+    descontos: number | null,
+    total: number | null,
+    logradouro_r: string,
+    numero_r: number | null,
+    complemento_r: string,
+    bairro_r: string,
+    cep_r: string,
+    cidade_r: string,
+    uf_r: string,
+    data_inc: Date,
+    hora_inc: Date,
+    usuario: string,
+    obs: string,
+    convalescenca_prod: Partial<{
+        id_conv: number,
+        id_produto: number,
+        descricao: string,
+        unidade: string,
+        grupo: string,
+        data: Date,
+        data_dev: Date,
+        quantidade: number,
+        valor: number,
+        descontos: number,
+        total: number,
+        hora: Date,
+        cortesia: string,
+        retornavel: string,
+        status: string
+    }>,
+    contrato: {
+        situacao: string,
+        carencia: string,
+        associado: {
+            nome: string
+        }
+
+    }
+
+}
+
+interface ContratoProps{
+    id_contrato: number,
+    plano: string,
+    id_plano: number,
+    valor_mensalidade: number,
+    dt_adesao: Date,
+    dt_carencia: Date,
+    situacao: string,
+    anotacoes: string,
+    consultor: string,
+    cobrador: string,
+    data_vencimento: Date,
+    n_parcelas: number,
+    origem: string,
+    supervisor: string,
+    convalescencia: Array<ConvProps>,
+    categoria_inativo: string,
+    motivo_inativo: string,
+    dt_cancelamento: true,
+}
+interface AcordoProps{
+    total_acordo: number,
+    data_inicio: Date,
+    data_fim: Date,
+    realizado_por: string,
+    dt_pgto: Date,
+    mensalidade: Array<Partial<MensalidadeProps>>,
+    status: string,
+    descricao: string,
+    metodo: string
+    closeAcordo: boolean,
+    id_acordo: number,
+    visibilidade: boolean
+}
+
+interface DependentesProps {
+    nome: string,
+    data_nasc: Date,
+    grau_parentesco: string,
+    data_adesao: Date,
+    carencia: Date,
+    id_dependente: number,
+    cad_dh: Date,
+    close: boolean,
+    sexo: string,
+    saveAdd: boolean,
+    excluido: boolean,
+    dt_exclusao: Date,
+    user_exclusao: string,
+    exclusao_motivo: string,
+    convalescenca: {
+        convalescenca_prod: Partial<{
+            id_conv: number,
+            id_produto: number,
+            descricao: string,
+            unidade: string,
+            grupo: string,
+            data: Date,
+            data_dev: Date,
+            quantidade: number,
+            valor: number,
+            descontos: number,
+            total: number,
+            hora: Date,
+            cortesia: string,
+            retornavel: string,
+            status: string
+        }>,
+    }
+}
 interface ContratoProps{
     id_contrato:number
 }
@@ -21,14 +227,21 @@ interface DadosProps{
     dependentes:Array<DependentesProps>
 }
 
-export function ModalBusca(){
+interface AssociadoProps{
+    carregarDados: ()=>Promise<void>
+    closeModa:(fields:Partial<DadosCadastro>)=>void,
+    data:Partial<DadosCadastro>
+}
+
+export function ModalBusca({carregarDados ,data,closeModa}:AssociadoProps){
     const [loading,setLoading] = useState(false)
     const [input,setInput] =useState('')
     const [array,setarray]=useState<DadosProps[]>([])
     const [dropOpen,setDrop] = useState(0)
     const [criterio,setCriterio]=useState("Contrato")
-    const [empresa,setEmpresa]=useState('AFAP CEDRO')
-    const {data,closeModa,carregarDados} = useContext(AuthContext)
+    const [componentMounted,setMounted]= useState<boolean>(false)
+   
+  
  async function onSubmit(event:FormEvent){
     event.preventDefault()
    
@@ -37,44 +250,48 @@ export function ModalBusca(){
    setLoading(false)
   }
   function DadosAssociado(id_associado:number) {
-   closeModa({id_associado:id_associado,closeModalPlano:false})
+   closeModa({...data,id_associado})
 
   }
+  useEffect(()=>{
+   componentMounted && carregarDados()
+   setMounted(true)
+  },[data.id_associado])
 
   async function buscar(){
 
     if(criterio ==="Contrato"){
         const response =  await api.post('/buscar',{
             id_contrato:Number(input),
-            empresa
+            empresa:data.empresa
         })
         setarray(response.data)
       }
       if(criterio ==="Titular"){
         const response =  await api.post('/buscar',{
             nome:input.toUpperCase(),
-            empresa
+            empresa:data.empresa
         })
         setarray(response.data)
       }
       if(criterio ==="Dependente"){
         const response =  await api.post('/buscar',{
             dependente:input.toUpperCase(),
-            empresa
+            empresa:data.empresa
         })
         setarray(response.data)
       }
       if(criterio ==="Endereço"){
         const response =  await api.post('/buscar',{
             endereco:input.toUpperCase(),
-            empresa
+            empresa:data.empresa
         })
         setarray(response.data)
       }
       if(criterio ==="Bairro"){
         const response =  await api.post('/buscar',{
             bairro:input.toUpperCase(),
-            empresa
+            empresa:data.empresa
         })
         setarray(response.data)
       }
@@ -89,7 +306,7 @@ export function ModalBusca(){
             <div className="flex w-full items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-600">
             <form onSubmit={onSubmit} className="flex w-3/4">
     <div className="flex w-full">
-    <button onClick={()=>setDrop(1)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-s-lg focus:outline-none border-e-2 border-gray-700  bg-gray-600 hover:bg-gray-600 focus:ring-gray-700 text-white" type="button">{empresa} 
+    <button onClick={()=>setDrop(1)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-s-lg focus:outline-none border-e-2 border-gray-700  bg-gray-600 hover:bg-gray-600 focus:ring-gray-700 text-white" type="button">{data.empresa} 
     <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
   </svg></button>
@@ -123,16 +340,16 @@ export function ModalBusca(){
           <div className="absolute top-[80px] divide-gray-100 rounded-lg shadow w-44 bg-gray-700">
           <ul className="py-2 text-sm text-gray-200">
           <li >
-              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setEmpresa('AFAP CEDRO'),setDrop(0)}}>AFAP CEDRO</a>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{closeModa({...data,empresa:'AFAP CEDRO'}),setDrop(0)}}>AFAP CEDRO</a>
           </li>
           <li>
-              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setEmpresa('AFAP LAVRAS'),setDrop(0)}}>AFAP LAVRAS</a>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{closeModa({...data,empresa:'AFAP LAVRAS'}),setDrop(0)}}>AFAP LAVRAS</a>
           </li>
           <li>
-              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{setEmpresa('ÓTICA FREITAS'),setDrop(0)}}>ÓTICA FREITAS</a>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={()=>{closeModa({...data,empresa:'ÓTICA FREITAS'}),setDrop(0)}}>ÓTICA FREITAS</a>
           </li>
           <li>
-              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white"  onClick={()=>{setEmpresa('AFAP VIVA MAIS'),setDrop(0)}}>AFAP VIVA MAIS</a>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white"  onClick={()=>{closeModa({...data,empresa:'AFAP VIVA MAIS'}),setDrop(0)}}>AFAP VIVA MAIS</a>
           </li>
          
           </ul>

@@ -207,7 +207,7 @@ type AuthContextData = {
     mov: Partial<CaixaProps>,
     data: Partial<DadosCadastro>,
     dadosassociado: AssociadoProps | undefined,
-    carregarDados: () => Promise<void>,
+  //  carregarDados: () => Promise<void>,
     setarListaConv: (fields: Partial<ConvProps>) => void,
     listaConv: Partial<ConvProps>,
     userToken: () => void
@@ -550,8 +550,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         });
     }
 
-
-    async function carregarDados() {
+   /* async function carregarDados() {
         try {
             const response = await api.post('/associado', {
                 id_associado: Number(data.id_associado)
@@ -564,9 +563,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             toast.error('Erro na requisição')
         }
 
-    }
+    }*/
     return (
-        <AuthContext.Provider value={{ userToken, usuario, isAuthenticated, sign, signOut, data, closeModa, dadosassociado, carregarDados, caixaMovimentacao, mov, setarServico, servico, listaConv, setarListaConv }}>
+        <AuthContext.Provider value={{ userToken, usuario, isAuthenticated, sign, signOut, data, closeModa, dadosassociado, caixaMovimentacao, mov, setarServico, servico, listaConv, setarListaConv }}>
             {children}
         </AuthContext.Provider>
     )
