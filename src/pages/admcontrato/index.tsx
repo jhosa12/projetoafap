@@ -224,7 +224,7 @@ interface AssociadoProps {
 
 export default function AdmContrato() {
 
-    const { usuario,data,closeModa,dadosassociado,carregarDados} = useContext(AuthContext)
+    const { usuario, data, closeModa, dadosassociado, carregarDados } = useContext(AuthContext)
     const [dados, setDados] = useState(true)
     const [historico, setHistorico] = useState(false)
     const [dependentes, setDependentes] = useState(false)
@@ -241,7 +241,7 @@ export default function AdmContrato() {
     const [showSublinhas, setShowSublinhas] = useState<boolean>(false);
     const [mensalidadeComGrupoE, setMensalidaGrupo] = useState<Array<MensalidadeProps>>([]);
     const [obitos, setObitos] = useState(false)
-  
+
 
 
     let currentAcordoId: string;
@@ -291,12 +291,12 @@ export default function AdmContrato() {
 
         async function listaCadastro() {
             const response = await api.get('/listarDadosCadastro')
-            closeModa({...data, cidades: response.data.cidades, planos: response.data.planos })
+            closeModa({ ...data, cidades: response.data.cidades, planos: response.data.planos })
 
         }
 
         listaCadastro()
-        closeModa({...data, acordo: { ...{} } })
+        closeModa({ ...data, acordo: { ...{} } })
         if (componenteMounted) { atualizarObs() }
         setMounted(true)
     }, [data.contrato?.anotacoes])
@@ -330,31 +330,31 @@ export default function AdmContrato() {
 
     }
     useEffect(() => {
-   
-    
-       const carregarDadosAsync = async () => {
-         try {
-           await carregarDados();
-          // closeModa({contrato:{},dependente:{}})
-           setVerObs(false)
-   
-         } catch (error) {
-           console.error('Erro ao carregar dados:', error);
-         }
-        
-       };
-      componenteMounted && carregarDadosAsync();
 
-      closeModa({...data, closeModalPlano:false })
 
-      setDados(false),
-          setDependentes(false),
-          setHistorico(true)
-      setVerObs(false)
-      
-       
-       
-     }, [data.id_associado]);
+        const carregarDadosAsync = async () => {
+            try {
+                await carregarDados();
+                // closeModa({contrato:{},dependente:{}})
+                setVerObs(false)
+
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+            }
+
+        };
+        componenteMounted && carregarDadosAsync();
+
+        closeModa({ ...data, closeModalPlano: false })
+
+        setDados(false),
+            setDependentes(false),
+            setHistorico(true)
+        setVerObs(false)
+
+
+
+    }, [data.id_associado]);
 
 
 
@@ -364,7 +364,7 @@ export default function AdmContrato() {
 
     useEffect(() => {
 
-        if (dadosassociado?.contrato.situacao === 'INATIVO') {
+        if (dadosassociado?.contrato?.situacao === 'INATIVO') {
             toast.error('CONTRATO INATIVO');
         }
         let x = 0;
@@ -376,7 +376,7 @@ export default function AdmContrato() {
             toast.warn(`Possui ${x} mensalidades Vencidas`);
         }
 
-        if (dadosassociado?.contrato.convalescencia.find(item => item.status === 'ABERTO')) {
+        if (dadosassociado?.contrato?.convalescencia.find(item => item.status === 'ABERTO')) {
 
             toast.info('Possui Material Convalescente!')
         }
@@ -442,10 +442,10 @@ export default function AdmContrato() {
         try {
             await toast.promise(
                 api.post('/mensalidade/adicionar', {
-                    id_contrato: dadosassociado?.contrato.id_contrato,
+                    id_contrato: dadosassociado?.contrato?.id_contrato,
                     id_associado: dadosassociado?.id_associado,
                     status: 'A',
-                    valor_principal: dadosassociado?.contrato.valor_mensalidade,
+                    valor_principal: dadosassociado?.contrato?.valor_mensalidade,
                     parcela_n: ultimaMensalidade?.parcela_n && ultimaMensalidade?.parcela_n + 1,
                     vencimento: new Date(proxData),
                     cobranca: new Date(proxData),
@@ -519,7 +519,7 @@ export default function AdmContrato() {
                 {data.mensalidade?.close && (<ModalMensalidade />)}
                 {data.dependente?.close && <ModalDependentes />}
                 {data.closeEditarAssociado && <ModalEditarDados openEdit={openEdit} />}
-                {data.acordo?.closeAcordo && (<ModalAcordos  />)}
+                {data.acordo?.closeAcordo && (<ModalAcordos />)}
 
                 <div className="flex  flex-col p-4  ">
                     <div className="flex  flex-row justify-start gap-2 items-center w-full mt-2 pb-1">
@@ -560,15 +560,15 @@ export default function AdmContrato() {
                             {dados && dadosassociado && (<div className={`p-4  rounded-lg md:p-8`}>
 
                                 <h2 className="inline-flex gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">
-                                    {dadosassociado?.contrato.id_contrato}-{dadosassociado?.nome}
+                                    {dadosassociado?.contrato?.id_contrato}-{dadosassociado?.nome}
                                     <span>PLANO:
 
-                                        <span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato.plano}</span>
+                                        <span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato?.plano}</span>
                                     </span>
 
-                                    <span className={`inline-flex items-center  text-sm font-medium px-2.5 py-0.5 rounded-full ${dadosassociado?.contrato.situacao === 'ATIVO' ? "bg-green-900 text-green-300" : "bg-red-900 text-red-300"}`}>
-                                        <span className={`w-2 h-2 me-1 ${dadosassociado?.contrato.situacao === 'ATIVO' ? "bg-green-500 " : "bg-red-500"}  rounded-full`}></span>
-                                        {dadosassociado?.contrato.situacao}
+                                    <span className={`inline-flex items-center  text-sm font-medium px-2.5 py-0.5 rounded-full ${dadosassociado?.contrato?.situacao === 'ATIVO' ? "bg-green-900 text-green-300" : "bg-red-900 text-red-300"}`}>
+                                        <span className={`w-2 h-2 me-1 ${dadosassociado?.contrato?.situacao === 'ATIVO' ? "bg-green-500 " : "bg-red-500"}  rounded-full`}></span>
+                                        {dadosassociado?.contrato?.situacao}
                                     </span>
 
                                     {dadosassociado?.contrato?.convalescencia?.map(item => (
@@ -655,15 +655,15 @@ export default function AdmContrato() {
 
                                         <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
 
-                                            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CATEGORIA: </span>{dadosassociado?.contrato.plano}</p>
-                                            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">VALOR: </span>R$ {dadosassociado?.contrato.valor_mensalidade}</p>
-                                            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">ADESÃO: </span> {new Date(dadosassociado?.contrato.dt_adesao).toLocaleDateString()}</p>
-                                            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CARÊNCIA: </span>{new Date(dadosassociado?.contrato.dt_carencia).toLocaleDateString()}</p>
+                                            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CATEGORIA: </span>{dadosassociado?.contrato?.plano}</p>
+                                            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">VALOR: </span>R$ {dadosassociado?.contrato?.valor_mensalidade}</p>
+                                            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">ADESÃO: </span> {new Date(dadosassociado?.contrato?.dt_adesao).toLocaleDateString()}</p>
+                                            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CARÊNCIA: </span>{new Date(dadosassociado?.contrato?.dt_carencia).toLocaleDateString()}</p>
                                         </h5>
                                         <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
-                                            <p className=" font-normal text-gray-400"><span className="text-white font-semibold">ORIGEM: </span>{dadosassociado?.contrato.origem}</p>
-                                            <p className=" font-normal text-red-600"><span className="text-white font-semibold">CONSULTOR: </span>{dadosassociado?.contrato.consultor}</p>
-                                            <p className=" font-normal text-red-600"><span className="text-white font-semibold">COBRADOR: </span>{dadosassociado?.contrato.cobrador}</p>
+                                            <p className=" font-normal text-gray-400"><span className="text-white font-semibold">ORIGEM: </span>{dadosassociado?.contrato?.origem}</p>
+                                            <p className=" font-normal text-red-600"><span className="text-white font-semibold">CONSULTOR: </span>{dadosassociado?.contrato?.consultor}</p>
+                                            <p className=" font-normal text-red-600"><span className="text-white font-semibold">COBRADOR: </span>{dadosassociado?.contrato?.cobrador}</p>
                                         </h5>
 
                                         <button data-tooltip-id="my-tooltip"

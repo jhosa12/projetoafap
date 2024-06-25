@@ -554,11 +554,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async function carregarDados() {
         try {
             const response = await api.post('/associado', {
-                id_associado: Number(data.id_associado)
+                id_associado: Number(data.id_associado),
+                empresa:data.empresa
             })
 
             setDadosAssociado(response.data);
-            console.log(response.data)
+           
 
         } catch (error) {
             toast.error('Erro na requisição')
