@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { api } from '@/services/apiClient';
 import Confetti from 'react-confetti';
 import {useWindowSize} from 'react-use';
-
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 
 interface DadosProps{
@@ -20,12 +20,13 @@ interface DadosProps{
 
 export default function Sorteios(){
   const {usuario,signOut} = useContext(AuthContext)
-  const [sorteado, setSorteado] = useState<number>(0);
+  const [sorteado, setSorteado] = useState<number|undefined>(0);
   const [dadosSorteio,setSorteio]=useState<Array<DadosProps>>([]);
-  const [arrayContratos,setArrayContratos]= useState<Array<number>>()
+  const [arrayContratos,setArrayContratos]= useState<Array<number|undefined>>()
   const { width, height } = useWindowSize();
   const [ativarConfete,setConfetes]=useState(false)
   const [ganhador,setGanhador] =useState<Partial<DadosProps>>({})
+  const [loading,setLoading]=useState(false)
 
   const handleBuscarCliente= ()=>{
     toast.info('ANIMAÇÃO PAROU!')
@@ -60,13 +61,23 @@ export default function Sorteios(){
         
       }
       async function dadosContratos() {
+        setLoading(true)
         const response = await api.get('/sorteio')
         const dadosArray:Array<DadosProps> = response.data
-        const contratos = dadosArray.map(item=>{return item.id_contrato})
-       setArrayContratos(contratos)
+        const contratosAtivos = dadosArray.map(item=>{
+          const count = item.mensalidade.reduce((acumulador,atual)=>{
+            if(new Date(atual.vencimento)<new Date()){
+              return acumulador+1
+            }
+            return acumulador
+          },0)
+          if(count<=1) return item.id_contrato
+        })
+        const deferidos = contratosAtivos.filter(item=>item!=null)
+       setArrayContratos(deferidos)
       setSorteio(response.data)
-       
-
+       setLoading(false)
+    
         
       }
   },[])
@@ -87,12 +98,18 @@ export default function Sorteios(){
      <div className='p-2'>
       <h1 className="text-2xl font-bold mb-4 text-white">Sorteio de Números</h1>
       <div className='flex gap-2'>
-      <button
+    {!loading ? <button
         onClick={sortearNumero}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         SORTEAR
-      </button>
+      </button>: <button
+        //onClick={sortearNumero}
+        className="inline-flex  justify-center items-center gap-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        disabled
+      >
+       <AiOutlineLoading3Quarters size={18} className="animate-spin"/> CARREGANDO DADOS....
+      </button>}
       <button
         onClick={()=>{setSorteado(0)}}
         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
