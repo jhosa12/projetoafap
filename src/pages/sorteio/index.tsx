@@ -7,6 +7,8 @@ import { api } from '@/services/apiClient';
 import Confetti from 'react-confetti';
 import {useWindowSize} from 'react-use';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import fotoFundo from "../../../public/fundoSorteio2.png";
+import Image from 'next/image';
 
 
 interface DadosProps{
@@ -29,7 +31,7 @@ export default function Sorteios(){
   const [loading,setLoading]=useState(false)
 
   const handleBuscarCliente= ()=>{
-    toast.info('ANIMAÇÃO PAROU!')
+ 
     if(sorteado!==0){
       setConfetes(true)
      
@@ -84,7 +86,7 @@ export default function Sorteios(){
   
   return (
     <>
-   
+  { /*
  { ativarConfete &&  <Confetti
     width={width}
     height={height}
@@ -140,6 +142,57 @@ export default function Sorteios(){
     </div>
   
   
+
+    </div>*/}
+    <div className='relative w-full  max-h-[100vh] overflow-hidden flex items-center justify-center'>
+    { ativarConfete &&  <Confetti
+    width={width}
+    height={height}
+    recycle={true}
+    numberOfPieces={300}
+    run={ativarConfete}
+    />
+}
+      <img alt='' src= '/fundoSorteio2.png' className='flex w-full object-contain h-full'></img>
+      <animated.h1
+  
+  className='absolute top-56 text-8xl lining-nums proportional-nums font-bold text-yellow-500 '
+  
+  >
+    {props.val.to((val)=>Math.floor(val))}
+    
+  </animated.h1>
+{ganhador.associado?.nome && <div className='absolute top-72'>
+<div className='flex flex-col gap-2 text-white  p-4 rounded-e-lg '> 
+     <span className='font-semibold text-2xl'>{ganhador.associado?.nome}</span>
+    <span className=''>Endereço: {ganhador.associado?.endereco}</span>
+    <span className=''>Bairro: {ganhador.associado?.bairro}</span>
+    </div>
+</div>}
+
+
+  <div className='absolute top-[600px]'>
+    <div className='flex gap-2'>
+    {!loading ? <button
+        onClick={sortearNumero}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        SORTEAR
+      </button>: <button
+        //onClick={sortearNumero}
+        className="inline-flex  justify-center items-center gap-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        disabled
+      >
+       <AiOutlineLoading3Quarters size={18} className="animate-spin"/> CARREGANDO DADOS....
+      </button>}
+      <button
+        onClick={()=>{setSorteado(0)}}
+        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        ZERAR
+      </button>
+      </div>
+    </div>
 
     </div>
 
