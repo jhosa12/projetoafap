@@ -165,8 +165,8 @@ export default function Sorteios(){
 {ganhador.associado?.nome && <div className='absolute top-72'>
 <div className='flex flex-col gap-2 text-white  p-4 rounded-e-lg '> 
      <span className='font-semibold text-2xl'>{ganhador.associado?.nome}</span>
-    <span className=''>Endereço: {ganhador.associado?.endereco}</span>
-    <span className=''>Bairro: {ganhador.associado?.bairro}</span>
+    <span className='text-center'>Endereço: {ganhador.associado?.endereco}</span>
+    <span className='text-center'>Bairro: {ganhador.associado?.bairro}</span>
     </div>
 </div>}
 
