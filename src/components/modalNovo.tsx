@@ -1,7 +1,6 @@
 
 import { FormEvent } from "react";
 import { IoIosClose } from "react-icons/io";
-import { toast } from "react-toastify";
 import React from 'react';
 
 interface PremiosProps{
