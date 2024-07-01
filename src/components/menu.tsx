@@ -15,6 +15,7 @@ import Link from "next/link";
 import { api } from "@/services/apiClient";
 import { RxDrawingPinFilled } from "react-icons/rx";
 import { GrConfigure } from "react-icons/gr";
+import { FaSortAlphaDown } from "react-icons/fa";
 
 export function MenuLateral(){
    const socket = io("https://apiafap.onrender.com");
@@ -24,6 +25,7 @@ export function MenuLateral(){
     const [isCaixaOpen,setIsCaixaOpen] = useState(false);
     const [isServicosOpen,setIsServicosOpen] =useState(false);
     const [isComercialOpen,setIsComercialOpen] = useState(false)
+    const [isSorteioOpen,setIsSorteio] =useState(false)
     const[notifyCount,setCount] = useState<number>();
     
  
@@ -218,13 +220,26 @@ async function contagem() {
                <span className="flex-1 ms-3 whitespace-nowrap">Sugestões</span>
         </Link>
          </li>
-         <li>
-            <Link href="/sorteio" onClick={()=>setIsOpen(false)} className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                <RxDrawingPinFilled size={23}/>
+
+
+<li>
+<button type="button" className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsSorteio(!isSorteioOpen)}>
+      <FaSortAlphaDown  size={23}/>
+        <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Sorteios</span>
+        <FaAngleDown size={18}/>
+    </button>
+<ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isSorteioOpen && "hidden"}`}>
+        <li>
+            <Link href="/sorteio/configuracoes" className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Configurar Sorteio</Link>
+        </li>
+        <li>
+            <Link href="/sorteio" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                <span className="flex-1 ms-3 whitespace-nowrap">Sortear</span>
             </Link>
-        
          </li>
+    </ul>
+
+</li>
          <li>
          <Link href="/financeiro/login" onClick={()=>setIsOpen(false)} className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                 <RxDrawingPinFilled size={23}/>

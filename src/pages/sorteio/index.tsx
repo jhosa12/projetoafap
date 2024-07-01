@@ -13,9 +13,23 @@ import Image from 'next/image';
 
 interface DadosProps{
   id_contrato:number,
-  associado:{nome:string,endereco:string,bairro:string},
+  associado:{nome:string,endereco:string,bairro:string,numero:number|null},
   mensalidade:Array<{vencimento:Date}>
 }
+
+interface PremiosProps{
+  id_produto:string,
+  descricao: string,
+  unidade: string,
+  valor_custo: number,
+  quantidade: number,
+  situacao: string,
+  grupo: string,
+  tipo: string,
+  openModal:boolean
+}
+
+
 
 
 
@@ -29,14 +43,47 @@ export default function Sorteios(){
   const [ativarConfete,setConfetes]=useState(false)
   const [ganhador,setGanhador] =useState<Partial<DadosProps>>({})
   const [loading,setLoading]=useState(false)
+  const [contador,setContador]=useState<number>(0)
+  const [premios,setPremios]=useState<Array<Partial<PremiosProps>>>([])
+
+
+
+
+  async function salvarGanhador() {
+
+  ganhador.associado?.nome && await toast.promise(
+    api.post('/sorteio/salvarGanhador',{
+      id_contrato:ganhador.id_contrato,
+      bairro:ganhador.associado?.bairro,
+      endereco:ganhador.associado?.endereco,
+      numero:ganhador.associado?.numero,
+      titular:ganhador.associado?.nome,
+      premio:premios[contador-1].descricao,
+      status:'PENDENTE',
+      data_sorteio:new Date()
+    }),
+    {error:'Erro ao Salvar Ganhador',
+      pending:'SALVANDO GANHADOR!',
+      success:'GANHADOR REGISTRADO COM SUCESSO!'
+    }
+
+   )
+
+    
+  }
+
+  useEffect(()=>{
+    salvarGanhador()
+  },[ganhador])
 
   const handleBuscarCliente= ()=>{
  
     if(sorteado!==0){
       setConfetes(true)
+      setContador(contador+1)
      
     }else{
-      setGanhador({associado:{nome:'',endereco:'',bairro:''}})
+      setGanhador({associado:{nome:'',endereco:'',bairro:'',numero:null}})
      setConfetes(false);}
 
     const vencedor = dadosSorteio.find(item=>item.id_contrato===sorteado)
@@ -45,6 +92,10 @@ export default function Sorteios(){
     
   }
   const sortearNumero = () => {
+   if(premios.length<=contador){
+    toast.info('SORTEIO FINALIZADO')
+    return;
+   }
     if(arrayContratos){
       const numeroSorteado = arrayContratos[Math.floor(Math.random() * arrayContratos.length)];
       setSorteado(numeroSorteado);
@@ -65,7 +116,7 @@ export default function Sorteios(){
       async function dadosContratos() {
         setLoading(true)
         const response = await api.get('/sorteio')
-        const dadosArray:Array<DadosProps> = response.data
+        const dadosArray:Array<DadosProps> = response.data.contratos
         const contratosAtivos = dadosArray.map(item=>{
           const count = item.mensalidade.reduce((acumulador,atual)=>{
             if(new Date(atual.vencimento)<new Date()){
@@ -77,7 +128,8 @@ export default function Sorteios(){
         })
         const deferidos = contratosAtivos.filter(item=>item!=null)
        setArrayContratos(deferidos)
-      setSorteio(response.data)
+      setSorteio(response.data.contratos)
+      setPremios(response.data.premios)
        setLoading(false)
     
         
@@ -86,7 +138,7 @@ export default function Sorteios(){
   
   return (
     <>
-  { /*
+ 
  { ativarConfete &&  <Confetti
     width={width}
     height={height}
@@ -139,12 +191,13 @@ export default function Sorteios(){
      <span className='font-semibold text-xl'>NOME: {ganhador.associado?.nome}</span>
     <span className=''>ENDEREÇO: {ganhador.associado?.endereco}</span>
     <span className=''>BAIRRO: {ganhador.associado?.bairro}</span>
+    <span className=''>PREMIO: {premios[contador-1]?.descricao}</span>
     </div>
   
   
 
-    </div>*/}
-    <div className='relative w-full  max-h-[100vh] overflow-hidden flex items-center justify-center'>
+    </div>
+{   /* <div className='relative w-full  h-full overflow-hidden flex items-center justify-center'>
     { ativarConfete &&  <Confetti
     width={width}
     height={height}
@@ -153,7 +206,7 @@ export default function Sorteios(){
     run={ativarConfete}
     />
 }
-      <img alt='' src= '/fundoSorteio2.png' className='flex w-full object-contain h-full'></img>
+      <img alt='' src= '/fundoSorteio2.png' className='flex w-full object-contain h-[100vh]'></img>
       <animated.h1
   
   className='absolute top-56 text-8xl lining-nums proportional-nums font-bold text-yellow-500 '
@@ -194,7 +247,7 @@ export default function Sorteios(){
       </div>
     </div>
 
-    </div>
+    </div>*/}
 
     
     </>
