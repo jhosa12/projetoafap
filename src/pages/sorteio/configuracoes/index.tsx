@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
-import { CadastroPremio } from "./cadastroPremio"
+import  CadastroPremio  from "./cadastroPremio"
 import { api } from "@/services/apiClient"
 import { toast } from "react-toastify"
-import { ConsultarGanhadores } from "./consultar"
+import  ConsultarGanhadores  from "./consultar"
 
 interface PremiosProps{
     id_produto:string,

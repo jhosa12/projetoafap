@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import React from 'react';
 import { MdDelete } from "react-icons/md";
 import { MdModeEditOutline } from "react-icons/md";
 import { FaRepeat } from "react-icons/fa6";
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
-import { ModalNovoPremio } from "./modalNovoPremio";
+import  ModalNovoPremio  from "./modalNovoPremio";
 interface PremiosProps{
     id_produto:string,
     descricao: string,
@@ -23,7 +24,7 @@ interface DataProps{
 }
 
 
-export function CadastroPremio({listarPremios,arrayPremios}:DataProps){
+export default function CadastroPremio({listarPremios,arrayPremios}:DataProps){
    
     const [excluir, setExcluir] = useState<number>(0)
     const [dadosPremio,setDadosPremio] =useState<Partial<PremiosProps>>({openModal:false})

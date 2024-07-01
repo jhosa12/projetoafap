@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { MdDelete } from "react-icons/md";
 import { MdModeEditOutline } from "react-icons/md";
+import React from 'react';
 interface GanhadoresProps{
     id_contrato:number,
     titular:string,
@@ -19,7 +20,7 @@ interface DataProps{
 }
 
 
-export function ConsultarGanhadores({setarDataSorteio,dataSorteio,arrayGanhadores,listarGanhadores}:DataProps){
+export default function ConsultarGanhadores({setarDataSorteio,dataSorteio,arrayGanhadores,listarGanhadores}:DataProps){
    
   
     return (

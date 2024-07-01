@@ -2,7 +2,7 @@
 import { FormEvent } from "react";
 import { IoIosClose } from "react-icons/io";
 import { toast } from "react-toastify";
-
+import React from 'react';
 
 interface PremiosProps{
     id_produto:string,
@@ -21,7 +21,7 @@ interface CadastroProps{
     dadosPremio:Partial<PremiosProps>
 }
 
-export function ModalNovoPremio({cadastroPremio,setarDadosPremios,dadosPremio}:CadastroProps){
+export default function ModalNovoPremio({cadastroPremio,setarDadosPremios,dadosPremio}:CadastroProps){
 
 
 
