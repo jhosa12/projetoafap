@@ -21,7 +21,7 @@ interface CadastroProps{
     dadosPremio:Partial<PremiosProps>
 }
 
-export default function ModalNovoPremio({cadastroPremio,setarDadosPremios,dadosPremio}:CadastroProps){
+export default function ModalNovo({cadastroPremio,setarDadosPremios,dadosPremio}:CadastroProps){
 
 
 

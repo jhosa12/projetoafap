@@ -5,7 +5,7 @@ import { MdModeEditOutline } from "react-icons/md";
 import { FaRepeat } from "react-icons/fa6";
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
-import  ModalNovoPremio  from "./modalNovo";
+import  ModalNovo  from "./modalNovo";
 interface PremiosProps{
     id_produto:string,
     descricao: string,
@@ -72,7 +72,7 @@ export default function CadastroPremio({listarPremios,arrayPremios}:DataProps){
     }
     return(
         <div className="text-white">
-         {dadosPremio.openModal &&   <ModalNovoPremio cadastroPremio={cadastroPremio} setarDadosPremios={setarDadosPremios} dadosPremio={dadosPremio}/>}
+         {dadosPremio.openModal &&   <ModalNovo cadastroPremio={cadastroPremio} setarDadosPremios={setarDadosPremios} dadosPremio={dadosPremio}/>}
          <button onClick={()=>setarDadosPremios({...dadosPremio,openModal:true})} className="flex text-sm ml-auto bg-green-600 rounded-lg p-2">ADICIONAR PRÊMIO</button>
              <ul className="flex flex-col w-full p-2 mt-1 gap-1 text-sm">
                 <li className="flex flex-col w-full  text-xs pl-4 border-b-[1px] ">
