@@ -5,7 +5,7 @@ import { MdModeEditOutline } from "react-icons/md";
 import { FaRepeat } from "react-icons/fa6";
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
-import  ModalNovoPremio  from "./modalNovoPremio";
+import  ModalNovoPremio  from "./modalNovo";
 interface PremiosProps{
     id_produto:string,
     descricao: string,
