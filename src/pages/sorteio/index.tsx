@@ -161,31 +161,11 @@ export default function Sorteios(){
 
      <div className='p-2'>
       <h1 className="text-2xl font-bold mb-4 text-white">Sorteio de Números</h1>
-      <div className='flex gap-2'>
-    {!loading ? <button
-        onClick={sortearNumero}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        SORTEAR
-      </button>: <button
-        //onClick={sortearNumero}
-        className="inline-flex  justify-center items-center gap-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        disabled
-      >
-       <AiOutlineLoading3Quarters size={18} className="animate-spin"/> CARREGANDO DADOS....
-      </button>}
-      <button
-        onClick={()=>{setSorteado(0)}}
-        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-      >
-        ZERAR
-      </button>
     
-    </div>
      
     </div>
-    <div className='flex w-full items-center justify-center'>
-    
+    <div className='flex flex-col gap-3 w-full  items-center justify-center'>
+  <div className='inline-flex'> 
    <div  className='inline-flex w-60 h-60 bg-white rounded-s-lg justify-center items-center text-xl text-white '>
     <animated.h1
   
@@ -203,8 +183,28 @@ export default function Sorteios(){
     <span className=''>BAIRRO: {ganhador.associado?.bairro}</span>
     <span className=''>PREMIO: {premios[contador-1]?.descricao}</span>
     </div>
-  
-  
+    </div> 
+    <div className='flex gap-2'>
+    {!loading ? <button
+        onClick={sortearNumero}
+        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        SORTEAR
+      </button>: <button
+        //onClick={sortearNumero}
+        className="inline-flex  justify-center items-center gap-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        disabled
+      >
+       <AiOutlineLoading3Quarters size={18} className="animate-spin"/> CARREGANDO DADOS....
+      </button>}
+      <button
+        onClick={()=>{setSorteado(0)}}
+        className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        ZERAR
+      </button>
+    
+    </div>
 
     </div>
 {   /* <div className='relative w-full  h-full overflow-hidden flex items-center justify-center'>
