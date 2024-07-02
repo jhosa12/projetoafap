@@ -14,7 +14,7 @@ import Image from 'next/image';
 interface DadosProps{
   id_contrato:number,
   associado:{nome:string,endereco:string,bairro:string,numero:number|null},
-  mensalidade:Array<{vencimento:Date}>
+  mensalidade:Array<{vencimento:Date|null}>
 }
 
 interface PremiosProps{
@@ -46,7 +46,15 @@ export default function Sorteios(){
   const [contador,setContador]=useState<number>(0)
   const [premios,setPremios]=useState<Array<Partial<PremiosProps>>>([])
 
-
+  const lavras = [
+    {id_contrato:772,associado:{nome:'ANTONIA MARTINS DA SILVA (TÂNIA)',endereco:'RUA FERROVIÁRIA',bairro:'BOA VISTA',numero:107},mensalidade:[{vencimento:null}]},
+    {id_contrato:1462,associado:{nome:'MARIA DO ROSÁRIO LUCENA DA SILVA',endereco:'RUA MARIA ZILDA',bairro:'VILA BANCÁRIA',numero:233},mensalidade:[{vencimento:null}]},
+    {id_contrato:1463,associado:{nome:'ANTONIA MARQUES MARCELINO)',endereco:'SITIO COCOS',bairro:'GRANJEIRO',numero:182},mensalidade:[{vencimento:null}]},
+    {id_contrato:1464,associado:{nome:'MARIA DASDORES LANDIM PINHEIRO',endereco:'SITIO PITOMBEIRA',bairro:'ARROJADO',numero:null},mensalidade:[{vencimento:null}]},
+    {id_contrato:1465,associado:{nome:'SILVANA BISPO DA CONCEIÇÃO',endereco:'SITIO PITOMBEIRA',bairro:'ARROJADO',numero:null},mensalidade:[{vencimento:null}]},
+    {id_contrato:1466,associado:{nome:'JOSE NILTON SOARES DOS SANTOS',endereco:'SITIO BRADÃO',bairro:'AMANIUTUBA',numero:null},mensalidade:[{vencimento:null}]},
+    {id_contrato:1468,associado:{nome:'MARILIA ALVES DE OLIVEIRA',endereco:'SITIO VOLTA',bairro:'QUITAIUS',numero:null},mensalidade:[{vencimento:null}]}
+]
 
 
   async function salvarGanhador() {
@@ -58,7 +66,7 @@ export default function Sorteios(){
       endereco:ganhador.associado?.endereco,
       numero:ganhador.associado?.numero,
       titular:ganhador.associado?.nome,
-      premio:premios[contador-1].descricao,
+      premio:`${premios[contador-1].descricao} - ${premios[contador-1].situacao}`,
       status:'PENDENTE',
       data_sorteio:new Date()
     }),
@@ -116,19 +124,21 @@ export default function Sorteios(){
       async function dadosContratos() {
         setLoading(true)
         const response = await api.get('/sorteio')
-        const dadosArray:Array<DadosProps> = response.data.contratos
-        const contratosAtivos = dadosArray.map(item=>{
+       // const dadosArray:Array<DadosProps> = response.data.contratos
+       /* const contratosAtivos = dadosArray.map(item=>{
           const count = item.mensalidade.reduce((acumulador,atual)=>{
-            if(new Date(atual.vencimento)<new Date()){
+           if(new Date(atual.vencimento)<new Date()){
               return acumulador+1
             }
             return acumulador
           },0)
           if(count<=1) return item.id_contrato
-        })
+        })*/
+       const contratosAtivos = lavras.map(item=>{return item.id_contrato})
         const deferidos = contratosAtivos.filter(item=>item!=null)
        setArrayContratos(deferidos)
-      setSorteio(response.data.contratos)
+     // setSorteio(response.data.contratos)
+     setSorteio(lavras)
       setPremios(response.data.premios)
        setLoading(false)
     

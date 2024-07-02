@@ -31,6 +31,8 @@ export default function ConfigSort(){
     const [arrayPremios,setArrayPremios]=useState<Array<Partial<PremiosProps>>>([])
     const [dataSorteio,setDataSorteio] = useState<Date>(new Date())
     const [arrayGanhadores,setGanhadores] = useState<Array<Partial<GanhadoresProps>>>([])
+    const [loading, setLoading] = useState(false)
+
 
 
 
@@ -55,6 +57,7 @@ export default function ConfigSort(){
     }
 
     async function listarGanhadores() {
+        setLoading(true)
         try {
             const response = await api.post('/sorteio/listarGanhadores',
                 {
@@ -65,6 +68,7 @@ export default function ConfigSort(){
         } catch (error) {
             console.log('erro na requisição')
         }
+        setLoading(false)
         
     }
 
@@ -87,7 +91,7 @@ return(
 </ul>
 
 {menuIndex===1 && (<CadastroPremio listarPremios={listarPremios} arrayPremios={arrayPremios}/>)}
-{menuIndex===2 && (<ConsultarGanhadores listarGanhadores={listarGanhadores} setarDataSorteio={setarDataSorteio} dataSorteio={dataSorteio} arrayGanhadores={arrayGanhadores}/>)}
+{menuIndex===2 && (<ConsultarGanhadores loading={loading} listarGanhadores={listarGanhadores} setarDataSorteio={setarDataSorteio} dataSorteio={dataSorteio} arrayGanhadores={arrayGanhadores}/>)}
 </div>
 
 )

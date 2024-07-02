@@ -448,8 +448,6 @@ export default function LoginFinaceiro() {
       listarDados()
       listarContasReq()
 
-
-
     } catch (error) {
       toast.error('Erro ao requitar dados!')
 
