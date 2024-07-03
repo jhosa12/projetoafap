@@ -28,6 +28,7 @@ import Head from "next/head";
 import PrintButtonContrato from "@/Documents/contratoAdesão/PrintButton";
 import { TbWheelchair } from "react-icons/tb";
 import PrintButton from "@/Documents/carteiraAssociado/PrintButton";
+import CarteirasDep from "./carteirasDep";
 
 
 
@@ -241,6 +242,7 @@ export default function AdmContrato() {
     const [linhasSelecionadas, setLinhasSelecionadas] = useState<Array<Partial<MensalidadeProps>>>([]);
     const [showSublinhas, setShowSublinhas] = useState<boolean>(false);
     const [mensalidadeComGrupoE, setMensalidaGrupo] = useState<Array<MensalidadeProps>>([]);
+    const [carteira, setCarteira] = useState(false)
     const [obitos, setObitos] = useState(false)
 
 
@@ -327,7 +329,10 @@ export default function AdmContrato() {
     function mensalidadeSet() {
         setDados(false),
             setDependentes(false),
-            setHistorico(true)
+            setHistorico(true),
+            setCarteira(false),
+            setDocumentos(false)
+            
 
     }
     useEffect(() => {
@@ -538,22 +543,22 @@ export default function AdmContrato() {
                     <div className="flex-col w-full border  rounded-lg shadow  border-gray-700">
                         <ul className="flex flex-wrap text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800" role="tablist">
                             <li className="me-2">
-                                <button type="button" onClick={() => { setDados(true), setDependentes(false), setHistorico(false), setDocumentos(false) }} className={`inline-block p-4 font-semibold rounded-ss-lg  bg-gray-800 hover:bg-gray-700 ${dados && "text-blue-500"} `}>Dados</button>
+                                <button type="button" onClick={() => { setDados(true), setDependentes(false), setHistorico(false), setDocumentos(false), setCarteira(false) }} className={`inline-block p-4 font-semibold rounded-ss-lg  bg-gray-800 hover:bg-gray-700 ${dados && "text-blue-500"} `}>Dados</button>
                             </li>
                             <li className="me-2">
                                 <button type="button" onClick={() => mensalidadeSet()} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${historico && "text-blue-500"}`}>Histórico/Movimentação</button>
                             </li>
                             <li className="me-2">
-                                <button type="button" onClick={() => { setDados(false), setDependentes(true), setHistorico(false), setDocumentos(false) }} className="inline-block p-4   hover:bg-gray-700 hover:text-gray-300">Dependentes</button>
+                                <button type="button" onClick={() => { setDados(false), setDependentes(true), setHistorico(false), setDocumentos(false), setCarteira(false) }} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${dependentes && "text-blue-500"}`}>Dependentes</button>
                             </li>
                             <li className="me-2">
-                                <button type="button" onClick={() => { setDados(false), setDependentes(true), setHistorico(false), setDocumentos(false) }} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${dependentes && "text-blue-500"}`}>Carteiras</button>
+                                <button type="button" onClick={() => { setDados(false), setDependentes(false), setHistorico(false), setDocumentos(false), setCarteira(true) }} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${carteira && "text-blue-500"}`}>Carteiras</button>
                             </li>
                             <li className="me-2">
-                                <button type="button" onClick={() => { setDados(false), setDependentes(true), setHistorico(false), setDocumentos(false) }} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${obitos && "text-blue-500"}`}>Óbitos</button>
+                                <button type="button" onClick={() => { setDados(false), setDependentes(true), setHistorico(false), setDocumentos(false), setCarteira(false) }} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${obitos && "text-blue-500"}`}>Óbitos</button>
                             </li>
                             <li className="me-2">
-                                <button type="button" onClick={() => { setDados(false), setDependentes(false), setHistorico(false), setDocumentos(true) }} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${documentos && "text-blue-500"}`}>Documentos</button>
+                                <button type="button" onClick={() => { setDados(false), setDependentes(false), setHistorico(false), setDocumentos(true), setCarteira(false) }} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${documentos && "text-blue-500"}`}>Documentos</button>
                             </li>
                         </ul>
                         <div className="flex flex-col">
@@ -939,7 +944,6 @@ export default function AdmContrato() {
                                                         (
 
                                                             <tr key={index}
-
                                                                 onClick={() => toggleSelecionada(item)}
                                                                 //className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600  ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":item.status==='P'? 'text-blue-500':'text-white'}`}>
                                                                 className={`${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"} border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-600" : "bg-gray-800"}  ${item.status === 'P' && "text-blue-500"} border-gray-700  hover:bg-gray-500 hover:text-black   ${item.parcela_n === 0 ? "hidden" : ''}`}>
@@ -1188,100 +1192,101 @@ export default function AdmContrato() {
                                     </thead>
                                     <tbody>
                                         {dadosassociado?.dependentes?.map((item, index) => (
-                                            checkDependente && item.excluido ? (<tr key={index} onClick={() => closeModa({ dependente: { id_dependente: item.id_dependente, nome: item.nome, excluido: item.excluido } })} className={`border-b ${item.id_dependente === data.dependente?.id_dependente ? "bg-gray-600" : "bg-gray-800"} border-gray-700  hover:bg-gray-600 text-red-500`}>
-                                                <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap">
-                                                    {item.nome}
-                                                </th>
-                                                <td className="px-6 py-1">
-                                                    {new Date(item.data_adesao).toLocaleDateString()}
-                                                </td>
-                                                <td className="px-6 py-1">
-                                                    {item?.carencia ? new Date(item.carencia).toLocaleDateString() : ''}
-                                                </td>
-                                                <td className="px-6 py-1">
-                                                    {item?.data_nasc ? new Date(item.data_nasc).toLocaleDateString() : ''}
-                                                </td>
-                                                <td className="px-6 py-1">
-                                                    {item.grau_parentesco}
-                                                </td>
-                                                <td className="px-6 py-1">
-                                                    {new Date(item.dt_exclusao).toLocaleDateString()}
-                                                </td>
-                                                <td className="px-6 py-1">
-                                                    {item.user_exclusao}
-                                                </td>
-
-
-                                                <td className="px-4 py-1 text-right">
-                                                    <button onClick={(event) => {
-                                                        event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                                                        closeModa(
-                                                            {
-                                                                dependente: {
-                                                                    saveAdd: true,
-                                                                    close: true,
-                                                                    carencia: item.carencia,
-                                                                    data_adesao: item.data_adesao,
-                                                                    data_nasc: item.data_nasc,
-                                                                    grau_parentesco: item.grau_parentesco,
-                                                                    id_dependente: item.id_dependente,
-                                                                    nome: item.nome,
-                                                                    excluido: item.excluido,
-                                                                    exclusao_motivo: item.exclusao_motivo
-                                                                }
-                                                            })
-                                                    }} className="font-medium  text-blue-500 hover:underline">Edit</button>
-                                                    {item.convalescenca?.convalescenca_prod.status === 'ABERTO' && <button data-tooltip-id="id_dependente" data-tooltip-content={item.convalescenca.convalescenca_prod.descricao} className="text-yellow-500">
-                                                        <TbWheelchair size={19} />
-                                                    </button>}
-                                                </td>
-                                            </tr>) : !checkDependente && !item.excluido ? (
-                                                <tr key={index} onClick={() => closeModa({ dependente: { id_dependente: item.id_dependente, nome: item.nome, excluido: item.excluido } })} className={`border-b ${new Date(item.carencia) > new Date() ? "text-yellow-500" : "text-white"} ${item.id_dependente === data.dependente?.id_dependente ? "bg-gray-600" : "bg-gray-800"} border-gray-700  hover:bg-gray-600`}>
-                                                    <th scope="row" className="px-2 py-1 font-medium   whitespace-nowrap">
+                                            checkDependente && item.excluido ? (
+                                                <tr key={index} onClick={() => closeModa({ dependente: { id_dependente: item.id_dependente, nome: item.nome, excluido: item.excluido } })} className={`border-b ${item.id_dependente === data.dependente?.id_dependente ? "bg-gray-600" : "bg-gray-800"} border-gray-700  hover:bg-gray-600 text-red-500`}>
+                                                    <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap">
                                                         {item.nome}
                                                     </th>
-                                                    <td className="px-8 py-1">
+                                                    <td className="px-6 py-1">
                                                         {new Date(item.data_adesao).toLocaleDateString()}
                                                     </td>
-                                                    <td className="px-10 py-1">
+                                                    <td className="px-6 py-1">
                                                         {item?.carencia ? new Date(item.carencia).toLocaleDateString() : ''}
                                                     </td>
-                                                    <td className="px-8 py-1">
+                                                    <td className="px-6 py-1">
                                                         {item?.data_nasc ? new Date(item.data_nasc).toLocaleDateString() : ''}
                                                     </td>
-                                                    <td className="px-12 py-1">
+                                                    <td className="px-6 py-1">
                                                         {item.grau_parentesco}
                                                     </td>
-
-
-                                                    <td className="px-3 py-1 ">
-                                                        <div className="inline-flex gap-3">
-                                                            <button onClick={(event) => {
-                                                                event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                                                                closeModa(
-                                                                    {
-                                                                        dependente: {
-                                                                            saveAdd: true,
-                                                                            close: true,
-                                                                            carencia: item.carencia,
-                                                                            data_adesao: item.data_adesao,
-                                                                            data_nasc: item.data_nasc,
-                                                                            grau_parentesco: item.grau_parentesco,
-                                                                            id_dependente: item.id_dependente,
-                                                                            excluido: item.excluido,
-                                                                            nome: item.nome,
-
-                                                                        }
-                                                                    })
-                                                            }} className="font-medium  text-blue-500 hover:underline">Edit</button>
-
-                                                            {item.convalescenca?.convalescenca_prod?.status === 'ABERTO' && <button data-tooltip-id="id_dependente" data-tooltip-content={item.convalescenca.convalescenca_prod.descricao} className="text-yellow-500">
-                                                                <TbWheelchair size={19} />
-                                                            </button>}
-                                                        </div>
+                                                    <td className="px-6 py-1">
+                                                        {new Date(item.dt_exclusao).toLocaleDateString()}
                                                     </td>
-                                                </tr>
-                                            ) : ''
+                                                    <td className="px-6 py-1">
+                                                        {item.user_exclusao}
+                                                    </td>
+
+
+                                                    <td className="px-4 py-1 text-right">
+                                                        <button onClick={(event) => {
+                                                            event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
+                                                            closeModa(
+                                                                {
+                                                                    dependente: {
+                                                                        saveAdd: true,
+                                                                        close: true,
+                                                                        carencia: item.carencia,
+                                                                        data_adesao: item.data_adesao,
+                                                                        data_nasc: item.data_nasc,
+                                                                        grau_parentesco: item.grau_parentesco,
+                                                                        id_dependente: item.id_dependente,
+                                                                        nome: item.nome,
+                                                                        excluido: item.excluido,
+                                                                        exclusao_motivo: item.exclusao_motivo
+                                                                    }
+                                                                })
+                                                        }} className="font-medium  text-blue-500 hover:underline">Edit</button>
+                                                        {item.convalescenca?.convalescenca_prod.status === 'ABERTO' && <button data-tooltip-id="id_dependente" data-tooltip-content={item.convalescenca.convalescenca_prod.descricao} className="text-yellow-500">
+                                                            <TbWheelchair size={19} />
+                                                        </button>}
+                                                    </td>
+                                                </tr>) : !checkDependente && !item.excluido ? (
+                                                    <tr key={index} onClick={() => closeModa({ dependente: { id_dependente: item.id_dependente, nome: item.nome, excluido: item.excluido } })} className={`border-b ${new Date(item.carencia) > new Date() ? "text-yellow-500" : "text-white"} ${item.id_dependente === data.dependente?.id_dependente ? "bg-gray-600" : "bg-gray-800"} border-gray-700  hover:bg-gray-600`}>
+                                                        <th scope="row" className="px-2 py-1 font-medium   whitespace-nowrap">
+                                                            {item.nome}
+                                                        </th>
+                                                        <td className="px-8 py-1">
+                                                            {new Date(item.data_adesao).toLocaleDateString()}
+                                                        </td>
+                                                        <td className="px-10 py-1">
+                                                            {item?.carencia ? new Date(item.carencia).toLocaleDateString() : ''}
+                                                        </td>
+                                                        <td className="px-8 py-1">
+                                                            {item?.data_nasc ? new Date(item.data_nasc).toLocaleDateString() : ''}
+                                                        </td>
+                                                        <td className="px-12 py-1">
+                                                            {item.grau_parentesco}
+                                                        </td>
+
+
+                                                        <td className="px-3 py-1 ">
+                                                            <div className="inline-flex gap-3">
+                                                                <button onClick={(event) => {
+                                                                    event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
+                                                                    closeModa(
+                                                                        {
+                                                                            dependente: {
+                                                                                saveAdd: true,
+                                                                                close: true,
+                                                                                carencia: item.carencia,
+                                                                                data_adesao: item.data_adesao,
+                                                                                data_nasc: item.data_nasc,
+                                                                                grau_parentesco: item.grau_parentesco,
+                                                                                id_dependente: item.id_dependente,
+                                                                                excluido: item.excluido,
+                                                                                nome: item.nome,
+
+                                                                            }
+                                                                        })
+                                                                }} className="font-medium  text-blue-500 hover:underline">Edit</button>
+
+                                                                {item.convalescenca?.convalescenca_prod?.status === 'ABERTO' && <button data-tooltip-id="id_dependente" data-tooltip-content={item.convalescenca.convalescenca_prod.descricao} className="text-yellow-500">
+                                                                    <TbWheelchair size={19} />
+                                                                </button>}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ) : ''
 
                                         ))}
 
@@ -1299,6 +1304,10 @@ export default function AdmContrato() {
                                     </div>
 
                                 </div>
+                            }
+
+                            {
+                                carteira && (<CarteirasDep dependentes={dadosassociado?.dependentes ?? []} contrato={dadosassociado?.contrato.id_contrato ?? 0} plano={dadosassociado?.contrato.plano ?? ''} />)
                             }
 
 

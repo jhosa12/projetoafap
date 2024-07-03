@@ -9,11 +9,25 @@ import { AuthContext } from '@/contexts/AuthContext';
 
 
 interface DadosProps{
-    nome:string, 
-    logradouro:string,
-    bairro:string,
-    cidade:string,
-    contrato:number,
+  dependentes:Array<Partial<{
+    nome: string,
+    data_nasc: Date,
+    grau_parentesco: string,
+    data_adesao: Date,
+    carencia: Date,
+    id_dependente: number,
+    cad_dh: Date,
+    close: boolean,
+    sexo: string,
+    saveAdd: boolean,
+    dt_exclusao: Date,
+    user_exclusao: string,
+    exclusao_motivo: string,
+   
+  }>>
+  contrato:number,
+  plano:string,
+  tipoButton:boolean
     
 }
 
@@ -36,12 +50,8 @@ interface DadosProps{
       <div className='text-white' style={{ display: 'none' }}>
         <DocumentTemplate
           ref={componentRef}
-          nome ={dadosassociado?.nome??''}
-          logradouro={dadosassociado?.endereco??''}
-          bairro={dadosassociado?.bairro??''}
-          cidade={dadosassociado?.cidade??''}
-          uf={dadosassociado?.uf??''}
-          
+          dependentes={dadosassociado?.dependentes??[]}
+          plano={dadosassociado?.contrato.plano??''}
           contrato={dadosassociado?.contrato.id_contrato??0}
         
         />
