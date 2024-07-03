@@ -88,7 +88,7 @@ export default function CarteirasDep({dependentes,contrato,plano}:DadosProps){
     }
     useEffect(()=>{
 
-        if(arrayPrint){
+        if(arrayPrint.length!==0){
             handlePrint()
 
         }
