@@ -1,0 +1,105 @@
+import Image from "next/image";
+import logo from "../../../public/logoafap.png"
+
+
+
+// DocumentTemplate.js
+
+import React, { Component } from 'react';
+interface DadosProps {
+  winners: Array<Partial<{
+    id_contrato:number,
+    titular:string,
+    endereco:string,
+    bairro:string,
+    numero:number,
+    premio:string,
+    data_sorteio:Date,
+    status:string
+  }>>
+}
+
+
+
+class DocumentTemplate extends Component<DadosProps> {
+
+  render() {
+    const {
+      winners
+    } = this.props;
+
+    return (
+      <div className='flex flex-col w-full p-2 px-6  text-black'>
+
+        <div className="flex justify-center items-center
+         mt-4">
+          <Image className="flex w-44 h-20 mr-7 " src={logo} alt="" />
+        </div>
+      
+      
+
+
+      
+
+      
+
+        <h1 className='text-xl text-center font-semibold mt-2'>RELAÇÃO DE GANHADORES</h1>
+        <div className="flex  justify-center items-center w-full">
+         
+
+
+
+        </div>
+
+        <div className="flex  justify-center items-center w-full">
+<table className="block  text-left rtl:text-center border-[1px] border-black border-solid">
+    <thead className="top-0 uppercase border-b-[1px] border-black border-solid">
+        <tr>
+        <th scope="col" className="px-2 py-1">
+               PRÊMIO
+            </th>
+          
+            <th scope="col" className="px-2 py-1">
+               TITULAR
+            </th>
+            <th scope="col" className="px-2 py-1">
+                ENDEREÇO
+            </th>
+            <th scope="col" className="px-2 py-1">
+               BAIRRO
+            </th>
+         
+        </tr>
+    </thead>
+    <tbody>
+        {winners?.map((item, index) => (
+            <tr key={index} className={` border-t border-black`}>
+               <td className="px-2 py-1 text-[12px] border-black">
+                    {item.premio}
+                </td>
+             
+                <td className="px-2 py-1 whitespace-nowrap text-[12px]">
+                   {item.id_contrato}-{item.titular}
+                </td>
+                <td className="px-2 py-1 whitespace-nowrap text-[12px]">
+                    {item.endereco}
+                </td>
+                <td className="px-2 py-1 whitespace-nowrap text-[12px]">
+                    {item.bairro}
+                </td>
+               
+            </tr>
+        ))}
+    </tbody>
+</table>
+
+
+
+                            </div>
+
+      </div>
+    );
+  }
+}
+
+export default DocumentTemplate;

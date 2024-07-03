@@ -3,6 +3,7 @@ import  CadastroPremio  from "./cadastroPremio"
 import { api } from "@/services/apiClient"
 import { toast } from "react-toastify"
 import  ConsultarGanhadores  from "./consultar"
+import ConfigParams from "./configParams"
 
 interface PremiosProps{
     id_produto:string,
@@ -82,7 +83,7 @@ return(
     <button type="button" onClick={() => setMenuIndex(2)} className={`inline-block p-2 border-blue-600  hover:border-b-[1px]  rounded-t-lg   hover:text-gray-300  `}>Consultar Ganhadores</button>
   </li>
   <li className="me-2">
-    <button type="button" onClick={() => setMenuIndex(3)} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Contas a Pagar/Receber</button>
+    <button type="button" onClick={() => setMenuIndex(3)} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Configurar Parâmetros</button>
   </li>
   <li className="me-2">
     <button type="button" onClick={() => setMenuIndex(4)} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Relatório Vendas</button>
@@ -92,6 +93,7 @@ return(
 
 {menuIndex===1 && (<CadastroPremio listarPremios={listarPremios} arrayPremios={arrayPremios}/>)}
 {menuIndex===2 && (<ConsultarGanhadores loading={loading} listarGanhadores={listarGanhadores} setarDataSorteio={setarDataSorteio} dataSorteio={dataSorteio} arrayGanhadores={arrayGanhadores}/>)}
+{menuIndex===3 && (<ConfigParams/>)}
 </div>
 
 )

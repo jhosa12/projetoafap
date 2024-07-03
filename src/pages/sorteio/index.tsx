@@ -14,7 +14,7 @@ import Image from 'next/image';
 interface DadosProps{
   id_contrato:number,
   associado:{nome:string,endereco:string,bairro:string,numero:number|null},
-  mensalidade:Array<{vencimento:Date|null}>
+  mensalidade:Array<{vencimento:Date}>
 }
 
 interface PremiosProps{
@@ -124,8 +124,8 @@ export default function Sorteios(){
       async function dadosContratos() {
         setLoading(true)
         const response = await api.get('/sorteio')
-       // const dadosArray:Array<DadosProps> = response.data.contratos
-       /* const contratosAtivos = dadosArray.map(item=>{
+       const dadosArray:Array<DadosProps> = response.data.contratos
+        const contratosAtivos = dadosArray.map(item=>{
           const count = item.mensalidade.reduce((acumulador,atual)=>{
            if(new Date(atual.vencimento)<new Date()){
               return acumulador+1
@@ -133,12 +133,12 @@ export default function Sorteios(){
             return acumulador
           },0)
           if(count<=1) return item.id_contrato
-        })*/
-       const contratosAtivos = lavras.map(item=>{return item.id_contrato})
+        })
+     //  const contratosAtivos = lavras.map(item=>{return item.id_contrato})
         const deferidos = contratosAtivos.filter(item=>item!=null)
        setArrayContratos(deferidos)
-     // setSorteio(response.data.contratos)
-     setSorteio(lavras)
+      setSorteio(response.data.contratos)
+    // setSorteio(lavras)
       setPremios(response.data.premios)
        setLoading(false)
     

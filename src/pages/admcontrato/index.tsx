@@ -27,6 +27,7 @@ import { canSRRAuth } from "@/utils/canSSRAuth";
 import Head from "next/head";
 import PrintButtonContrato from "@/Documents/contratoAdesão/PrintButton";
 import { TbWheelchair } from "react-icons/tb";
+import PrintButton from "@/Documents/carteiraAssociado/PrintButton";
 
 
 
@@ -1293,6 +1294,7 @@ export default function AdmContrato() {
                                 documentos && <div className="flex flex-col w-full rounded-lg p-6   gap-5">
                                     <div className="flex flex-row text-white gap-6 w-full">
                                         <PrintButtonContrato />
+                                        <PrintButton />
 
                                     </div>
 

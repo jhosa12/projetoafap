@@ -8,6 +8,7 @@ import { MdModeEditOutline } from "react-icons/md";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { IoSearch } from "react-icons/io5";
 import React from 'react';
+import PrintButton from "@/Documents/sorteados/PrintButton";
 interface GanhadoresProps{
     id_contrato:number,
     titular:string,
@@ -93,6 +94,7 @@ export default function ConsultarGanhadores({setarDataSorteio,dataSorteio,arrayG
               {!loading ? <button onClick={listarGanhadores} className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCAR<IoSearch size={18} /></button> :
                 <button className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCANDO..<AiOutlineLoading3Quarters size={20} className="animate-spin" /></button>
               }
+              <PrintButton winners={arrayGanhadores}/>
             </div>
        
              <ul className="flex flex-col w-full p-2 mt-1 gap-1 text-sm">
@@ -117,11 +119,11 @@ export default function ConsultarGanhadores({setarDataSorteio,dataSorteio,arrayG
                           <div className="flex w-full gap-8  items-center">
                           <span className="flex w-full font-semibold">{item.titular}º</span>
                             <span className="flex w-full font-semibold">{item.premio}</span>
-                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.endereco} Nº {item.numero}</span>
-                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.bairro}</span>
-                            <span className="flex w-full text-start whitespace-nowrap text-yellow-500 font-semibold">{item.status}</span>
-                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.data_sorteio && new Date(item.data_sorteio).toLocaleDateString()}</span>
-                            <div className="inline-flex w-full text-start justify-end whitespace-nowrap">
+                            <span className="flex w-full text-start  font-semibold">{item.endereco} Nº {item.numero}</span>
+                            <span className="flex w-full text-start  font-semibold">{item.bairro}</span>
+                            <span className="flex w-full text-start  text-yellow-500 font-semibold">{item.status}</span>
+                            <span className="flex w-full text-start  font-semibold">{item.data_sorteio && new Date(item.data_sorteio).toLocaleDateString()}</span>
+                            <div className="inline-flex w-full text-start justify-end">
                               <button onClick={() => { }} className="rounded-lg text-red-600 hover:bg-gray-300 p-1"><MdDelete size={18} /></button>
                               <button className="rounded-lg text-blue-500 hover:bg-gray-300 p-1"><MdModeEditOutline size={18} /></button>
                             
