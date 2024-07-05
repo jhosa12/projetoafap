@@ -2,7 +2,7 @@
 import DocumentTemplate from "@/Documents/carteiraAssociado/DocumentTemplate";
 import { useEffect, useRef, useState } from "react";
 import { IoPrint } from "react-icons/io5";
-import ReactToPrint,{useReactToPrint} from "react-to-print";
+import {useReactToPrint} from "react-to-print";
 
 interface DadosProps{
     dependentes:Array<DependentesProps>
@@ -25,27 +25,8 @@ interface DadosProps{
     dt_exclusao: Date,
     user_exclusao: string,
     exclusao_motivo: string,
-    convalescenca: {
-        convalescenca_prod: Partial<{
-            id_conv: number,
-            id_produto: number,
-            descricao: string,
-            unidade: string,
-            grupo: string,
-            data: Date,
-            data_dev: Date,
-            quantidade: number,
-            valor: number,
-            descontos: number,
-            total: number,
-            hora: Date,
-            cortesia: string,
-            retornavel: string,
-            status: string
-        }>,
-    }
+   
 }
-
 
 export default function CarteirasDep({dependentes,contrato,plano}:DadosProps){
     const [arrayPrint,setArrayPrint]=useState<Array<Partial<DependentesProps>>>([])
@@ -170,7 +151,7 @@ export default function CarteirasDep({dependentes,contrato,plano}:DadosProps){
                                       </table>
 
             </div>
-            <div className='text-white' style={{ display: 'none' }}>
+        
         <DocumentTemplate
           ref={componentRef}
           dependentes={arrayPrint}
@@ -178,7 +159,7 @@ export default function CarteirasDep({dependentes,contrato,plano}:DadosProps){
           contrato={contrato}
         
         />
-      </div>
+ 
 
 
         </div>

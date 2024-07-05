@@ -98,7 +98,7 @@ interface ConvProps {
     hora_inc: Date,
     usuario: string,
     obs: string,
-    convalescenca_prod: Partial<{
+    convalescenca_prod: Array<Partial<{
         id_conv: number,
         id_produto: number,
         descricao: string,
@@ -114,7 +114,7 @@ interface ConvProps {
         cortesia: string,
         retornavel: string,
         status: string
-    }>,
+    }>>,
     contrato: {
         situacao: string,
         carencia: string,
@@ -332,7 +332,7 @@ export default function AdmContrato() {
             setHistorico(true),
             setCarteira(false),
             setDocumentos(false)
-            
+
 
     }
     useEffect(() => {
@@ -579,9 +579,9 @@ export default function AdmContrato() {
 
                                     {dadosassociado?.contrato?.convalescencia?.map(item => (
                                         <>
-                                            {(!item.id_dependente || item.id_dependente === null) && item.status === 'ABERTO' && <button data-tooltip-id="my-tooltip" data-tooltip-content={item.convalescenca_prod?.descricao ?? ''} className="text-yellow-500">
+                                            {item.convalescenca_prod.map((dados, index) => (!item.id_dependente || item.id_dependente === null) && item.status === 'ABERTO' && <button data-tooltip-id="my-tooltip" data-tooltip-content={dados?.descricao ?? ''} className="text-yellow-500">
                                                 <TbWheelchair size={20} />
-                                            </button>}
+                                            </button>)}
                                         </>
                                     ))}
 
@@ -1236,9 +1236,12 @@ export default function AdmContrato() {
                                                                     }
                                                                 })
                                                         }} className="font-medium  text-blue-500 hover:underline">Edit</button>
-                                                        {item.convalescenca?.convalescenca_prod.status === 'ABERTO' && <button data-tooltip-id="id_dependente" data-tooltip-content={item.convalescenca.convalescenca_prod.descricao} className="text-yellow-500">
-                                                            <TbWheelchair size={19} />
-                                                        </button>}
+                                                        {item.convalescenca.convalescenca_prod.map((dados, index) => (
+                                                            dados?.status === 'ABERTO' && <button data-tooltip-id="id_dependente" data-tooltip-content={dados?.descricao} className="text-yellow-500">
+                                                                <TbWheelchair size={19} />
+                                                            </button>
+
+                                                        ))}
                                                     </td>
                                                 </tr>) : !checkDependente && !item.excluido ? (
                                                     <tr key={index} onClick={() => closeModa({ dependente: { id_dependente: item.id_dependente, nome: item.nome, excluido: item.excluido } })} className={`border-b ${new Date(item.carencia) > new Date() ? "text-yellow-500" : "text-white"} ${item.id_dependente === data.dependente?.id_dependente ? "bg-gray-600" : "bg-gray-800"} border-gray-700  hover:bg-gray-600`}>
@@ -1280,9 +1283,12 @@ export default function AdmContrato() {
                                                                         })
                                                                 }} className="font-medium  text-blue-500 hover:underline">Edit</button>
 
-                                                                {item.convalescenca?.convalescenca_prod?.status === 'ABERTO' && <button data-tooltip-id="id_dependente" data-tooltip-content={item.convalescenca.convalescenca_prod.descricao} className="text-yellow-500">
-                                                                    <TbWheelchair size={19} />
-                                                                </button>}
+                                                                {item.convalescenca.convalescenca_prod.map((dados, index) => (
+                                                                    dados?.status === 'ABERTO' && <button data-tooltip-id="id_dependente" data-tooltip-content={dados?.descricao} className="text-yellow-500">
+                                                                        <TbWheelchair size={19} />
+                                                                    </button>
+
+                                                                ))}
                                                             </div>
                                                         </td>
                                                     </tr>
