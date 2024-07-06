@@ -16,6 +16,7 @@ import { api } from "@/services/apiClient";
 import { RxDrawingPinFilled } from "react-icons/rx";
 import { GrConfigure } from "react-icons/gr";
 import { FaSortAlphaDown } from "react-icons/fa";
+import { RiUserReceived2Fill } from "react-icons/ri";
 
 export function MenuLateral(){
    const socket = io("https://apiafap.onrender.com");
@@ -142,6 +143,25 @@ async function contagem() {
       
     </ul>
 </li>
+
+<li >
+    <button type="button" className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsCaixaOpen(!isCaixaOpen)}>
+      <RiUserReceived2Fill  size={23}/>
+        <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Cobrança</span>
+        <FaAngleDown size={18}/>
+    </button>
+    <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isCaixaOpen && "hidden"}`}>
+        <li>
+            <Link href='/caixa' onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-16 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Movimentar</Link>
+        </li>
+        <li>
+            <a href="#" className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-16 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Relatórios</a>
+        </li>
+      
+    </ul>
+</li>
+
+
         <li>
             <Link href="/gerenciarAdministrativo" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Gerenciar</Link>
         </li>
