@@ -28,7 +28,7 @@ import Head from "next/head";
 import PrintButtonContrato from "@/Documents/contratoAdesão/PrintButton";
 import { TbWheelchair } from "react-icons/tb";
 import PrintButton from "@/Documents/carteiraAssociado/PrintButton";
-import CarteirasDep from "../../screens/admContrato/carteirasDep";
+import CarteirasDep from "../../components/admContrato/carteirasDep";
 
 
 
