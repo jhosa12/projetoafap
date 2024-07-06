@@ -151,14 +151,19 @@ export default function CarteirasDep({dependentes,contrato,plano}:DadosProps){
                                       </table>
 
             </div>
-        
-        <DocumentTemplate
+
+            <div className="hidden">
+            <DocumentTemplate
           ref={componentRef}
           dependentes={arrayPrint}
           plano={plano}
           contrato={contrato}
         
         />
+
+            </div>
+        
+    
  
 
 

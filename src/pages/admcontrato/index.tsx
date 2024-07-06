@@ -357,6 +357,7 @@ export default function AdmContrato() {
             setDependentes(false),
             setHistorico(true)
         setVerObs(false)
+        setCarteira(false)
 
 
 
@@ -1283,7 +1284,7 @@ export default function AdmContrato() {
                                                                         })
                                                                 }} className="font-medium  text-blue-500 hover:underline">Edit</button>
 
-                                                                {item.convalescenca.convalescenca_prod.map((dados, index) => (
+                                                                {item?.convalescenca?.convalescenca_prod?.map((dados, index) => (
                                                                     dados?.status === 'ABERTO' && <button data-tooltip-id="id_dependente" data-tooltip-content={dados?.descricao} className="text-yellow-500">
                                                                         <TbWheelchair size={19} />
                                                                     </button>
