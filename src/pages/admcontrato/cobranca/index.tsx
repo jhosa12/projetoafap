@@ -43,22 +43,44 @@ export default function Cobranca() {
     const [valorTotal,setValor] = useState<number>(0);
     const [arrayBairros,setArrayBairros] = useState<Array<Partial<{bairro:string,check:boolean}>>>([])
     const [todos,setTodos]= useState(true)
-    const [filtroBairros,setFiltroBairros] = useState<Array<string>>([])
     const [dataInicial,setDataInicial] = useState(new Date())
     const [dataFinal,setDataFinal] = useState(new Date())
     const [loading,setLoading]= useState(false)
+    const [reqListaBairros,setReq]= useState<boolean>() 
+    const [status,setStatus] = useState<Array<string>>()
 
 
     useEffect(()=>{
-        listarCobranca()
-        listarBairros()
+    
+      listarBairros()
+     
     },[])
+
+    useEffect(()=>{
+
+        listarCobranca()
+
+
+  
+    },[reqListaBairros])
     async function listarBairros() {
         const bairros = await api.get("/bairros");
         const bairrosProps:Array<Partial<{bairro:string,check:boolean}>> = bairros.data
         const checkBairros = bairrosProps.map(item=>{return {...item,check:true}})
         setArrayBairros(checkBairros)
+        setReq(true)
     }
+
+
+
+    const handleChangeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
+
+      const value = e.target.value;
+      // Converter o valor para um array de strings
+      const selectedValues = value.split(',');
+      setStatus(selectedValues);
+     
+    };
 
 
     function handleOptionChange(index:number){
@@ -84,12 +106,14 @@ export default function Cobranca() {
     },[todos])
 
     async function listarCobranca() {
-        try {
+     if(arrayBairros.length>0) {  try {
+      console.log('CHAMOU')
             setLoading(true)
             const response = await api.post("/cobranca/lista",{
                 dataInicial,
                 dataFinal,
-                status:[]
+                status:status,
+                bairros:arrayBairros.map(item=>{if(item.check){return item.bairro}}).filter(item=>item!=null)
             })
             const valor = response.data.cobranca.reduce((acumulador:number,item:CobrancaProps)=>{
                   return  acumulador+=Number(item.valor_principal)
@@ -101,7 +125,7 @@ export default function Cobranca() {
             setLoading(false)
         } catch (error) {
            toast.error('Erro na Requisição')
-        }
+        }}
         
     }
     return (
@@ -120,10 +144,10 @@ export default function Cobranca() {
           </div>
           <div className="flex flex-col w-2/6">
                   <label className="block mb-1 text-xs font-medium text-gray-900 dark:text-white">STATUS</label>
-                  <select defaultValue={''} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-xs  text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <option selected>ABERTO/REAGENDADO</option>
-                    <option selected>ABERTO</option>
-                    <option selected>REAGENDADO</option>
+                  <select defaultValue={''} onChange={handleChangeStatus} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-xs  text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <option value={['A','R']} selected>ABERTO/REAGENDADO</option>
+                    <option value={['A']} selected>ABERTO</option>
+                    <option value={['R']} selected>REAGENDADO</option>
                    
                   </select>
                 </div>
@@ -212,25 +236,25 @@ export default function Cobranca() {
         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
         <tr>
                 <th scope="col" className=" px-2 py-1 whitespace-nowrap">
-                    Nº LANC.
-                </th>
-                <th scope="col" className="px-8 py-1">
-                    DATA
+                   REF.
                 </th>
                 <th scope="col" className="px-5 py-1">
-                    CONTA
+                    VENCIMENTO
                 </th>
                 <th scope="col" className="px-5 py-1">
-                    C.CUSTOS
+                    COBRANÇA
                 </th>
                 <th scope="col" className="px-5 py-1">
-                    DOCUMENTO
+                    TITULAR
+                </th>
+                <th scope="col" className="px-5 py-1">
+                    ENDEREÇO
                 </th> 
                 <th scope="col" className="px-5 py-1">
-                    HISTÓRICO
+                    BAIRRO
                 </th> 
                 <th scope="col" className="px-5 py-1">
-                    TIPO
+                    STATUS
                 </th>
                 <th scope="col" className="px-5 py-1">
                     VALOR
@@ -246,28 +270,28 @@ export default function Cobranca() {
             {arrayCobranca.map((item,index)=>(
             <tr key={item.id_mensalidade} className="border-b border-gray-500">
             <th scope="row"  className="px-2 py-1 font-medium  whitespace-nowrap">
-                   {item.id_mensalidade}
+                   {item.referencia}
             </th>
             <td data-tooltip-id="tooltip-hora" data-tooltip-place="bottom" className="px-6 py-1">
             {item.vencimento && new Date(item.vencimento).toLocaleDateString('pt-BR',{timeZone: 'UTC'})}
             </td>
-            <td className="px-5 py-1 ">
+            <td className="px-5 py-1  ">
             {item.cobranca && new Date(item.cobranca).toLocaleDateString('pt-BR',{timeZone:'UTC'})}
            
             </td>
-            <td className="px-5 py-1 whitespace-nowrap ">
-            {item.associado?.nome}
+            <td className="px-5 py-1 w-full whitespace-nowrap ">
+            {item.id_contrato}-{item.associado?.nome}
             </td>
-            <td className="px-5 py-1 whitespace-nowrap ">
-               {item.associado?.endereco}
+            <td className="px-5 py-1 w-full whitespace-nowrap ">
+               {item.associado?.endereco}{item.associado?.numero?"-Nº"+item.associado?.numero:''}
             </td>
             <td className=" px-5 py-1 w-full whitespace-nowrap">
                {item.associado?.bairro}
             </td>
-            <td className={`px-5 py-1  font-semibold ${item.status==='A'?"text-green-600":'text-red-600'} `}>
+            <td className={`px-5 py-1 w-full font-semibold ${item.status==='A'?"text-green-600":'text-red-600'} `}>
                {item.status}
             </td>
-            <td className="px-5 py-1 ">
+            <td className="px-5 py-1 w-full ">
                R${item.valor_principal}
             </td>
            
