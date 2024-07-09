@@ -170,8 +170,8 @@ export default function Cobranca() {
 
           />
           </div> 
-            <div className="flex flex-col w-full border  rounded-lg shadow  border-gray-700 ">
-                <div className="text-gray-300 bg-gray-800 rounded-t-lg inline-flex items-center p-2 justify-between">
+            <div className="flex flex-col w-full border  rounded-lg shadow  border-gray-700 max-h-[calc(100vh-100px)] ">
+                <div className="text-gray-300 bg-gray-800 rounded-t-lg inline-flex items-center p-2 justify-between   ">
                     <h1 className=" text-lg  pl-3 font-medium">Relatórios de Cobrança</h1>
                     <div id="divFiltro" className="inline-flex gap-4">
                     <div>
@@ -273,9 +273,9 @@ export default function Cobranca() {
            
                     </div>
 
-                    <div className="p-2  ">
+                    <div className="p-2 ">
         <table 
-     className="block max-h-[calc(100vh-155px)] overflow-y-auto overflow-x-auto text-xs text-left rtl:text-center border-collapse rounded-lg text-gray-400">
+     className="block max-h-[calc(100vh-180px)] overflow-y-auto overflow-x-auto text-xs text-left rtl:text-center border-collapse rounded-lg text-gray-400">
         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
         <tr>
                 <th scope="col" className=" px-2 py-1 whitespace-nowrap">
