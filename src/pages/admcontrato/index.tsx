@@ -852,7 +852,7 @@ export default function AdmContrato() {
                                                                         <td className="px-2 py-1">{/* Renderizar algo aqui */}</td>
                                                                         <td className="px-2 py-1">ACORDO</td>
                                                                         <td className="px-2 py-1">VALOR:R${i.total_acordo}</td>
-                                                                        <td className="px-2 py-1">VENC.:{new Date(i.data_fim).toLocaleDateString()}</td>
+                                                                        <td className="px-2 py-1">VENC.:{new Date(i.data_fim).toLocaleDateString('pt',{timeZone:'UTC'})}</td>
                                                                         <td className="px-2 py-1">RESP.:{i.realizado_por}</td>
                                                                         <td className="px-2 py-1">Método:{i.metodo}</td>
                                                                         <td className="px-2 py-1">{i.status}</td>
@@ -894,14 +894,14 @@ export default function AdmContrato() {
                                                                                 {ii.parcela_n}
                                                                             </th>
                                                                             <td className={`px-2 py-1 `}>
-                                                                                {ii.vencimento && new Date(ii.vencimento).toLocaleDateString()}
+                                                                                {ii.vencimento && new Date(ii.vencimento).toLocaleDateString('pt',{timeZone:'UTC'})}
 
                                                                             </td>
                                                                             <td className="px-2 py-1">
                                                                                 {ii.referencia}
                                                                             </td>
                                                                             <td className="px-5 py-1">
-                                                                                {ii.cobranca && new Date(ii.cobranca).toLocaleDateString()}
+                                                                                {ii.cobranca && new Date(ii.cobranca).toLocaleDateString('pt',{timeZone:'UTC'})}
                                                                             </td>
                                                                             <td className="px-3 py-1">
                                                                                 {`R$${ii.valor_principal}`}
@@ -910,10 +910,10 @@ export default function AdmContrato() {
                                                                                 {ii.status}
                                                                             </td>
                                                                             <td className="px-4 py-1">
-                                                                                {ii.data_pgto ? new Date(ii.data_pgto).toLocaleDateString() : ''}
+                                                                                {ii.data_pgto ? new Date(ii.data_pgto).toLocaleDateString('pt',{timeZone:'UTC'}) : ''}
                                                                             </td>
                                                                             <td className="px-4 py-1">
-                                                                                {ii.data_pgto ? new Date(ii.data_pgto).toLocaleTimeString() : ''}
+                                                                                {ii.data_pgto ? new Date(ii.data_pgto).toLocaleTimeString('pt',{timeZone:'UTC'}) : ''}
                                                                             </td>
                                                                             <td className="px-6 py-1">
                                                                                 {ii.usuario}
@@ -952,14 +952,14 @@ export default function AdmContrato() {
                                                                     {item.parcela_n}
                                                                 </th>
                                                                 <td className={`px-2 py-1 `}>
-                                                                    {new Date(item.vencimento).toLocaleDateString()}
+                                                                    {new Date(item.vencimento).toLocaleDateString('pt',{timeZone:'UTC'})}
 
                                                                 </td>
                                                                 <td className="px-2 py-1">
                                                                     {item.referencia}
                                                                 </td>
                                                                 <td className="px-5 py-1">
-                                                                    {new Date(item.cobranca).toLocaleDateString()}
+                                                                    {new Date(item.cobranca).toLocaleDateString('pt',{timeZone:'UTC'})}
                                                                 </td>
                                                                 <td className="px-3 py-1">
                                                                     {`R$${item.valor_principal}`}
@@ -968,10 +968,10 @@ export default function AdmContrato() {
                                                                     {item.status}
                                                                 </td>
                                                                 <td className="px-4 py-1">
-                                                                    {item.data_pgto ? new Date(item.data_pgto).toLocaleDateString() : ''}
+                                                                    {item.data_pgto ? new Date(item.data_pgto).toLocaleDateString('pt',{timeZone:'UTC'}) : ''}
                                                                 </td>
                                                                 <td className="px-4 py-1">
-                                                                    {item.data_pgto ? new Date(item.data_pgto).toLocaleTimeString() : ''}
+                                                                    {item.data_pgto ? new Date(item.data_pgto).toLocaleTimeString('pt',{timeZone:'UTC'}) : ''}
                                                                 </td>
                                                                 <td className="px-6 py-1">
                                                                     {item.usuario}
@@ -1023,14 +1023,14 @@ export default function AdmContrato() {
                                                                     {item.parcela_n}
                                                                 </th>
                                                                 <td className="px-2 py-1">
-                                                                    {new Date(item.vencimento).toLocaleDateString()}
+                                                                    {new Date(item.vencimento).toLocaleDateString('pt',{timeZone:'UTC'})}
 
                                                                 </td>
                                                                 <td className="px-2 py-1">
                                                                     {item.referencia}
                                                                 </td>
                                                                 <td className="px-5 py-1">
-                                                                    {new Date(item.cobranca).toLocaleDateString()}
+                                                                    {new Date(item.cobranca).toLocaleDateString('pt',{timeZone:'UTC'})}
                                                                 </td>
                                                                 <td className="px-3 py-1">
                                                                     {`R$${item.valor_principal}`}
@@ -1039,7 +1039,7 @@ export default function AdmContrato() {
                                                                     {item.status}
                                                                 </td>
                                                                 <td className="px-4 py-1">
-                                                                    {item.data_pgto ? new Date(item.data_pgto).toLocaleDateString() : ''}
+                                                                    {item.data_pgto ? new Date(item.data_pgto).toLocaleDateString('pt',{timeZone:'UTC'}) : ''}
                                                                 </td>
                                                                 <td className="px-4 py-1">
                                                                     {item.data_pgto ? new Date(item.data_pgto).toLocaleTimeString() : ''}

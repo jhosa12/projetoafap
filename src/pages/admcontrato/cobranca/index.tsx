@@ -1,5 +1,5 @@
 import { api } from "@/services/apiClient";
-import { useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
@@ -10,6 +10,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import Relatorio from '@/Documents/relatorioCobranca/DocumentTemplate';
 import {useReactToPrint} from "react-to-print";
 import { IoPrint } from "react-icons/io5";
+import { AuthContext } from "@/contexts/AuthContext";
 
 interface CobrancaProps{
     id_mensalidade:number,
@@ -28,7 +29,10 @@ interface CobrancaProps{
         numero:string,
         cidade:string,
         uf:string,
-        guia_rua:string
+        guia_rua:string,
+        telefone:string,
+        celular1:string,
+        celular2:string
 
     }
     
@@ -36,6 +40,10 @@ interface CobrancaProps{
 interface CobradorProps{
     id_consultor:number,
     nome:string
+}
+interface UltimosPagProsps{
+  id_contrato:number,
+  _max:{data_pgto:Date}
 }
 
 let formatter = new Intl.NumberFormat('pt-BR', {
@@ -57,6 +65,8 @@ export default function Cobranca() {
     const [reqListaBairros,setReq]= useState<boolean>() 
     const [status,setStatus] = useState<Array<string>>(['A','R'])
     const componenteRef = useRef<Relatorio>(null)
+    const {usuario} = useContext(AuthContext)
+    const [ultimosPag,setUltimosPag] = useState<Array<UltimosPagProsps>>([])
 
 
     const imprimirRelatorio = useReactToPrint({
@@ -132,11 +142,12 @@ export default function Cobranca() {
             const valor = response.data.cobranca.reduce((acumulador:number,item:CobrancaProps)=>{
                   return  acumulador+=Number(item.valor_principal)
             },0)
-            
+            console.log(response.data)
             setArrayCobranca(response.data.cobranca)
             setSelectCobrador(response.data.cobrador)
             setValor(valor)
             setLoading(false)
+            setUltimosPag(response.data.ultimosPag)
         } catch (error) {
            toast.error('Erro na Requisição')
         }}
@@ -145,7 +156,19 @@ export default function Cobranca() {
     return (
         <div className="flex  w-full justify-center p-4">
         <div style={{display:'none'}}>
-        <Relatorio ref={componenteRef} arrayCobranca={arrayCobranca} />
+        <Relatorio 
+        ref={componenteRef}
+         arrayCobranca={arrayCobranca}
+         bairros={arrayBairros}
+         cobrador={[]}
+         dataFinal={dataFinal}
+         dataInicial={dataInicial}
+         ultimosPag={ultimosPag}
+         status={status}
+         todos={todos}
+         usuario={usuario?.nome??''}
+
+          />
           </div> 
             <div className="flex flex-col w-full border  rounded-lg shadow  border-gray-700 ">
                 <div className="text-gray-300 bg-gray-800 rounded-t-lg inline-flex items-center p-2 justify-between">
