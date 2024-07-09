@@ -1,12 +1,15 @@
-import { api } from "@/services/apiClient"
-import { useEffect, useState } from "react"
-import DatePicker,{registerLocale} from "react-datepicker";
+import { api } from "@/services/apiClient";
+import { useEffect, useRef, useState } from "react"
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { IoIosArrowDown } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import Relatorio from '@/Documents/relatorioCobranca/DocumentTemplate';
+import {useReactToPrint} from "react-to-print";
+import { IoPrint } from "react-icons/io5";
 
 interface CobrancaProps{
     id_mensalidade:number,
@@ -35,6 +38,11 @@ interface CobradorProps{
     nome:string
 }
 
+let formatter = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL'
+});
+
 export default function Cobranca() {
     const [arrayCobranca,setArrayCobranca] = useState<Array<Partial<CobrancaProps>>>([]);
     const [selectCobrador,setSelectCobrador] = useState<Array<CobradorProps>>([]);
@@ -47,7 +55,13 @@ export default function Cobranca() {
     const [dataFinal,setDataFinal] = useState(new Date())
     const [loading,setLoading]= useState(false)
     const [reqListaBairros,setReq]= useState<boolean>() 
-    const [status,setStatus] = useState<Array<string>>()
+    const [status,setStatus] = useState<Array<string>>(['A','R'])
+    const componenteRef = useRef<Relatorio>(null)
+
+
+    const imprimirRelatorio = useReactToPrint({
+      content:()=>componenteRef.current
+    })
 
 
     useEffect(()=>{
@@ -130,6 +144,9 @@ export default function Cobranca() {
     }
     return (
         <div className="flex  w-full justify-center p-4">
+        <div style={{display:'none'}}>
+        <Relatorio ref={componenteRef} arrayCobranca={arrayCobranca} />
+          </div> 
             <div className="flex flex-col w-full border  rounded-lg shadow  border-gray-700 ">
                 <div className="text-gray-300 bg-gray-800 rounded-t-lg inline-flex items-center p-2 justify-between">
                     <h1 className=" text-lg  pl-3 font-medium">Relatórios de Cobrança</h1>
@@ -215,9 +232,12 @@ export default function Cobranca() {
 
 
               </div>
-                  <div className="flex   items-end ">
+                  <div className="flex   items-end gap-2">
                   <button disabled={loading} onClick={listarCobranca} className="inline-flex text-sm bg-blue-600 p-1 rounded-lg items-center" >{!loading?<span className="inline-flex items-center"><IoSearch/>BUSCAR</span>:<span className="inline-flex items-center gap-1"><AiOutlineLoading3Quarters size={20} className="animate-spin"/>CARREGANDO...</span>}</button>
-
+                    <button
+                     onClick={()=>imprimirRelatorio()} 
+                     className="inline-flex justify-center items-center text-sm font-medium bg-white text-black p-1 rounded-lg"
+                      ><IoPrint  size={18}/>IMPRIMIR</button>
                   </div>
             
 
@@ -292,7 +312,7 @@ export default function Cobranca() {
                {item.status}
             </td>
             <td className="px-5 py-1 w-full ">
-               R${item.valor_principal}
+               {item.valor_principal && formatter.format(item.valor_principal)}
             </td>
            
             
@@ -311,7 +331,7 @@ export default function Cobranca() {
             <tr>
                 <td colSpan={5} align="right"    className="text-white  font-semibold">TOTAL MENSALIDADES: {arrayCobranca.length}</td>
 
-                <td  align="right"    className="text-white  font-semibold">VALOR: R${valorTotal}</td>
+                <td  align="right"    className="text-white  font-semibold">VALOR: {formatter.format(valorTotal)}</td>
                
                 
             </tr>
