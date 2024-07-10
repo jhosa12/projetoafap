@@ -76,10 +76,10 @@ export function ModalLancamentosCaixa({closeModal,planos,listarLancamentos,grupo
 
      async function lancarMovimentacao() {
 
-        if(!descricao||!idSetor||!historico){
-            toast.warn('Preencha todos os campos obrigatórios')
-            return;
-        }
+      //  if(!descricao||!idSetor||!historico){
+        //    toast.warn('Preencha todos os campos obrigatórios')
+        //    return;
+     //   }
 
         if(descricao==='SANGRIA'){
             await toast.promise(

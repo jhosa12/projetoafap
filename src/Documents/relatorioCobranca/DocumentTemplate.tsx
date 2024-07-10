@@ -115,21 +115,27 @@ class DocumentTemplate extends React.Component<DadosProps> {
   
        
         <ul className="list-item px-2 mx-3 ">
-          {novoArray.map((item,index)=>(
+          {novoArray.map((item)=>{
+            const arrayRef = item.referencia?.split('-')
+            const tamanho = arrayRef?.length
+return(
+  <li key={item.id_mensalidade} className="flex flex-col p-2 gap-1 mx-2 border-b-[1px] text-xs border-black">
+  <span className="inline-flex">{item.id_contrato}-{item.associado?.nome}-END.: {item.associado?.endereco}-Nº{item.associado?.numero}-BAIRRO: {item.associado?.bairro} -  COMPL.: {item.associado?.guia_rua}</span>
+  <span className="block">REFERENCIA: {arrayRef && `${arrayRef[0]} até ${tamanho && arrayRef[tamanho-1]}`} - <b className="whitespace-nowrap">TOT.: {formatter.format(item.valor_principal??0)}</b></span>
+  {item.associado?.celular1&&<span>CELULAR: {item.associado?.celular1}  NUMERO ATUAL: {'(___)__ _____-_____'}</span>}
 
-            <li key={item.id_mensalidade} className="flex flex-col p-2 mx-2 border-b-[1px] text-xs border-black">
-              <span className="inline-flex">{item.id_contrato}-{item.associado?.nome}-END.: {item.associado?.endereco}-Nº{item.associado?.numero}-BAIRRO: {item.associado?.bairro} -  COMPL.: {item.associado?.guia_rua}</span>
-              <span className="block">REFERENCIA: {item.referencia} - <b className="whitespace-nowrap">TOT.: {formatter.format(item.valor_principal??0)}</b></span>
-              {item.associado?.celular1&&<span>CELULAR: {item.associado?.celular1}</span>}
+ <span className="inline-flex w-full">{item.ultimoPag && 
+  <span className="whitespace-nowrap">ULTIMO PAGAMENTO: {new Date(item.ultimoPag?._max.data_pgto).toLocaleDateString('pt',{timeZone:'UTC'})}</span>} <span className="flex w-full justify-end">NOVA DATA: 
+  ___/___/______</span></span> 
+  <span className="flex pt-2">OBSERVAÇÃO:_____________________________________________________________________________________________________________</span>
+  
+  </li>
 
-             <span className="inline-flex w-full">{item.ultimoPag && 
-              <span className="whitespace-nowrap">ULTIMO PAGAMENTO: {new Date(item.ultimoPag?._max.data_pgto).toLocaleDateString('pt',{timeZone:'UTC'})}</span>} <span className="flex w-full justify-end">NOVA DATA: 
-              ___/___/______</span></span> 
-              
-              </li>
-        
 
-          ))}
+)
+           
+
+  })}
       
 
         </ul>

@@ -244,8 +244,18 @@ export default function AdmContrato() {
     const [mensalidadeComGrupoE, setMensalidaGrupo] = useState<Array<MensalidadeProps>>([]);
     const [carteira, setCarteira] = useState(false)
     const [obitos, setObitos] = useState(false)
+    const [openModalAcordo,setModalAcordo]= useState({open:false,visible:false})
 
+        const setarModalAcordo = (fields:{open:boolean,visible:boolean})=>{
+            setModalAcordo((prev:{open:boolean,visible:boolean})=>{
+                if(prev){
+                    return {...prev,...fields}
+                }else{
+                    return {...fields}
+                }
 
+            })
+        }
 
     let currentAcordoId: string;
 
@@ -522,11 +532,38 @@ export default function AdmContrato() {
             </Head>
             <div className="flex flex-col w-full mr-2  justify-center">
                 {data.closeModalPlano && (<ModalBusca />)}
-                {data.closeModalCadastro && (<Teste />)}
+                {data.closeModalCadastro && (<Teste titular={{
+                    name:dadosassociado?.nome,
+                    bairro:dadosassociado?.bairro,
+                    celular1:dadosassociado?.celular1,
+                    celular2:dadosassociado?.celular2,
+                    cep:dadosassociado?.cep,
+                    cidade:dadosassociado?.cidade,
+                    cpf:dadosassociado?.cpf,
+                    email:dadosassociado?.email,
+                    endereco:dadosassociado?.endereco,
+                    nasc:dadosassociado?.data_nasc,
+                    numero:dadosassociado?.numero,
+                    referencia:dadosassociado?.guia_rua,
+                    rg:dadosassociado?.rg,
+                    sexo:dadosassociado?.sexo,
+                    telefone:dadosassociado?.telefone,
+                    uf:dadosassociado?.uf,
+                    cidades:data.cidades
+                }}/>)}
                 {data.mensalidade?.close && (<ModalMensalidade />)}
                 {data.dependente?.close && <ModalDependentes />}
                 {data.closeEditarAssociado && <ModalEditarDados openEdit={openEdit} />}
-                {data.acordo?.closeAcordo && (<ModalAcordos />)}
+                {openModalAcordo.open && (<ModalAcordos
+                 acordo={data?.acordo??{}} 
+                 contrato={dadosassociado?.contrato.id_contrato??0}
+                  mensalidade={dadosassociado?.mensalidade??[]}
+                   usuario={{nome:usuario?.nome??'',id:Number(usuario?.id)}}
+                   closeModal={setarModalAcordo}
+                   associado={dadosassociado?.id_associado??0}
+                   carregarDados={carregarDados}
+                   openModal={openModalAcordo}
+                     />)}
 
                 <div className="flex  flex-col p-4  ">
                     <div className="flex  flex-row justify-start gap-2 items-center w-full mt-2 pb-1">
@@ -753,7 +790,7 @@ export default function AdmContrato() {
                                                 <RiAddCircleFill size={20} />
                                                 Adicionar
                                             </button>
-                                            <button type="button" onClick={() => closeModa({ acordo: { ...data.acordo, closeAcordo: true, visibilidade: false } })} className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+                                            <button type="button" onClick={() => setarModalAcordo({open:true,visible:true})} className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
                                                 <FaHandshake size={20} />
                                                 Acordo
                                             </button>
@@ -786,7 +823,7 @@ export default function AdmContrato() {
                                         </div>
 
                                     </div>
-
+                                <div className="flex w-full p-4 max-h-[calc(100vh-255px)]">
                                     <table
                                         className="block  overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse rounded-lg text-gray-400">
                                         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
@@ -864,7 +901,7 @@ export default function AdmContrato() {
                                                                         {/* Renderizar mais colunas se necessário */}
                                                                         <td className="px-2 py-1">
                                                                             <button onClick={(event) => {
-                                                                                console.log(i.mensalidade)
+                                                                                
                                                                                 event.stopPropagation()
 
                                                                                 closeModa({
@@ -882,6 +919,7 @@ export default function AdmContrato() {
                                                                                         closeAcordo: true,
                                                                                     }
                                                                                 })
+                                                                                setarModalAcordo({open:true,visible:false})
 
                                                                             }} className={`font-medium hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>
                                                                                 Baixar/Editar
@@ -1092,6 +1130,7 @@ export default function AdmContrato() {
                                         </tbody>
 
                                     </table>
+                                    </div>
                                 </div>
                             )}
                             {dependentes && (<div className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)]  max-w-[calc(100vw-350px)]  p-4 shadow-md sm:rounded-lg">

@@ -92,10 +92,10 @@ try{
             toast.warn("Realize a etapa de autenticação!")
             return;
         }
-        if(!descricao || !valor || !datalanc){
-            toast.warn("Preencha todos os campos!")
-            return;
-        }
+       // if(!descricao || !valor || !datalanc){
+         //   toast.warn("Preencha todos os campos!")
+         //   return;
+     //   }
         await toast.promise(
             api.post('/novoLancamento',{
             id_usuario:Number(usuario?.id),
