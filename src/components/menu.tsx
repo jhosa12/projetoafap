@@ -17,6 +17,7 @@ import { RxDrawingPinFilled } from "react-icons/rx";
 import { GrConfigure } from "react-icons/gr";
 import { FaSortAlphaDown } from "react-icons/fa";
 import { RiUserReceived2Fill } from "react-icons/ri";
+import { BsInboxesFill } from "react-icons/bs";
 
 export function MenuLateral(){
    const socket = io("https://apiafap.onrender.com");
@@ -28,6 +29,7 @@ export function MenuLateral(){
     const [isComercialOpen,setIsComercialOpen] = useState(false)
     const [isSorteioOpen,setIsSorteio] =useState(false)
     const[notifyCount,setCount] = useState<number>();
+    const [isEstoqueOpen,setEstoque] = useState(false)
     
  
   useEffect(() => {
@@ -182,6 +184,29 @@ async function contagem() {
                <span className="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium rounded-full bg-blue-900 text-blue-300">3</span>
             </Link>
          </li>
+
+         <li >
+    <button type="button" className="flex items-center w-full p-2 text-base  transition duration-75 rounded-lg group  text-white hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setEstoque(!isEstoqueOpen)}>
+    <BsInboxesFill size={25}/>
+        <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Estoque</span>
+            <FaAngleDown size={18}/>
+    </button>
+    <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isEstoqueOpen && "hidden"}`}>
+        <li>
+            <Link href="/estoque/estoqueConvalescente" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 transition duration-75 rounded-lg pl-11 group  text-white hover:bg-gray-700">Estoque Convalescente</Link>
+        </li>
+        <li>
+            <Link href="/estoque/estoqueConsumo" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 transition duration-75 rounded-lg pl-11 group  text-white hover:bg-gray-700">Estoque de Consumo</Link>
+        </li>
+        
+     
+    </ul>
+</li>
+
+
+
+
+
          <li >
     <button type="button" className="flex items-center w-full p-2 text-base transition duration-75 rounded-lg group text-white hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsServicosOpen(!isServicosOpen)}>
       <FaMoneyBillTransfer  size={23}/>

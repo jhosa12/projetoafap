@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { TbAlertTriangle } from "react-icons/tb";
 import { IoMdCheckmarkCircle } from "react-icons/io";
 import { MdAdd } from "react-icons/md";
-
+import ReactPaginate from 'react-paginate';
 import { Tooltip } from 'react-tooltip';
 import Link from "next/link";
 import PrintButtonComprovante from "@/Documents/convalescenca/comprovante/PrintButton";
@@ -84,6 +84,19 @@ export default function Convalescente() {
     const [aberto, setAberto] = useState(true)
     const [entregue, setEntregue] = useState(true)
     const [pendente, setPendente] = useState(true)
+    const [currentPage,setCurrentPage] = useState(0);
+    const itemsPerPage = 16;
+
+
+    const handlePageClick = (selectdItem:{selected:number})=>{
+        setCurrentPage(selectdItem.selected)
+    }
+
+    const offset = currentPage*itemsPerPage;
+    const currentItems = arrayFiltro.slice(offset,offset+itemsPerPage);
+    const pageCount = Math.ceil(arrayFiltro.length/itemsPerPage);
+
+
 
 
     useEffect(() => {
@@ -196,6 +209,8 @@ export default function Convalescente() {
             else if (aberto && entregue && !pendente) {
                 novoArray = arrayConv.filter(item => item.convalescenca_prod.some(dado => dado.status === 'FECHADO' || dado.status === 'ABERTO'))
             }
+
+          
             novoArray && setFiltro(novoArray)
 
         }
@@ -324,7 +339,7 @@ export default function Convalescente() {
                 </div>)}
             </div>
 
-            <div className="flex w-full justify-center p-1 max-h-[calc(100vh-150px)]">{/*DIV DA TABELA*/}
+            <div className="flex flex-col w-full justify-center p-1 max-h-[calc(100vh-150px)]">{/*DIV DA TABELA*/}
                 <table
                     className="block overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
                     <thead className="sticky  top-0 text-sm  uppercase bg-gray-700 text-gray-400">
@@ -351,17 +366,17 @@ export default function Convalescente() {
                         </tr>
                     </thead>
                     <tbody>
-                        {arrayFiltro?.map((item, index) => {
+                        {currentItems?.map((item, index) => {
                             return (
 
                                 <tr key={index} className={`border-b  border-gray-700 "bg-gray-600":"bg-gray-800"} hover:bg-gray-600`}>
                                     <td className="px-4 py-1">
                                         {item.id_contrato}
                                     </td>
-                                    <td className="px-8 py-1">
+                                    <td className="px-8 py-1 w-full whitespace-nowrap">
                                         {item.contrato?.associado.nome}
                                     </td>
-                                    <td className="px-8 py-1">
+                                    <td className="px-8 py-1 w-full whitespace-nowrap">
                                         {item.nome}
                                     </td>
 
@@ -401,7 +416,43 @@ export default function Convalescente() {
 
 
                 </table>
+                        <ReactPaginate
+                        previousLabel={'Anterior'}
+                        nextLabel={'Próximo'}
+                        breakLabel={'...'}
+                        breakClassName="breack-me"
+                        pageCount={pageCount}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={5}
+                        onPageChange={handlePageClick}
+                        containerClassName={'pagination inline-flex text-gray-400 gap-4 ml-auto justify-end font-semibold p-1 rounded-lg border-[1px] border-gray-300 '}
+                        activeClassName={'active text-blue-600'}
+                        
+                        />
 
+<style jsx>{`
+        .pagination {
+          display: flex;
+          justify-content: center;
+          list-style: none;
+          padding: 0;
+        }
+
+        .pagination li {
+          margin: 0 5px;
+          cursor: pointer;
+        }
+
+        .pagination li a {
+          text-decoration: none;
+          color: #0070f3;
+        }
+
+        .pagination li.active a {
+          font-weight: bold;
+          color: #fff;
+        }
+      `}</style>
 
 
             </div>
