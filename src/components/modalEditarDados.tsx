@@ -55,7 +55,7 @@ export function ModalEditarDados({ openEdit }: { openEdit: number }) {
     const response = await toast.promise(
       api.put('/contrato/inativar',
         {
-          id_contrato: dadosassociado?.contrato.id_contrato,
+          id_contrato: dadosassociado?.contrato?.id_contrato,
           motivo_inativo: st === 'INATIVO' ? data.contrato?.motivo_inativo : undefined,
           categoria_inativo: st === 'INATIVO' ? data.contrato?.categoria_inativo : undefined,
           dt_cancelamento: st === 'INATIVO' ? new Date() : undefined,
@@ -89,18 +89,18 @@ export function ModalEditarDados({ openEdit }: { openEdit: number }) {
       email: dadosassociado?.email,
       id_associado: dadosassociado?.id_associado,
       contrato: {
-        id_contrato: dadosassociado?.contrato.id_contrato,
-        cobrador: dadosassociado?.contrato.cobrador,
-        consultor: dadosassociado?.contrato.consultor,
-        data_vencimento: dadosassociado?.contrato.data_vencimento,
-        dt_adesao: dadosassociado?.contrato.dt_adesao,
-        dt_carencia: dadosassociado?.contrato.dt_carencia,
-        id_plano: dadosassociado?.contrato.id_plano,
-        origem: dadosassociado?.contrato.origem,
-        plano: dadosassociado?.contrato.plano,
-        situacao: dadosassociado?.contrato.situacao,
-        supervisor: dadosassociado?.contrato.supervisor,
-        valor_mensalidade: dadosassociado?.contrato.valor_mensalidade
+        id_contrato: dadosassociado?.contrato?.id_contrato,
+        cobrador: dadosassociado?.contrato?.cobrador,
+        consultor: dadosassociado?.contrato?.consultor,
+        data_vencimento: dadosassociado?.contrato?.data_vencimento,
+        dt_adesao: dadosassociado?.contrato?.dt_adesao,
+        dt_carencia: dadosassociado?.contrato?.dt_carencia,
+        id_plano: dadosassociado?.contrato?.id_plano,
+        origem: dadosassociado?.contrato?.origem,
+        plano: dadosassociado?.contrato?.plano,
+        situacao: dadosassociado?.contrato?.situacao,
+        supervisor: dadosassociado?.contrato?.supervisor,
+        valor_mensalidade: dadosassociado?.contrato?.valor_mensalidade
       },
 
       numero: dadosassociado?.numero,
@@ -263,7 +263,7 @@ export function ModalEditarDados({ openEdit }: { openEdit: number }) {
             {situacao ? (<div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
               <div className="flex items-center justify-center p-2 w-full h-full">
                 <div className="relative rounded-lg border-solid border-[1px] border-red-500 shadow bg-gray-800">
-                  <button type="button" onClick={() => { setSituaçao(!situacao), closeModa({ contrato: { ...(data.contrato), situacao: dadosassociado?.contrato.situacao } }) }} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                  <button type="button" onClick={() => { setSituaçao(!situacao), closeModa({ contrato: { ...(data.contrato), situacao: dadosassociado?.contrato?.situacao } }) }} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
                     <button type="button" onClick={() => closeModa({ closeModalPlano: false })} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
                       <IoIosClose size={30} />
                     </button>
@@ -300,7 +300,7 @@ export function ModalEditarDados({ openEdit }: { openEdit: number }) {
 
                       Sim, tenho certeza
                     </button>
-                    <button onClick={() => { setSituaçao(!situacao), closeModa({ contrato: { ...(data.contrato), situacao: dadosassociado?.contrato.situacao } }) }} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
+                    <button onClick={() => { setSituaçao(!situacao), closeModa({ contrato: { ...(data.contrato), situacao: dadosassociado?.contrato?.situacao } }) }} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
                   </div>
                 </div>
               </div>

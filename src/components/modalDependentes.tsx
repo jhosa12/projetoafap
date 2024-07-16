@@ -16,7 +16,7 @@ export function ModalDependentes(){
  async function addDependente(){
     const response = await toast.promise(
         api.post('/novoDependente',{
-            id_contrato:dadosassociado?.contrato.id_contrato,
+            id_contrato:dadosassociado?.contrato?.id_contrato,
             id_associado:dadosassociado?.id_associado,
             nome:data.dependente?.nome,
             data_nasc:data.dependente?.data_nasc,
