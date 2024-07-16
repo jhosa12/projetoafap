@@ -317,7 +317,7 @@ export default function AdmContrato() {
         try {
             const response = await toast.promise(
                 api.put('/atualizarObservacao', {
-                    id_contrato: dadosassociado?.contrato.id_contrato,
+                    id_contrato: dadosassociado?.contrato?.id_contrato,
                     anotacoes: data.contrato?.anotacoes?.toUpperCase()
                 }),
                 {
@@ -453,7 +453,7 @@ export default function AdmContrato() {
         }
     }
     async function adicionarMensalidade() {
-        const ultimaMensalidade = dadosassociado?.mensalidade[dadosassociado.mensalidade?.length - 1]
+        const ultimaMensalidade =dadosassociado?.mensalidade &&  dadosassociado?.mensalidade[dadosassociado?.mensalidade?.length - 1]
         const vencimento = new Date(ultimaMensalidade?.vencimento ? ultimaMensalidade?.vencimento : '')
         const proxData = vencimento.setMonth(vencimento.getMonth() + 1)
         try {
@@ -556,7 +556,7 @@ export default function AdmContrato() {
                 {data.closeEditarAssociado && <ModalEditarDados openEdit={openEdit} />}
                 {openModalAcordo.open && (<ModalAcordos
                  acordo={data?.acordo??{}} 
-                 contrato={dadosassociado?.contrato.id_contrato??0}
+                 contrato={dadosassociado?.contrato?.id_contrato??0}
                   mensalidade={dadosassociado?.mensalidade??[]}
                    usuario={{nome:usuario?.nome??'',id:Number(usuario?.id)}}
                    closeModal={setarModalAcordo}
@@ -658,7 +658,7 @@ export default function AdmContrato() {
                                                 setOpenEdit(1), closeModa({
                                                     closeEditarAssociado: true,
                                                     name: dadosassociado.nome,
-                                                    nasc: new Date(dadosassociado.data_nasc).toLocaleDateString(),
+                                                    nasc:dadosassociado.data_nasc && new Date(dadosassociado?.data_nasc).toLocaleDateString(),
                                                     bairro: dadosassociado.bairro,
                                                     celular1: dadosassociado.celular1,
                                                     celular2: dadosassociado.celular2,
@@ -670,18 +670,18 @@ export default function AdmContrato() {
                                                     email: dadosassociado.email,
                                                     id_associado: dadosassociado.id_associado,
                                                     contrato: {
-                                                        id_contrato: dadosassociado.contrato.id_contrato,
-                                                        cobrador: dadosassociado.contrato.cobrador,
-                                                        consultor: dadosassociado.contrato.consultor,
-                                                        data_vencimento: dadosassociado.contrato.data_vencimento,
-                                                        dt_adesao: dadosassociado.contrato.dt_adesao,
-                                                        dt_carencia: dadosassociado.contrato.dt_carencia,
-                                                        id_plano: dadosassociado.contrato.id_plano,
-                                                        origem: dadosassociado.contrato.origem,
-                                                        plano: dadosassociado.contrato.plano,
-                                                        situacao: dadosassociado.contrato.situacao,
-                                                        supervisor: dadosassociado.contrato.supervisor,
-                                                        valor_mensalidade: dadosassociado.contrato.valor_mensalidade
+                                                        id_contrato: dadosassociado?.contrato?.id_contrato,
+                                                        cobrador: dadosassociado?.contrato?.cobrador,
+                                                        consultor: dadosassociado?.contrato?.consultor,
+                                                        data_vencimento: dadosassociado?.contrato?.data_vencimento,
+                                                        dt_adesao: dadosassociado?.contrato?.dt_adesao,
+                                                        dt_carencia: dadosassociado?.contrato?.dt_carencia,
+                                                        id_plano: dadosassociado?.contrato?.id_plano,
+                                                        origem: dadosassociado?.contrato?.origem,
+                                                        plano: dadosassociado?.contrato?.plano,
+                                                        situacao: dadosassociado?.contrato?.situacao,
+                                                        supervisor: dadosassociado?.contrato?.supervisor,
+                                                        valor_mensalidade: dadosassociado?.contrato?.valor_mensalidade
                                                     },
                                                     //  planos:usuario?.planos,
                                                     // cidades:usuario?.cidades,
@@ -701,8 +701,8 @@ export default function AdmContrato() {
 
                                             <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CATEGORIA: </span>{dadosassociado?.contrato?.plano}</p>
                                             <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">VALOR: </span>R$ {dadosassociado?.contrato?.valor_mensalidade}</p>
-                                            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">ADESÃO: </span> {new Date(dadosassociado?.contrato?.dt_adesao).toLocaleDateString()}</p>
-                                            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CARÊNCIA: </span>{new Date(dadosassociado?.contrato?.dt_carencia).toLocaleDateString()}</p>
+                                            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">ADESÃO: </span> {dadosassociado.contrato?.dt_adesao && new Date(dadosassociado?.contrato?.dt_adesao).toLocaleDateString()}</p>
+                                            <p className="mb-1 font-normal text-gray-400"><span className="text-white font-semibold">CARÊNCIA: </span>{dadosassociado.contrato?.dt_carencia && new Date(dadosassociado?.contrato?.dt_carencia).toLocaleDateString()}</p>
                                         </h5>
                                         <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  text-white">
                                             <p className=" font-normal text-gray-400"><span className="text-white font-semibold">ORIGEM: </span>{dadosassociado?.contrato?.origem}</p>
@@ -715,7 +715,7 @@ export default function AdmContrato() {
                                                 setOpenEdit(2), closeModa({
                                                     closeEditarAssociado: true,
                                                     name: dadosassociado.nome,
-                                                    nasc: new Date(dadosassociado.data_nasc).toLocaleDateString(),
+                                                    nasc:dadosassociado.data_nasc && new Date(dadosassociado.data_nasc).toLocaleDateString(),
                                                     bairro: dadosassociado.bairro,
                                                     celular1: dadosassociado.celular1,
                                                     celular2: dadosassociado.celular2,
@@ -727,18 +727,18 @@ export default function AdmContrato() {
                                                     email: dadosassociado.email,
                                                     id_associado: dadosassociado.id_associado,
                                                     contrato: {
-                                                        id_contrato: dadosassociado.contrato.id_contrato,
-                                                        cobrador: dadosassociado.contrato.cobrador,
-                                                        consultor: dadosassociado.contrato.consultor,
-                                                        data_vencimento: dadosassociado.contrato.data_vencimento,
-                                                        dt_adesao: dadosassociado.contrato.dt_adesao,
-                                                        dt_carencia: dadosassociado.contrato.dt_carencia,
-                                                        id_plano: dadosassociado.contrato.id_plano,
-                                                        origem: dadosassociado.contrato.origem,
-                                                        plano: dadosassociado.contrato.plano,
-                                                        situacao: dadosassociado.contrato.situacao,
-                                                        supervisor: dadosassociado.contrato.supervisor,
-                                                        valor_mensalidade: dadosassociado.contrato.valor_mensalidade
+                                                        id_contrato: dadosassociado?.contrato?.id_contrato,
+                                                        cobrador: dadosassociado?.contrato?.cobrador,
+                                                        consultor: dadosassociado?.contrato?.consultor,
+                                                        data_vencimento: dadosassociado?.contrato?.data_vencimento,
+                                                        dt_adesao: dadosassociado?.contrato?.dt_adesao,
+                                                        dt_carencia: dadosassociado?.contrato?.dt_carencia,
+                                                        id_plano: dadosassociado?.contrato?.id_plano,
+                                                        origem: dadosassociado?.contrato?.origem,
+                                                        plano: dadosassociado?.contrato?.plano,
+                                                        situacao: dadosassociado?.contrato?.situacao,
+                                                        supervisor: dadosassociado?.contrato?.supervisor,
+                                                        valor_mensalidade: dadosassociado?.contrato?.valor_mensalidade
                                                     },
 
                                                     numero: dadosassociado.numero,
@@ -1353,7 +1353,7 @@ export default function AdmContrato() {
                             }
 
                             {
-                                carteira && (<CarteirasDep dependentes={dadosassociado?.dependentes ?? []} contrato={dadosassociado?.contrato.id_contrato ?? 0} plano={dadosassociado?.contrato.plano ?? ''} />)
+                                carteira && (<CarteirasDep dependentes={dadosassociado?.dependentes ?? []} contrato={dadosassociado?.contrato?.id_contrato ?? 0} plano={dadosassociado?.contrato?.plano ?? ''} />)
                             }
 
 

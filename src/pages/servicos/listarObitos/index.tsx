@@ -211,13 +211,13 @@ export default function ListarObitos() {
                 <div className="flex flex-row p-2 border-b-[1px] border-gray-600">
                     <h1 className="flex w-full  text-gray-300 font-semibold text-2xl ">Histórico de O.S's</h1>
                     <div className="inline-flex rounded-md shadow-sm mb-1" role="group" >
-  <Link href="/servicos/gerarOS" onClick={()=>setarServico({atendente:undefined,bairro_velorio:undefined,caracterista_corporal:undefined,cemiterio:undefined,certidao_casado:undefined,cidade_eleitor:undefined,cidade_velorio:undefined,
+  <Link href="/servicos/gerarOS" onClick={()=>setarServico({id_obitos:undefined,atendente:undefined,bairro_velorio:undefined,caracterista_corporal:undefined,cemiterio:undefined,certidao_casado:undefined,cidade_eleitor:undefined,cidade_velorio:undefined,
   complemento:undefined,conjuge:undefined,copeira:undefined,cpf:undefined,cpf_cnpj:undefined,ct_bairro:undefined,ct_comarca:undefined,ct_compet:undefined,ct_dtreg:undefined,ct_end:undefined,
   ct_folha:undefined,ct_livro:undefined,ct_munic:undefined,ct_nome:undefined,ct_tel:undefined,ct_termo:undefined,custo:0,data_nascimento:undefined,dc_crm:"",dc_laudo_med:undefined,
   dc_nome_medico:undefined,dec_obito_num:undefined,deixa_bens:undefined,deixa_testamento:undefined,dt_retorno:undefined,dt_sepultamento:undefined,dt_velorio:undefined,
   end_bairro:undefined,end_celular:undefined,end_cidade:undefined,end_data_falecimento:undefined,end_decl_obito:undefined,end_hora_falecimento:undefined,end_hora_informaram:undefined,
   end_local_falecimento:undefined,end_numero:undefined,end_rua:undefined,end_telefone:undefined,end_uf:undefined,endereco_cemiterio:undefined,endereco_mae:undefined,endereco_pais:undefined,enfermeira:undefined,estado_civil:undefined,estadocivil_mae:undefined,estadocivil_pai:undefined,
-  falecido:undefined,hr_retorno:undefined,hr_sepultamento:undefined,hr_velorio:undefined,id_contrato:undefined,id_contrato_st:undefined,id_obitos:undefined,id_titular:undefined,jazigo:undefined,local_velorio:undefined,mae_vivo:undefined,nacionalidade:undefined,naturalidade:undefined,nb_aposentado:undefined,nome_falecido:undefined,nome_mae:undefined,nome_pai:undefined,numero_velorio:undefined,
+  falecido:undefined,hr_retorno:undefined,hr_sepultamento:undefined,hr_velorio:undefined,id_contrato:undefined,id_contrato_st:undefined,id_titular:undefined,jazigo:undefined,local_velorio:undefined,mae_vivo:undefined,nacionalidade:undefined,naturalidade:undefined,nb_aposentado:undefined,nome_falecido:undefined,nome_mae:undefined,nome_pai:undefined,numero_velorio:undefined,
   obito_itens:undefined,pai_vivo:undefined,plano:undefined,profissao:undefined,profissao_mae:undefined,profissao_pai:undefined,rd_bairro:undefined,rd_celular:undefined,rd_cidade:undefined,rd_complemento:undefined,rd_endereco:undefined,rd_nome:undefined,rd_numero:undefined,
   rd_parentesco:undefined,rd_profissao:undefined,rd_rg:undefined,rd_telefone:undefined,rd_uf:undefined,religiao:undefined,rg:undefined,saldo:undefined,secao:undefined,sexo:undefined,situacao_contrato:undefined,status:undefined,t_eleitor:undefined,t_eleitor_perg:undefined,tipo_atendimento:undefined,
   uf_naturalidade:undefined,uf_velorio:undefined,veiculo_cortejo:undefined,veiculo_retirada:undefined,vl_aprazo:undefined,vl_avista:undefined,vl_comissao:undefined,vl_produtos:undefined,vl_recebimentos:undefined,
@@ -257,46 +257,44 @@ export default function ListarObitos() {
 </div>):''}
 </div>
                 </div>
-                <div className="flex p-1 max-h-[calc(100vh-150px)] justify-center">{/*DIV DA TABELA*/}
+                <div className="flex p-1 w-full max-h-[calc(100vh-150px)] justify-center">{/*DIV DA TABELA*/}
                     <table
-                        className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
+                        className="block  w-full overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
                         <thead className="sticky top-0 text-xs  uppercase bg-gray-700 text-gray-400">
                             <tr>
-                                <th scope="col" className=" px-2 py-1">
+                                <th scope="col" className=" px-4 py-1 whitespace-nowrap">
                                     Tipo
                                 </th>
 
-                                <th scope="col" className="px-2 py-1">
+                                <th scope="col" className="px-2 py-1 whitespace-nowrap">
                                     Data Fal.
                                 </th>
-                                <th scope="col" className="px-2 py-1">
+                                <th scope="col" className="px-2 py-1 whitespace-nowrap">
                                     Contrato
                                 </th>
-                                <th scope="col" className="px-2 py-1">
+                                <th scope="col" className="px-2 py-1 whitespace-nowrap">
                                     Nome Decl.
                                 </th>
-                                <th scope="col" className="px-2 py-1">
-                                    CPF/CNPJ
-                                </th>
-                                <th scope="col" className="px-2 py-1">
+                              
+                                <th scope="col" className="px-2 py-1 whitespace-nowrap">
                                     Nome Falecido
                                 </th>
-                                <th scope="col" className="px-2 py-1">
+                                <th scope="col" className="px-2 py-1 whitespace-nowrap">
                                     <span >Situação Cont.</span>
                                 </th>
-                                <th scope="col" className="px-2 py-1">
+                                <th scope="col" className="px-2 py-1 whitespace-nowrap">
                                     <span >Falecido</span>
                                 </th>
-                                <th scope="col" className="px-2 py-1">
+                                <th scope="col" className="px-2 py-1 whitespace-nowrap">
                                     <span >Data Nasc.</span>
                                 </th>
-                                <th scope="col" className="px-2 py-1">
+                                <th scope="col" className="px-2 py-1 whitespace-nowrap">
                                     <span >Valor Total</span>
-                                </th>
-                                <th scope="col" className="px-2 py-1">
+                                </th> 
+                                <th scope="col" className="px-2 py-1 whitespace-nowrap">
                                     <span >STATUS</span>
                                 </th>
-                                <th scope="col" className="px-2 py-1">
+                                <th scope="col" className="px-2 py-1 whitespace-nowrap">
                                     <span >Ações</span>
                                 </th>
                             </tr>
@@ -314,13 +312,11 @@ export default function ListarObitos() {
                                     <td className="px-2 py-1">
                                         {item.id_contrato}
                                     </td>
-                                    <td className="px-2 py-1">
+                                    <td className="px-2 py-1 whitespace-nowrap w-full text-start ">
                                         {item.rd_nome}
                                     </td>
-                                    <td className="px-2 py-1">
-                                        {item.cpf_cnpj}
-                                    </td>
-                                    <td className="px-2 py-1">
+                                   
+                                    <td className="px-2 py-1 whitespace-nowrap w-full text-start">
                                         {item.nome_falecido}
                                     </td>
                                     <td className="px-2 py-1">

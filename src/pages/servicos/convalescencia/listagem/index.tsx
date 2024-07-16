@@ -425,7 +425,7 @@ export default function Convalescente() {
                         marginPagesDisplayed={2}
                         pageRangeDisplayed={5}
                         onPageChange={handlePageClick}
-                        containerClassName={'pagination inline-flex text-gray-400 gap-4 ml-auto justify-end font-semibold p-1 rounded-lg border-[1px] border-gray-300 '}
+                        containerClassName={'pagination inline-flex text-gray-400 gap-4 ml-auto justify-end font-semibold p-1 rounded-lg border-[1px] border-gray-500 '}
                         activeClassName={'active text-blue-600'}
                         
                         />

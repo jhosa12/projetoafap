@@ -197,21 +197,18 @@ interface AssociadoProps {
     acordo: Array<AcordoProps>
 
 }
-interface CidadesProps {
-    id_cidade: number,
-    estado: number,
-    uf: string,
-    cidade: string
-}
-interface PlanosProps {
-    id_plano: number,
-    descricao: string,
-    valor: number
-}
 
+interface EstoqueProps {
+    id_estoque: number,
+    codProd: string,
+    data: Date,
+    estado: string,
+    produto: string,
+}
 
 
 interface ListaMaterial {
+    id_estoque: number,
     id_conv_prod: number,
     id_conv: number,
     id_produto: number,
@@ -227,11 +224,13 @@ interface ListaMaterial {
     hora: Date,
     cortesia: string,
     retornavel: string,
-    status: string
+    status: string,
+
 }
 
 
 interface SelectProps {
+
     id_produto: number,
     descricao: string,
     unidade: string,
@@ -256,7 +255,7 @@ export default function ConvalescenciaNovo() {
     const { usuario, listaConv, data, closeModa, setarListaConv } = useContext(AuthContext)
     const [usuarioMaterial, setUsuarioMaterial] = useState(true);
     const [material, setMaterialUsuario] = useState(false);
-
+    const [estoque, setEstoque] = useState<Array<EstoqueProps>>([])
     const [componenteMounted, setMounted] = useState(false);
     const [titular, setTitular] = useState(false);
     const [dependente, setDependente] = useState(false);
@@ -269,6 +268,8 @@ export default function ConvalescenciaNovo() {
     const [modalComprovante, setComprovante] = useState(false);
     const [indexProd, setIndex] = useState<number>(0);
     const [modalContrato, setModalContrato] = useState(false)
+
+
 
     const imprimirComprovante = useReactToPrint({
         content: () => componentRefComprovante.current
@@ -289,14 +290,91 @@ export default function ConvalescenciaNovo() {
         })
     }
 
-    function statusProd(status: string) {
+    //  function statusProd(status: string) {
+    //   const novoArray = [...listaMaterial]
+    //     novoArray[indexProd].status = status
+    //     setMaterial(novoArray)
+    //      editarRegistro()
+    //   if (status === 'FECHADO') { imprimirComprovante() }
+    //   else { imprimirContrato() }
+    //   }
+
+
+    async function adicionarProduto() {
+
+        if(!listaConv.id_conv){
+            toast.info('SALVE OS DADOS DO SOLICITANTE!')
+            return;
+        }
+
+        const response = await toast.promise(
+            api.post('/convalescente/novoProduto',
+                {
+                    id_conv:listaConv.id_conv,
+                    id_produto:dataInputs.id_produto,
+                    descricao:dataInputs.descricao,
+                    unidade:'',
+                    grupo:'cv',
+                    data:new Date(),
+                    data_dev:undefined,
+                    quantidade:dataInputs.quantidade,
+                    valor:dataInputs.valor,
+                    descontos:0,
+                    total:dataInputs.quantidade,
+                    hora:new Date(),
+                    cortesia:'',
+                    retornavel:'',
+                    status:'PENDENTE'
+                }
+            ),
+            {
+                error: 'Erro ao Atualizar Dados',
+                pending: 'Atualizando Dados....',
+                success: 'Dados Atualizados com sucesso!'
+            }
+        )
         const novoArray = [...listaMaterial]
-        novoArray[indexProd].status = status
+        novoArray.push(response.data)
         setMaterial(novoArray)
-        editarRegistro()
-        if (status === 'FECHADO') { imprimirComprovante() }
-        else { imprimirContrato() }
+
     }
+
+
+    async function receberDev(status: string) {
+
+        if(status==='ABERTO'){
+            const novoArray = [...listaMaterial]
+            novoArray[indexProd].id_estoque = dataInputs.id_estoque
+            setMaterial(novoArray)
+        }
+
+        const response = await toast.promise(
+            api.put('/convalescencia/receber', {
+                id_conv_prod: listaMaterial[indexProd].id_conv_prod,
+                id_estoque:status==='ABERTO'?listaMaterial[indexProd].id_estoque:undefined,
+                status
+            }),
+            {
+                error: 'Erro ao Atualizar Dados',
+                pending: 'Atualizando Dados....',
+                success: 'Dados Atualizados com sucesso!'
+
+            }
+
+
+
+        )
+
+        const novoArray = [...listaMaterial]
+        novoArray[indexProd] = response.data
+        setMaterial(novoArray)
+
+    }
+
+
+
+
+
 
     async function carregarDados() {
         try {
@@ -416,10 +494,7 @@ export default function ConvalescenciaNovo() {
             return;
         }
 
-        if (listaMaterial && listaMaterial.length === 0) {
-            toast.info('Adicione o Produto Desejado!');
-            return;
-        }
+      
         try {
             const response = await toast.promise(
                 api.post('/convalescencia/novo', {
@@ -431,7 +506,7 @@ export default function ConvalescenciaNovo() {
                     nome: listaConv.nome,
                     cpf_cnpj: listaConv.cpf_cnpj,
                     data: listaConv.data,
-                    status: "PENDENTE",
+                    status: "ABERTO",
                     forma_pag: listaConv.forma_pag,
                     logradouro: listaConv.logradouro,
                     numero: listaConv.numero,
@@ -454,7 +529,7 @@ export default function ConvalescenciaNovo() {
                     hora_inc: listaConv.hora_inc,
                     usuario: usuario?.nome,
                     obs: listaConv.obs,
-                    convalescenca_prod: listaConv.convalescenca_prod
+                   
 
                 }),
                 {
@@ -466,21 +541,23 @@ export default function ConvalescenciaNovo() {
 
 
         } catch (error) {
-            // console.log(error)
+            console.log(error)
         }
 
     }
 
 
     useEffect(() => {
+        closeModa({id_associado:undefined})
         const novoArray = listaConv.convalescenca_prod && [...listaConv.convalescenca_prod];
         // novoArray.push({ ...listaConv.convalescenca_prod})
         novoArray && setMaterial(novoArray)
         if (!componenteMounted) {
             try {
                 const selectMateriais = async () => {
-                    const response = await api.get('/convalescencia/selectLista')
-                    setSelect(response.data)
+                    const response = await api.get('/estoque/listar')
+                    setSelect(response.data.produtos)
+                    setEstoque(response.data.estoque)
 
                 }
                 selectMateriais()
@@ -491,14 +568,24 @@ export default function ConvalescenciaNovo() {
 
 
         }
+      
+
+
+        setMounted(true)
+    }, [])
+
+
+    useEffect(()=>{
+
+        closeModa({...data,closeModalPlano:false})
+
         if (data.id_associado && componenteMounted) {
+           
             carregarDados();
 
         }
 
-
-        setMounted(true)
-    }, [data.id_associado])
+    },[data.id_associado])
 
     //function setarMaterialLista(fields: Partial<ListaMaterial>) {
     //     setMaterial((prev: Partial<ListaMaterial>) => {
@@ -553,7 +640,7 @@ export default function ConvalescenciaNovo() {
                             </div>
                             <h3 className="mb-5 text-lg font-normal  text-gray-400">Deseja Confirmar a devolução desse produto?</h3>
                             <div className="flex flex-row gap-6 justify-center ">
-                                <button onClick={() => statusProd('FECHADO')} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2  focus:z-10 bg-green-700 text-gray-200 border-gray-500 hover:text-white hover:bg-green-600 focus:ring-gray-600">Sim, imprimir</button>
+                                <button onClick={() => receberDev('FECHADO')} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2  focus:z-10 bg-green-700 text-gray-200 border-gray-500 hover:text-white hover:bg-green-600 focus:ring-gray-600">Sim, imprimir</button>
 
                                 <button onClick={() => setComprovante(false)} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2  focus:z-10 bg-red-700 text-gray-200 border-gray-500 hover:text-white hover:bg-red-600 focus:ring-gray-600">Não, cancelar</button>
 
@@ -578,8 +665,25 @@ export default function ConvalescenciaNovo() {
                                 <TbAlertTriangle className='text-gray-400' size={60} />
                             </div>
                             <h3 className="mb-5 text-lg font-normal  text-gray-400">Deseja Confirmar a Entrega desse produto?</h3>
+                            <div className="my-2">
+                                <label className="block mb-1 text-sm  font-medium  text-white">Codigo do Produto</label>
+                                <select onChange={e => {
+
+                                    setInputs({ ...dataInputs, id_estoque: Number(e.target.value) })
+                                }}
+                                    className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " >
+                                    <option></option>
+                                    {
+                                        estoque.map((item, index) => {
+                                            return (
+                                                item.produto === listaMaterial[indexProd].descricao && <option key={index} value={item.id_estoque}>{item.codProd} - {item.estado}</option>
+                                            )
+                                        })
+                                    }
+                                </select>
+                            </div>
                             <div className="flex flex-row gap-6 justify-center ">
-                                <button onClick={() => statusProd('ABERTO')} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2  focus:z-10 bg-green-700 text-gray-200 border-gray-500 hover:text-white hover:bg-green-600 focus:ring-gray-600">Sim, imprimir</button>
+                                <button onClick={() => receberDev('ABERTO')} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2  focus:z-10 bg-green-700 text-gray-200 border-gray-500 hover:text-white hover:bg-green-600 focus:ring-gray-600">Sim, imprimir</button>
 
                                 <button onClick={() => setModalContrato(false)} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2  focus:z-10 bg-red-700 text-gray-200 border-gray-500 hover:text-white hover:bg-red-600 focus:ring-gray-600">Não, cancelar</button>
 
@@ -679,7 +783,7 @@ export default function ConvalescenciaNovo() {
                             </div>
                             <div className="flex flex-col col-span-1 ">
                                 <label className="block  text-xs font-medium  text-white">Data Nasc</label>
-                                <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={listaConv.data} onChange={e => e && setarListaConv({ data: e })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</DatePicker>
+                                <DatePicker dateFormat={"dd/MM/yyyy"} locale={pt} selected={listaConv.data} onChange={e => e && setarListaConv({ data: e })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</DatePicker>
                             </div>
                             <div className="flex flex-col col-span-1">
                                 <label className="block  text-xs font-medium  text-white">CPF</label>
@@ -772,6 +876,23 @@ export default function ConvalescenciaNovo() {
                                     }
                                 </select>
                             </div>
+                            <div>
+                                <label className="block mb-1 text-sm font-medium  text-white">Codigo do Produto</label>
+                                <select onChange={e => {
+
+                                    setInputs({ ...dataInputs, id_estoque: Number(e.target.value) })
+                                }}
+                                    className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " >
+                                    <option></option>
+                                    {
+                                        estoque.map((item, index) => {
+                                            return (
+                                                item.produto === dataInputs.descricao && <option value={item.id_estoque}>{item.codProd} - {item.estado}</option>
+                                            )
+                                        })
+                                    }
+                                </select>
+                            </div>
 
                             <div className="flex flex-col w-1/12">
                                 <label className="block mb-1 text-sm font-medium  text-white">Quant.</label>
@@ -790,10 +911,11 @@ export default function ConvalescenciaNovo() {
                                         return;
 
                                     }
+                                    adicionarProduto()
 
-                                    const novoArray = listaMaterial && [...listaMaterial];
-                                    novoArray.push({ ...dataInputs, status: 'ABERTO', data: new Date(), id_conv: Number(listaConv.id_conv) })
-                                    setMaterial(novoArray)
+                                    // const novoArray = listaMaterial && [...listaMaterial];
+                                    // novoArray.push({ ...dataInputs, status: 'PENDENTE', data: new Date(), id_conv: Number(listaConv.id_conv) })
+                                    // setMaterial(novoArray)
 
 
 
@@ -810,6 +932,9 @@ export default function ConvalescenciaNovo() {
                                     <tr>
                                         <th scope="col" className=" px-2 py-1">
                                             Descrição Item
+                                        </th>
+                                        <th scope="col" className=" px-2 py-1">
+                                            Código do Produto
                                         </th>
 
                                         <th scope="col" className="px-4 py-1">
@@ -833,6 +958,13 @@ export default function ConvalescenciaNovo() {
                                         return (<tr key={index} className={`border-b bg-gray-800 border-gray-700`}>
                                             <td className="px-2 py-1">
                                                 {item?.descricao}
+                                            </td>
+                                            <td className="px-2 py-1">
+                                                {estoque.map(it=>{
+                                                    if(item.id_estoque===it.id_estoque){
+                                                        return it.codProd
+                                                    }
+                                                })}
                                             </td>
                                             <td className="px-4 py-1">
                                                 {item?.quantidade}
@@ -867,6 +999,9 @@ export default function ConvalescenciaNovo() {
                                                     }
                                                 }} className="text-blue-600 p-1  rounded-lg hover:text-white hover:bg-blue-600"><IoPrint size={18} /></button>
                                                 <button onClick={() => {
+                                                    if(item.status==='PENDENTE'){
+                                                        return
+                                                    }
                                                     if (item.id_conv_prod && item.status === 'FECHADO') {
                                                         imprimirComprovante()
                                                         return;
@@ -891,7 +1026,7 @@ export default function ConvalescenciaNovo() {
 
                                 <tfoot >
                                     <tr className={`border-b bg-gray-700 border-gray-700  hover:bg-gray-600`}>
-                                        <td className="px-4 py-1 text-start font-semibold" colSpan={2}>Total Geral</td>
+                                        <td className="px-4 py-1 text-start font-semibold" colSpan={3}>Total Geral</td>
                                         <td className="px-4 py-1 text-green-500 text-start font-semibold" colSpan={3} >R${ }</td>
                                     </tr>
                                 </tfoot>
