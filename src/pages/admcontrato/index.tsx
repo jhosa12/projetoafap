@@ -29,6 +29,7 @@ import PrintButtonContrato from "@/Documents/contratoAdesão/PrintButton";
 import { TbWheelchair } from "react-icons/tb";
 import PrintButton from "@/Documents/carteiraAssociado/PrintButton";
 import CarteirasDep from "../../components/admContrato/carteirasDep";
+import { IoPrint } from "react-icons/io5";
 
 
 
@@ -821,6 +822,9 @@ export default function AdmContrato() {
                                                 </div>
                                             </div>) : ''}
                                         </div>
+
+
+                                        <button onClick={()=>{}} className="flex p-1 rounded-lg justify-center bg-gray-500 gap-1 items-center text-xs z-40 text-white"><IoPrint size={18}/> PRINT</button>
 
                                     </div>
                                 <div className="flex w-full p-4 max-h-[calc(100vh-255px)]">

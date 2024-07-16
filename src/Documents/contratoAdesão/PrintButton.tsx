@@ -12,7 +12,7 @@ import { AuthContext } from '@/contexts/AuthContext';
   export function PrintButton( ){
   const componentRef = useRef<DocumentTemplate>(null);
   const {dadosassociado}=useContext(AuthContext)
-  const cadastrado = !!dadosassociado?.contrato.id_contrato
+  const cadastrado = !!dadosassociado?.contrato?.id_contrato
 
   return (
     <div>
@@ -36,9 +36,9 @@ import { AuthContext } from '@/contexts/AuthContext';
           bairro={dadosassociado?.bairro??''}
           complemento={dadosassociado?.guia_rua??''}
           cidade={dadosassociado?.cidade??''}
-          adesao={new Date(dadosassociado?.contrato.dt_adesao ?? '')}
+          adesao={new Date(dadosassociado?.contrato?.dt_adesao ?? '')}
           telefone={dadosassociado?.celular1??''}
-          contrato={dadosassociado?.contrato.id_contrato??0}
+          contrato={dadosassociado?.contrato?.id_contrato??0}
           dependentes={dadosassociado?.dependentes??[]}
           estado={dadosassociado?.uf??''}
 

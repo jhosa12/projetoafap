@@ -51,8 +51,8 @@ interface DadosProps{
         <DocumentTemplate
           ref={componentRef}
           dependentes={dadosassociado?.dependentes??[]}
-          plano={dadosassociado?.contrato.plano??''}
-          contrato={dadosassociado?.contrato.id_contrato??0}
+          plano={dadosassociado?.contrato?.plano??''}
+          contrato={dadosassociado?.contrato?.id_contrato??0}
         />
       </div>
     </div>
