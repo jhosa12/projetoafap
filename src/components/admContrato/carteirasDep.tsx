@@ -149,10 +149,7 @@ export default function CarteirasDep({dependentes,contrato,plano}:DadosProps){
                                         ))}
                                       </tbody>
                                       </table>
-
-            </div>
-
-            <div className="hidden">
+                                      <div className="hidden">
             <DocumentTemplate
           ref={componentRef}
           dependentes={arrayPrint}
@@ -162,6 +159,10 @@ export default function CarteirasDep({dependentes,contrato,plano}:DadosProps){
         />
 
             </div>
+
+            </div>
+
+        
         
     
  

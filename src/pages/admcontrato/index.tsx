@@ -660,6 +660,7 @@ export default function AdmContrato() {
                             carregarDados={carregarDados}
                             dados={{acordo:data.acordo??{},closeModalPlano:data.closeModalPlano??false,id_associado:dadosassociado?.id_associado??0,mensalidade:data.mensalidade??{},mensalidadeAnt:data.mensalidadeAnt??{}}}
                             dadosAssociado={{
+                                nome:dadosassociado?.nome??'',
                                 arrayAcordo:dadosassociado?.acordo??[],
                                 arrayMensalidade:dadosassociado?.mensalidade??[],
                                 id_associado:dadosassociado?.id_associado??0,

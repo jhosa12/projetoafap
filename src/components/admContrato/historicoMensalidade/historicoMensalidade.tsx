@@ -1,15 +1,19 @@
 
-import { ModalAcordos } from '@/components/modalAcordos'
-import { api } from '@/services/apiClient'
-import React, { useRef, useState } from 'react'
-import { FaHandshake } from 'react-icons/fa'
-import { IoIosClose } from 'react-icons/io'
-import { IoPrint } from 'react-icons/io5'
-import { MdDeleteForever } from 'react-icons/md'
-import { RiAddCircleFill } from 'react-icons/ri'
-import { TbAlertTriangle } from 'react-icons/tb'
+import { ModalAcordos } from '@/components/modalAcordos';
+import ImpressaoCarne from '@/Documents/carne/ImpressaoCarne';
+import { api } from '@/services/apiClient';
+import { useReactToPrint } from 'react-to-print';
+import React, { useRef, useState } from 'react';
+import { FaHandshake } from 'react-icons/fa';
+import { IoIosClose } from 'react-icons/io';
+import { IoPrint } from 'react-icons/io5';
+import { MdDeleteForever } from 'react-icons/md';
+import { RiAddCircleFill } from 'react-icons/ri';
+import { TbAlertTriangle } from 'react-icons/tb';
 import { toast } from 'react-toastify'
-import { useReactToPrint } from 'react-to-print'
+
+
+
 
 interface MensalidadeProps  {
     id_usuario: number,
@@ -62,6 +66,7 @@ closeModalPlano:boolean
 
 
 interface DadosAssociadoGeral{
+    nome:string
     id_contrato:number,
     id_associado:number,
     arrayMensalidade:Array<MensalidadeProps>,
@@ -85,13 +90,16 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
     const [linhasSelecionadas, setLinhasSelecionadas] = useState<Array<Partial<MensalidadeProps>>>([]);
     const [openModalAcordo,setModalAcordo]= useState({open:false,visible:false})
     const [showSublinhas, setShowSublinhas] = useState<boolean>(false);
-    const componentRef =useRef()
+    const componentRef =useRef<ImpressaoCarne>(null);
+
+
+    
 
     let currentAcordoId: string;
 
-    //const imprimirCarne =useReactToPrint({
-      //  content
-  //  })
+    const imprimirCarne =useReactToPrint({
+        content:()=>componentRef.current
+   })
 
     const setarModalAcordo = (fields:{open:boolean,visible:boolean})=>{
         setModalAcordo((prev:{open:boolean,visible:boolean})=>{
@@ -220,7 +228,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
 
   return (
     <div className="flex flex-col rounded-lg  max-h-[calc(100vh-220px)]  p-2 shadow-md sm:rounded-lg">
-
+  
                 {openModalAcordo.open && (<ModalAcordos
                  acordo={dados?.acordo??{}} 
                  contrato={dadosAssociado?.id_contrato??0}
@@ -236,6 +244,15 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
 
 
     <div className="flex w-full mb-2 gap-2">
+    <div style={{display:'none'}}>
+    <ImpressaoCarne
+    ref={componentRef}
+    arrayMensalidade={dadosAssociado.arrayMensalidade}
+    id_contrato={dadosAssociado.id_contrato}
+    nome={dadosAssociado.nome}
+    />
+
+    </div>
         <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
             <input checked={checkMensal} onChange={() => setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer" />
             <div className="w-9 h-5 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[5px] after:start-[5px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
@@ -279,7 +296,9 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
         </div>
 
 
-        <button onClick={()=>{}} className="flex p-1 rounded-lg justify-center bg-gray-500 gap-1 items-center text-xs z-40 text-white"><IoPrint size={18}/> PRINT</button>
+        <button onClick={imprimirCarne} className="flex p-1 rounded-lg justify-center bg-gray-500 gap-1 items-center text-xs z-40 text-white"><IoPrint size={18}/> PRINT</button>
+        
+    
 
     </div>
 <div className="flex w-full p-4 max-h-[calc(100vh-255px)]">
@@ -590,6 +609,8 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
 
     </table>
     </div>
+  
+
 </div>
   )
 }
