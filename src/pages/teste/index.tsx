@@ -57,7 +57,7 @@ interface DadosProps{
 }
 
 
-export default function TesteLayout({titular}:Partial<DadosProps>) {
+export default function TesteLayout() {
     const {usuario,data,closeModa,carregarDados} = useContext(AuthContext)
     const [mounted,setMounted] = useState(false)
     const [dadosTitular,setDados] = useState<Partial<TitularProps>>({})
@@ -69,7 +69,6 @@ export default function TesteLayout({titular}:Partial<DadosProps>) {
         }else return{...fields}
 
       })
-
     }
  
    function gerarMensalidade(){
@@ -151,7 +150,7 @@ export default function TesteLayout({titular}:Partial<DadosProps>) {
     
    }
    useEffect(()=>{
-    setarDadosTitular({...titular})
+    //setarDadosTitular({...titular})
     mounted && carregarDados()
     setMounted(true)
    },[data.id_associado])

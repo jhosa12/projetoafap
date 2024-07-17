@@ -253,7 +253,41 @@ export default function AdmContrato() {
 
     // Função para adicionar ou remover linhas do array de linhas selecionadas
  
-
+    const limparDadosCadastro=()=>{
+            closeModa({
+                closeModalCadastro:true,
+                acordo:undefined,
+                arraydep:[],
+                bairro:undefined,
+                celular1:undefined,
+                celular2:undefined,
+                cep:undefined,
+                cidade:undefined,
+                closeEditarAssociado:undefined,
+                closeModalPlano:undefined,
+                contrato:undefined,
+                cpf:undefined,
+                dependente:undefined,
+                email:undefined,
+                empresa:undefined,
+                endereco:undefined,
+                id_associado:undefined,
+                mensalidade:undefined,
+                mensalidadeAnt:undefined,
+                mensalidadeProx:undefined,
+                name:undefined,
+                nasc:undefined,
+                naturalidade:undefined,
+                numero:undefined,
+                origem:undefined,
+                profissao:undefined,
+                referencia:undefined,
+                rg:undefined,
+                sexo:undefined,
+                telefone:undefined,
+                uf:undefined
+            })
+    }
 
     function handleObservacao() {
 
@@ -338,6 +372,7 @@ export default function AdmContrato() {
             setHistorico(true)
         setVerObs(false)
         setCarteira(false)
+        setDocumentos(false)
 
 
 
@@ -422,25 +457,7 @@ export default function AdmContrato() {
             </Head>
             <div className="flex flex-col w-full mr-2  justify-center">
                 {data.closeModalPlano && (<ModalBusca />)}
-                {data.closeModalCadastro && (<Teste titular={{
-                    name:dadosassociado?.nome,
-                    bairro:dadosassociado?.bairro,
-                    celular1:dadosassociado?.celular1,
-                    celular2:dadosassociado?.celular2,
-                    cep:dadosassociado?.cep,
-                    cidade:dadosassociado?.cidade,
-                    cpf:dadosassociado?.cpf,
-                    email:dadosassociado?.email,
-                    endereco:dadosassociado?.endereco,
-                    nasc:dadosassociado?.data_nasc,
-                    numero:dadosassociado?.numero,
-                    referencia:dadosassociado?.guia_rua,
-                    rg:dadosassociado?.rg,
-                    sexo:dadosassociado?.sexo,
-                    telefone:dadosassociado?.telefone,
-                    uf:dadosassociado?.uf,
-                    cidades:data.cidades
-                }}/>)}
+                {data.closeModalCadastro && (<Teste/>)}
                 {data.mensalidade?.close && (<ModalMensalidade />)}
                 {data.dependente?.close && <ModalDependentes />}
                 {data.closeEditarAssociado && <ModalEditarDados openEdit={openEdit} />}
@@ -452,7 +469,7 @@ export default function AdmContrato() {
                             <IoMdSearch size={20} />
                             Buscar Cliente
                         </button>
-                        <button type="button" onClick={() => closeModa({ closeModalCadastro: true })} className="text-white gap-1  focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-3 py-2.5 text-center inline-flex items-center bg-[#c5942b] hover:bg-[#c5942ba9] focus:ring-blue-800">
+                        <button type="button" onClick={limparDadosCadastro} className="text-white gap-1  focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-3 py-2.5 text-center inline-flex items-center bg-[#c5942b] hover:bg-[#c5942ba9] focus:ring-blue-800">
                             Add Plano
                             <RiFileAddLine size={20} />
                         </button>
