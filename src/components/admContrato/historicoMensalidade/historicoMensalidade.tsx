@@ -66,7 +66,13 @@ closeModalPlano:boolean
 
 
 interface DadosAssociadoGeral{
-    nome:string
+    nome:string,
+    endereco:string,
+    plano:string
+    bairro:string,
+    numero:number,
+    cidade:string,
+    uf:string
     id_contrato:number,
     id_associado:number,
     arrayMensalidade:Array<MensalidadeProps>,
@@ -247,15 +253,23 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
     <div style={{display:'none'}}>
     <ImpressaoCarne
     ref={componentRef}
-    arrayMensalidade={dadosAssociado.arrayMensalidade}
-    id_contrato={dadosAssociado.id_contrato}
-    nome={dadosAssociado.nome}
+    arrayMensalidade={linhasSelecionadas.length>0?linhasSelecionadas:dadosAssociado.arrayMensalidade}
+    dadosAssociado={{nome:dadosAssociado.nome,
+        endereco:dadosAssociado.endereco,
+        bairro:dadosAssociado.bairro,
+        cidade:dadosAssociado.cidade,
+        id_contrato:dadosAssociado.id_contrato,
+        numero:Number(dadosAssociado.numero),
+        uf:dadosAssociado.uf,
+        plano:dadosAssociado.plano
+    
+    }}
     />
 
     </div>
         <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
             <input checked={checkMensal} onChange={() => setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer" />
-            <div className="w-9 h-5 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[5px] after:start-[5px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
+            <div className="w-9 h-5 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[5px] after:start-[7px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
             <span className="ms-3 text-sm font-medium  text-gray-300">Exibir Pagas</span>
         </label>
         <div className="inline-flex rounded-md shadow-sm" role="group">

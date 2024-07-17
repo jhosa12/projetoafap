@@ -138,7 +138,7 @@ export function ModalMensalidade(){
     <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
        
     <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
-    <div className="fixed flex flex-col  w-2/4  rounded-lg  shadow bg-gray-800">
+    <div className="fixed flex flex-col p-2 w-2/4  rounded-lg  shadow bg-gray-800">
     <button  type="button" onClick={()=>closeModa({mensalidade:{close:false}})} className="absolute cursor-pointer right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
     <IoIosClose size={30}/>
         </button>

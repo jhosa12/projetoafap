@@ -56,18 +56,18 @@ useEffect(()=>{
         <div  className="grid border-white h-2/3  border-r-2 pb-3 gap-2 grid-flow-row-dense pl-2 pr-2 w-1/2  md:grid-cols-2" >
               <div className="col-span-2">
               <label  className="block mb-1 text-sm font-medium  text-white">NOME</label>
-              <input  autoComplete="off"  className="block uppercase w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " value={nome} onChange={e=>setNome(e.target.value.toUpperCase())} type="text"></input>
+              <input  autoComplete="off"  className="block uppercase w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white " value={nome} onChange={e=>setNome(e.target.value.toUpperCase())} type="text"></input>
               </div>
              
               <div>
               <label  className="block mb-1 text-sm font-medium  text-white">NASCIMENTO</label>
-              <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"}  className="block  w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " selected={data_nasc} onChange={(date)=>date && setNasc(date)} ></DatePicker>
+              <DatePicker dateFormat={"dd/MM/yyyy"} locale={pt}  className="block  w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white " selected={data_nasc} onChange={(date)=>date && setNasc(date)} ></DatePicker>
               </div>
             
               
               <div>
               <label  className="block mb-1 text-sm font-medium  text-white">PARENTESCO</label>
-              <select className="block w-full p-1.5  sm:text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={grau_parentesco} onChange={e=>setPar(e.target.value)} >
+              <select className="block w-full p-1.5  sm:text-xs  border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" value={grau_parentesco} onChange={e=>setPar(e.target.value)} >
                     <option selected className="text-gray-200">PARENTESCO</option>
                     <option>CONJUGE</option>
                     <option>PAI</option>
@@ -85,11 +85,11 @@ useEffect(()=>{
               </div>
               <div>
               <label className="block mb-1 text-sm font-medium  text-white">ADESÃO</label>
-              <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"}  className="block  w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " selected={data_adesao} onChange={(date)=>date && setAdesao(date)} ></DatePicker>
+              <DatePicker dateFormat={"dd/MM/yyyy"} locale={pt}  className="block  w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white " selected={data_adesao} onChange={(date)=>date && setAdesao(date)} ></DatePicker>
               </div>
               <div className="relative">
               <label  className="block mb-1 text-sm font-medium  text-white">CARÊNCIA</label>
-              <DatePicker dateFormat={"dd/MM/yyyy"} locale={"pt"}  className="block  w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " selected={carencia} onChange={(date)=>date && setCarencia(date)} ></DatePicker>
+              <DatePicker dateFormat={"dd/MM/yyyy"} locale={pt}  className="block  w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white " selected={carencia} onChange={(date)=>date && setCarencia(date)} ></DatePicker>
               </div>
               <div className="col-span-2">
               <button  type="button" onClick={adicionar}  className=" block  justify-center items-center w-full px-3 py-1.5 text-sm font-medium text-center text-white rounded-lg  focus:ring-4 focus:outline-none  bg-blue-600 hover:bg-blue-700 focus:ring-blue-800" >ADICIONAR</button>  

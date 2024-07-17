@@ -26,7 +26,7 @@ export function DadosObito({servico,setarServico}:DadosProps) {
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Local do Falecimento</label>
-                            <input value={servico.end_local_falecimento} onChange={e => setarServico({ end_local_falecimento: e.target.value })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
+                            <input value={servico.end_local_falecimento} onChange={e => setarServico({ end_local_falecimento: e.target.value.toUpperCase() })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
                         </div>
 
                         <div className="flex flex-col col-span-1 ">
@@ -49,7 +49,7 @@ export function DadosObito({servico,setarServico}:DadosProps) {
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Nome do Médico</label>
-                            <input value={servico.dc_nome_medico} onChange={e => setarServico({ dc_nome_medico: e.target.value })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
+                            <input value={servico.dc_nome_medico} onChange={e => setarServico({ dc_nome_medico: e.target.value.toUpperCase() })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">CRM</label>
@@ -69,13 +69,13 @@ export function DadosObito({servico,setarServico}:DadosProps) {
                         </div>
                         <div className="flex flex-col col-span-1 ">
                             <label className="block  text-xs font-medium  text-white">Tipo</label>
-                            <input value={servico.jazigo} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
+                            <input value={servico.jazigo} onChange={e=>setarServico({...servico,jazigo:e.target.value.toUpperCase()})} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></input>
                         </div>
 
 
                         <div className="flex flex-col col-span-3 ">
                             <label className="block  text-xs font-medium  p-1 text-white">Observações</label>
-                            <textarea value={servico.caracterista_corporal} onChange={e => setarServico({ caracterista_corporal: e.target.value })} rows={3} className="whitespace-nowrap uppercase rounded-lg  py-1 px-2 w-full text-xs  bg-transparent border-2   text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></textarea>
+                            <textarea value={servico.caracterista_corporal} onChange={e => setarServico({ caracterista_corporal: e.target.value.toUpperCase()  })} rows={3} className="whitespace-nowrap uppercase rounded-lg  py-1 px-2 w-full text-xs  bg-transparent border-2   text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" ></textarea>
                         </div>
                     </div>
   )

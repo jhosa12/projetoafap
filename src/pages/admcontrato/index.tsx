@@ -31,6 +31,7 @@ import PrintButton from "@/Documents/carteiraAssociado/PrintButton";
 import CarteirasDep from "../../components/admContrato/carteirasDep";
 import { IoPrint } from "react-icons/io5";
 import { HistoricoMensalidade } from "@/components/admContrato/historicoMensalidade/historicoMensalidade";
+import PrintButtonCarne from "@/Documents/carne/PrintButton";
 
 
 
@@ -661,6 +662,12 @@ export default function AdmContrato() {
                             dados={{acordo:data.acordo??{},closeModalPlano:data.closeModalPlano??false,id_associado:dadosassociado?.id_associado??0,mensalidade:data.mensalidade??{},mensalidadeAnt:data.mensalidadeAnt??{}}}
                             dadosAssociado={{
                                 nome:dadosassociado?.nome??'',
+                                endereco:dadosassociado?.endereco??'',
+                                bairro:dadosassociado?.bairro??'',
+                                cidade:dadosassociado?.cidade??'',
+                                plano:dadosassociado?.contrato?.plano??'',
+                                numero:Number(dadosassociado?.numero),
+                                uf:dadosassociado?.uf??'',
                                 arrayAcordo:dadosassociado?.acordo??[],
                                 arrayMensalidade:dadosassociado?.mensalidade??[],
                                 id_associado:dadosassociado?.id_associado??0,
@@ -676,7 +683,7 @@ export default function AdmContrato() {
                                 <div className="flex w-full mb-2 gap-2">
                                     <label className="relative inline-flex w-[150px] justify-center  items-center mb-1 cursor-pointer">
                                         <input checked={checkDependente} onChange={() => setCheckDependente(!checkDependente)} type="checkbox" value="2" className="sr-only peer" />
-                                        <div className="w-9 h-5 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[7px] after:start-[5px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
+                                        <div className="w-9 h-5 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[7px] after:start-[9px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
 
                                         <Tooltip className="z-30" id="id_dependente" />
 
@@ -885,7 +892,22 @@ export default function AdmContrato() {
                                     <div className="flex flex-row text-white gap-6 w-full">
                                         <PrintButtonContrato />
                                         <PrintButton />
+                                        <PrintButtonCarne
+                                        arrayMensalidade={dadosassociado?.mensalidade??[]}
+                                        dadosAssociado={{
+                                            nome:dadosassociado?.nome??'',
+                                            bairro:dadosassociado?.bairro??'',
+                                            cidade:dadosassociado?.cidade??'',
+                                            endereco:dadosassociado?.endereco??'',
+                                            id_contrato:Number(dadosassociado?.contrato?.id_contrato),
+                                            numero:Number(dadosassociado?.numero),
+                                            plano:dadosassociado?.contrato?.plano??'',
+                                            uf:dadosassociado?.uf??''
+                                        }}
 
+                                        
+                                        />
+                                        
                                     </div>
 
                                 </div>
