@@ -61,7 +61,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
         return (
             <ul className="flex flex-col w-full justify-center items-center pt-4">
             {arrayMensalidade.map((item,index)=>(
-               item.status==='A'&& <li key={item.id_mensalidade} style={{display:'block',position:'relative',borderBottom:'1px dotted',lineHeight: '1'}} className="flex w-full  text-black text-xs ">
+               item.status==='A'&& <li key={item.id_mensalidade} style={{display:'block',position:'relative',borderTop:'1px dotted',lineHeight: '1'}} className="flex w-full  text-black text-xs ">
                 
                     <Image src={carne} className=" object-cover  h-[250px]" alt="modeloCarne"  />
                

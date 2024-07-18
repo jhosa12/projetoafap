@@ -104,7 +104,31 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
     let currentAcordoId: string;
 
     const imprimirCarne =useReactToPrint({
+        pageStyle: `
+            @page {
+                margin: 1rem;
+            }
+            @media print {
+                body {
+                    -webkit-print-color-adjust: exact;
+                }
+                @page {
+                    size: auto;
+                    margin: 1rem;
+                }
+                @page {
+                    @top-center {
+                        content: none;
+                    }
+                    @bottom-center {
+                        content: none;
+                    }
+                }
+            }
+        `,
+        documentTitle:'CARNÊ ASSOCIADO',
         content:()=>componentRef.current
+
    })
 
     const setarModalAcordo = (fields:{open:boolean,visible:boolean})=>{
