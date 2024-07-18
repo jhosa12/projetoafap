@@ -23,14 +23,14 @@ import { DadosVelorio } from "@/components/obito/dadosVelorio";
 
 
 
-interface EstoqueProps{
-id_produto:number,
-id_estoque:number,
-data:Date,
-estado:string,
-produto:string,
-total:number
-fornecedor:string
+interface EstoqueProps {
+    id_produto: number,
+    id_estoque: number,
+    data: Date,
+    estado: string,
+    produto: string,
+    total: number
+    fornecedor: string
 }
 
 interface ArrayProps {
@@ -62,235 +62,13 @@ interface ListaProdutos {
     grupo: string,
     tipo: string,
     taxa_conval: number,
-    estoque:Array<EstoqueProps>
-}
-
-
-interface MensalidadeProps {
-    id_acordo: number,
-    parcela_n: number,
-    vencimento: Date,
-    cobranca: Date,
-    valor_principal: number,
-    close: boolean,
-    status: string,
-    usuario: string,
-    id_mensalidade: number,
-    valor_total: number,
-    motivo_bonus: string,
-    data_pgto: Date,
-    referencia: string,
-    index: number
-}
-
-
-interface ConvProps {
-    editar: boolean
-    id_conv: number | null,
-    id_contrato: number | null,
-    id_associado: number | null,
-    id_dependente: number | null,
-    id_contrato_st: string,
-    tipo_entrada: string,
-    nome: string,
-    cpf_cnpj: string,
-    data: Date,
-    status: string,
-    forma_pag: string,
-    logradouro: string,
-    numero: number | null,
-    complemento: string,
-    bairro: string,
-    cep: string,
-    cidade: string,
-    uf: string,
-    subtotal: number | null,
-    descontos: number | null,
-    total: number | null,
-    logradouro_r: string,
-    numero_r: number | null,
-    complemento_r: string,
-    bairro_r: string,
-    cep_r: string,
-    cidade_r: string,
-    uf_r: string,
-    data_inc: Date,
-    hora_inc: Date,
-    usuario: string,
-    obs: string,
-    convalescenca_prod: Partial<{
-        id_conv: number,
-        id_produto: number,
-        descricao: string,
-        unidade: string,
-        grupo: string,
-        data: Date,
-        data_dev: Date,
-        quantidade: number,
-        valor: number,
-        descontos: number,
-        total: number,
-        hora: Date,
-        cortesia: string,
-        retornavel: string,
-        status: string
-    }>,
-    contrato: {
-        situacao: string,
-        carencia: string,
-        associado: {
-            nome: string
-        }
-
-    }
-
-}
-
-interface ContratoProps {
-    id_contrato: number,
-    plano: string,
-    id_plano: number,
-    valor_mensalidade: number,
-    dt_adesao: Date,
-    dt_carencia: Date,
-    situacao: string,
-    anotacoes: string,
-    consultor: string,
-    cobrador: string,
-    data_vencimento: Date,
-    n_parcelas: number,
-    origem: string,
-    supervisor: string,
-    convalescencia: Array<ConvProps>,
-    categoria_inativo: string,
-    motivo_inativo: string,
-    dt_cancelamento: true,
-}
-interface AcordoProps {
-    total_acordo: number,
-    data_inicio: Date,
-    data_fim: Date,
-    realizado_por: string,
-    dt_pgto: Date,
-    mensalidade: Array<Partial<MensalidadeProps>>,
-    status: string,
-    descricao: string,
-    metodo: string
-    closeAcordo: boolean,
-    id_acordo: number,
-    visibilidade: boolean
-}
-
-interface DependentesProps {
-    nome: string,
-    data_nasc: Date,
-    grau_parentesco: string,
-    data_adesao: Date,
-    carencia: Date,
-    id_dependente: number,
-    cad_dh: Date,
-    close: boolean,
-    sexo: string,
-    saveAdd: boolean,
-    excluido: boolean,
-    dt_exclusao: Date,
-    user_exclusao: string,
-    exclusao_motivo: string,
-    convalescenca: {
-        convalescenca_prod: Partial<{
-            id_conv: number,
-            id_produto: number,
-            descricao: string,
-            unidade: string,
-            grupo: string,
-            data: Date,
-            data_dev: Date,
-            quantidade: number,
-            valor: number,
-            descontos: number,
-            total: number,
-            hora: Date,
-            cortesia: string,
-            retornavel: string,
-            status: string
-        }>,
-    }
-}
-
-interface AssociadoProps {
-    nome: string,
-    data_nasc: Date,
-    sexo: string,
-    celular1: string, celular2: string, telefone: string,
-    id_associado: number,
-    endereco: string,
-    bairro: string,
-    numero: number,
-    cidade: string,
-    cep: string,
-    cpf: string, rg: string
-    email: string,
-    profissao: string,
-    guia_rua: string,
-    uf: string,
-    mensalidade: Array<MensalidadeProps>,
-    contrato: ContratoProps,
-    dependentes: Array<DependentesProps>
-    acordo: Array<AcordoProps>
-
-}
-interface CidadesProps {
-    id_cidade: number,
-    estado: number,
-    uf: string,
-    cidade: string
-}
-interface PlanosProps {
-    id_plano: number,
-    descricao: string,
-    valor: number
-}
-
-interface DadosCadastro {
-    empresa: string,
-    name: string,
-    nasc: string,
-    sexo: string,
-    cep: string,
-    endereco: string,
-    numero: number,
-    bairro: string,
-    referencia: string,
-    cidade: string,
-    uf: string,
-    email: string,
-    rg: string,
-    cpf: string,
-    closeModalPlano: boolean,
-    closeModalCadastro: boolean
-    arraydep: Array<Partial<DependentesProps>>,
-    dependente: Partial<DependentesProps>,
-    naturalidade: string,
-    celular1: string,
-    celular2: string,
-    telefone: string,
-    contrato: Partial<ContratoProps>,
-    origem: string,
-    profissao: string,
-    planos: Array<Partial<PlanosProps>>
-    cidades: Array<Partial<CidadesProps>>
-    id_associado: number,
-    mensalidade: Partial<MensalidadeProps>
-    mensalidadeAnt: Partial<MensalidadeProps>
-    mensalidadeProx: Partial<MensalidadeProps>,
-    closeEditarAssociado: boolean,
-    acordo: Partial<AcordoProps>
+    estoque: Array<EstoqueProps>
 }
 
 
 export default function GerarOS() {
 
-    const { usuario, setarServico, servico, signOut,data,closeModa,dadosassociado,carregarDados } = useContext(AuthContext)
+    const { usuario, setarServico, servico, signOut, data, closeModa, dadosassociado, carregarDados } = useContext(AuthContext)
     const [listaProduto, setListaProdutos] = useState<Partial<ArrayProps>>({ descricao_item: "" });
     const [selectProdutos, setselectProdutos] = useState<Array<ListaProdutos>>([]);
     const [total, setTotal] = useState<number>();
@@ -299,11 +77,11 @@ export default function GerarOS() {
     const [modalDependente, setModalDependente] = useState(false);
     const [componenteMounted, setMounted] = useState(false);
     const [particular, setParticular] = useState(false);
-    const [indexTab,setIndex]=useState<number>(0)
+    const [indexTab, setIndex] = useState<number>(0)
 
 
-   
 
+    
 
 
     function setarProdutos(fields: Partial<ArrayProps>) {
@@ -351,7 +129,7 @@ export default function GerarOS() {
     }, [data.id_associado])
 
 
-   
+
 
 
     useEffect(() => {
@@ -405,7 +183,7 @@ export default function GerarOS() {
                 success: 'Cadastrado com sucesso!'
             }
         )
-        setarServico({...servico,id_obitos:response.data})
+        setarServico({ ...servico, id_obitos: response.data })
     }
 
 
@@ -414,7 +192,7 @@ export default function GerarOS() {
     async function editarObito() {
         await toast.promise(
             api.put('/obitos/editarObito', {
-               ...servico,
+                ...servico,
                 status: servico.listacheckida?.find(item => item.status === false) || servico.listacheckvolta?.find(item => item.status === false) ? 'PENDENTE' : 'FECHADO'
 
             }),
@@ -514,8 +292,7 @@ export default function GerarOS() {
     }
     return (
         <>
-            {data.closeModalPlano && <ModalBusca/>}
-
+           
             {modalDependente && dependente && (
                 <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
 
@@ -564,31 +341,31 @@ export default function GerarOS() {
                     <ul className="flex flex-wrap w-full text-sm font-medium text-center  border-b   rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800" role="tablist">
 
                         {!particular && <li className="me-2">
-                            <button type="button" onClick={() => {setIndex(1)}} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab===1 && "text-blue-500"}`}>Plano</button>
+                            <button type="button" onClick={() => { setIndex(1) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 1 && "text-blue-500"}`}>Plano</button>
                         </li>}
                         <li className="me-2">
-                            <button type="button" onClick={() => { setIndex(2)}} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab===2 && "text-blue-500"}`}>Falecido</button>
+                            <button type="button" onClick={() => { setIndex(2) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 2 && "text-blue-500"}`}>Falecido</button>
                         </li>
                         <li className="me-2">
-                            <button type="button" onClick={() => {setIndex(3) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab===3 && "text-blue-500"}`}>Declarante</button>
+                            <button type="button" onClick={() => { setIndex(3) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 3 && "text-blue-500"}`}>Declarante</button>
                         </li>
                         <li className="me-2">
-                            <button type="button" onClick={() => { setIndex(4) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab===4 && "text-blue-500"}`}>Dados do Óbito</button>
+                            <button type="button" onClick={() => { setIndex(4) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 4 && "text-blue-500"}`}>Dados do Óbito</button>
                         </li>
                         <li className="me-2">
-                            <button type="button" onClick={() => {setIndex(5) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab===5 && "text-blue-500"}`}>Produtos e Serviços</button>
+                            <button type="button" onClick={() => { setIndex(5) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 5 && "text-blue-500"}`}>Produtos e Serviços</button>
                         </li>
                         <li className="me-2">
-                            <button type="button" onClick={() => { setIndex(6)}} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab===6 && "text-blue-500"}`}>Velório</button>
+                            <button type="button" onClick={() => { setIndex(6) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 6 && "text-blue-500"}`}>Velório</button>
                         </li>
                         <li className="me-2">
-                            <button type="button" onClick={() => { setIndex(7) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab===7 && "text-blue-500"}`}>CheckLists</button>
+                            <button type="button" onClick={() => { setIndex(7) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 7 && "text-blue-500"}`}>CheckLists</button>
                         </li>
                         <li className="me-2">
-                            <button type="button" onClick={() => { setIndex(8) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab===8 && "text-blue-500"}`}>Documentação</button>
+                            <button type="button" onClick={() => { setIndex(8) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 8 && "text-blue-500"}`}>Documentação</button>
                         </li>
                         <li className="me-2">
-                            <button type="button" onClick={() => { setIndex(9) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab===9 && "text-blue-500"}`}>Itens Usados</button>
+                            <button type="button" onClick={() => { setIndex(9) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 9 && "text-blue-500"}`}>Itens Usados</button>
                         </li>
                         <li className="ml-auto flex items-center mr-2">
                             {servico.id_obitos ? <button type="button" onClick={() => editarObito()} className="inline-flex p-2 text-white font-semibold rounded-lg bg-yellow-500 gap-1">Gravar Alterações<HiOutlineSave size={22} /></button> : <button type="button" onClick={() => cadastrarObito()} className="inline-flex p-2 text-white font-semibold rounded-lg bg-green-600 gap-1">Salvar<HiOutlineSave size={22} /></button>}
@@ -597,17 +374,17 @@ export default function GerarOS() {
                     </ul>
 
 
-                    {indexTab===1 && !particular && (<DadosPlano dados={{
-                        nome:dadosassociado?.nome,
-                        categoria:dadosassociado?.contrato?.plano,
-                        id_associado:dadosassociado?.id_associado,
-                        id_contrato:dadosassociado?.contrato?.id_contrato,
-                        situacao:dadosassociado?.contrato?.situacao
+                    {indexTab === 1 && !particular && (<DadosPlano dados={{
+                        nome: dadosassociado?.nome,
+                        categoria: dadosassociado?.contrato?.plano,
+                        id_associado: dadosassociado?.id_associado,
+                        id_contrato: dadosassociado?.contrato?.id_contrato,
+                        situacao: dadosassociado?.contrato?.situacao
                     }}
-                    
+
                     />)}
 
-                    {indexTab===2 &&  <>
+                    {indexTab === 2 && <>
                         {!particular && <div className="inline-flex gap-8 pl-4 pt-1">
                             <div className="flex items-center ">
                                 <input type="checkbox" checked={titular} onClick={() => { setTitular(!titular), setDependente(false) }} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
@@ -618,40 +395,48 @@ export default function GerarOS() {
                                 <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">DEPENDENTE</label>
                             </div>
                         </div>}
-                       <DadosFalecido servico={servico} setarServico={setarServico}/>
+                        <DadosFalecido servico={servico} setarServico={setarServico} />
 
-                        </>}
-
-
-
-                    {indexTab===3 && <DadosDeclarante servico={servico} setarServico={setarServico}/>}
+                    </>}
 
 
 
-                    {indexTab===4 && <DadosObito servico={servico} setarServico={setarServico}/>}
-
-                    {indexTab===5 && <ProdutosServicos
-                    deletarProduto={deletarProduto}
-                    lancarCaixa={lancarCaixa}
-                    listaProduto={listaProduto}
-                    obito_itens={servico.obito_itens ??[]}
-                    selectProdutos={selectProdutos}
-                    setarProdutos={setarProdutos}
-                    setarServico={setarServico}
-                    total={total ??0}
-                    id_obito={servico.id_obitos??0}
-
-                    
-                    /> }
-
-
-                    {indexTab===9 && <ItensUsados selectProdutos={selectProdutos}/>}
+                    {indexTab === 3 && <DadosDeclarante servico={servico} setarServico={setarServico} />}
 
 
 
-                    {indexTab===6 && <DadosVelorio servico={servico} setarServico={setarServico} />}
+                    {indexTab === 4 && <DadosObito servico={servico} setarServico={setarServico} />}
 
-                    {indexTab===7 && <div className="flex flex-row w-full justify-around rounded-lg p-2   gap-6">    <div className="flex flex-col overflow-y-auto w-1/3 text-white p-2 gap-2 rounded-md bg-gray-600 mt-1 mb-1 max-h-[calc(100vh-250px)] ">
+                    {indexTab === 5 && <ProdutosServicos
+                        deletarProduto={deletarProduto}
+                        lancarCaixa={lancarCaixa}
+                        listaProduto={listaProduto}
+                        obito_itens={servico.obito_itens ?? []}
+                        selectProdutos={selectProdutos}
+                        setarProdutos={setarProdutos}
+                        setarServico={setarServico}
+                        total={total ?? 0}
+                        id_obito={servico.id_obitos ?? 0}
+
+
+                    />}
+
+
+                    {indexTab === 9 && <ItensUsados
+                        selectProdutos={selectProdutos}
+                        deletarProduto={deletarProduto}
+                        id_obito={Number(servico.id_obitos)}
+                        obito_itens={servico.obito_itens ?? []}
+                        setarServico={setarServico}
+                        atualizarProdutos={listarProdutos}
+
+                    />}
+
+
+
+                    {indexTab === 6 && <DadosVelorio servico={servico} setarServico={setarServico} />}
+
+                    {indexTab === 7 && <div className="flex flex-row w-full justify-around rounded-lg p-2   gap-6">    <div className="flex flex-col overflow-y-auto w-1/3 text-white p-2 gap-2 rounded-md bg-gray-600 mt-1 mb-1 max-h-[calc(100vh-250px)] ">
                         <h1 className="border-b-[1px] border-gray-500">Checklist Saída</h1>
                         <ul className="flex flex-col gap-2">
                             {servico.listacheckida?.map((it, index) => {
@@ -689,6 +474,7 @@ export default function GerarOS() {
 
                 </div>
 
+                {data.closeModalPlano && (<ModalBusca />)}
 
 
             </div>

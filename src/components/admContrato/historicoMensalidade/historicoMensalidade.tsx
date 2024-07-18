@@ -334,9 +334,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
         </div>
 
 
-        <button onClick={imprimirCarne} className="flex p-1 rounded-lg justify-center bg-gray-500 gap-1 items-center text-xs z-40 text-white"><IoPrint size={18}/> PRINT</button>
-        
-    
+        <button onClick={imprimirCarne} className="flex p-1 rounded-lg justify-center bg-gray-500 gap-1 items-center text-[14px] z-40 text-white"><IoPrint size={18}/>Imprimir Carnê</button>
 
     </div>
 <div className="flex w-full p-4 max-h-[calc(100vh-255px)]">

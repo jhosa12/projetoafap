@@ -151,6 +151,7 @@ type ContratoProps = {
     categoria_inativo: string,
     motivo_inativo: string,
     dt_cancelamento: true,
+    obitos:Array<ObitoProps>
 
 
 
@@ -193,6 +194,7 @@ type AssociadoProps = {
     contrato: ContratoProps,
     dependentes: Array<DependentesProps>
     acordo: Array<AcordoProps>
+    
 
 }
 type AuthContextData = {
@@ -352,7 +354,9 @@ interface ObitoProps {
 
 
 interface ArrayProdutoProps {
+    id_ob_itens:number|null
     id_produto: number | null,
+    id_estoque:number|null,
     descricao_item: string;
     valor_unit: number | null,
     quantidade: number | null,

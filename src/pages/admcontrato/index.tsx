@@ -32,6 +32,7 @@ import CarteirasDep from "../../components/admContrato/carteirasDep";
 import { IoPrint } from "react-icons/io5";
 import { HistoricoMensalidade } from "@/components/admContrato/historicoMensalidade/historicoMensalidade";
 import PrintButtonCarne from "@/Documents/carne/PrintButton";
+import ObitosAssociado from "@/components/admContrato/obitos/obitos";
 
 
 
@@ -230,28 +231,21 @@ interface AssociadoProps {
 export default function AdmContrato() {
 
     const { usuario, data, closeModa, dadosassociado, carregarDados } = useContext(AuthContext)
-    const [dados, setDados] = useState(true)
-    const [historico, setHistorico] = useState(false)
-    const [dependentes, setDependentes] = useState(false)
-    const [documentos, setDocumentos] = useState(false)
+    const [indexTab,setIndex]=useState<number>(2)
     const [checkDependente, setCheckDependente] = useState(false)
     const [excluirDependente, setExcluirDependente] = useState(false)
     const [openEdit, setOpenEdit] = useState<number>(0)
     const [observacao, setObservacao] = useState('');
     const [verObs, setVerObs] = useState(false)
     const [componenteMounted, setMounted] = useState(false)
- 
-   
-    const [mensalidadeComGrupoE, setMensalidaGrupo] = useState<Array<MensalidadeProps>>([]);
-    const [carteira, setCarteira] = useState(false)
-    const [obitos, setObitos] = useState(false)
-   
+ //   const [mensalidadeComGrupoE, setMensalidaGrupo] = useState<Array<MensalidadeProps>>([]);
+  
 
        
 
    
 
-    // Função para adicionar ou remover linhas do array de linhas selecionadas
+   
  
     const limparDadosCadastro=()=>{
             closeModa({
@@ -291,7 +285,7 @@ export default function AdmContrato() {
 
     function handleObservacao() {
 
-        const novaObservacao = observacao.trim();
+        const novaObservacao = observacao.trim(); // Remove espaços em branco
 
         if (novaObservacao !== '') {
             const anotacoesAntigas = dadosassociado && dadosassociado.contrato?.anotacoes || ''; // Definindo um valor padrão para anotacoesAntigas caso seja null ou undefined
@@ -341,13 +335,7 @@ export default function AdmContrato() {
 
     }
     function mensalidadeSet() {
-        setDados(false),
-            setDependentes(false),
-            setHistorico(true),
-            setCarteira(false),
-            setDocumentos(false)
-
-
+       setIndex(2)
     }
     useEffect(() => {
 
@@ -367,12 +355,7 @@ export default function AdmContrato() {
 
         closeModa({ ...data, closeModalPlano: false })
 
-        setDados(false),
-            setDependentes(false),
-            setHistorico(true)
-        setVerObs(false)
-        setCarteira(false)
-        setDocumentos(false)
+        setIndex(2)
 
 
 
@@ -479,27 +462,27 @@ export default function AdmContrato() {
                     <div className="flex-col w-full border  rounded-lg shadow  border-gray-700">
                         <ul className="flex flex-wrap text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800" role="tablist">
                             <li className="me-2">
-                                <button type="button" onClick={() => { setDados(true), setDependentes(false), setHistorico(false), setDocumentos(false), setCarteira(false) }} className={`inline-block p-4 font-semibold rounded-ss-lg  bg-gray-800 hover:bg-gray-700 ${dados && "text-blue-500"} `}>Dados</button>
+                                <button type="button" onClick={() => { setIndex(1) }} className={`inline-block p-4 font-semibold rounded-ss-lg  bg-gray-800 hover:bg-gray-700 ${indexTab===1 && "text-blue-500"} `}>Dados</button>
                             </li>
                             <li className="me-2">
-                                <button type="button" onClick={() => mensalidadeSet()} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${historico && "text-blue-500"}`}>Histórico/Movimentação</button>
+                                <button type="button" onClick={() => setIndex(2)} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${indexTab===2 && "text-blue-500"}`}>Histórico/Movimentação</button>
                             </li>
                             <li className="me-2">
-                                <button type="button" onClick={() => { setDados(false), setDependentes(true), setHistorico(false), setDocumentos(false), setCarteira(false) }} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${dependentes && "text-blue-500"}`}>Dependentes</button>
+                                <button type="button" onClick={() =>setIndex(3)} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${indexTab===3 && "text-blue-500"}`}>Dependentes</button>
                             </li>
                             <li className="me-2">
-                                <button type="button" onClick={() => { setDados(false), setDependentes(false), setHistorico(false), setDocumentos(false), setCarteira(true) }} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${carteira && "text-blue-500"}`}>Carteiras</button>
+                                <button type="button" onClick={() => setIndex(4)} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${indexTab===4 && "text-blue-500"}`}>Carteiras</button>
                             </li>
                             <li className="me-2">
-                                <button type="button" onClick={() => { setDados(false), setDependentes(true), setHistorico(false), setDocumentos(false), setCarteira(false) }} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${obitos && "text-blue-500"}`}>Óbitos</button>
+                                <button type="button" onClick={() => setIndex(5)} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${indexTab===5 && "text-blue-500"}`}>Óbitos</button>
                             </li>
                             <li className="me-2">
-                                <button type="button" onClick={() => { setDados(false), setDependentes(false), setHistorico(false), setDocumentos(true), setCarteira(false) }} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${documentos && "text-blue-500"}`}>Documentos</button>
+                                <button type="button" onClick={() => setIndex(6)} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${indexTab===6 && "text-blue-500"}`}>Documentos</button>
                             </li>
                         </ul>
                         <div className="flex flex-col">
 
-                            {dados && dadosassociado && (<div className={`p-4  rounded-lg md:p-8`}>
+                            {indexTab===1 && dadosassociado && (<div className={`p-4  rounded-lg md:p-8`}>
 
                                 <h2 className="inline-flex gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">
                                     {dadosassociado?.contrato?.id_contrato}-{dadosassociado?.nome}
@@ -674,7 +657,7 @@ export default function AdmContrato() {
                             </div>
                             )}
 
-                            {historico && (<HistoricoMensalidade
+                            {indexTab===2 && (<HistoricoMensalidade
                             carregarDados={carregarDados}
                             dados={{acordo:data.acordo??{},closeModalPlano:data.closeModalPlano??false,id_associado:dadosassociado?.id_associado??0,mensalidade:data.mensalidade??{},mensalidadeAnt:data.mensalidadeAnt??{}}}
                             dadosAssociado={{
@@ -696,7 +679,7 @@ export default function AdmContrato() {
                             
                             
                             /> )}
-                            {dependentes && (<div className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)]  max-w-[calc(100vw-350px)]  p-4 shadow-md sm:rounded-lg">
+                            {indexTab===3 && (<div className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)]  max-w-[calc(100vw-350px)]  p-4 shadow-md sm:rounded-lg">
                                 <div className="flex w-full mb-2 gap-2">
                                     <label className="relative inline-flex w-[150px] justify-center  items-center mb-1 cursor-pointer">
                                         <input checked={checkDependente} onChange={() => setCheckDependente(!checkDependente)} type="checkbox" value="2" className="sr-only peer" />
@@ -905,7 +888,7 @@ export default function AdmContrato() {
                             </div>)}
 
                             {
-                                documentos && <div className="flex flex-col w-full rounded-lg p-6   gap-5">
+                                indexTab===6 && <div className="flex flex-col w-full rounded-lg p-6   gap-5">
                                     <div className="flex flex-row text-white gap-6 w-full">
                                         <PrintButtonContrato />
                                         <PrintButton />
@@ -931,8 +914,12 @@ export default function AdmContrato() {
                             }
 
                             {
-                                carteira && (<CarteirasDep dependentes={dadosassociado?.dependentes ?? []} contrato={dadosassociado?.contrato?.id_contrato ?? 0} plano={dadosassociado?.contrato?.plano ?? ''} />)
+                                indexTab===4 && (<CarteirasDep dependentes={dadosassociado?.dependentes ?? []} contrato={dadosassociado?.contrato?.id_contrato ?? 0} plano={dadosassociado?.contrato?.plano ?? ''} />)
                             }
+
+                            {indexTab===5 && (<ObitosAssociado
+                                obitos={dadosassociado?.contrato?.obitos??[]}
+                            />)}
 
 
 

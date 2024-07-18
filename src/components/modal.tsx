@@ -192,7 +192,7 @@ export function ModalBusca(){
    setLoading(false)
   }
   function dadosAssociado(id_associado:number) {
-   closeModa({...data,id_associado})
+   closeModa({...data,id_associado,closeModalPlano:false})
 
   }
 //  useEffect(()=>{
