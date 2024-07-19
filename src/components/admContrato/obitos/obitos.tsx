@@ -177,19 +177,22 @@ export default function ObitosAssociado({obitos}:DadosProps){
                                     <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
                                        <tr>
                                             <th scope="col" className=" px-2 py-1">
+                                                FALECIDO
+                                            </th>
+                                            <th scope="col" className="px-12 py-1">
                                                 NOME
                                             </th>
                                             <th scope="col" className="px-12 py-1">
-                                                ADESÃO
+                                                DATA NASC.
                                             </th>
                                             <th scope="col" className="px-12 py-1">
-                                                CARÊNCIA
+                                                DATA FALECIMENTO
                                             </th>
                                             <th scope="col" className="px-12 py-1">
-                                                NASC.
+                                                HORA FALECIMENTO
                                             </th>
                                             <th scope="col" className="px-12 py-1">
-                                                PARENTESCO
+                                                LOCAL FALECIMENTO
                                             </th>
                                             <th scope="col" className="px-4 py-1">
                                                 <span className="">Ações</span>
@@ -199,20 +202,26 @@ export default function ObitosAssociado({obitos}:DadosProps){
                                       <tbody>
                                         {obitos.map((item,index)=>(
                                             <tr  className={`cursor-pointer hover:bg-gray-500 text-white border-b  bg-gray-800 border-gray-700`}>
-                                            <th scope="row" className="px-2 py-1 font-medium  whitespace-nowrap">{item.nome_falecido}</th>
-                                            <td className="px-10 py-1">
-                                                        {item.end_data_falecimento && new Date(item.end_data_falecimento).toLocaleDateString()}
-                                                    </td>
-                                            <td className="px-10 py-1">
-                                            {}
+                                            <th scope="row" className="px-2 py-1 font-medium  whitespace-nowrap">{item.falecido}</th>
+                                            <td className="px-12 py-1">
+                                            {item.nome_falecido}
                                         </td>
-                                        <td className="px-8 py-1">
-                                                        {}
+                                            <td className="px-12 py-1">
+                                                        {item.data_nascimento
+                                                         && new Date(item.data_nascimento).toLocaleDateString()}
+                                                    </td>
+                                          
+                                        <td className="px-12 py-1">
+                                        {item.end_data_falecimento
+                                                         && new Date(item.end_data_falecimento).toLocaleDateString()}
                                                     </td>
                                                     <td className="px-12 py-1">
-                                                        {}
+                                                        {item.end_hora_falecimento && new Date(item.end_hora_falecimento).toLocaleTimeString()}
                                                     </td>
-                                                    <td className="px-6 py-1">
+                                                    <td className="px-12 py-1">
+                                        {item.end_local_falecimento}
+                                                    </td>
+                                                    <td className="px-12 py-1">
 
                                                     { 
                                                              <button onClick={(event)=>{event.stopPropagation()}} className="object-contain z-40 text-blue-500"><IoPrint size={18}/></button>

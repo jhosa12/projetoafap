@@ -52,7 +52,7 @@ interface DadosProps{
    atualizarProdutos:()=>Promise<void>,
     obito_itens:Array<Partial<ProdutosProps>>
     setarServico:(fields:Partial<{obito_itens:Array<Partial<ProdutosProps>>}>)=>void
-    deletarProduto:(index:number)=>void
+ 
     //setSelectListaProdutos:Array<ListaProdutos>
 }
 
@@ -65,12 +65,9 @@ interface ItensProps{
     total_estoque:number,
 }
 
-
-export function ItensUsados({selectProdutos,obito_itens,setarServico,deletarProduto,id_obito,atualizarProdutos}:DadosProps) {
+export function ItensUsados({selectProdutos,obito_itens,setarServico,id_obito,atualizarProdutos}:DadosProps) {
         const [itens,setItens] = useState<ItensProps>({produto:'',quantidade:1,id_estoque:0,valor_custo:0,valor_total:0,total_estoque:0})
-        const [total,setTotal] = useState<number>(0)
-
-
+        
 
         const setarItens = (fields:ItensProps)=>{
             setItens((prev:ItensProps)=>{
@@ -99,6 +96,42 @@ export function ItensUsados({selectProdutos,obito_itens,setarServico,deletarProd
     },[itens.quantidade,itens.produto])
 
 
+
+   async function deletarProduto({id_ob_itens,index}:{id_ob_itens:number,index:number}) {
+
+const id_estoque =Number(obito_itens[index].id_estoque)
+const quantidade =Number(obito_itens[index].quantidade)
+   
+
+
+
+       try {
+        await toast.promise(
+            api.delete(`/obitoItens/deletar/${String(id_ob_itens)}`),
+            {
+                error:'Erro ao deletar dado',
+                success:'Dado deletado',
+                pending:'Deletando dado....'
+                
+            }
+        )
+     
+      
+       await atualizarEstoque({acao:false,id_estoque,quantidade})
+       const novoArray = [...obito_itens]
+      novoArray.splice(index,1)
+       setarServico({obito_itens:novoArray})
+        
+       } catch (error) {
+        toast.error('ERRO DESCONHECIDO')
+       }
+      
+
+      
+
+       
+      
+    }
     async function adionarObitoItens() {
         if(!id_obito){
             toast.info('Salve os dados do Obito para acrescentar produtos!');
@@ -131,37 +164,47 @@ export function ItensUsados({selectProdutos,obito_itens,setarServico,deletarProd
             const novoArray = [...obito_itens]
             novoArray.push(response.data)
             setarServico({obito_itens:novoArray})
-            atualizrEstoque()
+            atualizarEstoque({acao:true,id_estoque:itens.id_estoque,quantidade:itens.quantidade})
         } catch (error) {
             toast.error('Erro ao salvar dados')
         }
         
     }
+    
 
-    async function atualizrEstoque() {
+    async function atualizarEstoque({acao,id_estoque,quantidade}:{acao:boolean,id_estoque:number,quantidade:number}) {
 
 
         try {
             const response = await toast.promise(
                 api.put('/estoque/reduzirProd',{
-                    id_estoque:itens.id_estoque,
-                    quantidade:itens.quantidade
+                    id_estoque:id_estoque,
+                    quantidade:quantidade,
+                    acao:acao
                 }),
                 {error:'Erro ao atualizar estoque',
                     pending:'Atualizando estoque....',
                     success:'Estoque atualizado'
                 }
             )
-            console.log(response.data)
-           atualizarProdutos()
+            setItens({
+                id_estoque:0,
+                produto:'',
+                quantidade:1,
+                total_estoque:0,
+                valor_custo:0,
+                valor_total:0
+            })
+          await atualizarProdutos()
+        
             
         } catch (error) {
-            toast.info('Erro ao Atualizar estoque')
+            console.log(error)
         }
 
-        setItens({id_estoque:0,produto:'',quantidade:1,total_estoque:0,valor_custo:0,
-            valor_total:0
-        })
+     
+     
+      
         
     }
 
@@ -172,7 +215,7 @@ export function ItensUsados({selectProdutos,obito_itens,setarServico,deletarProd
 
                 <div>
                     <label className="block mb-1 text-xs font-medium text-gray-900 dark:text-white">Descrição</label>
-                    <select defaultValue={''} onChange={e => {
+                    <select value={itens.id_estoque} onChange={e => {
                             const item = selectProdutos?.find(it=>it.estoque.some(atual=>atual.id_estoque===Number(e.target.value)))
                             const index = item?.estoque.findIndex(it=>it.id_estoque===Number(e.target.value))
                             
@@ -271,7 +314,8 @@ export function ItensUsados({selectProdutos,obito_itens,setarServico,deletarProd
                             R${item.valor_total}
                         </td>
                         <td className="px-4 py-1 flex justify-center text-center ">
-                            <button onClick={() => deletarProduto(index)} className=" flex justify-center items-center rounded-lg  px-1 py-1 text-white hover:bg-red-600"><MdClose /></button>
+                            <button onClick={() =>{
+                                deletarProduto({id_ob_itens:Number(item.id_ob_itens),index:Number(index)})}} className=" flex justify-center items-center rounded-lg  px-1 py-1 text-white hover:bg-red-600"><MdClose /></button>
                         </td>
 
                     </tr>)

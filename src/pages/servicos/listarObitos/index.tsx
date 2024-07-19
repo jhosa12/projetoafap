@@ -136,6 +136,7 @@ interface ObitoProps {
 }
 
 interface ArrayProdutoProps {
+    id_estoque:number|null
     id_produto:number | null,
     descricao_item: string;
     valor_unit: number | null,

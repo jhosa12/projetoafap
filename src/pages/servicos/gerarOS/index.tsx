@@ -68,7 +68,7 @@ interface ListaProdutos {
 
 export default function GerarOS() {
 
-    const { usuario, setarServico, servico, signOut, data, closeModa, dadosassociado, carregarDados } = useContext(AuthContext)
+    const { usuario, setarServico, servico, signOut, data, closeModa, dadosassociado,limparDados, carregarDados } = useContext(AuthContext)
     const [listaProduto, setListaProdutos] = useState<Partial<ArrayProps>>({ descricao_item: "" });
     const [selectProdutos, setselectProdutos] = useState<Array<ListaProdutos>>([]);
     const [total, setTotal] = useState<number>();
@@ -81,8 +81,42 @@ export default function GerarOS() {
 
 
 
-    
+   const handleCheckParticular=()=>{
+        if(!particular){
+            limparDados()
+            setarServico({
+                id_contrato:undefined,
+                id_titular:undefined
+            })
+            setParticular(true)
+            setTitular(false)
+            setDependente(false)
+        }else{
+            setParticular(false)
+        }
+     
+    }
+   const handleCheckDependente=()=>{
+    if(!dependente){
+        if(!dadosassociado?.contrato?.id_contrato){
+            toast.info('Realize a busca pelo associado')
+            return;
+        }else{
+            setDependente(true)
+            setTitular(false)
+            setParticular(false)
+            setModalDependente(true)
+        }
+    }else{
+        setDependente(false)
+    }
 
+    }
+
+
+    useEffect(()=>{
+        limparDados()
+    },[])
 
     function setarProdutos(fields: Partial<ArrayProps>) {
         setListaProdutos((prev: Partial<ArrayProps>) => {
@@ -96,27 +130,36 @@ export default function GerarOS() {
         })
 
     }
-
-    useEffect(() => {
-
-        if (titular) {
-            setarServico({
-                nome_falecido: dadosassociado?.nome,
-                data_nascimento: dadosassociado?.data_nasc,
-                end_rua: dadosassociado?.endereco,
-                end_bairro: dadosassociado?.bairro,
-                end_numero: String(dadosassociado?.numero),
-                end_cidade: dadosassociado?.cidade
-            })
-
+const handleCheckTitular=()=>{
+    if (!titular) {
+        if(!dadosassociado?.contrato?.id_contrato){
+            toast.info('Realize a busca pelo associado!');
+            
+            return
         }
+        else{
+        setTitular(true)
+        setDependente(false)
+        setarServico({
+            nome_falecido: dadosassociado?.nome,
+            data_nascimento: dadosassociado?.data_nasc,
+            end_rua: dadosassociado?.endereco,
+            end_bairro: dadosassociado?.bairro,
+            end_numero: String(dadosassociado?.numero),
+            end_cidade: dadosassociado?.cidade,
+            id_contrato:dadosassociado.contrato?.id_contrato,
+            id_titular:dadosassociado.id_associado
+        })}
 
-    }, [titular])
+    }else setTitular(false)
+}
+ 
 
     function setarFalecidoDependente({ nome, data_nasc }: { nome: string, data_nasc: Date }) {
         setarServico({
             nome_falecido: nome,
             data_nascimento: data_nasc,
+            id_contrato:dadosassociado?.contrato?.id_contrato
         });
         setModalDependente(false);
 
@@ -164,6 +207,7 @@ export default function GerarOS() {
     }
 
     async function cadastrarObito() {
+        console.log(servico)
         const [hours, minutes] = (servico.hr_velorio ?? '').split(':');
         const newDate = new Date();
         newDate.setHours(parseInt(hours));
@@ -172,9 +216,10 @@ export default function GerarOS() {
             toast.info("Preencha todos os campos obrigatórios");
             return;
         }
+      
         const response = await toast.promise(
             api.post("/obitos/adicionarObito", {
-                ...servico, hr_velorio: newDate, obito_itens: servico.obito_itens, tipo_atendimento: particular ? 'PARTICULAR' : 'ASSOCIADO',
+                ...servico, hr_velorio: newDate, obito_itens: servico.obito_itens, tipo_atendimento: particular ? 'PARTICULAR' : 'ASSOCIADO',falecido:titular?'TITULAR':dependente?'DEPENDENTE':undefined,
                 status: servico.listacheckida?.find(item => item.status === false) || servico.listacheckvolta?.find(item => item.status === false) ? 'PENDENTE' : 'FECHADO'
             }),
             {
@@ -219,13 +264,18 @@ export default function GerarOS() {
     }
 
 
-    function deletarProduto(index: number) {
-        if (servico.obito_itens) {
-            const novoArray = [...servico.obito_itens];
-            novoArray.splice(index, 1);
-            setarServico({ ...servico, obito_itens: novoArray })
-        }
-
+    function deletarProduto(id_ob_itens: number) {
+        console.log(id_ob_itens)
+        const response = toast.promise(
+            api.delete(`/obitoItens/deletar/${String(id_ob_itens)}`),
+            {
+                error:'Erro ao deletar dado',
+                success:'Dado deletado',
+                pending:'Deletando dado....'
+                
+            }
+        )
+      
     }
 
     function alterCheckListIda(index: number) {
@@ -327,7 +377,7 @@ export default function GerarOS() {
 
                     <div className="flex flex-row gap-8">
                         <div className="flex items-center ">
-                            <input type="checkbox" checked={particular} onChange={() => setParticular(!particular)} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                            <input type="checkbox" checked={particular} onChange={handleCheckParticular} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                             <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
                         </div>
                         <button onClick={() => closeModa({ closeModalPlano: true })} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
@@ -387,15 +437,15 @@ export default function GerarOS() {
                     {indexTab === 2 && <>
                         {!particular && <div className="inline-flex gap-8 pl-4 pt-1">
                             <div className="flex items-center ">
-                                <input type="checkbox" checked={titular} onClick={() => { setTitular(!titular), setDependente(false) }} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                                <input type="checkbox" checked={titular} onClick={handleCheckTitular} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                                 <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">TITULAR</label>
                             </div>
                             <div className="flex items-center ">
-                                <input type="checkbox" onClick={() => { setDependente(!dependente), setTitular(false), setModalDependente(true) }} checked={dependente} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                                <input type="checkbox" onClick={handleCheckDependente} checked={dependente} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
                                 <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">DEPENDENTE</label>
                             </div>
                         </div>}
-                        <DadosFalecido servico={servico} setarServico={setarServico} />
+                        <DadosFalecido servico={servico} setarServico={setarServico} check={particular||titular||dependente?false:true} />
 
                     </>}
 
@@ -424,7 +474,6 @@ export default function GerarOS() {
 
                     {indexTab === 9 && <ItensUsados
                         selectProdutos={selectProdutos}
-                        deletarProduto={deletarProduto}
                         id_obito={Number(servico.id_obitos)}
                         obito_itens={servico.obito_itens ?? []}
                         setarServico={setarServico}

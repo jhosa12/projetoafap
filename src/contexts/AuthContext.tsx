@@ -212,7 +212,8 @@ type AuthContextData = {
     carregarDados: () => Promise<void>,
     setarListaConv: (fields: Partial<ConvProps>) => void,
     listaConv: Partial<ConvProps>,
-    userToken: () => void
+    userToken: () => void,
+    limparDados:()=>void
 }
 
 type SignInProps = {
@@ -449,7 +450,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
 
-
+    const limparDados=()=>{
+        setDadosAssociado({acordo:[],
+            bairro:'',
+            celular1:'',
+            celular2:'',
+            cep:'',
+            cidade:'',
+            nome:undefined,
+            id_associado:undefined,
+            endereco:'',
+            mensalidade:[],
+            data_nasc:undefined,
+            cpf:undefined,
+            dependentes:[],
+            telefone:undefined,
+            uf:undefined,
+            contrato:undefined,
+            guia_rua:undefined,
+            email:undefined,
+            numero:undefined,
+            profissao:undefined,
+            rg:undefined,
+            sexo:undefined   
+        })
+        
+    }
 
     async function sign({ user, password }: SignInProps) {
        
@@ -557,30 +583,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
     async function carregarDados() {
-        setDadosAssociado({acordo:[],
-            bairro:'',
-            celular1:'',
-            celular2:'',
-            cep:'',
-            cidade:'',
-            nome:'',
-            id_associado:undefined,
-            endereco:'',
-            mensalidade:[],
-            data_nasc:undefined,
-            cpf:undefined,
-            dependentes:[],
-            telefone:undefined,
-            uf:undefined,
-            contrato:undefined,
-            guia_rua:undefined,
-            email:undefined,
-            numero:undefined,
-            profissao:undefined,
-            rg:undefined,
-            sexo:undefined
-        
-        })
+        limparDados()
         try {
             const response = await api.post('/associado', {
                 id_associado: Number(data.id_associado),
@@ -596,7 +599,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     }
     return (
-        <AuthContext.Provider value={{ userToken, usuario, isAuthenticated, sign, signOut, data, closeModa, dadosassociado, carregarDados, caixaMovimentacao, mov, setarServico, servico, listaConv, setarListaConv }}>
+        <AuthContext.Provider value={{limparDados, userToken, usuario, isAuthenticated, sign, signOut, data, closeModa, dadosassociado, carregarDados, caixaMovimentacao, mov, setarServico, servico, listaConv, setarListaConv }}>
             {children}
         </AuthContext.Provider>
     )
