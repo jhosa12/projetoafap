@@ -8,7 +8,7 @@ export function setupAPIClient(ctx = undefined) {
 
     const api = axios.create({
    baseURL:"https://apiafap.onrender.com",
-   //  baseURL:"http://localhost:3333",
+   // baseURL:"http://localhost:3333",
         headers: {
             Authorization: `Bearer ${cookies['@nextauth.token']}`
         }
