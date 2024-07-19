@@ -19,6 +19,7 @@ import { DadosObito } from "@/components/obito/dadosObito";
 import { ProdutosServicos } from "@/components/obito/produtosServicos";
 import { ItensUsados } from "@/components/obito/itensUsados";
 import { DadosVelorio } from "@/components/obito/dadosVelorio";
+import DocumentacaoOS from "@/components/obito/documentacao";
 
 
 
@@ -518,6 +519,12 @@ const handleCheckTitular=()=>{
 
                     </div>
                     }
+
+                    {indexTab===8 && <DocumentacaoOS
+
+                        servico={servico}
+                    
+                    />}
 
 
 

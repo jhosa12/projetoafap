@@ -8,7 +8,7 @@ export function setupAPIClient(ctx = undefined) {
 
     const api = axios.create({
    baseURL:"https://apiafap.onrender.com",
-    // baseURL:"http://localhost:3333",
+   //  baseURL:"http://localhost:3333",
         headers: {
             Authorization: `Bearer ${cookies['@nextauth.token']}`
         }
@@ -19,7 +19,7 @@ export function setupAPIClient(ctx = undefined) {
         if (error.response?.status === 401) {
             //qualquer erro 401 (não autorizado) devemos deslogar o usuario
             if (typeof window !== undefined) {
-                signOut();
+                signOut()
             } else {
                 return Promise.reject(new AuthTokenError())
             }
