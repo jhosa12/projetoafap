@@ -84,17 +84,17 @@ export default function Convalescente() {
     const [aberto, setAberto] = useState(true)
     const [entregue, setEntregue] = useState(true)
     const [pendente, setPendente] = useState(true)
-    const [currentPage,setCurrentPage] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 16;
 
 
-    const handlePageClick = (selectdItem:{selected:number})=>{
+    const handlePageClick = (selectdItem: { selected: number }) => {
         setCurrentPage(selectdItem.selected)
     }
 
-    const offset = currentPage*itemsPerPage;
-    const currentItems = arrayFiltro.slice(offset,offset+itemsPerPage);
-    const pageCount = Math.ceil(arrayFiltro.length/itemsPerPage);
+    const offset = currentPage * itemsPerPage;
+    const currentItems = arrayFiltro.slice(offset, offset + itemsPerPage);
+    const pageCount = Math.ceil(arrayFiltro.length / itemsPerPage);
 
 
 
@@ -210,16 +210,13 @@ export default function Convalescente() {
                 novoArray = arrayConv.filter(item => item.convalescenca_prod.some(dado => dado.status === 'FECHADO' || dado.status === 'ABERTO'))
             }
 
-          
+
             novoArray && setFiltro(novoArray)
 
         }
 
 
     }, [pendente, entregue, aberto, arrayConv])
-
-
-
     return (
         <div className="flex flex-col w-full pl-10 pr-10 pt-4">
             <Tooltip className="z-20" id="toolId" />
@@ -416,21 +413,21 @@ export default function Convalescente() {
 
 
                 </table>
-                        <ReactPaginate
-                        previousLabel={'Anterior'}
-                        nextLabel={'Próximo'}
-                        breakLabel={'...'}
-                        breakClassName="breack-me"
-                        pageCount={pageCount}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={5}
-                        onPageChange={handlePageClick}
-                        containerClassName={'pagination inline-flex text-gray-400 gap-4 ml-auto justify-end font-semibold p-1 rounded-lg border-[1px] border-gray-500 '}
-                        activeClassName={'active text-blue-600'}
-                        
-                        />
+                <ReactPaginate
+                    previousLabel={'Anterior'}
+                    nextLabel={'Próximo'}
+                    breakLabel={'...'}
+                    breakClassName="breack-me"
+                    pageCount={pageCount}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={handlePageClick}
+                    containerClassName={'pagination inline-flex text-gray-400 gap-4 ml-auto justify-end font-semibold'}
+                    activeClassName={'active text-blue-600'}
 
-<style jsx>{`
+                />
+
+                <style jsx>{`
         .pagination {
           display: flex;
           justify-content: center;

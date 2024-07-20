@@ -11,7 +11,7 @@ import Relatorio from '@/Documents/relatorioCobranca/DocumentTemplate';
 import {useReactToPrint} from "react-to-print";
 import { IoPrint } from "react-icons/io5";
 import { AuthContext } from "@/contexts/AuthContext";
-
+import ReactPaginate from "react-paginate";
 interface CobrancaProps{
     id_mensalidade:number,
     id_contrato:number,
@@ -67,6 +67,21 @@ export default function Cobranca() {
     const componenteRef = useRef<Relatorio>(null)
     const {usuario} = useContext(AuthContext)
     const [ultimosPag,setUltimosPag] = useState<Array<UltimosPagProsps>>([])
+  const [currentPage,setCurrentPage] =useState(0);
+  const itemsPerPage = 20;
+
+
+  const handlePageClick = (selectedItem:{selected:number})=>{
+    setCurrentPage(selectedItem.selected)
+
+  }
+
+  const offset = currentPage*itemsPerPage;
+  const currentItems = arrayCobranca.slice(offset,offset+itemsPerPage);
+  const pageCount =Math.ceil(arrayCobranca.length/itemsPerPage);
+
+
+
 
 
     const imprimirRelatorio = useReactToPrint({
@@ -295,9 +310,9 @@ export default function Cobranca() {
            
                     </div>
 
-                    <div className="p-2 ">
+                    <div className="p-2 max-h-[calc(100vh-150px)]  ">
         <table 
-     className="block max-h-[calc(100vh-180px)] overflow-y-auto overflow-x-auto text-xs text-left rtl:text-center border-collapse rounded-lg text-gray-400">
+     className="block  overflow-y-auto max-h-[calc(100vh-220px)] text-xs text-left rtl:text-center border-collapse rounded-lg text-gray-400">
         <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
         <tr>
                 <th scope="col" className=" px-2 py-1 whitespace-nowrap">
@@ -332,7 +347,7 @@ export default function Cobranca() {
             
         </thead>
         <tbody className="text-white">
-            {arrayCobranca.map((item,index)=>(
+            {currentItems.map((item,index)=>(
             <tr key={item.id_mensalidade} className="border-b border-gray-500">
             <th scope="row"  className="px-2 py-1 font-medium  whitespace-nowrap">
                    {item.referencia}
@@ -383,6 +398,21 @@ export default function Cobranca() {
         </tfoot>
     
     </table>
+    <div className="flex w-full justify-end ">
+    <ReactPaginate
+        previousLabel={'Anterior'}
+        nextLabel={'Próximo'}
+        breakLabel={'...'}
+        breakClassName="breack-me"
+        pageCount={pageCount}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        onPageChange={handlePageClick}
+        containerClassName={'pagination inline-flex text-gray-400 gap-4 ml-auto justify-end font-semibold  rounded-lg  '}
+        activeClassName={'active text-blue-600'}
+    
+    />
+    </div>
     </div>
             </div>
       

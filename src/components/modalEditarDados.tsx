@@ -77,7 +77,7 @@ export function ModalEditarDados({ openEdit }: { openEdit: number }) {
     closeModa({
       closeEditarAssociado: true,
       name: dadosassociado?.nome,
-      nasc: new Date(dadosassociado?.data_nasc ?? '').toLocaleDateString(),
+      nasc: new Date(dadosassociado?.data_nasc ?? ''),
       bairro: dadosassociado?.bairro,
       celular1: dadosassociado?.celular1,
       celular2: dadosassociado?.celular2,
@@ -140,7 +140,7 @@ export function ModalEditarDados({ openEdit }: { openEdit: number }) {
                 </div>
                 <div className="col-span-1">
                   <label className="block mb-1 text-xs font-medium  text-white">NASCIMENTO</label>
-                  <input defaultValue={data.nasc} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+                  <input defaultValue={data.nasc && new Date(data.nasc).toLocaleDateString('pt-BR',{timeZone:'UTC'})} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2  border  rounded-lg bg-gray-50 sm:text-xs dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
                 </div>
                 <div className="col-span-1">
                   <label className="block mb-1 text-xs font-medium text-gray-900 dark:text-white">SEXO</label>
