@@ -229,15 +229,15 @@ export default function Convalescente() {
                     <div className="inline-flex gap-6">
                         <div className="flex items-center ">
                             <input type="checkbox" checked={pendente} onChange={() => { setPendente(!pendente) }} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                            <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">ENTREGA PENDENTE</label>
+                            <label className="ms-2 text-sm font-medium whitespace-nowrap  text-gray-300">ENTREGA PENDENTE</label>
                         </div>
                         <div className="flex items-center ">
                             <input type="checkbox" checked={aberto} onChange={() => { setAberto(!aberto) }} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                            <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">ABERTO</label>
+                            <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-300">ABERTO</label>
                         </div>
                         <div className="flex items-center ">
                             <input type="checkbox" checked={entregue} onChange={() => { setEntregue(!entregue) }} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                            <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">ENTREGUE</label>
+                            <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-300">ENTREGUE</label>
                         </div>
 
                     </div>

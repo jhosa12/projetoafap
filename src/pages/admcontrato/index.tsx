@@ -22,7 +22,6 @@ import { IoMdEyeOff } from "react-icons/io";
 import 'react-tooltip/dist/react-tooltip.css';
 import { ModalAcordos } from "@/components/modalAcordos";
 import { FaHandshake } from "react-icons/fa";
-import { MenuLateral } from "@/components/menu";
 import { canSRRAuth } from "@/utils/canSSRAuth";
 import Head from "next/head";
 import PrintButtonContrato from "@/Documents/contratoAdesão/PrintButton";
@@ -231,56 +230,56 @@ interface AssociadoProps {
 export default function AdmContrato() {
 
     const { usuario, data, closeModa, dadosassociado, carregarDados } = useContext(AuthContext)
-    const [indexTab,setIndex]=useState<number>(2)
+    const [indexTab, setIndex] = useState<number>(2)
     const [checkDependente, setCheckDependente] = useState(false)
     const [excluirDependente, setExcluirDependente] = useState(false)
     const [openEdit, setOpenEdit] = useState<number>(0)
     const [observacao, setObservacao] = useState('');
     const [verObs, setVerObs] = useState(false)
     const [componenteMounted, setMounted] = useState(false)
- //   const [mensalidadeComGrupoE, setMensalidaGrupo] = useState<Array<MensalidadeProps>>([]);
-  
+    //   const [mensalidadeComGrupoE, setMensalidaGrupo] = useState<Array<MensalidadeProps>>([]);
 
-       
 
-   
 
-   
- 
-    const limparDadosCadastro=()=>{
-            closeModa({
-                closeModalCadastro:true,
-                acordo:undefined,
-                arraydep:[],
-                bairro:undefined,
-                celular1:undefined,
-                celular2:undefined,
-                cep:undefined,
-                cidade:undefined,
-                closeEditarAssociado:undefined,
-                closeModalPlano:undefined,
-                contrato:undefined,
-                cpf:undefined,
-                dependente:undefined,
-                email:undefined,
-                empresa:undefined,
-                endereco:undefined,
-                id_associado:undefined,
-                mensalidade:undefined,
-                mensalidadeAnt:undefined,
-                mensalidadeProx:undefined,
-                name:undefined,
-                nasc:undefined,
-                naturalidade:undefined,
-                numero:undefined,
-                origem:undefined,
-                profissao:undefined,
-                referencia:undefined,
-                rg:undefined,
-                sexo:undefined,
-                telefone:undefined,
-                uf:undefined
-            })
+
+
+
+
+
+    const limparDadosCadastro = () => {
+        closeModa({
+            closeModalCadastro: true,
+            acordo: undefined,
+            arraydep: [],
+            bairro: undefined,
+            celular1: undefined,
+            celular2: undefined,
+            cep: undefined,
+            cidade: undefined,
+            closeEditarAssociado: undefined,
+            closeModalPlano: undefined,
+            contrato: undefined,
+            cpf: undefined,
+            dependente: undefined,
+            email: undefined,
+            empresa: undefined,
+            endereco: undefined,
+            id_associado: undefined,
+            mensalidade: undefined,
+            mensalidadeAnt: undefined,
+            mensalidadeProx: undefined,
+            name: undefined,
+            nasc: undefined,
+            naturalidade: undefined,
+            numero: undefined,
+            origem: undefined,
+            profissao: undefined,
+            referencia: undefined,
+            rg: undefined,
+            sexo: undefined,
+            telefone: undefined,
+            uf: undefined
+        })
     }
 
     function handleObservacao() {
@@ -335,7 +334,7 @@ export default function AdmContrato() {
 
     }
     function mensalidadeSet() {
-       setIndex(2)
+        setIndex(2)
     }
     useEffect(() => {
 
@@ -386,7 +385,7 @@ export default function AdmContrato() {
             toast.info('Possui Material Convalescente!')
         }
 
-      
+
         // Marcar o componente como desmontado quando ele for desmontado
     }, [dadosassociado?.contrato?.situacao, dadosassociado?.mensalidade]);
 
@@ -440,11 +439,11 @@ export default function AdmContrato() {
             </Head>
             <div className="flex flex-col w-full mr-2  justify-center">
                 {data.closeModalPlano && (<ModalBusca />)}
-                {data.closeModalCadastro && (<Teste/>)}
+                {data.closeModalCadastro && (<Teste />)}
                 {data.mensalidade?.close && (<ModalMensalidade />)}
                 {data.dependente?.close && <ModalDependentes />}
                 {data.closeEditarAssociado && <ModalEditarDados openEdit={openEdit} />}
-            
+
 
                 <div className="flex  flex-col p-4  ">
                     <div className="flex  flex-row justify-start gap-2 items-center w-full mt-2 pb-1">
@@ -462,27 +461,27 @@ export default function AdmContrato() {
                     <div className="flex-col w-full border  rounded-lg shadow  border-gray-700">
                         <ul className="flex flex-wrap text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800" role="tablist">
                             <li className="me-2">
-                                <button type="button" onClick={() => { setIndex(1) }} className={`inline-block p-4 font-semibold rounded-ss-lg  bg-gray-800 hover:bg-gray-700 ${indexTab===1 && "text-blue-500"} `}>Dados</button>
+                                <button type="button" onClick={() => { setIndex(1) }} className={`inline-block p-4 font-semibold rounded-ss-lg  bg-gray-800 hover:bg-gray-700 ${indexTab === 1 && "text-blue-500"} `}>Dados</button>
                             </li>
                             <li className="me-2">
-                                <button type="button" onClick={() => setIndex(2)} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${indexTab===2 && "text-blue-500"}`}>Histórico/Movimentação</button>
+                                <button type="button" onClick={() => setIndex(2)} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${indexTab === 2 && "text-blue-500"}`}>Histórico/Movimentação</button>
                             </li>
                             <li className="me-2">
-                                <button type="button" onClick={() =>setIndex(3)} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${indexTab===3 && "text-blue-500"}`}>Dependentes</button>
+                                <button type="button" onClick={() => setIndex(3)} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${indexTab === 3 && "text-blue-500"}`}>Dependentes</button>
                             </li>
                             <li className="me-2">
-                                <button type="button" onClick={() => setIndex(4)} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${indexTab===4 && "text-blue-500"}`}>Carteiras</button>
+                                <button type="button" onClick={() => setIndex(4)} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${indexTab === 4 && "text-blue-500"}`}>Carteiras</button>
                             </li>
                             <li className="me-2">
-                                <button type="button" onClick={() => setIndex(5)} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${indexTab===5 && "text-blue-500"}`}>Óbitos</button>
+                                <button type="button" onClick={() => setIndex(5)} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${indexTab === 5 && "text-blue-500"}`}>Óbitos</button>
                             </li>
                             <li className="me-2">
-                                <button type="button" onClick={() => setIndex(6)} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${indexTab===6 && "text-blue-500"}`}>Documentos</button>
+                                <button type="button" onClick={() => setIndex(6)} className={`inline-block p-4  hover:bg-gray-700 hover:text-gray-300 ${indexTab === 6 && "text-blue-500"}`}>Documentos</button>
                             </li>
                         </ul>
                         <div className="flex flex-col">
 
-                            {indexTab===1 && dadosassociado && (<div className={`p-4  rounded-lg md:p-8`}>
+                            {indexTab === 1 && dadosassociado && (<div className={`p-4  rounded-lg md:p-8`}>
 
                                 <h2 className="inline-flex gap-3 mb-3 text-xl font-extrabold tracking-tight text-white">
                                     {dadosassociado?.contrato?.id_contrato}-{dadosassociado?.nome}
@@ -539,7 +538,7 @@ export default function AdmContrato() {
                                                 setOpenEdit(1), closeModa({
                                                     closeEditarAssociado: true,
                                                     name: dadosassociado.nome,
-                                                    nasc:dadosassociado.data_nasc && new Date(dadosassociado?.data_nasc).toLocaleDateString(),
+                                                    nasc: dadosassociado.data_nasc && new Date(dadosassociado?.data_nasc),
                                                     bairro: dadosassociado.bairro,
                                                     celular1: dadosassociado.celular1,
                                                     celular2: dadosassociado.celular2,
@@ -596,7 +595,7 @@ export default function AdmContrato() {
                                                 setOpenEdit(2), closeModa({
                                                     closeEditarAssociado: true,
                                                     name: dadosassociado.nome,
-                                                    nasc:dadosassociado.data_nasc && new Date(dadosassociado.data_nasc).toLocaleDateString(),
+                                                    nasc: dadosassociado.data_nasc && new Date(dadosassociado.data_nasc),
                                                     bairro: dadosassociado.bairro,
                                                     celular1: dadosassociado.celular1,
                                                     celular2: dadosassociado.celular2,
@@ -634,7 +633,7 @@ export default function AdmContrato() {
 
                                 <div>
                                     <div className="w-full  mt-2 border  rounded-lg  bg-gray-700 border-gray-600">
-                                        <div className="flex gap-2 items-center justify-end px-2 py-1 border-b dark:border-gray-600">
+                                        <div className="flex gap-2 items-center justify-end px-2 py-1 border-b border-gray-600">
                                             <button onClick={() => setVerObs(!verObs)} type="button" className="inline-flex items-center py-1 px-2  text-center text-white 0 rounded-lg  hover:bg-blue-800">
                                                 {verObs ? <IoMdEye data-tooltip-id="my-tooltip"
                                                     data-tooltip-content="Ocultar Observações" size={20} /> : <IoMdEyeOff data-tooltip-id="my-tooltip"
@@ -647,7 +646,7 @@ export default function AdmContrato() {
                                             </button>
 
                                         </div>
-                                        <div className="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
+                                        <div className="px-4 py-2 rounded-b-lg bg-gray-800">
 
                                             <textarea value={verObs ? dadosassociado.contrato?.anotacoes : ''} disabled rows={4} className="w-full px-0 text-sm pl-2  border-0 bg-gray-800 focus:ring-0 text-white placeholder-gray-400" />
                                         </div>
@@ -657,29 +656,29 @@ export default function AdmContrato() {
                             </div>
                             )}
 
-                            {indexTab===2 && (<HistoricoMensalidade
-                            carregarDados={carregarDados}
-                            dados={{acordo:data.acordo??{},closeModalPlano:data.closeModalPlano??false,id_associado:dadosassociado?.id_associado??0,mensalidade:data.mensalidade??{},mensalidadeAnt:data.mensalidadeAnt??{}}}
-                            dadosAssociado={{
-                                nome:dadosassociado?.nome??'',
-                                endereco:dadosassociado?.endereco??'',
-                                bairro:dadosassociado?.bairro??'',
-                                cidade:dadosassociado?.cidade??'',
-                                plano:dadosassociado?.contrato?.plano??'',
-                                numero:Number(dadosassociado?.numero),
-                                uf:dadosassociado?.uf??'',
-                                arrayAcordo:dadosassociado?.acordo??[],
-                                arrayMensalidade:dadosassociado?.mensalidade??[],
-                                id_associado:dadosassociado?.id_associado??0,
-                                id_contrato:dadosassociado?.contrato?.id_contrato??0,
-                                valor_mensalidade:dadosassociado?.contrato?.valor_mensalidade??0
-                            }}
-                            setarDados={closeModa}
-                            usuario={{id:Number(usuario?.id),nome:usuario?.nome??''}}
-                            
-                            
-                            /> )}
-                            {indexTab===3 && (<div className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)]  max-w-[calc(100vw-350px)]  p-4 shadow-md sm:rounded-lg">
+                            {indexTab === 2 && (<HistoricoMensalidade
+                                carregarDados={carregarDados}
+                                dados={{ acordo: data.acordo ?? {}, closeModalPlano: data.closeModalPlano ?? false, id_associado: dadosassociado?.id_associado ?? 0, mensalidade: data.mensalidade ?? {}, mensalidadeAnt: data.mensalidadeAnt ?? {} }}
+                                dadosAssociado={{
+                                    nome: dadosassociado?.nome ?? '',
+                                    endereco: dadosassociado?.endereco ?? '',
+                                    bairro: dadosassociado?.bairro ?? '',
+                                    cidade: dadosassociado?.cidade ?? '',
+                                    plano: dadosassociado?.contrato?.plano ?? '',
+                                    numero: Number(dadosassociado?.numero),
+                                    uf: dadosassociado?.uf ?? '',
+                                    arrayAcordo: dadosassociado?.acordo ?? [],
+                                    arrayMensalidade: dadosassociado?.mensalidade ?? [],
+                                    id_associado: dadosassociado?.id_associado ?? 0,
+                                    id_contrato: dadosassociado?.contrato?.id_contrato ?? 0,
+                                    valor_mensalidade: dadosassociado?.contrato?.valor_mensalidade ?? 0
+                                }}
+                                setarDados={closeModa}
+                                usuario={{ id: Number(usuario?.id), nome: usuario?.nome ?? '' }}
+
+
+                            />)}
+                            {indexTab === 3 && (<div className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)]  max-w-[calc(100vw-350px)]  p-4 shadow-md sm:rounded-lg">
                                 <div className="flex w-full mb-2 gap-2">
                                     <label className="relative inline-flex w-[150px] justify-center  items-center mb-1 cursor-pointer">
                                         <input checked={checkDependente} onChange={() => setCheckDependente(!checkDependente)} type="checkbox" value="2" className="sr-only peer" />
@@ -726,7 +725,7 @@ export default function AdmContrato() {
                                     </div>
                                 </div>
                                 <table
-                                    className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
+                                    className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400 ">
                                     <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
                                         {!checkDependente ? (<tr>
                                             <th scope="col" className=" px-2 py-1">
@@ -743,6 +742,9 @@ export default function AdmContrato() {
                                             </th>
                                             <th scope="col" className="px-12 py-1">
                                                 PARENTESCO
+                                            </th>
+                                            <th scope="col" className="px-12 py-1">
+                                                CELULAR
                                             </th>
                                             <th scope="col" className="px-4 py-1">
                                                 <span className="">Ações</span>
@@ -764,6 +766,7 @@ export default function AdmContrato() {
                                                 <th scope="col" className="px-6 py-1">
                                                     PARENTESCO
                                                 </th>
+
                                                 <th scope="col" className="px-6 py-1">
                                                     DATA EXCLUSÃO
                                                 </th>
@@ -831,24 +834,26 @@ export default function AdmContrato() {
                                                     </td>
                                                 </tr>) : !checkDependente && !item.excluido ? (
                                                     <tr key={index} onClick={() => closeModa({ dependente: { id_dependente: item.id_dependente, nome: item.nome, excluido: item.excluido } })} className={`border-b ${new Date(item.carencia) > new Date() ? "text-yellow-500" : "text-white"} ${item.id_dependente === data.dependente?.id_dependente ? "bg-gray-600" : "bg-gray-800"} border-gray-700  hover:bg-gray-600`}>
-                                                        <th scope="row" className="px-2 py-1 font-medium   whitespace-nowrap">
+                                                        <th scope="row" className="px-2 py-1 font-medium   whitespace-nowrap w-full">
                                                             {item.nome}
                                                         </th>
-                                                        <td className="px-8 py-1">
+                                                        <td className="px-8 py-1 w-full">
                                                             {new Date(item.data_adesao).toLocaleDateString()}
                                                         </td>
-                                                        <td className="px-10 py-1">
+                                                        <td className="px-10 py-1 w-full">
                                                             {item?.carencia ? new Date(item.carencia).toLocaleDateString() : ''}
                                                         </td>
-                                                        <td className="px-8 py-1">
+                                                        <td className="px-8 py-1 w-full">
                                                             {item?.data_nasc ? new Date(item.data_nasc).toLocaleDateString() : ''}
-                                                        </td>
-                                                        <td className="px-12 py-1">
+                                                        </td> 
+                                                        <td className="px-12 py-1 w-full">
                                                             {item.grau_parentesco}
                                                         </td>
 
-
-                                                        <td className="px-3 py-1 ">
+                                                        <td className="px-6 py-1 w-full">
+                                                            {item.celular}
+                                                        </td>
+                                                        <td className="px-3 py-1 w-full">
                                                             <div className="inline-flex gap-3">
                                                                 <button onClick={(event) => {
                                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
@@ -888,37 +893,37 @@ export default function AdmContrato() {
                             </div>)}
 
                             {
-                                indexTab===6 && <div className="flex flex-col w-full rounded-lg p-6   gap-5">
+                                indexTab === 6 && <div className="flex flex-col w-full rounded-lg p-6   gap-5">
                                     <div className="flex flex-row text-white gap-6 w-full">
                                         <PrintButtonContrato />
                                         <PrintButton />
                                         <PrintButtonCarne
-                                        arrayMensalidade={dadosassociado?.mensalidade??[]}
-                                        dadosAssociado={{
-                                            nome:dadosassociado?.nome??'',
-                                            bairro:dadosassociado?.bairro??'',
-                                            cidade:dadosassociado?.cidade??'',
-                                            endereco:dadosassociado?.endereco??'',
-                                            id_contrato:Number(dadosassociado?.contrato?.id_contrato),
-                                            numero:Number(dadosassociado?.numero),
-                                            plano:dadosassociado?.contrato?.plano??'',
-                                            uf:dadosassociado?.uf??''
-                                        }}
+                                            arrayMensalidade={dadosassociado?.mensalidade ?? []}
+                                            dadosAssociado={{
+                                                nome: dadosassociado?.nome ?? '',
+                                                bairro: dadosassociado?.bairro ?? '',
+                                                cidade: dadosassociado?.cidade ?? '',
+                                                endereco: dadosassociado?.endereco ?? '',
+                                                id_contrato: Number(dadosassociado?.contrato?.id_contrato),
+                                                numero: Number(dadosassociado?.numero),
+                                                plano: dadosassociado?.contrato?.plano ?? '',
+                                                uf: dadosassociado?.uf ?? ''
+                                            }}
 
-                                        
+
                                         />
-                                        
+
                                     </div>
 
                                 </div>
                             }
 
                             {
-                                indexTab===4 && (<CarteirasDep dependentes={dadosassociado?.dependentes ?? []} contrato={dadosassociado?.contrato?.id_contrato ?? 0} plano={dadosassociado?.contrato?.plano ?? ''} />)
+                                indexTab === 4 && (<CarteirasDep dependentes={dadosassociado?.dependentes ?? []} contrato={dadosassociado?.contrato?.id_contrato ?? 0} plano={dadosassociado?.contrato?.plano ?? ''} />)
                             }
 
-                            {indexTab===5 && (<ObitosAssociado
-                                obitos={dadosassociado?.contrato?.obitos??[]}
+                            {indexTab === 5 && (<ObitosAssociado
+                                obitos={dadosassociado?.contrato?.obitos ?? []}
                             />)}
 
 

@@ -24,52 +24,14 @@ interface ParcelaData {
   referencia: string;
 }
 
-interface CidadesProps  {
-  id_cidade: number,
-  estado: number,
-  uf: string,
-  cidade: string
-}
 
-interface TitularProps{
-  name:string,
-  nasc:Date,
-  sexo:string,
-  cep:string,
-  endereco:string,
-  numero:number,
-  bairro:string,
-  profissao:string,
-  referencia:string,
-  uf:string,
-  cidade:string,
-  rg:string,
-  cpf:string,
-  naturalidade:string,
-  email:string,
-  celular1:string,
-  celular2:string,
-  telefone:string,
-  cidades:Array<Partial<CidadesProps>>
-}
-interface DadosProps{
-  titular:Partial<TitularProps>
-}
+
 
 
 export default function TesteLayout() {
     const {usuario,data,closeModa,carregarDados} = useContext(AuthContext)
     const [mounted,setMounted] = useState(false)
-    const [dadosTitular,setDados] = useState<Partial<TitularProps>>({})
-
-    const setarDadosTitular =(fields:Partial<TitularProps>)=>{
-      setDados((prev:Partial<TitularProps>)=>{
-        if(prev){
-          return {...prev,...fields}
-        }else return{...fields}
-
-      })
-    }
+  
  
    function gerarMensalidade(){
     const mensalidades : Array<ParcelaData> = []
@@ -95,26 +57,26 @@ export default function TesteLayout() {
     try{
       const response = await toast.promise(
         api.post('/novoAssociado',{
-            nome:dadosTitular.name,
-            cep:dadosTitular.cep,
-            endereco:dadosTitular.endereco,
-            bairro:dadosTitular.bairro,
-            numero:dadosTitular.numero,
-            cidade:dadosTitular.cidade,
-            uf:dadosTitular.uf,
-            guia_rua:dadosTitular.referencia,
-            email:dadosTitular.email,
-            dadosTitular_nasc:dadosTitular.nasc && new Date(dadosTitular.nasc),
-            dadosTitular_cadastro:new Date(),
-            celular1:dadosTitular.celular1,
-            celular2:dadosTitular.celular2,
-            telefone:dadosTitular.telefone,
+            nome:data.name,
+            cep:data.cep,
+            endereco:data.endereco,
+            bairro:data.bairro,
+            numero:data.numero,
+            cidade:data.cidade,
+            uf:data.uf,
+            guia_rua:data.referencia,
+            email:data.email,
+            data_nasc:data.nasc && new Date(data.nasc),
+            data_cadastro:new Date(),
+            celular1:data.celular1,
+            celular2:data.celular2,
+            telefone:data.telefone,
             cad_usu:usuario?.nome,
             cad_dh:new Date(),
             edi_usu:usuario?.nome,
             edi_dh:new Date(),
-            profissao:dadosTitular.profissao,
-            sexo:dadosTitular.sexo,
+            profissao:data.profissao,
+            sexo:data.sexo,
             contrato:{id_plano:data.contrato?.id_plano,
               plano:data.contrato?.plano,
               consultor:data.contrato?.consultor,
@@ -156,7 +118,7 @@ export default function TesteLayout() {
    },[data.id_associado])
 
   const {steps,currentStepIndex,step,next,back} =MultiStep([
-    <Item dadosTitular={dadosTitular} setarDados={setarDadosTitular}  />,
+    <Item  />,
     <DadosPlano />,
     <DadosDependentes />,
     <ResumoCadastro/>

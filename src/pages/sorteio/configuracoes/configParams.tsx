@@ -9,7 +9,7 @@ export default function ConfigParams(){
             <h1 className="font-semibold p-2">PERÍODO DE ADESÃO:</h1>
             <div className="flex items-center px-2 py-1">
             <input onChange={() =>{}} type="checkbox" checked />
-            <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODO PERÍODO</label>
+            <label className="ms-2  text-xs whitespace-nowrap text-gray-300">TODO PERÍODO</label>
             </div>
             <DatePicker className="flex bg-gray-500 text-white rounded-sm  px-2" onChange={()=>{}}/>
                 <span className="text-xs">até</span>

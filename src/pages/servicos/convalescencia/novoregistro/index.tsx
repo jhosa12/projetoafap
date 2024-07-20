@@ -671,7 +671,7 @@ export default function ConvalescenciaNovo() {
 
                                     setInputs({ ...dataInputs, id_estoque: Number(e.target.value) })
                                 }}
-                                    className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " >
+                                    className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white " >
                                     <option></option>
                                     {
                                         estoque.map((item, index) => {
@@ -768,11 +768,11 @@ export default function ConvalescenciaNovo() {
                         <div className="inline-flex gap-8 pl-4 pt-1">
                             <div className="flex items-center ">
                                 <input type="checkbox" checked={titular} onClick={() => { setTitular(!titular), setDependente(false) }} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                                <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">TITULAR</label>
+                                <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-300">TITULAR</label>
                             </div>
                             <div className="flex items-center ">
                                 <input type="checkbox" onClick={() => { setDependente(!dependente), setTitular(false), setModalDependente(true) }} checked={dependente} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                                <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">DEPENDENTE</label>
+                                <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-300">DEPENDENTE</label>
                             </div>
                         </div>
 
@@ -865,7 +865,7 @@ export default function ConvalescenciaNovo() {
                                     const prod = selectProdutos.find(item => item.id_produto === Number(e.target.value))
                                     setInputs({ ...dataInputs, descricao: prod?.descricao, id_produto: Number(e.target.value) })
                                 }}
-                                    className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " >
+                                    className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white " >
                                     <option></option>
                                     {
                                         selectProdutos.map((item, index) => {
@@ -882,7 +882,7 @@ export default function ConvalescenciaNovo() {
 
                                     setInputs({ ...dataInputs, id_estoque: Number(e.target.value) })
                                 }}
-                                    className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " >
+                                    className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white " >
                                     <option></option>
                                     {
                                         estoque.map((item, index) => {
@@ -896,12 +896,12 @@ export default function ConvalescenciaNovo() {
 
                             <div className="flex flex-col w-1/12">
                                 <label className="block mb-1 text-sm font-medium  text-white">Quant.</label>
-                                <input value={Number(dataInputs.quantidade)} onChange={e => setInputs({ quantidade: Number(e.target.value) })} autoComplete='off' type="number" className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+                                <input value={Number(dataInputs.quantidade)} onChange={e => setInputs({ quantidade: Number(e.target.value) })} autoComplete='off' type="number" className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
                             </div>
                             <div className="flex flex-col w-1/12" >
                                 <label className="block mb-1 text-sm font-medium  text-white">Valor</label>
                                 <input value={Number(dataInputs.valor)} onChange={(e) => setInputs({ valor: Number(e.target.value) })}
-                                    autoComplete='off' type="number" className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+                                    autoComplete='off' type="number" className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
                             </div>
 
                             <div className="flex items-end">

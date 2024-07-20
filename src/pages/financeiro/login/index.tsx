@@ -770,13 +770,13 @@ export default function LoginFinaceiro() {
                 {dropPlanos && <ul className="absolute  top-7 -left-1 max-h-64 overflow-y-auto  bg-gray-600 p-1 rounded-lg">
                   <li className="flex items-center px-2 py-1">
                     <input onChange={() => setTodos(!todos)} type="checkbox" checked={todos} />
-                    <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODOS</label>
+                    <label className="ms-2  text-xs whitespace-nowrap  text-gray-300">TODOS</label>
                   </li>
                   {arraygeral.map((item, index) => {
                     return (
                       <li className="flex items-center px-2 py-1">
                         <input onChange={() => handleOptionChange(item?.conta)} type="checkbox" checked={item?.check} value={item?.conta} />
-                        <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">{item?.descricao.toUpperCase()}</label>
+                        <label className="ms-2  text-xs whitespace-nowrap text-gray-300">{item?.descricao.toUpperCase()}</label>
                       </li>
                     )
                   })}
@@ -791,7 +791,7 @@ export default function LoginFinaceiro() {
               <div className="inline-flex  items-center  gap-3">
                 <div className="flex items-center ">
                   <input type="checkbox" checked={todoPeriodo} onChange={() => setPeriodo(!todoPeriodo)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODO PERÍODO</label>
+                  <label className="ms-2  text-xs whitespace-nowrap  text-gray-300">TODO PERÍODO</label>
                 </div>
                 <DatePicker
                   disabled={todoPeriodo}
@@ -909,12 +909,12 @@ export default function LoginFinaceiro() {
 
                 <div className="flex items-center ">
                   <input type="checkbox" checked={filtroatee === 0} onChange={() => filtroatee === 0 ? setFiltroAteE(1) : setFiltroAteE(0)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">ATÉ</label>
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-300">ATÉ</label>
                 </div>
                 <span>/</span>
                 <div className="flex items-center ">
                   <input type="checkbox" checked={filtroatee === 1} onChange={() => filtroatee === 1 ? setFiltroAteE(0) : setFiltroAteE(1)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">E</label>
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-300">E</label>
                 </div>
 
                 <DatePicker
@@ -936,15 +936,15 @@ export default function LoginFinaceiro() {
                 <span className="flex items-center">ESCALA:</span>
                 <div className="flex items-center ">
                   <input type="checkbox" checked={escalaDia} onChange={() => { setDia(true), setMes(false), setAno(false) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">DIA</label>
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-300">DIA</label>
                 </div>
                 <div className="flex items-center ">
                   <input type="checkbox" checked={escalaMes} onChange={() => { setDia(false), setMes(true), setAno(false) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">MÊS</label>
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-300">MÊS</label>
                 </div>
                 <div className="flex items-center ">
                   <input type="checkbox" checked={escalaAno} onChange={() => { setDia(false), setMes(false), setAno(true) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">ANO</label>
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-300">ANO</label>
                 </div>
                 {!loading ? <button onClick={() => filtroMensalidade()} className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCAR<IoSearch size={18} /></button> :
                   <button className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCANDO..<AiOutlineLoading3Quarters size={20} className="animate-spin" /></button>
@@ -1001,11 +1001,11 @@ export default function LoginFinaceiro() {
               <div className="inline-flex  items-center  gap-3">
                 <div className="flex items-center ">
                   <input type="checkbox" checked={abertoFinalizado === 1} onChange={() => { abertoFinalizado === 1 ? setAbertoFinalizado(0) : setAbertoFinalizado(1) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">ABERTO</label>
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-300">ABERTO</label>
                 </div>
                 <div className="flex items-center ">
                   <input type="checkbox" checked={abertoFinalizado === 2} onChange={() => { abertoFinalizado === 2 ? setAbertoFinalizado(0) : setAbertoFinalizado(2) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">FINALIZADO</label>
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-300">FINALIZADO</label>
                 </div>
                 <DatePicker
                   dateFormat={"dd/MM/yyyy"}
@@ -1224,7 +1224,7 @@ export default function LoginFinaceiro() {
                         </div>
                         <div className="ml-2 justify-start ">
                           <label className="block w-full mb-1 text-xs font-medium  text-white">DATA PREVISTA</label>
-                          <DatePicker selected={dadosConta.dataprev} onChange={e => e && setarDadosConta({ ...dadosConta, dataprev: e })} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+                          <DatePicker selected={dadosConta.dataprev} onChange={e => e && setarDadosConta({ ...dadosConta, dataprev: e })} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
                         </div>
 
                         <div className="mb-1  col-span-1 w-full ">

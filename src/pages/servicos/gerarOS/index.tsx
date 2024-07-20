@@ -379,7 +379,7 @@ const handleCheckTitular=()=>{
                     <div className="flex flex-row gap-8">
                         <div className="flex items-center ">
                             <input type="checkbox" checked={particular} onChange={handleCheckParticular} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                            <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">PARTICULAR</label>
+                            <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-300">PARTICULAR</label>
                         </div>
                         <button onClick={() => closeModa({ closeModalPlano: true })} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
                             <IoMdSearch size={20} />
@@ -439,11 +439,11 @@ const handleCheckTitular=()=>{
                         {!particular && <div className="inline-flex gap-8 pl-4 pt-1">
                             <div className="flex items-center ">
                                 <input type="checkbox" checked={titular} onClick={handleCheckTitular} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                                <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">TITULAR</label>
+                                <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-300">TITULAR</label>
                             </div>
                             <div className="flex items-center ">
                                 <input type="checkbox" onClick={handleCheckDependente} checked={dependente} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                                <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">DEPENDENTE</label>
+                                <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-300">DEPENDENTE</label>
                             </div>
                         </div>}
                         <DadosFalecido servico={servico} setarServico={setarServico} check={particular||titular||dependente?false:true} />
@@ -493,7 +493,7 @@ const handleCheckTitular=()=>{
                                 return (
                                     <li className="flex items-center ">
                                         <input checked={it.status} onChange={() => alterCheckListIda(index)} type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                                        <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">{it.descricao}</label>
+                                        <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-300">{it.descricao}</label>
                                     </li>
                                 )
                             })}
@@ -508,7 +508,7 @@ const handleCheckTitular=()=>{
                                     return (
                                         <li className="flex items-center ">
                                             <input checked={item.status} onChange={() => alterCheckListVolta(i)} type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                                            <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-300">{item.descricao}</label>
+                                            <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-300">{item.descricao}</label>
                                         </li>
                                     )
                                 })}

@@ -70,6 +70,28 @@ export default function Cobranca() {
 
 
     const imprimirRelatorio = useReactToPrint({
+      pageStyle: `
+      @page {
+          margin: 1rem;
+      }
+      @media print {
+          body {
+              -webkit-print-color-adjust: exact;
+          }
+          @page {
+              size: auto;
+              margin: 1rem;
+          }
+          @page {
+              @top-center {
+                  content: none;
+              }
+              @bottom-center {
+                  content: none;
+              }
+          }
+      }
+  `,
       content:()=>componenteRef.current
     })
 
@@ -176,15 +198,15 @@ export default function Cobranca() {
                     <div id="divFiltro" className="inline-flex gap-4">
                     <div>
           <label  className="block mb-1 text-xs font-medium  text-white">DATA INICIAL</label>
-          <DatePicker selected={dataInicial} onChange={e=>e && setDataInicial(e)}  dateFormat={"dd/MM/yyyy"} locale={pt}   required className="block uppercase w-full py-[5px] pr-2 pl-2 sm:text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <DatePicker selected={dataInicial} onChange={e=>e && setDataInicial(e)}  dateFormat={"dd/MM/yyyy"} locale={pt}   required className="block uppercase w-full py-[5px] pr-2 pl-2 sm:text-xs  border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div>
           <label  className="block mb-1 text-xs font-medium  text-white">DATA FINAL</label>
-          <DatePicker selected={dataFinal} onChange={e=>e && setDataFinal(e)}  dateFormat={"dd/MM/yyyy"} locale={pt}   required className="block uppercase w-full py-[5px] pr-2 pl-2 sm:text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <DatePicker selected={dataFinal} onChange={e=>e && setDataFinal(e)}  dateFormat={"dd/MM/yyyy"} locale={pt}   required className="block uppercase w-full py-[5px] pr-2 pl-2 sm:text-xs  border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="flex flex-col w-2/6">
-                  <label className="block mb-1 text-xs font-medium text-gray-900 dark:text-white">STATUS</label>
-                  <select defaultValue={''} onChange={handleChangeStatus} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-xs  text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                  <label className="block mb-1 text-xs font-medium text-white">STATUS</label>
+                  <select defaultValue={''} onChange={handleChangeStatus} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-xs  text-xs  border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
                     <option value={['A','R']} selected>ABERTO/REAGENDADO</option>
                     <option value={['A']} selected>ABERTO</option>
                     <option value={['R']} selected>REAGENDADO</option>
@@ -195,7 +217,7 @@ export default function Cobranca() {
                
               
                 <div className="flex flex-col relative w-2/5">
-                <label className="block mb-1 ml-0 text-xs font-medium text-gray-900 dark:text-white">COBRADOR</label>
+                <label className="block mb-1 ml-0 text-xs font-medium  text-white">COBRADOR</label>
              
                 <button onClick={() => setDropCobrador(!dropCobrador)}
                   className="flex w-full h-full justify-between items-center py-1 pl-2 pr-2 uppercase border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
@@ -209,13 +231,13 @@ export default function Cobranca() {
                 {dropCobrador && <ul className="flex flex-col w-full absolute  top-12 z-10 left-0 max-h-64 overflow-y-auto  bg-gray-600 p-1 rounded-lg">
                   <li className="flex items-center px-2 py-1">
                     <input onChange={() => {}} type="checkbox" checked />
-                    <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODOS</label>
+                    <label className="ms-2  text-xs whitespace-nowrap  text-gray-300">TODOS</label>
                   </li>
                   {selectCobrador.map((item, index) => {
                     return (
                       <li key={item.id_consultor} className="flex items-center px-2 py-1">
                         <input onChange={() => {}} type="checkbox" checked value={item?.id_consultor} />
-                        <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">{item?.nome.toUpperCase()}</label>
+                        <label className="ms-2  text-xs whitespace-nowrap  text-gray-300">{item?.nome.toUpperCase()}</label>
                       </li>
                     )
                   })}
@@ -226,7 +248,7 @@ export default function Cobranca() {
               </div>
 
               <div className="flex flex-col relative w-2/5">
-                <label className="block mb-1 ml-0 text-xs font-medium text-gray-900 dark:text-white">BAIRROS</label>
+                <label className="block mb-1 ml-0 text-xs font-medium text-white">BAIRROS</label>
              
                 <button onClick={() => setDropBairros(!dropBairros)}
                   className="flex w-full h-full justify-between items-center py-1 pl-2 pr-2 uppercase border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
@@ -240,13 +262,13 @@ export default function Cobranca() {
                 {dropBairros && <ul className="flex flex-col w-full absolute  top-12 z-10 left-0 max-h-64 overflow-y-auto  bg-gray-600 p-1 rounded-lg">
                   <li className="flex items-center px-2 py-1">
                     <input onChange={() => setTodos(!todos)} type="checkbox" checked={todos} />
-                    <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODOS</label>
+                    <label className="ms-2  text-xs whitespace-nowrap text-gray-300">TODOS</label>
                   </li>
                   {arrayBairros.map((item, index) => {
                     return (
                       <li key={index} className="flex items-center px-2 py-1">
                         <input onChange={() => handleOptionChange(index)} type="checkbox" checked={item.check} />
-                        <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">{item?.bairro?.toUpperCase()}</label>
+                        <label className="ms-2  text-xs whitespace-nowrap text-gray-300">{item?.bairro?.toUpperCase()}</label>
                       </li>
                     )
                   })}

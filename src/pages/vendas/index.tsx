@@ -318,9 +318,9 @@ export default function Vendas() {
                                             <div className='flex flex-col w-full leading-none'>
                                                 <div className="flex justify-between mb-1 leading-none">
 
-                                                    <span className="text-sm font-medium text-blue-700 dark:text-white leading-none">{meta &&((item._sum.valor_mensalidade*100)/meta).toFixed(2)}%</span>
+                                                    <span className="text-sm font-medium text-white leading-none">{meta &&((item._sum.valor_mensalidade*100)/meta).toFixed(2)}%</span>
                                                 </div>
-                                                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                                                <div className="w-full rounded-full h-2.5 bg-gray-700">
                                                     <div style={{ width:`${(meta && ((item._sum.valor_mensalidade*100)/meta)>100?'100':meta && ((item._sum.valor_mensalidade*100)/meta))}%` }} className="bg-blue-600 h-2.5 rounded-full" ></div>
                                                 </div>
 
@@ -366,11 +366,11 @@ export default function Vendas() {
 
                                 <div className="mb-1 ">
                                     <label className="block w-full mb-1 text-xs font-medium  text-white">DATA INICIO</label>
-                                    <DatePicker selected={dadosMetas.date} onChange={e => { e && setarDadosMetas({ ...dadosMetas, date: e }) }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase  w-full pb-1 pt-1 pr-2 pl-2 text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+                                    <DatePicker selected={dadosMetas.date} onChange={e => { e && setarDadosMetas({ ...dadosMetas, date: e }) }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase  w-full pb-1 pt-1 pr-2 pl-2 text-xs  border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
                                 </div>
                                 <div className="mb-1 ">
                                     <label className="block w-full mb-1 text-xs font-medium  text-white">DATA FIM</label>
-                                    <DatePicker selected={dadosMetas.dateFimMeta} onChange={e => { e && setarDadosMetas({ ...dadosMetas, dateFimMeta: e }) }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase  w-full pb-1 pt-1 pr-2 pl-2 text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+                                    <DatePicker selected={dadosMetas.dateFimMeta} onChange={e => { e && setarDadosMetas({ ...dadosMetas, dateFimMeta: e }) }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase  w-full pb-1 pt-1 pr-2 pl-2 text-xs  border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
                                 </div>
 
                                 <div className="mb-1 ">

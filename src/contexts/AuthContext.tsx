@@ -34,6 +34,7 @@ type DependentesProps = {
     nome: string,
     data_nasc: Date,
     grau_parentesco: string,
+    celular:string,
     data_adesao: Date,
     carencia: Date,
     id_dependente: number,
@@ -94,7 +95,7 @@ type MensalidadeProps = {
 type DadosCadastro = {
     empresa:string
     name: string,
-    nasc: string,
+    nasc: Date,
     sexo: string,
     cep: string,
     endereco: string,

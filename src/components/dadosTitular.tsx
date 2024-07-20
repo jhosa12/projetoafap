@@ -3,6 +3,8 @@ import { FormWrapper } from "./organizador";
 import InputMask from 'react-input-mask';
 import DatePicker from 'react-datepicker'
 import pt from "date-fns/locale/pt";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
 
 
 
@@ -35,19 +37,17 @@ interface TitularProps{
 }
 interface DadosProps{
  // titular:Partial<TitularProps>
-  dadosTitular:Partial<TitularProps>
-  setarDados: (fields:Partial<TitularProps>)=>void
+  data:Partial<TitularProps>
+  closeModa: (fields:Partial<TitularProps>)=>void
 }
 
-export function Item({dadosTitular,setarDados}:DadosProps){
+export function Item(){
 
- // const {dadosTitular,closeModa}= useContext(AuthContext)
+  const {data,closeModa}= useContext(AuthContext)
  
 
 
   
-
-
 
     return(
         <FormWrapper title="DADOS DO TITULAR">
@@ -56,15 +56,15 @@ export function Item({dadosTitular,setarDados}:DadosProps){
         
         <div className="col-span-2">
           <label  className="block mb-1 text-sm font-medium  text-white">NOME</label>
-          <input autoComplete='off' value={dadosTitular.name} onChange={e=>setarDados({...dadosTitular,name:e.target.value.toUpperCase()})}  type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input autoComplete='off' value={data.name} onChange={e=>closeModa({...data,name:e.target.value.toUpperCase()})}  type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">NASCIMENTO</label>
-          <DatePicker  selected={dadosTitular.nasc} locale={pt} onChange={e=>e && setarDados({...dadosTitular,nasc:e})}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2  border  rounded-lg sm:text-sm bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <DatePicker  selected={data.nasc} locale={pt} onChange={e=>e && closeModa({...data,nasc:e})}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2  border  rounded-lg sm:text-sm bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label   className="block mb-1 text-sm font-medium text-white">SEXO</label>
-            <select value={dadosTitular.sexo} onChange={e=>setarDados({...dadosTitular,sexo:e.target.value.toUpperCase()})} className="block w-full pb-1 pt-1 pr-2 pl-2  text-sm  border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+            <select value={data.sexo} onChange={e=>closeModa({...data,sexo:e.target.value.toUpperCase()})} className="block w-full pb-1 pt-1 pr-2 pl-2  text-sm  border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
               <option   selected></option>
               <option   value="M">MASCULINO</option>
               <option   value="F">FEMININO</option>
@@ -73,27 +73,27 @@ export function Item({dadosTitular,setarDados}:DadosProps){
        
         <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">CEP</label>
-          <InputMask value={dadosTitular.cep} onChange={e=>setarDados({...dadosTitular,cep:e.target.value})} mask={'99999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <InputMask value={data.cep} onChange={e=>closeModa({...data,cep:e.target.value})} mask={'99999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-2">
           <label  className="block mb-1 text-sm font-medium  text-white">ENDEREÇO</label>
-          <input value={dadosTitular.endereco} onChange={e=>setarDados({...dadosTitular,endereco:e.target.value.toUpperCase()})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.endereco} onChange={e=>closeModa({...data,endereco:e.target.value.toUpperCase()})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">NUMERO</label>
-          <input value={dadosTitular.numero} onChange={e=>setarDados({...dadosTitular,numero:Number(e.target.value)})} autoComplete="off" type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.numero} onChange={e=>closeModa({...data,numero:Number(e.target.value)})} autoComplete="off" type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">BAIRRO</label>
-          <input value={dadosTitular.bairro} onChange={e=>setarDados({...dadosTitular,bairro:e.target.value.toUpperCase()})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.bairro} onChange={e=>closeModa({...data,bairro:e.target.value.toUpperCase()})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-2">
           <label  className="block mb-1 text-sm font-medium  text-white">PONTO REF</label>
-          <input value={dadosTitular.referencia} onChange={e=>setarDados({...dadosTitular,referencia:e.target.value.toUpperCase()})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.referencia} onChange={e=>closeModa({...data,referencia:e.target.value.toUpperCase()})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">UF</label>
-            <select value={dadosTitular.uf} onChange={e=>setarDados({...dadosTitular,uf:e.target.value.toUpperCase()})} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm    border  rounded-lg    bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+            <select value={data.uf} onChange={e=>closeModa({...data,uf:e.target.value.toUpperCase()})} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm    border  rounded-lg    bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
               <option selected></option>
              
                   <option>AC</option>
@@ -131,42 +131,42 @@ export function Item({dadosTitular,setarDados}:DadosProps){
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium text-white">CIDADE</label>
-            <select value={dadosTitular.cidade} onChange={e=>setarDados({...dadosTitular,cidade:e.target.value.toUpperCase()})} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  text-sm  border  rounded-lg    bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+            <select value={data.cidade} onChange={e=>closeModa({...data,cidade:e.target.value.toUpperCase()})} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  text-sm  border  rounded-lg    bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
               <option selected></option>
-                {dadosTitular.cidades?.map((item)=>{
+                {data.cidades?.map((item)=>{
                   return(
-                      item.uf===dadosTitular.uf?(<option>{item.cidade}</option>):''
+                      item.uf===data.uf?(<option>{item.cidade}</option>):''
                   )
                 })}
             </select>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">RG</label>
-          <input value={dadosTitular.rg} onChange={e=>setarDados({...dadosTitular,rg:e.target.value})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.rg} onChange={e=>closeModa({...data,rg:e.target.value})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">CPF</label>
-          <InputMask mask={'999.999.999-99'}  value={dadosTitular.cpf} onChange={e=>setarDados({cpf:e.target.value})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <InputMask mask={'999.999.999-99'}  value={data.cpf} onChange={e=>closeModa({cpf:e.target.value})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">NATURALIDADE</label>
-          <input value={dadosTitular.naturalidade} onChange={e=>setarDados({...dadosTitular,naturalidade:e.target.value.toUpperCase()})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.naturalidade} onChange={e=>closeModa({...data,naturalidade:e.target.value.toUpperCase()})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">EMAIL</label>
-          <input value={dadosTitular.email} onChange={e=>setarDados({...dadosTitular,email:e.target.value.toUpperCase()})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={data.email} onChange={e=>closeModa({...data,email:e.target.value.toUpperCase()})} autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">CELULAR1</label>
-          <InputMask value={dadosTitular.celular1} onChange={e=>setarDados({...dadosTitular,celular1:e.target.value})} mask={'(99) 9 9999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <InputMask value={data.celular1} onChange={e=>closeModa({...data,celular1:e.target.value})} mask={'(99) 9 9999-9999'} type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">CELULAR2</label>
-          <InputMask value={dadosTitular.celular2} onChange={e=>setarDados({...dadosTitular,celular2:e.target.value})} mask={'(99) 9 9999-9999'} type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <InputMask value={data.celular2} onChange={e=>closeModa({...data,celular2:e.target.value})} mask={'(99) 9 9999-9999'} type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
           <div className="col-span-1">
           <label  className="block mb-1 text-sm font-medium  text-white">TELEFONE</label>
-          <InputMask value={dadosTitular.telefone} onChange={e=>setarDados({...dadosTitular,telefone:e.target.value})} mask={'(99) 9 9999-9999'} type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <InputMask value={data.telefone} onChange={e=>closeModa({...data,telefone:e.target.value})} mask={'(99) 9 9999-9999'} type="text"  className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           </div>
         </div>
         </div>

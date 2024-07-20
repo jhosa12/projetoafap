@@ -163,11 +163,11 @@ export default function ObitosAssociado({obitos}:DadosProps){
             <div className="flex p-2">
             <div className="flex items-center px-2 py-1">
             <input onChange={() =>{}} type="checkbox" checked />
-            <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">CARTEIRA TITULAR</label>
+            <label className="ms-2  text-xs whitespace-nowrap text-gray-300">CARTEIRA TITULAR</label>
             </div>
             <div className="flex items-center px-2 py-1">
             <input onChange={() =>{}} type="checkbox" checked />
-            <label className="ms-2  text-xs whitespace-nowrap text-gray-900 dark:text-gray-300">TODOS DEPENDENTES</label>
+            <label className="ms-2  text-xs whitespace-nowrap text-gray-300">TODOS DEPENDENTES</label>
             </div>
             <button onClick={()=>{}} className="flex p-1 rounded-lg justify-center bg-gray-500 gap-1 items-center text-xs z-40 text-white"><IoPrint size={18}/> PRINT</button>
             </div>

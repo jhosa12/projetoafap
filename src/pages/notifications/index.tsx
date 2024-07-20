@@ -102,7 +102,7 @@ console.log(err)
                             <div className="flex flex-row justify-between w-full">
                             <p className="pl-2">{item.descricao}</p>
                             <span className="flex items-end justify-end h-full">{new Date(item.data).toLocaleDateString()} - {new Date(item.data).toLocaleTimeString()}</span>
-                            <span className="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300">
+                            <span className="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full bg-yellow-900 text-yellow-300">
                 <span className="w-2 h-2 me-1 bg-yellow-500 rounded-full"></span>
                 {item.status}
             </span>
