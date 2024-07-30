@@ -217,6 +217,9 @@ export default function Convalescente() {
 
 
     }, [pendente, entregue, aberto, arrayConv])
+
+
+
     return (
         <div className="flex flex-col w-full pl-10 pr-10 pt-4">
             <Tooltip className="z-20" id="toolId" />
@@ -422,7 +425,7 @@ export default function Convalescente() {
                     marginPagesDisplayed={2}
                     pageRangeDisplayed={5}
                     onPageChange={handlePageClick}
-                    containerClassName={'pagination inline-flex text-gray-400 gap-4 ml-auto justify-end font-semibold'}
+                    containerClassName={'pagination inline-flex text-gray-400 gap-4 ml-auto justify-end font-semibold  '}
                     activeClassName={'active text-blue-600'}
 
                 />

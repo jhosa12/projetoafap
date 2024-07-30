@@ -160,17 +160,9 @@ export default function ObitosAssociado({obitos}:DadosProps){
     
     return (
         <div className="flex flex-col w-full p-2">
-            <div className="flex p-2">
-            <div className="flex items-center px-2 py-1">
-            <input onChange={() =>{}} type="checkbox" checked />
-            <label className="ms-2  text-xs whitespace-nowrap text-gray-300">CARTEIRA TITULAR</label>
-            </div>
-            <div className="flex items-center px-2 py-1">
-            <input onChange={() =>{}} type="checkbox" checked />
-            <label className="ms-2  text-xs whitespace-nowrap text-gray-300">TODOS DEPENDENTES</label>
-            </div>
-            <button onClick={()=>{}} className="flex p-1 rounded-lg justify-center bg-gray-500 gap-1 items-center text-xs z-40 text-white"><IoPrint size={18}/> PRINT</button>
-            </div>
+         
+        
+          
             <div className="flex max-h-[calc(100vh-250px)]" id="DIV DA TABELA">
             <table
                                     className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
@@ -194,9 +186,7 @@ export default function ObitosAssociado({obitos}:DadosProps){
                                             <th scope="col" className="px-12 py-1">
                                                 LOCAL FALECIMENTO
                                             </th>
-                                            <th scope="col" className="px-4 py-1">
-                                                <span className="">Ações</span>
-                                            </th>
+                                            
                                         </tr>
                                       </thead> 
                                       <tbody>
@@ -221,14 +211,7 @@ export default function ObitosAssociado({obitos}:DadosProps){
                                                     <td className="px-12 py-1">
                                         {item.end_local_falecimento}
                                                     </td>
-                                                    <td className="px-12 py-1">
-
-                                                    { 
-                                                             <button onClick={(event)=>{event.stopPropagation()}} className="object-contain z-40 text-blue-500"><IoPrint size={18}/></button>
-                                                     
-                                                     }
-                                                     
-                                                    </td>
+                                             
                                                    
                                                   
 

@@ -43,3 +43,72 @@ body{
 ::-webkit-scrollbar:horizontal {
     height: 10px;
 }
+
+
+.rbc-header{
+    color: white;
+    font-size: 14px;
+    height: 26px;
+    justify-content: center;
+    align-items: center;
+    background: #0f172a;
+}
+.rbc-header.rbc-today {
+  background-color:rgb(12, 47, 121) !important;
+
+}
+
+.rbc-calendar {
+    background-color: #fff;
+    color: #000;
+  }
+  
+  .rbc-toolbar {
+    background-color: #f8f9fa;
+    color: #333;
+  }
+  
+  .rbc-event {
+    background-color: #3174ad;
+    color: #fff;
+  }
+  
+  .rbc-today {
+    background-color: #41a6f3;
+  }
+  
+  .rbc-off-range-bg {
+    background-color: #f8f9fa;
+  }
+  
+  .rbc-off-range {
+    color: #999;
+  }
+
+  .rbc-event,
+.rbc-background-event {
+  z-index: 2;
+  
+  padding: 0px !important;
+  border: none !important;
+}
+/*
+.rbc-day-slot .rbc-time-slot:after {
+  content: "";
+  width: 100%;
+  border-top: 1px solid #52970d;
+  display: block;
+  
+
+}*/
+.rbc-event-label {
+ display: flex;
+ padding-left: 10px;
+ padding-top: 1px;
+
+}
+
+.rbc-events-container {
+  width: 100% !important;
+  display: flex;
+}

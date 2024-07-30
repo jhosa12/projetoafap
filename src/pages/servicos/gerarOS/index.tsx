@@ -259,12 +259,7 @@ const handleCheckTitular=()=>{
         const response = await api.get("/obitos/listarCheckList")
         setarServico({ ...servico, listacheckida: response.data })
         setarServico({ ...servico, listacheckvolta: response.data })
-
-
-
     }
-
-
     function deletarProduto(id_ob_itens: number) {
         console.log(id_ob_itens)
         const response = toast.promise(

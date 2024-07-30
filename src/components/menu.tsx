@@ -170,8 +170,9 @@ async function contagem() {
         <li>
             <Link href="/vendas" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 transition duration-75 rounded-lg pl-11 group  text-white hover:bg-gray-700">Vendas</Link>
         </li>
-        
-     
+        <li>
+            <Link href="/agenda" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 transition duration-75 rounded-lg pl-11 group  text-white hover:bg-gray-700">Agenda</Link>
+        </li>
     </ul>
 </li>
 

@@ -339,12 +339,7 @@ export default function Cobranca() {
                 <th scope="col" className="px-5 py-1">
                     VALOR
                 </th>  
-                <th scope="col" className="px-4 py-1">
-                    AÇÕES
-                </th> 
-             
             </tr>
-            
         </thead>
         <tbody className="text-white">
             {currentItems.map((item,index)=>(
@@ -376,12 +371,7 @@ export default function Cobranca() {
             </td>
            
             
-            <td className="px-4 py-1 text-right">
-                <button onClick={(event)=>{
-                              
-                             
-                            }} className="font-medium  text-blue-500 hover:underline">Edit</button>
-            </td>
+          
            </tr>
 
             ))}
