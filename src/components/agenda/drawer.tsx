@@ -5,12 +5,15 @@ import pt from 'date-fns/locale/pt-BR';
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
-
+import 'react-datepicker/dist/react-datepicker.css';
 interface DadosProps{
     id_med:number,
     espec:string,
     nome:string,
-    image:string
+    image:{
+      type: string;
+      data: number[];
+    }
    
 }
 interface EventoProps{
@@ -20,7 +23,8 @@ interface EventoProps{
     start:Date
     end:Date
     title:string
-    status: string
+    status: string,
+    obs:string
 }
 interface DrawerProps{
     isOpen:boolean,
@@ -41,12 +45,13 @@ export function Drawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,se
           const evento =await toast.promise(
             api.post("/agenda/novoEvento",{
         
-              id_med:1,
+              id_med:Number(dataEvent.id_med),
               data:new Date(),
               start:dataEvent.start,
               end:dataEvent.end,
               title:dataEvent.title,
-              status: 'CANCELADO'
+              status: dataEvent.status,
+              obs:dataEvent.obs
           
             }),
           {
@@ -71,37 +76,54 @@ export function Drawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,se
         <div  className="fixed z-10 flex w-full h-[100vh] ">
        
   
-        <div className={`fixed flex flex-col top-0 gap-8 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} bg-white w-2/5 dark:bg-gray-800`} aria-labelledby="drawer-label">
-        <h5 id="drawer-label" className="inline-flex items-center mb-4 text-base font-semibold text-gray-500 dark:text-gray-400">
+        <div className={`fixed flex flex-col top-0 gap-8 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform ${isOpen ? 'translate-x-0' : 'translate-x-full'}  w-2/5 bg-gray-800`} aria-labelledby="drawer-label">
+        <h5 id="drawer-label" className="inline-flex items-center mb-4 text-base font-semibold  text-gray-400">
          <MdEvent size={40}/>
           NOVO EVENTO
         </h5>
      
         
         <DropDown setarDataEvent={setarDataEvent} dataEvent={dataEvent} array={arrayMedicos}/>
+        
+<form className="w-full mx-auto">
+  <label  className="block mb-2 text-sm font-medium  text-white">STATUS</label>
+  <select defaultValue={dataEvent.status} onChange={e=>setarDataEvent({...dataEvent,status:e.target.value})} className=" border  text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white ">
+    <option selected>SELECIONE O STATUS</option>
+    <option value="AB">ABERTO</option>
+    <option value="C">CANCELADO</option>
+    <option value="AD">ADIADO</option>
+  </select>
+</form>
+
+
+     
+
         <div className="inline-flex w-full justify-between gap-4">
         <div className="flex flex-col w-1/2">
           <label  className="block mb-1 text-sm font-medium  text-white">DATA INICIAL</label>
           <DatePicker
-        className="flex-shrink-0 w-full justify-between z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
+        className="flex-shrink-0 w-full justify-between z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center  border  rounded-lg focus:ring-4  bg-gray-700 hover:bg-gray-600  text-white border-gray-600"
         selected={dataEvent.start}
         onChange={(e)=>e && setarDataEvent({...dataEvent,start:e})}
-        timeInputLabel="Hora:"
-        dateFormat="dd/MM/yyyy h:mm aa"
-        showTimeInput
+        timeFormat="p"
+           dateFormat="Pp"
+        showTimeSelect
         locale={pt}
+       
         />
           </div>
 
           <div className="flex flex-col w-1/2">
           <label  className="block mb-1 text-sm font-medium  text-white">DATA FINAL</label>
           <DatePicker
-        className="flex-shrink-0 w-full justify-between z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
+        className="flex-shrink-0 w-full justify-between z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center border rounded-lg focus:outline-none bg-gray-700 hover:bg-gray-600 focus:ring-gray-700 text-white border-gray-600"
         selected={dataEvent.end}
         onChange={(e)=>e && setarDataEvent({...dataEvent,end:e})}
-        timeInputLabel="Hora:"
-        dateFormat="dd/MM/yyyy h:mm aa"
-        showTimeInput
+      
+          timeFormat="p"
+           dateFormat="Pp"
+      
+        showTimeSelect
         locale={pt}
         
         />
@@ -110,16 +132,12 @@ export function Drawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,se
         </div>
         
     <div>
-    <label  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">OBSERVAÇÃO</label>
-    <textarea  rows={4} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your thoughts here..."></textarea>
-      
+    <label  className="block mb-1 text-sm font-medium text-white">OBSERVAÇÃO</label>
+    <textarea value={dataEvent.obs} onChange={e=>setarDataEvent({...dataEvent,obs:e.target.value})}  rows={4} className="block p-2.5 w-full text-sm rounded-lg border 0  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" placeholder="Write your thoughts here..."></textarea>
       </div>   
-
-
-        
         <div className="inline-flex w-full h-full justify-end items-end  gap-4">
-          <button onClick={toggleDrawer} className="flex w-1/2 h-fit px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cencelar</button>
-          <button onClick={()=>novoEvento()} className="flex w-1/2 h-fit items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Salvar Evento<svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+          <button onClick={toggleDrawer} className="flex w-1/2 h-fit px-4 py-2 text-sm font-medium text-center  border  rounded-lg focus:outline-none  focus:z-10 focus:ring-4   bg-gray-800 text-gray-400 border-gray-600 hover:text-white hover:bg-gray-700">Cencelar</button>
+          <button onClick={()=>novoEvento()} className="flex w-1/2 h-fit items-center px-4 py-2 text-sm font-medium text-center text-white  rounded-lg   bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-blue-800">Salvar Evento<svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
           </svg></button>
         </div>
