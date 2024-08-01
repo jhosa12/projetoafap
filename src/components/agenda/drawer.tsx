@@ -32,6 +32,11 @@ export function Drawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,se
    
   
   const novoEvento=async()=>{
+
+    if(!dataEvent.status ||!dataEvent.id_med||!dataEvent.id_med||!dataEvent.title){
+      toast.info('Preencha todos os campos obrigatorios!')
+      return;
+    }
         try {
           const evento =await toast.promise(
             api.post("/agenda/novoEvento",{
@@ -60,6 +65,40 @@ export function Drawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,se
             toast.error('Erro ao gerar evento')
         }
   }
+
+  const editarEvento=async()=>{
+    if(!dataEvent.status ||!dataEvent.id_med||!dataEvent.id_med||!dataEvent.title){
+      toast.info('Preencha todos os campos obrigatorios!')
+      return;
+    }
+    try {
+      const evento =await toast.promise(
+        api.put("/agenda/editarEvento",{
+          id_ag:Number(dataEvent.id_ag),
+          id_med:Number(dataEvent.id_med),
+          start:dataEvent.start,
+          end:dataEvent.end,
+          title:dataEvent.title,
+          status: dataEvent.status,
+          obs:dataEvent.obs
+      
+        }),
+      {
+        error:'Erro na requisição',
+        pending:'Gerando Evento..',
+        success:'Evento Gerado com sucesso'
+      }          
+    
+    )
+      const novo= [...events]
+      const index = novo.findIndex(item=>item.id_ag===dataEvent.id_ag)
+      novo[index] = {...evento.data}
+      const ed = novo.map(item =>{return {...item,start:item.start ? new Date(item.start):new Date(),end:item.end?new Date(item.end):new Date()}})
+      setArrayEvent(ed)
+    } catch (error) {
+        toast.error('Erro ao gerar evento')
+    }
+}
     
 
     return(
@@ -128,9 +167,11 @@ export function Drawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,se
       </div>   
         <div className="inline-flex w-full h-full justify-end items-end  gap-4">
           <button onClick={toggleDrawer} className="flex w-1/2 h-fit px-4 py-2 text-sm font-medium text-center  border  rounded-lg focus:outline-none  focus:z-10 focus:ring-4   bg-gray-800 text-gray-400 border-gray-600 hover:text-white hover:bg-gray-700">Cencelar</button>
-          <button onClick={()=>novoEvento()} className="flex w-1/2 h-fit items-center px-4 py-2 text-sm font-medium text-center text-white  rounded-lg   bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-blue-800">Salvar Evento<svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+         {dataEvent.id_ag? <button onClick={()=>editarEvento()} className="flex w-1/2 h-fit items-center px-4 py-2 text-sm font-medium text-center text-white  rounded-lg   bg-yellow-600 hover:bg-yellow-700">Editar Evento<svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-          </svg></button>
+          </svg></button>: <button onClick={()=>novoEvento()} className="flex w-1/2 h-fit items-center px-4 py-2 text-sm font-medium text-center text-white  rounded-lg   bg-blue-600 hover:bg-blue-700  ">Salvar Evento<svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+          </svg></button>}
         </div>
       </div>
       </div>

@@ -47,7 +47,7 @@ export default function Calendario({medicos,events,setArrayEvent,dataEvent,setar
 
   const components:any ={
       event:({event}:{event:EventProps})=>{
-         return <div className={`flex rounded-md flex-col  items-center text-white   h-full pt-1 ${event.status==='C'?"bg-red-600":event.status==='AB'?"bg-green-600":"bg-yellow-500"}`}>
+          return <div className={`flex rounded-md flex-col  items-center text-white   h-full pt-1 ${event.status==='C'?"bg-[#ff0000]":event.status==='AB'?"bg-[#008000]":"bg-yellow-400"}`}>
           <span className="whitespace-nowrap">{event.title}</span>
           <span >{event.obs}</span>
        
@@ -59,7 +59,8 @@ export default function Calendario({medicos,events,setArrayEvent,dataEvent,setar
 
 
 const handleEventClick =(event:Partial<EventProps>)=>{
-    console.log(event)
+    setarDataEvento({...event})
+    toggleDrawer()
 }
 
     const toggleDrawer = () => {
@@ -68,7 +69,7 @@ const handleEventClick =(event:Partial<EventProps>)=>{
 
 
         const handleNovoEvento = useCallback(({start,end}:{start:Date,end:Date})=>{
-               setarDataEvento({start,end})  
+               setarDataEvento({start,end,data:undefined,id_ag:undefined,id_med:undefined,obs:undefined,status:undefined,title:undefined})  
                toggleDrawer()
           
 
