@@ -1,16 +1,5 @@
 import { useState } from "react"
-
-
-interface ArrayProps{
-    id_med:number,
-    espec:string,
-    nome:string,
-    image:{
-        type: string;
-        data: number[];
-      }
-    
-}
+import { MedicoProps } from "@/pages/agenda"
 interface EventoProps{
     id_ag :number
     id_med:number
@@ -22,7 +11,7 @@ interface EventoProps{
 }
 
 interface DadosProps{
-    array:Array<ArrayProps>
+    array:Array<MedicoProps>
     setarDataEvent :(fields:Partial<EventoProps>)=>void
     dataEvent:Partial<EventoProps>
 
@@ -46,7 +35,7 @@ export function DropDown({array,setarDataEvent,dataEvent}:DadosProps){
                 <li>
                 <button onClick={()=> {setarDataEvent({...dataEvent,title:`${item.nome}-(${item.espec})`,id_med:item.id_med});setOnPress(!onPress)}} type="button" className="inline-flex w-full px-4 py-2 text-sm  text-gray-400 hover:bg-gray-600 hover:text-white">
                     <div className="inline-flex items-center gap-4">
-                    <img className="w-[36px] h-[36px] rounded-full" src={`data:image/jpeg;base64,${item.image}`} alt="Rounded avatar"></img>
+                    <img className="w-[36px] h-[36px] rounded-full" src={`${process.env.NEXT_PUBLIC_API_URL}/${item.imageUrl}`} alt="Rounded avatar"></img>
                         {item.nome}-{`(${item.espec})`}
                     </div>
                 </button>

@@ -26,14 +26,10 @@ export interface MedicoProps{
     id_med:number,
     espec:string,
     nome:string,
-    image:{
-      type: string;
-      data: number[];
-    },
     sobre:string,
     file:File|undefined,
-    avatarUrl:string,
-    imageUrl:string
+    imageUrl:string,
+    tmpUrl:string
   
 }
 export interface EventProps{
@@ -172,7 +168,7 @@ const handleEventClick =(event:Partial<EventProps>)=>{
           </ul>
 
           {menuIndex===1 && <Calendario setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent}/> }
-          {menuIndex===2 && <AdmMedico setArray={setArrayMedicos} medicos={medicos}/> }
+          {menuIndex===2 && <AdmMedico  setArray={setArrayMedicos} medicos={medicos}/> }
 
     </div>
    

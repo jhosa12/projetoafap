@@ -6,16 +6,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import 'react-datepicker/dist/react-datepicker.css';
-interface DadosProps{
-    id_med:number,
-    espec:string,
-    nome:string,
-    image:{
-      type: string;
-      data: number[];
-    }
-   
-}
+import { MedicoProps } from "@/pages/agenda";
 interface EventoProps{
     id_ag :number
     id_med:number
@@ -29,7 +20,7 @@ interface EventoProps{
 interface DrawerProps{
     isOpen:boolean,
     toggleDrawer:()=>void
-    arrayMedicos:Array<DadosProps>
+    arrayMedicos:Array<MedicoProps>
     setarDataEvent :(fields:Partial<EventoProps>)=>void
     dataEvent:Partial<EventoProps>
     setArrayEvent:(array:Array<Partial<EventoProps>>)=>void

@@ -13,22 +13,13 @@ import moment from 'moment'
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
 import { Drawer } from "@/components/agenda/drawer";
-
+import { MedicoProps } from "@/pages/agenda";
 // Configura o moment para usar o idioma português
 moment.locale('pt-br');
 const localizer = momentLocalizer(moment)
 
 
-interface MedicoProps{
-    id_med:number,
-    espec:string,
-    nome:string,
-    image:{
-      type: string;
-      data: number[];
-    }
-  
-}
+
 interface EventProps{
     id_ag :number
     id_med:number

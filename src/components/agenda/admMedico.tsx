@@ -1,5 +1,5 @@
 
-import { Card,Modal,ModalHeader,ModalBody,Button,Label,FileInput,TextInput,Textarea } from "flowbite-react";
+import { Card,Modal,ModalHeader,ModalBody,Button,Label,FileInput,TextInput,Textarea,Dropdown,DropdownItem } from "flowbite-react";
 import imag from "../../../public/carne.png"
 import { MedicoProps } from "@/pages/agenda";
 import { IoAddOutline } from "react-icons/io5";
@@ -11,12 +11,12 @@ import Image from "next/image";
 interface DataProps{
     medicos:Array<MedicoProps>
     setArray:(array:Array<MedicoProps>)=>void
+   
 }
 export default function AdmMedico({medicos,setArray}:DataProps){
 
     const [openModal, setOpenModal] = useState(false);
     const [dataMedico,setDataMedico]= useState<Partial<MedicoProps>>({})
-
 
     const setarDadosMedico=(fields:Partial<MedicoProps>)=>{
         setDataMedico((prev: Partial<MedicoProps>)=>{
@@ -27,11 +27,11 @@ export default function AdmMedico({medicos,setArray}:DataProps){
 
 
 
-    const convertBufferToUrl = (buffer: number[]) => {
-        const byteArray = new Uint8Array(buffer);
-        const blob = new Blob([byteArray], { type: 'image/png' });
-        return URL.createObjectURL(blob);
-      };
+  //  const convertBufferToUrl = (buffer: number[]) => {
+    //    const byteArray = new Uint8Array(buffer);
+      //  const blob = new Blob([byteArray], { type: 'image/png' });
+       ;// return URL.createObjectURL(blob);
+      //};
 
 
 
@@ -45,10 +45,7 @@ if(!imagem ){
     return;
 }
 if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
-   setarDadosMedico({...dataMedico,avatarUrl:URL.createObjectURL(e.target.files[0]),file:e.target.files[0]})
-  
-
-
+   setarDadosMedico({...dataMedico,imageUrl:'',tmpUrl:URL.createObjectURL(e.target.files[0]),file:e.target.files[0]})
     }
 }
 
@@ -73,11 +70,62 @@ if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
         const novoArray = [...medicos]
         novoArray.push(novo.data)
         setArray(novoArray)
+        setOpenModal(false)
         } catch (error) {
             toast.error('erro na requisição')
         }
         
     }
+    async function editarMedico() {
+      const data =new FormData()
+      data.append("id_med",String(dataMedico.id_med))
+      data.append("nome",dataMedico.nome??'')
+      data.append("espec",dataMedico.espec??'')
+      data.append("sobre",dataMedico.sobre??'')
+      data.append("imageUrl",dataMedico.imageUrl??'')
+      if(dataMedico.file){
+          data.append("file",dataMedico.file)
+      }
+  try {
+  const novo =  await toast.promise(
+      api.put("/agenda/editarMedico",data),
+      {error:'Erro ao salvar dados',
+          pending:'Salvando novos dados...',
+          success:'Dados salvos com sucesso!'
+      }
+  )
+  
+  const novoArray = [...medicos]
+  const index = novoArray.findIndex(item=>item.id_med===dataMedico.id_med)
+  novoArray[index]={...novo.data}
+  setArray(novoArray)
+  } catch (error) {
+      toast.error('erro na requisição')
+  }
+  
+}
+
+
+async function deletarMedico(id:number) {
+  
+try {
+const novo =  await toast.promise(
+  api.delete(`/agenda/deletarMedico/${id}`),
+  {error:'Erro ao salvar dados',
+      pending:'Salvando novos dados...',
+      success:'Dados salvos com sucesso!'
+  }
+)
+
+const novoArray = [...medicos]
+const index = novoArray.findIndex(item=>item.id_med===id)
+novoArray.splice(index,1)
+setArray(novoArray)
+} catch (error) {
+  toast.error('erro na requisição')
+}
+
+}
 
 
 
@@ -92,10 +140,33 @@ if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
    {medicos.map(item=>(
     <Card 
     key={item.id_med} 
-     className="max-w-sm col-span-1" 
-     imgSrc={`http://localhost:3333/file/${item.imageUrl}`}
+     className=" relative max-w-sm col-span-1 cursor-pointer" 
+     imgSrc={`${process.env.NEXT_PUBLIC_API_URL}/file/${item.imageUrl}`}
    // renderImage={()=><Image alt="image med" className="rounded-lg w-full" width={250} height={100} src={convertBufferToUrl(item.image.data)}/>}
-      horizontal>
+      horizontal
+     
+      >
+        <div className="absolute top-0 right-0 z-10 flex justify-end px-4 pt-4">
+        <Dropdown inline label="">
+          <Dropdown.Item  onClick={()=>{setarDadosMedico({...item,tmpUrl:undefined}),setOpenModal(true)}}>
+            <span
+              
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
+            >
+              Editar
+            </span>
+          </Dropdown.Item>
+     
+          <Dropdown.Item>
+            <button
+              onClick={()=>deletarMedico(item.id_med)}
+              className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
+            >
+              Deletar
+            </button>
+          </Dropdown.Item>
+        </Dropdown>
+      </div>
         <div className="flex flex-col">
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
       {item.nome}
@@ -108,7 +179,18 @@ if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
     </p>
   </Card>
    )) }
-      <Card onClick={()=>setOpenModal(true)} className="flex justify-center items-center max-w-sm bg-gray-800"  horizontal>
+      <Card onClick={()=>{
+        setarDadosMedico({
+          espec:undefined,
+          file:undefined,
+          id_med:undefined,
+          imageUrl:undefined,
+          nome:undefined,
+          sobre:undefined,
+          tmpUrl:undefined
+        })
+        setOpenModal(true)
+        }} className="flex cursor-pointer justify-center items-center max-w-sm bg-gray-800"  horizontal>
             <IoAddOutline size={60}/>
       </Card>
         </div>
@@ -123,8 +205,8 @@ if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
            
            className="absolute bg-transparent ">
            
-            <ModalHeader title={"Editar Dados"} className="flex text-white items-start justify-between bg-gray-800 rounded-t border-b p-4 border-gray-60">
-                <h1 className="text-white">Editar Dados</h1>
+            <ModalHeader className="flex text-white items-start justify-between bg-gray-800 rounded-t border-b p-4 border-gray-60">
+                {dataMedico.id_med?<h1 className="text-white">Editar Dados</h1>:<h1 className="text-white">Adicionar Novo Medico</h1>}
                 </ModalHeader>
             <ModalBody>
                 <div className="space-y-2 p-2">
@@ -147,24 +229,22 @@ if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
               d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
             />
           </svg>
-       {!dataMedico.avatarUrl && <div className="flex flex-col items-center justify-center  pt-6">
-      
-        
+       {!dataMedico.imageUrl && !dataMedico.tmpUrl && <div className="flex flex-col items-center justify-center pt-6">
           <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG(MAX. 500x350px)</p>
         </div>}
         <FileInput onChange={handleFile} id="dropzone-file" className="hidden" />
-       {dataMedico.avatarUrl && <img className="w-full h-36 object-center rounded-lg" src={dataMedico.avatarUrl} alt="fotoUser"  ></img>}
+       {(dataMedico.imageUrl || dataMedico.tmpUrl) &&  <img className="w-full h-36 object-center rounded-lg" src={dataMedico.imageUrl?`${process.env.NEXT_PUBLIC_API_URL}/file/${dataMedico.imageUrl}`:dataMedico.tmpUrl} alt="fotoUser"  ></img>}
       </Label>
-      <TextInput onChange={e=>setarDadosMedico({...dataMedico,nome:e.target.value})} placeholder="Nome do Médico"/>
-      <TextInput onChange={e=>setarDadosMedico({...dataMedico,espec:e.target.value})} placeholder="Especialidade"/>
-      <Textarea onChange={e=>setarDadosMedico({...dataMedico,sobre:e.target.value})} rows={4} placeholder="Descreva suas atividades"/>
+      <TextInput value={dataMedico.nome} onChange={e=>setarDadosMedico({...dataMedico,nome:e.target.value})} placeholder="Nome do Médico"/>
+      <TextInput value={dataMedico.espec} onChange={e=>setarDadosMedico({...dataMedico,espec:e.target.value})} placeholder="Especialidade"/>
+      <Textarea value={dataMedico.sobre} onChange={e=>setarDadosMedico({...dataMedico,sobre:e.target.value})} rows={4} placeholder="Descreva suas atividades"/>
         
           </div></ModalBody>
 
           <Modal.Footer>
-          <Button color="blue"  onClick={novoMedico}>Salvar</Button>
+         { !dataMedico.id_med?<Button color="blue"  onClick={novoMedico}>Salvar</Button>: <Button className="bg-yellow-400"  onClick={editarMedico}>Editar</Button>}
           <Button color="gray" className="bg-gray-400" onClick={() => setOpenModal(false)}>
-            Decline
+            Cancelar
           </Button>
         </Modal.Footer>
 
