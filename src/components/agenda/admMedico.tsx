@@ -174,7 +174,7 @@ setArray(novoArray)
     <span className="text-sm text-gray-500 dark:text-gray-400">{item.espec}</span>
         </div>
 
-    <p className="font-normal text-gray-700 dark:text-gray-400">
+    <p className=" font-normal break-words text-gray-700 dark:text-gray-400">
      {item.sobre}
     </p>
   </Card>
