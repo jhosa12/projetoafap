@@ -140,7 +140,7 @@ setArray(novoArray)
    {medicos.map(item=>(
     <Card 
     key={item.id_med} 
-     className=" relative max-w-sm col-span-1 cursor-pointer" 
+     className=" relative max-w-sm col-span-1" 
      imgSrc={`${process.env.NEXT_PUBLIC_API_URL}/file/${item.imageUrl}`}
    // renderImage={()=><Image alt="image med" className="rounded-lg w-full" width={250} height={100} src={convertBufferToUrl(item.image.data)}/>}
       horizontal
