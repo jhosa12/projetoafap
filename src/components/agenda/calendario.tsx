@@ -4,8 +4,6 @@
 import { MdDelete, MdEdit } from "react-icons/md";
 import { BiSolidLockOpenAlt } from "react-icons/bi";
 import { useCallback, useEffect, useState } from "react";
-import { api } from "@/services/apiClient";
-import { toast } from "react-toastify";
 import "react-datepicker/dist/react-datepicker.css";
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
@@ -47,7 +45,7 @@ export default function Calendario({medicos,events,setArrayEvent,dataEvent,setar
 
   const components:any ={
       event:({event}:{event:EventProps})=>{
-          return <div className={`flex rounded-md flex-col  items-center text-white   h-full pt-1 ${event.status==='C'?"bg-[#ff0000]":event.status==='AB'?"bg-[#008000]":"bg-yellow-400"}`}>
+          return <div className={`flex rounded-md flex-col cursor-pointer items-center text-white   h-full pt-1 ${event.status==='C'?"bg-[#ff0000]":event.status==='AB'?"bg-[#008000]":"bg-yellow-400"}`}>
           <span className="whitespace-nowrap">{event.title}</span>
           <span >{event.obs}</span>
        

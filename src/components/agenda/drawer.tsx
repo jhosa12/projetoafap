@@ -6,6 +6,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import 'react-datepicker/dist/react-datepicker.css';
+import { MdDelete } from "react-icons/md";
 import { MedicoProps } from "@/pages/agenda";
 interface EventoProps{
     id_ag :number
@@ -31,6 +32,40 @@ interface DrawerProps{
 export function Drawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,setarDataEvent,dataEvent}:DrawerProps){
    
   
+
+  async function deletarEvento() {
+      if(!dataEvent.id_ag){
+        toggleDrawer();
+        return;
+      }
+  
+    try {
+    const novo =  await toast.promise(
+      api.delete(`/agenda/deletarEvento/${dataEvent.id_ag}`),
+      {error:'Erro ao salvar dados',
+          pending:'Salvando novos dados...',
+          success:'Dados salvos com sucesso!'
+      }
+    )
+    
+    const novoArray = [...events]
+    const index = novoArray.findIndex(item=>item.id_ag===dataEvent.id_ag)
+    novoArray.splice(index,1)
+    setArrayEvent(novoArray)
+    toggleDrawer()
+    } catch (error) {
+      toast.error('erro na requisição')
+    }
+    
+    }
+
+
+
+
+
+
+
+
   const novoEvento=async()=>{
 
     if(!dataEvent.status ||!dataEvent.id_med||!dataEvent.id_med||!dataEvent.title){
@@ -61,6 +96,7 @@ export function Drawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,se
           novo.push(evento.data)
           const ed = novo.map(item =>{return {...item,start:item.start ? new Date(item.start):new Date(),end:item.end?new Date(item.end):new Date()}})
           setArrayEvent(ed)
+          toggleDrawer()
         } catch (error) {
             toast.error('Erro ao gerar evento')
         }
@@ -95,6 +131,7 @@ export function Drawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,se
       novo[index] = {...evento.data}
       const ed = novo.map(item =>{return {...item,start:item.start ? new Date(item.start):new Date(),end:item.end?new Date(item.end):new Date()}})
       setArrayEvent(ed)
+      toggleDrawer()
     } catch (error) {
         toast.error('Erro ao gerar evento')
     }
@@ -104,15 +141,15 @@ export function Drawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,se
     return(
         
         <div  className="fixed z-10 flex w-full h-[100vh] ">
-       
-  
         <div className={`fixed flex flex-col top-0 gap-8 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform ${isOpen ? 'translate-x-0' : 'translate-x-full'}  w-2/5 bg-gray-800`} aria-labelledby="drawer-label">
-        <h5 id="drawer-label" className="inline-flex items-center mb-4 text-base font-semibold  text-gray-400">
-         <MdEvent size={40}/>
+
+        <div id="drawer-label" className="inline-flex items-center justify-between mb-4 text-base font-semibold  text-gray-400">
+          <div className="inline-flex items-center">
+          <MdEvent size={40}/>
           NOVO EVENTO
-        </h5>
-     
-        
+          </div>
+          <button onClick={deletarEvento} className="p-1 hover:bg-gray-600 rounded-lg"><MdDelete size={23}/></button>
+        </div>
         <DropDown setarDataEvent={setarDataEvent} dataEvent={dataEvent} array={arrayMedicos}/>
         
 <form className="w-full mx-auto">
@@ -124,10 +161,6 @@ export function Drawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,se
     <option value="AD">ADIADO</option>
   </select>
 </form>
-
-
-     
-
         <div className="inline-flex w-full justify-between gap-4">
         <div className="flex flex-col w-1/2">
           <label  className="block mb-1 text-sm font-medium  text-white">DATA INICIAL</label>
