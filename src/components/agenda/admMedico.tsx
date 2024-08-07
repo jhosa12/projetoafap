@@ -140,7 +140,7 @@ setArray(novoArray)
    {medicos.map(item=>(
     <Card 
     key={item.id_med} 
-     className=" relative max-w-sm col-span-1" 
+     className=" relative  max-w-sm col-span-1 h-full" 
      imgSrc={`${process.env.NEXT_PUBLIC_API_URL}/file/${item.imageUrl}`}
    // renderImage={()=><Image alt="image med" className="rounded-lg w-full" width={250} height={100} src={convertBufferToUrl(item.image.data)}/>}
       horizontal
@@ -174,7 +174,7 @@ setArray(novoArray)
     <span className="text-sm text-gray-500 dark:text-gray-400">{item.espec}</span>
         </div>
 
-    <p className=" font-normal break-words text-gray-700 dark:text-gray-400">
+    <p className=" font-normal break-words overflow-y-auto text-gray-700 dark:text-gray-400">
      {item.sobre}
     </p>
   </Card>
