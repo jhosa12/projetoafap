@@ -7,7 +7,15 @@ import {useReactToPrint} from "react-to-print";
 interface DadosProps{
     dependentes:Array<DependentesProps>
     contrato:number,
-    plano:string
+    plano:string,
+    titular:string,
+    endereco:string,
+    numero:number|null,
+    bairro:string,
+    cidade:string,
+    celular:string,
+    uf:string,
+   
   }
 
   interface DependentesProps{
@@ -28,7 +36,7 @@ interface DadosProps{
    
 }
 
-export default function CarteirasDep({dependentes,contrato,plano}:DadosProps){
+export default function CarteirasDep({dependentes,contrato,plano,titular,endereco,numero,bairro,cidade,celular,uf}:DadosProps){
     const [arrayPrint,setArrayPrint]=useState<Array<Partial<DependentesProps>>>([])
     const componentRef = useRef<DocumentTemplate>(null)
     const [todosDep,setTodosDep]=useState(false)
@@ -37,7 +45,19 @@ export default function CarteirasDep({dependentes,contrato,plano}:DadosProps){
     
 
     const handlePrint = useReactToPrint({
-        content:()=>componentRef.current
+        content:()=>componentRef.current,
+        pageStyle: `
+        @page {
+            margin: 4px;
+        }
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+            }
+           
+          
+        }
+    `,
     })
     const toggleSelecionada = (item:DependentesProps)=>{
         const index =linhasSelecionadas.findIndex((linha)=>linha.id_dependente===item.id_dependente);
@@ -155,6 +175,16 @@ export default function CarteirasDep({dependentes,contrato,plano}:DadosProps){
           dependentes={arrayPrint}
           plano={plano}
           contrato={contrato}
+          titular={titular}
+          endereco={endereco}
+          celular={celular}
+          bairro={bairro}
+          cidade={cidade}
+          numero={numero}
+          uf={uf}
+          cartTitular={cartTitular}
+          dependentesTitular={dependentes}
+          
         
         />
 

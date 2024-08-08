@@ -919,7 +919,18 @@ export default function AdmContrato() {
                             }
 
                             {
-                                indexTab === 4 && (<CarteirasDep dependentes={dadosassociado?.dependentes ?? []} contrato={dadosassociado?.contrato?.id_contrato ?? 0} plano={dadosassociado?.contrato?.plano ?? ''} />)
+                                indexTab === 4 && (<CarteirasDep
+                                     titular={dadosassociado?.nome??''}
+                                      dependentes={dadosassociado?.dependentes ?? []} 
+                                      contrato={dadosassociado?.contrato?.id_contrato ?? 0}
+                                       plano={dadosassociado?.contrato?.plano ?? ''}
+                                       bairro={dadosassociado?.bairro??''}
+                                       celular={dadosassociado?.celular1??''}
+                                       cidade={dadosassociado?.cidade??''}
+                                       endereco={dadosassociado?.endereco??''}
+                                       numero={dadosassociado?.numero??null}
+                                       uf={dadosassociado?.uf??''}
+                                       />)
                             }
 
                             {indexTab === 5 && (<ObitosAssociado
