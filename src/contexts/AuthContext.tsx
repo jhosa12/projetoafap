@@ -214,7 +214,8 @@ type AuthContextData = {
     setarListaConv: (fields: Partial<ConvProps>) => void,
     listaConv: Partial<ConvProps>,
     userToken: () => void,
-    limparDados:()=>void
+    limparDados:()=>void,
+    setarDadosAssociado:(fields:Partial<AssociadoProps>)=>void
 }
 
 type SignInProps = {
@@ -443,13 +444,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [usuario, setUser] = useState<UserProps>()
     const isAuthenticated = !!usuario;
     const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod: [] })
-    const [dadosassociado, setDadosAssociado] = useState<Partial<AssociadoProps>>()
+    const [dadosassociado, setDadosAssociado] = useState<Partial<AssociadoProps>>({})
     const [data, setData] = useState<Partial<DadosCadastro>>({})
     const [mov, setMov] = useState<Partial<CaixaProps>>({})
     const [servico, setServico] = useState<Partial<ObitoProps>>({ hr_sepultamento: new Date(), end_hora_falecimento: new Date(), end_hora_informaram: new Date() })
 
 
+    const setarDadosAssociado =(fields:Partial<AssociadoProps>)=>{
+        setDadosAssociado((prev:Partial<AssociadoProps>)=>(
+            prev?{...prev,...fields}:{...fields}
 
+        ))
+
+    }
 
     const limparDados=()=>{
         setDadosAssociado({acordo:[],
@@ -600,7 +607,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     }
     return (
-        <AuthContext.Provider value={{limparDados, userToken, usuario, isAuthenticated, sign, signOut, data, closeModa, dadosassociado, carregarDados, caixaMovimentacao, mov, setarServico, servico, listaConv, setarListaConv }}>
+        <AuthContext.Provider value={{setarDadosAssociado,limparDados, userToken, usuario, isAuthenticated, sign, signOut, data, closeModa, dadosassociado, carregarDados, caixaMovimentacao, mov, setarServico, servico, listaConv, setarListaConv }}>
             {children}
         </AuthContext.Provider>
     )

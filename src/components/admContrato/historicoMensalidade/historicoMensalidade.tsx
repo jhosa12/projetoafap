@@ -3,7 +3,7 @@ import { ModalAcordos } from '@/components/modalAcordos';
 import ImpressaoCarne from '@/Documents/carne/ImpressaoCarne';
 import { api } from '@/services/apiClient';
 import { useReactToPrint } from 'react-to-print';
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { FaHandshake } from 'react-icons/fa';
 import { IoIosClose } from 'react-icons/io';
 import { IoPrint } from 'react-icons/io5';
@@ -11,9 +11,7 @@ import { MdDeleteForever } from 'react-icons/md';
 import { RiAddCircleFill } from 'react-icons/ri';
 import { TbAlertTriangle } from 'react-icons/tb';
 import { toast } from 'react-toastify'
-
-
-
+import { AuthContext } from '@/contexts/AuthContext';
 
 interface MensalidadeProps  {
     id_usuario: number,
@@ -81,14 +79,12 @@ interface DadosAssociadoGeral{
 
 }
 
-
 interface DadosProps{
     usuario:{id:number,nome:string}
     carregarDados:()=>Promise<void>
     setarDados:(fields:Partial<SetAssociadoProps>)=>void
     dados:SetAssociadoProps
     dadosAssociado:DadosAssociadoGeral
-
 }
 export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,dados,usuario}:DadosProps) {
     const [checkMensal, setCheck] = useState(false)
@@ -97,9 +93,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
     const [openModalAcordo,setModalAcordo]= useState({open:false,visible:false})
     const [showSublinhas, setShowSublinhas] = useState<boolean>(false);
     const componentRef =useRef<ImpressaoCarne>(null);
-
-
-    
+    const {setarDadosAssociado} = useContext(AuthContext)
 
     let currentAcordoId: string;
 
@@ -196,8 +190,16 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                 }
 
             )
-            await carregarDados()
-            setarDados({ mensalidade: {} })
+            const novoArray = [...dadosAssociado.arrayMensalidade]
+
+            for (const value of linhasSelecionadas){
+                const index = novoArray.findIndex(item=>item.id_mensalidade===value.id_mensalidade)
+                novoArray.splice(index,1)
+            }
+            console.log(response.data)
+           // await carregarDados()
+           // setarDados({ mensalidade: {} })
+           setarDadosAssociado({mensalidade:novoArray})
 
         } catch (err) {
             console.log(err)
@@ -225,7 +227,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
         const vencimento = new Date(ultimaMensalidade?.vencimento ? ultimaMensalidade?.vencimento : '')
         const proxData = vencimento.setMonth(vencimento.getMonth() + 1)
         try {
-            await toast.promise(
+          const response =  await toast.promise(
                 api.post('/mensalidade/adicionar', {
                     id_contrato: dadosAssociado.id_contrato,
                     id_associado: dados.id_associado,
@@ -243,7 +245,9 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                 }
 
             )
-            carregarDados()
+           // carregarDados()
+
+            setarDadosAssociado({...dadosAssociado,mensalidade:[...dadosAssociado.arrayMensalidade,response.data]})
 
         } catch (err) {
             toast.error('Erro ao Adicionar nova parcela')

@@ -341,9 +341,13 @@ export default function AdmContrato() {
 
         const carregarDadosAsync = async () => {
             try {
-                await carregarDados();
+                if(data.id_associado){
+                    await carregarDados();
+                    setVerObs(false)
+                }else return;
+               
                 // closeModa({contrato:{},dependente:{}})
-                setVerObs(false)
+                
 
             } catch (error) {
                 console.error('Erro ao carregar dados:', error);

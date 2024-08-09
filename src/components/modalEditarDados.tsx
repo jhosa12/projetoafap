@@ -69,8 +69,9 @@ export function ModalEditarDados({ openEdit }: { openEdit: number }) {
 
       }
     )
-    await carregarDados()
+   // await carregarDados()
     setSituaçao(false)
+    closeModa({...data,contrato:{...data.contrato,...response.data}})
 
   }
   useEffect(() => {
@@ -109,7 +110,7 @@ export function ModalEditarDados({ openEdit }: { openEdit: number }) {
       referencia: dadosassociado?.guia_rua,
       uf: dadosassociado?.uf
     })
-  }, [dadosassociado])
+  }, [])
 
 
 
@@ -130,7 +131,7 @@ export function ModalEditarDados({ openEdit }: { openEdit: number }) {
               <button onClick={() => setAba(3)} data-tabs-target="#faq" type="button" role="tab" aria-controls="faq" aria-selected="false" className="inline-block w-full p-4 rounded-se-lg focus:outline-none bg-gray-700 hover:bg-gray-600">DEPENDENTES</button>
             </li>
           </ul>
-          <button onClick={() => closeModa({ closeEditarAssociado: false, contrato: {}, arraydep: [], dependente: {} })} className="absolute top-0 right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto  hover:bg-gray-600 hover:text-white"><IoIosClose size={30} /></button>
+          <button onClick={() => closeModa({ ...data,closeEditarAssociado: false})} className="absolute top-0 right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto  hover:bg-gray-600 hover:text-white"><IoIosClose size={30} /></button>
           <div className="border-t border-gray-600">
             <div className={`${aba === 1 ? "" : "hidden"} max-h-[calc(100vh-150px)]  p-2 rounded-lg bg-gray-800`}>
               <div className="grid max-w-screen-xl grid-cols-4 gap-2 p-2 mx-auto text-white  pt-3 pb-3">
@@ -252,10 +253,9 @@ export function ModalEditarDados({ openEdit }: { openEdit: number }) {
             <div className="inline-flex gap-2 mb-2">
               <span className=" text-sm text-white font-medium">SITUAÇÃO:</span>
               <label className="relative inline-flex w-[120px] justify-center  items-center  cursor-pointer">
-                <input checked={data.contrato?.situacao === 'ATIVO' ? true : false} onChange={() => {
-                  closeModa({ contrato: { ...(data.contrato), situacao: data.contrato?.situacao === 'ATIVO' ? 'INATIVO' : 'ATIVO' } })
-
-                }} type="checkbox" value="2" className="sr-only peer" />
+                <input checked={data.contrato?.situacao === 'ATIVO' ? true : false} onChange={()=>{
+                   data.contrato?.situacao==='ATIVO'?setSituaçao(true):inativarAtivarContrato('ATIVO')
+                  }} type="checkbox" value="2" className="sr-only peer" />
                 <div className="absolute right-20 w-9 h-5 rounded-full peer bg-red-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1.9px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-green-600"></div>
                 <span className={`ms-6 text-sm font-medium  ${data.contrato?.situacao === 'ATIVO' ? "text-green-500" : "text-red-500"}`}>{data.contrato?.situacao}</span>
               </label>
@@ -300,7 +300,7 @@ export function ModalEditarDados({ openEdit }: { openEdit: number }) {
 
                       Sim, tenho certeza
                     </button>
-                    <button onClick={() => { setSituaçao(!situacao), closeModa({ contrato: { ...(data.contrato), situacao: dadosassociado?.contrato?.situacao } }) }} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
+                    <button onClick={() => { setSituaçao(!situacao) }} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
                   </div>
                 </div>
               </div>
