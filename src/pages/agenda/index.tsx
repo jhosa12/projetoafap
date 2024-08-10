@@ -29,8 +29,10 @@ export interface MedicoProps{
     sobre:string,
     file:File|undefined,
     imageUrl:string,
-    tmpUrl:string
-  
+    tmpUrl:string,
+    funeraria:number,
+    particular:number,
+    plano:number
 }
 export interface EventProps{
     id_ag :number
@@ -75,17 +77,6 @@ else return <div className="flex flex-col  items-center rounded-md  text-white  
   }
 
 
-const handleEventClick =(event:Partial<EventProps>)=>{
-    console.log(event)
-}
-
-
-
-
-
-
-
-
   const setarDataEvento =(fields:Partial<EventProps>)=>{
     setDataEvent((prev:Partial<EventProps>)=>{
 
@@ -102,9 +93,9 @@ const handleEventClick =(event:Partial<EventProps>)=>{
   }
 
     
-    const toggleDrawer = () => {
+ /*   const toggleDrawer = () => {
       setIsOpen(!isOpen);
-    };
+    };*/
 
 
    useEffect(() => {
@@ -141,13 +132,13 @@ const handleEventClick =(event:Partial<EventProps>)=>{
     
       }
 
-        const handleNovoEvento = useCallback(({start,end}:{start:Date,end:Date})=>{
+    /*    const handleNovoEvento = useCallback(({start,end}:{start:Date,end:Date})=>{
                setDataEvent({start,end})  
                toggleDrawer()
           
 
 
-        },[setEvents])
+        },[setEvents])*/
 
 
 

@@ -1,12 +1,11 @@
 
 import { Card,Modal,ModalHeader,ModalBody,Button,Label,FileInput,TextInput,Textarea,Dropdown,DropdownItem } from "flowbite-react";
-import imag from "../../../public/carne.png"
 import { MedicoProps } from "@/pages/agenda";
 import { IoAddOutline } from "react-icons/io5";
 import { ChangeEvent, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
-import Image from "next/image";
+
 
 interface DataProps{
     medicos:Array<MedicoProps>
@@ -48,13 +47,14 @@ if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
    setarDadosMedico({...dataMedico,imageUrl:'',tmpUrl:URL.createObjectURL(e.target.files[0]),file:e.target.files[0]})
     }
 }
-
-
     async function novoMedico() {
             const data =new FormData()
             data.append("nome",dataMedico.nome??'')
             data.append("espec",dataMedico.espec??'')
             data.append("sobre",dataMedico.sobre??'')
+            data.append("plano",String(dataMedico.plano)??'')
+            data.append("funeraria",String(dataMedico.funeraria)??'')
+            data.append("particular",String(dataMedico.particular)??'')
             if(dataMedico.file){
                 data.append("file",dataMedico.file)
             }
@@ -76,6 +76,9 @@ if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
         }
         
     }
+
+
+
     async function editarMedico() {
       const data =new FormData()
       data.append("id_med",String(dataMedico.id_med))
@@ -83,6 +86,9 @@ if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
       data.append("espec",dataMedico.espec??'')
       data.append("sobre",dataMedico.sobre??'')
       data.append("imageUrl",dataMedico.imageUrl??'')
+      data.append("plano",String(dataMedico.plano)??'')
+      data.append("funeraria",String(dataMedico.funeraria)??'')
+      data.append("particular",String(dataMedico.particular)??'')
       if(dataMedico.file){
           data.append("file",dataMedico.file)
       }
@@ -104,7 +110,6 @@ if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
   }
   
 }
-
 
 async function deletarMedico(id:number) {
   
@@ -237,6 +242,9 @@ setArray(novoArray)
       </Label>
       <TextInput value={dataMedico.nome} onChange={e=>setarDadosMedico({...dataMedico,nome:e.target.value})} placeholder="Nome do Médico"/>
       <TextInput value={dataMedico.espec} onChange={e=>setarDadosMedico({...dataMedico,espec:e.target.value})} placeholder="Especialidade"/>
+      <TextInput type="number" value={dataMedico.plano} onChange={e=>setarDadosMedico({...dataMedico,plano:Number(e.target.value)})} placeholder="Valor Plano"/>
+      <TextInput type="number" value={dataMedico.funeraria} onChange={e=>setarDadosMedico({...dataMedico,funeraria:Number(e.target.value)})} placeholder="Valor Funerária"/>
+      <TextInput type="number" value={dataMedico.particular} onChange={e=>setarDadosMedico({...dataMedico,particular:Number(e.target.value)})} placeholder="Valor Particular"/>
       <Textarea value={dataMedico.sobre} onChange={e=>setarDadosMedico({...dataMedico,sobre:e.target.value})} rows={4} placeholder="Descreva suas atividades"/>
         
           </div></ModalBody>
