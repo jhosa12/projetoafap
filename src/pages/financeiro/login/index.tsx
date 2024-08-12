@@ -4,6 +4,7 @@ import { GiExpense } from "react-icons/gi";
 import { GiReceiveMoney } from "react-icons/gi";
 import { BiTransferAlt } from "react-icons/bi";
 import { FaBalanceScale } from "react-icons/fa";
+import { Table, TableHead, TableHeadCell } from "flowbite-react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
@@ -22,6 +23,7 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { TbAlertTriangle } from "react-icons/tb";
 import { FaRepeat } from "react-icons/fa6";
 import RelatorioVendas from "./relatorioVendas";
+import {Caixa} from "@/components/financeiro/caixa";
 
 interface DataProps {
   y: number,
@@ -33,7 +35,6 @@ interface DataProps {
 }
 
 interface PlanoContasProps {
-
   conta: string,
   id_grupo: number,
   descricao: string,
@@ -113,6 +114,38 @@ interface ContaProps {
   tipo_conta: string
 }
 
+export interface CcustosProps{
+  id_ccustos:number,
+  descricao:string,
+  image:string,
+  check:boolean
+}
+
+export interface CaixaProps{
+  
+    lanc_id: number,
+    num_seq: number,
+    conta: string,
+    ccustos_id: number,
+    id_grupo: number,
+    ccustos_desc: string,
+    descricao: string,
+    conta_n: number,
+    data: Date,
+    notafiscal: string,
+    historico: string,
+    tipo: string,
+    valor: number,
+    valorreal: number,
+    valordolar: number,
+    modo_inc: string,
+    datalanc: Date,
+    horalanc: Date,
+    usuario: string,
+    cod_mens: string,
+    cod_conta: number
+
+}
 
 
 export default function LoginFinaceiro() {
@@ -148,6 +181,8 @@ export default function LoginFinaceiro() {
   const [dadosConta, setDadosConta] = useState<Partial<ContaProps>>({})
   const [listaContas, setListaContas] = useState<Array<Partial<ContaProps>>>([])
   const [abertoFinalizado, setAbertoFinalizado] = useState<number>(1)
+  const [ccustos,setCcustos] = useState<Array<CcustosProps>>([])
+  const [caixa,setCaixa] = useState<Array<CaixaProps>>([])
 
   const toogleAberto = (index: number) => {
     setAbertos((prev: { [key: number]: boolean }) => ({
@@ -171,6 +206,20 @@ export default function LoginFinaceiro() {
   }
 
 
+  const reqCcustos =async ()=>{
+    try {
+      const response = await api.get("/financeiro/caixa/listarCcustos")
+      const dados: Array<CcustosProps> = response.data
+      const array = dados.map(item=>{return {...item,check:true}})
+   
+       caixaReq(array)
+     setCcustos(array)
+    } catch (error) {
+      toast.error('Erro na requisição ccustos')
+    }
+ 
+   
+  }
 
 
   const filtroMensalidade = async () => {
@@ -361,7 +410,7 @@ export default function LoginFinaceiro() {
     currency: 'BRL'
   });
 
-  useEffect(() => {
+  /*useEffect(() => {
     /// const diaAtual = new Date()
     // setStartDate(new Date(diaAtual.getFullYear(),diaAtual.getMonth(),1))
     /* try {
@@ -387,9 +436,13 @@ export default function LoginFinaceiro() {
  
      }
  
- */
+ 
 
-  }, [setorSelect])
+  }, [setorSelect])*/
+
+
+
+  
 
 
   async function contasReq() {
@@ -438,8 +491,16 @@ export default function LoginFinaceiro() {
     })
     setListaContas(response.data)
     setLoading(false)
+  }
 
 
+  const caixaReq = async (array:Array<CcustosProps>)=>{
+    const response = await api.post('/financeiro/caixa/lancamentos',{
+      array : array.map(item=>{if(item.check)return item.id_ccustos}).filter(item=>item),
+      dataInicio:new Date(),
+      dataFim:new Date()
+    })
+    setCaixa(response.data)
   }
 
 
@@ -447,7 +508,8 @@ export default function LoginFinaceiro() {
     try {
       listarDados()
       listarContasReq()
-
+        reqCcustos()
+    
     } catch (error) {
       toast.error('Erro ao requitar dados!')
 
@@ -700,22 +762,27 @@ export default function LoginFinaceiro() {
 
         <div className="flex flex-col  px-4 w-full ">
           <ul className="flex flex-wrap mb-1 text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 "  >
-            <li className="me-2">
-              <button type="button" onClick={() => setMenuIndex(1)} className={`inline-block p-2 border-blue-600 rounded-t-lg hover:border-b-[1px]  hover:text-gray-300  `}>Plano de Contas</button>
+          <li className="me-2">
+              <button type="button" onClick={() => setMenuIndex(1)} className={`inline-block p-2 border-blue-600 rounded-t-lg hover:border-b-[1px]  hover:text-gray-300  `}>Caixa</button>
             </li>
             <li className="me-2">
-              <button type="button" onClick={() => setMenuIndex(2)} className={`inline-block p-2 border-blue-600  hover:border-b-[1px]  rounded-t-lg   hover:text-gray-300  `}>Gráficos</button>
+              <button type="button" onClick={() => setMenuIndex(2)} className={`inline-block p-2 border-blue-600 rounded-t-lg hover:border-b-[1px]  hover:text-gray-300  `}>Plano de Contas</button>
             </li>
             <li className="me-2">
-              <button type="button" onClick={() => setMenuIndex(3)} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Contas a Pagar/Receber</button>
+              <button type="button" onClick={() => setMenuIndex(3)} className={`inline-block p-2 border-blue-600  hover:border-b-[1px]  rounded-t-lg   hover:text-gray-300  `}>Gráficos</button>
             </li>
             <li className="me-2">
-              <button type="button" onClick={() => setMenuIndex(4)} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Relatório Vendas</button>
+              <button type="button" onClick={() => setMenuIndex(4)} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Contas a Pagar/Receber</button>
+            </li>
+            <li className="me-2">
+              <button type="button" onClick={() => setMenuIndex(5)} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Relatório Vendas</button>
             </li>
 
           </ul>
 
-          {menuIndex === 1 && <div>
+          {menuIndex===1 && <Caixa setCaixa={setCaixa} setCcustos={setCcustos} arrayCaixa={caixa} arrayCcustos={ccustos}/>}
+
+          {menuIndex === 2 && <div>
             <div className="flex flex-row w-full text-xs justify-between  mb-1">
               <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
                 <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense size={25} /></div>
@@ -886,7 +953,7 @@ export default function LoginFinaceiro() {
 
           </div>}
 
-          {menuIndex === 2 && <div className="flex flex-col p-2 bg-[#2b2e3b]  ml-2 w-full overflow-y-auto h-[calc(100vh-120px)] text-white  rounded-lg ">
+          {menuIndex === 3 && <div className="flex flex-col p-2 bg-[#2b2e3b]  ml-2 w-full overflow-y-auto h-[calc(100vh-120px)] text-white  rounded-lg ">
             <div className="flex w-full border-b-[1px] border-gray-500 px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
               <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
 
@@ -974,7 +1041,7 @@ export default function LoginFinaceiro() {
 
           </div>}
 
-          {menuIndex === 3 && <> <div className="flex flex-col px-2  gap-2 w-full overflow-y-auto h-[calc(100vh-120px)] text-white  rounded-lg ">
+          {menuIndex === 4 && <> <div className="flex flex-col px-2  gap-2 w-full overflow-y-auto h-[calc(100vh-120px)] text-white  rounded-lg ">
             <div className="flex flex-row gap-10 text-sm w-full px-2 justify-between  " id="Area Resumo/Filtro">
               <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
                 <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense size={25} /></div>
@@ -1269,7 +1336,7 @@ export default function LoginFinaceiro() {
 
 
           </>}
-          {menuIndex===4 && <RelatorioVendas/>}
+          {menuIndex===5 && <RelatorioVendas/>}
         </div>
       </div>
 

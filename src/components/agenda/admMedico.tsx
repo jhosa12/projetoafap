@@ -192,7 +192,10 @@ setArray(novoArray)
           imageUrl:undefined,
           nome:undefined,
           sobre:undefined,
-          tmpUrl:undefined
+          tmpUrl:undefined,
+          funeraria:undefined,
+          particular:undefined,
+          plano:undefined
         })
         setOpenModal(true)
         }} className="flex cursor-pointer justify-center items-center max-w-sm bg-gray-800"  horizontal>
@@ -201,23 +204,24 @@ setArray(novoArray)
         </div>
 
         <Modal
-        content={"relative h-full w-full p-4 md:h-auto"}
+        className="absolute bg-transparent overflow-y-auto"
+        content={"base"}
          show={openModal}
          onClose={()=>setOpenModal(false)}
           size={'md'}
            popup 
         
+         dismissible
+          >
            
-           className="absolute bg-transparent ">
-           
-            <ModalHeader className="flex text-white items-start justify-between bg-gray-800 rounded-t border-b p-4 border-gray-60">
+            <ModalHeader className="flex text-white items-start justify-between bg-gray-800 rounded-t border-b p-2 border-gray-60">
                 {dataMedico.id_med?<h1 className="text-white">Editar Dados</h1>:<h1 className="text-white">Adicionar Novo Medico</h1>}
                 </ModalHeader>
             <ModalBody>
-                <div className="space-y-2 p-2">
+                <div className="flex flex-col space-y-2 px-2  max-h-[68vh] overflow-y-auto">
                 <Label
         htmlFor="dropzone-file"
-        className="flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+        className="flex relative w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
       >
             <svg
             className="absolute  z-20 mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
@@ -245,7 +249,7 @@ setArray(novoArray)
       <TextInput type="number" value={dataMedico.plano} onChange={e=>setarDadosMedico({...dataMedico,plano:Number(e.target.value)})} placeholder="Valor Plano"/>
       <TextInput type="number" value={dataMedico.funeraria} onChange={e=>setarDadosMedico({...dataMedico,funeraria:Number(e.target.value)})} placeholder="Valor Funerária"/>
       <TextInput type="number" value={dataMedico.particular} onChange={e=>setarDadosMedico({...dataMedico,particular:Number(e.target.value)})} placeholder="Valor Particular"/>
-      <Textarea value={dataMedico.sobre} onChange={e=>setarDadosMedico({...dataMedico,sobre:e.target.value})} rows={4} placeholder="Descreva suas atividades"/>
+      <Textarea  className="min-h-[100px] h-auto"  value={dataMedico.sobre} onChange={e=>setarDadosMedico({...dataMedico,sobre:e.target.value})} rows={4} placeholder="Descreva suas atividades"/>
         
           </div></ModalBody>
 
