@@ -33,12 +33,12 @@ export function Caixa({ arrayCcustos, arrayCaixa, setCcustos, setCaixa, handleFi
   const [dataFim, setDataFim] = useState<Date>(new Date())
   const [somaValor, setSoma] = useState<SomaProps>({ boleto: 0, cartao: 0, deposito: 0, dinheiro: 0, pix: 0, total: 0, transferencia: 0 })
   const [openModal, setOpenModal] = useState(false)
-  const [tagSelect, setTag] = useState<Array<CaixaProps> | []>([])
+  const [tagSelect, setTag] = useState<Array<CaixaProps>>([])
 
 
 
   const clickTag = (tag: string) => {
-    let caixaTag: Array<CaixaProps> | [] = []
+    let caixaTag: Array<CaixaProps> =[]
     if (tag === 'PIX') {
       caixaTag = arrayCaixa.map(item => {
         if (item.mensalidade.form_pagto === 'PIX') {
@@ -61,7 +61,7 @@ export function Caixa({ arrayCcustos, arrayCaixa, setCcustos, setCaixa, handleFi
         }
       }).filter(item => item !== undefined)
     }
-    setTag(caixaTag ?? [])
+   setTag(caixaTag ?? [])
     setOpenModal(true)
   }
 
