@@ -40,28 +40,13 @@ export function Caixa({ arrayCcustos, arrayCaixa, setCcustos, setCaixa, handleFi
   const clickTag = (tag: string) => {
     let caixaTag: Array<CaixaProps> =[]
     if (tag === 'PIX') {
-      caixaTag = arrayCaixa.map(item => {
-        if (item.mensalidade.form_pagto === 'PIX') {
-          return item
-        }
-      }).filter(item => item !== undefined)
+      caixaTag = arrayCaixa.filter(item => item.mensalidade.form_pagto === 'PIX')
+    } else if (tag === 'DINHEIRO') {
+      caixaTag = arrayCaixa.filter(item => item.mensalidade.form_pagto === 'DINHEIRO')
+    } else if (tag === 'CARTAO') {
+      caixaTag = arrayCaixa.filter(item => item.mensalidade.form_pagto === 'CARTAO')
     }
-
-    if (tag === 'DINHEIRO') {
-      caixaTag = arrayCaixa.map(item => {
-        if (item.mensalidade.form_pagto === 'DINHEIRO') {
-          return item
-        }
-      }).filter(item => item !== undefined)
-    }
-    if (tag === 'CARTAO') {
-      caixaTag = arrayCaixa.map(item => {
-        if (item.mensalidade.form_pagto === 'CARTAO') {
-          return item
-        }
-      }).filter(item => item !== undefined)
-    }
-   setTag(caixaTag ?? [])
+   setTag(caixaTag)
     setOpenModal(true)
   }
 
