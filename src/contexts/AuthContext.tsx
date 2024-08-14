@@ -89,7 +89,9 @@ type MensalidadeProps = {
     data_pgto: Date,
     referencia: string,
     index: number,
-    id_acordo: number
+    id_acordo: number,
+    form_pagto:string,
+    banco_dest:string
 
 }
 type DadosCadastro = {

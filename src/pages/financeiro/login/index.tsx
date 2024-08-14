@@ -143,7 +143,12 @@ export interface CaixaProps{
     horalanc: Date,
     usuario: string,
     cod_mens: string,
-    cod_conta: number
+    cod_conta: number,
+    mensalidade:{
+      banco_dest:string,
+      data_pagto:Date,
+      form_pagto:string
+    }
 
 }
 
@@ -212,7 +217,7 @@ export default function LoginFinaceiro() {
       const dados: Array<CcustosProps> = response.data
       const array = dados.map(item=>{return {...item,check:true}})
    
-       caixaReq(array)
+       caixaReq(array,new Date(),new Date())
      setCcustos(array)
     } catch (error) {
       toast.error('Erro na requisição ccustos')
@@ -494,11 +499,11 @@ export default function LoginFinaceiro() {
   }
 
 
-  const caixaReq = async (array:Array<CcustosProps>)=>{
+  const caixaReq = async (array:Array<CcustosProps>,dataInicio:Date,dataFim:Date)=>{
     const response = await api.post('/financeiro/caixa/lancamentos',{
       array : array.map(item=>{if(item.check)return item.id_ccustos}).filter(item=>item),
-      dataInicio:new Date(),
-      dataFim:new Date()
+      dataInicio,
+      dataFim
     })
     setCaixa(response.data)
   }
@@ -780,7 +785,7 @@ export default function LoginFinaceiro() {
 
           </ul>
 
-          {menuIndex===1 && <Caixa setCaixa={setCaixa} setCcustos={setCcustos} arrayCaixa={caixa} arrayCcustos={ccustos}/>}
+          {menuIndex===1 && <Caixa handleFiltro={caixaReq} setCaixa={setCaixa} setCcustos={setCcustos} arrayCaixa={caixa} arrayCcustos={ccustos}/>}
 
           {menuIndex === 2 && <div>
             <div className="flex flex-row w-full text-xs justify-between  mb-1">

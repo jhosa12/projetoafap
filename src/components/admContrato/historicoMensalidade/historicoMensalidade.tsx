@@ -36,7 +36,9 @@ interface MensalidadeProps  {
     data_pgto: Date,
     referencia: string,
     index: number,
-    id_acordo: number
+    id_acordo: number,
+    form_pagto:string,
+    banco_dest:string
 
 }
 
@@ -478,7 +480,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                                                 {ii.valor_total ? `R$${ii.valor_total}` : ''}
                                             </td>
                                             <td className="px-4 py-1">
-
+                                                {ii.form_pagto}
                                             </td>
 
                                             <td className="px-4 py-1">
@@ -536,7 +538,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                                     {item.valor_total ? `R$${item.valor_total}` : ''}
                                 </td>
                                 <td className="px-4 py-1">
-
+                                    {item.form_pagto}
                                 </td>
 
                                 <td className="px-4 py-1">
@@ -607,6 +609,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                                     {item.valor_total ? `R$${item.valor_total}` : ''}
                                 </td>
                                 <td className="px-4 py-1">
+                                    {item.form_pagto}
                                 </td>
                                 <td className="px-4 py-1">
                                     {calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) <= 0 ? 0 : calcularDiferencaEmDias(new Date(), new Date(item.vencimento))}

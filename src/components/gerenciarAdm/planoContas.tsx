@@ -209,7 +209,7 @@ const adicionarPlanoContas = async()=>{
             <div className="flex flex-row p-2 gap-2">
           
          
-          <input  onChange={e=>setDescricaoGrupo(e.target.value)} placeholder="Novo Setor" autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50 dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input  onChange={e=>setDescricaoGrupo(e.target.value)} placeholder="Novo Setor" autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           <button onClick={()=>adicionarGrupo()}  className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"><IoMdAddCircle size={20}/></button>
             </div>
         <table 
@@ -258,9 +258,9 @@ const adicionarPlanoContas = async()=>{
         <h1 className="flex w-full text-gray-400 font-medium">PLANO DE CONTAS</h1>
             <div className="flex flex-row p-2 gap-2">
           
-            <InputMask mask={'9.99.999'}  onChange={e=>setConta(e.target.value)} placeholder="CONTA" autoComplete="off" type="text" required className=" uppercase w-1/6 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50 dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-          <input  onChange={e=>setDescricaoPlanoC(e.target.value)} placeholder="Descrição" autoComplete="off" type="text" required className=" uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50 dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-          <select value={tipo} onChange={e=>setTipo(e.target.value)} className=" uppercase w-1/4 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50 dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white ">
+            <InputMask mask={'9.99.999'}  onChange={e=>setConta(e.target.value)} placeholder="CONTA" autoComplete="off" type="text" required className=" uppercase w-1/6 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input  onChange={e=>setDescricaoPlanoC(e.target.value)} placeholder="Descrição" autoComplete="off" type="text" required className=" uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <select value={tipo} onChange={e=>setTipo(e.target.value)} className=" uppercase w-1/4 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white ">
             <option value={''}>TIPO</option>
             <option value={'DESPESA'}>DESPESA</option>
             <option value={'RECEITA'}>RECEITA</option>

@@ -160,7 +160,7 @@ const adicionarMeta = async()=>{
         <h1 className="flex w-full text-gray-400 font-medium">METAS</h1>
             <div className="flex flex-row p-2 gap-2">
             
-            <select className=" uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50 dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white" defaultValue={id_conta} onChange={(event) => {setIdConta(event.target.value)}} name="DESCRIÇÃO" >
+            <select className=" uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white" defaultValue={id_conta} onChange={(event) => {setIdConta(event.target.value)}} name="DESCRIÇÃO" >
                      <option  value={''}>SELECIONE UM PLANO</option>
                      
                       {arrayPlanoContas.map((item,index)=>{
@@ -177,7 +177,7 @@ const adicionarMeta = async()=>{
                         )
                       }) }
                     </select>
-          <input value={valor!=0?valor:''} onChange={e=>setValor(Number(e.target.value))} placeholder="valor" autoComplete="off" type="number" required className=" uppercase w-1/4 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-50 dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <input value={valor!=0?valor:''} onChange={e=>setValor(Number(e.target.value))} placeholder="valor" autoComplete="off" type="number" required className=" uppercase w-1/4 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
           <button onClick={()=>adicionarMeta()} className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"><IoMdAddCircle size={20}/></button>
             </div>
         <table 
