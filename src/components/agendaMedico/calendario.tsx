@@ -1,8 +1,7 @@
 
 
 
-import { MdDelete, MdEdit } from "react-icons/md";
-import { BiSolidLockOpenAlt } from "react-icons/bi";
+import { HiInformationCircle } from "react-icons/hi";
 import { useCallback, useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { Calendar, momentLocalizer } from 'react-big-calendar'
@@ -10,7 +9,8 @@ import moment from 'moment'
 
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
-import { Drawer } from "@/components/agenda/drawer";
+import { ModalDrawer } from "@/components/agendaMedico/drawer";
+import { Alert } from "flowbite-react";
 import { MedicoProps } from "@/pages/agenda";
 // Configura o moment para usar o idioma português
 moment.locale('pt-br');
@@ -21,12 +21,17 @@ const localizer = momentLocalizer(moment)
 interface EventProps{
     id_ag :number
     id_med:number
+    id_usuario:number,
     data:Date
     start:Date,
     end:Date,
     title:string
     status: string,
-    obs:string
+    obs:string,
+    nome:string,
+    celular:string,
+    endereco:string,
+    tipoAg:string
 
 }
 interface DataProps{
@@ -45,11 +50,10 @@ export default function Calendario({medicos,events,setArrayEvent,dataEvent,setar
 
   const components:any ={
       event:({event}:{event:EventProps})=>{
-          return <div className={`flex rounded-md flex-col cursor-pointer items-center text-white   h-full pt-1 ${event.status==='C'?"bg-[#ff0000]":event.status==='AB'?"bg-[#008000]":"bg-yellow-400"}`}>
-          <span className="whitespace-nowrap">{event.title}</span>
-          <span >{event.obs}</span>
-       
-          </div>
+          return(
+            <Alert color={event.tipoAg==='md'?'info':'success'}  withBorderAccent icon={HiInformationCircle}>
+      <span className="font-semibold">{event.status==='AB'?'ABERTO-':event.status==='AD'?'ADIADO-':'CANCELADO'}</span> {event.title} {event.tipoAg==='ct'?`-${event.nome} - Cel:${event.celular}`:event.obs}
+    </Alert>)
          
 
       }
@@ -58,6 +62,7 @@ export default function Calendario({medicos,events,setArrayEvent,dataEvent,setar
 
 const handleEventClick =(event:Partial<EventProps>)=>{
     setarDataEvento({...event})
+    console.log(event)
     toggleDrawer()
 }
 
@@ -69,9 +74,6 @@ const handleEventClick =(event:Partial<EventProps>)=>{
         const handleNovoEvento = useCallback(({start,end}:{start:Date,end:Date})=>{
                setarDataEvento({start,end,data:undefined,id_ag:undefined,id_med:undefined,obs:undefined,status:undefined,title:undefined})  
                toggleDrawer()
-          
-
-
         },[setArrayEvent])
 
 
@@ -79,10 +81,10 @@ const handleEventClick =(event:Partial<EventProps>)=>{
 
     return(
     <>
-   <div>
+   <div >
 
 
-    {isOpen && <Drawer setArrayEvent={setArrayEvent} events={events} dataEvent={dataEvent} setarDataEvent={setarDataEvento} arrayMedicos={medicos} isOpen={isOpen} toggleDrawer={toggleDrawer}/>}
+    <ModalDrawer setArrayEvent={setArrayEvent} events={events} dataEvent={dataEvent} setarDataEvent={setarDataEvento} arrayMedicos={medicos} isOpen={isOpen} toggleDrawer={toggleDrawer}/>
     <Calendar
       localizer={localizer}
       events={events}
@@ -118,7 +120,7 @@ const handleEventClick =(event:Partial<EventProps>)=>{
   <DatePicker selected={new Date()} onChange={()=>{}}  dateFormat={"dd/MM/yyyy"} locale={pt}   required className="block uppercase w-full py-[5px] pr-2 pl-2 sm:text-xs  border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
   </div>
   <div>
-  <label  className="block mb-1 text-xs font-medium  text-white">DATA FINAL</label>
+  <label  className="block mb-1  text-xs font-medium  text-white">DATA FINAL</label>
   <DatePicker selected={new Date} onChange={()=>{}}  dateFormat={"dd/MM/yyyy"} locale={pt}   required className="block uppercase w-full py-[5px] pr-2 pl-2 sm:text-xs  border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
   </div>
   <div className="flex flex-col w-2/6">

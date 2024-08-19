@@ -1,22 +1,30 @@
 import { MdEvent } from "react-icons/md";
 import { DropDown } from "./dropDown";
+import { Alert, Drawer } from "flowbite-react";
 import DatePicker from "react-datepicker";
 import pt from 'date-fns/locale/pt-BR';
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import 'react-datepicker/dist/react-datepicker.css';
 import { MdDelete } from "react-icons/md";
 import { MedicoProps } from "@/pages/agenda";
+import ReactInputMask from "react-input-mask";
+import { AuthContext } from "@/contexts/AuthContext";
 interface EventoProps{
     id_ag :number
-    id_med:number
+    id_med:number,
+    id_usuario:number,
     data:Date
     start:Date
     end:Date
     title:string
     status: string,
-    obs:string
+    obs:string,
+    nome:string,
+    tipoAg:string,
+    celular:string,
+    endereco:string
 }
 interface DrawerProps{
     isOpen:boolean,
@@ -29,17 +37,32 @@ interface DrawerProps{
 }
 
 
-export function Drawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,setarDataEvent,dataEvent}:DrawerProps){
+export function ModalDrawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,setarDataEvent,dataEvent}:DrawerProps){
+
+  const {usuario} = useContext(AuthContext)
    
   
 
   async function deletarEvento() {
       if(!dataEvent.id_ag){
+        setarDataEvent({
+          celular:'',
+          data:new Date(),
+          nome:'',
+          endereco:'',
+          status:'',
+          obs:'',
+          tipoAg:'',
+          title:''
+        })
         toggleDrawer();
         return;
       }
   
     try {
+
+
+    
     const novo =  await toast.promise(
       api.delete(`/agenda/deletarEvento/${dataEvent.id_ag}`),
       {error:'Erro ao salvar dados',
@@ -68,7 +91,7 @@ export function Drawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,se
 
   const novoEvento=async()=>{
 
-    if(!dataEvent.status ||!dataEvent.id_med||!dataEvent.id_med||!dataEvent.title){
+    if(!dataEvent.status ||!dataEvent.id_med||!dataEvent.title||!dataEvent.tipoAg){
       toast.info('Preencha todos os campos obrigatorios!')
       return;
     }
@@ -78,11 +101,13 @@ export function Drawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,se
         
               id_med:Number(dataEvent.id_med),
               data:new Date(),
+              id_usuario:Number(usuario?.id),
               start:dataEvent.start,
               end:dataEvent.end,
               title:dataEvent.title,
               status: dataEvent.status,
-              obs:dataEvent.obs
+              obs:dataEvent.obs,
+              tipoAge:dataEvent.tipoAg
           
             }),
           {
@@ -140,16 +165,46 @@ export function Drawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,se
 
     return(
         
-        <div  className="fixed z-10 flex w-full h-[100vh] ">
-        <div className={`fixed flex flex-col top-0 gap-8 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform ${isOpen ? 'translate-x-0' : 'translate-x-full'}  w-2/5 bg-gray-800`} aria-labelledby="drawer-label">
+      
+ <Drawer   className="bg-gray-800 w-[40vw]" open={isOpen} position="right" onClose={toggleDrawer}>
 
-        <div id="drawer-label" className="inline-flex items-center justify-between mb-4 text-base font-semibold  text-gray-400">
+  {  /*    <div id="drawer-label" className="inline-flex items-center justify-between mb-4 text-base font-semibold  text-gray-400">
           <div className="inline-flex items-center">
           <MdEvent size={40}/>
           NOVO EVENTO
           </div>
           <button onClick={deletarEvento} className="p-1 hover:bg-gray-600 rounded-lg"><MdDelete size={23}/></button>
-        </div>
+        </div>*/}
+
+        <Drawer.Header  title="NOVO EVENTO" titleIcon={()=> <MdEvent size={40}/>}/>
+
+        <Drawer.Items className="flex flex-col gap-5">
+         
+        <form className="w-full mx-auto">
+  <label  className="block mb-2 text-sm font-medium  text-white">TIPO DE AGENDAMENTO</label>
+  <select defaultValue={dataEvent.tipoAg} onChange={e=>setarDataEvent({...dataEvent,tipoAg:e.target.value})} className=" border  text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white ">
+    <option selected value={''}>{''}</option>
+    <option value="md">MÉDICO</option>
+    <option value="ct">CLIENTE</option>
+   
+  </select>
+</form>
+{dataEvent.tipoAg==='ct' && <div className="flex flex-col gap-4">
+  <div >
+    <label  className="block mb-1 text-sm font-medium text-white">NOME</label>
+    <input value={dataEvent.nome} onChange={e=>setarDataEvent({...dataEvent,nome:e.target.value})}  className="block p-2.5 w-full text-sm rounded-lg border 0  bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="NOME"></input>
+      </div> 
+      <div className="inline-flex gap-4">
+      <div className="w-full" >
+    <label  className="block mb-1 text-sm font-medium text-white">CELULAR</label>
+    <ReactInputMask mask={'(99) 9 9999-9999'} value={dataEvent.celular} onChange={e=>setarDataEvent({...dataEvent,celular:e.target.value})}  className="block p-2.5 w-full text-sm rounded-lg border 0  bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="CELULAR"></ReactInputMask>
+      </div> 
+      <div className="w-full">
+    <label  className="block mb-1 text-sm font-medium text-white">ENDEREÇO</label>
+    <input value={dataEvent.endereco} onChange={e=>setarDataEvent({...dataEvent,endereco:e.target.value})}  className="block p-2.5 w-full text-sm rounded-lg border 0  bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="ENDEREÇO"></input>
+      </div> 
+      </div>
+  </div>}
         <DropDown setarDataEvent={setarDataEvent} dataEvent={dataEvent} array={arrayMedicos}/>
         
 <form className="w-full mx-auto">
@@ -161,6 +216,8 @@ export function Drawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,se
     <option value="AD">ADIADO</option>
   </select>
 </form>
+
+
         <div className="inline-flex w-full justify-between gap-4">
         <div className="flex flex-col w-1/2">
           <label  className="block mb-1 text-sm font-medium  text-white">DATA INICIAL</label>
@@ -198,16 +255,19 @@ export function Drawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,se
     <label  className="block mb-1 text-sm font-medium text-white">OBSERVAÇÃO</label>
     <textarea value={dataEvent.obs} onChange={e=>setarDataEvent({...dataEvent,obs:e.target.value})}  rows={4} className="block p-2.5 w-full text-sm rounded-lg border 0  bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="Write your thoughts here..."></textarea>
       </div>   
-        <div className="inline-flex w-full h-full justify-end items-end  gap-4">
-          <button onClick={toggleDrawer} className="flex w-1/2 h-fit px-4 py-2 text-sm font-medium text-center  border rounded-lg bg-gray-800 text-gray-400 border-gray-600 hover:text-white hover:bg-gray-700">Cancelar</button>
-         {dataEvent.id_ag? <button onClick={()=>editarEvento()} className="flex w-1/2 h-fit items-center px-4 py-2 text-sm font-medium text-center text-white  rounded-lg   bg-yellow-500 hover:bg-yellow-600">Editar Evento<svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+       
+       
+         {dataEvent.id_ag?  <div className="inline-flex w-full h-full justify-center items-end  gap-4">    <button onClick={deletarEvento} className="flex w-1/2 h-fit px-4 py-2 text-sm font-medium text-center  rounded-lg bg-red-600   hover:text-white hover:bg-red-700">Deletar</button> <button onClick={()=>editarEvento()} className="flex w-1/2 h-fit items-center px-4 py-2 text-sm font-medium text-center text-white  rounded-lg   bg-yellow-500 hover:bg-yellow-600">Editar Evento<svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-          </svg></button>: <button onClick={()=>novoEvento()} className="flex w-1/2 h-fit items-center px-4 py-2 text-sm font-medium text-center text-white  rounded-lg   bg-blue-600 hover:bg-blue-700  ">Salvar Evento<svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+          </svg></button> </div>:  <div className="inline-flex w-full h-full justify-center items-end  gap-4">
+          
+          <button onClick={toggleDrawer} className="flex w-1/2 h-fit px-4 py-2 text-sm font-medium text-center  border rounded-lg bg-gray-800 text-gray-400 border-gray-600 hover:text-white hover:bg-gray-700">Cancelar</button><button onClick={()=>novoEvento()} className="flex w-1/2 h-fit items-center px-4 py-2 text-sm font-medium text-center text-white  rounded-lg   bg-blue-600 hover:bg-blue-700  ">Salvar Evento<svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-          </svg></button>}
-        </div>
-      </div>
-      </div>
+          </svg></button> </div>}
+     
+        
+        </Drawer.Items>
+        </Drawer>
 
     )
 }

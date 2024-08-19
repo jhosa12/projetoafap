@@ -81,13 +81,13 @@ const filtro = async()=>{
       }
 
 
+    }else{
+      novoArray[index].check = !novoArray[index].check
+      novoArray[0].check =false
+      mod=novoArray
     }
 
-
-
     setArrayTags(mod)
-   
-
   }
 
   const clickTag = (tag: string) => {
@@ -105,12 +105,6 @@ const filtro = async()=>{
    setTag(caixaTag)
     setOpenModal(true)
   }
-
-
-
-
-
-
 
 
   useEffect(() => {
@@ -249,6 +243,7 @@ const filtro = async()=>{
           </Button>
         </ModalFooter>
       </Modal>}
+      {/* TAGS VALORES E TABELA*/}
       <div className="flex flex-col p-4 gap-2">
         <div className="flex flex-row w-full text-xs justify-between cursor-pointer  mb-1">
 

@@ -16,14 +16,12 @@ interface DadosProps{
     dataEvent:Partial<EventoProps>
 
 }
-
-
 export function DropDown({array,setarDataEvent,dataEvent}:DadosProps){
     const [onPress,setOnPress]=useState(false)
     return(
         
   <div className="flex flex-col relative w-full">
-      <button onClick={()=>setOnPress(!onPress)} className="flex-shrink-0 w-full justify-between z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center   border  rounded-lg  focus:ring-4 focus:outline-none  bg-gray-700 hover:bg-gray-600 focus:ring-gray-700 text-white border-gray-600" type="button">
+      <button onClick={()=>setOnPress(!onPress)} className="flex-shrink-0 w-full justify-between  inline-flex items-center py-2.5 px-4 text-sm font-medium text-center   border  rounded-lg  focus:ring-4 focus:outline-none  bg-gray-700 hover:bg-gray-600 focus:ring-gray-700 text-white border-gray-600" type="button">
       
          {!dataEvent.title ?"SELECIONE O ESPECIALISTA":dataEvent.title }<svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>

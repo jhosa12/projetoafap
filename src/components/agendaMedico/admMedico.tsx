@@ -148,7 +148,7 @@ setArray(novoArray)
      className=" relative  max-w-sm col-span-1 h-full" 
      imgSrc={`${process.env.NEXT_PUBLIC_API_URL}/file/${item.imageUrl}`}
    // renderImage={()=><Image alt="image med" className="rounded-lg w-full" width={250} height={100} src={convertBufferToUrl(item.image.data)}/>}
-      horizontal
+    
      
       >
         <div className="absolute top-0 right-0 z-10 flex justify-end px-4 pt-4">
