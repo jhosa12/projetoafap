@@ -107,7 +107,7 @@ export function ModalDrawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedic
               title:dataEvent.title,
               status: dataEvent.status,
               obs:dataEvent.obs,
-              tipoAge:dataEvent.tipoAg
+              tipoAg:dataEvent.tipoAg
           
             }),
           {
@@ -182,7 +182,7 @@ export function ModalDrawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedic
          
         <form className="w-full mx-auto">
   <label  className="block mb-2 text-sm font-medium  text-white">TIPO DE AGENDAMENTO</label>
-  <select defaultValue={dataEvent.tipoAg} onChange={e=>setarDataEvent({...dataEvent,tipoAg:e.target.value})} className=" border  text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white ">
+  <select value={dataEvent.tipoAg} onChange={e=>setarDataEvent({...dataEvent,tipoAg:e.target.value})} className=" border  text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white ">
     <option selected value={''}>{''}</option>
     <option value="md">MÉDICO</option>
     <option value="ct">CLIENTE</option>
@@ -209,7 +209,7 @@ export function ModalDrawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedic
         
 <form className="w-full mx-auto">
   <label  className="block mb-2 text-sm font-medium  text-white">STATUS</label>
-  <select defaultValue={dataEvent.status} onChange={e=>setarDataEvent({...dataEvent,status:e.target.value})} className=" border  text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white ">
+  <select value={dataEvent.status} onChange={e=>setarDataEvent({...dataEvent,status:e.target.value})} className=" border  text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white ">
     <option selected>SELECIONE O STATUS</option>
     <option value="AB">ABERTO</option>
     <option value="C">CANCELADO</option>

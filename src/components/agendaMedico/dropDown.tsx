@@ -7,7 +7,10 @@ interface EventoProps{
     start:Date
     end:Date
     title:string
-    status: string
+    status: string,
+    tipoAg:string,
+    nome:string,
+    celular:string
 }
 
 interface DadosProps{

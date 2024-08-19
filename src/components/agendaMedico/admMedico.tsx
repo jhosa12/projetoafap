@@ -1,5 +1,5 @@
 
-import { Card,Modal,ModalHeader,ModalBody,Button,Label,FileInput,TextInput,Textarea,Dropdown,DropdownItem } from "flowbite-react";
+import { Card,Modal,ModalHeader,ModalBody,Button,Label,FileInput,TextInput,Textarea,Dropdown,DropdownItem, FloatingLabel } from "flowbite-react";
 import { MedicoProps } from "@/pages/agenda";
 import { IoAddOutline } from "react-icons/io5";
 import { ChangeEvent, useState } from "react";
@@ -195,7 +195,8 @@ setArray(novoArray)
           tmpUrl:undefined,
           funeraria:undefined,
           particular:undefined,
-          plano:undefined
+          plano:undefined,
+          time:undefined
         })
         setOpenModal(true)
         }} className="flex cursor-pointer justify-center items-center max-w-sm bg-gray-800"  horizontal>
@@ -208,7 +209,7 @@ setArray(novoArray)
         content={"base"}
          show={openModal}
          onClose={()=>setOpenModal(false)}
-          size={'md'}
+          size={'xl'}
            popup 
         
          dismissible
@@ -218,10 +219,10 @@ setArray(novoArray)
                 {dataMedico.id_med?<h1 className="text-white">Editar Dados</h1>:<h1 className="text-white">Adicionar Novo Medico</h1>}
                 </ModalHeader>
             <ModalBody>
-                <div className="flex flex-col space-y-2 px-2  max-h-[68vh] overflow-y-auto">
+                <div className="flex flex-col space-y-2 px-2  max-h-[82vh] overflow-y-auto">
                 <Label
         htmlFor="dropzone-file"
-        className="flex relative w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+        className="flex relative w-full cursor-pointer mt-2 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
       >
             <svg
             className="absolute  z-20 mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
@@ -244,11 +245,14 @@ setArray(novoArray)
         <FileInput onChange={handleFile} id="dropzone-file" className="hidden" />
        {(dataMedico.imageUrl || dataMedico.tmpUrl) &&  <img className="w-full h-36 object-center rounded-lg" src={dataMedico.imageUrl?`${process.env.NEXT_PUBLIC_API_URL}/file/${dataMedico.imageUrl}`:dataMedico.tmpUrl} alt="fotoUser"  ></img>}
       </Label>
-      <TextInput value={dataMedico.nome} onChange={e=>setarDadosMedico({...dataMedico,nome:e.target.value})} placeholder="Nome do Médico"/>
-      <TextInput value={dataMedico.espec} onChange={e=>setarDadosMedico({...dataMedico,espec:e.target.value})} placeholder="Especialidade"/>
-      <TextInput type="number" value={dataMedico.plano} onChange={e=>setarDadosMedico({...dataMedico,plano:Number(e.target.value)})} placeholder="Valor Plano"/>
-      <TextInput type="number" value={dataMedico.funeraria} onChange={e=>setarDadosMedico({...dataMedico,funeraria:Number(e.target.value)})} placeholder="Valor Funerária"/>
-      <TextInput type="number" value={dataMedico.particular} onChange={e=>setarDadosMedico({...dataMedico,particular:Number(e.target.value)})} placeholder="Valor Particular"/>
+      <FloatingLabel label="Nome do Médico" variant="outlined" value={dataMedico.nome} onChange={e=>setarDadosMedico({...dataMedico,nome:e.target.value})} />
+      <FloatingLabel label="Especialidade" variant="outlined" value={dataMedico.espec} onChange={e=>setarDadosMedico({...dataMedico,espec:e.target.value})} />
+        <div className=" inline-flex gap-4">
+        <FloatingLabel label="Valor Plano" variant="outlined" type="number" value={dataMedico.plano} onChange={e=>setarDadosMedico({...dataMedico,plano:Number(e.target.value)})} />
+        <FloatingLabel label="Valor Funerária" variant="outlined" type="number" value={dataMedico.funeraria} onChange={e=>setarDadosMedico({...dataMedico,funeraria:Number(e.target.value)})} />
+        <FloatingLabel label="Valor Particular" variant="outlined" type="number" value={dataMedico.particular} onChange={e=>setarDadosMedico({...dataMedico,particular:Number(e.target.value)})} />
+      </div>
+      <FloatingLabel label="Intervalo médio entre consultas em minutos" variant="outlined" type="number" value={dataMedico.time} onChange={e=>setarDadosMedico({...dataMedico,time:Number(e.target.value)})} />
       <Textarea  className="min-h-[100px] h-auto"  value={dataMedico.sobre} onChange={e=>setarDadosMedico({...dataMedico,sobre:e.target.value})} rows={4} placeholder="Descreva suas atividades"/>
         
           </div></ModalBody>

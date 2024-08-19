@@ -51,7 +51,7 @@ export default function Calendario({medicos,events,setArrayEvent,dataEvent,setar
   const components:any ={
       event:({event}:{event:EventProps})=>{
           return(
-            <Alert color={event.tipoAg==='md'?'info':'success'}  withBorderAccent icon={HiInformationCircle}>
+            <Alert className="cursor-pointer" color={event.tipoAg==='md'?'info':'success'}  withBorderAccent icon={HiInformationCircle}>
       <span className="font-semibold">{event.status==='AB'?'ABERTO-':event.status==='AD'?'ADIADO-':'CANCELADO'}</span> {event.title} {event.tipoAg==='ct'?`-${event.nome} - Cel:${event.celular}`:event.obs}
     </Alert>)
          
@@ -72,7 +72,7 @@ const handleEventClick =(event:Partial<EventProps>)=>{
 
 
         const handleNovoEvento = useCallback(({start,end}:{start:Date,end:Date})=>{
-               setarDataEvento({start,end,data:undefined,id_ag:undefined,id_med:undefined,obs:undefined,status:undefined,title:undefined})  
+               setarDataEvento({start,end,data:undefined,id_ag:undefined,id_med:undefined,obs:undefined,status:'',title:undefined,celular:undefined,endereco:undefined,nome:undefined,tipoAg:''})  
                toggleDrawer()
         },[setArrayEvent])
 

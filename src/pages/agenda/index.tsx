@@ -32,7 +32,8 @@ export interface MedicoProps {
   tmpUrl: string,
   funeraria: number,
   particular: number,
-  plano: number
+  plano: number,
+  time:number
 }
 export interface EventProps {
   id_ag: number
