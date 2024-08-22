@@ -132,11 +132,6 @@ setArray(novoArray)
 
 }
 
-
-
-
-
-
     return(
         <>
 

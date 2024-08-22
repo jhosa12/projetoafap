@@ -32,7 +32,6 @@ interface EventProps{
     celular:string,
     endereco:string,
     tipoAg:string
-
 }
 interface DataProps{
   medicos:Array<MedicoProps>

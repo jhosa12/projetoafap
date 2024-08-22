@@ -16,6 +16,7 @@ import 'moment/locale/pt-br'; // Importa o idioma português para o moment
 
 import Calendario from "@/components/agendaMedico/calendario";
 import AdmMedico from "@/components/agendaMedico/admMedico";
+import PreAgend from "@/components/agendaMedico/preAgendamento";
 
 // Configura o moment para usar o idioma português
 moment.locale('pt-br');
@@ -141,9 +142,6 @@ export default function Agenda() {
   /*    const handleNovoEvento = useCallback(({start,end}:{start:Date,end:Date})=>{
              setDataEvent({start,end})  
              toggleDrawer()
-        
-
-
       },[setEvents])*/
 
 
@@ -160,12 +158,17 @@ export default function Agenda() {
             <button type="button" onClick={() => setMenuIndex(2)} className={`inline-block p-2 border-blue-600  hover:border-b-[1px]  rounded-t-lg   hover:text-gray-300  `}>Médicos</button>
           </li>
 
+          <li className="me-2">
+            <button type="button" onClick={() => setMenuIndex(3)} className={`inline-block p-2 border-blue-600  hover:border-b-[1px]  rounded-t-lg   hover:text-gray-300  `}>Pré-Agendamento</button>
+          </li>
+
 
 
         </ul>
 
         {menuIndex === 1 && <Calendario setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />}
         {menuIndex === 2 && <AdmMedico setArray={setArrayMedicos} medicos={medicos} />}
+        {menuIndex===3 && <PreAgend setArrayEvent={setArrayEvent} setarDataEvent={setarDataEvento} arrayMedicos={medicos} dataEvent={dataEvent}  events={events}/>}
 
       </div>
 
