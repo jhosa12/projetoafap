@@ -19,19 +19,27 @@ interface DataProps {
 export default function PreAgend({ events,arrayMedicos,dataEvent,setArrayEvent,setarDataEvent }: DataProps) {
     const [isOpen,setIsOpen] =useState<boolean>(false)
 
-    const toogleDrawer = () =>{
+    const toggleDrawer = () =>{
         setIsOpen(!isOpen)
     }
 
     const handleDeletarEvent = async(id:number)=>{
         try {
             const deletado =await api.delete(`/agenda/deletarEvento/${id}`)
+            const novoArray = [...events]
+    const index = novoArray.findIndex(item=>item.id_ag===dataEvent.id_ag)
+    novoArray.splice(index,1)
+    setArrayEvent(novoArray)
+    toggleDrawer()
             toast.success('DELETADO COM SUCESSO')
             
         } catch (error) {
                 console.log(error)
         }
     }
+
+
+ 
 
     const formatPhoneNumber = (phoneNumber:string) => {
         // Remove todos os caracteres que não sejam números
@@ -63,7 +71,7 @@ export default function PreAgend({ events,arrayMedicos,dataEvent,setArrayEvent,s
 
     return (
         <>
-        <ModalDrawer   arrayMedicos={arrayMedicos} dataEvent={dataEvent} events={events} isOpen={isOpen} setArrayEvent={setArrayEvent} setarDataEvent={setarDataEvent} toggleDrawer={toogleDrawer} />
+        <ModalDrawer   arrayMedicos={arrayMedicos} dataEvent={dataEvent} events={events} isOpen={isOpen} setArrayEvent={setArrayEvent} setarDataEvent={setarDataEvent} toggleDrawer={toggleDrawer} />
         <div className="overflow-x-auto">
             <Table>
                 <Table.Head>
@@ -93,7 +101,10 @@ export default function PreAgend({ events,arrayMedicos,dataEvent,setArrayEvent,s
                                 <button onClick={()=>handleDeletarEvent(Number(item.id_ag))} className="hover:text-red-500">
                                 <MdDelete size={22}/>
                                 </button>
-                                <button onClick={toogleDrawer} className="hover:text-blue-500">
+                                <button onClick={()=>{
+                                    setarDataEvent({...item,tipoAg:'ct',start:undefined,end:undefined})
+                                    toggleDrawer()
+                                }} className="hover:text-blue-500">
                                 <BsFillCalendarDateFill size={20}/>
                                 </button>
                                

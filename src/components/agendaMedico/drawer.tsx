@@ -65,9 +65,9 @@ export function ModalDrawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedic
     
     const novo =  await toast.promise(
       api.delete(`/agenda/deletarEvento/${dataEvent.id_ag}`),
-      {error:'Erro ao salvar dados',
-          pending:'Salvando novos dados...',
-          success:'Dados salvos com sucesso!'
+      {error:'Erro ao deletar dados',
+          pending:'Apagando dados...',
+          success:'Dados deletados com sucesso!'
       }
     )
     
@@ -128,7 +128,7 @@ export function ModalDrawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedic
   }
 
   const editarEvento=async()=>{
-    if(!dataEvent.status ||!dataEvent.id_med||!dataEvent.id_med||!dataEvent.title){
+    if(!dataEvent.status ||!dataEvent.id_med||!dataEvent.id_med||!dataEvent.title||!dataEvent.start||!dataEvent.end){
       toast.info('Preencha todos os campos obrigatorios!')
       return;
     }
@@ -141,7 +141,8 @@ export function ModalDrawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedic
           end:dataEvent.end,
           title:dataEvent.title,
           status: dataEvent.status,
-          obs:dataEvent.obs
+          obs:dataEvent.obs,
+          tipoAg:dataEvent.tipoAg
       
         }),
       {
