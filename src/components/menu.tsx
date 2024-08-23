@@ -20,7 +20,7 @@ import { RiUserReceived2Fill } from "react-icons/ri";
 import { BsInboxesFill } from "react-icons/bs";
 
 export function MenuLateral(){
-  // const socket = io("https://apiafap.onrender.com");
+   const socket = io("https://testeapiafap.shop");
     const [isOpen,setIsOpen]=useState(false);
     const {usuario,userToken}= useContext(AuthContext);
     const [isAdmOpen,setIsAdmOpen]= useState(false );
@@ -38,15 +38,15 @@ export function MenuLateral(){
         userToken();
     }
   
- //  socket.on('connect', () => {
-   //   socket.emit('userId', usuario?.id.toString());
-  // });
+   socket.on('connect', () => {
+      socket.emit('userId', usuario?.id.toString());
+   });
 
- //  socket.on('nova-tarefa', (tarefa) => {
+   socket.on('nova-tarefa', (tarefa) => {
       // Lógica para lidar com a nova tarefa recebida
-   //   console.log('Nova tarefa recebida:', tarefa);
-   //   setCount(tarefa);
- //  });
+   console.log('Nova tarefa recebida:', tarefa);
+      setCount(tarefa);
+  });
    
    try{
 

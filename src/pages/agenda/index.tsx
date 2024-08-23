@@ -114,7 +114,7 @@ export default function Agenda() {
       const response = await api.post("/agenda/listaEventos", {
         tipo: 'td'
       })
-      const novoArray = response.data.map((item: EventProps) => { return { ...item, start: new Date(item.start), end: new Date(item.end) } }).filter((item:EventProps)=>item.tipoAg!=='tp')
+      const novoArray = response.data.map((item: EventProps) => { return { ...item, start: new Date(item.start), end: new Date(item.end) } })
       setEvents(novoArray)
     } catch (error) {
       toast.error('ERRO NA REQUISIÇÃO')
@@ -123,10 +123,7 @@ export default function Agenda() {
   async function getMedicos() {
     try {
       const response = await api.get("/medico/lista")
-
       setMedicos(response.data)
-
-
     } catch (error) {
       toast.error('ERRO NA REQUISIÇÃO')
 
@@ -156,9 +153,6 @@ export default function Agenda() {
           <li className="me-2">
             <button type="button" onClick={() => setMenuIndex(3)} className={`inline-block p-2 border-blue-600  hover:border-b-[1px]  rounded-t-lg   hover:text-gray-300  `}>Pré-Agendamento</button>
           </li>
-
-
-
         </ul>
 
         {menuIndex === 1 && <Calendario setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />}

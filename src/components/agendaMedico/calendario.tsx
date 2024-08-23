@@ -86,7 +86,7 @@ const handleEventClick =(event:Partial<EventProps>)=>{
     <ModalDrawer setArrayEvent={setArrayEvent} events={events} dataEvent={dataEvent} setarDataEvent={setarDataEvento} arrayMedicos={medicos} isOpen={isOpen} toggleDrawer={toggleDrawer}/>
     <Calendar
       localizer={localizer}
-      events={events}
+      events={events.filter((item)=>item.tipoAg!=='tp')}
       components={components}
       startAccessor="start"
       endAccessor="end"
