@@ -114,17 +114,12 @@ export default function Agenda() {
       const response = await api.post("/agenda/listaEventos", {
         tipo: 'td'
       })
-      const novoArray = response.data.map((item: EventProps) => { return { ...item, start: new Date(item.start), end: new Date(item.end) } })
+      const novoArray = response.data.map((item: EventProps) => { return { ...item, start: new Date(item.start), end: new Date(item.end) } }).filter((item:EventProps)=>item.tipoAg!=='tp')
       setEvents(novoArray)
-
-
     } catch (error) {
       toast.error('ERRO NA REQUISIÇÃO')
-
     }
-
   }
-
   async function getMedicos() {
     try {
       const response = await api.get("/medico/lista")

@@ -187,10 +187,10 @@ export function ModalDrawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedic
     <option selected value={''}>{''}</option>
     <option value="md">MÉDICO</option>
     <option value="ct">CLIENTE</option>
-   
+    <option value='tp'>PRÉ AGENDAMENTO</option>
   </select>
 </form>
-{dataEvent.tipoAg==='ct' && <div className="flex flex-col gap-4">
+{dataEvent.tipoAg!=='md' && <div className="flex flex-col gap-4">
   <div >
     <label  className="block mb-1 text-sm font-medium text-white">NOME</label>
     <input value={dataEvent.nome} onChange={e=>setarDataEvent({...dataEvent,nome:e.target.value})}  className="block p-2.5 w-full text-sm rounded-lg border 0  bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="NOME"></input>

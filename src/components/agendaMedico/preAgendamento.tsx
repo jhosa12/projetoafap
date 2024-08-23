@@ -102,7 +102,7 @@ export default function PreAgend({ events,arrayMedicos,dataEvent,setArrayEvent,s
                                 <MdDelete size={22}/>
                                 </button>
                                 <button onClick={()=>{
-                                    setarDataEvent({...item,tipoAg:'ct',start:undefined,end:undefined})
+                                    setarDataEvent({...item,start:undefined,end:undefined})
                                     toggleDrawer()
                                 }} className="hover:text-blue-500">
                                 <BsFillCalendarDateFill size={20}/>
