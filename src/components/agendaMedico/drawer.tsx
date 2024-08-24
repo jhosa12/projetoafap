@@ -142,18 +142,18 @@ export function ModalDrawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedic
 
     
       const novo= [...events]
-      const index:number = novo.findIndex(item=>item.id_agmed===dataEvent.id_agmed)
+      const index = novo.findIndex(item=>item.id_agmed===dataEvent.id_agmed)
   
       if(dataEvent.tipoAg==='md'){
         novo[index] = {...evento.data}
         const ed = novo.map(item =>{return {...item,start:item.start ? new Date(item.start):new Date(),end:item.end?new Date(item.end):new Date()}})
         setArrayEvent(ed)
       }
-      else if(dataEvent.tipoAg==='ct'){
+      else if(dataEvent.tipoAg==='ct' && index!==undefined){
      
         const indexct = novo[index].clientes?.findIndex(item=>item.id_agcli===dataEvent.id_agcli)
         if (indexct !== undefined && indexct !== -1 && novo[index].clientes) {
-          novo[index].clientes[Number(indexct)] = { ...evento.data };
+          novo[index].clientes![Number(indexct)] = { ...evento.data };
       }
 
       }
