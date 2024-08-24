@@ -19,6 +19,13 @@ interface DataProps {
 export default function PreAgend({ events,arrayMedicos,dataEvent,setArrayEvent,setarDataEvent }: DataProps) {
     const [isOpen,setIsOpen] =useState<boolean>(false)
 
+
+
+
+    const deletarEvento=async ()=>{
+
+    }
+
     const toggleDrawer = () =>{
         setIsOpen(!isOpen)
     }
@@ -71,7 +78,7 @@ export default function PreAgend({ events,arrayMedicos,dataEvent,setArrayEvent,s
 
     return (
         <>
-        <ModalDrawer   arrayMedicos={arrayMedicos} dataEvent={dataEvent} events={events} isOpen={isOpen} setArrayEvent={setArrayEvent} setarDataEvent={setarDataEvent} toggleDrawer={toggleDrawer} />
+        <ModalDrawer deletarEvento={deletarEvento}  arrayMedicos={arrayMedicos} dataEvent={dataEvent} events={events} isOpen={isOpen} setArrayEvent={setArrayEvent} setarDataEvent={setarDataEvent} toggleDrawer={toggleDrawer} />
         <div className="overflow-x-auto">
             <Table>
                 <Table.Head>
