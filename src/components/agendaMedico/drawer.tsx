@@ -7,142 +7,128 @@ import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import 'react-datepicker/dist/react-datepicker.css';
-import { MdDelete } from "react-icons/md";
-import { MedicoProps } from "@/pages/agenda";
+import { EventProps, MedicoProps } from "@/pages/agenda";
 import ReactInputMask from "react-input-mask";
 import { AuthContext } from "@/contexts/AuthContext";
-interface EventoProps{
-    id_ag :number
-    id_med:number,
-    id_usuario:number,
-    data:Date
-    start:Date
-    end:Date
-    title:string
-    status: string,
-    obs:string,
-    nome:string,
-    tipoAg:string,
-    celular:string,
-    endereco:string
-}
+
 interface DrawerProps{
     isOpen:boolean,
     toggleDrawer:()=>void
     arrayMedicos:Array<MedicoProps>
-    setarDataEvent :(fields:Partial<EventoProps>)=>void
-    dataEvent:Partial<EventoProps>
-    setArrayEvent:(array:Array<Partial<EventoProps>>)=>void
-    events:Array<Partial<EventoProps>>
+    setarDataEvent :(fields:Partial<EventProps>)=>void
+    dataEvent:Partial<EventProps>
+    setArrayEvent:(array:Array<Partial<EventProps>>)=>void
+    events:Array<Partial<EventProps>>,
+    deletarEvento:()=>Promise<void>
 }
 
 
-export function ModalDrawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,setarDataEvent,dataEvent}:DrawerProps){
+export function ModalDrawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedicos,setarDataEvent,dataEvent,deletarEvento}:DrawerProps){
 
   const {usuario} = useContext(AuthContext)
    
   
 
-  async function deletarEvento() {
-      if(!dataEvent.id_ag){
-        setarDataEvent({
-          celular:'',
-          data:new Date(),
-          nome:'',
-          endereco:'',
-          status:'',
-          obs:'',
-          tipoAg:'',
-          title:''
-        })
-        toggleDrawer();
-        return;
-      }
-  
-    try {
-
-
-    
-    const novo =  await toast.promise(
-      api.delete(`/agenda/deletarEvento/${dataEvent.id_ag}`),
-      {error:'Erro ao deletar dados',
-          pending:'Apagando dados...',
-          success:'Dados deletados com sucesso!'
-      }
-    )
-    
-    const novoArray = [...events]
-    const index = novoArray.findIndex(item=>item.id_ag===dataEvent.id_ag)
-    novoArray.splice(index,1)
-    setArrayEvent(novoArray)
-    toggleDrawer()
-    } catch (error) {
-      toast.error('erro na requisição')
-    }
-    
-    }
-
-
-
-
-
-
 
 
   const novoEvento=async()=>{
-
     if(!dataEvent.status ||!dataEvent.id_med||!dataEvent.title||!dataEvent.tipoAg){
       toast.info('Preencha todos os campos obrigatorios!')
       return;
     }
+    console.log(dataEvent)
         try {
-          const evento =await toast.promise(
-            api.post("/agenda/novoEvento",{
         
-              id_med:Number(dataEvent.id_med),
-              data:new Date(),
-              id_usuario:Number(usuario?.id),
-              start:dataEvent.start,
-              end:dataEvent.end,
-              title:dataEvent.title,
-              status: dataEvent.status,
-              obs:dataEvent.obs,
-              tipoAg:dataEvent.tipoAg
+          if(dataEvent.tipoAg==='md'){
+           const evento =await toast.promise(
+              api.post("/agenda/novoEvento",{
+        
+                id_med:Number(dataEvent.id_med),
+                data:new Date(),
+                id_usuario:Number(usuario?.id),
+                start:dataEvent.start,
+                end:dataEvent.end,
+                title:dataEvent.title,
+                status: dataEvent.status,
+                obs:dataEvent.obs,
+                tipoAg:dataEvent.tipoAg
+            
+              }),
+            {
+              error:'Erro na requisição',
+              pending:'Gerando Evento..',
+              success:'Evento Gerado com sucesso'
+            }          
           
-            }),
-          {
-            error:'Erro na requisição',
-            pending:'Gerando Evento..',
-            success:'Evento Gerado com sucesso'
-          }          
-        
-        )
+          )
+
           const novo= [...events]
-          novo.push(evento.data)
-          const ed = novo.map(item =>{return {...item,start:item.start ? new Date(item.start):new Date(),end:item.end?new Date(item.end):new Date()}})
-          setArrayEvent(ed)
-          toggleDrawer()
+          evento &&  novo.push(evento.data)
+            const ed = novo.map(item =>{return {...item,start:item.start ? new Date(item.start):new Date(),end:item.end?new Date(item.end):new Date()}})
+            setArrayEvent(ed)
+            toggleDrawer()
+
+          }else if(dataEvent.tipoAg==='ct'){
+           const evento =await toast.promise(
+              api.post("/agenda/novoEvento",{
+                id_agmed:Number(dataEvent.id_agmed),
+                id_med:Number(dataEvent.id_med),
+                data:new Date(),
+                id_usuario:Number(usuario?.id),
+                nome:dataEvent.nome,
+                endereco:dataEvent.endereco,
+                celular:dataEvent.celular,
+                start:dataEvent.start,
+                end:dataEvent.end,
+                title:dataEvent.title,
+                status: dataEvent.status,
+                obs:dataEvent.obs,
+                tipoAg:dataEvent.tipoAg
+            
+              }),
+            {
+              error:'Erro na requisição',
+              pending:'Gerando Evento..',
+              success:'Evento Gerado com sucesso'
+            }          
+          
+          )
+          const index = events.findIndex(item=>item.id_agmed===dataEvent.id_agmed)
+          const novo= [...events]
+            novo[index].clientes?.push(evento.data)
+        
+           // const ed = novo.map(item =>{return {...item,start:item.start ? new Date(item.start):new Date(),end:item.end?new Date(item.end):new Date()}})
+            setArrayEvent(novo)
+            toggleDrawer()
+
+          }
+          
+     /*  */
         } catch (error) {
             toast.error('Erro ao gerar evento')
         }
   }
 
   const editarEvento=async()=>{
-    if(!dataEvent.status ||!dataEvent.id_med||!dataEvent.id_med||!dataEvent.title||!dataEvent.start||!dataEvent.end){
+    if(!dataEvent.status ||!dataEvent.id_med||!dataEvent.start||!dataEvent.end){
       toast.info('Preencha todos os campos obrigatorios!')
       return;
     }
     try {
       const evento =await toast.promise(
         api.put("/agenda/editarEvento",{
-          id_ag:Number(dataEvent.id_ag),
+          id_agcli:Number(dataEvent.id_agcli),
+          id_agmed:Number(dataEvent.id_agmed),
           id_med:Number(dataEvent.id_med),
+          nome:dataEvent.nome,
           start:dataEvent.start,
           end:dataEvent.end,
           title:dataEvent.title,
           status: dataEvent.status,
           obs:dataEvent.obs,
-          tipoAg:dataEvent.tipoAg
+          tipoAg:dataEvent.tipoAg,
+          celular:dataEvent.celular,
+          endereco:dataEvent.endereco
       
         }),
       {
@@ -152,11 +138,27 @@ export function ModalDrawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedic
       }          
     
     )
+
+
+    
       const novo= [...events]
-      const index = novo.findIndex(item=>item.id_ag===dataEvent.id_ag)
-      novo[index] = {...evento.data}
-      const ed = novo.map(item =>{return {...item,start:item.start ? new Date(item.start):new Date(),end:item.end?new Date(item.end):new Date()}})
-      setArrayEvent(ed)
+      const index:number = novo.findIndex(item=>item.id_agmed===dataEvent.id_agmed)
+  
+      if(dataEvent.tipoAg==='md'){
+        novo[index] = {...evento.data}
+        const ed = novo.map(item =>{return {...item,start:item.start ? new Date(item.start):new Date(),end:item.end?new Date(item.end):new Date()}})
+        setArrayEvent(ed)
+      }
+      else if(dataEvent.tipoAg==='ct'){
+     
+        const indexct = novo[index].clientes?.findIndex(item=>item.id_agcli===dataEvent.id_agcli)
+        if (indexct !== undefined && indexct !== -1 && novo[index].clientes) {
+          novo[index].clientes[Number(indexct)] = { ...evento.data };
+      }
+
+      }
+    
+     
       toggleDrawer()
     } catch (error) {
         toast.error('Erro ao gerar evento')
@@ -167,7 +169,7 @@ export function ModalDrawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedic
     return(
         
       
- <Drawer   className="bg-gray-800 w-[40vw]" open={isOpen} position="right" onClose={toggleDrawer}>
+ <Drawer   className="bg-gray-800 w-[40vw] px-8" open={isOpen} position="right" onClose={toggleDrawer}>
 
   {  /*    <div id="drawer-label" className="inline-flex items-center justify-between mb-4 text-base font-semibold  text-gray-400">
           <div className="inline-flex items-center">
@@ -181,7 +183,7 @@ export function ModalDrawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedic
 
         <Drawer.Items className="flex flex-col gap-5">
          
-        <form className="w-full mx-auto">
+       {/* <form className="w-full mx-auto">
   <label  className="block mb-2 text-sm font-medium  text-white">TIPO DE AGENDAMENTO</label>
   <select value={dataEvent.tipoAg} onChange={e=>setarDataEvent({...dataEvent,tipoAg:e.target.value})} className=" border  text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white ">
     <option selected value={''}>{''}</option>
@@ -189,7 +191,7 @@ export function ModalDrawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedic
     <option value="ct">CLIENTE</option>
     <option value='tp'>PRÉ AGENDAMENTO</option>
   </select>
-</form>
+</form>*/}
 {dataEvent.tipoAg!=='md' && <div className="flex flex-col gap-4">
   <div >
     <label  className="block mb-1 text-sm font-medium text-white">NOME</label>
@@ -258,7 +260,7 @@ export function ModalDrawer({events,setArrayEvent,isOpen,toggleDrawer,arrayMedic
       </div>   
        
        
-         {dataEvent.id_ag?  <div className="inline-flex w-full h-full justify-center items-end  gap-4">    <button onClick={deletarEvento} className="flex w-1/2 h-fit px-4 py-2 text-sm font-medium text-center  rounded-lg bg-red-600   hover:text-white hover:bg-red-700">Deletar</button> <button onClick={()=>editarEvento()} className="flex w-1/2 h-fit items-center px-4 py-2 text-sm font-medium text-center text-white  rounded-lg   bg-yellow-500 hover:bg-yellow-600">Editar Evento<svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+         {dataEvent.id_agcli  && dataEvent.id_agmed ?  <div className="inline-flex w-full h-full justify-center items-end  gap-4">    <button onClick={deletarEvento} className="flex w-1/2 h-fit px-4 py-2 text-sm font-medium text-center  rounded-lg bg-red-600   hover:text-white hover:bg-red-700">Deletar</button> <button onClick={()=>editarEvento()} className="flex w-1/2 h-fit items-center px-4 py-2 text-sm font-medium text-center text-white  rounded-lg   bg-yellow-500 hover:bg-yellow-600">Editar Evento<svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
           </svg></button> </div>:  <div className="inline-flex w-full h-full justify-center items-end  gap-4">
           

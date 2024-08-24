@@ -1,67 +1,138 @@
 
 
 
-import { HiInformationCircle } from "react-icons/hi";
 import { useCallback, useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
-
+import { MdDelete } from "react-icons/md";
+import {  HiCalendar, HiOutlineArrowNarrowRight } from "react-icons/hi";
+import { IoIosAddCircle } from "react-icons/io";
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
 import { ModalDrawer } from "@/components/agendaMedico/drawer";
-import { Alert } from "flowbite-react";
-import { MedicoProps } from "@/pages/agenda";
+import { Timeline,Accordion,Button, Modal } from "flowbite-react";
+import { EventProps, MedicoProps } from "@/pages/agenda";
+import { MdAddBox } from "react-icons/md";
+import { HiOutlineExclamationCircle } from "react-icons/hi2";
+import { toast } from "react-toastify";
+import { api } from "@/services/apiClient";
 // Configura o moment para usar o idioma português
 moment.locale('pt-br');
 const localizer = momentLocalizer(moment)
 
 
 
-interface EventProps{
-    id_ag :number
-    id_med:number
-    id_usuario:number,
-    data:Date
-    start:Date,
-    end:Date,
-    title:string
-    status: string,
-    obs:string,
-    nome:string,
-    celular:string,
-    endereco:string,
-    tipoAg:string
-}
+
 interface DataProps{
   medicos:Array<MedicoProps>
   events:Array<Partial<EventProps>>
   setArrayEvent:(array:Array<Partial<EventProps>>)=>void
   dataEvent:Partial<EventProps>
   setarDataEvento:(fields:Partial<EventProps>)=>void
+  deletarEvento:()=>Promise<void>
 }
 
-export default function Calendario({medicos,events,setArrayEvent,dataEvent,setarDataEvento}:DataProps){
+interface ObjectArrayMod{
+  id_ag :number
+  id_med:number
+  id_usuario:number,
+  data:Date
+  start:Date,
+  end:Date,
+  title:string
+  status: string,
+  obs:string,
+  clientes:Array<EventProps>
+
+}
+
+
+
+export default function Calendario({medicos,events,setArrayEvent,dataEvent,setarDataEvento,deletarEvento}:DataProps){
   
     
     const [isOpen, setIsOpen] = useState(false);
+    const [modalDelete,setModalDel] = useState(false)
+
+
+
+
+
+useEffect(()=>{
+
+  if(events.length>0){
+    const novoArray = events.reduce((acumulador,atual)=>{
+      const itemExistente = acumulador.find(item=>item.id_med===atual.id_med)
+
+      return acumulador
+    },[] as Array<ObjectArrayMod>)
+  }
+
+},[events])
 
 
   const components:any ={
-      event:({event}:{event:EventProps})=>{
+      event:({event,index}:{event:EventProps,index:number})=>{
           return(
-            <Alert className="cursor-pointer" color={event.tipoAg==='md'?'info':'success'}  withBorderAccent icon={HiInformationCircle}>
-      <span className="font-semibold">{event.status==='AB'?'ABERTO-':event.status==='AD'?'ADIADO-':'CANCELADO'}</span> {event.title} {event.tipoAg==='ct'?`-${event.nome} - Cel:${event.celular}`:event.obs}
-    </Alert>)
+            <Accordion  collapseAll onClick={(e) => e.stopPropagation()}  >
+            <Accordion.Panel>
+                <Accordion.Title  className="flex w-full border-cyan-500 bg-cyan-100 text-cyan-700  border-t-4 py-3 focus:outline-none focus:ring-0 focus:ring-offset-0"  >
+                  <div className="inline-flex w-full items-center gap-8">
+                  {event.status==='AB'?'ABERTO':event.status==='AD'?'ADIADO':'CANCELADO'} - {event.title}
+                    <button className="hover:text-blue-600" onClick={(e)=>{e.stopPropagation()
+                       setarDataEvento({...event,tipoAg:'ct',nome:'',celular:'',clientes:[],endereco:'',editar:false,id_agcli:undefined})
+                       toggleDrawer()
+                    }} >
+        <MdAddBox size={26} />
+    
+      </button>
+      <button onClick={()=>{
+        setarDataEvento({...event,tipoAg:'md',id_agcli:undefined}),
+        setModalDel(true)
+      }} className="hover:text-red-600">
+        <MdDelete size={26}/>
+      </button>
+   
+                  </div>
+                  
+                </Accordion.Title >
+                <Accordion.Content>
+      <Timeline theme={{item:{root:{vertical:'mb-1 ml-6 '},content:{body:{base:"mb-4 text-sm font-normal text-gray-500 dark:text-gray-400"},title:{base:"flex justify-between text-sm font-semibold text-gray-900 dark:text-white"}}}}}>
+      {event?.clientes?.map((item,index)=>(
+        <Timeline.Item  key={item.id_agcli}>
+          <Timeline.Point icon={HiCalendar}/>
+          <Timeline.Content>
+          <Timeline.Time>{new Date(item.start).toLocaleDateString('pt-BR',{timeZone:'America/Fortaleza',weekday:'long',day:'2-digit',month:'long',hour:'2-digit',minute:'2-digit'})}</Timeline.Time>
+          <Timeline.Title> 
+            {item.nome}
+             <button onClick={()=>handleEventClick({...item,tipoAg:'ct',id_med:event.id_med})} ><HiCalendar size={20} color="gray"/></button></Timeline.Title>
+          <Timeline.Body>
+            {item.endereco}
+          </Timeline.Body>
+          </Timeline.Content>
+        </Timeline.Item>
+      ))}
+        </Timeline>
+   
+                </Accordion.Content>
+            </Accordion.Panel>
+        </Accordion>
+    
+  
+  
+  )
          
 
       }
   }
 
 
+
+
+
 const handleEventClick =(event:Partial<EventProps>)=>{
     setarDataEvento({...event})
-    console.log(event)
     toggleDrawer()
 }
 
@@ -71,11 +142,9 @@ const handleEventClick =(event:Partial<EventProps>)=>{
 
 
         const handleNovoEvento = useCallback(({start,end}:{start:Date,end:Date})=>{
-               setarDataEvento({start,end,data:undefined,id_ag:undefined,id_med:undefined,obs:undefined,status:'',title:undefined,celular:undefined,endereco:undefined,nome:undefined,tipoAg:''})  
+               setarDataEvento({start,end,data:undefined,id_agmed:undefined,id_med:undefined,obs:'',status:'',title:'',celular:'',nome:'',tipoAg:'',endereco:'',editar:true})  
                toggleDrawer()
         },[setArrayEvent])
-
-
 
 
     return(
@@ -83,7 +152,7 @@ const handleEventClick =(event:Partial<EventProps>)=>{
    <div >
 
 
-    <ModalDrawer setArrayEvent={setArrayEvent} events={events} dataEvent={dataEvent} setarDataEvent={setarDataEvento} arrayMedicos={medicos} isOpen={isOpen} toggleDrawer={toggleDrawer}/>
+    <ModalDrawer deletarEvento={deletarEvento} setArrayEvent={setArrayEvent} events={events} dataEvent={dataEvent} setarDataEvent={setarDataEvento} arrayMedicos={medicos} isOpen={isOpen} toggleDrawer={toggleDrawer}/>
     <Calendar
       localizer={localizer}
       events={events.filter((item)=>item.tipoAg!=='tp')}
@@ -91,8 +160,8 @@ const handleEventClick =(event:Partial<EventProps>)=>{
       startAccessor="start"
       endAccessor="end"
       selectable
-      onSelectSlot={handleNovoEvento}
-      onSelectEvent={handleEventClick}
+     onSelectSlot={handleNovoEvento}
+    // onSelectEvent={handleEventClick}
       selected={true}
      style={{ height: 'calc(100vh - 108px)' }}
       messages={{
@@ -108,6 +177,27 @@ const handleEventClick =(event:Partial<EventProps>)=>{
         event: "Evento"
       }}
     />
+
+<Modal show={modalDelete} size="md" onClose={() => setModalDel(false)} popup>
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              Realmente deseja deletar esse agendamento?
+              Todos os dados vinculados a ele também serão apagados
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button color="failure" onClick={() => { setModalDel(false), deletarEvento()}}>
+                {"Sim, tenho certeza"}
+              </Button>
+              <Button color="gray" onClick={() => setModalDel(false)}>
+                Não, cancelar
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
   </div>
     {/*    <div className="p-4">
         <div className="flex flex-col w-full border  rounded-lg shadow  border-gray-700 max-h-[calc(100vh-100px)] ">

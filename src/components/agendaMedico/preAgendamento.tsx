@@ -27,7 +27,7 @@ export default function PreAgend({ events,arrayMedicos,dataEvent,setArrayEvent,s
         try {
             const deletado =await api.delete(`/agenda/deletarEvento/${id}`)
             const novoArray = [...events]
-    const index = novoArray.findIndex(item=>item.id_ag===dataEvent.id_ag)
+    const index = novoArray.findIndex(item=>item.id_agmed===dataEvent.id_agmed)
     novoArray.splice(index,1)
     setArrayEvent(novoArray)
     toggleDrawer()
@@ -98,7 +98,7 @@ export default function PreAgend({ events,arrayMedicos,dataEvent,setArrayEvent,s
                                 <button onClick={()=>handleWhatsAppClick(item.celular??'')} className="hover:text-green-400">
                                 <IoLogoWhatsapp size={20}/>
                                 </button>
-                                <button onClick={()=>handleDeletarEvent(Number(item.id_ag))} className="hover:text-red-500">
+                                <button onClick={()=>handleDeletarEvent(Number(item.id_agmed))} className="hover:text-red-500">
                                 <MdDelete size={22}/>
                                 </button>
                                 <button onClick={()=>{

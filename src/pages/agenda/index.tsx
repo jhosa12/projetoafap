@@ -34,10 +34,14 @@ export interface MedicoProps {
   funeraria: number,
   particular: number,
   plano: number,
-  time:number
+  time:number,
+ 
 }
-export interface EventProps {
-  id_ag: number
+
+export interface ClientProps{
+  
+  id_agcli: number,
+  id_agmed:number,
   id_med: number,
   id_usuario:number
   data: Date
@@ -45,10 +49,29 @@ export interface EventProps {
   end: Date,
   title: string
   status: string,
+  endereco:string,
   obs: string,
   nome:string,
   celular:string,
   tipoAg:string
+}
+export interface EventProps {
+  clientes:Array<ClientProps>
+  id_agcli: number,
+  id_agmed: number
+  id_med: number,
+  id_usuario:number
+  data: Date,
+  endereco:string,
+  start: Date,
+  end: Date,
+  title: string
+  status: string,
+  obs: string,
+  nome:string,
+  celular:string,
+  tipoAg:string,
+  editar:boolean
 }
 
 
@@ -58,6 +81,72 @@ export default function Agenda() {
   const [isOpen, setIsOpen] = useState(false);
   const [dataEvent, setDataEvent] = useState<Partial<EventProps>>({})
   const [menuIndex, setMenuIndex] = useState(1)
+
+
+
+  async function deletarEvento() {
+    if(!dataEvent.id_agmed){
+      setarDataEvento({
+        celular:'',
+        data:new Date(),
+        nome:'',
+        endereco:'',
+        status:'',
+        obs:'',
+        tipoAg:'',
+        title:''
+      })
+      setIsOpen(false);
+      return;
+    }
+
+  try {
+
+
+    if(dataEvent.tipoAg==='md'){
+      const novo =  await toast.promise(
+        api.delete(`/agenda/deletarEvento/${dataEvent.tipoAg}/${dataEvent.id_agmed}`),
+        {error:'Erro ao deletar dados',
+            pending:'Apagando dados...',
+            success:'Dados deletados com sucesso!'
+        }
+      )
+      const novoArray = [...events]
+      const index = novoArray.findIndex(item=>item.id_agmed===dataEvent.id_agmed)
+      novoArray.splice(index,1)
+      setArrayEvent(novoArray)
+    }
+    else if(dataEvent.tipoAg==='ct'){
+      const novo =  await toast.promise(
+        api.delete(`/agenda/deletarEvento/${dataEvent.tipoAg}/${dataEvent.id_agcli}`),
+
+        
+        {error:'Erro ao deletar dados',
+            pending:'Apagando dados...',
+            success:'Dados deletados com sucesso!'
+        }
+      )
+
+      const novoArray = [...events]
+      const indexMd = novoArray?.findIndex(item=>item.id_agmed===dataEvent.id_agmed)
+      const indexCt = novoArray[indexMd]?.clientes?.findIndex(item=>item.id_agcli===dataEvent.id_agcli)
+      novoArray[Number(indexMd)]?.clientes?.splice(Number(indexCt),1)
+      setArrayEvent(novoArray)
+      setIsOpen(false)
+    }
+
+  
+ 
+ 
+  } catch (error) {
+    toast.error('erro na requisição')
+  }
+  
+  }
+
+
+
+
 
 
 
@@ -114,6 +203,7 @@ export default function Agenda() {
       const response = await api.post("/agenda/listaEventos", {
         tipo: 'td'
       })
+      console.log(response.data)
       const novoArray = response.data.map((item: EventProps) => { return { ...item, start: new Date(item.start), end: new Date(item.end) } })
       setEvents(novoArray)
     } catch (error) {
@@ -155,7 +245,7 @@ export default function Agenda() {
           </li>
         </ul>
 
-        {menuIndex === 1 && <Calendario setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />}
+        {menuIndex === 1 && <Calendario deletarEvento={deletarEvento} setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />}
         {menuIndex === 2 && <AdmMedico setArray={setArrayMedicos} medicos={medicos} />}
         {menuIndex===3 && <PreAgend setArrayEvent={setArrayEvent} setarDataEvent={setarDataEvento} arrayMedicos={medicos} dataEvent={dataEvent}  events={events}/>}
 

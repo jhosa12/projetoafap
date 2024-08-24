@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react"
 import Image from 'next/image';
 import { MdManageAccounts } from "react-icons/md";
 import logo from '../../public/novaLogo.png'
-import fototeste from '../../public/fototeste.jpeg'
 import { MdLogout } from "react-icons/md";
 import { AuthContext,signOut } from '@/contexts/AuthContext';
 import { Tooltip } from 'react-tooltip';
@@ -16,7 +15,6 @@ import { api } from "@/services/apiClient";
 import { RxDrawingPinFilled } from "react-icons/rx";
 import { GrConfigure } from "react-icons/gr";
 import { FaSortAlphaDown } from "react-icons/fa";
-import { RiUserReceived2Fill } from "react-icons/ri";
 import { BsInboxesFill } from "react-icons/bs";
 
 export function MenuLateral(){
