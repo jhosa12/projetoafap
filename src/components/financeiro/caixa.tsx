@@ -112,16 +112,16 @@ const filtro = async()=>{
     if (arrayCaixa.length > 0) {
 
       const soma = arrayCaixa.reduce((acumulador, atual) => {
-        if (atual.mensalidade.form_pagto === 'PIX') {
+        if (atual?.mensalidade?.form_pagto === 'PIX') {
           acumulador.pix += Number(atual.valor)
         }
-        if (atual.mensalidade.form_pagto === 'BOLETO') {
+        if (atual?.mensalidade?.form_pagto === 'BOLETO') {
           acumulador.boleto += Number(atual.valor)
         }
-        if (atual.mensalidade.form_pagto === 'CARTAO') {
+        if (atual?.mensalidade?.form_pagto === 'CARTAO') {
           acumulador.cartao += Number(atual.valor)
         }
-        if (atual.mensalidade.form_pagto === 'DINHEIRO') {
+        if (atual?.mensalidade?.form_pagto === 'DINHEIRO') {
           acumulador.dinheiro += Number(atual.valor)
         }
         acumulador.total += Number(atual.valor)

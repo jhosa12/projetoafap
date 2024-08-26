@@ -36,23 +36,23 @@ class DocumentTemplate extends React.Component<DadosProps> {
           const itemexistente = acumulador.find(item=>item.nome===atual.ccustos_desc)
 
           if(itemexistente){
-            itemexistente.lancamentos.push(atual)
-            if(atual.mensalidade.form_pagto==='BOLETO') itemexistente.boleto+=Number(atual.valor)
-           else if (atual.mensalidade.form_pagto==='PIX') itemexistente.pix+=Number(atual.valor)
-           else if (atual.mensalidade.form_pagto==='CARTAO') itemexistente.cartao+=Number(atual.valor)
-           else if (atual.mensalidade.form_pagto==='DEPOSITO') itemexistente.deposito+=Number(atual.valor)
-           else if (atual.mensalidade.form_pagto==='DINHEIRO') itemexistente.dinheiro+=Number(atual.valor)
-           else if (atual.mensalidade.form_pagto==='TRANSFERENCIA') itemexistente.transferencia+=Number(atual.valor)
+            itemexistente?.lancamentos?.push(atual)
+            if(atual?.mensalidade?.form_pagto==='BOLETO') itemexistente.boleto+=Number(atual.valor)
+           else if (atual?.mensalidade?.form_pagto==='PIX') itemexistente.pix+=Number(atual.valor)
+           else if (atual?.mensalidade?.form_pagto==='CARTAO') itemexistente.cartao+=Number(atual.valor)
+           else if (atual?.mensalidade?.form_pagto==='DEPOSITO') itemexistente.deposito+=Number(atual.valor)
+           else if (atual?.mensalidade?.form_pagto==='DINHEIRO') itemexistente.dinheiro+=Number(atual.valor)
+           else if (atual?.mensalidade?.form_pagto==='TRANSFERENCIA') itemexistente.transferencia+=Number(atual.valor)
           }
           else{
             acumulador.push({nome:atual.ccustos_desc,
               lancamentos:[atual],
-              boleto:atual.mensalidade.form_pagto==='BOLETO'?Number(atual.valor):0,
-              pix:atual.mensalidade.form_pagto==='PIX'?Number(atual.valor):0,
-              cartao:atual.mensalidade.form_pagto==='CARTAO'?Number(atual.valor):0,
-              deposito:atual.mensalidade.form_pagto==='DEPOSITO'?Number(atual.valor):0,
-              dinheiro:atual.mensalidade.form_pagto==='DINHEIRO'?Number(atual.valor):0,
-              transferencia:atual.mensalidade.form_pagto==='TRANSFERENCIA'?Number(atual.valor):0
+              boleto:atual?.mensalidade?.form_pagto==='BOLETO'?Number(atual.valor):0,
+              pix:atual?.mensalidade?.form_pagto==='PIX'?Number(atual.valor):0,
+              cartao:atual?.mensalidade?.form_pagto==='CARTAO'?Number(atual.valor):0,
+              deposito:atual?.mensalidade?.form_pagto==='DEPOSITO'?Number(atual.valor):0,
+              dinheiro:atual?.mensalidade?.form_pagto==='DINHEIRO'?Number(atual.valor):0,
+              transferencia:atual?.mensalidade?.form_pagto==='TRANSFERENCIA'?Number(atual.valor):0
             })
           }
 
@@ -90,10 +90,10 @@ class DocumentTemplate extends React.Component<DadosProps> {
                 (<TableRow key={it.num_seq} className="bg-white">
 
                   <TableCell className="text-black">{new Date(it.datalanc).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</TableCell>
-                  <TableCell className="text-black">{it.mensalidade.form_pagto}</TableCell>
-                  <TableCell className="text-black">{it.mensalidade.banco_dest}</TableCell>
-                  <TableCell className="text-black">{it.descricao}</TableCell>
-                  <TableCell className="text-black">{it.historico}</TableCell>
+                  <TableCell className="text-black">{it?.mensalidade?.form_pagto}</TableCell>
+                  <TableCell className="text-black">{it?.mensalidade?.banco_dest}</TableCell>
+                  <TableCell className="text-black">{it?.descricao}</TableCell>
+                  <TableCell className="text-black">{it?.historico}</TableCell>
 
                   <TableCell className="text-black">{Number(it.valor).toLocaleString('pt-BR', {
                     style: 'currency',

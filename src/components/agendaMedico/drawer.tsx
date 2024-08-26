@@ -17,8 +17,8 @@ interface DrawerProps {
   arrayMedicos: Array<MedicoProps>
   setarDataEvent: (fields: Partial<EventProps>) => void
   dataEvent: Partial<EventProps>
-  setArrayEvent: (array: Array<Partial<EventProps>>) => void
-  events: Array<Partial<EventProps>>,
+  setArrayEvent: (array: Array<EventProps>) => void
+  events: Array<EventProps>,
   deletarEvento: () => Promise<void>
 }
 

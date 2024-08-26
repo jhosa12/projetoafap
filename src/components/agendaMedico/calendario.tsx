@@ -26,8 +26,8 @@ const localizer = momentLocalizer(moment)
 
 interface DataProps{
   medicos:Array<MedicoProps>
-  events:Array<Partial<EventProps>>
-  setArrayEvent:(array:Array<Partial<EventProps>>)=>void
+  events:Array<EventProps>
+  setArrayEvent:(array:Array<EventProps>)=>void
   dataEvent:Partial<EventProps>
   setarDataEvento:(fields:Partial<EventProps>)=>void
   deletarEvento:()=>Promise<void>
@@ -77,7 +77,7 @@ useEffect(()=>{
           return(
             <Accordion  collapseAll onClick={(e) => e.stopPropagation()}  >
             <Accordion.Panel>
-                <Accordion.Title  className="flex w-full border-cyan-500 bg-cyan-100 text-cyan-700  border-t-4 py-3 focus:outline-none focus:ring-0 focus:ring-offset-0"  >
+                <Accordion.Title  className="flex w-full border-green-500 bg-white text-cyan-700  border-l-8 py-2 focus:outline-none focus:ring-0 focus:ring-offset-0 "  >
                   <div className="inline-flex w-full items-center gap-8">
                   {event.status==='AB'?'ABERTO':event.status==='AD'?'ADIADO':'CANCELADO'} - {event.title}
                     <button className="hover:text-blue-600" onClick={(e)=>{e.stopPropagation()
@@ -93,8 +93,8 @@ useEffect(()=>{
       }} className="hover:text-red-600">
         <MdDelete size={26}/>
       </button>
-   
                   </div>
+                  <span className="text-sm">Clientes: {event?.clientes?.length}</span>
                   
                 </Accordion.Title >
                 <Accordion.Content>
@@ -142,7 +142,7 @@ const handleEventClick =(event:Partial<EventProps>)=>{
 
 
         const handleNovoEvento = useCallback(({start,end}:{start:Date,end:Date})=>{
-               setarDataEvento({start,end,data:undefined,id_agmed:undefined,id_med:undefined,obs:'',status:'',title:'',celular:'',nome:'',tipoAg:'',endereco:'',editar:true})  
+               setarDataEvento({start,end,data:undefined,id_agmed:undefined,id_med:undefined,obs:'',status:'AB',title:'',celular:'',nome:'',tipoAg:'md',endereco:'',editar:true})  
                toggleDrawer()
         },[setArrayEvent])
 

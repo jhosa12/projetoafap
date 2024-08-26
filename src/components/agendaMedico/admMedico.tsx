@@ -85,6 +85,7 @@ if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
       data.append("nome",dataMedico.nome??'')
       data.append("espec",dataMedico.espec??'')
       data.append("sobre",dataMedico.sobre??'')
+      data.append("time",String(dataMedico.time)??'')
       data.append("imageUrl",dataMedico.imageUrl??'')
       data.append("plano",String(dataMedico.plano)??'')
       data.append("funeraria",String(dataMedico.funeraria)??'')

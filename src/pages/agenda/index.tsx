@@ -77,10 +77,11 @@ export interface EventProps {
 
 export default function Agenda() {
   const [medicos, setMedicos] = useState<Array<MedicoProps>>([])
-  const [events, setEvents] = useState<Array<Partial<EventProps>>>([])
+  const [events, setEvents] = useState<Array<EventProps>>([])
   const [isOpen, setIsOpen] = useState(false);
   const [dataEvent, setDataEvent] = useState<Partial<EventProps>>({})
   const [menuIndex, setMenuIndex] = useState(1)
+  const [pre,setPre] = useState<Array<ClientProps>>([])
 
 
 
@@ -182,7 +183,7 @@ export default function Agenda() {
     })
   }
 
-  const setArrayEvent = (array: Array<Partial<EventProps>>) => {
+  const setArrayEvent = (array: Array<EventProps>) => {
     setEvents(array)
   }
 
@@ -195,6 +196,7 @@ export default function Agenda() {
   useEffect(() => {
     getMedicos()
     agenda()
+    preAgendamento()
   }, [])
 
 
@@ -203,7 +205,7 @@ export default function Agenda() {
       const response = await api.post("/agenda/listaEventos", {
         tipo: 'td'
       })
-      console.log(response.data)
+     
       const novoArray = response.data.map((item: EventProps) => { return { ...item, start: new Date(item.start), end: new Date(item.end) } })
       setEvents(novoArray)
     } catch (error) {
@@ -219,6 +221,17 @@ export default function Agenda() {
 
     }
 
+  }
+
+
+  const preAgendamento = async()=>{
+    try {
+      const lista = await api.get("/agenda/preagendamento")
+      setPre(lista.data)
+     
+    } catch (error) {
+      console.error('Erro na requisição pre')
+    }
   }
 
   /*    const handleNovoEvento = useCallback(({start,end}:{start:Date,end:Date})=>{
@@ -247,7 +260,7 @@ export default function Agenda() {
 
         {menuIndex === 1 && <Calendario deletarEvento={deletarEvento} setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />}
         {menuIndex === 2 && <AdmMedico setArray={setArrayMedicos} medicos={medicos} />}
-        {menuIndex===3 && <PreAgend setArrayEvent={setArrayEvent} setarDataEvent={setarDataEvento} arrayMedicos={medicos} dataEvent={dataEvent}  events={events}/>}
+        {menuIndex===3 && <PreAgend setArrayEvent={setArrayEvent} events={events.filter(item=>new Date(item.end)>=new Date())} setPre={setPre}  arrayMedicos={medicos} pre={pre}/>}
 
       </div>
 
