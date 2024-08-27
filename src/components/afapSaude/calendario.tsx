@@ -10,9 +10,9 @@ import { HiCalendar, HiOutlineArrowNarrowRight } from "react-icons/hi";
 import { IoIosAddCircle } from "react-icons/io";
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
-import { ModalDrawer } from "@/components/agendaMedico/drawer";
+import { ModalDrawer } from "@/components/afapSaude/drawer";
 import { Timeline, Accordion, Button, Modal } from "flowbite-react";
-import { EventProps, MedicoProps } from "@/pages/agenda";
+import { EventProps, MedicoProps } from "@/pages/afapSaude";
 import { MdAddBox } from "react-icons/md";
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
 import { toast } from "react-toastify";
@@ -47,15 +47,11 @@ interface ObjectArrayMod {
 
 }
 
-
-
 export default function Calendario({ medicos, events, setArrayEvent, dataEvent, setarDataEvento, deletarEvento }: DataProps) {
 
 
   const [isOpen, setIsOpen] = useState(false);
   const [modalDelete, setModalDel] = useState(false)
-
-
 
 
 
@@ -164,7 +160,7 @@ export default function Calendario({ medicos, events, setArrayEvent, dataEvent, 
           onSelectSlot={handleNovoEvento}
           // onSelectEvent={handleEventClick}
           selected={true}
-          style={{ height: 'calc(100vh - 108px)' }}
+          style={{ height: 'calc(100vh - 125px)' }}
           messages={{
             next: "Próximo",
             previous: "Anterior",

@@ -7,7 +7,7 @@ import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import 'react-datepicker/dist/react-datepicker.css';
-import { EventProps, MedicoProps } from "@/pages/agenda";
+import { EventProps, MedicoProps } from "@/pages/afapSaude";
 import ReactInputMask from "react-input-mask";
 import { AuthContext } from "@/contexts/AuthContext";
 

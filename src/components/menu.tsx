@@ -16,7 +16,7 @@ import { RxDrawingPinFilled } from "react-icons/rx";
 import { GrConfigure } from "react-icons/gr";
 import { FaSortAlphaDown } from "react-icons/fa";
 import { BsInboxesFill } from "react-icons/bs";
-
+import { MdHealthAndSafety } from "react-icons/md";
 export function MenuLateral(){
    const socket = io("https://testeapiafap.shop");
     const [isOpen,setIsOpen]=useState(false);
@@ -168,11 +168,19 @@ async function contagem() {
         <li>
             <Link href="/vendas" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 transition duration-75 rounded-lg pl-11 group  text-white hover:bg-gray-700">Vendas</Link>
         </li>
-        <li>
-            <Link href="/agenda" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 transition duration-75 rounded-lg pl-11 group  text-white hover:bg-gray-700">Agenda</Link>
-        </li>
+      
     </ul>
 </li>
+
+
+
+<li>
+            <Link href="/afapSaude" onClick={()=>setIsOpen(false)} className="flex items-center p-2 rounded-lg text-white  hover:bg-gray-700 group">
+              <MdHealthAndSafety size={25}/>
+               <span className="flex-1 ms-3 whitespace-nowrap">Afap Saúde</span>
+           
+            </Link>
+         </li>
 
          <li>
             <Link href="/notifications" onClick={()=>setIsOpen(false)} className="flex items-center p-2 rounded-lg text-white  hover:bg-gray-700 group">
@@ -183,7 +191,7 @@ async function contagem() {
                <span className="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium rounded-full bg-blue-900 text-blue-300">3</span>
             </Link>
          </li>
-
+   
          <li >
     <button type="button" className="flex items-center w-full p-2 text-base  transition duration-75 rounded-lg group  text-white hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setEstoque(!isEstoqueOpen)}>
     <BsInboxesFill size={25}/>

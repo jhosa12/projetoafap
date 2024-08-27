@@ -1,4 +1,4 @@
-import { ClientProps, EventProps, MedicoProps } from "@/pages/agenda"
+import { ClientProps, EventProps, MedicoProps } from "@/pages/afapSaude"
 import { Modal, Table, FloatingLabel, Label, TextInput, Select, Button } from "flowbite-react"
 import { IoLogoWhatsapp } from "react-icons/io";
 import { BsFillCalendarDateFill } from "react-icons/bs";

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { EventProps, MedicoProps } from "@/pages/agenda"
+import { EventProps, MedicoProps } from "@/pages/afapSaude"
 
 
 interface DadosProps{

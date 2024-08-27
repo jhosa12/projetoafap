@@ -1,7 +1,7 @@
 
 
 
-import { MdDelete, MdEdit } from "react-icons/md";
+
 import { BiSolidLockOpenAlt } from "react-icons/bi";
 import { useCallback, useEffect, useState } from "react";
 import { api } from "@/services/apiClient";
@@ -14,14 +14,48 @@ import imag from "../../../public/carne.png"
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
 
-import Calendario from "@/components/agendaMedico/calendario";
-import AdmMedico from "@/components/agendaMedico/admMedico";
-import PreAgend from "@/components/agendaMedico/preAgendamento";
+import Calendario from "@/components/afapSaude/calendario";
+import AdmMedico from "@/components/afapSaude/admMedico";
+import PreAgend from "@/components/afapSaude/preAgendamento";
+import { MdMedicalServices } from "react-icons/md";
+import Consultas from "@/components/afapSaude/consultas";
+import { Tabs } from "flowbite-react";
+import { FaCalendarAlt } from "react-icons/fa";
+import {HiClipboardList } from "react-icons/hi";
+import { IoMdSettings } from "react-icons/io";
+import { MdAccessTimeFilled } from "react-icons/md";
 
 // Configura o moment para usar o idioma português
 moment.locale('pt-br');
 const localizer = momentLocalizer(moment)
 
+
+
+
+
+export interface ExamesData{
+  id_exame:number,
+  nome:string,
+  data:Date,
+  usuario:string,
+  valorBruto:number,
+  desconto:number,
+  valorFinal:number
+}
+
+
+export interface ConsultaProps{
+  id_consulta:number,
+  id_med:number,
+  nome:string,
+  espec:string,
+  vl_consulta:number,
+  tipoDesc:string,
+  vl_desc:number,
+  vl_final:number,
+  data:Date,
+  exames:Array<ExamesData>
+}
 
 export interface MedicoProps {
   id_med: number,
@@ -75,13 +109,47 @@ export interface EventProps {
 }
 
 
-export default function Agenda() {
+export default function AfapSaude() {
   const [medicos, setMedicos] = useState<Array<MedicoProps>>([])
   const [events, setEvents] = useState<Array<EventProps>>([])
   const [isOpen, setIsOpen] = useState(false);
   const [dataEvent, setDataEvent] = useState<Partial<EventProps>>({})
   const [menuIndex, setMenuIndex] = useState(1)
   const [pre, setPre] = useState<Array<ClientProps>>([])
+  const [consultas,setConsultas] =useState<Array<ConsultaProps>>([])
+  const [exames,setExames] = useState<Array<ExamesData>>([])
+
+
+
+
+  const buscarExames = async ()=>{
+    try {
+
+        const response  = await api.get("/afapSaude/exames")
+
+
+        setExames(response.data)
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+const buscarConsultas = async ()=>{
+        try {
+            const response = await api.get("/afapSaude/consultas")
+            
+            setConsultas(response.data)
+        } catch (error) {
+            console.log(error)
+        }
+}
+
+
+
+
+
 
 
 
@@ -196,9 +264,16 @@ export default function Agenda() {
 
 
   useEffect(() => {
-    getMedicos()
-    agenda()
-    preAgendamento()
+
+   
+      getMedicos()
+      agenda()
+      preAgendamento()
+      
+    buscarConsultas()
+    buscarExames()
+    
+  
   }, [])
 
 
@@ -247,22 +322,37 @@ export default function Agenda() {
   return (
     <>
       <div className="flex flex-col px-4 w-full text-white">
-        <ul className="flex flex-wrap mb-1 text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 "  >
-          <li className="me-2">
-            <button type="button" onClick={() => setMenuIndex(1)} className={`inline-block p-2 border-blue-600 rounded-t-lg hover:border-b-[1px]  hover:text-gray-300  `}>Agenda</button>
-          </li>
-          <li className="me-2">
-            <button type="button" onClick={() => setMenuIndex(2)} className={`inline-block p-2 border-blue-600  hover:border-b-[1px]  rounded-t-lg   hover:text-gray-300  `}>Médicos</button>
-          </li>
+      <Tabs theme={{tabpanel:'py-1',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
+        on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
+        off:"border-b-2 border-transparent text-gray-200 hover:border-gray-300 hover:text-gray-400 "
+      }}}}}}}  variant="underline">
 
-          <li className="me-2">
-            <button type="button" onClick={() => setMenuIndex(3)} className={`inline-block p-2 border-blue-600  hover:border-b-[1px]  rounded-t-lg   hover:text-gray-300  `}>Pré-Agendamento</button>
-          </li>
-        </ul>
+      <Tabs.Item  active title="Agenda" icon={FaCalendarAlt}>
+      <Calendario deletarEvento={deletarEvento} setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />
+      </Tabs.Item>
 
-        {menuIndex === 1 && <Calendario deletarEvento={deletarEvento} setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />}
-        {menuIndex === 2 && <AdmMedico setArray={setArrayMedicos} medicos={medicos} />}
-        {menuIndex === 3 && <PreAgend setArrayEvent={setArrayEvent} events={events.filter(item => new Date(item.end) >= new Date())} setPre={setPre} arrayMedicos={medicos} pre={pre} />}
+      <Tabs.Item title="Medicos" icon={MdMedicalServices}>
+      <AdmMedico setArray={setArrayMedicos} medicos={medicos} />
+      </Tabs.Item>
+
+      <Tabs.Item title="Pré Agendamentos" icon={MdAccessTimeFilled}>
+      <PreAgend setArrayEvent={setArrayEvent} events={events.filter(item => new Date(item.end) >= new Date())} setPre={setPre} arrayMedicos={medicos} pre={pre} />
+      </Tabs.Item>
+
+      <Tabs.Item title="Consultas" icon={HiClipboardList}>
+      <Consultas consultas={consultas} medicos={medicos}/>
+      </Tabs.Item>
+
+
+      <Tabs.Item disabled icon={IoMdSettings}  title="Configurar">
+        Disabled content
+      </Tabs.Item>
+    </Tabs>
+     
+
+   
+ 
+
 
       </div>
 

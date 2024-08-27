@@ -1,6 +1,6 @@
 
 import { Card,Modal,ModalHeader,ModalBody,Button,Label,FileInput,TextInput,Textarea,Dropdown,DropdownItem, FloatingLabel } from "flowbite-react";
-import { MedicoProps } from "@/pages/agenda";
+import { MedicoProps } from "@/pages/afapSaude";
 import { IoAddOutline } from "react-icons/io5";
 import { ChangeEvent, useState } from "react";
 import { toast } from "react-toastify";
