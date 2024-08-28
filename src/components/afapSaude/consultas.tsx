@@ -1,10 +1,11 @@
 
 
-import { ConsultaProps, ExamesData, MedicoProps } from "@/pages/afapSaude";
+import { ConsultaProps, ExamesData, ExamesProps, MedicoProps } from "@/pages/afapSaude";
 import { api } from "@/services/apiClient";
 import { Button, Table, Modal, Label, TextInput, Checkbox,Select} from "flowbite-react";
 import { useEffect, useState } from "react";
 import ReactInputMask from "react-input-mask";
+import { ModalConsulta } from "./components/modalNovaConsulta";
 
 
 
@@ -12,9 +13,13 @@ import ReactInputMask from "react-input-mask";
 interface DataProps{
     medicos:Array<MedicoProps>,
     consultas:Array<ConsultaProps>
+    exames:Array<ExamesProps>
 }
-export default function Consultas({medicos,consultas}:DataProps) {
+export default function Consultas({medicos,consultas,exames}:DataProps) {
     const [openModal, setOpenModal] = useState(false);
+    const [data,setData] = useState<ConsultaProps>({
+      data:new Date(),espec:'',exames:[],id_consulta:null,id_med:null,nome:'',tipoDesc:'',vl_consulta:0,vl_desc:0,vl_final:0,celular:'',cpf:''
+    })
   
 
 
@@ -28,6 +33,7 @@ export default function Consultas({medicos,consultas}:DataProps) {
   
     <div className="overflow-x-auto">
       <Table striped >
+        
         <Table.Head>
           <Table.HeadCell>Nome</Table.HeadCell>
           <Table.HeadCell>Especialidade</Table.HeadCell>
@@ -42,8 +48,8 @@ export default function Consultas({medicos,consultas}:DataProps) {
         </Table.Head>
         <Table.Body className="divide-y">
             {consultas.map((item,index)=>(
-                 <Table.Row key={item.id_consulta} className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                     <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+              <Table.Row key={item.id_consulta} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
               {item.nome}
             </Table.Cell>
             <Table.Cell>{item.espec}</Table.Cell>
@@ -59,70 +65,12 @@ export default function Consultas({medicos,consultas}:DataProps) {
             </Table.Cell>
 
 </Table.Row>
-
-            ))}
-           
-        
-         
-       
-        
-       
+            ))}      
         </Table.Body>
       </Table>
     </div>
 
-    <Modal show={openModal} size="2xl" popup dismissible onClose={() => setOpenModal(false)} >
-        <Modal.Header />
-        <Modal.Body>
-          <div className="space-y-4">
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">Cadastrar Consulta</h3>
-            <div>
-              <div className="mb-1 block">
-                <Label htmlFor="email" value="Nome" />
-              </div>
-              <TextInput className="focus:outline-none" id="email" placeholder="Nome" required />
-            </div>
-<div className="inline-flex w-full gap-4 ">
-<div className="w-full">
-                
-                <div className="mb-1 block ">
-                  <Label htmlFor="celular" value="Celular" />
-                </div>
-               <ReactInputMask id="celular" placeholder="Celular" className="px-2 py-2 focus:outline-none bg-gray-100 w-full rounded-lg border-[1px] border-gray-300" mask={'(99) 9 9999-9999'}/>
-              </div>
-
-              <div className="w-full">
-                
-                <div className="mb-1 block w-full">
-                  <Label htmlFor="password" value="CPF" />
-                </div>
-               <ReactInputMask placeholder="CPF" className="px-2 py-2 focus:outline-none bg-gray-100 w-full rounded-lg border-[1px] border-gray-300" mask={'999.999.999-99'}/>
-              </div>
-
-
-</div>
-
-<div>
-              <div className="mb-1 block">
-                <Label htmlFor="email" value="Especialidade" />
-              </div>
-              <Select className="focus:outline-none"   required >
-                    <option value={''}></option>
-                    {medicos.map((item,index)=>(
-                        <option key={item.id_med}>{`${item.nome}-(${item.espec})`}</option>
-                    ))}
-              </Select>
-            </div>
-
-      
-            <div className="w-full">
-              <Button>Log in to your account</Button>
-            </div>
-       
-          </div>
-        </Modal.Body>
-      </Modal>
-
+   <ModalConsulta  data={data} setData={setData} exames={exames} medicos={medicos} openModal={openModal} setOpenModal={setOpenModal}/>
     </div>
   );
 }

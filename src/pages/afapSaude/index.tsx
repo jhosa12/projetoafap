@@ -24,6 +24,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 import {HiClipboardList } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
 import { MdAccessTimeFilled } from "react-icons/md";
+import Configuracoes from "@/components/afapSaude/configuracoes";
 
 // Configura o moment para usar o idioma português
 moment.locale('pt-br');
@@ -34,20 +35,36 @@ const localizer = momentLocalizer(moment)
 
 
 export interface ExamesData{
-  id_exame:number,
+  id_exame:number|null,
   nome:string,
   data:Date,
-  usuario:string,
+  porcFun:number,
+  porcPart:number,
+  porcPlan:number
   valorBruto:number,
   desconto:number,
   valorFinal:number
 }
 
+export interface ExamesProps{
+  id_exame:number,
+  nome:string,
+  data:Date,
+  usuario:string,
+  valorBruto:number,
+  porcFun:number,
+  porcPart:number,
+  porcPlan:number
+  valorFinal:number
+}
+
 
 export interface ConsultaProps{
-  id_consulta:number,
-  id_med:number,
+  id_consulta:number|null,
+  id_med:number|null,
   nome:string,
+  celular:string,
+  cpf:string,
   espec:string,
   vl_consulta:number,
   tipoDesc:string,
@@ -117,7 +134,7 @@ export default function AfapSaude() {
   const [menuIndex, setMenuIndex] = useState(1)
   const [pre, setPre] = useState<Array<ClientProps>>([])
   const [consultas,setConsultas] =useState<Array<ConsultaProps>>([])
-  const [exames,setExames] = useState<Array<ExamesData>>([])
+  const [exames,setExames] = useState<Array<ExamesProps>>([])
 
 
 
@@ -340,20 +357,12 @@ const buscarConsultas = async ()=>{
       </Tabs.Item>
 
       <Tabs.Item title="Consultas" icon={HiClipboardList}>
-      <Consultas consultas={consultas} medicos={medicos}/>
+      <Consultas exames={exames} consultas={consultas} medicos={medicos}/>
       </Tabs.Item>
-
-
-      <Tabs.Item disabled icon={IoMdSettings}  title="Configurar">
-        Disabled content
+      <Tabs.Item  icon={IoMdSettings}  title="Configurar">
+       <Configuracoes/>
       </Tabs.Item>
     </Tabs>
-     
-
-   
- 
-
-
       </div>
 
     </>
