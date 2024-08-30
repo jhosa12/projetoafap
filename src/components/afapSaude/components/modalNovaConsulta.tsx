@@ -121,7 +121,6 @@ const handleCadastrar = async()=>{
                <ReactInputMask value={data.cpf} onChange={e=>setData({...data,cpf:e.target.value})} id="cpf" placeholder="CPF" className="px-2 py-2 focus:outline-none bg-gray-100 w-full rounded-lg border-[1px] border-gray-300" mask={'999.999.999-99'}/>
               </div>
 
-
 </div>
 <div>
               <div className="mb-1 block">

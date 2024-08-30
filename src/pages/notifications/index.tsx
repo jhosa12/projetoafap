@@ -3,6 +3,8 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import { AuthContext } from "@/contexts/AuthContext";
+import { Alert } from "flowbite-react";
+import { HiEye, HiInformationCircle } from "react-icons/hi2";
 
 interface NotifyProps{
     id_notificacao: number,
@@ -93,29 +95,49 @@ console.log(err)
         <>
         <div className="flex flex-col w-full pl-10 pr-10 pt-4">
             <h1 className="flex w-full p-2 border-b-[1px] text-gray-300 font-semibold text-2xl border-gray-600">Notificações/Tarefas</h1>
-            <ul className="flex flex-col gap-3 w-full  p-4">
+            <div className="flex flex-col gap-3 w-full max-h-[83vh] overflow-y-auto p-4">
                 {notificacoes.map((item,index)=>{
                     return(
-                        <li key={index} className="flex justify-between items-center p-2 border-t-[3px] shadow-sm shadow-gray-400 border-yellow-600 rounded-lg w-full text-white bg-gray-700">
-                            <div className="flex flex-col w-full ">
-                            <h1 className="uppercase font-bold justify-start pl-2  ">{item.titulo}</h1>
-                            <div className="flex flex-row justify-between w-full">
-                            <p className="pl-2">{item.descricao}</p>
-                            <span className="flex items-end justify-end h-full">{new Date(item.data).toLocaleDateString()} - {new Date(item.data).toLocaleTimeString()}</span>
-                            <span className="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full bg-yellow-900 text-yellow-300">
-                <span className="w-2 h-2 me-1 bg-yellow-500 rounded-full"></span>
-                {item.status}
-            </span>
-            {item.sangria && item.status==='PENDENTE' && <button onClick={()=>lancarMovimentacao({dados:item.descricao,id_origem:item.id_usuario,id_notificacao:item.id_notificacao})} className=" bg-blue-600 p-1 rounded-lg text-white">ACEITAR</button>}
-                            </div>
-                            
-                                </div>
-                               
-                            </li>
+                        <Alert
+                        additionalContent={<ExampleAdditionalContent item={item}/>}
+                        color="warning"
+                        icon={HiInformationCircle}
+                        onDismiss={() => alert('Alert dismissed!')}
+                        rounded
+                      >
+                        <span className="font-medium">{item.status}!</span>{item.titulo}
+                      </Alert>
                     )
                 })}
-            </ul>
+            </div>
         </div>
         </>
     )
 }
+
+
+
+function ExampleAdditionalContent({item}:{item:NotifyProps}) {
+    return (
+      <>
+        <div className="mb-4 mt-2 text-sm text-cyan-700 dark:text-cyan-800">
+        {item.descricao}
+        </div>
+        <div className="flex">
+          <button
+            type="button"
+            className="mr-2 inline-flex items-center rounded-lg bg-cyan-700 px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-cyan-800 focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-800 dark:hover:bg-cyan-900"
+          >
+            <HiEye className="-ml-0.5 mr-2 h-4 w-4" />
+            View more
+          </button>
+          <button
+            type="button"
+            className="rounded-lg border border-cyan-700 bg-transparent px-3 py-1.5 text-center text-xs font-medium text-cyan-700 hover:bg-cyan-800 hover:text-white focus:ring-4 focus:ring-cyan-300 dark:border-cyan-800 dark:text-cyan-800 dark:hover:text-white"
+          >
+            Dismiss
+          </button>
+        </div>
+      </>
+    );
+  }

@@ -18,7 +18,7 @@ import { FaSortAlphaDown } from "react-icons/fa";
 import { BsInboxesFill } from "react-icons/bs";
 import { MdHealthAndSafety } from "react-icons/md";
 export function MenuLateral(){
-   const socket = io("https://testeapiafap.shop");
+   const socket = io("https://www.testeapiafap.shop");
     const [isOpen,setIsOpen]=useState(false);
     const {usuario,userToken}= useContext(AuthContext);
     const [isAdmOpen,setIsAdmOpen]= useState(false );
