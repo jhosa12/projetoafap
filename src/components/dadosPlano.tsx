@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from 'react';
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
+import { Label, Select, TextInput } from "flowbite-react";
 
 registerLocale('pt', pt)
 
@@ -21,26 +22,26 @@ export function DadosPlano(){
    
   },[])
     return(
-        <FormWrapper title="DADOS DO PLANO">
-              <div className="flex flex-col   gap-9 p-4 rounded-lg w-full h-full ">
-        <div  className="grid gap-2 grid-flow-c-dense pl-2 pr-2 w-full  md:grid-cols-4" >
+     
+            
+        <div  className="grid gap-2 grid-flow-c-dense  w-full  md:grid-cols-4" >
   
-   
-         
-          <div className="col-span-1">
-          <label  className="block mb-1 text-sm font-medium  text-white">ORIGEM</label>
-            <select value={data.origem} onChange={e=>closeModa({origem:e.target.value})} className="block w-full  pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg    bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-              <option selected></option>
+        <div className="col-span-1">
+          <div className="mb-1 block">
+          <Label  value="Origem" />
+        </div>
+            <Select value={data.origem} onChange={e=>closeModa({origem:e.target.value})}  >
+            <option selected></option>
               <option >PLANO NOVO</option>
               <option >TRANSFERÊNCIA</option>
-            </select>
+            </Select>
           </div>
+
           <div className="col-span-1">
-          <label  className="block mb-1 text-sm font-medium text-white">PLANO</label>
-          <select
-          defaultValue ={data.contrato?.plano}
-  className="block w-full p-1.5 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
-  onChange={(e) => {
+          <div className="mb-1 block">
+          <Label value="Plano" />
+        </div>
+            <Select  value ={data.contrato?.id_plano} onChange={(e) => {
     const selectedPlanId = Number(e.target.value); 
     const selectedPlan = data.planos?.find(plan =>plan.id_plano === selectedPlanId);
     if(selectedPlan){
@@ -54,66 +55,102 @@ export function DadosPlano(){
       });
       console.log(selectedPlan.descricao)
     }
-  }}>
-    <option></option>
+  }} >
+             <option></option>
   {data.planos?.map((item)=>{
     return (
       <option value={item.id_plano} key={item.id_plano} >{item.descricao}</option>
     )
   })}
-</select>
+            </Select>
           </div>
+         
+
           <div className="col-span-1">
-          <label  className="block mb-1 text-sm font-medium  text-white">VALOR</label>
-          <input value={data.contrato?.valor_mensalidade} onChange={e=>closeModa({contrato:{...data.contrato,valor_mensalidade:Number(e.target.value)}})} autoComplete="off" type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-          </div>
-          <div className="col-span-1">
-          <label  className="block mb-1 text-sm font-medium  text-white">COBRADOR</label>
-            <select value={data.contrato?.cobrador} onChange={e=>closeModa({contrato:{...data.contrato,cobrador:e.target.value}})} className="block w-full   pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-              <option selected></option>
-              <option >JACKSON</option>
-              <option >SAMUEL</option>
-            </select>
-          </div>
-          <div className="col-span-1">
-          <label  className="block mb-1 text-sm font-medium text-white">CONSULTOR</label>
-            <select value={data.contrato?.consultor} onChange={e=>closeModa({contrato:{...data.contrato,consultor:e.target.value}})} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border rounded-lg    bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-              <option selected></option>
-              <option >MATEUS</option>
-              <option >JOÃO</option>
-            </select>
-          </div>
-          <div className="col-span-1">
-          <label  className="block mb-1 text-sm font-medium  text-white">SUPERVISOR</label>
-            <select value={data.contrato?.supervisor} onChange={e=>closeModa({contrato:{...data.contrato,supervisor:e.target.value}})} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border rounded-lg  focus:border-blue-500 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 ">
-              <option selected></option>
-              <option >MATEUS</option>
-              <option >JOÃO</option>
-            </select>
+          <div className="mb-1 block">
+          <Label  value="Valor" />
+        </div>
+        <TextInput   value={data.contrato?.valor_mensalidade} onChange={e=>closeModa({contrato:{...data.contrato,valor_mensalidade:Number(e.target.value)}})} type="number" required />
           </div>
         
+
+
           <div className="col-span-1">
-          <label  className="block mb-1 text-sm font-medium  text-white">NP</label>
-          <input value={data.contrato?.n_parcelas} onChange={e=>closeModa({contrato:{...data.contrato,n_parcelas:Number(e.target.value)}})} autoComplete="off" type="number" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <div className="mb-1 block">
+          <Label  value="Cobrador" />
+        </div>
+            <Select value={data.contrato?.cobrador} onChange={e=>closeModa({contrato:{...data.contrato,cobrador:e.target.value}})}   >
+
+            <option selected></option>
+              <option >JACKSON</option>
+              <option >SAMUEL</option>
+            </Select>
           </div>
-          <div  className="col-span-1">
-          <label  className="block mb-1 text-sm font-medium  text-white">VENC. 1° PARCELA</label>
-          <DatePicker   dateFormat={"dd/MM/yyyy"} locale={pt} selected={data.contrato?.data_vencimento} onChange={(e)=>e && closeModa({contrato:{...data.contrato,data_vencimento:e}})}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-          </div>
+
+
           <div className="col-span-1">
-          <label  className="block mb-1 text-sm font-medium  text-white">DATA DE ADESÃO</label>
-          <DatePicker  dateFormat={"dd/MM/yyyy"} locale={pt} selected={data.contrato?.dt_adesao} onChange={e=>e && closeModa({contrato:{...data.contrato,dt_adesao:e}})} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <div className="mb-1 block">
+          <Label  value="Consultor" />
+        </div>
+            <Select value={data.contrato?.consultor} onChange={e=>closeModa({contrato:{...data.contrato,consultor:e.target.value}})}  >
+
+            <option selected></option>
+              <option >JACKSON</option>
+              <option >SAMUEL</option>
+            </Select>
           </div>
+
+
           <div className="col-span-1">
-          <label  className="block mb-1 text-sm font-medium  text-white">FIM DA CARÊNCIA</label>
-          <DatePicker dateFormat={"dd/MM/yyyy"} locale={pt} selected={data.contrato?.dt_carencia} onChange={e=>e && closeModa({contrato:{...data.contrato,dt_carencia:e}})} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <div className="mb-1 block">
+          <Label  value="Supervisor" />
+        </div>
+            <Select  value={data.contrato?.supervisor} onChange={e=>closeModa({contrato:{...data.contrato,supervisor:e.target.value}})} >
+
+            <option selected></option>
+              <option >JACKSON</option>
+              <option >SAMUEL</option>
+            </Select>
           </div>
+         
+      
+
+          <div className="col-span-1">
+          <div className="mb-1 block">
+          <Label  value="Numero de Parcelas" />
+        </div>
+        <TextInput   value={data.contrato?.n_parcelas} onChange={e=>closeModa({contrato:{...data.contrato,n_parcelas:Number(e.target.value)}})}  type="number" required />
+          </div>
+         
+          <div className="col-span-1">
+          <div className="mb-1 block">
+          <Label value="Venc. 1° Parcela" />
+        </div>
+          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={data.contrato?.data_vencimento} onChange={(e)=>e && closeModa({contrato:{...data.contrato,data_vencimento:e}})}  required className="block  uppercase  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
+          </div>
+
+
+          <div className="col-span-1">
+          <div className="mb-1 block">
+          <Label  value="Data de adesão" />
+        </div>
+          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={data.contrato?.dt_adesao} onChange={e=>e && closeModa({contrato:{...data.contrato,dt_adesao:e}})}  required className="block  uppercase  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
+          </div>
+
+
+          <div className="col-span-1">
+          <div className="mb-1 block">
+          <Label  value="Fim da carência" />
+        </div>
+          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={data.contrato?.dt_carencia} onChange={e=>e && closeModa({contrato:{...data.contrato,dt_carencia:e}})}  required className="block  uppercase  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
+          </div>
+
          
         </div>
 
 
-        </div>
-      </FormWrapper>
+      
+   
 
 
     )

@@ -6,8 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import { MdDelete } from "react-icons/md";
-import { HiCalendar, HiOutlineArrowNarrowRight } from "react-icons/hi";
-import { IoIosAddCircle } from "react-icons/io";
+import { HiCalendar } from "react-icons/hi";
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
 import { ModalDrawer } from "@/components/afapSaude/drawer";
@@ -15,8 +14,8 @@ import { Timeline, Accordion, Button, Modal } from "flowbite-react";
 import { EventProps, MedicoProps } from "@/pages/afapSaude";
 import { MdAddBox } from "react-icons/md";
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
-import { toast } from "react-toastify";
-import { api } from "@/services/apiClient";
+import { TiCancel } from "react-icons/ti";
+import { Tooltip } from 'react-tooltip';
 // Configura o moment para usar o idioma português
 moment.locale('pt-br');
 const localizer = momentLocalizer(moment)
@@ -76,7 +75,7 @@ export default function Calendario({ medicos, events, setArrayEvent, dataEvent, 
             <Accordion.Title className="flex w-full border-green-500 bg-white text-cyan-700  border-l-8 py-2 focus:outline-none focus:ring-0 focus:ring-offset-0 "  >
               <div className="inline-flex w-full items-center gap-8">
                 {event.status === 'AB' ? 'ABERTO' : event.status === 'AD' ? 'ADIADO' : 'CANCELADO'} - {event.title}
-                <button className="hover:text-blue-600" onClick={(e) => {
+                <button data-tooltip-id="event" data-tooltip-content={'Adicionar Agendamento'} className="hover:text-blue-600" onClick={(e) => {
                   e.stopPropagation()
                   setarDataEvento({ ...event, tipoAg: 'ct', nome: '', celular: '', clientes: [], endereco: '', editar: false, id_agcli: undefined })
                   toggleDrawer()
@@ -84,7 +83,7 @@ export default function Calendario({ medicos, events, setArrayEvent, dataEvent, 
                   <MdAddBox size={26} />
 
                 </button>
-                <button onClick={() => {
+                <button data-tooltip-id="event" data-tooltip-content={'Deletar'} onClick={() => {
                   setarDataEvento({ ...event, tipoAg: 'md', id_agcli: undefined }),
                     setModalDel(true)
                 }} className="hover:text-red-600">
@@ -103,7 +102,12 @@ export default function Calendario({ medicos, events, setArrayEvent, dataEvent, 
                       <Timeline.Time>{new Date(item.start).toLocaleDateString('pt-BR', { timeZone: 'America/Fortaleza', weekday: 'long', day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit' })}</Timeline.Time>
                       <Timeline.Title>
                         {item.nome}
-                        <button onClick={() => handleEventClick({ ...item, tipoAg: 'ct', id_med: event.id_med })} ><HiCalendar size={20} color="gray" /></button></Timeline.Title>
+                        <div className="inline-flex gap-5">
+                        <button data-tooltip-id="event" data-tooltip-content={'Editar Agendamento'} className="text-gray-500 hover:text-blue-600" onClick={() => handleEventClick({ ...item, tipoAg: 'ct', id_med: event.id_med })} ><HiCalendar size={20} /></button>
+                        <button data-tooltip-id="event" data-tooltip-content={'Cancelar'} className="text-gray-500 hover:text-red-600" onClick={() => handleEventClick({ ...item, tipoAg: 'ct', id_med: event.id_med })} ><TiCancel size={23}  /></button>
+                        </div>
+                        
+                        </Timeline.Title>
                       <Timeline.Body>
                         {item.endereco}
                       </Timeline.Body>
@@ -111,9 +115,10 @@ export default function Calendario({ medicos, events, setArrayEvent, dataEvent, 
                   </Timeline.Item>
                 ))}
               </Timeline>
-
+              <Tooltip id="event"/>
             </Accordion.Content>
           </Accordion.Panel>
+          
         </Accordion>
 
 

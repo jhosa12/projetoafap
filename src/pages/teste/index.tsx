@@ -6,13 +6,15 @@ import { FaCircleArrowRight } from "react-icons/fa6";
 import { FaCircleArrowLeft } from "react-icons/fa6";
 import {FormEvent, useEffect, useState} from 'react'
 import { DadosDependentes } from "@/components/dadosDependentes";
-import { IoIosClose } from "react-icons/io";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { MdSaveAlt } from "react-icons/md";
 import { ResumoCadastro } from "@/components/resumoCadastro";
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
+import { Modal } from "flowbite-react";
+import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi2";
+import { HiInboxIn } from "react-icons/hi";
 
 
 interface ParcelaData {
@@ -129,28 +131,29 @@ export default function TesteLayout() {
   }
   return ( 
      
-            <div  tabIndex={-1} aria-hidden="true" className="bg-opacity-5 bg-white overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full">
-          <div className="pl-2 pr-2 flex flex-col items-center justify-center w-full h-full ">
-          <div className="relative  border  rounded-lg shadow bg-gray-800 border-gray-600 p-2">
+        <Modal
+          show={data.closeModalCadastro}
+          position={'center'}
+          onClose={()=>closeModa({closeModalCadastro:false})}
+          size={'5xl'}
+         //dismissible
+        >
+          <Modal.Header>Cadastro de Contrato</Modal.Header>
+          <Modal.Body>
           <form onSubmit={onSubmit}>
-            <div className="absolute font-bold text-white top-2 right-2">
-              {currentStepIndex + 1} / {steps.length}
-              <button onClick={()=>closeModa({...data,closeModalCadastro:false})} type="button" className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                      <IoIosClose size={30}/>
-                  </button>
-            </div>
             {step}
-            <div className="flex mt-4 gap-4 justify-end">
-             {currentStepIndex!==0 &&(<button type="button" onClick={back}><FaCircleArrowLeft color='blue' style={{color:'#CA9629'}} size={30}/></button>)} 
-              <button type="submit">
-               {steps.length-1===currentStepIndex ?(<button onClick={save} className="flex flex-row bg-blue-600 rounded-lg p-2 gap-2 text-white" type="button" ><MdSaveAlt size={22}/> SALVAR</button>):(<FaCircleArrowRight size={30} style={{color:'#CA9629'}}/>)} 
-                </button>
+            <div className="flex mt-4 gap-8 p-2 justify-end">
+             {currentStepIndex!==0 &&(<button className="bg-blue-600 p-2 rounded-lg justify-center items-center" type="button" onClick={back}><HiOutlineChevronLeft color="white" size={25}/></button>)} 
+          
+               {steps.length-1===currentStepIndex ?(<button onClick={save} className="flex flex-row bg-blue-600 rounded-lg p-2 gap-2 text-white" type="button" ><HiInboxIn size={22}/> SALVAR</button>):
+               
+               
+               <button  className="bg-blue-600 p-2 rounded-lg justify-center items-center" type="submit"><HiOutlineChevronRight color="white" size={25}/></button>} 
+             
             </div>
           </form>
-          </div>
-          </div>
-        </div>
-     
+          </Modal.Body>
+          </Modal>
 
         )
   } 

@@ -195,7 +195,7 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
         {dataEvent.tipoAg !== 'md' && <div className="flex flex-col gap-4">
           <div >
             <label className="block mb-1 text-sm font-medium text-white">NOME</label>
-            <input value={dataEvent.nome} onChange={e => setarDataEvent({ ...dataEvent, nome: e.target.value })} className="block p-2.5 w-full text-sm rounded-lg border 0  bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="NOME"></input>
+            <input value={dataEvent.nome} onChange={e => setarDataEvent({ ...dataEvent, nome: e.target.value.toUpperCase() })} className="block p-2.5 w-full text-sm rounded-lg border 0  bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="NOME"></input>
           </div>
           <div className="inline-flex gap-4">
             <div className="w-full" >
@@ -204,7 +204,7 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
             </div>
             <div className="w-full">
               <label className="block mb-1 text-sm font-medium text-white">ENDEREÇO</label>
-              <input value={dataEvent.endereco} onChange={e => setarDataEvent({ ...dataEvent, endereco: e.target.value })} className="block p-2.5 w-full text-sm rounded-lg border 0  bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="ENDEREÇO"></input>
+              <input value={dataEvent.endereco} onChange={e => setarDataEvent({ ...dataEvent, endereco: e.target.value.toUpperCase() })} className="block p-2.5 w-full text-sm rounded-lg border 0  bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="ENDEREÇO"></input>
             </div>
           </div>
         </div>}
@@ -256,7 +256,7 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
 
         <div>
           <label className="block mb-1 text-sm font-medium text-white">OBSERVAÇÃO</label>
-          <textarea value={dataEvent.obs} onChange={e => setarDataEvent({ ...dataEvent, obs: e.target.value })} rows={4} className="block p-2.5 w-full text-sm rounded-lg border 0  bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="Write your thoughts here..."></textarea>
+          <textarea value={dataEvent.obs} onChange={e => setarDataEvent({ ...dataEvent, obs: e.target.value.toUpperCase() })} rows={4} className="block p-2.5 w-full text-sm rounded-lg border 0  bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="Write your thoughts here..."></textarea>
         </div>
 
 

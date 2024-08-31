@@ -109,11 +109,14 @@ async function contagem() {
     </div>
 </nav>
 </header>
-<div  className={`fixed  rounded-e-lg z-40 top-[65px] left-0 w-64 h-[calc(100vh-60px)] p-4 overflow-y-auto bg-gray-800 transition-transform ${isOpen ? "" : "transform -translate-x-full"}`}>
-    <h5  className="text-base font-semibold  uppercase text-gray-400">Menu</h5>
-    <button onClick={()=>setIsOpen(!isOpen)} type="button" className="text-gray-400 bg-transparent   rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center hover:bg-gray-600 hover:text-white" >
-       <IoIosClose size={35}/>
+<div  className={`fixed  rounded-e-lg z-50 top-[65px] left-0 w-[25vw] h-[calc(100vh-60px)] p-4 overflow-y-auto bg-gray-800 transition-transform ${isOpen ? "" : "transform -translate-x-full"}`}>
+    <div className="inline-flex items-center justify-between w-full">
+    <h5  className="flex w-full text-base font-semibold  uppercase text-gray-400">Menu</h5>
+    <button onClick={()=>setIsOpen(!isOpen)} type="button" className="text-gray-400 bg-transparent   rounded-lg text-sm  inline-flex items-center hover:bg-gray-600 hover:text-white" >
+       <IoIosClose size={30}/>
     </button>
+    </div>
+  
   <div className="py-4 overflow-y-auto">
       <ul className="space-y-2 font-medium">
       <li >

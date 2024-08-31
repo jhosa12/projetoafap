@@ -20,18 +20,16 @@ import { BiSave } from "react-icons/bi";
 import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
 import 'react-tooltip/dist/react-tooltip.css';
-import { ModalAcordos } from "@/components/modalAcordos";
-import { FaHandshake } from "react-icons/fa";
 import { canSRRAuth } from "@/utils/canSSRAuth";
 import Head from "next/head";
 import PrintButtonContrato from "@/Documents/contratoAdesão/PrintButton";
 import { TbWheelchair } from "react-icons/tb";
 import PrintButton from "@/Documents/carteiraAssociado/PrintButton";
 import CarteirasDep from "../../components/admContrato/carteirasDep";
-import { IoPrint } from "react-icons/io5";
 import { HistoricoMensalidade } from "@/components/admContrato/historicoMensalidade/historicoMensalidade";
 import PrintButtonCarne from "@/Documents/carne/PrintButton";
 import ObitosAssociado from "@/components/admContrato/obitos/obitos";
+
 
 
 
@@ -237,7 +235,7 @@ export default function AdmContrato() {
     const [observacao, setObservacao] = useState('');
     const [verObs, setVerObs] = useState(false)
     const [componenteMounted, setMounted] = useState(false)
-    //   const [mensalidadeComGrupoE, setMensalidaGrupo] = useState<Array<MensalidadeProps>>([]);
+
 
 
 

@@ -9,6 +9,7 @@ import { AuthContext } from "@/contexts/AuthContext";
 import DatePicker,{registerLocale, setDefaultLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
+import { Label, Select, Table, TextInput } from "flowbite-react";
 registerLocale('pt', pt)
 
 interface UserProps{
@@ -58,24 +59,33 @@ useEffect(()=>{
         }
 
     return(
-        <FormWrapper title="ADICIONAR DEPENDENTES">
-        <div className="flex flex-row  max-h-96 gap-2 p-4 rounded-lg w-full">
-        <div  className="grid border-white h-2/3  border-r-2 pb-3 gap-2 grid-flow-row-dense pl-2 pr-2 w-3/4  grid-cols-2" >
-              <div className="col-span-2">
-              <label  className="block mb-1 text-xs font-medium  text-white">NOME</label>
-              <input  autoComplete="off"  className="block uppercase w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white " value={nome} onChange={e=>setNome(e.target.value.toUpperCase())} type="text"></input>
-              </div>
+ 
+        <div className="flex flex-row divide-x-2 max-h-96 gap-4  rounded-lg w-full">
+        <div  className="grid border-white h-2/3  border-r-2 pb-3 gap-2   w-2/6  grid-cols-2" >
              
-              <div>
-              <label  className="block mb-1 text-xs font-medium  text-white">NASCIMENTO</label>
-              <DatePicker dateFormat={"dd/MM/yyyy"} locale={pt}  className="block  w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white " selected={data_nasc} onChange={(date)=>date && setNasc(date)} ></DatePicker>
-              </div>
-            
-              
-              <div>
-              <label  className="block mb-1 text-xs font-medium  text-white">PARENTESCO</label>
-              <select className="block w-full p-1.5  sm:text-xs  border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" value={grau_parentesco} onChange={e=>setPar(e.target.value)} >
-                    <option selected className="text-gray-200">PARENTESCO</option>
+             
+          <div className="col-span-2">
+          <div className="mb-1 block">
+          <Label  value="Nome" />
+        </div>
+        <TextInput  value={nome} onChange={e=>setNome(e.target.value.toUpperCase())} type="text"  />
+          </div>
+             
+             
+          <div className="col-span-1">
+          <div className="mb-1 block">
+          <Label  value="Nascimento" />
+        </div>
+          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={data_nasc} onChange={(date)=>date && setNasc(date)}   className="flex uppercase w-full  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
+          </div>
+             
+          <div className="col-span-1">
+          <div className="mb-1 block">
+          <Label  value="Parentesco" />
+        </div>
+            <Select  value={grau_parentesco} onChange={e=>setPar(e.target.value)} >
+
+            <option selected className="text-gray-200">PARENTESCO</option>
                     <option>CONJUGE</option>
                     <option>PAI</option>
                     <option>MÃE</option>
@@ -88,20 +98,37 @@ useEffect(()=>{
                     <option>TIO(A)</option>
                     <option>AVÔ(Ó)</option>
                     <option>OUTROS</option>
-                </select>
-              </div>
-              <div className="col-span-1">
-              <label  className="block mb-1 text-xs font-medium  text-white">CELULAR</label>
-              <InputMask mask={"(99) 9 9999-9999"}  autoComplete="off"  className="block uppercase w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white " value={celular} onChange={e=>setCelular(e.target.value)} type="text"></InputMask>
-              </div>
-              <div>
-              <label className="block mb-1 text-xs font-medium  text-white">ADESÃO</label>
-              <DatePicker dateFormat={"dd/MM/yyyy"} locale={pt}  className="block  w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white " selected={data_adesao} onChange={(date)=>date && setAdesao(date)} ></DatePicker>
-              </div>
-              <div className="relative">
-              <label  className="block mb-1 text-xs font-medium  text-white">CARÊNCIA</label>
-              <DatePicker dateFormat={"dd/MM/yyyy"} locale={pt}  className="block  w-full pb-1.5 pt-2 pr-2 pl-2  border  rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white " selected={carencia} onChange={(date)=>date && setCarencia(date)} ></DatePicker>
-              </div>
+            </Select>
+          </div> 
+
+
+          <div className="col-span-1">
+          <div className="mb-1 block">
+          <Label  value="Celular" />
+        </div>
+          <InputMask  value={celular} onChange={e=>setCelular(e.target.value)} mask={'(99) 9 9999-9999'} type="text"  className="flex uppercase w-full  pr-2 pl-2  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
+          </div>
+            
+              
+          
+          <div className="col-span-1">
+          <div className="mb-1 block">
+          <Label  value="Adesão" />
+        </div>
+          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={data_adesao} onChange={(date)=>date && setAdesao(date)}   className="flex uppercase w-full  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
+          </div>
+
+
+          <div className="col-span-1">
+          <div className="mb-1 block">
+          <Label  value="Carência" />
+        </div>
+          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={carencia} onChange={(date)=>date && setCarencia(date)}   className="flex uppercase w-full  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
+          </div>
+
+
+
+          
               <div className="col-span-2">
               <button  type="button" onClick={adicionar}  className=" block  justify-center items-center w-full px-3 py-1.5 text-sm font-medium text-center text-white rounded-lg  focus:ring-4 focus:outline-none  bg-blue-600 hover:bg-blue-700 focus:ring-blue-800" >ADICIONAR</button>  
               </div>
@@ -109,8 +136,53 @@ useEffect(()=>{
               </div>
                          
 
-            <div className="flex flex-col w-full text-[13px]">
-            <table 
+            <div className="flex w-4/5 overflow-x-auto">
+              <Table striped>
+                <Table.Head>
+                  <Table.HeadCell>
+                  Nome
+                  </Table.HeadCell>
+                  <Table.HeadCell>
+                  Nasc
+                  </Table.HeadCell>
+                  <Table.HeadCell>
+                  Parent.
+                  </Table.HeadCell>
+                  <Table.HeadCell>
+                  Celular
+                  </Table.HeadCell>
+                  <Table.HeadCell>
+                  Adesão
+                  </Table.HeadCell>
+                  <Table.HeadCell>
+                  Carência
+                  </Table.HeadCell>
+                  <Table.HeadCell>
+                  Ações
+                  </Table.HeadCell>
+                </Table.Head>
+                <Table.Body>
+                {data.arraydep?.map((usuario, index) => (
+                           <Table.Row key={index} className="bg-white border-gray-700 p-1">
+                              <Table.Cell className="whitespace-nowrap" scope="row" >{usuario.nome}</Table.Cell>
+                              <Table.Cell>{usuario.data_nasc?.toLocaleDateString()}</Table.Cell>
+                              <Table.Cell>{usuario.grau_parentesco}</Table.Cell>
+                              <Table.Cell className="whitespace-nowrap">{usuario.celular}</Table.Cell>
+                              <Table.Cell >{usuario.data_adesao?.toLocaleDateString()}</Table.Cell>
+                              <Table.Cell>{usuario.carencia?.toLocaleDateString()}</Table.Cell>
+                              <Table.Cell>
+                                <div className="flex gap-3">
+                               
+                                <button type="button" onClick={()=>handleExcluirDependente(index)}  className="flex justify-center items-center  hover:text-red-600 " ><MdDeleteForever  size={18}/></button>
+                                </div>
+                              </Table.Cell>
+                              </Table.Row>
+                          ))}
+
+                </Table.Body>
+              </Table>
+
+            {/*<table 
                 className="block  overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse rounded-lg text-gray-400">
                   <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
                           <tr >
@@ -141,8 +213,8 @@ useEffect(()=>{
                             </tr>
                           ))}
                         </tbody>
-                      </table>
+                      </table>*/}
             </div>
         </div>
-        </FormWrapper>
+     
         )}
