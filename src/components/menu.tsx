@@ -59,13 +59,13 @@ export function MenuLateral(){
      contagem() 
 
    }catch(err){
+    console.log(err)
+   }
+   return () => {
+    socket.off('nova-tarefa'); // Remove o listener do evento 'nova-tarefa'
+    socket.disconnect(); // Opcionalmente, desconecta o socket
+};
 
-   }
-   return ()=>{
-   //   socket.on('disconnect', () => {
-      //   console.log('Cliente desconectado');
-   //  });
-   }
 
 }, [usuario]);
 
