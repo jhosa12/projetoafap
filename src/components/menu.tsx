@@ -19,11 +19,7 @@ import { BsInboxesFill } from "react-icons/bs";
 import { MdHealthAndSafety } from "react-icons/md";
 
 
-const socket = io("https://www.testeapiafap.shop", {
-    reconnection: true,
-    reconnectionAttempts: 5, // tenta reconectar 5 vezes antes de desistir
-    reconnectionDelay: 1000, // espera 1 segundo entre as tentativas
-  });
+
   
 export function MenuLateral(){
    
@@ -43,6 +39,12 @@ export function MenuLateral(){
     if(!usuario){
         userToken();
     }
+
+    const socket = io("https://www.testeapiafap.shop", {
+        reconnection: true,
+        reconnectionAttempts: 5, // tenta reconectar 5 vezes antes de desistir
+        reconnectionDelay: 1000, // espera 1 segundo entre as tentativas
+      });
   
    socket.on('connect', () => {
       socket.emit('userId', usuario?.id.toString());
@@ -63,7 +65,7 @@ export function MenuLateral(){
    }
    return () => {
     socket.off('nova-tarefa'); // Remove o listener do evento 'nova-tarefa'
-    socket.disconnect(); // Opcionalmente, desconecta o socket
+   // socket.disconnect(); // Opcionalmente, desconecta o socket
 };
 
 
