@@ -17,8 +17,16 @@ import { GrConfigure } from "react-icons/gr";
 import { FaSortAlphaDown } from "react-icons/fa";
 import { BsInboxesFill } from "react-icons/bs";
 import { MdHealthAndSafety } from "react-icons/md";
+
+
+const socket = io("https://www.testeapiafap.shop", {
+    reconnection: true,
+    reconnectionAttempts: 5, // tenta reconectar 5 vezes antes de desistir
+    reconnectionDelay: 1000, // espera 1 segundo entre as tentativas
+  });
+  
 export function MenuLateral(){
-   const socket = io("https://www.testeapiafap.shop");
+   
     const [isOpen,setIsOpen]=useState(false);
     const {usuario,userToken}= useContext(AuthContext);
     const [isAdmOpen,setIsAdmOpen]= useState(false );
