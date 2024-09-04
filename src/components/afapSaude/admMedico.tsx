@@ -51,6 +51,7 @@ if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
             const data =new FormData()
             data.append("nome",dataMedico.nome??'')
             data.append("espec",dataMedico.espec??'')
+            data.append("time",String(dataMedico.time)??'')
             data.append("sobre",dataMedico.sobre??'')
             data.append("plano",String(dataMedico.plano)??'')
             data.append("funeraria",String(dataMedico.funeraria)??'')

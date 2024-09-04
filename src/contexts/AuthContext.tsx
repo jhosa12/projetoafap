@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useState } from 'react';
+import { ReactNode, createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import { api } from "../services/apiClient"
 import { destroyCookie, setCookie, parseCookies } from "nookies"
 import Router from 'next/router';
@@ -66,7 +66,7 @@ type DependentesProps = {
         }>>,
     }
 }
-type MensalidadeProps = {
+export type MensalidadeProps = {
     id_usuario: number,
     id_contrato: number,
     estorno_dt: Date,
@@ -83,6 +83,7 @@ type MensalidadeProps = {
     close: boolean,
     status: string,
     usuario: string,
+    hora_pgto:string
     id_mensalidade: number,
     valor_total: number,
     motivo_bonus: string,
@@ -215,7 +216,6 @@ type AuthContextData = {
     carregarDados: () => Promise<void>,
     setarListaConv: (fields: Partial<ConvProps>) => void,
     listaConv: Partial<ConvProps>,
-    userToken: () => void,
     limparDados:()=>void,
     setarDadosAssociado:(fields:Partial<AssociadoProps>)=>void
 }
@@ -230,7 +230,7 @@ type UserProps = {
     cargo: string,
     dir: string,
     image: string,
-    permissoes: Array<{ nome: string, tela: string, val: boolean }>
+    permissoes: Array<Partial<{ nome: string, tela: string, val: boolean }>>
 
 }
 interface CheckListProps {
@@ -443,126 +443,66 @@ export function signOut() {
 };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [usuario, setUser] = useState<UserProps>()
-    const isAuthenticated = !!usuario;
-    const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod: [] })
-    const [dadosassociado, setDadosAssociado] = useState<Partial<AssociadoProps>>({})
-    const [data, setData] = useState<Partial<DadosCadastro>>({})
-    const [mov, setMov] = useState<Partial<CaixaProps>>({})
-    const [servico, setServico] = useState<Partial<ObitoProps>>({ hr_sepultamento: new Date(), end_hora_falecimento: new Date(), end_hora_informaram: new Date() })
+    const [usuario, setUser] = useState<UserProps>();
+    const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod: [] });
+    const [dadosassociado, setDadosAssociado] = useState<Partial<AssociadoProps>>({});
+    const [data, setData] = useState<Partial<DadosCadastro>>({});
+    const [mov, setMov] = useState<Partial<CaixaProps>>({});
+    const [servico, setServico] = useState<Partial<ObitoProps>>({ hr_sepultamento: new Date(), end_hora_falecimento: new Date(), end_hora_informaram: new Date() });
 
+    const isAuthenticated = useMemo(() => !!usuario, [usuario]);
 
-    const setarDadosAssociado =(fields:Partial<AssociadoProps>)=>{
-        setDadosAssociado((prev:Partial<AssociadoProps>)=>(
-            prev?{...prev,...fields}:{...fields}
-
-        ))
-
-    }
-
-    const limparDados=()=>{
-        setDadosAssociado({acordo:[],
-            bairro:'',
-            celular1:'',
-            celular2:'',
-            cep:'',
-            cidade:'',
-            nome:undefined,
-            id_associado:undefined,
-            endereco:'',
-            mensalidade:[],
-            data_nasc:undefined,
-            cpf:undefined,
-            dependentes:[],
-            telefone:undefined,
-            uf:undefined,
-            contrato:undefined,
-            guia_rua:undefined,
-            email:undefined,
-            numero:undefined,
-            profissao:undefined,
-            rg:undefined,
-            sexo:undefined   
-        })
-        
-    }
-
-    async function sign({ user, password }: SignInProps) {
-       
+    const sign = useCallback(async ({ user, password }: SignInProps) => {
         try {
-          const response = await api.post('/session', {
-                usuario: user,
-                password
-            })
-            const { id, token, cargo, dir, nome, image, permissoes } = response.data
-          
-           
+            const response = await api.post('/session', { usuario: user, password });
+            const { id, token, cargo, dir, nome, image, permissoes } = response.data;
+
             if (typeof window !== 'undefined') {
                 localStorage.setItem('@user.image', image);
             }
-           setCookie(undefined, '@nextauth.token', token, {
-                maxAge: 60 * 60 * 24 * 1, // expirar em 1 dia
-                path: "/" // quais caminhos terão acesso ao cookie
-            })
-         
-            //   setUser({ id, nome: nome.toUpperCase(), cargo, dir,image,permissoes })
-            await userToken()
-            // Passar o token para as proximas paginas
-            api.defaults.headers["Authorization"] = `Bearer ${token}`
-            //redirecionar o user para /dashboard
-            Router.push("/admcontrato")
+            setCookie(undefined, '@nextauth.token', token, {
+                maxAge: 60 * 60 * 24 * 1,
+                path: "/"
+            });
+
+           // await userToken();
+         const  parsedPermissoes = typeof permissoes === 'string' ? JSON.parse(permissoes) : permissoes ?? [];
+            api.defaults.headers["Authorization"] = `Bearer ${token}`;
+           setUser({ id: id, nome: nome.toUpperCase(), cargo, dir, image: image ?? '', permissoes: parsedPermissoes });
+            Router.push("/admcontrato");
 
         } catch (err) {
-            //toast.error(err.response.data.error)
-            toast.error('Erro no Login')
-           
-
-
+            toast.error('Erro no Login');
+            console.log(err)
         }
-    }
+    }, []);
 
+   
 
+    const closeModa = useCallback((fields: Partial<DadosCadastro>) => {
+        setData(prev => ({ ...prev, ...fields }));
+    }, []);
 
+    const setarServico = useCallback((fields: Partial<ObitoProps>) => {
+        setServico(prev => ({ ...prev, ...fields }));
+    }, []);
 
-    function closeModa(fields: Partial<DadosCadastro>) {
-        setData((prev: Partial<DadosCadastro>) => {
-            if (prev) {
-                return { ...prev, ...fields };
-            } else {
-                return { ...fields };
-            }
-        });
-    }
+    const setarListaConv = useCallback((fields: Partial<ConvProps>) => {
+        setLista(prev => ({ ...prev, ...fields }));
+    }, []);
 
-    function setarServico(fields: Partial<ObitoProps>) {
-        setServico((prev: Partial<ObitoProps>) => {
-            if (prev) {
-                return { ...prev, ...fields };
-            } else {
-                return { ...fields };
-            }
-        });
-    }
+    useEffect(()=>{
+        const { "@nextauth.token": token } = parseCookies();
+        if (token) userToken(token)
+            console.log(token)
+    },[])
 
-
-    function setarListaConv(fields: Partial<ConvProps>) {
-
-        setLista((prev: Partial<ConvProps>) => {
-            if (prev) {
-                return { ...prev, ...fields };
-            }
-            else {
-                return { ...fields };
-            }
-
-        })
-
-    }
-    async function userToken() {
-        const cookies = parseCookies();
+    const userToken = useCallback(async (token:string) => {
+       
+       
         try {
-            if (cookies['@nextauth.token']) {
-                const token = cookies['@nextauth.token'];
+         
+              
                 let image;
                 if (typeof window !== 'undefined') {
                     image = localStorage.getItem('@user.image');
@@ -570,47 +510,73 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 const decodeToken = decode(token);
                 if (decodeToken && typeof decodeToken === 'object') {
                     const { nome, sub, dir, cargo, permissoes } = decodeToken;
-                    setUser({ id: String(sub), nome: nome.toUpperCase(), cargo, dir, image: image??'', permissoes: JSON.parse(permissoes) })
+                    setUser({ id: String(sub), nome: nome.toUpperCase(), cargo, dir, image: image ?? '', permissoes: JSON.parse(permissoes) });
                 }
-            }
-
+            
         } catch (error) {
-            toast.error('Erro ao captar Usuário')
-
+            toast.error('Erro ao captar Usuário');
         }
+    }, []);
 
-    }
-
-    function caixaMovimentacao(fields: Partial<CaixaProps>) {
-        setMov((prev: Partial<CaixaProps>) => {
-            if (prev) {
-                return { ...prev, ...fields };
-            } else {
-                return { ...fields };
-            }
-        });
-    }
+    const caixaMovimentacao = useCallback((fields: Partial<CaixaProps>) => {
+        setMov(prev => ({ ...prev, ...fields }));
+    }, []);
 
 
-    async function carregarDados() {
-        limparDados()
+    useEffect(()=>{
+
+        if(data.id_associado) carregarDados()
+        
+    },[data.id_associado])
+
+    const carregarDados = async () => {
+        limparDados();
         try {
             const response = await api.post('/associado', {
                 id_associado: Number(data.id_associado),
-                empresa:data.empresa
-            })
-
+                empresa: data.empresa
+            });
+            console.log(data.id_associado)
             setDadosAssociado(response.data);
-           
-
         } catch (error) {
-            toast.error('Erro na requisição')
+            toast.error('Erro na requisição');
         }
+    };
 
-    }
+    const setarDadosAssociado = useCallback((fields: Partial<AssociadoProps>) => {
+        setDadosAssociado(prev => ({ ...prev, ...fields }));
+    }, []);
+
+    const limparDados = useCallback(() => {
+        setDadosAssociado({
+            acordo: [],
+            bairro: '',
+            celular1: '',
+            celular2: '',
+            cep: '',
+            cidade: '',
+            nome: undefined,
+            id_associado: undefined,
+            endereco: '',
+            mensalidade: [],
+            data_nasc: undefined,
+            cpf: undefined,
+            dependentes: [],
+            telefone: undefined,
+            uf: undefined,
+            contrato: undefined,
+            guia_rua: undefined,
+            email: undefined,
+            numero: undefined,
+            profissao: undefined,
+            rg: undefined,
+            sexo: undefined
+        });
+    }, []);
+
     return (
-        <AuthContext.Provider value={{setarDadosAssociado,limparDados, userToken, usuario, isAuthenticated, sign, signOut, data, closeModa, dadosassociado, carregarDados, caixaMovimentacao, mov, setarServico, servico, listaConv, setarListaConv }}>
+        <AuthContext.Provider value={{ setarDadosAssociado, limparDados, usuario, isAuthenticated, sign, signOut, data, closeModa, dadosassociado, carregarDados, caixaMovimentacao, mov, setarServico, servico, listaConv, setarListaConv }}>
             {children}
         </AuthContext.Provider>
-    )
+    );
 }

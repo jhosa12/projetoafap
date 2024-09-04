@@ -6,16 +6,18 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import { MdDelete } from "react-icons/md";
-import { HiCalendar } from "react-icons/hi";
+import { HiCalendar, HiClipboardCheck } from "react-icons/hi";
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
 import { ModalDrawer } from "@/components/afapSaude/drawer";
 import { Timeline, Accordion, Button, Modal } from "flowbite-react";
-import { EventProps, MedicoProps } from "@/pages/afapSaude";
+import { ClientProps, EventProps, MedicoProps } from "@/pages/afapSaude";
 import { MdAddBox } from "react-icons/md";
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
 import { TiCancel } from "react-icons/ti";
 import { Tooltip } from 'react-tooltip';
+import { api } from "@/services/apiClient";
+import { toast } from "react-toastify";
 // Configura o moment para usar o idioma português
 moment.locale('pt-br');
 const localizer = momentLocalizer(moment)
@@ -30,6 +32,9 @@ interface DataProps {
   dataEvent: Partial<EventProps>
   setarDataEvento: (fields: Partial<EventProps>) => void
   deletarEvento: () => Promise<void>
+  pre:Array<ClientProps>
+  setPre:(array:Array<ClientProps>)=>void
+ 
 }
 
 interface ObjectArrayMod {
@@ -46,7 +51,7 @@ interface ObjectArrayMod {
 
 }
 
-export default function Calendario({ medicos, events, setArrayEvent, dataEvent, setarDataEvento, deletarEvento }: DataProps) {
+export default function Calendario({pre,setPre, medicos, events, setArrayEvent, dataEvent, setarDataEvento, deletarEvento }: DataProps) {
 
 
   const [isOpen, setIsOpen] = useState(false);
@@ -104,7 +109,8 @@ export default function Calendario({ medicos, events, setArrayEvent, dataEvent, 
                         {item.nome}
                         <div className="inline-flex gap-5">
                         <button data-tooltip-id="event" data-tooltip-content={'Editar Agendamento'} className="text-gray-500 hover:text-blue-600" onClick={() => handleEventClick({ ...item, tipoAg: 'ct', id_med: event.id_med })} ><HiCalendar size={20} /></button>
-                        <button data-tooltip-id="event" data-tooltip-content={'Cancelar'} className="text-gray-500 hover:text-red-600" onClick={() => handleEventClick({ ...item, tipoAg: 'ct', id_med: event.id_med })} ><TiCancel size={23}  /></button>
+                        <button data-tooltip-id="event" data-tooltip-content={'Cancelar'} className="text-gray-500 hover:text-red-600" onClick={() => CancelarAgendamento({id_agmed:item.id_agmed,id_agcli:item.id_agcli})} ><TiCancel size={23}  /></button>
+                        <button data-tooltip-id="event" data-tooltip-content={'Gerar Consulta'} className="text-gray-500 hover:text-green-600" onClick={() => handleEventClick({ ...item, tipoAg: 'ct', id_med: event.id_med })} ><HiClipboardCheck size={23}  /></button>
                         </div>
                         
                         </Timeline.Title>
@@ -129,7 +135,49 @@ export default function Calendario({ medicos, events, setArrayEvent, dataEvent, 
     }
   }
 
+  const CancelarAgendamento = async ({id_agmed,id_agcli}:{id_agmed:number|null,id_agcli:number}) => {
+ 
+    try {
+      const evento = await toast.promise(
+        api.put("/agenda/editarEvento", {
+          id_agcli:id_agcli,
+          id_agmed:null,
+          tipoAg: 'ct',
+          
 
+        }),
+        {
+          error: 'Erro na requisição',
+          pending: 'Gerando Evento..',
+          success: 'Evento Gerado com sucesso'
+        }
+
+      )
+
+
+
+      const novo = [...events]
+      const index = novo.findIndex(item => item.id_agmed === id_agmed)
+
+
+     
+
+        const indexct = novo[index].clientes?.findIndex(item => item.id_agcli === id_agcli)
+        if (indexct !== undefined && indexct !== -1 && novo[index].clientes) {
+          novo[index].clientes.splice(indexct,1)
+          setArrayEvent(novo)
+        setPre([...pre,evento.data])
+        }
+
+      
+
+
+
+    } catch (error) {
+      toast.error('Erro ao gerar evento')
+      console.log(error)
+    }
+  }
 
 
 
@@ -201,117 +249,7 @@ export default function Calendario({ medicos, events, setArrayEvent, dataEvent, 
           </Modal.Body>
         </Modal>
       </div>
-      {/*    <div className="p-4">
-        <div className="flex flex-col w-full border  rounded-lg shadow  border-gray-700 max-h-[calc(100vh-100px)] ">
-        <div className="text-gray-300 bg-gray-800 rounded-t-lg inline-flex items-center p-2 justify-between   ">
-            <h1 className=" text-lg  pl-3 font-medium">Agenda Consultas</h1>
-            <div id="divFiltro" className="inline-flex gap-4">
-            <div>
-  <label  className="block mb-1 text-xs font-medium  text-white">DATA INICIAL</label>
-  <DatePicker selected={new Date()} onChange={()=>{}}  dateFormat={"dd/MM/yyyy"} locale={pt}   required className="block uppercase w-full py-[5px] pr-2 pl-2 sm:text-xs  border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-  </div>
-  <div>
-  <label  className="block mb-1  text-xs font-medium  text-white">DATA FINAL</label>
-  <DatePicker selected={new Date} onChange={()=>{}}  dateFormat={"dd/MM/yyyy"} locale={pt}   required className="block uppercase w-full py-[5px] pr-2 pl-2 sm:text-xs  border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-  </div>
-  <div className="flex flex-col w-2/6">
-          <label className="block mb-1 text-xs font-medium text-white">STATUS</label>
-          <select defaultValue={''} onChange={()=>{}} className="block w-full pb-1 pt-1 pr-2 pl-2 sm:text-xs  text-xs  border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-            <option value={['A','R']} selected>ABERTO/REAGENDADO</option>
-            <option value={['A']} selected>ABERTO</option>
-            <option value={['R']} selected>REAGENDADO</option>
-           
-          </select>
-        </div>
-      
-        </div>
-        </div>
-        <div className="flex flex-col  px-4 w-full overflow-y-auto max-h-[calc(100vh-210px)] text-white">
-
-<ul className="flex flex-col w-full p-2 gap-1 text-sm">
-  <li className="flex flex-col w-full  text-xs pl-4 border-b-[1px] ">
-    <div className="inline-flex w-full items-center">
-      <span className="flex w-72 me-2 justify-center font-semibold">#</span>
-      <span className="flex w-full text-start font-semibold">MEDICO</span>
-      <span className="flex w-full text-start whitespace-nowrap ">ESPECIALIDADE</span>
-      <span className="flex w-full   "></span>
-      <span className="flex w-full justify-end  "></span>
-
-    </div>
-  </li>
-  {
-    medicos?.map((item, index) => {
-
-
-      return (
-        <li className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
-          <div className="inline-flex w-full items-center">
-          
-            <span className="flex w-72 me-2 text-start justify-center font-semibold">
-              {item.image && <img className="w-[46px] h-[46px] rounded-full" src={`data:image/jpeg;base64,${item.image}`} alt="Rounded avatar"></img>}</span>
-            <span className="flex w-full text-start font-semibold">{item?.nome}</span>
-            <span className="flex w-full text-start font-semibold">{item.espec}</span>
-            <span className="flex w-full text-start font-semibold">{''}</span>
-          
-        
-            <div className="flex w-full justify-end gap-2 ">
-              <button onClick={() => {
-             
-             
-              }}
-                className="hover:bg-gray-500 p-1 text-blue-500 rounded-lg ">
-                <MdEdit size={17} />
-              </button>
-              <button className="hover:bg-gray-500 p-1 rounded-lg text-red-500 ">
-                <MdDelete size={17} />
-              </button>
-            </div>
-
-
-          </div>
-          <ul >
    
-            {item.agenda.map(atual=>(
-                <li className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
-          <div className="inline-flex w-full items-center">
-          <span className="flex w-72 me-2 text-start justify-center font-semibold">{''}</span>
-            <span className="flex w-full text-start font-semibold">{new Date(atual.data).toLocaleDateString()}</span>
-            <span className="flex w-full text-start ">{''}</span>
-            <div className="flex w-full justify-end gap-2 ">
-              <button onClick={() => {
-             
-             
-              }}
-                className="hover:bg-gray-500 p-1 text-blue-500 rounded-lg ">
-                <MdEdit size={17} />
-              </button>
-              <button className="hover:bg-gray-500 p-1 rounded-lg text-red-500 ">
-                <MdDelete size={17} />
-              </button>
-            </div>
-                
-                 </div>
-                 </li>
-            ))}
-          </ul>
-
-        </li>
-      )
-    })
-  }
-</ul>
-
-</div>
-
-
-
-
-
-        </div>
-        
-
-
-        </div>*/}
     </>
   )
 }

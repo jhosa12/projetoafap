@@ -11,37 +11,11 @@ import { MdDeleteForever } from 'react-icons/md';
 import { RiAddCircleFill } from 'react-icons/ri';
 import { TbAlertTriangle } from 'react-icons/tb';
 import { toast } from 'react-toastify'
-import { AuthContext } from '@/contexts/AuthContext';
+import { AuthContext, MensalidadeProps } from '@/contexts/AuthContext';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc'
 
-interface MensalidadeProps  {
-    id_usuario: number,
-    id_contrato: number,
-    estorno_dt: Date,
-    estorno_user: string,
-    dt_exclusao: Date,
-    exclusao_motivo: string,
-    user_exclusao: string,
-    associado: string,
-    n_doc: string,
-    parcela_n: number,
-    vencimento: Date,
-    cobranca: Date,
-    valor_principal: number,
-    close: boolean,
-    status: string,
-    usuario: string,
-    id_mensalidade: number,
-    valor_total: number,
-    motivo_bonus: string,
-    data_pgto: Date,
-    referencia: string,
-    index: number,
-    id_acordo: number,
-    form_pagto:string,
-    banco_dest:string
-
-}
-
+dayjs.extend(utc);
 interface AcordoProps {
     total_acordo: number,
     data_inicio: Date,
@@ -64,7 +38,7 @@ acordo:Partial<AcordoProps>,
 closeModalPlano:boolean
 }
 
-
+console.log(dayjs())
 interface DadosAssociadoGeral{
     nome:string,
     endereco:string,
@@ -96,6 +70,9 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
     const [showSublinhas, setShowSublinhas] = useState<boolean>(false);
     const componentRef =useRef<ImpressaoCarne>(null);
     const {setarDadosAssociado} = useContext(AuthContext)
+    
+    const dateInUTC = dayjs();  // cria uma data UTC
+console.log(dateInUTC.local().format('YYYY-MM-DDTHH:mm:ssZZ'));  // formata em UTC
 
     let currentAcordoId: string;
 
@@ -468,10 +445,10 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                                                 {ii.status}
                                             </td>
                                             <td className="px-4 py-1">
-                                                {ii.data_pgto ? new Date(ii.data_pgto).toLocaleDateString('pt',{timeZone:'UTC'}) : ''}
+                                                {ii.data_pgto ? new Date(ii.data_pgto).toLocaleDateString('pt-BR',{timeZone:'UTC'}) : ''}
                                             </td>
                                             <td className="px-4 py-1">
-                                                {ii.data_pgto ? new Date(ii.data_pgto).toLocaleTimeString('pt',{timeZone:'UTC'}) : ''}
+                                                {ii.hora_pgto}
                                             </td>
                                             <td className="px-6 py-1">
                                                 {ii.usuario}
@@ -529,7 +506,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                                     {item.data_pgto ? new Date(item.data_pgto).toLocaleDateString('pt',{timeZone:'UTC'}) : ''}
                                 </td>
                                 <td className="px-4 py-1">
-                                    {item.data_pgto ? new Date(item.data_pgto).toLocaleTimeString('pt',{timeZone:'UTC'}) : ''}
+                                {item.hora_pgto}
                                 </td>
                                 <td className="px-6 py-1">
                                     {item.usuario}
@@ -600,7 +577,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                                     {item.data_pgto ? new Date(item.data_pgto).toLocaleDateString('pt',{timeZone:'UTC'}) : ''}
                                 </td>
                                 <td className="px-4 py-1">
-                                    {item.data_pgto ? new Date(item.data_pgto).toLocaleTimeString() : ''}
+                                {item.hora_pgto }
                                 </td>
                                 <td className="px-6 py-1">
                                     {item.usuario}

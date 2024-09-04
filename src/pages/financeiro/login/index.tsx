@@ -156,7 +156,6 @@ export interface CaixaProps{
 export default function LoginFinaceiro() {
   const { usuario } = useContext(AuthContext)
   const [excluir, setExcluir] = useState<number>(0)
-  const [lancar, setLancar] = useState<boolean>()
   const [listaLancamentos, setLancamentos] = useState<Array<PlanoContasProps>>([])
   const [subListaLanc, setSubLista] = useState<Array<LancamentoProps>>()
   const [despesas, setDespesas] = useState<number>(0)
@@ -451,27 +450,33 @@ export default function LoginFinaceiro() {
 
 
   async function contasReq() {
-    await toast.promise(
-      api.post('/conta/adicionar', {
-        dataLanc: new Date(),
-        dataprev: dadosConta.dataprev,
-        descricao: dadosConta.descricao,
-        tipo: dadosConta.tipo,
-        valor: dadosConta.valor,
-        parcelas: dadosConta.parcela
+    try {
+      const response =   await toast.promise(
+        api.post('/conta/adicionar', {
+          dataLanc: new Date(),
+          dataprev: dadosConta.dataprev,
+          descricao: dadosConta.descricao,
+          tipo: dadosConta.tipo,
+          valor: dadosConta.valor,
+          parcelas: dadosConta.parcela
+  
+        }),
+        {
+          error: 'Erro ao realizar requisição',
+          pending: 'Salvando Dados...',
+          success: 'Dados salvos com sucesso'
+        }
+      )
+      
+    } catch (error) {
+      toast.error('Erro')
+    }
 
-      }),
-      {
-        error: 'Erro ao realizar requisição',
-        pending: 'Salvando Dados...',
-        success: 'Dados salvos com sucesso'
-      }
-    )
-    listarContasReq()
+    
 
   }
   async function contaDelete() {
-    await toast.promise(
+  const response =   await toast.promise(
       api.delete('/conta/deletar', {
         data: {
           id_conta: dadosConta.id_conta
@@ -485,7 +490,10 @@ export default function LoginFinaceiro() {
         success: 'Dados Deletados com sucesso'
       }
     )
-    listarContasReq()
+    const index = listaContas.findIndex(item=>item.id_conta===dadosConta.id_conta)
+    const novoArray = [...listaContas]
+    novoArray.splice(index,1);
+    setListaContas(novoArray)
 
   }
   async function listarContasReq() {
@@ -511,6 +519,8 @@ export default function LoginFinaceiro() {
 
   useEffect(() => {
     try {
+   
+   
       listarDados()
       listarContasReq()
         reqCcustos()

@@ -344,7 +344,7 @@ export default function PreAgend({ arrayMedicos, pre, setPre, events, setArrayEv
                     <Table.Body className="divide-y">
                         {pre.map((item, index) =>
                         (
-                            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                            <Table.Row key={item.id_agcli} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                                     {item.nome}
                                 </Table.Cell>

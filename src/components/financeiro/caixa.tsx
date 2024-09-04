@@ -93,16 +93,16 @@ const filtro = async()=>{
   const clickTag = (tag: string) => {
     let caixaTag: Array<CaixaProps> =[]
     if (tag === 'PIX') {
-      caixaTag = arrayCaixa.filter(item => item.mensalidade.form_pagto === 'PIX')
+      caixaTag = arrayCaixa.filter(item => item?.mensalidade?.form_pagto === 'PIX')
     } else if (tag === 'DINHEIRO') {
-      caixaTag = arrayCaixa.filter(item => item.mensalidade.form_pagto === 'DINHEIRO')
+      caixaTag = arrayCaixa.filter(item => item?.mensalidade?.form_pagto === 'DINHEIRO')
     } else if (tag === 'CARTAO') {
-      caixaTag = arrayCaixa.filter(item => item.mensalidade.form_pagto === 'CARTAO')
+      caixaTag = arrayCaixa.filter(item => item?.mensalidade?.form_pagto === 'CARTAO')
     }
     else if (tag === 'TRANSFERENCIA') {
-      caixaTag = arrayCaixa.filter(item => item.mensalidade.form_pagto === 'TRANSFERENCIA')
+      caixaTag = arrayCaixa.filter(item => item?.mensalidade?.form_pagto === 'TRANSFERENCIA')
     }
-   setTag(caixaTag)
+   setTag(caixaTag??[])
     setOpenModal(true)
   }
 
@@ -128,7 +128,7 @@ const filtro = async()=>{
         return acumulador
 
       }, { pix: 0, boleto: 0, cartao: 0, dinheiro: 0, deposito: 0, total: 0, transferencia: 0 } as SomaProps)
-      console.log(soma)
+    
       setSoma(soma)
     }else{
       setSoma({
@@ -142,7 +142,6 @@ const filtro = async()=>{
       })
     }
   }, [arrayCaixa])
-
 
 
   const handleSelectCheck = (select: CcustosProps) => {
@@ -186,7 +185,7 @@ const filtro = async()=>{
                 (<TableRow className="bg-white">
 
                   <TableCell>{new Date(item.datalanc).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</TableCell>
-                  <TableCell>{item.mensalidade.banco_dest?item.mensalidade.banco_dest:item.mensalidade.form_pagto}</TableCell>
+                  <TableCell>{item.mensalidade.banco_dest?item?.mensalidade?.banco_dest:item?.mensalidade?.form_pagto}</TableCell>
                   <TableCell>{item.descricao}</TableCell>
                   <TableCell>{item.historico}</TableCell>
 

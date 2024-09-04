@@ -1,23 +1,17 @@
 
 
-
-
-import { BiSolidLockOpenAlt } from "react-icons/bi";
-import { useCallback, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
 import "react-datepicker/dist/react-datepicker.css";
-import { Calendar, momentLocalizer } from 'react-big-calendar'
+import {  momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
-import imag from "../../../public/carne.png"
+
 
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
-
 import Calendario from "@/components/afapSaude/calendario";
-import AdmMedico from "@/components/afapSaude/admMedico";
 import PreAgend from "@/components/afapSaude/preAgendamento";
-import { MdMedicalServices } from "react-icons/md";
 import Consultas from "@/components/afapSaude/consultas";
 import { Tabs } from "flowbite-react";
 import { FaCalendarAlt } from "react-icons/fa";
@@ -47,7 +41,7 @@ export interface ExamesData{
 }
 
 export interface ExamesProps{
-  id_exame:number,
+  id_exame:number|null,
   nome:string,
   data:Date,
   usuario:string,
@@ -92,7 +86,7 @@ export interface MedicoProps {
 export interface ClientProps {
 
   id_agcli: number,
-  id_agmed: number,
+  id_agmed: number|null,
   id_med: number,
   id_usuario: number
   data: Date
@@ -109,7 +103,7 @@ export interface ClientProps {
 export interface EventProps {
   clientes: Array<ClientProps>
   id_agcli: number,
-  id_agmed: number
+  id_agmed: number|null
   id_med: number,
   id_usuario: number
   data: Date,
@@ -135,7 +129,7 @@ export default function AfapSaude() {
   const [pre, setPre] = useState<Array<ClientProps>>([])
   const [consultas,setConsultas] =useState<Array<ConsultaProps>>([])
   const [exames,setExames] = useState<Array<ExamesProps>>([])
-
+  const [loading,setLoading] =useState<boolean>(false)
 
 
 
@@ -153,11 +147,16 @@ export default function AfapSaude() {
 }
 
 
-const buscarConsultas = async ()=>{
+const buscarConsultas = async ({startDate,endDate}:{startDate:Date,endDate:Date})=>{
         try {
-            const response = await api.get("/afapSaude/consultas")
+          setLoading(true)
+            const response = await api.post("/afapSaude/consultas",{
+              startDate,
+              endDate
+            })
             
             setConsultas(response.data)
+            setLoading(false)
         } catch (error) {
             console.log(error)
         }
@@ -287,7 +286,7 @@ const buscarConsultas = async ()=>{
       agenda()
       preAgendamento()
       
-    buscarConsultas()
+    buscarConsultas({startDate:new Date(),endDate:new Date})
     buscarExames()
     
   
@@ -345,22 +344,17 @@ const buscarConsultas = async ()=>{
       }}}}}}}  variant="underline">
 
       <Tabs.Item  active title="Agenda" icon={FaCalendarAlt}>
-      <Calendario deletarEvento={deletarEvento} setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />
+      <Calendario pre={pre} setPre={setPre} deletarEvento={deletarEvento} setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />
       </Tabs.Item>
-
-      <Tabs.Item title="Medicos" icon={MdMedicalServices}>
-      <AdmMedico setArray={setArrayMedicos} medicos={medicos} />
-      </Tabs.Item>
-
       <Tabs.Item title="Pré Agendamentos" icon={MdAccessTimeFilled}>
       <PreAgend setArrayEvent={setArrayEvent} events={events.filter(item => new Date(item.end) >= new Date())} setPre={setPre} arrayMedicos={medicos} pre={pre} />
       </Tabs.Item>
 
       <Tabs.Item title="Consultas" icon={HiClipboardList}>
-      <Consultas exames={exames} consultas={consultas} medicos={medicos}/>
+      <Consultas loading={loading} buscarConsultas={buscarConsultas} setConsultas={setConsultas} exames={exames} consultas={consultas} medicos={medicos}/>
       </Tabs.Item>
       <Tabs.Item  icon={IoMdSettings}  title="Configurar">
-       <Configuracoes/>
+       <Configuracoes medicos={medicos} setMedicos={setArrayMedicos} setExames={setExames} exames={exames}/>
       </Tabs.Item>
     </Tabs>
       </div>

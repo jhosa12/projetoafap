@@ -294,20 +294,13 @@ export default function AdmContrato() {
 
 
     useEffect(() => {
-
-
-
         async function listaCadastro() {
             const response = await api.get('/listarDadosCadastro')
-            closeModa({ ...data, cidades: response.data.cidades, planos: response.data.planos })
-
-        }
-
+            closeModa({ ...data, cidades: response.data.cidades, planos: response.data.planos })}
         listaCadastro()
-        closeModa({ ...data, acordo: { ...{} } })
-        if (componenteMounted) { atualizarObs() }
-        setMounted(true)
-    }, [data.contrato?.anotacoes])
+    }, [])
+
+
     async function atualizarObs() {
         try {
             const response = await toast.promise(
@@ -323,7 +316,7 @@ export default function AdmContrato() {
 
             )
 
-            await carregarDados()
+          //  await carregarDados()
 
         } catch (err) {
             console.log(err)

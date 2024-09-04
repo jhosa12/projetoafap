@@ -1,4 +1,4 @@
-import { IoIosClose } from "react-icons/io";
+
 import { MdSaveAlt } from "react-icons/md";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { GiReturnArrow } from "react-icons/gi";
@@ -6,10 +6,8 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
-import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import pt from 'date-fns/locale/pt-BR';
-import { Button, Label, Modal, ModalBody, ModalHeader, TextInput,Datepicker,Select,Checkbox } from "flowbite-react";
+import { Modal, ModalBody, ModalHeader, TextInput,Datepicker,Select,Checkbox } from "flowbite-react";
 
 
 export function ModalMensalidade(){
@@ -95,10 +93,11 @@ export function ModalMensalidade(){
         try{
              await  toast.promise(
                 api.put('/mensalidade',{
-                    id_usuario:Number(usuario?.id),
+                    id_usuario:usuario?.id,
                     id_mensalidade:data.mensalidade?.id_mensalidade,
                     status:status,
                     data_pgto:status==='A'?null:data.mensalidade?.data_pgto && new Date(data.mensalidade?.data_pgto).toLocaleDateString()===new Date().toLocaleDateString()?new Date():data.mensalidade?.data_pgto?new Date(data.mensalidade?.data_pgto):null,
+                    hora_pgto:status==='A'?null:data.mensalidade?.data_pgto && new Date(data.mensalidade?.data_pgto).toLocaleDateString()===new Date().toLocaleDateString()?new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):data.mensalidade?.hora_pgto?data.mensalidade.hora_pgto:null,
                     usuario:status==='A'?null:usuario?.nome.toUpperCase(),
                     valor_total:status==='A'?null:data.mensalidade?.valor_total,
                     motivo_bonus:status==='A'?null:data.mensalidade?.motivo_bonus?.toUpperCase(),

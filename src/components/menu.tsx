@@ -18,51 +18,54 @@ import { FaSortAlphaDown } from "react-icons/fa";
 import { BsInboxesFill } from "react-icons/bs";
 import { MdHealthAndSafety } from "react-icons/md";
 
-
+interface ButtonsMenu{
+    isAdmOpen:boolean,
+    isCaixaOpen:boolean,
+    isServicosOpen:boolean,
+    isComercialOpen:boolean,
+    isSorteioOpen:boolean,
+    isEstoqueOpen:boolean
+}
 
   
 export function MenuLateral(){
    
     const [isOpen,setIsOpen]=useState(false);
-    const {usuario,userToken}= useContext(AuthContext);
-    const [isAdmOpen,setIsAdmOpen]= useState(false );
-    const [isCaixaOpen,setIsCaixaOpen] = useState(false);
-    const [isServicosOpen,setIsServicosOpen] =useState(false);
-    const [isComercialOpen,setIsComercialOpen] = useState(false)
-    const [isSorteioOpen,setIsSorteio] =useState(false)
-    const[notifyCount,setCount] = useState<number>();
-    const [isEstoqueOpen,setEstoque] = useState(false)
+    const {usuario}= useContext(AuthContext);
+    const [isButOpen,setIsButOpen]= useState<ButtonsMenu>({isAdmOpen:false,isCaixaOpen:false,isComercialOpen:false,isServicosOpen:false,isSorteioOpen:false,isEstoqueOpen:false});
     
- 
+    const[notifyCount,setCount] = useState<number>();
+    
+    
+ console.log("CHAMOU")
   useEffect(() => {
 
-    if(!usuario){
-        userToken();
-    }
+  
 
+    
     const socket = io("https://www.testeapiafap.shop", {
         reconnection: true,
         reconnectionAttempts: 5, // tenta reconectar 5 vezes antes de desistir
         reconnectionDelay: 1000, // espera 1 segundo entre as tentativas
       });
+
+
+      if(usuario){
+        socket.on('connect', () => {
+            socket.emit('userId', usuario?.id.toString());
+         });
+
+      }
   
-   socket.on('connect', () => {
-      socket.emit('userId', usuario?.id.toString());
-   });
+ 
 
    socket.on('nova-tarefa', (tarefa) => {
       // Lógica para lidar com a nova tarefa recebida
    console.log('Nova tarefa recebida:', tarefa);
-      setCount(tarefa);
+   if(tarefa) setCount(tarefa);
   });
    
-   try{
-
-     contagem() 
-
-   }catch(err){
-    console.log(err)
-   }
+   
    return () => {
     socket.off('nova-tarefa'); // Remove o listener do evento 'nova-tarefa'
    // socket.disconnect(); // Opcionalmente, desconecta o socket
@@ -130,23 +133,23 @@ async function contagem() {
   <div className="py-4 overflow-y-auto">
       <ul className="space-y-2 font-medium">
       <li >
-    <button type="button" className="flex items-center w-full p-2 text-base transition duration-75 rounded-lg group  text-white hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsAdmOpen(!isAdmOpen)}>
+    <button type="button" className="flex items-center w-full p-2 text-base transition duration-75 rounded-lg group  text-white hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsButOpen({...isButOpen,isAdmOpen:!isButOpen.isAdmOpen})}>
     <MdManageAccounts size={25}/>
         <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Administrativo</span>
             <FaAngleDown size={18}/>
     </button>
-    <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isAdmOpen && "hidden"}`}>
+    <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isButOpen.isAdmOpen && "hidden"}`}>
         <li>
             <Link href="/admcontrato" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group text-white hover:bg-gray-700">Adm Contrato</Link>
         </li>
         
         <li >
-    <button type="button" className="flex items-center w-full p-2 text-base transition duration-75 rounded-lg group text-white bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsCaixaOpen(!isCaixaOpen)}>
+    <button type="button" className="flex items-center w-full p-2 text-base transition duration-75 rounded-lg group text-white bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsButOpen({...isButOpen,isCaixaOpen:!isButOpen.isCaixaOpen})}>
       <FaMoneyBillTransfer  size={23}/>
         <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Caixa</span>
         <FaAngleDown size={18}/>
     </button>
-    <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isCaixaOpen && "hidden"}`}>
+    <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isButOpen.isCaixaOpen && "hidden"}`}>
         <li>
             <Link href='/caixa' onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 transition duration-75 rounded-lg pl-16 group text-white hover:bg-gray-700">Movimentar</Link>
         </li>
@@ -172,12 +175,12 @@ async function contagem() {
     </ul>
 </li>
 <li >
-    <button type="button" className="flex items-center w-full p-2 text-base  transition duration-75 rounded-lg group  text-white hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsComercialOpen(!isComercialOpen)}>
+    <button type="button" className="flex items-center w-full p-2 text-base  transition duration-75 rounded-lg group  text-white hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsButOpen({...isButOpen,isComercialOpen:!isButOpen.isComercialOpen})}>
     <MdManageAccounts size={25}/>
         <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Comercial</span>
             <FaAngleDown size={18}/>
     </button>
-    <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isComercialOpen && "hidden"}`}>
+    <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isButOpen.isComercialOpen && "hidden"}`}>
         <li>
             <Link href="/vendas" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 transition duration-75 rounded-lg pl-11 group  text-white hover:bg-gray-700">Vendas</Link>
         </li>
@@ -206,12 +209,12 @@ async function contagem() {
          </li>
    
          <li >
-    <button type="button" className="flex items-center w-full p-2 text-base  transition duration-75 rounded-lg group  text-white hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setEstoque(!isEstoqueOpen)}>
+    <button type="button" className="flex items-center w-full p-2 text-base  transition duration-75 rounded-lg group  text-white hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsButOpen({...isButOpen,isEstoqueOpen:!isButOpen.isEstoqueOpen})}>
     <BsInboxesFill size={25}/>
         <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Estoque</span>
             <FaAngleDown size={18}/>
     </button>
-    <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isEstoqueOpen && "hidden"}`}>
+    <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isButOpen.isEstoqueOpen && "hidden"}`}>
         <li>
             <Link href="/estoque/estoqueConvalescente" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 transition duration-75 rounded-lg pl-11 group  text-white hover:bg-gray-700">Estoque Convalescente</Link>
         </li>
@@ -228,12 +231,12 @@ async function contagem() {
 
 
          <li >
-    <button type="button" className="flex items-center w-full p-2 text-base transition duration-75 rounded-lg group text-white hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsServicosOpen(!isServicosOpen)}>
+    <button type="button" className="flex items-center w-full p-2 text-base transition duration-75 rounded-lg group text-white hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsButOpen({...isButOpen,isServicosOpen:!isButOpen.isServicosOpen})}>
       <FaMoneyBillTransfer  size={23}/>
         <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Serviços</span>
         <FaAngleDown size={18}/>
     </button>
-    <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isServicosOpen && "hidden"}`}>
+    <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isButOpen.isServicosOpen && "hidden"}`}>
     <li>
             <Link href='/servicos/listarObitos' onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group  text-white hover:bg-gray-700">Óbitos</Link>
         </li>
@@ -275,12 +278,12 @@ async function contagem() {
 
 
 <li>
-<button type="button" className="flex items-center w-full p-2 text-base  transition duration-75 rounded-lg group  text-white hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsSorteio(!isSorteioOpen)}>
+<button type="button" className="flex items-center w-full p-2 text-base  transition duration-75 rounded-lg group  text-white hover:bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsButOpen({...isButOpen,isSorteioOpen:!isButOpen.isSorteioOpen})}>
       <FaSortAlphaDown  size={23}/>
         <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Sorteios</span>
         <FaAngleDown size={18}/>
     </button>
-<ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isSorteioOpen && "hidden"}`}>
+<ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isButOpen.isSorteioOpen && "hidden"}`}>
         <li>
             <Link href="/sorteio/configuracoes" className="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group text-white hover:bg-gray-700">Configurar Sorteio</Link>
         </li>

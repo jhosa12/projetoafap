@@ -24,8 +24,6 @@
     "immer": "^10.0.3",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.294.0",
-    "moment": "^2.30.1",
-    "moment-timezone": "^0.5.45",
     "nanoid": "^5.0.7",
     "next": "14.0.4",
     "nookies": "^2.5.2",

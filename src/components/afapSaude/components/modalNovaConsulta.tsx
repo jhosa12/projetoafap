@@ -5,6 +5,7 @@ import { IoAddCircle } from "react-icons/io5";
 import { ChangeEvent, useState } from "react";
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
+import { HiOutlineTrash } from "react-icons/hi";
 
 interface DataProps{
     openModal:boolean,
@@ -13,89 +14,33 @@ interface DataProps{
     exames:Array<ExamesProps>
     data:ConsultaProps,
     setData:(consulta:ConsultaProps)=>void
+    handleCadastrar:()=>Promise<void>
+    handleExame: (event:ChangeEvent<HTMLSelectElement>)=>void
+  dataExame:ExamesData,
+  setDataExam:(list:ExamesData)=>void
+  handleEditarConsulta:()=>Promise<void>
 
 }
 
-export function ModalConsulta({openModal,setOpenModal,medicos,exames,data,setData}:DataProps) {
-    const [dataExame,setDataExam] =useState<ExamesData>({
-        data:new Date,
-        desconto:0,
-        id_exame:null,
-        nome:'',
-        valorBruto:0,
-        valorFinal:0,
-        porcFun:0,
-        porcPart:0,
-        porcPlan:0
-    })
+export function ModalConsulta({openModal,setOpenModal,medicos,exames,data,setData,handleCadastrar,handleExame,setDataExam,dataExame,handleEditarConsulta}:DataProps) {
+   
 
 
 
+  const handleTableExames = (index:number)=>{
+      const novoArray =[...data.exames]
+      novoArray.splice(index,1)
+      setData({...data,exames:novoArray})
 
-const handleCadastrar = async()=>{
-    try {
+  }
 
-        const response = await toast.promise(
-            api.post("/afapSaude/consultas/cadastro",{
-                nome:data.nome,
-                data:new Date(),
-                espec:data.espec,
-                exames:data.exames,
-                id_med:data.id_med,
-                tipoDesc:data.tipoDesc,
-                vl_consulta:data.vl_consulta,
-                vl_desc:data.vl_desc,
-                vl_final:data.vl_final,
-                celular:data.celular,
-                cpf:data.cpf
-            }),
-            {
-                error:'Erro ao Cadastrar Dados',
-                pending:'Cadastrando Consulta.....',
-                success:'Consulta Cadastrada com sucesso'
-            }
-        ) 
-        
-    } catch (error) {
-        console.log(error)
-    }
-}
 
-  const handleExame=  (event:ChangeEvent<HTMLSelectElement>)=>{
 
-    if(!event.target.value){
-        setDataExam({
-            data:new Date,
-            desconto:0,
-            id_exame:null,
-            nome:'',
-            valorBruto:0,
-            valorFinal:0,
-            porcFun:0,
-            porcPart:0,
-            porcPlan:0
-        })
-        return
-    }
-            const item = exames.find(atual=>atual.id_exame===Number(event.target.value))
-           
-               
-         item?.id_exame && setDataExam({
-                desconto:0,
-                data:new Date(),
-                id_exame:item?.id_exame,
-                nome:item?.nome??'',
-                valorBruto:item?.valorBruto??0,
-                valorFinal: item.valorBruto,
-                porcFun:item.porcFun,
-                porcPart:item.porcPart,
-                porcPlan:item.porcPlan
-            })
-    }
+ 
 
     return(
         <Modal show={openModal} size="3xl" popup dismissible onClose={() => setOpenModal(false)} >
-        <Modal.Header>Cadastrar Consulta</Modal.Header>
+        <Modal.Header>Administrar Consulta</Modal.Header>
         <Modal.Body>
           <div className="space-y-4">
         
@@ -150,8 +95,8 @@ const handleCadastrar = async()=>{
             </div>
 
             {
-                <div>
-              <div className="inline-flex w-full gap-3 items-end">
+            data.id_med===1 &&    <div>
+           <div className="inline-flex w-full gap-3 items-end">
            
 
             <div className="w-full">
@@ -161,7 +106,7 @@ const handleCadastrar = async()=>{
               <Select   onChange={e=>handleExame(e)} className="focus:outline-none"   required >
                     <option value={''}></option>
                     {exames.map((item,index)=>(
-                        <option value={item.id_exame} key={item.nome}>{`${item.nome}-(${item.nome})`}</option>
+                        <option value={item.id_exame??''} key={item.nome}>{`${item.nome}-(${item.nome})`}</option>
                     ))}
               </Select>
             </div>
@@ -178,9 +123,7 @@ const handleCadastrar = async()=>{
     
                else if(data.tipoDesc==='Plano'){
                     valorDesc= dataExame.valorBruto*(dataExame.porcPlan/100)
-               }
-    
-                       
+               }                 
                 setData({...data,exames:[...data.exames,{...dataExame,desconto:valorDesc,valorFinal:dataExame.valorBruto-valorDesc}]})
             }} className="mb-1"><IoAddCircle color="blue" size={32}/></button>
               </div>
@@ -194,6 +137,9 @@ const handleCadastrar = async()=>{
           <Table.HeadCell>Valor Bruto</Table.HeadCell>
           <Table.HeadCell>Valor Desc.</Table.HeadCell>
           <Table.HeadCell>Valor Final</Table.HeadCell>
+          <Table.HeadCell>
+            <span className="sr-only">Edit</span>
+          </Table.HeadCell>
        
         </Table.Head>
         <Table.Body className="divide-y">
@@ -205,6 +151,12 @@ const handleCadastrar = async()=>{
             <Table.Cell>{Number(item.valorBruto).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
             <Table.Cell>{Number(item.desconto).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
             <Table.Cell>{Number(item.valorFinal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
+            <Table.Cell>
+           
+              <button onClick={()=>handleTableExames(index)} className="font-medium text-gray-500 hover:text-red-600 ">
+                <HiOutlineTrash size={20}/>
+              </button>
+            </Table.Cell>
          
 </Table.Row>
 
@@ -238,9 +190,9 @@ const handleCadastrar = async()=>{
             }
 
       
-            <div className="w-full">
-              <Button onClick={handleCadastrar}>Salvar</Button>
-            </div>
+          
+             {data.id_consulta?<Button color={"warning"} onClick={handleEditarConsulta}>Editar</Button>: <Button onClick={handleCadastrar}>Salvar</Button>}
+           
        
           </div>
         </Modal.Body>

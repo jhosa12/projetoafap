@@ -29,9 +29,9 @@ export function ResumoCadastro(){
           <Timeline.Point icon={HiOutlineCheck} />
           <Timeline.Content>
             <Timeline.Time>Dados Plano</Timeline.Time>
-            <Timeline.Title className="whitespace-nowrap">Gold Prime 6{data.contrato?.plano}</Timeline.Title>
+            <Timeline.Title className="whitespace-nowrap">{data.contrato?.plano}</Timeline.Title>
             <Timeline.Body className="whitespace-nowrap">
-              Valor: R$ 78,00
+             {Number(data.contrato?.valor_mensalidade).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
             </Timeline.Body>
           </Timeline.Content>
         </Timeline.Item>

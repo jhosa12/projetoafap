@@ -24,7 +24,7 @@ export default function SideBar(){
       <Sidebar.Items>
         <Sidebar.ItemGroup>
           <Sidebar.Collapse label="Administrativo"  icon={HiWallet}>
-          <Sidebar.Item > <Link href="/admcontrato">Adm Contrato</Link></Sidebar.Item>
+          <Sidebar.Item as={Link} href='/admcontrato' > Adm Contrato</Sidebar.Item>
             
           </Sidebar.Collapse>
           <Sidebar.Collapse icon={HiShoppingBag} label="E-commerce">

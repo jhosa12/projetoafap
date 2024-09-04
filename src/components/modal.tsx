@@ -208,6 +208,7 @@ export function ModalBusca(){
             empresa:data.empresa
         })
         setarray(response.data)
+
       }
       if(criterio ==="Titular"){
         const response =  await api.post('/buscar',{
