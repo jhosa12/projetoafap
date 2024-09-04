@@ -299,7 +299,7 @@ export default function PreAgend({ arrayMedicos, pre, setPre, events, setArrayEv
                                     <Select id="small" onChange={e => selectMed(e)} sizing="large" >
                                         <option value={''}></option>
                                         {events.map((item, index) => (
-                                            <option key={item.id_agmed} value={item.id_agmed}>{item.title}-{new Date(item.start).toLocaleDateString('pt-BR', { timeZone: 'America/Fortaleza' })}</option>
+                                            <option key={item.id_agmed} value={item.id_agmed??''}>{item.title}-{new Date(item.start).toLocaleDateString('pt-BR', { timeZone: 'America/Fortaleza' })}</option>
                                         ))}
                                     </Select>
                                 </div>
