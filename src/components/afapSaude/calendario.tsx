@@ -11,15 +11,16 @@ import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
 import { ModalDrawer } from "@/components/afapSaude/drawer";
 import { Timeline, Accordion, Button, Modal } from "flowbite-react";
-import { ClientProps, EventProps, MedicoProps } from "@/pages/afapSaude";
+import { ClientProps, ConsultaProps, EventProps, MedicoProps } from "@/pages/afapSaude";
 import { MdAddBox } from "react-icons/md";
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
 import { TiCancel } from "react-icons/ti";
 import { Tooltip } from 'react-tooltip';
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
+
 // Configura o moment para usar o idioma português
-moment.locale('pt-br');
+moment.locale('pt-BR');
 const localizer = momentLocalizer(moment)
 
 
@@ -34,6 +35,8 @@ interface DataProps {
   deletarEvento: () => Promise<void>
   pre:Array<ClientProps>
   setPre:(array:Array<ClientProps>)=>void
+  consultas:Array<ConsultaProps>
+  setConsultas:(array:Array<ConsultaProps>)=>void
  
 }
 
@@ -49,15 +52,46 @@ interface ObjectArrayMod {
   obs: string,
   clientes: Array<EventProps>
 
+
 }
 
-export default function Calendario({pre,setPre, medicos, events, setArrayEvent, dataEvent, setarDataEvento, deletarEvento }: DataProps) {
+export default function Calendario({pre,setPre, medicos, events, setArrayEvent, dataEvent, setarDataEvento, deletarEvento,consultas,setConsultas }: DataProps) {
 
 
   const [isOpen, setIsOpen] = useState(false);
   const [modalDelete, setModalDel] = useState(false)
 
+  const gerarConsulta = async ({evento,id_med}:{evento:ClientProps,id_med:number}) => {
+  
+    try {
 
+      const response = await toast.promise(
+        api.post("/afapSaude/consultas/cadastro", {
+          nome: evento.nome,
+          data: new Date(),
+          espec: evento.title,
+         // exames: data.exames,
+          id_med: id_med,
+         // tipoDesc: data.tipoDesc,
+         // vl_consulta: data.vl_consulta,
+         // vl_desc: data.vl_desc,
+        //  vl_final: data.vl_final,
+          celular: evento.celular,
+          //cpf: data.cpf
+        }),
+        {
+          error: 'Erro ao gerar consulta',
+          pending: 'Cadastrando Consulta.....',
+          success: 'Consulta Cadastrada com sucesso'
+        }
+      )
+
+      setConsultas([...consultas, response.data])
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
 
@@ -110,7 +144,7 @@ export default function Calendario({pre,setPre, medicos, events, setArrayEvent, 
                         <div className="inline-flex gap-5">
                         <button data-tooltip-id="event" data-tooltip-content={'Editar Agendamento'} className="text-gray-500 hover:text-blue-600" onClick={() => handleEventClick({ ...item, tipoAg: 'ct', id_med: event.id_med })} ><HiCalendar size={20} /></button>
                         <button data-tooltip-id="event" data-tooltip-content={'Cancelar'} className="text-gray-500 hover:text-red-600" onClick={() => CancelarAgendamento({id_agmed:item.id_agmed,id_agcli:item.id_agcli})} ><TiCancel size={23}  /></button>
-                        <button data-tooltip-id="event" data-tooltip-content={'Gerar Consulta'} className="text-gray-500 hover:text-green-600" onClick={() => handleEventClick({ ...item, tipoAg: 'ct', id_med: event.id_med })} ><HiClipboardCheck size={23}  /></button>
+                        <button data-tooltip-id="event" data-tooltip-content={'Gerar Consulta'} className="text-gray-500 hover:text-green-600" onClick={() => gerarConsulta({evento:item,id_med:event.id_med})} ><HiClipboardCheck size={23}  /></button>
                         </div>
                         
                         </Timeline.Title>
@@ -250,6 +284,10 @@ export default function Calendario({pre,setPre, medicos, events, setArrayEvent, 
         </Modal>
       </div>
    
+
+
+
+
     </>
   )
 }

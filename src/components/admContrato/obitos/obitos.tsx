@@ -165,15 +165,13 @@ export default function ObitosAssociado({obitos}:DadosProps){
           
             <div className="flex max-h-[calc(100vh-250px)]" id="DIV DA TABELA">
             <table
-                                    className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
-                                    <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
+                                    className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-600">
+                                    <thead className="sticky top-0  text-xs uppercase bg-gray-100 ">
                                        <tr>
                                             <th scope="col" className=" px-2 py-1">
                                                 FALECIDO
                                             </th>
-                                            <th scope="col" className="px-12 py-1">
-                                                NOME
-                                            </th>
+                                          
                                             <th scope="col" className="px-12 py-1">
                                                 DATA NASC.
                                             </th>
@@ -191,9 +189,9 @@ export default function ObitosAssociado({obitos}:DadosProps){
                                       </thead> 
                                       <tbody>
                                         {obitos.map((item,index)=>(
-                                            <tr  className={`cursor-pointer hover:bg-gray-500 text-white border-b  bg-gray-800 border-gray-700`}>
-                                            <th scope="row" className="px-2 py-1 font-medium  whitespace-nowrap">{item.falecido}</th>
-                                            <td className="px-12 py-1">
+                                            <tr  className={`cursor-pointer hover:bg-gray-200  border-b  bg-gray-50 border-gray-300`}>
+                                           
+                                            <td className="px-2 py-1">
                                             {item.nome_falecido}
                                         </td>
                                             <td className="px-12 py-1">

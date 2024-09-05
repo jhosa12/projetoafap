@@ -344,7 +344,7 @@ const buscarConsultas = async ({startDate,endDate}:{startDate:Date,endDate:Date}
       }}}}}}}  variant="underline">
 
       <Tabs.Item  active title="Agenda" icon={FaCalendarAlt}>
-      <Calendario pre={pre} setPre={setPre} deletarEvento={deletarEvento} setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />
+      <Calendario consultas={consultas} setConsultas={setConsultas} pre={pre} setPre={setPre} deletarEvento={deletarEvento} setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />
       </Tabs.Item>
       <Tabs.Item title="Pré Agendamentos" icon={MdAccessTimeFilled}>
       <PreAgend setArrayEvent={setArrayEvent} events={events.filter(item => new Date(item.end) >= new Date())} setPre={setPre} arrayMedicos={medicos} pre={pre} />

@@ -178,7 +178,7 @@ type AcordoProps = {
     visibilidade: boolean
 }
 
-type AssociadoProps = {
+export type AssociadoProps = {
     nome: string,
     data_nasc: Date,
     sexo: string,

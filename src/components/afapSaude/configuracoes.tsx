@@ -18,7 +18,7 @@ export default function Configuracoes({exames,setExames,medicos,setMedicos}:Data
 
     return(
         <div className="overflow-x-auto">
-      <Tabs theme={{tablist:{tabitem:{base:"flex  items-center justify-center rounded-t-lg p-4 text-sm font-medium first:ml-0 focus:outline-none disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{fullWidth:{active:{off:'bg-gray-600',on:'bg-gray-100 text-black'}}}}}}} aria-label="Full width tabs" variant="fullWidth">
+      <Tabs theme={{tablist:{tabitem:{base:"flex  items-center justify-center rounded-t-lg p-2 text-sm font-medium first:ml-0 focus:outline-none disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{fullWidth:{active:{off:'bg-gray-600',on:'bg-gray-100 text-black'}}}}}}} aria-label="Full width tabs" variant="fullWidth">
         <Tabs.Item active title="Exames" icon={HiUserCircle}>
          <AddEditExames exames={exames} setExames={setExames}/>
         </Tabs.Item>

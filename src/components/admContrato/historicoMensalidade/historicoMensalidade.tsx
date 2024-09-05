@@ -240,7 +240,7 @@ console.log(dateInUTC.local().format('YYYY-MM-DDTHH:mm:ssZZ'));  // formata em U
 
 
   return (
-    <div className="flex flex-col rounded-lg  max-h-[calc(100vh-220px)]  p-2 shadow-md sm:rounded-lg">
+    <div className="flex flex-col rounded-lg  max-h-[calc(100vh-220px)]    sm:rounded-lg">
   
                 {openModalAcordo.open && (<ModalAcordos
                  acordo={dados?.acordo??{}} 
@@ -256,7 +256,7 @@ console.log(dateInUTC.local().format('YYYY-MM-DDTHH:mm:ssZZ'));  // formata em U
 
 
 
-    <div className="flex w-full mb-2 gap-2">
+    <div className="flex w-full  gap-2">
     <div style={{display:'none'}}>
     <ImpressaoCarne
     ref={componentRef}
@@ -276,19 +276,19 @@ console.log(dateInUTC.local().format('YYYY-MM-DDTHH:mm:ssZZ'));  // formata em U
     </div>
         <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
             <input checked={checkMensal} onChange={() => setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer" />
-            <div className="w-9 h-5 rounded-full peer bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[5px] after:start-[7px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
-            <span className="ms-3 text-sm font-medium  text-gray-300">Exibir Pagas</span>
+            <div className="w-9 h-5 rounded-full peer bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[5px] after:start-[7px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
+            <span className="ms-3 text-sm font-medium  text-gray-600">Exibir Pagas</span>
         </label>
         <div className="inline-flex rounded-md shadow-sm" role="group">
-            <button onClick={adicionarMensalidade} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border  rounded-s-lg  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+            <button onClick={adicionarMensalidade} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border  rounded-s-lg  focus:z-10 focus:ring-2  bg-gray-200 border-gray-400 text-gray-600 hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
                 <RiAddCircleFill size={20} />
                 Adicionar
             </button>
-            <button type="button" onClick={() => setarModalAcordo({open:true,visible:true})} className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+            <button type="button" onClick={() => setarModalAcordo({open:true,visible:true})} className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-200 border-gray-400 text-gray-600 hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
                 <FaHandshake size={20} />
                 Acordo
             </button>
-            <button onClick={() => setExcluir(!excluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2   bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+            <button onClick={() => setExcluir(!excluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2   bg-gray-200 border-gray-400 text-gray-600 hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
                 <MdDeleteForever size={20} />
                 Excluir
             </button>
@@ -320,10 +320,10 @@ console.log(dateInUTC.local().format('YYYY-MM-DDTHH:mm:ssZZ'));  // formata em U
         <button onClick={imprimirCarne} className="flex p-1 rounded-lg justify-center bg-gray-500 gap-1 items-center text-[14px] z-40 text-white"><IoPrint size={18}/>Imprimir Carnê</button>
 
     </div>
-<div className="flex w-full p-4 max-h-[calc(100vh-255px)]">
+<div className="flex w-full p-2 max-h-[calc(100vh-255px)]">
     <table
-        className="block  overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse rounded-lg text-gray-400">
-        <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
+        className="block  overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse rounded-lg text-gray-600">
+        <thead className="sticky top-0  text-xs uppercase  bg-gray-100 text-gray-600">
             <tr >
                 <th scope="col" className="px-6 py-1">
                     NP
@@ -382,7 +382,7 @@ console.log(dateInUTC.local().format('YYYY-MM-DDTHH:mm:ssZZ'));  // formata em U
 
 
                                 <React.Fragment key={l}>
-                                    <tr onAuxClick={() => setShowSublinhas(!showSublinhas)} className={` ${i.status !== 'A' && "hidden"} cursor-pointer hover:bg-gray-600 font-semibold text-yellow-500 border-b bg-gray-800 border-gray-700`} onClick={() => setShowSublinhas(!showSublinhas)} key={l}>
+                                    <tr onAuxClick={() => setShowSublinhas(!showSublinhas)} className={` ${i.status !== 'A' && "hidden"} cursor-pointer hover:bg-gray-600 font-semibold text-yellow-500 border-b bg-gray-50 border-gray-300`} onClick={() => setShowSublinhas(!showSublinhas)} key={l}>
                                         <td className="px-2 py-1">{/* Renderizar algo aqui */}</td>
                                         <td className="px-2 py-1">ACORDO</td>
                                         <td className="px-2 py-1">VALOR:R${i.total_acordo}</td>
@@ -424,7 +424,7 @@ console.log(dateInUTC.local().format('YYYY-MM-DDTHH:mm:ssZZ'));  // formata em U
                                         </td>
                                     </tr>
                                     {i.mensalidade?.map((ii, ee) => (
-                                        <tr className={`border-b ${!showSublinhas && "hidden"} ${ii.status !== 'E' && "hidden"} text-yellow-500 border-gray-700  hover:bg-gray-500 hover:text-black `} key={ee}>
+                                        <tr className={`border-b ${!showSublinhas && "hidden"} ${ii.status !== 'E' && "hidden"} text-yellow-500 border-gray-300  hover:bg-gray-500 hover:text-black `} key={ee}>
                                             <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
                                                 {ii.parcela_n}
                                             </th>
@@ -482,7 +482,7 @@ console.log(dateInUTC.local().format('YYYY-MM-DDTHH:mm:ssZZ'));  // formata em U
                             <tr key={index}
                                 onClick={() => toggleSelecionada(item)}
                                 //className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600  ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":item.status==='P'? 'text-blue-500':'text-white'}`}>
-                                className={`${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"} border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-600" : "bg-gray-800"}  ${item.status === 'P' && "text-blue-500"} border-gray-700  hover:bg-gray-500 hover:text-black   ${item.parcela_n === 0 ? "hidden" : ''}`}>
+                                className={`${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"} border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-100" : "bg-gray-50"}  ${item.status === 'P' && "text-blue-600"} border-gray-400  hover:bg-gray-500 hover:text-black   ${item.parcela_n === 0 ? "hidden" : ''}`}>
                                 <th scope="row" className={`px-5 py-1 font-medium `}>
                                     {item.parcela_n}
                                 </th>

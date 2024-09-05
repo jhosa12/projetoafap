@@ -96,22 +96,22 @@ export default function CarteirasDep({dependentes,contrato,plano,titular,enderec
     },[arrayPrint])
     
     return (
-        <div className="flex flex-col w-full p-2">
-            <div className="flex p-2">
+        <div className="flex flex-col w-full px-2 text-gray-600">
+            <div className="flex px-2 mb-2">
             <div className="flex items-center px-2 py-1">
             <input onChange={() =>setTitular(!cartTitular)} type="checkbox" checked={cartTitular} />
-            <label className="ms-2  text-xs whitespace-nowrap text-gray-300">CARTEIRA TITULAR</label>
+            <label className="ms-2  text-xs whitespace-nowrap ">CARTEIRA TITULAR</label>
             </div>
             <div className="flex items-center px-2 py-1">
             <input onChange={() =>setTodosDep(!todosDep)} type="checkbox" checked={todosDep} />
-            <label className="ms-2  text-xs whitespace-nowrap text-gray-300">TODOS DEPENDENTES</label>
+            <label className="ms-2  text-xs whitespace-nowrap ">TODOS DEPENDENTES</label>
             </div>
             <button onClick={()=>ButtonPrintGeral()} className="flex p-1 rounded-lg justify-center bg-gray-500 gap-1 items-center text-xs z-40 text-white"><IoPrint size={18}/> PRINT</button>
             </div>
             <div className="flex max-h-[calc(100vh-250px)]" id="DIV DA TABELA">
             <table
-                                    className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
-                                    <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
+                                    className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-600">
+                                    <thead className="sticky top-0  text-xs uppercase bg-gray-100 ">
                                        <tr>
                                             <th scope="col" className=" px-2 py-1">
                                                 NOME
@@ -135,7 +135,7 @@ export default function CarteirasDep({dependentes,contrato,plano,titular,enderec
                                       </thead> 
                                       <tbody>
                                         {dependentes.map((item,index)=>(
-                                            <tr onClick={()=>toggleSelecionada(item)} className={`cursor-pointer hover:bg-gray-500 text-white border-b  ${linhasSelecionadas.some(linha=>linha.id_dependente===item.id_dependente)?"bg-gray-600":"bg-gray-800"} border-gray-700`}>
+                                            <tr onClick={()=>toggleSelecionada(item)} className={`cursor-pointer hover:bg-gray-200  border-b  ${linhasSelecionadas.some(linha=>linha.id_dependente===item.id_dependente)?"bg-gray-300":"bg-gray-50"} border-gray-300`}>
                                             <th scope="row" className="px-2 py-1 font-medium  whitespace-nowrap">{item.nome}</th>
                                             <td className="px-10 py-1">
                                                         {new Date(item.data_adesao).toLocaleDateString()}

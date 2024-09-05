@@ -3,13 +3,15 @@
 import { ConsultaProps, ExamesData, ExamesProps, MedicoProps } from "@/pages/afapSaude";
 import { api } from "@/services/apiClient";
 import { Button, Table } from "flowbite-react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { ModalConsulta } from "./components/modalNovaConsulta";
 import { toast } from "react-toastify";
-import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
+import { HiDocument, HiOutlineTrash, HiPencil } from "react-icons/hi2";
 import { ModalDeletarExame } from "./components/modalDeletarExame";
 import { HiFilter } from "react-icons/hi";
 import { ModalFiltroConsultas } from "./components/modalFiltro";
+import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
+import { useReactToPrint } from "react-to-print";
 
 
 
@@ -42,11 +44,47 @@ export default function Consultas({ medicos, consultas, exames, setConsultas, bu
     porcPlan: 0
   })
 
-  const handleEditarConsulta = async () => {
-    try {
+const currentPage = useRef<FichaConsulta>(null)
 
+
+
+const imprimirFicha = useReactToPrint({
+  content:()=>currentPage.current
+})
+
+
+
+
+
+
+
+
+  const handleEditarConsulta = async () => {
+
+    if(!data.id_med){
+      toast.info('Selecione um especialista')
+    }
+    if(!data.tipoDesc){
+      toast.info('Selecione um tipo de desconto')
+    }
+    try {
+      const medico = medicos.find(item=>item.id_med===data.id_med)
       const response = await toast.promise(
-        api.put('/afapSaude/consultas/Editarcadastro', data),
+        api.put('/afapSaude/consultas/Editarcadastro', {
+          ...data,
+          nome: data.nome,
+          data: new Date(),
+          espec: data.espec,
+          exames: data.exames,
+          id_med: data.id_med,
+          tipoDesc: data.tipoDesc,
+          vl_consulta:Number(medico?.particular)+data.exames.reduce((acc,at)=>{acc+=Number(at.valorBruto); return acc},0),
+          vl_desc:(data.tipoDesc==='Funeraria'?Number(medico?.particular)-Number(medico?.funeraria):data.tipoDesc==='Plano'?Number(medico?.particular)-Number(medico?.plano):0)+data.exames.reduce((acc,at)=>{acc+=Number(at.desconto); return acc},0),
+
+          vl_final:(data.tipoDesc==='Funeraria'?Number(medico?.funeraria):data.tipoDesc==='Plano'?Number(medico?.plano):Number(medico?.particular))+data.exames.reduce((acc,at)=>{acc+=Number(at.valorFinal); return acc},0), 
+          celular: data.celular,
+          cpf: data.cpf
+        }),
         {
           error: 'Erro ao editar dados',
           pending: 'Alterando dados .....',
@@ -121,8 +159,15 @@ export default function Consultas({ medicos, consultas, exames, setConsultas, bu
 
 
   const handleCadastrar = async () => {
-    try {
 
+    if(!data.id_med){
+      toast.info('Selecione um especialista')
+    }
+    if(!data.tipoDesc){
+      toast.info('Selecione um tipo de desconto')
+    }
+    try {
+const medico = medicos.find(item=>item.id_med===data.id_med)
       const response = await toast.promise(
         api.post("/afapSaude/consultas/cadastro", {
           nome: data.nome,
@@ -131,9 +176,10 @@ export default function Consultas({ medicos, consultas, exames, setConsultas, bu
           exames: data.exames,
           id_med: data.id_med,
           tipoDesc: data.tipoDesc,
-          vl_consulta: data.vl_consulta,
-          vl_desc: data.vl_desc,
-          vl_final: data.vl_final,
+          vl_consulta:Number(medico?.particular)+data.exames.reduce((acc,at)=>{acc+=Number(at.valorBruto); return acc},0),
+          vl_desc:(data.tipoDesc==='Funeraria'?Number(medico?.particular)-Number(medico?.funeraria):data.tipoDesc==='Plano'?Number(medico?.particular)-Number(medico?.plano):0)+data.exames.reduce((acc,at)=>{acc+=Number(at.desconto); return acc},0),
+
+          vl_final:(data.tipoDesc==='Funeraria'?Number(medico?.funeraria):data.tipoDesc==='Plano'?Number(medico?.plano):Number(medico?.particular))+data.exames.reduce((acc,at)=>{acc+=Number(at.valorFinal); return acc},0), 
           celular: data.celular,
           cpf: data.cpf
         }),
@@ -156,7 +202,7 @@ export default function Consultas({ medicos, consultas, exames, setConsultas, bu
     <div className="flex flex-col py-2 gap-2">
       <div className="ml-auto inline-flex gap-4">
         <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 " } }} color={'light'} size={'sm'} onClick={() => setModalFiltro(true)}>  <HiFilter className="mr-2 h-5 w-5" /> Filtro</Button>
-        <Button size={'sm'} onClick={() => setOpenModal(true)}>Nova Consulta</Button>
+        <Button size={'sm'} onClick={() =>{setData({celular:'',cpf:'',data:new Date(),espec:'',exames:[],id_consulta:null,id_med:null,nome:'',tipoDesc:'',vl_consulta:0,vl_desc:0,vl_final:0}), setOpenModal(true)}}>Nova Consulta</Button>
       </div>
 
 
@@ -196,6 +242,9 @@ export default function Consultas({ medicos, consultas, exames, setConsultas, bu
                   <button onClick={() => { setModalDeletar(true), setData({ ...item }) }} className="font-medium text-gray-500 hover:text-red-600 ">
                     <HiOutlineTrash size={20} />
                   </button>
+                  <button onClick={() => imprimirFicha()} className="font-medium text-gray-500 hover:text-blue-600 ">
+                    <HiDocument size={20} />
+                  </button>
                 </Table.Cell>
 
               </Table.Row>
@@ -204,10 +253,16 @@ export default function Consultas({ medicos, consultas, exames, setConsultas, bu
         </Table>
       </div>
 
-      <ModalConsulta handleEditarConsulta={handleEditarConsulta} dataExame={dataExame} setDataExam={setDataExam} handleExame={handleExame} handleCadastrar={handleCadastrar} data={data} setData={setData} exames={exames} medicos={medicos} openModal={openModal} setOpenModal={setOpenModal} />
+      <ModalConsulta handleEditarConsulta={handleEditarConsulta} dataExame={dataExame}  handleExame={handleExame} handleCadastrar={handleCadastrar} data={data} setData={setData} exames={exames} medicos={medicos} openModal={openModal} setOpenModal={setOpenModal} />
 
       <ModalDeletarExame setOpenModal={setModalDeletar} show={modalDeletar} handleDeletarExame={handleDeletar} />
       <ModalFiltroConsultas buscarConsultas={buscarConsultas} loading={loading} setFiltro={setModalFiltro} show={modalFiltro} />
+
+
+
+      <div className="hidden">
+        <FichaConsulta bairro="" cidade="" contrato={0} cpf="" logradouro="" material="" nome="" rg="" telefone="" uf="" ref={currentPage}/>
+      </div>
     </div>
   );
 }

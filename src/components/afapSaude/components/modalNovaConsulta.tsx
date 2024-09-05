@@ -17,12 +17,11 @@ interface DataProps{
     handleCadastrar:()=>Promise<void>
     handleExame: (event:ChangeEvent<HTMLSelectElement>)=>void
   dataExame:ExamesData,
-  setDataExam:(list:ExamesData)=>void
   handleEditarConsulta:()=>Promise<void>
 
 }
 
-export function ModalConsulta({openModal,setOpenModal,medicos,exames,data,setData,handleCadastrar,handleExame,setDataExam,dataExame,handleEditarConsulta}:DataProps) {
+export function ModalConsulta({openModal,setOpenModal,medicos,exames,data,setData,handleCadastrar,handleExame,dataExame,handleEditarConsulta}:DataProps) {
    
 
 
@@ -86,9 +85,10 @@ export function ModalConsulta({openModal,setOpenModal,medicos,exames,data,setDat
               <div className="mb-1 block">
                 <Label  value="Tipo de Desconto" />
               </div>
-              <Select value={data.tipoDesc} onChange={e=>setData({...data,tipoDesc:e.target.value})} className="focus:outline-none"   required >
+              <Select value={data.tipoDesc} onChange={e=>{setData({...data,tipoDesc:e.target.value})}} className="focus:outline-none"   required >
                     <option value={''}></option>
                     <option value={'Particular'}>Particular</option>
+                    
                     <option value={'Funeraria'}>Funerária</option>
                     <option value={'Plano'}>Plano</option>
               </Select>
@@ -143,7 +143,7 @@ export function ModalConsulta({openModal,setOpenModal,medicos,exames,data,setDat
        
         </Table.Head>
         <Table.Body className="divide-y">
-            {data.exames.map((item,index)=>(
+            {data?.exames?.map((item,index)=>(
                  <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                      <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
               {item.nome}
@@ -174,7 +174,7 @@ export function ModalConsulta({openModal,setOpenModal,medicos,exames,data,setDat
           
             <Table.Cell>{}</Table.Cell>
             <Table.Cell>{}</Table.Cell>
-            <Table.Cell>{Number(data.exames.reduce((acumulador,atual)=>{
+            <Table.Cell>{Number(data?.exames?.reduce((acumulador,atual)=>{
                 acumulador+=Number(atual.valorFinal)
                 return acumulador},0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
 </Table.Row>
