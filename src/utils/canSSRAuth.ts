@@ -1,10 +1,10 @@
 //Pode usuarios logados --- acessar
 
-import { AuthContext } from "@/contexts/AuthContext";
+
 import { AuthTokenError } from "@/services/errors/AuthTokenError";
 import { GetServerSideProps,GetServerSidePropsContext,GetServerSidePropsResult } from "next";
 import { parseCookies,destroyCookie } from "nookies";
-import { useContext } from "react";
+
 
 interface Props{
     [key:string]:any

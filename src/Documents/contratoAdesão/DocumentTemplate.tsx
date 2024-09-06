@@ -153,7 +153,7 @@ class DocumentTemplate extends Component<DadosProps> {
 
 
 
-        <p className='uppercase mx-5 p-2 text-justify'>
+        <div className='uppercase mx-5 p-2 text-justify'>
           ATENDIMENTO FUNERÁRIO <br />
           I. Remoção do corpo no local do Óbito ao do velório<br />
           II. Assepsia, preparação e vestimenta do corpo<br />
@@ -172,7 +172,7 @@ class DocumentTemplate extends Component<DadosProps> {
           XV. Urna básica com visor<br /><br />
 
           <h1 className='text-center font-semibold '>CONTRATO PARTICULAR DE PRESTAÇÃO DE SERVIÇOS ASSISTENCIAL FAMILIAR & FUNERÁRIO</h1>
-        </p>
+        </div>
         <p className='uppercase mx-5 p-2 text-justify'>
           Pelo presente instrumento particular as partes doravante denominas isoladamente.
           Parte e conjunto. Partes, de um lado na qualidade de CONTRATADA e doravante assim

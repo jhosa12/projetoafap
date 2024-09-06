@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useCallback, useEffect, useMemo, useState } from 'react';
+import { ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { api } from "../services/apiClient"
 import { destroyCookie, setCookie, parseCookies } from "nookies"
 import Router from 'next/router';
@@ -194,6 +194,7 @@ export type AssociadoProps = {
     profissao: string,
     guia_rua: string,
     uf: string,
+    empresa:string,
     mensalidade: Array<MensalidadeProps>,
     contrato: ContratoProps,
     dependentes: Array<DependentesProps>
@@ -433,6 +434,8 @@ interface ConvProps {
 }
 
 export const AuthContext = createContext({} as AuthContextData)
+
+
 export function signOut() {
     try {
         destroyCookie(undefined, '@nextauth.token')
@@ -441,6 +444,11 @@ export function signOut() {
         console.log("erro ao deslogar")
     }
 };
+
+
+export function useAuth() {
+    return useContext(AuthContext);
+  }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [usuario, setUser] = useState<UserProps>();
@@ -536,7 +544,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 id_associado: Number(data.id_associado),
                 empresa: data.empresa
             });
-            console.log(data.id_associado)
+            console.log(response.data)
             setDadosAssociado(response.data);
         } catch (error) {
             toast.error('Erro na requisição');

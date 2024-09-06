@@ -469,7 +469,7 @@ export default function AdmContrato() {
 
       <Tabs.Item title="Impressões" icon={HiPrinter
       }>
-            <div className="flex flex-col w-full rounded-lg p-6   gap-5">
+           {/* <div className="flex flex-col w-full rounded-lg p-6   gap-5">
                                     <div className="flex flex-row text-white gap-6 w-full">
                                         <PrintButtonContrato />
                                         <PrintButton />
@@ -491,7 +491,7 @@ export default function AdmContrato() {
 
                                     </div>
 
-                                </div>
+                                </div>*/}
       </Tabs.Item>
  
    

@@ -12,10 +12,11 @@ import { RiAddCircleFill } from 'react-icons/ri';
 import { TbAlertTriangle } from 'react-icons/tb';
 import { toast } from 'react-toastify'
 import { AuthContext, MensalidadeProps } from '@/contexts/AuthContext';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc'
 
-dayjs.extend(utc);
+
+
+
+
 interface AcordoProps {
     total_acordo: number,
     data_inicio: Date,
@@ -38,7 +39,6 @@ acordo:Partial<AcordoProps>,
 closeModalPlano:boolean
 }
 
-console.log(dayjs())
 interface DadosAssociadoGeral{
     nome:string,
     endereco:string,
@@ -71,8 +71,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
     const componentRef =useRef<ImpressaoCarne>(null);
     const {setarDadosAssociado} = useContext(AuthContext)
     
-    const dateInUTC = dayjs();  // cria uma data UTC
-console.log(dateInUTC.local().format('YYYY-MM-DDTHH:mm:ssZZ'));  // formata em UTC
+   
 
     let currentAcordoId: string;
 
@@ -553,7 +552,7 @@ console.log(dateInUTC.local().format('YYYY-MM-DDTHH:mm:ssZZ'));  // formata em U
                                 // status:item.status
                                 // }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600 ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-white'}`}>
                                 onClick={() => toggleSelecionada(item)}
-                                className={`${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && "text-red-600"}  border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-600" : "bg-gray-800"}   border-gray-700  hover:bg-gray-500 hover:text-black   ${item.parcela_n === 0 ? "hidden" : ''}`}>
+                                className={`${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && "text-red-600"}  border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : "bg-gray-50"}   border-gray-400  hover:bg-gray-300 hover:text-black   ${item.parcela_n === 0 ? "hidden" : ''}`}>
                                 <th className="px-5 py-1 font-medium  ">
                                     {item.parcela_n}
                                 </th>
