@@ -82,7 +82,7 @@ export  function MenuMultiStep({ setarModalAdicionar,getUsers,setarDadosFunciona
  
 
   const { steps, currentStepIndex, step, next, back } = MultiStep([
-    <ModalNovoUsuario setarDadosUsuario={setarDadosUsuario} dadosUser={dadosUser}  />,
+    //<ModalNovoUsuario setarDadosUsuario={setarDadosUsuario} dadosUser={dadosUser}  />,
     <ModalDadosFuncionario setarDadosFuncionario={setarDadosFuncionario} dadosFuncionario={dadosFuncionario} />,
     <ModalPermissoes setarDadosPermissoes={setarDadosPermissoes} dadosPermissoes={dadosPermissoes}/>
   ])
