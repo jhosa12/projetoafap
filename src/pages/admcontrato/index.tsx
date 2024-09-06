@@ -33,7 +33,7 @@ import { Button, Tabs } from "flowbite-react";
 import { HiIdentification, HiMiniInbox, HiMiniWallet, HiOutlineUserGroup, HiPrinter, HiUserCircle, HiUserGroup } from "react-icons/hi2";
 import { HiAdjustments, HiClipboardList } from "react-icons/hi";
 import { DadosAssociado } from "@/components/admContrato/dadosAssociado/screen";
-import { Dependentes } from "@/components/admContrato/dadosAssociado/dependentes/dependentes";
+import { Dependentes } from "@/components/admContrato/dependentes/dependentes";
 
 
 
@@ -507,8 +507,12 @@ export default function AdmContrato() {
         </>
     )
 }
-export const getServerSideProps = canSRRAuth(async (ctx) => {
+
+
+
+
+/*export const getServerSideProps = canSRRAuth(async (ctx) => {
     return {
         props: {}
     }
-})
+})*/

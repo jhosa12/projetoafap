@@ -2,14 +2,12 @@ import { ChangeEvent, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import sharp from 'sharp';
 import { MdOutlineFileUpload } from "react-icons/md";
+import { Button, Card, FloatingLabel, Modal, ToggleSwitch } from "flowbite-react";
+import { Permissoes } from "./permissoes/permisssoes";
 
 
 
-interface PermissoesProps {
-    nome:string,
-    val:boolean,
-    tela:string
-  }
+
 interface Usuario{
     nome:string,
     senhaAtual:string,
@@ -22,18 +20,22 @@ interface Usuario{
     repSenha:string,
     editar:boolean,
     image:string
-  
+    
   }
 interface UsuarioProps{
     setarDadosUsuario : (fields:Partial<Usuario>)=>void,
     dadosUser:Partial<Usuario>
+    show:boolean,
+    setModal:(open:boolean)=>void
+    permissions:Array<string>
+    handlePermission:(permission:string)=>void
 
 }
 
 
 
 
-export function ModalNovoUsuario({setarDadosUsuario,dadosUser}:UsuarioProps) {
+export function ModalNovoUsuario({setarDadosUsuario,dadosUser,setModal,show,handlePermission,permissions}:UsuarioProps) {
   
     
    
@@ -57,14 +59,15 @@ if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
     }
     return (
        
-
+<Modal dismissible size={'7xl'} show={show} onClose={()=>setModal(false)} popup>
            
-                <div className=" flex flex-col  p-4 rounded-lg  shadow bg-gray-800">
-                    
-                    <h1 className="flex flex-row justify-start mb-4 border-b-[1px] text-lg border-gray-500 font-semibold mt-2 gap-2 text-white">ADICIONAR USUÁRIO</h1>
-
+          <Modal.Header />   
+                    <Modal.Body>
                     
                         <div className="inline-flex w-full gap-2 ">
+
+<Card theme={{root:{children:"flex h-full flex-col  gap-4 p-6"}}} >
+    <div className="flex w-full relative">
                             <label className="flex w-60 h-40 justify-center cursor-pointer rounded-lg items-center border-[1px]">
                                 <span className="z-50 absolute opacity-40 transition-all hover:scale-125">
                                     <MdOutlineFileUpload size={25}/>
@@ -75,49 +78,37 @@ if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
                                 {dadosUser.image && !dadosUser.avataUrl && <img className="w-full h-full object-cover rounded-lg" src={`data:image/jpeg;base64,${dadosUser.image}`} alt="fotoUser" width={150} height={100}></img>}
 
                             </label>
-                        <div className="grid  grid-cols-2 gap-2  w-full">
-                        <div className=" col-span-1">
-                                <label className="block  text-xs font-medium  text-white">NOME</label>
-                                <input required  type="text" value={dadosUser.nome} onChange={e => setarDadosUsuario({...dadosUser,nome:e.target.value})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
                             </div>
+                        <div className="flex flex-col  w-full gap-2">
+                        
+                               
+                                <FloatingLabel variant='standard' label="Nome" required  type="text" value={dadosUser.nome} onChange={e => setarDadosUsuario({...dadosUser,nome:e.target.value})}  />
+                            
                          
-                            <div className=" col-span-1">
-                                <label className="block  text-xs font-medium  text-white">USUÁRIO</label>
-                                <input required type="text" value={dadosUser.usuario} onChange={e => {setarDadosUsuario({...dadosUser,usuario:e.target.value}) }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
-                            </div>
-                            <div className=" col-span-1">
-                                <label className="block  text-xs font-medium  text-white">CARGO</label>
-                                <input required type="text" value={dadosUser.cargo} onChange={e => {setarDadosUsuario({...dadosUser,cargo:e.target.value}) }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
-                            </div>
-                            {dadosUser.editar &&
-                              <div className=" col-span-1">
-                              <label className="block  text-xs font-medium  text-white">SENHA ATUAL</label>
-                              <input required={!dadosUser.editar} type="password" value={dadosUser.senhaAtual} onChange={e => setarDadosUsuario({...dadosUser,senhaAtual:e.target.value})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
-                          </div>
-
-                            }
+                           
+                              
+                                <FloatingLabel label="Usuário" variant="standard" required type="text" value={dadosUser.usuario} onChange={e => {setarDadosUsuario({...dadosUser,usuario:e.target.value}) }}  />
                           
-                            <div className=" col-span-1">
-                                <label className="block  text-xs font-medium  text-white">NOVA SENHA</label>
-                                <input required={!dadosUser.editar} type="password" value={dadosUser.password} onChange={e => {setarDadosUsuario({...dadosUser,password:e.target.value}) }} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
-                            </div>
-                            <div className=" col-span-1">
-                                <label className="block  text-xs font-medium  text-white">REPITA A SENHA</label>
-                                <input required={!dadosUser.editar} type="password" value={dadosUser.repSenha} onChange={e => setarDadosUsuario({...dadosUser,repSenha:e.target.value})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
-                            </div>
-                         
-
+                           
+                                <FloatingLabel label="Cargo" variant="standard" required type="text" value={dadosUser.cargo} onChange={e => {setarDadosUsuario({...dadosUser,cargo:e.target.value}) }}  />
                         </div>
 
+                        </Card>
+                       
 
+                     <Permissoes handlePermission={handlePermission} permissions={permissions}/>
+                        </div>
+
+                        <div className="flex w-full justify-end">
+                           {dadosUser.id ? <Button>Gravar alterações</Button>:<Button>Salvar</Button>}
                         </div>
                       
-             
+                        </Modal.Body>
 
 
                    
-                </div>
-           
+               
+                </Modal>
        
     )
 }

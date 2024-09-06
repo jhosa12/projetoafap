@@ -16,9 +16,10 @@ function isLoginPage(pathname: string) {
 
 function PrivateRouter({Component,pageProps,router}:AppProps){
 
-  const {isAuthenticated} = useAuth()
+  const {isAuthenticated,usuario} = useAuth()
   useEffect(()=>{
-    if(!isAuthenticated && !isLoginPage(router.pathname)){
+    
+    if( !isAuthenticated && !isLoginPage(router.pathname)){
       router.push('/')
     }
   },[isAuthenticated,router])

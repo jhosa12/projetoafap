@@ -63,12 +63,12 @@ export default function Home() {
 </div>)
 }
 
-export const getServerSideProps = canSSRGuest(async(ctx)=>{
+/*export const getServerSideProps = canSSRGuest(async(ctx)=>{
 
     return{
         props:{}
     }
-})
+})*/
 
  
 

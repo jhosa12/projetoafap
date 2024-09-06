@@ -1,23 +1,17 @@
 import { api } from "@/services/apiClient"
-import { getURL } from "next/dist/shared/lib/utils"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
-import fototeste from '../../../../public/fototeste.jpeg'
-import { FaLockOpen } from "react-icons/fa";
 import { BiSolidLockOpenAlt } from "react-icons/bi";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { IoIosAddCircle } from "react-icons/io";
 import { MenuMultiStep } from "../multiStep/multStep"
+import { ModalNovoUsuario } from "./modalNovoUsuario";
 
 
 
 
-interface PermissoesProps {
-  nome: string,
-  val: boolean,
-  tela: string
-}
+
 interface UsuarioProps {
   nome: string,
   usuario: string,
@@ -30,7 +24,7 @@ interface UsuarioProps {
   avatarUrl: string,
   editar: boolean,
   repSenha: string,
-  permissoes: Array<PermissoesProps>,
+  permissoes: Array<string>,
   consultor: Array<Partial<FuncionarioProps>>
 }
 
@@ -73,19 +67,29 @@ export function Usuario() {
   const [modalAdicionar, setModalAdicionar] = useState<boolean>(false)
   const [dadosUser, setDadosUser] = useState<Partial<UsuarioProps>>({})
   const [dadosFuncionario, setDadosFuncionario] = useState<Partial<FuncionarioProps>>({})
-  const [dadosPermissoes, setDadosPermissoes] = useState<Array<PermissoesProps>>([{ nome: "ALTERAR DADOS TITULAR", val: false, tela: 'admContDados' }, { nome: "ALTERAR CARÊNCIA", val: false, tela: 'admContDados' }, { nome: "ALTERAR ADESÃO", val: false, tela: 'admContDados' }, { nome: "ALTERAR VENCIMENTO", val: false, tela: 'admContDados' }, { nome: "ALTERAR CATEGORIA", val: false, tela: 'admContDados' }, { nome: "ALTERAR CONSULTOR", val: false, tela: 'admContDados' }, { nome: "ALTERAR COBRADOR", val: false, tela: 'admContDados' }, { nome: "INATIVAR PLANO", val: false, tela: 'admContDados' }, { nome: "ADICIONAR MENSALIDADE", val: false, tela: 'admContMensal' }, { nome: "REALIZAR ACORDO", val: false, tela: 'admContMensal' }, { nome: 'EXCLUIR MENSALIDADE', val: false, tela: 'admContMensal' }, { nome: "ADICIONAR DEPENDENTE", val: false, tela: 'admContDep' }, { nome: "EXCLUIR DEPENDENTE", val: false, tela: 'admContDep' }, { nome: "EXIBIR EXCLUIDOS", val: false, tela: 'admContDep' }, { nome: "ADICIONAR OBSERVAÇÃO", val: false, tela: 'admContDados'}])
+  const [dadosPermissoes, setDadosPermissoes] = useState<Array<string>>([])
 
 
 
+
+
+
+  const handlePermission =(permission:string)=>{
+    if(dadosUser.permissoes && dadosUser.permissoes.includes(permission)){
+      setDadosUser({...dadosUser,permissoes:dadosUser.permissoes.filter(item=>item!==permission)})
+    }else{
+      setDadosUser({...dadosUser,permissoes:[...(dadosUser.permissoes??[]),permission]})
+       
+    }
+
+}
 
 
   const setarModalAdicionar = () => {
     setModalAdicionar(!modalAdicionar)
   }
 
-  const setarDadosPermissoes = (permissoes: Array<PermissoesProps>) => {
-    setDadosPermissoes(permissoes)
-  }
+ 
 
   const setarDadosUsuario = (fields: Partial<UsuarioProps>) => {
     setDadosUser((prev: Partial<UsuarioProps>) => {
@@ -212,7 +216,8 @@ export function Usuario() {
             })
           }
         </ul>
-        {modalAdicionar && <MenuMultiStep setarModalAdicionar={setarModalAdicionar} getUsers={getUsers} dadosFuncionario={dadosFuncionario} dadosPermissoes={dadosPermissoes} dadosUser={dadosUser} setarDadosFuncionario={setarDadosFuncionario} setarDadosPermissoes={setarDadosPermissoes} setarDadosUsuario={setarDadosUsuario} />}
+        {/*modalAdicionar && <MenuMultiStep setarModalAdicionar={setarModalAdicionar} getUsers={getUsers} dadosFuncionario={dadosFuncionario} dadosPermissoes={dadosPermissoes} dadosUser={dadosUser} setarDadosFuncionario={setarDadosFuncionario} setarDadosPermissoes={setarDadosPermissoes} setarDadosUsuario={setarDadosUsuario} />*/}
+        <ModalNovoUsuario permissions={dadosUser.permissoes??[]}  handlePermission={handlePermission}  dadosUser={dadosUser} setModal={setModalAdicionar} setarDadosUsuario={setarDadosUsuario} show={modalAdicionar} />
       </div>
 
 

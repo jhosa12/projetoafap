@@ -231,7 +231,7 @@ type UserProps = {
     cargo: string,
     dir: string,
     image: string,
-    permissoes: Array<Partial<{ nome: string, tela: string, val: boolean }>>
+    permissoes: Array<string>
 
 }
 interface CheckListProps {
