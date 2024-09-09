@@ -25,7 +25,7 @@ interface PlanosProps{
     perm_lanc:string,
 }
 export function ModalSangria({closeModalSangria,listarLancamentos}:ModalProps){
-    const {usuario,mov}=useContext(AuthContext)
+    const {usuario}=useContext(AuthContext)
     const [descricao,setDescricao]=useState('');
     const[datalanc,setData] =useState(new Date());
     const[historico,setHistorico]= useState('');
