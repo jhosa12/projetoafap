@@ -19,7 +19,6 @@ interface MensalidadeProps {
     vencimento: Date,
     cobranca: Date,
     valor_principal: number,
-    close: boolean,
     status: string,
     usuario: string,
     id_mensalidade: number,

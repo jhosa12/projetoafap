@@ -17,6 +17,7 @@ import { GrConfigure } from "react-icons/gr";
 import { FaSortAlphaDown } from "react-icons/fa";
 import { BsInboxesFill } from "react-icons/bs";
 import { MdHealthAndSafety } from "react-icons/md";
+import { useRouter } from "next/router";
 
 interface ButtonsMenu{
     isAdmOpen:boolean,
@@ -35,7 +36,7 @@ export function MenuLateral(){
     const [isButOpen,setIsButOpen]= useState<ButtonsMenu>({isAdmOpen:false,isCaixaOpen:false,isComercialOpen:false,isServicosOpen:false,isSorteioOpen:false,isEstoqueOpen:false});
     
     const[notifyCount,setCount] = useState<number>();
-    
+    const route =useRouter()
     
  console.log("CHAMOU")
   useEffect(() => {
@@ -150,8 +151,9 @@ async function contagem() {
         <FaAngleDown size={18}/>
     </button>
     <ul  className={`shadow-md rounded-lg py-2 space-y-2 transition duration-300 ${!isButOpen.isCaixaOpen && "hidden"}`}>
-        <li>
+        <li >
             <Link href='/caixa' onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2 transition duration-75 rounded-lg pl-16 group text-white hover:bg-gray-700">Movimentar</Link>
+          
         </li>
         <li>
             <a href="#" className="flex items-center w-full p-2 transition duration-75 rounded-lg pl-16 group  text-white hover:bg-gray-700">Relatórios</a>

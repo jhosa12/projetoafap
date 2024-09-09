@@ -6,19 +6,22 @@ import { IoSearchSharp } from "react-icons/io5";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { ModalLancamentosCaixa } from "@/components/modalLancamentosCaixa";
+import { ModalLancamentosCaixa } from "@/components/caixa/modalLancamentosCaixa";
 import { Tooltip } from "react-tooltip";
 import { AuthContext } from "@/contexts/AuthContext";
 import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
+import { Button, Label, Table, TextInput } from "flowbite-react";
 
 
 registerLocale('pt', pt)
 
-interface LancamentosProps{
-    num_seq:number,
+
+
+export interface LancamentosProps{
+    num_seq:number|null,
     conta:string,
-    ccustos_id:number,
+    ccustos_id:number|null,
     ccustos_desc:string,
     descricao:string,
     conta_n:string,
@@ -26,9 +29,10 @@ interface LancamentosProps{
     notafiscal:string,
     historico:string,
     tipo:string,
-    valor:number,
+    valor:number|null,
     datalanc:Date,
-    usuario:string
+    usuario:string,
+    id_grupo:number|null
 }
 interface GrupoPrps{
     id_grupo:number,
@@ -38,6 +42,7 @@ interface GrupoPrps{
 
 export default function CaixaMovimentar(){
     const[lancamentos,setLancamentos]=useState<Array<LancamentosProps>>([]);
+    const[mov,setMov]=useState<Partial<LancamentosProps>>();
     const[dataInicial,setDataInicial] =useState<Date>(new Date());
     const[dataFinal,setDataFinal] =useState<Date>(new Date());
     const[descricao,setDescricao] =useState('');
@@ -45,25 +50,20 @@ export default function CaixaMovimentar(){
     const[grupos,setGrupos] = useState<Array<GrupoPrps>>([])
     const[saldoInicial,setSaldoInicial]=useState(0);
     const[despesas,setDespesas]=useState(0);
-    const[IsModalOpen,setIsModalOpen] =useState(false);
-    const [planos,setPlanos]=useState([]);
-    const {caixaMovimentacao,usuario,signOut} =useContext(AuthContext);
-    const[visible,setVisible] = useState(false)
     
+    const [planos,setPlanos]=useState([]);
+    const {usuario,signOut} =useContext(AuthContext);
+    const[visible,setVisible] = useState(false)
+    const [openModal,setModal] = useState<boolean>(false)
    
 
-    const closeModal = ()=>{
-        setIsModalOpen(false)
-    }
+    
 
     useEffect(()=>{
-        const user = !!usuario
-        if(!user){ 
-           signOut()
-           return;
-       }
+       
+     
       listarLancamentos()
-    },[usuario])
+    },[])
 
     async function listarLancamentos() {
         try{
@@ -72,7 +72,7 @@ export default function CaixaMovimentar(){
                 dataInicial:dataInicial,
                 dataFinal:dataFinal,
                 descricao:descricao,
-                ccustos_id:Number(usuario?.id)
+                id_user:usuario?.id
           
             })
 
@@ -115,128 +115,119 @@ export default function CaixaMovimentar(){
 return(
 <>
 
-{IsModalOpen && <ModalLancamentosCaixa listarLancamentos={listarLancamentos} planos={planos} closeModal={closeModal} grupo={grupos}/>}
+<ModalLancamentosCaixa setMov={setMov} mov={mov??{}} openModal={openModal} setOpenModal={setModal} listarLancamentos={listarLancamentos} planos={planos}  grupo={grupos}/>
 
 
 <div className="flex w-full justify-center p-4">
 <div className="flex flex-col w-full border  rounded-lg shadow  border-gray-700 ">
-    <div className="text-gray-300 bg-gray-800 rounded-t-lg inline-flex items-center p-2 justify-between">
-    <h1 className=" text-lg  pl-3 font-medium">Movimentação de Caixa</h1>
-   
-    </div>
-    <div className="flex flex-col">
-        <div className="flex flex-row w-full p-2 gap-2">
-        <div>
-          <label  className="block mb-1 text-xs font-medium  text-white">DATA INICIAL</label>
-          <DatePicker selected={dataInicial} onChange={e=>e && setDataInicial(e)}  dateFormat={"dd/MM/yyyy"} locale={"pt"}   required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-          </div>
-          <div>
-          <label  className="block mb-1 text-xs font-medium  text-white">DATA FINAL</label>
-          <DatePicker selected={dataFinal} onChange={e=>e && setDataFinal(e)}  dateFormat={"dd/MM/yyyy"} locale={"pt"}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-          </div>
-          <div className="flex flex-col w-1/3">
-          <label  className="block mb-1 text-xs font-medium  text-white">BUSCAR LANÇAMENTO</label>
-          <input value={descricao} onChange={e=>setDescricao(e.target.value)} className="uppercase block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-sm bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"></input>
-                   </div>
+    <div className="text-gray-600 bg-gray-50 rounded-t-lg inline-flex items-center p-2 justify-between">
+    <h1 className="flex  text-lg items-end pl-3 font-medium">Movimentação de Caixa</h1>
+    <div className="flex flex-row justify-end p-2 gap-2">
+
+    <div >
+        <div className=" block">
+          <Label  value="Data inicial" />
+        </div>
+       <DatePicker selected={dataInicial} onChange={e=>e && setDataInicial(e)}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase  z-50 text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+      </div>
+
+
+
+      <div >
+        <div className=" block">
+          <Label  value="Data final" />
+        </div>
+       <DatePicker selected={dataFinal} onChange={e=>e && setDataFinal(e)}   dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase  z-50 text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+      </div>
+      
+      <div className="w-1/2" >
+        <div className=" block">
+          <Label  value="Buscar" />
+        </div>
+        <TextInput value={descricao} onChange={e=>setDescricao(e.target.value)}  disabled sizing={'sm'}  />
+      </div> 
+         
                    <div className="flex items-end">
-                   <button onClick={()=>listarLancamentos()} type="button" className="inline-flex h-8 font-semibold justify-center items-center bg-blue-600 rounded-lg p-2 gap-2 text-white"><IoSearchSharp size={20}/> Buscar</button>
+                   <Button size={'sm'} onClick={()=>listarLancamentos()} ><IoSearchSharp size={20}/> Buscar</Button>
                    </div>
-                   <div className="flex w-1/3  items-end justify-end pr-2 ">
-                   <button onClick={()=>{caixaMovimentacao({conta:'',conta_n:'',ccustos_desc:'',data:new Date(),datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null}),setIsModalOpen(!IsModalOpen)}} type="button" className="inline-flex w- h-8 font-semibold justify-center items-center bg-green-600 rounded-lg p-2 gap-2 text-white"><MdOutlineAddCircle size={22}/> Novo</button>
+                   <div className="flex   items-end justify-end pr-2 ">
+                   <Button color={'success'} size={'sm'} onClick={()=>{setMov({conta:'',conta_n:'',ccustos_desc:'',data:undefined,datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal(true)}} ><MdOutlineAddCircle size={20}/> Novo</Button>
                    </div>
         </div>
+    </div>
+    <div className="flex flex-col border-t-2">
+    
         <Tooltip id="tooltip-hora"/>
-        <div className="p-2">
-        <table 
-     className="block overflow-y-auto overflow-x-auto text-xs text-left rtl:text-center border-collapse rounded-lg text-gray-400">
-        <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
-        <tr>
-                <th scope="col" className=" px-2 py-1 whitespace-nowrap">
+        <div className="overflow-y-auto p-2">
+        <Table  hoverable theme={{ body: { cell: { base: "px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg" } } }} 
+    >
+        <Table.Head >
+        
+                <Table.HeadCell >
                     Nº LANC.
-                </th>
-                <th scope="col" className="px-8 py-1">
+                </Table.HeadCell>
+                <Table.HeadCell >
                     DATA
-                </th>
-                <th scope="col" className="px-5 py-1">
+                </Table.HeadCell>
+                <Table.HeadCell >
                     CONTA
-                </th>
-                <th scope="col" className="px-5 py-1">
+                </Table.HeadCell>
+                <Table.HeadCell >
                     C.CUSTOS
-                </th>
-                <th scope="col" className="px-5 py-1">
+                </Table.HeadCell>
+                <Table.HeadCell >
                     DOCUMENTO
-                </th> 
-                <th scope="col" className="px-5 py-1">
+                </Table.HeadCell> 
+                <Table.HeadCell >
                     HISTÓRICO
-                </th> 
-                <th scope="col" className="px-5 py-1">
+                </Table.HeadCell> 
+                <Table.HeadCell >
                     TIPO
-                </th>
-                <th scope="col" className="px-5 py-1">
+                </Table.HeadCell>
+                <Table.HeadCell >
                     VALOR
-                </th>  
-                <th scope="col" className="px-4 py-1">
+                </Table.HeadCell>  
+                <Table.HeadCell >
                     AÇÕES
-                </th> 
+                </Table.HeadCell> 
              
-            </tr>
             
-        </thead>
-        <tbody className="text-white">
+            
+        </Table.Head>
+        <Table.Body className="divide-y">
             {lancamentos.map((item,index)=>(
-            <tr className="border-b border-gray-500">
-            <th scope="row"  className="px-2 py-1 font-medium  whitespace-nowrap">
-                   {item.num_seq}
-            </th>
-            <td data-tooltip-id="tooltip-hora" data-tooltip-place="bottom" data-tooltip-content={new Date(item.data).toLocaleTimeString()} className="px-6 py-1">
+            <Table.Row className="bg-white  ">
+
+<Table.Cell className="whitespace-nowrap font-medium text-gray-900 ">
+{item.num_seq}
+            </Table.Cell>
+            <Table.Cell  data-tooltip-id="tooltip-hora" data-tooltip-place="bottom" data-tooltip-content={new Date(item.data).toLocaleTimeString()} >
             {new Date(item.data).toLocaleDateString('pt-BR',{timeZone: 'UTC'})}
-            </td>
-            <td className="px-5 py-1 ">
-            {item.conta}
-           
-            </td>
-            <td className="px-5 py-1 whitespace-nowrap ">
-            {item.ccustos_desc  }
-            </td>
-            <td className="px-5 py-1 whitespace-nowrap ">
-               {item.notafiscal?item.notafiscal.toUpperCase():item.descricao.toUpperCase()}
-            </td>
-            <td className=" px-5 py-1 w-full whitespace-nowrap">
-               {item.historico}
-            </td>
-            <td className={`px-5 py-1  font-semibold ${item.tipo==='RECEITA'?"text-green-500":"text-red-500"}`}>
-               {item.tipo}
-            </td>
-            <td className="px-5 py-1 ">
-               R${item.valor}
-            </td>
-           
+            </Table.Cell>
+            <Table.Cell>{item.conta}</Table.Cell>
             
-            <td className="px-4 py-1 text-right">
-                <button onClick={(event)=>{
+            
+           
+            <Table.Cell>{item.ccustos_desc  }</Table.Cell>
+            <Table.Cell>  {item.notafiscal?item.notafiscal.toUpperCase():item.descricao.toUpperCase()}</Table.Cell>
+            <Table.Cell> {item.historico}</Table.Cell>
+            <Table.Cell className={`font-semibold ${item.tipo==='RECEITA'?"text-green-500":"text-red-500"}`}> {item.tipo}</Table.Cell>
+            <Table.Cell>{Number(item.valor).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
+          
+            <Table.Cell> <button onClick={(event)=>{
                                event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                               caixaMovimentacao({data:item.data,
-                                conta:item.conta,
-                                conta_n:item.conta_n,
-                                ccustos_desc:item.ccustos_desc,
-                                descricao:item.descricao,
-                                historico:item.historico,
-                                num_seq:item.num_seq,
-                                tipo:item.tipo,
-                                valor:item.valor,
-                                usuario:item.usuario,
-                                notafiscal:item.notafiscal
-                            })
-                               setIsModalOpen(true)
-                            }} className="font-medium  text-blue-500 hover:underline">Edit</button>
-            </td>
-           </tr>
+                               setMov({...item})
+                              setModal(true)
+                            }} className="font-medium  text-blue-500 hover:underline">Edit</button></Table.Cell>
+            
+          
+            </Table.Row>
 
             ))}
            
-        </tbody>
+           </Table.Body>
     
-    </table>
+    </Table>
     </div>
     </div>
 
@@ -261,7 +252,7 @@ return(
   </span>
   </div>
     </div>
-    <button onClick={()=>{caixaMovimentacao({conta:'1.02.003',conta_n:'',ccustos_desc:'',data:new Date(),datalanc:new Date(),descricao:'SANGRIA',historico:'',num_seq:null,tipo:'DESPESA',usuario:'',valor:null}),setIsModalOpen(!IsModalOpen)}} type="button" className="inline-flex  font-semibold justify-center items-center bg-yellow-600 rounded-lg p-2 gap-2 text-white"><BiTransfer size={22}/>Sangria</button>
+    <button onClick={()=>{setMov({conta:'1.02.003',conta_n:'',ccustos_desc:'',data:new Date(),datalanc:new Date(),descricao:'SANGRIA',historico:'',num_seq:null,tipo:'DESPESA',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal(true)}} type="button" className="inline-flex  font-semibold justify-center items-center bg-yellow-600 rounded-lg p-2 gap-2 text-white"><BiTransfer size={22}/>Sangria</button>
     </div>
 </div>
 </div>

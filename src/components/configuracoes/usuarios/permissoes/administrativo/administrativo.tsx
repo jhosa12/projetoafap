@@ -25,6 +25,7 @@ export function TabAdministrativo({permissions,handlePermission}:DataProps){
                     <h1 className="text-sm font-semibold">Dados Associado</h1>
                     <ToggleSwitch  sizing={'sm'} checked={permissions.includes('ADM1.1.1')} onChange={()=>handlePermission('ADM1.1.1')} label="Editar"/>
                     <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM1.1.2')} onChange={()=>handlePermission('ADM1.1.2')} label="Lançar/editar observações"/>
+                    <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM1.1.3')} onChange={()=>handlePermission('ADM1.1.3')} label="Inativar/Ativar Contrato"/>
               
                        
                   </Card>
@@ -39,6 +40,7 @@ export function TabAdministrativo({permissions,handlePermission}:DataProps){
                     <ToggleSwitch  sizing={'sm'} checked={permissions.includes('ADM1.2.7')} onChange={()=>handlePermission('ADM1.2.7')}  label="Baixa Retroativa"/>
                     <ToggleSwitch  sizing={'sm'} checked={permissions.includes('ADM1.2.8')} onChange={()=>handlePermission('ADM1.2.8')}  label="Alterar Vencimento"/>
                     <ToggleSwitch  sizing={'sm'} checked={permissions.includes('ADM1.2.9')} onChange={()=>handlePermission('ADM1.2.9')}  label="Alterar data cobrança"/>
+                    <ToggleSwitch  sizing={'sm'} checked={permissions.includes('ADM1.2.10')} onChange={()=>handlePermission('ADM1.2.10')}  label="Exibir Pagas"/>
                        
                   </Card>
                   <Card  theme={{root:{children:"flex h-full flex-col  gap-2 p-4"}}}>

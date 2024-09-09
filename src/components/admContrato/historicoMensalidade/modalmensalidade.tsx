@@ -7,11 +7,16 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import "react-datepicker/dist/react-datepicker.css";
-import { Modal, ModalBody, ModalHeader, TextInput,Datepicker,Select,Checkbox } from "flowbite-react";
+import { Modal, ModalBody, ModalHeader, TextInput,Datepicker,Select,Checkbox, Button } from "flowbite-react";
 
 
-export function ModalMensalidade(){
-    const {closeModa,data,usuario,dadosassociado,carregarDados}=useContext(AuthContext)
+interface DataProps{
+    openModal:boolean,
+    setOpenModal:(open:boolean)=>void
+}
+
+export function ModalMensalidade({openModal,setOpenModal}:DataProps){
+    const {closeModa,data,usuario,dadosassociado,carregarDados,permissoes}=useContext(AuthContext)
     const [desconto,setDesconto] = useState(false)
     const [componentMounted, setComponentMounted] = useState(false);
     const [status,setStatus]=useState('')
@@ -37,7 +42,7 @@ export function ModalMensalidade(){
                       ...(status==='P'?dadosassociado?.mensalidade[data.mensalidade?.index +1]:dadosassociado?.mensalidade[data.mensalidade?.index]),
                       valor_total:status==='P'?dadosassociado?.mensalidade[data.mensalidade?.index+1].valor_principal:dadosassociado?.mensalidade[data.mensalidade?.index].valor_principal,
                       index:status==='P'?data.mensalidade?.index+1:data.mensalidade.index,
-                      close:status ==='P'?true:false,
+                    
                       data_pgto:new Date()
                   },
                 
@@ -105,7 +110,8 @@ export function ModalMensalidade(){
                     estorno_user:status==='P'?null:usuario?.nome,
                     associado:dadosassociado?.nome,
                     form_pagto:status==='A'?null:data.mensalidade?.form_pagto,
-                    banco_dest:status==='A'?null:data.mensalidade.banco_dest
+                    banco_dest:status==='A'?null:data.mensalidade.banco_dest,
+                    empresa:dadosassociado?.empresa
                 }),
                 {
                   pending: `Efetuando ${acao}`,
@@ -164,8 +170,8 @@ export function ModalMensalidade(){
 <Modal
         className="absolute bg-transparent overflow-y-auto"
         content={"base"}
-         show={data.mensalidade?.close}
-         onClose={()=>closeModa({mensalidade:{close:false}})}
+         show={openModal}
+         onClose={()=>setOpenModal(false)}
           size={'4xl'}
            popup 
         
@@ -179,16 +185,16 @@ export function ModalMensalidade(){
                 <div className="grid grid-cols-4 px-2 mt-4 border-b-[1px] border-gray-500 mb-2 pb-2 max-h-[68vh] overflow-y-auto gap-2">
                 <div className="mb-1 col-span-1 ">
 <label  className="block mb-1 text-xs font-medium  text-black">REFERÊNCIA</label>
-<TextInput style={{padding:6}} value={data.mensalidade?.referencia} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),referencia:e.target.value}})} placeholder="REFERÊNCIA"/>
+<TextInput disabled style={{padding:6}} value={data.mensalidade?.referencia} onChange={e=>closeModa({mensalidade:{...(data.mensalidade || {}),referencia:e.target.value}})} placeholder="REFERÊNCIA"/>
 </div>
 
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-black">VENCIMENTO</label>
-    <Datepicker className="absolute" labelClearButton="Limpar" labelTodayButton="Hoje" onSelectedDateChanged={e=>closeModa({mensalidade:{...data.mensalidade,vencimento:new Date(e)}})} value={data.mensalidade?.vencimento && new Date(data.mensalidade?.vencimento).toLocaleDateString('pt-BR',{timeZone:'UTC'})} language="pt-BR" style={{padding:6,paddingLeft:34}}/>
+    <Datepicker disabled={!permissoes.includes('ADM1.2.8')} className="absolute" labelClearButton="Limpar" labelTodayButton="Hoje" onSelectedDateChanged={e=>closeModa({mensalidade:{...data.mensalidade,vencimento:new Date(e)}})} value={data.mensalidade?.vencimento && new Date(data.mensalidade?.vencimento).toLocaleDateString('pt-BR',{timeZone:'UTC'})} language="pt-BR" style={{padding:6,paddingLeft:34}}/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-black">COBRANÇA</label>
-    <Datepicker className="absolute" labelClearButton="Limpar" labelTodayButton="Hoje" onSelectedDateChanged={e=>closeModa({mensalidade:{...data.mensalidade,cobranca:new Date(e)}})} value={data.mensalidade?.cobranca && new Date(data.mensalidade?.cobranca).toLocaleDateString('pt-BR',{timeZone:'UTC'})} language="pt-BR" style={{padding:6,paddingLeft:34}}/>
+    <Datepicker disabled={!permissoes.includes('ADM1.2.9')} className="absolute" labelClearButton="Limpar" labelTodayButton="Hoje" onSelectedDateChanged={e=>closeModa({mensalidade:{...data.mensalidade,cobranca:new Date(e)}})} value={data.mensalidade?.cobranca && new Date(data.mensalidade?.cobranca).toLocaleDateString('pt-BR',{timeZone:'UTC'})} language="pt-BR" style={{padding:6,paddingLeft:34}}/>
 </div>
 
 <div className="mb-1 col-span-1">
@@ -257,7 +263,7 @@ export function ModalMensalidade(){
 </div>
 <div className="mb-1 col-span-1">
 <label  className="block mb-1 text-xs font-medium  text-black">DATA PAG.</label>
-<Datepicker  className="absolute" labelClearButton="Limpar" labelTodayButton="Hoje" onSelectedDateChanged={e=>closeModa({mensalidade:{...data.mensalidade,data_pgto:new Date(e)}})} value={data.mensalidade?.data_pgto && new Date(data.mensalidade?.data_pgto).toLocaleDateString('pt-BR',{timeZone:'UTC'})} language="pt-BR" style={{padding:6,paddingLeft:34,width:'80%'}}/>
+<Datepicker disabled={!permissoes.includes('ADM1.2.7')} className="absolute" labelClearButton="Limpar" labelTodayButton="Hoje" onSelectedDateChanged={e=>closeModa({mensalidade:{...data.mensalidade,data_pgto:new Date(e)}})} value={data.mensalidade?.data_pgto && new Date(data.mensalidade?.data_pgto).toLocaleDateString('pt-BR',{timeZone:'UTC'})} language="pt-BR" style={{padding:6,paddingLeft:34,width:'80%'}}/>
 </div>
 {((data.mensalidade?.valor_total ?? 0)<(data.mensalidade?.valor_principal ?? 0) && data.mensalidade?.valor_total!==undefined)&& data.mensalidade.valor_total>0?(
  <div className="col-span-4 gap-1 mt-1 inline-flex ">
@@ -278,8 +284,8 @@ export function ModalMensalidade(){
 
           <Modal.Footer>
             <div className="inline-flex w-full justify-between gap-4">
-            <button  type='button' onClick={()=>baixarEstornar('P','Baixa')} className="flex flex-row w-full justify-center items-center bg-green-600 rounded-lg p-2 gap-2 text-white"><IoIosArrowDropdownCircle size={25}/>BAIXAR</button>
-            <button type="button" onClick={()=>baixarEstornar('A','Estorno')} className=" flex flex-row w-full justify-center items-center  bg-red-600 rounded-lg p-2 gap-2 text-white"><GiReturnArrow size={22}/> ESTORNAR</button>
+            <Button disabled={!permissoes.includes('ADM1.2.5')} color={'success'} onClick={()=>baixarEstornar('P','Baixa')} ><IoIosArrowDropdownCircle className="mr-2 h-5 w-5"/>BAIXAR</Button>
+            <Button disabled={!permissoes.includes('ADM1.2.6')} color={'failure'} type="button" onClick={()=>baixarEstornar('A','Estorno')} ><GiReturnArrow className="mr-2 h-5 w-5"/> ESTORNAR</Button>
             </div>
     
         </Modal.Footer>

@@ -18,7 +18,7 @@ interface UsuarioProps {
   password: string,
   senhaAtual: string,
   image: string,
-  id: number | null,
+  id_user:string,
   cargo: string,
   file: File | undefined,
   avatarUrl: string,
@@ -71,6 +71,142 @@ export function Usuario() {
 
 
 
+  async function handleNovoCadastro() {
+    if(dadosUser.password!==dadosUser.repSenha){
+      toast.error('Senhas não coincidem !')
+      return
+    }
+    
+    
+    const data = new FormData();
+    data.append('nome',dadosUser.nome??'');
+    data.append('usuario',dadosUser.usuario??'');
+    data.append('password',dadosUser.password??'');
+    data.append( 'cargo',dadosUser.cargo??'');
+    data.append('nomeCompleto',dadosFuncionario?.nome??'');
+    data.append( 'cpf',dadosFuncionario.cpf??'');
+    data.append( 'rg',dadosFuncionario.rg??'');
+    data.append('nascimento',dadosFuncionario.data_nascimento?.toString()??'');
+    data.append('cep',dadosFuncionario.cep??'');
+    data.append( 'endereco',dadosFuncionario.endereco??'');
+    data.append('numero',dadosFuncionario.numero??'');
+    data.append( 'bairro',dadosFuncionario.bairro??'');
+    data.append('cidade',dadosFuncionario.cidade??'');
+    data.append('uf',dadosFuncionario.uf??'');
+    data.append('telefone',dadosFuncionario.telefone??'');
+    data.append('email',dadosFuncionario.email??'');
+    data.append('dataAdmissao',dadosFuncionario.dt_admissao?.toString()??'');
+    data.append('CNH_categoria',dadosFuncionario.cnh_categoria??'');
+    data.append('titulo_eleitor',dadosFuncionario.titulo_eleitor??'');
+    data.append('zona',dadosFuncionario.zona?.toString()??'');
+    data.append( 'secao',dadosFuncionario.secao?.toString()??'');
+    data.append('PIS_PASEP',dadosFuncionario.pis_pasep??'');
+    data.append('escolaridade',dadosFuncionario.grau_instrucao??'');
+    data.append('nome_conjuge',dadosFuncionario.nome_conjuge??'');
+    data.append('n_dep',dadosFuncionario.n_dependentes?.toString()??'');
+    data.append('n_dep14',dadosFuncionario.menores_14?.toString()??'');
+    data.append('caso_emergencia',dadosFuncionario.caso_emergencia??'');
+    data.append('salario',dadosFuncionario.salario?.toString()??'');
+    data.append('contrato_exp',dadosFuncionario.contrato_exp?.toString()??'');
+    data.append('prorrogacao',dadosFuncionario.prorrogacao_cont?.toString()??'');
+    data.append('situacao',dadosFuncionario.situacao??'');
+    data.append('permissoes',JSON.stringify(dadosPermissoes)??'');
+
+    if(dadosUser.file){
+      data.append( 'file',dadosUser.file);
+    }
+   
+
+    try {
+      await toast.promise(
+        api.post('/user',data),
+        {error:'ERRO AO REALIZAR CADASTRO',
+          pending:'CADASTRANDO NOVO FUNCIONÁRIO',
+          success:'FUNCIONÁRIO CADASTRADO COM SUCESSO'
+        }
+      )
+      
+    } catch (error) {
+      console.log(error)
+      
+    }
+   await getUsers()
+    
+  }
+
+
+
+
+  async function handleEditarCadastro() {
+    if(dadosUser.password && (dadosUser.password!==dadosUser.repSenha)){
+     toast.error('Senhas não coincidem !')
+     return
+  }
+
+   if(dadosUser.senhaAtual && (!dadosUser.password||!dadosUser.repSenha)){
+     toast.info('Insira a nova senha')
+     return ;
+   }
+    console.log(dadosFuncionario.id_consultor)
+    const data = new FormData();
+   dadosUser.id_user && data.append('id',dadosUser.id_user?.toString());
+   dadosFuncionario.id_consultor && data.append('id_consultor',dadosFuncionario.id_consultor?.toString());
+  dadosUser.nome &&  data.append('nome',dadosUser.nome);
+   dadosUser.usuario && data.append('usuario',dadosUser.usuario);
+    dadosUser.password && data.append('password',dadosUser.password);
+  dadosUser.senhaAtual && data.append('senhaAtual',dadosUser.senhaAtual);
+   dadosUser.cargo && data.append( 'cargo',dadosUser.cargo);
+  dadosFuncionario.nome &&  data.append('nomeCompleto',dadosFuncionario?.nome);
+   dadosFuncionario.cpf && data.append( 'cpf',dadosFuncionario.cpf);
+  dadosFuncionario.rg &&  data.append( 'rg',dadosFuncionario.rg);
+   dadosFuncionario.data_nascimento && data.append('nascimento',dadosFuncionario.data_nascimento?.toString());
+   dadosFuncionario.cep && data.append('cep',dadosFuncionario.cep);
+   dadosFuncionario.endereco && data.append( 'endereco',dadosFuncionario.endereco);
+   dadosFuncionario.numero && data.append('numero',dadosFuncionario.numero);
+   dadosFuncionario.bairro && data.append( 'bairro',dadosFuncionario.bairro);
+  dadosFuncionario.cidade &&  data.append('cidade',dadosFuncionario.cidade);
+   dadosFuncionario.uf && data.append('uf',dadosFuncionario.uf);
+   dadosFuncionario.telefone && data.append('telefone',dadosFuncionario.telefone);
+   dadosFuncionario.email && data.append('email',dadosFuncionario.email);
+  dadosFuncionario.dt_admissao &&  data.append('dataAdmissao',dadosFuncionario.dt_admissao?.toString());
+   dadosFuncionario.cnh_categoria && data.append('CNH_categoria',dadosFuncionario.cnh_categoria);
+   dadosFuncionario.titulo_eleitor && data.append('titulo_eleitor',dadosFuncionario.titulo_eleitor);
+   dadosFuncionario.zona && data.append('zona',dadosFuncionario.zona?.toString());
+   dadosFuncionario.secao && data.append( 'secao',dadosFuncionario.secao?.toString());
+    dadosFuncionario.pis_pasep && data.append('PIS_PASEP',dadosFuncionario.pis_pasep);
+   dadosFuncionario.grau_instrucao && data.append('escolaridade',dadosFuncionario.grau_instrucao);
+   dadosFuncionario.nome_conjuge && data.append('nome_conjuge',dadosFuncionario.nome_conjuge);
+   dadosFuncionario.n_dependentes && data.append('n_dep',dadosFuncionario.n_dependentes?.toString());
+   dadosFuncionario.menores_14 && data.append('n_dep14',dadosFuncionario.menores_14?.toString());
+   dadosFuncionario.caso_emergencia && data.append('caso_emergencia',dadosFuncionario.caso_emergencia);
+   dadosFuncionario.salario && data.append('salario',dadosFuncionario.salario?.toString());
+  dadosFuncionario.contrato_exp &&  data.append('contrato_exp',dadosFuncionario.contrato_exp?.toString());
+   dadosFuncionario.prorrogacao_cont && data.append('prorrogacao',dadosFuncionario.prorrogacao_cont?.toString());
+  dadosFuncionario.situacao &&  data.append('situacao',dadosFuncionario.situacao);
+  data.append('permissoes',JSON.stringify(dadosUser.permissoes));
+
+    if(dadosUser.file){
+      data.append( 'file',dadosUser.file);
+    }
+   
+
+    try {
+      await toast.promise(
+        api.put('/user/editar',data),
+        {error:'ERRO AO REALIZAR ALTERAÇÃO',
+          pending:'ALTERANDO DADOS',
+          success:'DADOS ALTERADOS COM SUCESSO'
+        }
+      )
+      
+    } catch (error) {
+      console.log(error)
+      
+    }
+    
+ await getUsers()
+    
+  }
 
 
 
@@ -127,7 +263,7 @@ export function Usuario() {
 
       setUserDados(response.data)
 
-
+      console.log(response.data)
     } catch (error) {
       toast.error('ERRO NA REQUISIÇÃO')
 
@@ -144,7 +280,7 @@ export function Usuario() {
             cargo: '',
             consultor: [],
             editar: false,
-            id: null,
+            id_user: '',
             nome: '',
             permissoes: [],
             password: '',
@@ -217,7 +353,7 @@ export function Usuario() {
           }
         </ul>
         {/*modalAdicionar && <MenuMultiStep setarModalAdicionar={setarModalAdicionar} getUsers={getUsers} dadosFuncionario={dadosFuncionario} dadosPermissoes={dadosPermissoes} dadosUser={dadosUser} setarDadosFuncionario={setarDadosFuncionario} setarDadosPermissoes={setarDadosPermissoes} setarDadosUsuario={setarDadosUsuario} />*/}
-        <ModalNovoUsuario permissions={dadosUser.permissoes??[]}  handlePermission={handlePermission}  dadosUser={dadosUser} setModal={setModalAdicionar} setarDadosUsuario={setarDadosUsuario} show={modalAdicionar} />
+        <ModalNovoUsuario handleEditarCadastro={handleEditarCadastro}  handleNovoCadastro={handleNovoCadastro}  handlePermission={handlePermission}  dadosUser={dadosUser} setModal={setModalAdicionar} setarDadosUsuario={setarDadosUsuario} show={modalAdicionar} />
       </div>
 
 

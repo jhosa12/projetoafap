@@ -7,14 +7,14 @@ import React, { useState, useContext, useEffect, useRef } from "react";
 import { RiFileAddLine } from "react-icons/ri";
 import { AuthContext } from "../../contexts/AuthContext"
 import { toast } from "react-toastify";
-import { ModalMensalidade } from "@/components/modalmensalidade";
+
 import { RiAddCircleFill } from "react-icons/ri";
 import { MdDashboard, MdDeleteForever } from "react-icons/md";
 import { api } from "@/services/apiClient";
 import { TbAlertTriangle } from "react-icons/tb";
-import { ModalDependentes } from "@/components/modalDependentes";
+import { ModalDependentes } from "@/components/admContrato/dependentes/modalDependentes";
 import { FaEdit } from "react-icons/fa";
-import { ModalEditarDados } from "@/components/modalEditarDados";
+import { ModalEditarDados } from "@/components/admContrato/dadosAssociado/modalEditar/modalEditarDados";
 import { Tooltip } from 'react-tooltip';
 import { BiSave } from "react-icons/bi";
 import { IoMdEye } from "react-icons/io";
@@ -175,7 +175,6 @@ interface DependentesProps {
     carencia: Date,
     id_dependente: number,
     cad_dh: Date,
-    close: boolean,
     sexo: string,
     saveAdd: boolean,
     excluido: boolean,
@@ -232,7 +231,7 @@ interface AssociadoProps {
 
 export default function AdmContrato() {
 
-    const { usuario, data, closeModa, dadosassociado, carregarDados } = useContext(AuthContext)
+    const { usuario, data, closeModa, dadosassociado, carregarDados,permissoes } = useContext(AuthContext)
     const [indexTab, setIndex] = useState<number>(2)
    
 
@@ -259,7 +258,6 @@ export default function AdmContrato() {
             celular2: undefined,
             cep: undefined,
             cidade: undefined,
-            closeEditarAssociado: undefined,
             closeModalPlano: undefined,
             contrato: undefined,
             cpf: undefined,
@@ -393,8 +391,8 @@ export default function AdmContrato() {
             <div className="flex flex-col w-full mr-2  justify-center">
                 {data.closeModalPlano && (<ModalBusca />)}
                 {data.closeModalCadastro && (<Teste />)}
-                {data.mensalidade?.close && (<ModalMensalidade />)}
-                {data.dependente?.close && <ModalDependentes />}
+               
+               
                
 
 
@@ -418,7 +416,7 @@ export default function AdmContrato() {
       <DadosAssociado dadosassociado={dadosassociado??{}}/>
       </Tabs.Item>
 
-      <Tabs.Item title="Histórico/Mensalidade" icon={HiMiniWallet}> 
+      <Tabs.Item disabled={!permissoes.includes('ADM1.2')} title="Histórico/Mensalidade" icon={HiMiniWallet}> 
       <HistoricoMensalidade
                                 carregarDados={carregarDados}
                                 dados={{ acordo: data.acordo ?? {}, closeModalPlano: data.closeModalPlano ?? false, id_associado: dadosassociado?.id_associado ?? 0, mensalidade: data.mensalidade ?? {}, mensalidadeAnt: data.mensalidadeAnt ?? {} }}
@@ -442,7 +440,7 @@ export default function AdmContrato() {
 
                             />
       </Tabs.Item>
-      <Tabs.Item title="Dependentes" icon={HiUserGroup
+      <Tabs.Item disabled={!permissoes.includes('ADM1.3')} title="Dependentes" icon={HiUserGroup
       }>
        <Dependentes/>
       </Tabs.Item>
@@ -460,7 +458,7 @@ export default function AdmContrato() {
                                        uf={dadosassociado?.uf??''}
                                        />
       </Tabs.Item>
-      <Tabs.Item title="Óbitos" icon={HiMiniInbox
+      <Tabs.Item disabled={!permissoes.includes('ADM1.5')} title="Óbitos" icon={HiMiniInbox
       }>
        <ObitosAssociado
                                 obitos={dadosassociado?.contrato?.obitos ?? []}

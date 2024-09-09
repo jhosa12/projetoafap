@@ -13,21 +13,7 @@ type CidadesProps = {
     cidade: string
 }
 
-type CaixaProps = {
-    num_seq: number | null,
-    conta: string,
-    conta_n: string,
-    descricao: string,
-    historico: string,
-    ccustos_desc: string,
-    valor: number | null,
-    usuario: string,
-    data: Date,
-    id_grupo: number | null,
-    tipo: string,
-    datalanc: Date,
-    notafiscal: string
-}
+
 
 
 type DependentesProps = {
@@ -39,7 +25,6 @@ type DependentesProps = {
     carencia: Date,
     id_dependente: number,
     cad_dh: Date,
-    close: boolean,
     sexo: string,
     saveAdd: boolean,
     excluido: boolean,
@@ -80,7 +65,6 @@ export type MensalidadeProps = {
     vencimento: Date,
     cobranca: Date,
     valor_principal: number,
-    close: boolean,
     status: string,
     usuario: string,
     hora_pgto:string
@@ -127,7 +111,7 @@ type DadosCadastro = {
     mensalidade: Partial<MensalidadeProps>
     mensalidadeAnt: Partial<MensalidadeProps>
     mensalidadeProx: Partial<MensalidadeProps>,
-    closeEditarAssociado: boolean,
+  
     acordo: Partial<AcordoProps>
 }
 type PlanosProps = {
@@ -204,14 +188,12 @@ export type AssociadoProps = {
 }
 type AuthContextData = {
     usuario: UserProps | undefined,
-    isAuthenticated: boolean,
+    userLogged(): boolean,
     sign: (credentials: SignInProps) => Promise<void>,
     signOut: () => void,
     closeModa: (fields: Partial<DadosCadastro>) => void,
     setarServico: (fields: Partial<ObitoProps>) => void,
     servico: Partial<ObitoProps>,
-    caixaMovimentacao: (fields: Partial<CaixaProps>) => void,
-    mov: Partial<CaixaProps>,
     data: Partial<DadosCadastro>,
     dadosassociado: Partial<AssociadoProps> | undefined,
     carregarDados: () => Promise<void>,
@@ -219,6 +201,8 @@ type AuthContextData = {
     listaConv: Partial<ConvProps>,
     limparDados:()=>void,
     setarDadosAssociado:(fields:Partial<AssociadoProps>)=>void
+    permissoes:Array<string>
+    setPermissoes:(array:Array<string>)=>void
 }
 
 type SignInProps = {
@@ -231,7 +215,7 @@ type UserProps = {
     cargo: string,
     dir: string,
     image: string,
-    permissoes: Array<string>
+
 
 }
 interface CheckListProps {
@@ -455,28 +439,48 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod: [] });
     const [dadosassociado, setDadosAssociado] = useState<Partial<AssociadoProps>>({});
     const [data, setData] = useState<Partial<DadosCadastro>>({});
-    const [mov, setMov] = useState<Partial<CaixaProps>>({});
+   
     const [servico, setServico] = useState<Partial<ObitoProps>>({ hr_sepultamento: new Date(), end_hora_falecimento: new Date(), end_hora_informaram: new Date() });
+    const [permissoes,setPermissoes] =useState<Array<string>>([])
+    const [token,setToken] = useState(()=>{
+        const { "@nextauth.token": tokenAuth } = parseCookies();
+        if(tokenAuth){
+            return tokenAuth
+        }
+        return ""
+    })
+    
 
-    const isAuthenticated = useMemo(() => !!usuario, [usuario]);
+
+    const userLogged = useCallback(() => {
+        const { "@nextauth.token": tokenAuth } = parseCookies();
+        if (tokenAuth) {
+          return true;
+        }
+        return false;
+      }, []);
+
+
+
 
     const sign = useCallback(async ({ user, password }: SignInProps) => {
         try {
             const response = await api.post('/session', { usuario: user, password });
-            const { id, token, cargo, dir, nome, image, permissoes } = response.data;
+            const { id, tokenAuth, cargo, dir, nome, image, permissoes } = response.data;
 
             if (typeof window !== 'undefined') {
                 localStorage.setItem('@user.image', image);
             }
-            setCookie(undefined, '@nextauth.token', token, {
+            setCookie(undefined, '@nextauth.token', tokenAuth, {
                 maxAge: 60 * 60 * 24 * 1,
                 path: "/"
             });
+            setToken(tokenAuth)
 
            // await userToken();
          const  parsedPermissoes = typeof permissoes === 'string' ? JSON.parse(permissoes) : permissoes ?? [];
-            api.defaults.headers["Authorization"] = `Bearer ${token}`;
-           setUser({ id: id, nome: nome.toUpperCase(), cargo, dir, image: image ?? '', permissoes: parsedPermissoes });
+            api.defaults.headers["Authorization"] = `Bearer ${tokenAuth}`;
+           setUser({ id: id, nome: nome.toUpperCase(), cargo, dir, image: image ?? '' });
             Router.push("/admcontrato");
 
         } catch (err) {
@@ -518,7 +522,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 const decodeToken = decode(token);
                 if (decodeToken && typeof decodeToken === 'object') {
                     const { nome, sub, dir, cargo, permissoes } = decodeToken;
-                    setUser({ id: String(sub), nome: nome.toUpperCase(), cargo, dir, image: image ?? '', permissoes: JSON.parse(permissoes) });
+                    setUser({ id: String(sub), nome: nome.toUpperCase(), cargo, dir, image: image ?? '' });
                 }
             
         } catch (error) {
@@ -526,9 +530,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
-    const caixaMovimentacao = useCallback((fields: Partial<CaixaProps>) => {
-        setMov(prev => ({ ...prev, ...fields }));
-    }, []);
+  
 
 
     useEffect(()=>{
@@ -583,7 +585,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ setarDadosAssociado, limparDados, usuario, isAuthenticated, sign, signOut, data, closeModa, dadosassociado, carregarDados, caixaMovimentacao, mov, setarServico, servico, listaConv, setarListaConv }}>
+        <AuthContext.Provider value={{permissoes,setPermissoes, setarDadosAssociado, limparDados, usuario, userLogged, sign, signOut, data, closeModa, dadosassociado, carregarDados, setarServico, servico, listaConv, setarListaConv }}>
             {children}
         </AuthContext.Provider>
     );

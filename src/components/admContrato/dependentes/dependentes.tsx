@@ -7,14 +7,17 @@ import { RiAddCircleFill } from "react-icons/ri"
 import { TbAlertTriangle, TbWheelchair } from "react-icons/tb"
 import { toast } from "react-toastify"
 import { Tooltip } from "react-tooltip"
+import { ModalDependentes } from "./modalDependentes"
+import { ModalExcluirDep } from "./modalExcluir"
 
 
 
 
 export function Dependentes(){
     const [checkDependente, setCheckDependente] = useState(false)
-    const {closeModa,dadosassociado,data,usuario,setarDadosAssociado} =useContext(AuthContext)
-    const [excluirDependente, setExcluirDependente] = useState(false)
+    const {closeModa,dadosassociado,data,usuario,setarDadosAssociado,permissoes} =useContext(AuthContext)
+    const [modalExcluirDep, setModalExcDep] = useState(false)
+    const [modalDep,setModalDep] = useState<boolean>(false)
 
 
 
@@ -50,8 +53,8 @@ export function Dependentes(){
             novo.splice(index,1)
             setarDadosAssociado({...dadosassociado,dependentes:novo})
          //   await carregarDados()
-           setExcluirDependente(false)
-            closeModa({ dependente: { close: false } })
+           setModalExcDep(false)
+            
 
         } catch (err) {
             console.log(err)
@@ -65,7 +68,7 @@ export function Dependentes(){
         <div className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)]  max-w-[calc(100vw-350px)]  p-4 shadow-md sm:rounded-lg">
                                 <div className="flex w-full mb-2 gap-2">
                                     <label className="relative inline-flex w-[150px] justify-center  items-center mb-1 cursor-pointer">
-                                        <input checked={checkDependente} onChange={() => setCheckDependente(!checkDependente)} type="checkbox" value="2" className="sr-only peer" />
+                                        <input disabled={!permissoes.includes('ADM1.3.1')} checked={checkDependente} onChange={() => setCheckDependente(!checkDependente)} type="checkbox" value="2" className="sr-only peer" />
                                         <div className="w-9 h-5 rounded-full peer bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[7px] after:start-[9px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
 
                                         <Tooltip className="z-30" id="id_dependente" />
@@ -73,39 +76,18 @@ export function Dependentes(){
                                         <span className="ms-2 text-sm font-medium whitespace-nowrap ">Exibir Excluidos</span>
                                     </label>
                                     <div className="inline-flex rounded-md shadow-sm mb-1" role="group" >
-                                        <button onClick={() => closeModa({ dependente: { close: true, saveAdd: false } })} type="button" className="inline-flex items-center px-4 py-1  bg-gray-200 border-gray-400  gap-1 text-sm font-medium  border  rounded-s-lg  focus:z-10 focus:ring-2   hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+                                        <button disabled={!permissoes.includes('ADM1.3.2')} onClick={() => closeModa({ dependente: {  saveAdd: false } })} type="button" className=" disabled:bg-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed inline-flex items-center px-4 py-1  bg-gray-200 border-gray-400  gap-1 text-sm font-medium  border  rounded-s-lg   enable:hover:text-white hover:bg-gray-400  ">
                                             <RiAddCircleFill size={20} />
                                             Adicionar
                                         </button>
-                                        <button type="button" className="inline-flex items-center px-4 py-1 gap-1 bg-gray-200 border-gray-400  text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2    hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+                                        <button type="button"  className=" disabled:bg-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed inline-flex items-center px-4 py-1  bg-gray-200 border-gray-400  gap-1 text-sm font-medium  border enable:hover:text-white hover:bg-gray-400  ">
                                             Settings
                                         </button>
-                                        <button onClick={() => setExcluirDependente(!excluirDependente)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm  bg-gray-200 border-gray-400 text-gray-600font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2     hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+                                        <button disabled={!permissoes.includes('ADM1.3.3')} onClick={() => setModalExcDep(true)} type="button"  className=" disabled:bg-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed inline-flex items-center px-4 py-1  bg-gray-200 border-gray-400  gap-1 text-sm font-medium  border  rounded-e-lg   enable:hover:text-white hover:bg-gray-400  ">
                                             <MdDeleteForever size={20} />
                                             Excluir
                                         </button>
-                                        {excluirDependente ? (<div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                                            <div className="flex items-center justify-center p-2 w-full h-full">
-                                                <div className="relative rounded-lg shadow bg-gray-800">
-                                                    <button type="button" onClick={() => setExcluirDependente(!excluirDependente)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                                                        <button type="button" onClick={() => closeModa({ closeModalPlano: false })} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                                                            <IoIosClose size={30} />
-                                                        </button>
-                                                    </button>
-                                                    <div className="p-4 md:p-5 text-center">
-                                                        <div className="flex w-full justify-center items-center">
-                                                            <TbAlertTriangle className='text-gray-400' size={60} />
-                                                        </div>
-                                                        <h3 className="mb-3 text-lg font-normal  text-gray-400">{`Realmente deseja deletar ${data.dependente?.nome} ?`}</h3>
-                                                        <input placeholder="Informe o motivo da exclusão" autoComplete='off' value={data.dependente?.exclusao_motivo} onChange={e => closeModa({ dependente: { ...data.dependente, exclusao_motivo: e.target.value } })} type="text" required className="block uppercase w-full mb-2 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
-                                                        <button onClick={excluirDep} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
-                                                            Sim, tenho certeza
-                                                        </button>
-                                                        <button onClick={() => setExcluirDependente(!excluirDependente)} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>) : ''}
+                                   
                                     </div>
                                 </div>
                                 <table
@@ -166,7 +148,7 @@ export function Dependentes(){
                                     <tbody>
                                         {dadosassociado?.dependentes?.map((item, index) => (
                                             checkDependente && item.excluido ? (
-                                                <tr key={index} onClick={() => closeModa({ dependente: { id_dependente: item.id_dependente, nome: item.nome, excluido: item.excluido } })} className={`border-b ${item.id_dependente === data.dependente?.id_dependente ? "bg-gray-600" : "bg-gray-50"} border-gray-300  hover:bg-gray-600 text-red-500`}>
+                                                <tr key={index} onClick={() => closeModa({ dependente: { id_dependente: item.id_dependente, nome: item.nome, excluido: item.excluido } })} className={`border-b ${item.id_dependente === data.dependente?.id_dependente ? "bg-gray-400" : "bg-gray-50"} border-gray-300  hover:bg-gray-300 text-red-500`}>
                                                     <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap">
                                                         {item.nome}
                                                     </th>
@@ -191,13 +173,14 @@ export function Dependentes(){
 
 
                                                     <td className="px-4 py-1 text-right">
-                                                        <button onClick={(event) => {
+                                                        <button disabled={!permissoes.includes('ADM1.3.4')} onClick={(event) => {
                                                             event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
+                                                            setModalDep(true),
                                                             closeModa(
                                                                 {
                                                                     dependente: {
                                                                         saveAdd: true,
-                                                                        close: true,
+                                                                      
                                                                         carencia: item.carencia,
                                                                         data_adesao: item.data_adesao,
                                                                         data_nasc: item.data_nasc,
@@ -209,7 +192,7 @@ export function Dependentes(){
                                                                     }
                                                                 })
                                                         }} className="font-medium  text-blue-500 hover:underline">Edit</button>
-                                                        {item.convalescenca.convalescenca_prod.map((dados, index) => (
+                                                        {item?.convalescenca?.convalescenca_prod?.map((dados, index) => (
                                                             dados?.status === 'ABERTO' && <button data-tooltip-id="id_dependente" data-tooltip-content={dados?.descricao} className="text-yellow-500">
                                                                 <TbWheelchair size={19} />
                                                             </button>
@@ -239,13 +222,14 @@ export function Dependentes(){
                                                         </td>
                                                         <td className="px-3 py-1 w-full">
                                                             <div className="inline-flex gap-3">
-                                                                <button onClick={(event) => {
+                                                                <button disabled={!permissoes.includes('ADM1.3.4')} onClick={(event) => {
                                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
+                                                                    setModalDep(true),
                                                                     closeModa(
                                                                         {
                                                                             dependente: {
                                                                                 saveAdd: true,
-                                                                                close: true,
+                                                                               
                                                                                 carencia: item.carencia,
                                                                                 data_adesao: item.data_adesao,
                                                                                 data_nasc: item.data_nasc,
@@ -274,6 +258,9 @@ export function Dependentes(){
                                     </tbody>
 
                                 </table>
+
+                                <ModalDependentes openModal={modalDep} setModal={setModalDep}/>
+                                <ModalExcluirDep excluirDep={excluirDep} openModal={modalExcluirDep} setOpenModal={setModalExcDep}/>
                             </div>
     )
 }

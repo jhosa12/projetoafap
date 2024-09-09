@@ -17,7 +17,6 @@ interface DadosProps{
     carencia: Date,
     id_dependente: number,
     cad_dh: Date,
-    close: boolean,
     sexo: string,
     saveAdd: boolean,
     dt_exclusao: Date,

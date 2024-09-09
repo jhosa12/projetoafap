@@ -1,8 +1,10 @@
 import { MenuLateral } from '@/components/menu';
 import { AuthContext, AuthProvider, useAuth } from '@/contexts/AuthContext'
+import { api } from '@/services/apiClient';
 import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router';
+import { parseCookies } from 'nookies';
 import { memo, StrictMode, useEffect } from 'react';
 import { ToastContainer, Zoom } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,13 +18,37 @@ function isLoginPage(pathname: string) {
 
 function PrivateRouter({Component,pageProps,router}:AppProps){
 
-  const {isAuthenticated,usuario} = useAuth()
+  const {usuario,setPermissoes,userLogged} = useAuth()
+
+async function GetPermissions() {
+ 
+  try {
+    const permissions = await api.post('/user/permissions',{
+      id_usuario:usuario?.id
+    })
+    setPermissoes(permissions.data)
+ 
+  } catch (error) {
+    console.log(error)
+  }
+ 
+
+}
+
+
   useEffect(()=>{
-    
-    if( !isAuthenticated && !isLoginPage(router.pathname)){
+
+
+    if( !userLogged() && !isLoginPage(router.pathname)){
       router.push('/')
     }
-  },[isAuthenticated,router])
+     
+ !isLoginPage(router.pathname) &&  usuario?.id &&  GetPermissions()
+  
+    
+   
+   
+  },[router.pathname,usuario])
 
   return <Component {...pageProps}/>
 }

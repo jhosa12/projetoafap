@@ -1,6 +1,6 @@
-import { ModalEditarDados } from "@/components/modalEditarDados";
+import { ModalEditarDados } from "@/components/admContrato/dadosAssociado/modalEditar/modalEditarDados";
 import { AssociadoProps, AuthContext } from "@/contexts/AuthContext";
-import { Card } from "flowbite-react";
+import { Button, Card } from "flowbite-react";
 import { useContext, useState } from "react";
 import { BiSave } from "react-icons/bi";
 import { FaEdit } from "react-icons/fa";
@@ -18,8 +18,8 @@ interface DataProps{
 
 
 export function DadosAssociado({dadosassociado}:DataProps){
-         const {usuario,closeModa,data}= useContext(AuthContext)
-         const [openEdit, setOpenEdit] = useState<number>(0)
+         const {usuario,closeModa,permissoes}= useContext(AuthContext)
+        const [openEdit,setModalEdit]=useState<boolean>(false)
          const [verObs, setVerObs] = useState(false)
          const [observacao, setObservacao] = useState('');
 
@@ -60,7 +60,46 @@ export function DadosAssociado({dadosassociado}:DataProps){
                                 </h2>
                                 <div className="flex w-full flex-row gap-2">
 
-                                   <Card className="w-full text-gray-600 text-sm">
+                                   <Card onClick={() => {
+
+closeModa({
+   
+    name: dadosassociado.nome,
+    nasc: dadosassociado?.data_nasc??new Date(),
+    bairro: dadosassociado.bairro,
+    celular1: dadosassociado.celular1,
+    celular2: dadosassociado.celular2,
+    telefone: dadosassociado.telefone,
+    cidade: dadosassociado.cidade,
+    cep: dadosassociado.cep,
+    cpf: dadosassociado.cpf,
+    endereco: dadosassociado.endereco,
+    email: dadosassociado.email,
+    id_associado: dadosassociado.id_associado,
+    contrato: {
+        id_contrato: dadosassociado?.contrato?.id_contrato,
+        cobrador: dadosassociado?.contrato?.cobrador,
+        consultor: dadosassociado?.contrato?.consultor,
+        data_vencimento: dadosassociado?.contrato?.data_vencimento,
+        dt_adesao: dadosassociado?.contrato?.dt_adesao,
+        dt_carencia: dadosassociado?.contrato?.dt_carencia,
+        id_plano: dadosassociado?.contrato?.id_plano,
+        origem: dadosassociado?.contrato?.origem,
+        plano: dadosassociado?.contrato?.plano,
+        situacao: dadosassociado?.contrato?.situacao,
+        supervisor: dadosassociado?.contrato?.supervisor,
+        valor_mensalidade: dadosassociado?.contrato?.valor_mensalidade
+    },
+    //  planos:usuario?.planos,
+    // cidades:usuario?.cidades,
+    numero: dadosassociado.numero,
+    profissao: dadosassociado.profissao,
+    rg: dadosassociado.rg,
+    referencia: dadosassociado.guia_rua,
+    uf: dadosassociado.uf
+}),
+setModalEdit(true)
+}}  className="w-full text-gray-600 text-sm cursor-pointer">
                                         <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO TITULAR </h2>
 
                                         <h5 className="mb-1 inline-flex justify-between  gap-2 font-semibold tracking-tight  ">
@@ -76,14 +115,14 @@ export function DadosAssociado({dadosassociado}:DataProps){
 
                                         </h5>
 
-                                        <button data-tooltip-id="my-tooltip"
+                                    
+                                      
+                                        </Card>
 
-                                            data-tooltip-content="Editar Dados do Cliente/Contrato" onClick={() => {
-
-                                                setOpenEdit(1), closeModa({
-                                                    closeEditarAssociado: true,
+                                    <Card onClick={() => {
+                                                 closeModa({
                                                     name: dadosassociado.nome,
-                                                    nasc: dadosassociado.data_nasc && new Date(dadosassociado?.data_nasc),
+                                                    nasc: dadosassociado.data_nasc ??new Date(),
                                                     bairro: dadosassociado.bairro,
                                                     celular1: dadosassociado.celular1,
                                                     celular2: dadosassociado.celular2,
@@ -108,19 +147,15 @@ export function DadosAssociado({dadosassociado}:DataProps){
                                                         supervisor: dadosassociado?.contrato?.supervisor,
                                                         valor_mensalidade: dadosassociado?.contrato?.valor_mensalidade
                                                     },
-                                                    //  planos:usuario?.planos,
-                                                    // cidades:usuario?.cidades,
+
                                                     numero: dadosassociado.numero,
                                                     profissao: dadosassociado.profissao,
                                                     rg: dadosassociado.rg,
                                                     referencia: dadosassociado.guia_rua,
                                                     uf: dadosassociado.uf
-                                                })
-                                            }} className="absolute -right-1 -top-1 text-blue-400 "><FaEdit size={16} /></button>
-                                        <Tooltip className="z-30" id="my-tooltip" />
-                                        </Card>
-
-                                    <Card className="flex w-full text-gray-600 text-sm">
+                                                }),
+                                                setModalEdit(true)
+                                            }} className="flex w-full text-gray-600 text-sm cursor-pointer">
                                    
                                         <h2 className="text-sm font-semibold mb-4 ">DADOS  DO PLANO</h2>
 
@@ -128,8 +163,8 @@ export function DadosAssociado({dadosassociado}:DataProps){
 
                                             <p className="mb-1 "><span className=" font-semibold">CATEGORIA: </span>{dadosassociado?.contrato?.plano}</p>
                                             <p className="mb-1 "><span className=" font-semibold">VALOR: </span>R$ {dadosassociado?.contrato?.valor_mensalidade}</p>
-                                            <p className="mb-1 "><span className=" font-semibold">ADESÃO: </span> {dadosassociado.contrato?.dt_adesao && new Date(dadosassociado?.contrato?.dt_adesao).toLocaleDateString()}</p>
-                                            <p className="mb-1 "><span className=" font-semibold">CARÊNCIA: </span>{dadosassociado.contrato?.dt_carencia && new Date(dadosassociado?.contrato?.dt_carencia).toLocaleDateString()}</p>
+                                            <p className="mb-1 "><span className=" font-semibold">ADESÃO: </span> {dadosassociado.contrato?.dt_adesao && new Date(dadosassociado?.contrato?.dt_adesao).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</p>
+                                            <p className="mb-1 "><span className=" font-semibold">CARÊNCIA: </span>{dadosassociado.contrato?.dt_carencia && new Date(dadosassociado?.contrato?.dt_carencia).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</p>
                                         </h5>
                                         <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  ">
                                             <p className="  "><span className=" font-semibold">ORIGEM: </span>{dadosassociado?.contrato?.origem}</p>
@@ -137,44 +172,7 @@ export function DadosAssociado({dadosassociado}:DataProps){
                                             <p className=" "><span className=" font-semibold">COBRADOR: </span>{dadosassociado?.contrato?.cobrador}</p>
                                         </h5>
 
-                                        <button data-tooltip-id="my-tooltip"
-                                            data-tooltip-content="Editar Dados do Cliente/Contrato" onClick={() => {
-                                                setOpenEdit(2), closeModa({
-                                                    closeEditarAssociado: true,
-                                                    name: dadosassociado.nome,
-                                                    nasc: dadosassociado.data_nasc && new Date(dadosassociado.data_nasc),
-                                                    bairro: dadosassociado.bairro,
-                                                    celular1: dadosassociado.celular1,
-                                                    celular2: dadosassociado.celular2,
-                                                    telefone: dadosassociado.telefone,
-                                                    cidade: dadosassociado.cidade,
-                                                    cep: dadosassociado.cep,
-                                                    cpf: dadosassociado.cpf,
-                                                    endereco: dadosassociado.endereco,
-                                                    email: dadosassociado.email,
-                                                    id_associado: dadosassociado.id_associado,
-                                                    contrato: {
-                                                        id_contrato: dadosassociado?.contrato?.id_contrato,
-                                                        cobrador: dadosassociado?.contrato?.cobrador,
-                                                        consultor: dadosassociado?.contrato?.consultor,
-                                                        data_vencimento: dadosassociado?.contrato?.data_vencimento,
-                                                        dt_adesao: dadosassociado?.contrato?.dt_adesao,
-                                                        dt_carencia: dadosassociado?.contrato?.dt_carencia,
-                                                        id_plano: dadosassociado?.contrato?.id_plano,
-                                                        origem: dadosassociado?.contrato?.origem,
-                                                        plano: dadosassociado?.contrato?.plano,
-                                                        situacao: dadosassociado?.contrato?.situacao,
-                                                        supervisor: dadosassociado?.contrato?.supervisor,
-                                                        valor_mensalidade: dadosassociado?.contrato?.valor_mensalidade
-                                                    },
-
-                                                    numero: dadosassociado.numero,
-                                                    profissao: dadosassociado.profissao,
-                                                    rg: dadosassociado.rg,
-                                                    referencia: dadosassociado.guia_rua,
-                                                    uf: dadosassociado.uf
-                                                })
-                                            }} className="absolute -right-1 -top-1  text-blue-400"><FaEdit size={16} /></button>
+                                      
                                     
                                     </Card >
                                 </div>
@@ -189,9 +187,9 @@ export function DadosAssociado({dadosassociado}:DataProps){
                                             </button>
 
                                             <input value={observacao ?? ''} onChange={e => setObservacao(e.target.value ?? '')} placeholder="Digite aqui todas as observações em relação ao plano" type="text" className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-sm bg-gray-100 border-gray-300 placeholder-gray-600 text-gray-600 focus:ring-blue-500 focus:border-blue-500" />
-                                            <button onClick={() => handleObservacao()} type="button" className="inline-flex items-center py-1 px-2  text-center text-gray-400 bg-blue-700 rounded-lg  hover:bg-blue-800">
-                                                <BiSave size={22} />
-                                            </button>
+                                            <Button size={'xs'} disabled={!permissoes.includes('ADM1.1.2')} onClick={() => handleObservacao()}>
+                                                <BiSave size={20} />
+                                            </Button>
 
                                         </div>
                                         <div className="px-4 py-2 rounded-b-lg bg-gray-100">
@@ -202,7 +200,7 @@ export function DadosAssociado({dadosassociado}:DataProps){
                                     </div>
                                 </div>
 
-                                {data.closeEditarAssociado && <ModalEditarDados openEdit={openEdit} />}
+                                <ModalEditarDados setModalEdit={setModalEdit} openEdit={openEdit} />
                             </div>
     )
 }

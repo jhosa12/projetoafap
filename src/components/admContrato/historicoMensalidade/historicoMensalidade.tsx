@@ -12,6 +12,7 @@ import { RiAddCircleFill } from 'react-icons/ri';
 import { TbAlertTriangle } from 'react-icons/tb';
 import { toast } from 'react-toastify'
 import { AuthContext, MensalidadeProps } from '@/contexts/AuthContext';
+import { ModalMensalidade } from './modalmensalidade';
 
 
 
@@ -69,7 +70,8 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
     const [openModalAcordo,setModalAcordo]= useState({open:false,visible:false})
     const [showSublinhas, setShowSublinhas] = useState<boolean>(false);
     const componentRef =useRef<ImpressaoCarne>(null);
-    const {setarDadosAssociado} = useContext(AuthContext)
+    const {setarDadosAssociado,permissoes} = useContext(AuthContext)
+    const [openModalMens,setModalMens]= useState<boolean>(false)
     
    
 
@@ -273,21 +275,21 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
     />
 
     </div>
-        <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
-            <input checked={checkMensal} onChange={() => setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer" />
-            <div className="w-9 h-5 rounded-full peer bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[5px] after:start-[7px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
+        <label  className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
+            <input disabled={!permissoes.includes('ADM1.2.10')} checked={checkMensal} onChange={() => setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer disabled:cursor-not-allowed" />
+            <div  className="  w-9 h-5 rounded-full peer bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[5px] after:start-[7px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
             <span className="ms-3 text-sm font-medium  text-gray-600">Exibir Pagas</span>
         </label>
         <div className="inline-flex rounded-md shadow-sm" role="group">
-            <button onClick={adicionarMensalidade} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border  rounded-s-lg  focus:z-10 focus:ring-2  bg-gray-200 border-gray-400 text-gray-600 hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+            <button disabled={!permissoes.includes('ADM1.2.1')}  onClick={adicionarMensalidade} type="button" className="inline-flex items-center px-4 py-1 gap-1 disabled:bg-gray-100 disabled:cursor-not-allowed text-sm font-medium  border  rounded-s-lg  disabled:text-gray-400   bg-gray-200 border-gray-400 text-gray-600 enable:hover:text-white hover:bg-gray-500 ">
                 <RiAddCircleFill size={20} />
                 Adicionar
             </button>
-            <button type="button" onClick={() => setarModalAcordo({open:true,visible:true})} className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-200 border-gray-400 text-gray-600 hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+            <button disabled={!permissoes.includes('ADM1.2.2')} type="button" onClick={() => setarModalAcordo({open:true,visible:true})} className="inline-flex items-center px-4 py-1 gap-1 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed font-medium  border-t border-b disabled:text-gray-400  bg-gray-200 border-gray-400 text-gray-600 hover:text-white hover:bg-gray-400">
                 <FaHandshake size={20} />
                 Acordo
             </button>
-            <button onClick={() => setExcluir(!excluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2   bg-gray-200 border-gray-400 text-gray-600 hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+            <button disabled={!permissoes.includes('ADM1.2.3')} onClick={() => setExcluir(!excluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium disabled:bg-gray-100 disabled:cursor-not-allowed border 0 rounded-e-lg  focus:z-10 focus:ring-2 disabled:text-gray-400   bg-gray-200 border-gray-400 text-gray-600 enable:hover:text-white hover:bg-gray-400 ">
                 <MdDeleteForever size={20} />
                 Excluir
             </button>
@@ -523,6 +525,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                                 <td className="px-8 py-1 text-right">
                                     <button onClick={(event) => {
                                         event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
+                                        setModalMens(true)
                                         setarDados(
                                             {
                                                 mensalidadeAnt: dadosAssociado?.arrayMensalidade && dadosAssociado.arrayMensalidade[index - 1],
@@ -536,7 +539,6 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                                                     usuario: item.usuario,
                                                     referencia: item.referencia,
                                                     id_mensalidade: item.id_mensalidade,
-                                                    close: true,
                                                     valor_total: item.valor_total,
                                                     motivo_bonus: item.motivo_bonus,
                                                     data_pgto: item.data_pgto ? item.data_pgto : new Date(),
@@ -593,6 +595,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                                 <td className=" px-8 py-1 text-right">
                                     <button onClick={(event) => {
                                         event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
+                                        setModalMens(true),
                                         setarDados(
                                             {
                                                 mensalidadeAnt: dadosAssociado.arrayMensalidade && dadosAssociado.arrayMensalidade[index - 1],
@@ -606,7 +609,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                                                     usuario: item.usuario,
                                                     referencia: item.referencia,
                                                     id_mensalidade: item.id_mensalidade,
-                                                    close: true,
+                                                    
                                                     valor_total: item.valor_total,
                                                     motivo_bonus: item.motivo_bonus,
                                                     data_pgto: item.data_pgto ? item.data_pgto : new Date(),
@@ -629,7 +632,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
     </table>
     </div>
   
-
+<ModalMensalidade openModal={openModalMens} setOpenModal={setModalMens}/>
 </div>
   )
 }

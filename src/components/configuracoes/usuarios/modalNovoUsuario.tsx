@@ -4,6 +4,7 @@ import sharp from 'sharp';
 import { MdOutlineFileUpload } from "react-icons/md";
 import { Button, Card, FloatingLabel, Modal, ToggleSwitch } from "flowbite-react";
 import { Permissoes } from "./permissoes/permisssoes";
+import { ModalPassword } from "./modalPassword";
 
 
 
@@ -13,13 +14,14 @@ interface Usuario{
     senhaAtual:string,
     usuario:string,
     password:string,
-    id:number|null,
+    id_user:string,
     cargo:string,
     file:File|undefined,
     avataUrl:string,
     repSenha:string,
     editar:boolean,
-    image:string
+    image:string,
+    permissoes:Array<string>
     
   }
 interface UsuarioProps{
@@ -27,16 +29,17 @@ interface UsuarioProps{
     dadosUser:Partial<Usuario>
     show:boolean,
     setModal:(open:boolean)=>void
-    permissions:Array<string>
     handlePermission:(permission:string)=>void
+    handleNovoCadastro:()=>Promise<void>;
+    handleEditarCadastro:()=>Promise<void>
 
 }
 
 
 
 
-export function ModalNovoUsuario({setarDadosUsuario,dadosUser,setModal,show,handlePermission,permissions}:UsuarioProps) {
-  
+export function ModalNovoUsuario({setarDadosUsuario,dadosUser,setModal,show,handlePermission,handleEditarCadastro,handleNovoCadastro}:UsuarioProps) {
+  const [modalPass,setModalPass] = useState<boolean>(false)
     
    
 
@@ -91,22 +94,28 @@ if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
                           
                            
                                 <FloatingLabel label="Cargo" variant="standard" required type="text" value={dadosUser.cargo} onChange={e => {setarDadosUsuario({...dadosUser,cargo:e.target.value}) }}  />
+                               {!dadosUser.id_user ? 
+                               <FloatingLabel label="Senha" variant="standard" required type="text" value={dadosUser.password} onChange={e => {setarDadosUsuario({...dadosUser,password:e.target.value}) }} />:
+                               <Button onClick={()=>setModalPass(true)}>
+                                Alterar Senha
+                               </Button>
+                                }
                         </div>
 
                         </Card>
                        
 
-                     <Permissoes handlePermission={handlePermission} permissions={permissions}/>
+                     <Permissoes handlePermission={handlePermission} permissions={dadosUser.permissoes??[]}/>
                         </div>
 
                         <div className="flex w-full justify-end">
-                           {dadosUser.id ? <Button>Gravar alterações</Button>:<Button>Salvar</Button>}
+                           {dadosUser.id_user ? <Button onClick={()=>handleEditarCadastro()}>Gravar alterações</Button>:<Button onClick={()=>handleNovoCadastro()}>Salvar</Button>}
                         </div>
                       
                         </Modal.Body>
 
 
-                   
+                   <ModalPassword id_user={dadosUser.id_user??''} openModal={modalPass} setOpenModal={setModalPass}/>
                
                 </Modal>
        
