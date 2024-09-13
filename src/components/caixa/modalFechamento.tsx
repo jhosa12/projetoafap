@@ -3,7 +3,7 @@ import { api } from "@/services/apiClient";
 import { Button, FloatingLabel, Modal, ModalHeader } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { LancamentosProps } from ".";
+import { LancamentosProps } from "../../pages/caixa";
 
 
 

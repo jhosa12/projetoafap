@@ -15,7 +15,7 @@ import { Button, Label, Select, Table, TextInput } from "flowbite-react";
 import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
 import { toast } from "react-toastify";
 import { ModalExcluir } from "@/components/modalExcluir";
-import { ModalFechamento } from "./modalFechamento";
+import { ModalFechamento } from "../../components/caixa/modalFechamento";
 
 
 registerLocale('pt', pt)
