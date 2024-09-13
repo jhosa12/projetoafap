@@ -60,9 +60,9 @@ class DocumentTemplate extends React.Component<DadosProps> {
 
                     item.mensalidade?.map(it => (
                         <li style={{
-                            display:'flex',
+                            display: 'flex',
                             backgroundImage: "url('/carneAtualizado.png')",
-                            pageBreakInside:'avoid',
+                            pageBreakInside: 'avoid',
                             height: '250px',
                             width: '100%',
                             backgroundSize: 'cover',
@@ -71,7 +71,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
 
                             {//  <Image src={carne} className=" object-cover  h-[250px]" alt="modeloCarne"  />
                             }
-                            <div className="flex flex-col space-y-4 pl-8   " style={{width:'28%'}}>
+                            <div className="flex flex-col space-y-4 pl-8   " style={{ width: '28%' }}>
                                 <h1 className="mt-2 " style={{ fontSize: '13px' }} >ASSISTENCIA FAMILIAR PARAÍSO</h1>
                                 <div className="inline-flex pl-8 w-full ">
                                     <span>{it.parcela_n}</span>
@@ -112,7 +112,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
 
 
 
-                            <div className="flex flex-col  space-y-3 pl-8  " style={{width:'70%'}}>
+                            <div className="flex flex-col  space-y-3 pl-8  " style={{ width: '70%' }}>
                                 <h1 className="mt-2  " style={{ fontSize: '13px', fontWeight: 'bold' }} >ASSISTENCIA FAMILIAR PARAÍSO</h1>
 
                                 <div className="inline-flex  pt-1 w-full ">
@@ -122,7 +122,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
                                 </div>
                                 <div className="inline-flex  w-full pt-1 ">
                                     <span className="pl-2 whitespace-nowrap">16.784.573/0001-93 - ASSISTÊNCIA FAMILIAR PARAÍSO</span>
-                                    <span className=" flex w-full justify-end pl-10">{Number(it.valor_principal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+                                    <span className=" flex w-full justify-end pl-10">{Number(it.valor_principal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
                                 </div>
                                 <div className="inline-flex   w-full ">
                                     <span className="pl-2 ">{new Date().toLocaleDateString('pt-BR')}</span>
@@ -132,31 +132,31 @@ class DocumentTemplate extends React.Component<DadosProps> {
 
                                 </div>
                                 <div className="flex flex-col w-full">
-                <span style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '1' }}>PIX: 16.784.573/0001-93</span>
-                    <span style={{ fontSize: '9px',  lineHeight: '1' }}>TITULAR FREITAS NETO COMERCIO E SERVIÇO- LTDA-ME</span>
-                    <span style={{ fontSize: '9px', lineHeight: '1',fontStyle:'italic' }}>MANTENHA SEU PLANO DE EM DIA</span>
-                </div>
+                                    <span style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '1' }}>PIX: 16.784.573/0001-93</span>
+                                    <span style={{ fontSize: '9px', lineHeight: '1' }}>TITULAR FREITAS NETO COMERCIO E SERVIÇO- LTDA-ME</span>
+                                    <span style={{ fontSize: '9px', lineHeight: '1', fontStyle: 'italic' }}>MANTENHA SEU PLANO DE EM DIA</span>
+                                </div>
 
 
-                <div className="inline-flex pt-2 w-full"  >
-                    <div className=" flex flex-col">
-                    <span className="whitespace-nowrap" style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '1' }}>{item.nome}</span>
-                    <span style={{ fontSize: '9px',  lineHeight: '1' }}>{item.endereco}-{item.numero}</span>
-                    <span style={{ fontSize: '9px',  lineHeight: '1' }}>{item.bairro}-{item.cidade}/{item.uf}</span>
-                    </div>
-
-                    <div className="flex flex-col w-full justify-end items-end">
-                                        {it.n_doc && <BarCode
-                                         width={3}
-                                          height={30} 
-                                          fontSize={10}
-                                          textMargin={0}
-                                          margin={0}
-                                          value={it.n_doc}/>}
-                                      
+                                <div className="inline-flex pt-2 w-full"  >
+                                    <div className=" flex flex-col">
+                                        <span className="whitespace-nowrap" style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '1' }}>{item.nome}</span>
+                                        <span style={{ fontSize: '9px', lineHeight: '1' }}>{item.endereco}-{item.numero}</span>
+                                        <span style={{ fontSize: '9px', lineHeight: '1' }}>{item.bairro}-{item.cidade}/{item.uf}</span>
                                     </div>
-                   
-                </div>
+
+                                    <div className="flex flex-col w-full justify-end items-end">
+                                        {it.n_doc && <BarCode
+                                            width={3}
+                                            height={30}
+                                            fontSize={10}
+                                            textMargin={0}
+                                            margin={0}
+                                            value={it.n_doc} />}
+
+                                    </div>
+
+                                </div>
 
 
 
