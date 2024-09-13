@@ -13,7 +13,7 @@ import { IoPrint } from "react-icons/io5";
 import { AuthContext } from "@/contexts/AuthContext";
 import ReactPaginate from "react-paginate";
 import { HiFilter } from "react-icons/hi";
-import { Button } from "flowbite-react";
+import { Button, Table } from "flowbite-react";
 import { ModalFiltroCobranca } from "@/components/relatorioCobranca/modalCobranca";
 interface CobrancaProps {
   id_mensalidade: number,
@@ -66,7 +66,7 @@ export default function Cobranca() {
   const [reqListaBairros, setReq] = useState<boolean>()
   const [status, setStatus] = useState<Array<string>>(['A', 'R'])
   const componenteRef = useRef<Relatorio>(null)
-  const { usuario } = useContext(AuthContext)
+  const { usuario,permissoes } = useContext(AuthContext)
   const [ultimosPag, setUltimosPag] = useState<Array<UltimosPagProsps>>([])
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 20;
@@ -122,7 +122,9 @@ export default function Cobranca() {
 
   useEffect(() => {
 
-    listarCobranca()
+
+
+   reqListaBairros && listarCobranca()
 
 
 
@@ -196,7 +198,7 @@ export default function Cobranca() {
 
   }
   return (
-    <div className="flex  w-full justify-center p-4">
+    <div className="flex  w-full justify-center px-1">
       <div style={{ display: 'none' }}>
         <Relatorio
           ref={componenteRef}
@@ -212,101 +214,97 @@ export default function Cobranca() {
 
         />
       </div>
-      <div className="flex flex-col w-full border  rounded-lg shadow  border-gray-700 max-h-[calc(100vh-100px)] ">
-        <div className="text-gray-300 bg-gray-800 rounded-t-lg inline-flex items-center p-2 justify-between   ">
+      <div className="flex flex-col w-full border  rounded-lg shadow bg-white border-gray-700 max-h-[92vh] ">
+        <div className="text-gray-600 bg-gray-50 rounded-t-lg inline-flex items-center p-2 justify-between   ">
           <h1 className=" text-lg  pl-3 font-medium">Relatórios de Cobrança</h1>
           <div id="divFiltro" className="inline-flex gap-4">
           
+          
 
             <div className="flex   items-end gap-2">
-              <Button className='cursor-pointer' as={'span'} size='sm' onClick={() => setFiltro(true)} color='cyan'>
+              <Button 
+                disabled={!permissoes.includes('ADM3.1')}
+              size='sm' onClick={() => setFiltro(true)} color='cyan'>
                 <HiFilter className="mr-2 h-5 w-5" /> Filtro
               </Button>
 
               <Button
+              disabled={!permissoes.includes('ADM3.2')}
                 size={'sm'}
                 onClick={() => imprimirRelatorio()}
-                className="cursor-pointer"
+               
               ><IoPrint className="mr-2" size={18} />IMPRIMIR</Button>
             </div>
-
-
-
-
-
-
-
           </div>
 
         </div>
-
-        <div className="p-2 max-h-[calc(100vh-150px)]  ">
-          <table
-            className="block  overflow-y-auto max-h-[calc(100vh-220px)] text-xs text-left rtl:text-center border-collapse rounded-lg text-gray-400">
-            <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
-              <tr>
-                <th scope="col" className=" px-2 py-1 whitespace-nowrap">
+          <div className="overflow-y-auto p-2 max-h-[77vh] ">
+          <Table  hoverable theme={{ body: { cell: { base: "px-6 py-1 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg" } } }} 
+    >
+            <Table.Head theme={{cell:{base:"bg-gray-50 px-6 py-1 group-first/head:first:rounded-tl-lg group-first/head:last:rounded-tr-lg "}}}>
+             
+                <Table.HeadCell>
                   REF.
-                </th>
-                <th scope="col" className="px-5 py-1">
+                </Table.HeadCell>
+                <Table.HeadCell>
                   VENCIMENTO
-                </th>
-                <th scope="col" className="px-5 py-1">
+                </Table.HeadCell>
+                <Table.HeadCell>
                   COBRANÇA
-                </th>
-                <th scope="col" className="px-5 py-1">
+                </Table.HeadCell>
+                <Table.HeadCell>
                   TITULAR
-                </th>
-                <th scope="col" className="px-5 py-1">
+                </Table.HeadCell>
+                <Table.HeadCell>
                   ENDEREÇO
-                </th>
-                <th scope="col" className="px-5 py-1">
+                </Table.HeadCell>
+                <Table.HeadCell >
                   BAIRRO
-                </th>
-                <th scope="col" className="px-5 py-1">
+                </Table.HeadCell>
+                <Table.HeadCell >
                   STATUS
-                </th>
-                <th scope="col" className="px-5 py-1">
+                </Table.HeadCell>
+                <Table.HeadCell >
                   VALOR
-                </th>
-              </tr>
-            </thead>
-            <tbody className="text-white">
+                </Table.HeadCell>
+             
+            </Table.Head>
+            <Table.Body className="divide-y bg-white">
               {currentItems.map((item, index) => (
-                <tr key={item.id_mensalidade} className="border-b border-gray-500">
-                  <th scope="row" className="px-2 py-1 font-medium  whitespace-nowrap">
+                <Table.Row key={item.id_mensalidade} >
+                  <Table.Cell scope="row" >
                     {item.referencia}
-                  </th>
-                  <td data-tooltip-id="tooltip-hora" data-tooltip-place="bottom" className="px-6 py-1">
+                  </Table.Cell>
+                  <Table.Cell data-tooltip-id="tooltip-hora" data-tooltip-place="bottom" >
                     {item.vencimento && new Date(item.vencimento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
-                  </td>
-                  <td className="px-5 py-1  ">
+                  </Table.Cell>
+                  <Table.Cell >
                     {item.cobranca && new Date(item.cobranca).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
 
-                  </td>
-                  <td className="px-5 py-1 w-full whitespace-nowrap ">
+                  </Table.Cell>
+                  <Table.Cell >
                     {item.id_contrato}-{item.associado?.nome}
-                  </td>
-                  <td className="px-5 py-1 w-full whitespace-nowrap ">
+                  </Table.Cell>
+                  <Table.Cell >
                     {item.associado?.endereco}{item.associado?.numero ? "-Nº" + item.associado?.numero : ''}
-                  </td>
-                  <td className=" px-5 py-1 w-full whitespace-nowrap">
+                  </Table.Cell>
+                  <Table.Cell >
                     {item.associado?.bairro}
-                  </td>
-                  <td className={`px-5 py-1 w-full font-semibold ${item.status === 'A' ? "text-green-600" : 'text-red-600'} `}>
+                  </Table.Cell>
+                  <Table.Cell className={` ${item.status === 'A' ? "text-green-600" : 'text-red-600'} `}>
                     {item.status}
-                  </td>
-                  <td className="px-5 py-1 w-full ">
+                  </Table.Cell>
+                  <Table.Cell >
                     {item.valor_principal && formatter.format(item.valor_principal)}
-                  </td>
+                  </Table.Cell>
 
 
 
-                </tr>
+                </Table.Row>
 
               ))}
 
-            </tbody>
+</Table.Body>
             <tfoot>
               <tr>
                 <td colSpan={5} align="right" className="text-white  font-semibold">TOTAL MENSALIDADES: {arrayCobranca.length}</td>
@@ -317,8 +315,11 @@ export default function Cobranca() {
               </tr>
             </tfoot>
 
-          </table>
-          <div className="flex w-full justify-end ">
+            </Table>
+
+          </div>
+    
+          <div className="flex w-full justify-end pr-8 ">
             <ReactPaginate
               previousLabel={'Anterior'}
               nextLabel={'Próximo'}
@@ -328,12 +329,12 @@ export default function Cobranca() {
               marginPagesDisplayed={2}
               pageRangeDisplayed={5}
               onPageChange={handlePageClick}
-              containerClassName={'pagination inline-flex text-gray-400 gap-4 ml-auto justify-end font-semibold  rounded-lg  '}
+              containerClassName={'pagination inline-flex text-gray-600 gap-4 ml-auto justify-end font-semibold  rounded-lg  '}
               activeClassName={'active text-blue-600'}
 
             />
           </div>
-        </div>
+       
       </div>
       <ModalFiltroCobranca empresa={empresa} setEmpresa={setEmpresa} selectCobrador={selectCobrador} setEndDate={setEndDate} startDate={startDate} endDate={endDate} handleChangeStatus={handleChangeStatus} listarCobranca={listarCobranca} loading={loading} setFiltro={setFiltro} setStartDate={setStartDate} show={filtro} arrayBairros={arrayBairros}
       handleOptionChange={handleOptionChange}

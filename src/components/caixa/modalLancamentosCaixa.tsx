@@ -12,20 +12,20 @@ import { api } from "@/services/apiClient";
 import { Button, Label, Modal, Select, TextInput } from "flowbite-react";
 import { LancamentosProps } from "@/pages/caixa";
 
-const utcToLocal = (dateStr:Date) => {
-    const date = new Date(dateStr);
-    return new Date(date.getTime() + date.getTimezoneOffset() * 60000);
-  };
+
 
 interface ModalProps{
     
     planos:Array<PlanosProps>
-    listarLancamentos:()=>Promise<void>
     grupo:Array<GruposProps>
     openModal:boolean,
     setOpenModal:(open:boolean)=>void
     mov:Partial<LancamentosProps>
     setMov:(fields:Partial<LancamentosProps>)=>void
+    arrayLanc:Array<LancamentosProps>,
+    setLancamentos:(array:Array<LancamentosProps>)=>void,
+    empresaAPI:string,
+    listarLancamentos:()=>Promise<void>
 
 }
 interface PlanosProps{
@@ -38,58 +38,73 @@ interface GruposProps{
     id_grupo:number|null,
     descricao:string
 }
-export function ModalLancamentosCaixa({planos,listarLancamentos,grupo,openModal,setOpenModal,mov,setMov}:ModalProps){
+export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,setOpenModal,mov,setMov,arrayLanc,setLancamentos}:ModalProps){
     const {usuario}=useContext(AuthContext)
-    const [descricao,setDescricao]=useState('');
-    const[conta,setConta] =useState('');
-    const [idSetor,setSetor] = useState('')
-    const[tipo,setTipo]=useState<string>('');
-    const[datalanc,setData] =useState(new Date());
-    const[historico,setHistorico]= useState('');
-    const[valor,setValor]=useState<number>()
+   
+
+  
     
 
 
 
    async function editarMovimentacao(){
-        await toast.promise(
-            api.put('/atualizarLancamento',{
-            num_seq:mov.num_seq,
-            conta:conta,
-            descricao:descricao,
-            historico:historico,
-            ccustos_desc:usuario?.nome,
-            ccustos_id:Number(usuario?.id),
-            valor:valor,
-            usuario:usuario,
-            data:datalanc,
-            tipo:tipo
-            }),
-            {pending:'Atualizando.....',
-            error:'Erro ao atualizar',
-            success:'Atualizado com sucesso!'
-        }
-        )
-        listarLancamentos()
+    try {
+      await toast.promise(
+        api.put('/atualizarLancamento',{
+        lanc_id:mov.lanc_id,
+        num_seq:mov.num_seq,
+        conta:mov.conta,
+        descricao:mov.descricao,
+        historico:mov.historico,
+        ccustos_desc:usuario?.nome,
+        ccustos_id:undefined,
+        valor:mov.valor,
+        usuario:usuario?.nome,
+        data:mov.data,
+        tipo:mov.tipo,
+        empresa:mov.empresa
+        }),
+        {pending:'Atualizando.....',
+        error:'Erro ao atualizar',
+        success:'Atualizado com sucesso!'
+    }
+    )
+      listarLancamentos()
+    } catch (error) {
+      toast.warning('Consulte o TI')
+      
+    }
+      
+    
    }
 
      async function lancarMovimentacao() {
 
-      //  if(!descricao||!idSetor||!historico){
-        //    toast.warn('Preencha todos os campos obrigatórios')
-        //    return;
-     //   }
+      if(!mov.empresa){
+        toast.info('Selecione a empresa')
+        return;
+      }
+      if(!mov.id_grupo){
+        toast.info('Selecione o setor')
+        return;
+      }
 
-        if(descricao==='SANGRIA'){
+       if(!mov.descricao||!mov.historico){
+            toast.warn('Preencha todos os campos obrigatórios')
+            return;
+      }
+
+        if(mov.descricao==='SANGRIA'){
             await toast.promise(
                 api.post('/notification/adicionar',{
                     titulo:'Sangria',
-                    descricao:`Sangria - Descrição: ${historico} - Origem: ${usuario?.nome} - Valor: ${valor}`,
+                    descricao:`Sangria - Descrição: ${mov.historico} - Origem: ${usuario?.nome} - Valor: ${mov.valor}`,
                     id_usuario:'2',
                     id_destino:'3',
                     data:new Date(),
                     status:'PENDENTE',
-                    sangria:true
+                    sangria:true,
+                   
                 }),
                 {
                     error:'Erro na requisição',
@@ -100,19 +115,24 @@ export function ModalLancamentosCaixa({planos,listarLancamentos,grupo,openModal,
              )
              return;
         }
-        await toast.promise(
+
+
+        try {
+
+        const response =   await toast.promise(
             api.post('/novoLancamento',{
-            id_usuario:Number(usuario?.id),
-            id_grupo:Number(idSetor),
-            datalanc:new Date(),
-            conta,
-            conta_n:conta,
-            descricao:descricao,
-            historico:historico.toUpperCase(),
-            valor:valor,
+            id_usuario:usuario?.id,
+            id_grupo:Number(mov.id_grupo),
+            datalanc:new Date().toISOString(),
+            conta:mov.conta,
+            conta_n:mov.conta_n,
+            descricao:mov.descricao,
+            historico:mov?.historico?.toUpperCase(),
+            valor:mov.valor,
             usuario:usuario?.nome.toUpperCase(),
-            data:new Date(datalanc),
-            tipo:tipo
+            data:mov.data  && new Date(mov.data).toISOString(), 
+            tipo:mov.tipo,
+            empresa:mov.empresa
             }),
             {
                 error:'Erro realizar Lançamento',
@@ -120,8 +140,14 @@ export function ModalLancamentosCaixa({planos,listarLancamentos,grupo,openModal,
                 success:'Lançado com sucesso!'
             }
         )
-      await listarLancamentos()
         
+
+        listarLancamentos()
+         // setLancamentos([...arrayLanc,response.data])
+        } catch (error) {
+          
+        }
+    
         
      }
 
@@ -129,7 +155,7 @@ export function ModalLancamentosCaixa({planos,listarLancamentos,grupo,openModal,
    
        
  
-  <Modal show={openModal} onClose={()=>setOpenModal(false)}>
+  <Modal  show={openModal} onClose={()=>setOpenModal(false)}>
     <Modal.Header>Adminstrar Lançamento</Modal.Header>
     <Modal.Body>
 
@@ -143,16 +169,23 @@ export function ModalLancamentosCaixa({planos,listarLancamentos,grupo,openModal,
         <div className=" block">
           <Label  value="Data" />
         </div>
-       <DatePicker  onChange={e=>e && setMov({...mov,data:e})}  selected={mov.data ? utcToLocal(mov.data) : new Date()}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+       <DatePicker  onChange={e=>e && setMov({...mov,data:e})}  selected={mov.data}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
       </div>
 
 
       <div >
         <div className=" block">
-          <Label  value="Usuário" />
+          <Label  value="Empresa" />
         </div>
-        <TextInput disabled sizing={'sm'} required type="text" value={usuario?.nome}    />
-      </div> 
+     <Select value={mov.empresa} onChange={e=>setMov({...mov,empresa:e.target.value})} disabled={!!mov.lanc_id} sizing={'sm'}>
+        <option value={''}></option>
+        <option value={'AFAP CEDRO'}>AFAP CEDRO</option>
+        <option value={'AFAP LAVRAS'}>AFAP LAVRAS</option>
+        <option value={'OTICA FREITAS'}>OTICA FREITAS</option>
+        <option value={'AFAP VIVAMAIS'}>AFAP VIVAMAIS</option>
+        <option value={'AFAP SAUDE'}>AFAP SAUDE</option>
+     </Select>
+      </div>
 
       <div  >
         <div className=" block">
@@ -231,10 +264,10 @@ export function ModalLancamentosCaixa({planos,listarLancamentos,grupo,openModal,
 
 <div className=" gap-2 col-span-4  flex flex-row justify-end">
 
-{mov.num_seq ?<div className="inline-flex w-full justify-between"> <Button size={'sm'} onClick={()=>lancarMovimentacao()}  ><MdSaveAlt size={22}/>Excluir</Button>
-<Button size={'sm'}   onClick={()=>editarMovimentacao()} ><MdSaveAlt size={22}/>Editar</Button>
- </div>:
-<Button size={'sm'}  onClick={()=>lancarMovimentacao()} ><MdSaveAlt size={22}/>Salvar</Button>}
+{mov.num_seq ?
+<Button size={'sm'}   onClick={()=>editarMovimentacao()} >Editar</Button>
+ :
+<Button size={'sm'}  onClick={()=>lancarMovimentacao()} >Salvar</Button>}
 </div>
     </div>
 

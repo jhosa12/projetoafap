@@ -143,6 +143,10 @@ async function contagem() {
         <li>
             <Link href="/admcontrato" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group text-white hover:bg-gray-700">Adm Contrato</Link>
         </li>
+
+        <li>
+            <Link href="/renovacao" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group text-white hover:bg-gray-700">Renovação</Link>
+        </li>
         
         <li >
     <button type="button" className="flex items-center w-full p-2 text-base transition duration-75 rounded-lg group text-white bg-gray-700" aria-controls="dropdown-example" onClick={() =>setIsButOpen({...isButOpen,isCaixaOpen:!isButOpen.isCaixaOpen})}>
@@ -162,7 +166,7 @@ async function contagem() {
     </ul>
 </li>
 <li>
-            <Link href="/admcontrato/cobranca" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group  text-white hover:bg-gray-700">Cobrança</Link>
+            <Link href="/cobranca" onClick={()=>setIsOpen(false)} className="flex items-center w-full p-2  transition duration-75 rounded-lg pl-11 group  text-white hover:bg-gray-700">Cobrança</Link>
         </li>
 
 

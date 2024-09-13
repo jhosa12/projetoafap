@@ -6,7 +6,7 @@ import { HiFilter } from "react-icons/hi"
 import { Button, Dropdown, Label, Modal, Select } from "flowbite-react";
 import { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
-import { CobradorProps } from "@/pages/admcontrato/cobranca";
+import { CobradorProps } from "@/pages/cobranca";
 
 interface DataProps {
     show: boolean,

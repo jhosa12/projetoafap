@@ -1,4 +1,5 @@
 import { api } from "@/services/apiClient";
+import { Button, Label, Select, Table, TextInput } from "flowbite-react";
 import { FormEvent } from "react";
 import { MdClose } from "react-icons/md"
 import { toast } from "react-toastify";
@@ -94,14 +95,14 @@ export function ProdutosServicos({id_obito,listaProduto,setarProdutos,selectProd
 
   return (
     <div className="flex flex-col w-full rounded-lg p-6   gap-5">
-    <form onSubmit={handleSubmit} className="flex flex-row text-white gap-6 w-full">
+    <form onSubmit={handleSubmit} className="flex flex-row  gap-6 w-full">
         <div>
-            <label className="block mb-1 text-xs font-medium  text-white">Descrição</label>
-            <select defaultValue={listaProduto.descricao_item ? listaProduto.descricao_item : ''} onChange={e => {
+            <Label value="Descrição" />
+            <Select sizing={'sm'} defaultValue={listaProduto.descricao_item ? listaProduto.descricao_item : ''} onChange={e => {
                 const item = selectProdutos.find((item) => item.id_produto === Number(e.target.value))
                 setarProdutos({ descricao_item: item?.descricao, valor_unit: item?.valor_venda, id_produto: item?.id_produto })
 
-            }} className="block w-full pb-1 pt-1 pr-2 pl-2 appearance-none text-xs  border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+            }} >
                 <option value={''}></option>
                 {selectProdutos.map((item, index) => {
                     return (
@@ -110,112 +111,109 @@ export function ProdutosServicos({id_obito,listaProduto,setarProdutos,selectProd
 
                 })}
 
-            </select>
+            </Select>
         </div>
         <div>
-            <label className="block mb-1 text-xs font-medium  text-white">Valor Unit.</label>
-            <input disabled value={Number(listaProduto.valor_unit)} autoComplete='off' type="text" className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-xs border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+            <Label value="Valor Unit." />
+            <TextInput sizing={'sm'} disabled value={Number(listaProduto.valor_unit)} autoComplete='off' type="text"  />
         </div>
         <div>
-            <label className="block mb-1 text-xs font-medium  text-white">Quantidade</label>
-            <input value={Number(listaProduto.quantidade)} onChange={(e) => {
+            <Label value="Quantidade" />
+            <TextInput sizing={'sm'} value={Number(listaProduto.quantidade)} onChange={(e) => {
                 setarProdutos({ quantidade: Number(e.target.value) }),
                     setarProdutos({ valor_total: listaProduto.valor_unit && listaProduto.quantidade && listaProduto.valor_unit * listaProduto.quantidade })
 
-            }} autoComplete='off' type="number" className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-xs border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+            }} autoComplete='off' type="number" />
         </div>
         <div>
-            <label className="block mb-1 text-xs font-medium  text-white">Desconto</label>
-            <input value={Number(listaProduto.desconto)} onChange={(e) => setarProdutos({ desconto: Number(e.target.value) })} autoComplete='off' type="text" className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-xs border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+            <Label value="Desconto" />
+            <TextInput sizing={'sm'} value={Number(listaProduto.desconto)} onChange={(e) => setarProdutos({ desconto: Number(e.target.value) })} autoComplete='off' type="text"  />
         </div>
         <div>
-            <label className="block mb-1 text-xs font-medium  text-white">Acrescimo</label>
-            <input value={Number(listaProduto.acrescimo)} onChange={(e) => setarProdutos({ acrescimo: Number(e.target.value) })} autoComplete='off' type="text" className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-xs border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+            <Label value="Acrescimo"/>
+            <TextInput sizing={'sm'} value={Number(listaProduto.acrescimo)} onChange={(e) => setarProdutos({ acrescimo: Number(e.target.value) })} autoComplete='off' type="text"  />
         </div>
         <div>
-            <label className="block mb-1 text-xs font-medium  text-white">Total</label>
-            <input disabled value={Number(listaProduto.valor_total)} autoComplete='off' type="text" className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-xs border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+            <Label value="Total" />
+            <TextInput sizing={'sm'} disabled value={Number(listaProduto.valor_total)} autoComplete='off' type="number" />
         </div>
         <div className="flex items-end text-sm">
-            <button type="submit"
-            
-                className="flex bg-blue-600 p-1 pl-2 pr-2 rounded-lg ">Adicionar</button>
+            <Button type="submit" size={'sm'}>Adicionar</Button>
         </div>
 
     </form>
-    <div className="flex">
-        <table
-            className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
-            <thead className="sticky top-0 text-sm  uppercase bg-gray-700 text-gray-400">
-                <tr>
-                    <th scope="col" className=" px-2 py-1">
+    <div className="overflow-x-auto overflow-y-auto">
+        <Table  hoverable theme={{ body: { cell: { base: "px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-gray-700" } } }}>
+            <Table.Head >
+               
+                    <Table.HeadCell >
                         Descrição Item
-                    </th>
+                    </Table.HeadCell>
 
-                    <th scope="col" className="px-4 py-1">
+                    <Table.HeadCell >
                         Valor Unit.
-                    </th>
-                    <th scope="col" className="px-4 py-1">
+                    </Table.HeadCell>
+                    <Table.HeadCell >
                         Quant.
-                    </th>
-                    <th scope="col" className="px-4 py-1">
+                    </Table.HeadCell>
+                    <Table.HeadCell >
                         Desconto
-                    </th>
-                    <th scope="col" className="px-4 py-1">
+                    </Table.HeadCell>
+                    <Table.HeadCell >
                         Acrescimo
-                    </th>
-                    <th scope="col" className="px-4 py-1">
+                    </Table.HeadCell>
+                    <Table.HeadCell >
                         Valor Total
-                    </th>
-                    <th scope="col" className="px-4 py-1">
-                        <span >AÇÕES</span>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
+                    </Table.HeadCell>
+                    <Table.HeadCell >
+                        AÇÕES
+                    </Table.HeadCell>
+                
+            </Table.Head>
+            <Table.Body>
                 {obito_itens?.map((item, index) => {
 
 
-                    return (<tr key={index} className={`border-b bg-gray-800 border-gray-700  hover:bg-gray-600`}>
-                        <td className="px-2 py-1">
+                    return (<Table.Row key={index} >
+                        <Table.Cell >
                             {item.descricao_item}
-                        </td>
-                        <td className="px-4 py-1">
+                        </Table.Cell>
+                        <Table.Cell >
                             R${item.valor_unit}
-                        </td>
-                        <td className="px-4 py-1">
+                        </Table.Cell>
+                        <Table.Cell >
                             {item.quantidade}
-                        </td>
-                        <td className="px-4 py-1">
+                        </Table.Cell>
+                        <Table.Cell >
                             {item.desconto && `R$${item.desconto}`}
-                        </td>
-                        <td className="px-4 py-1">
+                        </Table.Cell>
+                        <Table.Cell>
                             {item.acrescimo && `R$${item.acrescimo}`}
-                        </td>
-                        <td className="px-4 py-1">
+                        </Table.Cell>
+                        <Table.Cell >
                             R${item.valor_total}
-                        </td>
-                        <td className="px-4 py-1 flex justify-center text-center ">
-                            <button onClick={() => deletarProduto(index)} className=" flex justify-center items-center rounded-lg  px-1 py-1 text-white hover:bg-red-600"><MdClose /></button>
-                        </td>
+                        </Table.Cell>
+                        <Table.Cell >
+                            <button onClick={() => deletarProduto(index)} className=" flex justify-center items-center rounded-lg  px-1 py-1  hover:bg-red-600"><MdClose /></button>
+                        </Table.Cell>
 
-                    </tr>)
+                    </Table.Row>)
                 })}
 
-            </tbody>
+            </Table.Body>
 
             <tfoot >
-                <tr className={`border-b bg-gray-800 border-gray-700  hover:bg-gray-600`}>
-                    <td className="px-4 py-1 text-start font-semibold" colSpan={5}>Total Geral</td>
-                    <td className="px-4 py-1 text-green-500 text-start font-semibold" colSpan={2} >R${total}</td>
+                <tr className={`border-b  border-gray-700  hover:bg-gray-600`}>
+                    <td className=" text-gray-600 font-semibold " colSpan={5}>Total Geral</td>
+                    <td className=" text-green-500 text-start font-semibold" colSpan={2} >{Number(total).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</td>
                 </tr>
             </tfoot>
 
-        </table>
+        </Table>
 
     </div>
     <div className="flex justify-end w-full">
-        {total !== undefined && total > 0 && <button onClick={() => lancarCaixa()} className="flex bg-gray-600 rounded-lg p-2 text-white">Confirmar Pagamento</button>}
+        {total !== undefined && total > 0 && <button onClick={() => lancarCaixa()} className="flex bg-gray-600 rounded-lg p-2 ">Confirmar Pagamento</button>}
     </div>
 
 </div>

@@ -9,13 +9,7 @@ import React from 'react';
 
 
 interface MensalidadeProps {
-    id_usuario: number,
     id_contrato: number,
-    estorno_dt: Date,
-    estorno_user: string,
-    dt_exclusao: Date,
-    exclusao_motivo: string,
-    user_exclusao: string,
     associado: string,
     n_doc: string,
     parcela_n: number,
@@ -24,15 +18,9 @@ interface MensalidadeProps {
     valor_principal: number,
     close: boolean,
     status: string,
-    usuario: string,
     id_mensalidade: number,
-    valor_total: number,
-    motivo_bonus: string,
-    data_pgto: Date,
+   // valor_total: number,
     referencia: string,
-    index: number,
-    id_acordo: number
-
 }
 interface DadosAssociado{
     nome:string,

@@ -3,9 +3,9 @@ import { api } from "@/services/apiClient";
 import { useContext, useEffect, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import { AuthContext } from "@/contexts/AuthContext";
-import { IoMdSearch } from "react-icons/io";
-import { MdClose } from "react-icons/md";
-import { HiOutlineSave } from "react-icons/hi";
+import { IoMdSearch, IoMdSettings } from "react-icons/io";
+import { MdAccessTimeFilled, MdClose } from "react-icons/md";
+import { HiClipboardList, HiOutlineSave } from "react-icons/hi";
 import { IoIosClose } from "react-icons/io";
 import { IoIosSave } from "react-icons/io";
 import InputMask from 'react-input-mask'
@@ -20,6 +20,9 @@ import { ProdutosServicos } from "@/components/obito/produtosServicos";
 import { ItensUsados } from "@/components/obito/itensUsados";
 import { DadosVelorio } from "@/components/obito/dadosVelorio";
 import DocumentacaoOS from "@/components/obito/documentacao";
+import { ModalDependente } from "@/components/obito/modalDependentes";
+import { Button, Checkbox, Tabs } from "flowbite-react";
+import { FaCalendarAlt } from "react-icons/fa";
 
 
 
@@ -339,88 +342,36 @@ const handleCheckTitular=()=>{
     return (
         <>
            
-            {modalDependente && dependente && (
-                <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+          <ModalDependente openModal={modalDependente} setOpenModal={setModalDependente} setarFalecidoDependente={setarFalecidoDependente}/>
 
-                    <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-10 bg-gray-50 ">
 
-                        <div className="fixed flex flex-col p-4 max-h-96  rounded-lg shadow bg-gray-700">
-                            <div className="inline-flex border-b-[1px] text-white">
-                                <h1>SELECIONE O DEPENDENTE</h1>
-                                <button type="button" onClick={() => setModalDependente(false)} className="text-gray-400 bg-transparent rounded-lg text-sm h-4 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                                    <IoIosClose size={30} />
-                                </button>
-                            </div>
-                            <ul className="flex flex-col pt-2 overflow-y-auto text-gray-300 gap-2 ">
-                                {dadosassociado?.dependentes?.map((item, index) => {
-                                    return (
-                                        item.excluido !== true && <li onClick={() => setarFalecidoDependente({ nome: item.nome, data_nasc: item.data_nasc })} className="flex cursor-pointer hover:bg-gray-700 bg-gray-600 p-1 pl-2 pr-2 rounded-lg ">
-                                            {item.nome}
-                                        </li>
-                                    )
 
-                                })}
-                            </ul>
 
-                        </div>
-                    </div>
-                </div>
-            )}
-            <div className="flex flex-col w-full pl-10 pr-10 pt-4">
+            <div className="flex flex-col w-full pl-10 pr-10 pt-2 ">
 
-                <div className="flex flex-row p-2 border-b-[1px] border-gray-600">
-                    <h1 className="flex w-full  text-gray-300 font-semibold text-2xl ">Gerar Ordem de Serviço</h1>
+                <div className="flex flex-row p-1 border-b-[1px] text-white border-gray-600">
+                    <h1 className="flex w-full font-semibold text-2xl ">Gerar Ordem de Serviço</h1>
 
                     <div className="flex flex-row gap-8">
-                        <div className="flex items-center ">
-                            <input type="checkbox" checked={particular} onChange={handleCheckParticular} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                            <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-300">PARTICULAR</label>
+                        <div className="flex  items-end ">
+                            <input type="checkbox" checked={particular} onChange={handleCheckParticular} className="w-5 h-5 text-blue-600  rounded    bg-gray-700 border-gray-600" />
+                            <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-50">PARTICULAR</label>
                         </div>
-                        <button onClick={() => closeModa({ closeModalPlano: true })} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
+                        
+                        <Button color={'light'} size={'sm'} onClick={() => closeModa({ closeModalPlano: true })} >
                             <IoMdSearch size={20} />
                             Buscar
-                        </button>
+                        </Button>
                     </div>
                 </div>
-                <div className="flex-col w-full border mt-2 rounded-lg shadow  border-gray-700">
+                <div className="flex-col bg-white w-full border mt-1 rounded-lg shadow  border-gray-700">
+                <Tabs theme={{tabpanel:'py-1 ',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-3 py-3 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 ",variant:{underline:{active:{
+        on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
+        off:"border-b-2 border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-400 "
+      }}}}}}}  variant="underline">
 
-                    <ul className="flex flex-wrap w-full text-sm font-medium text-center  border-b   rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800" role="tablist">
-
-                        {!particular && <li className="me-2">
-                            <button type="button" onClick={() => { setIndex(1) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 1 && "text-blue-500"}`}>Plano</button>
-                        </li>}
-                        <li className="me-2">
-                            <button type="button" onClick={() => { setIndex(2) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 2 && "text-blue-500"}`}>Falecido</button>
-                        </li>
-                        <li className="me-2">
-                            <button type="button" onClick={() => { setIndex(3) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 3 && "text-blue-500"}`}>Declarante</button>
-                        </li>
-                        <li className="me-2">
-                            <button type="button" onClick={() => { setIndex(4) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 4 && "text-blue-500"}`}>Dados do Óbito</button>
-                        </li>
-                        <li className="me-2">
-                            <button type="button" onClick={() => { setIndex(5) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 5 && "text-blue-500"}`}>Produtos e Serviços</button>
-                        </li>
-                        <li className="me-2">
-                            <button type="button" onClick={() => { setIndex(6) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 6 && "text-blue-500"}`}>Velório</button>
-                        </li>
-                        <li className="me-2">
-                            <button type="button" onClick={() => { setIndex(7) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 7 && "text-blue-500"}`}>CheckLists</button>
-                        </li>
-                        <li className="me-2">
-                            <button type="button" onClick={() => { setIndex(8) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 8 && "text-blue-500"}`}>Documentação</button>
-                        </li>
-                        <li className="me-2">
-                            <button type="button" onClick={() => { setIndex(9) }} className={`inline-block p-4   hover:bg-gray-700 hover:text-gray-300 ${indexTab === 9 && "text-blue-500"}`}>Itens Usados</button>
-                        </li>
-                        <li className="ml-auto flex items-center mr-2">
-                            {servico.id_obitos ? <button type="button" onClick={() => editarObito()} className="inline-flex p-2 text-white font-semibold rounded-lg bg-yellow-500 gap-1">Gravar Alterações<HiOutlineSave size={22} /></button> : <button type="button" onClick={() => cadastrarObito()} className="inline-flex p-2 text-white font-semibold rounded-lg bg-green-600 gap-1">Salvar<HiOutlineSave size={22} /></button>}
-                        </li>
-
-                    </ul>
-
-
-                    {indexTab === 1 && !particular && (<DadosPlano dados={{
+      <Tabs.Item  active title="Plano" icon={FaCalendarAlt}>
+      <DadosPlano dados={{
                         nome: dadosassociado?.nome,
                         categoria: dadosassociado?.contrato?.plano,
                         id_associado: dadosassociado?.id_associado,
@@ -428,32 +379,36 @@ const handleCheckTitular=()=>{
                         situacao: dadosassociado?.contrato?.situacao
                     }}
 
-                    />)}
-
-                    {indexTab === 2 && <>
+                    />
+      </Tabs.Item>
+      <Tabs.Item title="Falecido" icon={MdAccessTimeFilled}>
+      <>
                         {!particular && <div className="inline-flex gap-8 pl-4 pt-1">
                             <div className="flex items-center ">
                                 <input type="checkbox" checked={titular} onClick={handleCheckTitular} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                                <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-300">TITULAR</label>
+                                <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-600">TITULAR</label>
                             </div>
                             <div className="flex items-center ">
                                 <input type="checkbox" onClick={handleCheckDependente} checked={dependente} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                                <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-300">DEPENDENTE</label>
+                                <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-600">DEPENDENTE</label>
                             </div>
                         </div>}
                         <DadosFalecido servico={servico} setarServico={setarServico} check={particular||titular||dependente?false:true} />
 
-                    </>}
+                    </>
+     
+      </Tabs.Item>
+     
+      <Tabs.Item title="Declarante" icon={HiClipboardList}>
+      <DadosDeclarante servico={servico} setarServico={setarServico} />
+      </Tabs.Item>
+      <Tabs.Item  icon={IoMdSettings}  title="Dados Óbito">
+      <DadosObito servico={servico} setarServico={setarServico} />
+      </Tabs.Item>
 
 
-
-                    {indexTab === 3 && <DadosDeclarante servico={servico} setarServico={setarServico} />}
-
-
-
-                    {indexTab === 4 && <DadosObito servico={servico} setarServico={setarServico} />}
-
-                    {indexTab === 5 && <ProdutosServicos
+      <Tabs.Item  icon={IoMdSettings}  title="Produtos e Serviços">
+      <ProdutosServicos
                         deletarProduto={deletarProduto}
                         lancarCaixa={lancarCaixa}
                         listaProduto={listaProduto}
@@ -465,23 +420,14 @@ const handleCheckTitular=()=>{
                         id_obito={servico.id_obitos ?? 0}
 
 
-                    />}
+                    />
+      </Tabs.Item>
 
-
-                    {indexTab === 9 && <ItensUsados
-                        selectProdutos={selectProdutos}
-                        id_obito={Number(servico.id_obitos)}
-                        obito_itens={servico.obito_itens ?? []}
-                        setarServico={setarServico}
-                        atualizarProdutos={listarProdutos}
-
-                    />}
-
-
-
-                    {indexTab === 6 && <DadosVelorio servico={servico} setarServico={setarServico} />}
-
-                    {indexTab === 7 && <div className="flex flex-row w-full justify-around rounded-lg p-2   gap-6">    <div className="flex flex-col overflow-y-auto w-1/3 text-white p-2 gap-2 rounded-md bg-gray-600 mt-1 mb-1 max-h-[calc(100vh-250px)] ">
+      <Tabs.Item  icon={IoMdSettings}  title="Velório">
+      <DadosVelorio servico={servico} setarServico={setarServico} />
+      </Tabs.Item>
+      <Tabs.Item  icon={IoMdSettings}  title="CheckList">
+      <div className="flex flex-row w-full justify-around rounded-lg p-2   gap-6">    <div className="flex flex-col overflow-y-auto w-1/3 text-white p-2 gap-2 rounded-md bg-gray-600 mt-1 mb-1 max-h-[calc(100vh-250px)] ">
                         <h1 className="border-b-[1px] border-gray-500">Checklist Saída</h1>
                         <ul className="flex flex-col gap-2">
                             {servico.listacheckida?.map((it, index) => {
@@ -513,13 +459,52 @@ const handleCheckTitular=()=>{
 
 
                     </div>
-                    }
-
-                    {indexTab===8 && <DocumentacaoOS
-
-                        servico={servico}
                     
-                    />}
+      </Tabs.Item>
+
+      <Tabs.Item  icon={IoMdSettings}  title="Itens Usados">
+      <ItensUsados
+                        selectProdutos={selectProdutos}
+                        id_obito={Number(servico.id_obitos)}
+                        obito_itens={servico.obito_itens ?? []}
+                        setarServico={setarServico}
+                        atualizarProdutos={listarProdutos}
+
+                    />
+      </Tabs.Item>
+
+
+      <Tabs.Item  icon={IoMdSettings}  title="Documentação">
+      <DocumentacaoOS servico={servico} />
+      </Tabs.Item>
+    </Tabs>
+
+                  
+
+
+             
+
+             
+
+
+
+
+
+
+                 
+
+                
+
+
+               
+
+
+
+                    
+
+                    
+
+               
 
 
 

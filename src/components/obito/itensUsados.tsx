@@ -1,4 +1,5 @@
 import { api } from "@/services/apiClient";
+import { Button, Label, Select, Table, TextInput } from "flowbite-react";
 import { FormEvent,useEffect,useState } from "react"
 import { MdClose } from "react-icons/md";
 import { toast } from "react-toastify";
@@ -211,17 +212,17 @@ const quantidade =Number(obito_itens[index].quantidade)
 
     return (
         <div className="flex flex-col w-full rounded-lg p-6   gap-5">
-            <form onSubmit={handleSubmit} className="flex flex-row text-white gap-6 w-full">
+            <form onSubmit={handleSubmit} className="flex flex-row  gap-6 w-full">
 
                 <div>
-                    <label className="block mb-1 text-xs font-medium text-gray-900 dark:text-white">Descrição</label>
-                    <select value={itens.id_estoque} onChange={e => {
+                    <Label value="Descrição"/>
+                    <Select sizing={'sm'} value={itens.id_estoque} onChange={e => {
                             const item = selectProdutos?.find(it=>it.estoque.some(atual=>atual.id_estoque===Number(e.target.value)))
                             const index = item?.estoque.findIndex(it=>it.id_estoque===Number(e.target.value))
                             
                            index!==-1 && setItens({...itens,id_estoque:Number(e.target.value),produto:item?.descricao??'',valor_custo:Number(item?.valor_custo),total_estoque:Number(item?.estoque[index??0]?.total)})
                         
-                        }} className="block w-full pb-1 pt-1 pr-2 pl-2 appearance-none text-xs  border  rounded-lg    bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+                        }} >
                         <option value={''}></option>
                         {selectProdutos?.map(item=>{
                           return (
@@ -230,112 +231,109 @@ const quantidade =Number(obito_itens[index].quantidade)
                             )) 
                             )
                         })}
-                    </select>
+                    </Select>
                 </div>
 
                 <div>
-            <label className="block mb-1 text-xs font-medium  text-white">Valor Unit.</label>
-            <input disabled value={Number(itens.valor_custo)} autoComplete='off' type="text" className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-xs border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+            <Label value="Valor Unit."/>
+            <TextInput sizing={'sm'} disabled value={Number(itens.valor_custo)} autoComplete='off' type="number" />
         </div>
 
                 <div>
-            <label className="block mb-1 text-xs font-medium  text-white">Quantidade</label>
-            <input value={Number(itens.quantidade)} onChange={(e) => {
+            <Label value="Quantidade" />
+            <TextInput sizing={'sm'} value={Number(itens.quantidade)} onChange={(e) => {
                 setarItens({...itens, quantidade: Number(e.target.value) })
                    
 
-            }} autoComplete='off' type="number" className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-xs border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+            }} autoComplete='off' type="number"  />
         </div>
 
         <div>
-            <label className="block mb-1 text-xs font-medium  text-white">Total</label>
-            <input disabled value={Number(itens.valor_total)} autoComplete='off' type="text" className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-xs border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
+            <Label value="Total" />
+            <TextInput sizing={'sm'} disabled value={Number(itens.valor_total)} autoComplete='off' type="text"  />
         </div>
 
 
         <div className="flex items-end text-sm">
-            <button type="submit"
-            
-                className="flex bg-blue-600 p-1 pl-2 pr-2 rounded-lg ">Adicionar</button>
+            <Button color={'blue'} size={'sm'} type="submit">Adicionar</Button>
         </div>
 
             </form>
 
-            <div className="flex">
-        <table
-            className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
-            <thead className="sticky top-0 text-sm  uppercase bg-gray-700 text-gray-400">
-                <tr>
-                    <th scope="col" className=" px-2 py-1">
+            <div className="overflow-x-auto">
+        <Table  hoverable theme={{ body: { cell: { base: "px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-gray-700" } } }}>
+            <Table.Head >
+                
+                    <Table.HeadCell >
                         Descrição Item
-                    </th>
+                    </Table.HeadCell>
 
-                    <th scope="col" className="px-4 py-1">
+                    <Table.HeadCell >
                         Valor Unit.
-                    </th>
-                    <th scope="col" className="px-4 py-1">
+                    </Table.HeadCell>
+                    <Table.HeadCell >
                         Quant.
-                    </th>
-                    <th scope="col" className="px-4 py-1">
+                    </Table.HeadCell>
+                    <Table.HeadCell >
                         Desconto
-                    </th>
-                    <th scope="col" className="px-4 py-1">
+                    </Table.HeadCell>
+                    <Table.HeadCell >
                         Acrescimo
-                    </th>
-                    <th scope="col" className="px-4 py-1">
+                    </Table.HeadCell>
+                    <Table.HeadCell >
                         Valor Total
-                    </th>
-                    <th scope="col" className="px-4 py-1">
-                        <span >AÇÕES</span>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
+                    </Table.HeadCell>
+                    <Table.HeadCell >
+                       AÇÕES
+                    </Table.HeadCell>
+                
+            </Table.Head>
+            <Table.Body>
                 {obito_itens?.map((item, index) => {
 
 
-                    return (item.id_estoque && <tr key={item.id_ob_itens} className={`border-b bg-gray-800 border-gray-700  hover:bg-gray-600`}>
-                        <td className="px-2 py-1">
+                    return (item.id_estoque && <Table.Row key={item.id_ob_itens} >
+                        <Table.Cell >
                             {item.descricao_item}
-                        </td>
-                        <td className="px-4 py-1">
+                        </Table.Cell>
+                        <Table.Cell >
                             R${item.valor_unit}
-                        </td>
-                        <td className="px-4 py-1">
+                        </Table.Cell>
+                        <Table.Cell >
                             {item.quantidade}
-                        </td>
-                        <td className="px-4 py-1">
+                        </Table.Cell>
+                        <Table.Cell >
                             {item.desconto && `R$${item.desconto}`}
-                        </td>
-                        <td className="px-4 py-1">
+                        </Table.Cell>
+                        <Table.Cell >
                             {item.acrescimo && `R$${item.acrescimo}`}
-                        </td>
-                        <td className="px-4 py-1">
+                        </Table.Cell>
+                        <Table.Cell >
                             R${item.valor_total}
-                        </td>
-                        <td className="px-4 py-1 flex justify-center text-center ">
+                        </Table.Cell>
+                        <Table.Cell >
                             <button onClick={() =>{
-                                deletarProduto({id_ob_itens:Number(item.id_ob_itens),index:Number(index)})}} className=" flex justify-center items-center rounded-lg  px-1 py-1 text-white hover:bg-red-600"><MdClose /></button>
-                        </td>
+                                deletarProduto({id_ob_itens:Number(item.id_ob_itens),index:Number(index)})}} className=" flex justify-center items-center rounded-lg  px-1 py-1  hover:bg-red-600"><MdClose /></button>
+                        </Table.Cell>
 
-                    </tr>)
+                    </Table.Row>)
                 })}
 
-            </tbody>
+            </Table.Body>
 
             <tfoot >
-                <tr className={`border-b bg-gray-800 border-gray-700  hover:bg-gray-600`}>
+                <tr className={`border-b  border-gray-700  hover:bg-gray-600`}>
                     <td className="px-4 py-1 text-start font-semibold" colSpan={5}>Total Geral</td>
-                    <td className="px-4 py-1 text-green-500 text-start font-semibold" colSpan={2} >R${obito_itens.reduce((acumulador,atual)=>{
+                    <td className="px-4 py-1 text-green-500 text-start font-semibold" colSpan={2} >{Number(obito_itens.reduce((acumulador,atual)=>{
                         if(atual.id_estoque){
                             acumulador+=Number(atual.valor_total)
                         }
                         return acumulador
-                    },0)}</td>
+                    },0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</td>
                 </tr>
             </tfoot>
 
-        </table>
+        </Table>
 
     </div>
 
