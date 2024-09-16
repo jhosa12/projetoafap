@@ -79,15 +79,14 @@ export default function Vendas() {
     const dadosVendas =async() => {
         try {
             setLoading(true);
-            console.log(startDate)
-            console.log(endDate)
+         
             const response = await api.post<ResponseProps>('/vendas/filtro', {
                 dataInicio: startDate,
                 dataFim: endDate,
             });
          
             const { grupos, metas, setores, consultores } = response.data;
-            console.log(response.data)
+          
             // Remove duplicatas de consultores
             const consultoresArray = consultores.reduce<ConsultoresProps[]>((acumulador, item) => {
                 if (!acumulador.some(it => it.nome === item.nome)) {

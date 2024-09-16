@@ -9,17 +9,31 @@ import { memo, StrictMode, useEffect } from 'react';
 import { ToastContainer, Zoom } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
-const MemoizedMenuLateral = memo(MenuLateral);
+
 
 function isLoginPage(pathname: string) {
   return pathname === '/' //|| pathname==='/sorteio';
 }
 
 
+function PrivateLayout({children}:{children:React.ReactNode}){
+  return(
+    <div >
+      <MenuLateral/>
+      <div>
+        {children}
+      </div>
+    </div>
+  )
+}
+
+
+
+
 function PrivateRouter({Component,pageProps,router}:AppProps){
 
   const {usuario,setPermissoes,userLogged} = useAuth()
-
+ 
 async function GetPermissions() {
  
   try {
@@ -27,7 +41,7 @@ async function GetPermissions() {
       id_usuario:usuario?.id
     })
     setPermissoes(permissions.data)
- 
+   
   } catch (error) {
     console.log(error)
   }
@@ -50,6 +64,14 @@ async function GetPermissions() {
    
   },[router.pathname,usuario])
 
+  if (!isLoginPage(router.pathname)) {
+    return (
+      <PrivateLayout>
+        <Component {...pageProps} />
+      </PrivateLayout>
+    );
+  }
+
   return <Component {...pageProps}/>
 }
 
@@ -62,7 +84,6 @@ export default function App({ Component, pageProps,router }: AppProps) {
   return (
     <StrictMode>
     <AuthProvider>
-      {!isLoginPage(router.pathname) && <MemoizedMenuLateral />}
      <PrivateRouter router={router} Component={Component} pageProps={pageProps}/>
       <ToastContainer
        autoClose={4000}

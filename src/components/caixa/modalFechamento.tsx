@@ -16,18 +16,6 @@ interface DataProps{
     lancamentos:Array<LancamentosProps>
 }
 
-interface CaixaFechamento{
-    tipo:string,
-    valor:number,
-}
-
-interface FechamentoProps{
-    id_usuario:string,
-    caixaCad:Array<CaixaFechamento>,
-    data:Date,
-    observacao:string,
-    caixaReal:Array<CaixaFechamento>
-}
 
 interface ValoresProps{
     pix:number,
@@ -48,15 +36,15 @@ useEffect(
     ()=>{
     
       const real:ValoresProps = lancamentos?.reduce((acc,at)=>{
-        if(at.mensalidade.form_pagto==='PIX'){
+        if(at.mensalidade?.form_pagto==='PIX'){
             acc.pix+=Number(at.valor)
-        }else   if(at.mensalidade.form_pagto==='DINHEIRO'){
+        }else   if(at.mensalidade?.form_pagto==='DINHEIRO'){
             acc.cedulas+=Number(at.valor)
         }
-        else   if(at.mensalidade.form_pagto==='CARTAO'){
+        else   if(at.mensalidade?.form_pagto==='CARTAO'){
             acc.cartao+=Number(at.valor)
         }
-        else   if(at.mensalidade.form_pagto==='TRANSFERENCIA'){
+        else   if(at.mensalidade?.form_pagto==='TRANSFERENCIA'){
             acc.transferencia+=Number(at.valor)
         }
         return acc

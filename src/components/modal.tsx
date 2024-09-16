@@ -328,7 +328,7 @@ export function ModalBusca(){
                 <p className="text-gray-400 mb-2">Selecione o Contrato:</p>
                 <ul className="overflow-y-visible space-y-2 mb-2">
                                 {array.map((item,index)=>(
-                                     <li onClick={()=>dadosAssociado(Number(item.id_associado))}>
+                                     <li onClick={()=>{carregarDados(item.id_associado),closeModa({closeModalPlano:false})}}>
                                      <label  className="inline-flex items-center justify-between w-full p-2 rounded-lg cursor-pointer hover:text-gray-300 border-gray-500 peer-checked:text-blue-500 peer-checked:border-blue-600 text-white bg-gray-600 hover:bg-gray-500">                           
                                     <div className="block">
                                      <div className="w-full text-sm font-semibold"><span className="pr-2">{item?.contrato?.id_contrato}</span>{item.nome}<span className="flex flex-col gap-1">{item?.dependentes?.map((i,id)=>(<span>DEPENDENTE: {i.nome}</span>))}</span></div>

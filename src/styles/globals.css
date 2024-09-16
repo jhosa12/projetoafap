@@ -4,7 +4,10 @@
 
 
 /*@import 'flowbite/dist/flowbite.css';*/
-
+.apexcharts-tooltip {
+  background: #f3f3f3;
+  color: orange;
+}
 
 .modal {
   z-index: 9999; /* Valor alto para garantir que o modal fique sobre o conteúdo */

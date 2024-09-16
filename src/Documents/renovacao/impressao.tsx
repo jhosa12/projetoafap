@@ -53,7 +53,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
 
 
         const { arrayMensalidade } = this.props;
-        console.log(arrayMensalidade)
+        
         return (
             <ul className="flex flex-col w-full justify-center items-center gap-4 ">
                 {arrayMensalidade.map((item, index) => (
@@ -91,9 +91,9 @@ class DocumentTemplate extends React.Component<DadosProps> {
 
 
                                 <div className="flex flex-col  justify-start w-full ">
-                                    <span >{item?.nome}</span>
-                                    <span >{item.endereco}- {item.numero}</span>
-                                    <span >{item.bairro}-{item.cidade}/{item.uf}</span>
+                                    <span style={{fontSize:'9px'}}>{item?.nome}</span>
+                                    <span style={{fontSize:'9px'}}>{item.endereco}- {item.numero}</span>
+                                    <span style={{fontSize:'9px'}}>{item.bairro}-{item.cidade}/{item.uf}</span>
 
 
                                 </div>
@@ -138,23 +138,23 @@ class DocumentTemplate extends React.Component<DadosProps> {
                                 </div>
 
 
-                                <div className="inline-flex pt-2 w-full"  >
+                                <div className="inline-flex pt-2 w-full justify-between"  >
                                     <div className=" flex flex-col">
                                         <span className="whitespace-nowrap" style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '1' }}>{item.nome}</span>
                                         <span style={{ fontSize: '9px', lineHeight: '1' }}>{item.endereco}-{item.numero}</span>
                                         <span style={{ fontSize: '9px', lineHeight: '1' }}>{item.bairro}-{item.cidade}/{item.uf}</span>
                                     </div>
 
-                                    <div className="flex flex-col w-full justify-end items-end">
+                                   
                                         {it.n_doc && <BarCode
                                             width={3}
-                                            height={30}
-                                            fontSize={10}
+                                            height={25}
+                                            fontSize={5}
                                             textMargin={0}
                                             margin={0}
+                                            marginBottom={0}
                                             value={it.n_doc} />}
-
-                                    </div>
+                                    
 
                                 </div>
 

@@ -2,7 +2,7 @@
 
 import { ConsultaProps, ExamesData, ExamesProps, MedicoProps } from "@/pages/afapSaude";
 import { api } from "@/services/apiClient";
-import { Button, Table } from "flowbite-react";
+import { Badge, Button, Table } from "flowbite-react";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { HiDocument, HiOutlineTrash, HiPencil } from "react-icons/hi2";
@@ -10,7 +10,7 @@ import { HiFilter } from "react-icons/hi";
 import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
 import { useReactToPrint } from "react-to-print";
 import { ModalConferencia } from "./modalConferencia";
-import { CaixaProps } from "@/pages/financeiro/login";
+import { CaixaProps } from "@/pages/financeiro";
 
 
 
@@ -23,13 +23,13 @@ export interface CaixaFechamento{
 
 export interface FechamentoProps{
  
-    id_conf: number,
-    id_ccustos: number,
+    id_conf: number|null,
+    id_ccustos: number|null,
     data: Date,
     dataConf: Date,
-    caixaCad:CaixaFechamento,
-    caixaReal: CaixaFechamento
-    caixaVerif: CaixaFechamento
+    caixaCad:Partial<CaixaFechamento>,
+    caixaReal: Partial<CaixaFechamento>
+    caixaVerif: Partial<CaixaFechamento>
     status: string,
     observacao: string,
     ccustos: {
@@ -45,7 +45,7 @@ interface DataProps {
 export default function Conferencia({  }: DataProps) {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [caixa,setCaixa] = useState<Array<FechamentoProps>>([])
-  const [dadosCaixa,setDadosCaixa] = useState<FechamentoProps|null>()
+  const [dadosCaixa,setDadosCaixa] = useState<Partial<FechamentoProps>>({caixaCad:{cartao:0,cedulas:0,pix:0,transferencia:0},caixaReal:{cartao:0,cedulas:0,pix:0,transferencia:0},caixaVerif:{cartao:0,cedulas:0,pix:0,transferencia:0},ccustos:{descricao:''},data:new Date(),dataConf:new Date(),id_ccustos:null,id_conf:null,observacao:'',status:'' })
 
 useEffect(
   ()=>{
@@ -76,7 +76,30 @@ const listar =useCallback( async()=>{
 )
 
 
+const handleAtualizar=async()=>{
+try {
+      const response =await toast.promise(
+        api.post('/caixa/atualizarFechamento',{
+          id_conf:dadosCaixa.id_conf,
+          caixaCad:dadosCaixa.caixaCad,
+          caixaVerif:dadosCaixa.caixaVerif,
+          caixaReal:dadosCaixa.caixaReal
+                }),
+                {
+                  error:'Erro ao atualizar dados',
+                  pending:'Atualizando....',
+                  success:'Dados atualizados com sucesso!'
+                }
+      )
+      const novo = [...caixa]
+      const index = caixa.findIndex(it=>it.id_conf===dadosCaixa.id_conf)
+      novo[index] = response.data
 
+      setCaixa(novo)
+} catch (error) {
+  console.log(error)
+}
+}
 
 
   
@@ -96,10 +119,6 @@ const listar =useCallback( async()=>{
         <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 " } }} color={'light'} size={'sm'} onClick={() => {}}>  <HiFilter className="mr-2 h-5 w-5" /> Filtro</Button>
         <Button size={'sm'} onClick={() =>{}}>Nova Consulta</Button>
       </div>
-
-
-
-
       <div className="overflow-x-auto">
         <Table hoverable theme={{ body: { cell: { base: "px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg" } } }}  >
 
@@ -117,10 +136,10 @@ const listar =useCallback( async()=>{
             {caixa?.map((item, index) => (
               <Table.Row key={item.id_conf} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  {item.ccustos.descricao}
+                  {item?.ccustos?.descricao}
                 </Table.Cell>
                 <Table.Cell> {new Date(item.data).toLocaleDateString('pt-BR')}</Table.Cell>
-                <Table.Cell>{Teste({caixaCadastrado:item.caixaCad,caixaReal:item.caixaReal,caixaVerificado:item.caixaVerif})}</Table.Cell>
+                <Table.Cell>{Teste({caixaCadastrado:item.caixaCad,caixaReal:item.caixaReal,caixaVerificado:item.caixaVerif})==='PENDENTE'?<Badge className="justify-center" color="warning">PENDENTE</Badge>:Teste({caixaCadastrado:item.caixaCad,caixaReal:item.caixaReal,caixaVerificado:item.caixaVerif})==='DIVERGENTE'?<Badge className="justify-center" color="failure">DIVERGENTE</Badge>:<Badge color="success" className="justify-center">CONVERGENTE</Badge>}</Table.Cell>
                 <Table.Cell>{item.observacao}</Table.Cell>
                 <Table.Cell className="space-x-6">
                   <button onClick={() => {  }} className="font-medium text-gray-500 hover:text-cyan-600">
@@ -151,21 +170,21 @@ const listar =useCallback( async()=>{
 
 
 
-      <ModalConferencia dadosCaixa={dadosCaixa??null} openModal={openModal} setOpenModal={setOpenModal}/>
+      <ModalConferencia handleAtualizar={handleAtualizar} setDadosCaixa={setDadosCaixa} dadosCaixa={dadosCaixa??{}} openModal={openModal} setOpenModal={setOpenModal}/>
     </div>
   );
 }
 
 
 interface TesteProps {
-  caixaReal: CaixaFechamento;
-  caixaVerificado: CaixaFechamento;
-  caixaCadastrado: CaixaFechamento;
+  caixaReal: Partial<CaixaFechamento>;
+  caixaVerificado: Partial<CaixaFechamento>;
+  caixaCadastrado: Partial<CaixaFechamento>;
 }
 
 const Teste = ({ caixaReal, caixaVerificado, caixaCadastrado }: TesteProps): string => {
   // Função auxiliar para verificar divergências
-  const isDivergente = (caixa1: CaixaFechamento, caixa2: CaixaFechamento): boolean => {
+  const isDivergente = (caixa1:Partial<CaixaFechamento>, caixa2: Partial<CaixaFechamento>): boolean => {
     return (
       caixa1.pix !== caixa2.pix ||
       caixa1.cartao !== caixa2.cartao ||

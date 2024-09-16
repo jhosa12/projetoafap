@@ -179,7 +179,7 @@ export type AssociadoProps = {
     guia_rua: string,
     uf: string,
     empresa:string,
-    mensalidade: Array<MensalidadeProps>,
+    mensalidade: Array<MensalidadeProps>|[],
     contrato: ContratoProps,
     dependentes: Array<DependentesProps>
     acordo: Array<AcordoProps>
@@ -196,7 +196,7 @@ type AuthContextData = {
     servico: Partial<ObitoProps>,
     data: Partial<DadosCadastro>,
     dadosassociado: Partial<AssociadoProps> | undefined,
-    carregarDados: () => Promise<void>,
+    carregarDados: (id:number) => Promise<void>,
     setarListaConv: (fields: Partial<ConvProps>) => void,
     listaConv: Partial<ConvProps>,
     limparDados:()=>void,
@@ -506,7 +506,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(()=>{
         const { "@nextauth.token": token } = parseCookies();
         if (token) userToken(token)
-            console.log(token)
+            
     },[])
 
     const userToken = useCallback(async (token:string) => {
@@ -533,20 +533,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
 
 
-    useEffect(()=>{
+   
 
-        if(data.id_associado) carregarDados()
-        
-    },[data.id_associado])
-
-    const carregarDados = async () => {
+    const carregarDados = async (id:number) => {
+        console.log(id)
         limparDados();
         try {
             const response = await api.post('/associado', {
-                id_associado: Number(data.id_associado),
+                id_associado: id,
                 empresa: data.empresa
             });
-            console.log(response.data)
+           
             setDadosAssociado(response.data);
         } catch (error) {
             toast.error('Erro na requisição');

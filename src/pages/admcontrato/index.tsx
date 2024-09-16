@@ -238,7 +238,7 @@ export default function AdmContrato() {
    
   
     
-    const [componenteMounted, setMounted] = useState(false)
+   
 
 
 
@@ -321,34 +321,7 @@ export default function AdmContrato() {
 
 
 
-    useEffect(() => {
-
-
-        const carregarDadosAsync = async () => {
-            try {
-                if(data.id_associado){
-                    await carregarDados();
-                   // setVerObs(false)
-                }else return;
-               
-                // closeModa({contrato:{},dependente:{}})
-                
-
-            } catch (error) {
-                console.error('Erro ao carregar dados:', error);
-            }
-
-        };
-        componenteMounted && carregarDadosAsync();
-
-        closeModa({ ...data, closeModalPlano: false })
-
-        setIndex(2)
-
-
-
-    }, [data.id_associado]);
-
+    
 
 
 
@@ -406,8 +379,6 @@ export default function AdmContrato() {
                             Add Plano
                             <RiFileAddLine size={20} />
                         </Button>
-
-
                     </div>
                     <div className="flex-col w-full border  rounded-lg shadow  border-gray-700">
                     <Tabs   theme={{base:'bg-white rounded-lg',tablist:{tabitem:{base:"flex items-center justify-center rounded-t-lg p-4 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 "}}}} aria-label="Tabs with icons" variant="underline">

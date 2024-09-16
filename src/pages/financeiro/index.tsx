@@ -4,7 +4,7 @@ import { GiExpense } from "react-icons/gi";
 import { GiReceiveMoney } from "react-icons/gi";
 import { BiTransferAlt } from "react-icons/bi";
 import { FaBalanceScale } from "react-icons/fa";
-import { Table, TableHead, TableHeadCell } from "flowbite-react";
+import { Button, Table, TableHead, TableHeadCell } from "flowbite-react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
@@ -24,7 +24,8 @@ import { TbAlertTriangle } from "react-icons/tb";
 import { FaRepeat } from "react-icons/fa6";
 
 import {Caixa} from "@/components/financeiro/caixa";
-import Conferencia from "../../../components/financeiro/conferencia/conferencia";
+import Conferencia from "../../components/financeiro/conferencia/conferencia";
+import { PlanodeContas } from "@/components/financeiro/planodeContas";
 
 interface DataProps {
   y: number,
@@ -35,7 +36,7 @@ interface DataProps {
   cancelamentos: number
 }
 
-interface PlanoContasProps {
+export interface PlanoContasProps {
   conta: string,
   id_grupo: number,
   descricao: string,
@@ -61,7 +62,8 @@ interface PlanoContasProps {
     }
   }>
 }
-interface GruposProps {
+
+export interface GruposProps {
   id_grupo: number,
   descricao: string
 }
@@ -82,11 +84,7 @@ interface ContratosProps {
   }
 }
 
-interface SomaValorConta {
-  _sum: { valor: number },
-  conta: string,
-  tipo: string
-}
+
 interface ResponseProps {
   mensalidade: Array<MensalidadeProps>
   contratosGeral: Array<ContratosProps>
@@ -157,8 +155,7 @@ export interface CaixaProps{
 export default function LoginFinaceiro() {
   const { usuario } = useContext(AuthContext)
   const [excluir, setExcluir] = useState<number>(0)
-  const [listaLancamentos, setLancamentos] = useState<Array<PlanoContasProps>>([])
-  const [subListaLanc, setSubLista] = useState<Array<LancamentoProps>>()
+
   const [despesas, setDespesas] = useState<number>(0)
   const [receitas, setReceitas] = useState<number>(0)
   const [remessa, setRemessa] = useState<number>(0)
@@ -171,14 +168,13 @@ export default function LoginFinaceiro() {
   const [endDateContas, setEndDateContas] = useState(new Date())
   const [todoPeriodo, setPeriodo] = useState(true)
   const [menuIndex, setMenuIndex] = useState(1)
-  const [arraygeral, setArrayGeral] = useState<Array<PlanoContasProps>>([])
+ 
   const [filtroatee, setFiltroAteE] = useState<number>(0)
   const [lancamentoFiltroMensalidade, setFiltroMensalidade] = useState<Array<DataProps>>([])
   const [lancamentoFiltroAtivos, setFiltroAtivos] = useState<Array<DataProps>>([])
   const [escalaDia, setDia] = useState(false)
   const [escalaMes, setMes] = useState(true)
   const [escalaAno, setAno] = useState(false)
-  const [somaPorConta, setSomaConta] = useState<Array<SomaValorConta>>([])
   const [loading, setLoading] = useState(false)
   const [todos, setTodos] = useState(true)
   const [dropPlanos, setDropPlanos] = useState(false)
@@ -189,15 +185,46 @@ export default function LoginFinaceiro() {
   const [ccustos,setCcustos] = useState<Array<CcustosProps>>([])
   const [caixa,setCaixa] = useState<Array<CaixaProps>>([])
 
-  const toogleAberto = (index: number) => {
-    setAbertos((prev: { [key: number]: boolean }) => ({
-      ...Object.keys(prev).reduce((acc, key) => {
-        acc[Number(key)] = false;
-        return acc;
-      }, {} as { [key: number]: boolean }),
-      [index]: !prev[index]
-    }));
-  };
+
+  const [listaPlanoContas, setListaPlanoContas] = useState<Array<PlanoContasProps>>([])
+
+
+
+
+  const reqPlanoConta = async()=>{
+    try {
+      const planoConta = await api.get('/financeiro/planoContas')
+
+
+      setListaPlanoContas(planoConta.data)
+    } catch (error) {
+      
+    }
+  }
+
+
+useEffect(()=>{
+  reqPlanoConta()
+},[])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const setarDadosConta = (fields: Partial<ContaProps>) => {
     setDadosConta((prev: Partial<ContaProps>) => {
@@ -238,7 +265,7 @@ export default function LoginFinaceiro() {
       escalaMes,
       escalaAno,
     })
-
+    console.log(response.data)
     const { mensalidade, contratosGeral } = response.data
 
     const timezone = 'America/Distrito_Federal';
@@ -292,21 +319,21 @@ export default function LoginFinaceiro() {
 
       return acumulador;
     }, [] as DataProps[]);
-    const dataInicial = new Date(startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDate());
-    const dataFinal = new Date(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate());
+    const dataInicial = startDate;
+    const dataFinal = endDate;
     let cumulativeSum = 0;
     const newArray = contratosGeral.map(item => {
       cumulativeSum += item._count.dt_adesao - item._count.dt_cancelamento;
-      const data = new Date(item.dt_adesao)
-      const novaDate = new Date(data.getUTCFullYear(), data.getUTCMonth(), data.getUTCDate())
+    
+     
 
-      return { ...item, _count: { ...item._count, dt_adesao: cumulativeSum }, dt_adesao: novaDate };
+      return { ...item, _count: { ...item._count, dt_adesao: cumulativeSum }, dt_adesao: item.dt_adesao };
 
     }).filter(item => item.dt_adesao >= dataInicial && item.dt_adesao <= dataFinal)
     // const novoArray = newArray.filter(item=>item.dt_adesao>=dataInicial&& item.dt_adesao<=dataFinal)
 
-    const resultadoAtivos = newArray?.reduce((acumulador, atual) => {
-      const dataLanc = new Date(new Date(atual?.dt_adesao).getUTCFullYear(), new Date(atual?.dt_adesao).getUTCMonth(), new Date(atual?.dt_adesao).getUTCDate())
+   /* const resultadoAtivos = newArray?.reduce((acumulador, atual) => {
+      const dataLanc = new Date(atual?.dt_adesao)
 
       if (escalaDia) {
         dataLancamento = dataLanc.toLocaleDateString('pt-BR', {
@@ -380,35 +407,14 @@ export default function LoginFinaceiro() {
 
 
     setFiltroMensalidade(resultado)
-    setFiltroAtivos(resultadoAtivos)
+  //  setFiltroAtivos(resultadoAtivos)
     setLoading(false)
 
 
   }
 
 
-  async function handleListaLanc(conta: string, index: number) {
-    setSubLista([])
-    if (!abertos[index]) {
-      try {
-        const response = await api.post('/financeiro/listaLancamentos', {
-          todoPeriodo: todoPeriodo,
-          startDate: startDate,
-          endDate: endDate,
-          conta: conta
-        })
-        setSubLista(response.data)
-
-      } catch (error) {
-        console.log(error)
-
-
-      }
-
-    }
-    return true
-
-  }
+ 
 
   let formatter = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -543,12 +549,12 @@ export default function LoginFinaceiro() {
       todoPeriodo: todoPeriodo
     });
     const novoArray = response.data.planosdeContas.map((item: PlanoContasProps) => { return { ...item, check: true } })
-    setArrayGeral(novoArray);
-    setLancamentos(response.data.planosdeContas);
+    //setArrayGeral(novoArray);
+   // setLancamentos(response.data.planosdeContas);
     setGrupos(response.data.grupos)
     // setContratosGeral(response.data.contratosGeral)
 
-    setSomaConta(response.data.somaPorConta)
+   // setSomaConta(response.data.somaPorConta)
 
 
     setLoading(false)
@@ -557,40 +563,9 @@ export default function LoginFinaceiro() {
 
 
 
-  useEffect(() => {
-    // const novoArray = arraygeral.flatMap(item => item.lancamentos)
-    //  const arrayMensal = novoArray.filter(item => item.conta === '1.01.002')
-    //   setArrayGrafico(arrayMensal)
-
-    if (!todos) {
-      const lancamentosFiltrados = arraygeral.filter((item) => item.check);
-      setLancamentos(lancamentosFiltrados)
-
-    }
-    else {
-      setLancamentos(arraygeral)
-    }
 
 
 
-
-
-  }, [arraygeral])
-
-  useEffect(() => {
-    if (!todos) {
-      const novoArray = arraygeral.map(item => { return { ...item, check: false } })
-      setArrayGeral(novoArray)
-
-    }
-    else {
-      const novoArray = arraygeral.map(item => { return { ...item, check: true } })
-      setArrayGeral(novoArray)
-
-
-    }
-
-  }, [todos])
 
 
 
@@ -656,79 +631,9 @@ export default function LoginFinaceiro() {
 
 
 
-  useEffect(() => {
-    const receitasMap = listaLancamentos.reduce((acumulador, atual) => {
-      const itemexistente = somaPorConta.find(item => item.conta === atual?.conta && item.tipo === 'RECEITA')
-      if (itemexistente) {
-        return acumulador + Number(itemexistente._sum.valor)
-
-      }
-      else {
-        return acumulador
-      }
-
-
-    }, 0)
-
-    setReceitas(receitasMap)
-
-
-    const despesasMap = listaLancamentos.reduce((acumulador, atual) => {
-      const itemexistente = somaPorConta.find(item => item.conta === atual?.conta && item.tipo === 'DESPESA')
-      if (itemexistente) {
-        return acumulador + Number(itemexistente._sum.valor)
-
-      }
-      else {
-        return acumulador
-      }
-
-
-    }, 0)
-
-    setDespesas(despesasMap)
 
 
 
-
-
-    //  const calcDespesas = listaLancamentos?.reduce((acumuladorP, atualP) => {
-    //  const total = atualP?.lancamentos?.reduce((acumulador, atual) => {
-    //   if (atual?.tipo === 'DESPESA') {
-    //    return Number(acumulador) + Number(atual?.valor)
-    //   }
-    //    else { return acumulador }
-    //   }, 0)
-    //  return acumuladorP + total
-    //   }, 0)
-    //  setDespesas(calcDespesas)
-    /*  const calcReceitas = listaLancamentos?.reduce((acumuladorP, atualP) => {
-        const total = atualP?.lancamentos.reduce((acumulador, atual) => {
-          if (atual?.tipo === 'RECEITA') {
-            return Number(acumulador) + Number(atual?.valor)
-          }
-          else { return acumulador }
-        }, 0)
-        return acumuladorP + total
-  
-      }, 0)
-  
-      setReceitas(calcReceitas)*/
-  }, [listaLancamentos])
-
-
-  function handleOptionChange(conta: string) {
-    const novoLancamentos = arraygeral.map((item) => {
-      if (item.conta === conta) {
-        return { ...item, check: !item.check }; // Alternando o valor de check
-      }
-      return item;
-    });
-    setArrayGeral(novoLancamentos)
-    // Filtrando apenas os itens com check verdadeiro
-
-
-  }
 
 
   return (
@@ -762,180 +667,11 @@ export default function LoginFinaceiro() {
 
           {menuIndex===1 && <Caixa handleFiltro={caixaReq} setCaixa={setCaixa} setCcustos={setCcustos} arrayCaixa={caixa} arrayCcustos={ccustos}/>}
 
-          {menuIndex === 2 && <div>
-            <div className="flex flex-row w-full text-xs justify-between  mb-1">
-              <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
-                <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense size={25} /></div>
-                <h2 className="flex flex-col" >DESPESAS <span>{formatter.format(despesas)}</span></h2>
-              </div>
-              <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
-                <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiReceiveMoney size={25} /></div>
-                <h2 className="flex flex-col" >RECEITAS <span>{formatter.format(receitas)}</span></h2>
-              </div>
-              <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
+          {menuIndex === 2 && <PlanodeContas listaContas={listaPlanoContas}/>}
 
-                <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><BiTransferAlt size={25} /></div>
-                <h2 className="flex flex-col" >REMESSA + RECEITA <span>R$ {remessa}</span></h2>
-              </div>
-              <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
-
-                <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><FaBalanceScale size={25} /></div>
-                <h2 className={`flex flex-col`} >SALDO <span className={`font-semibold  ${(receitas - despesas) < 0 ? "text-red-600" : "text-white"}`}>{formatter.format(receitas - despesas)}</span></h2>
-              </div>
-
-            </div>
-
-
-            <div className="flex  w-full bg-[#2b2e3b] px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
-              <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
-
-
-              <select value={setorSelect} onChange={e => {
-                setSetor(Number(e.target.value))
-              }} className="flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                <option value={0}>SETOR (TODOS)</option>
-
-                {grupos?.map((item, index) => (
-                  <option className="text-xs text-white" key={index} value={item.id_grupo}>
-                    {item.descricao}
-                  </option>
-
-                ))}
-              </select>
-              <div className="flex h-full relative w-1/4">
-                <div onClick={() => setDropPlanos(!dropPlanos)}
-                  className="flex w-full h-full justify-between items-center py-1.5 pl-2 pr-2 uppercase border rounded-lg  text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-
-                  {todos ? 'TODOS' : 'PERSONALIZADO'}
-                  <IoIosArrowDown />
-
-
-                </div>
-
-                {dropPlanos && <ul className="absolute  top-7 -left-1 max-h-64 overflow-y-auto  bg-gray-600 p-1 rounded-lg">
-                  <li className="flex items-center px-2 py-1">
-                    <input onChange={() => setTodos(!todos)} type="checkbox" checked={todos} />
-                    <label className="ms-2  text-xs whitespace-nowrap  text-gray-300">TODOS</label>
-                  </li>
-                  {arraygeral.map((item, index) => {
-                    return (
-                      <li className="flex items-center px-2 py-1">
-                        <input onChange={() => handleOptionChange(item?.conta)} type="checkbox" checked={item?.check} value={item?.conta} />
-                        <label className="ms-2  text-xs whitespace-nowrap text-gray-300">{item?.descricao.toUpperCase()}</label>
-                      </li>
-                    )
-                  })}
-                </ul>}
-
-
-
-              </div>
-
-
-
-              <div className="inline-flex  items-center  gap-3">
-                <div className="flex items-center ">
-                  <input type="checkbox" checked={todoPeriodo} onChange={() => setPeriodo(!todoPeriodo)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap  text-gray-300">TODO PERÍODO</label>
-                </div>
-                <DatePicker
-                  disabled={todoPeriodo}
-                  dateFormat={"dd/MM/yyyy"}
-                  locale={pt}
-                  selected={startDate}
-                  onChange={(date) => date && setStartDate(date)}
-                  selectsStart
-                  startDate={startDate}
-                  endDate={endDate}
-                  className="flex py-1 pl-2 text-xs  border rounded-lg   bg-gray-700 border-gray-600  text-white"
-                />
-                <span>até</span>
-
-                <DatePicker
-                  disabled={todoPeriodo}
-                  dateFormat={"dd/MM/yyyy"}
-                  locale={pt}
-                  selected={endDate}
-                  onChange={(date) => date && setEndDate(date)}
-                  selectsEnd
-                  startDate={startDate}
-                  endDate={endDate}
-                  minDate={startDate}
-                  className=" flex py-1 pl-2 text-xs  border rounded-lg  bg-gray-700 border-gray-600  text-white "
-                />
-
-              </div>
-              {!loading ? <button onClick={() => listarDados()} className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCAR<IoSearch size={18} /></button> :
-                <button className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCANDO..<AiOutlineLoading3Quarters size={20} className="animate-spin" /></button>
-              }
-            </div>
-            <div className="flex flex-col  px-4 w-full overflow-y-auto max-h-[calc(100vh-210px)] text-white bg-[#2b2e3b] rounded-lg ">
-              <ul className="flex flex-col w-full p-2 gap-1 text-sm">
-                <li className="flex flex-col w-full  text-xs pl-4 border-b-[1px] ">
-                  <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">DESCRIÇÃO</span>
-                    <div className="flex w-full gap-8  items-center">
-                      <span className="flex w-full text-start whitespace-nowrap ">CONSUMO</span>
-                      <span className="flex w-full text-start whitespace-nowrap">LIM. DE GASTOS</span>
-                      <span className="flex w-full text-start whitespace-nowrap ">META</span>
-                      <span className="flex w-full text-start whitespace-nowrap ">EQV. DE DESPESAS</span>
-                      <span className="flex w-full justify-end  "></span>
-                    </div>
-                  </div>
-                </li>
-                {
-                  listaLancamentos?.map((nome, index) => {
-                    //   const soma = nome?.lancamentos?.reduce((total, item) => {
-                    //   if (item.conta === nome.conta) {
-                    //     return total + Number(item.valor)
-                    //   }
-                    //   else {
-                    //     return total
-                    //   }
-                    //   }, 0)
-                    // let porc;
-                    //  if (soma === 0 || nome?.metas[0]?.valor === 0 || soma === null || nome?.metas[0]?.valor === null || isNaN(Number(nome?.metas[0]?.valor))) {
-                    //    porc = 0;
-                    //  } else {
-                    //    porc = (soma * 100) / Number(nome?.metas[0].valor);
-                    //  }
-
-                    return (
-                      <li onClick={() => { handleListaLanc(nome.conta, index), toogleAberto(index) }} className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
-                        <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">{nome?.descricao}</span>
-                          <div className="flex w-full gap-8  items-center">
-                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{somaPorConta.map((item, ind) => {
-                              if (item.conta == nome?.conta && item.tipo !== null) {
-                                return formatter.format(Number(item._sum.valor))
-                              }
-                            })}</span>
-                            <span className="flex w-full text-start whitespace-nowrap font-semibold">R$ {nome?.metas[0]?.valor ?? 0}</span>
-                            <span className="flex w-full text-start whitespace-nowrap"><span className="rounded-lg bg-red-500  p-1">{/*!Number.isNaN(porc) ? porc + '%' : '0%'*/}</span></span>
-                            <span className="flex w-full text-start whitespace-nowrap"><span className="rounded-lg bg-blue-500  p-1">{/*!Number.isNaN(porc) ? porc + '%' : '0%'*/}</span></span>
-                            <span className="flex w-full justify-end  "><IoIosArrowDown /></span>
-                          </div>
-                        </div>
-                        {abertos[index] && <ul className="flex flex-col w-full gap-1  ml-6 ">
-                          {subListaLanc?.map((lancamento, index) => {
-                            return (
-                              <li className="flex text-xs gap-2 "><span>{lancamento.historico}</span> Valor: R$ {lancamento.valor} / {subListaLanc.length}</li>
-                            )
-                          })
-
-                          }
-                        </ul>}
-                      </li>
-                    )
-                  })
-                }
-              </ul>
-            </div>
-
-
-          </div>}
-
-          {menuIndex === 3 && <div className="flex flex-col p-2 bg-[#2b2e3b]  ml-2 w-full overflow-y-auto h-[calc(100vh-120px)] text-white  rounded-lg ">
-            <div className="flex w-full border-b-[1px] border-gray-500 px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
-              <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
+          {menuIndex === 3 && <div className="flex flex-col p-2 bg-gray-50  ml-2 w-full overflow-y-auto h-[calc(100vh-120px)]  rounded-lg ">
+            <div className="flex w-full text-black border-b-[1px] border-gray-500 px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
+              <label className="flex bg-gray-300 border p-1 rounded-lg border-gray-400" >FILTROS</label>
 
               <div className="inline-flex  items-center w-full justify-end mr-4 gap-3">
 
@@ -949,17 +685,17 @@ export default function LoginFinaceiro() {
                   selectsStart
                   startDate={startDate}
                   endDate={endDate}
-                  className="flex py-1 pl-2 text-xs  border rounded-lg   bg-gray-700 border-gray-600  text-white"
+                  className="flex py-1 pl-2 text-xs text-black  border rounded-lg  bg-gray-100 border-gray-300    "
                 />
 
                 <div className="flex items-center ">
-                  <input type="checkbox" checked={filtroatee === 0} onChange={() => filtroatee === 0 ? setFiltroAteE(1) : setFiltroAteE(0)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap text-gray-300">ATÉ</label>
+                  <input type="checkbox" checked={filtroatee === 0} onChange={() => filtroatee === 0 ? setFiltroAteE(1) : setFiltroAteE(0)} className="w-3 h-3 text-blue-600  rounded    bg-gray-300 border-gray-400" />
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-700">ATÉ</label>
                 </div>
                 <span>/</span>
                 <div className="flex items-center ">
-                  <input type="checkbox" checked={filtroatee === 1} onChange={() => filtroatee === 1 ? setFiltroAteE(0) : setFiltroAteE(1)} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap text-gray-300">E</label>
+                  <input type="checkbox" checked={filtroatee === 1} onChange={() => filtroatee === 1 ? setFiltroAteE(0) : setFiltroAteE(1)} className="w-3 h-3 text-blue-600  rounded    bg-gray-300 border-gray-400" />
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-700">E</label>
                 </div>
 
                 <DatePicker
@@ -973,27 +709,27 @@ export default function LoginFinaceiro() {
                   startDate={startDate}
                   endDate={endDate}
                   minDate={startDate}
-                  className=" flex py-1 pl-2 text-xs  border rounded-lg  bg-gray-700 border-gray-600  text-white "
+                  className=" flex py-1 pl-2 text-xs text-black  border rounded-lg  bg-gray-100 border-gray-300   "
                 />
 
               </div>
               <div className="inline-flex gap-4">
                 <span className="flex items-center">ESCALA:</span>
                 <div className="flex items-center ">
-                  <input type="checkbox" checked={escalaDia} onChange={() => { setDia(true), setMes(false), setAno(false) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap text-gray-300">DIA</label>
+                  <input type="checkbox" checked={escalaDia} onChange={() => { setDia(true), setMes(false), setAno(false) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-300 border-gray-400" />
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-700">DIA</label>
                 </div>
                 <div className="flex items-center ">
-                  <input type="checkbox" checked={escalaMes} onChange={() => { setDia(false), setMes(true), setAno(false) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap text-gray-300">MÊS</label>
+                  <input type="checkbox" checked={escalaMes} onChange={() => { setDia(false), setMes(true), setAno(false) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-300 border-gray-400" />
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-700">MÊS</label>
                 </div>
                 <div className="flex items-center ">
-                  <input type="checkbox" checked={escalaAno} onChange={() => { setDia(false), setMes(false), setAno(true) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap text-gray-300">ANO</label>
+                  <input type="checkbox" checked={escalaAno} onChange={() => { setDia(false), setMes(false), setAno(true) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-300 border-gray-400" />
+                  <label className="ms-2  text-xs whitespace-nowrap text-gray-700">ANO</label>
                 </div>
-                {!loading ? <button onClick={() => filtroMensalidade()} className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCAR<IoSearch size={18} /></button> :
-                  <button className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCANDO..<AiOutlineLoading3Quarters size={20} className="animate-spin" /></button>
-                }
+            <Button size={'sm'} isProcessing={loading} onClick={() => filtroMensalidade()}>BUSCAR<IoSearch size={18} /></Button> 
+                 
+               
 
               </div>
             </div>
@@ -1108,7 +844,7 @@ export default function LoginFinaceiro() {
 
 
 
-            {excluir === 2 && (<div id="Lançar conta no caixa" className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+            {/*excluir === 2 && (<div id="Lançar conta no caixa" className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
               <div className="flex items-center justify-center p-2 w-full h-full">
                 <div className="relative rounded-lg shadow bg-gray-800">
                   <button type="button" onClick={() => setExcluir(0)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
@@ -1162,7 +898,7 @@ export default function LoginFinaceiro() {
                   </div>
                 </div>
               </div>
-            </div>)}
+            </div>)*/}
 
             <div className="flex flex-col  px-4 w-full overflow-y-auto max-h-[calc(100vh-210px)] text-white bg-[#2b2e3b] rounded-lg ">
               <ul className="flex flex-col w-full p-2 gap-1 text-sm">

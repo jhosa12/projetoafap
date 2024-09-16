@@ -1,7 +1,7 @@
 import { BiTransfer } from "react-icons/bi";
 import { api } from "@/services/apiClient";
 import { MdOutlineAddCircle } from "react-icons/md";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -16,6 +16,8 @@ import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
 import { toast } from "react-toastify";
 import { ModalExcluir } from "@/components/modalExcluir";
 import { ModalFechamento } from "../../components/caixa/modalFechamento";
+import  Fechamento  from "@/Documents/caixa/Fechamento";
+import { useReactToPrint } from "react-to-print";
 
 
 registerLocale('pt', pt)
@@ -66,9 +68,15 @@ export default function CaixaMovimentar(){
     const [openModalExc,setModalExc] = useState<boolean>(false);
     const [loading,setLoading] = useState<boolean>(false);
     const [openFecModal,setFecModal]= useState<boolean>(false)
+
+
+    const currentePage = useRef<Fechamento>(null)
     
 
+    const imprimir = useReactToPrint({
+        content:()=>currentePage.current,
 
+    })
 
 
 
@@ -105,8 +113,8 @@ export default function CaixaMovimentar(){
             setLoading(true)
             const response = await api.post('/listarLancamentos',{
                 empresa:selectEmpresa,
-                dataInicial:new Date(dataInicial).toISOString(),
-                dataFinal:new Date(dataFinal).toISOString(),
+                dataInicial:dataInicial,
+                dataFinal:dataFinal,
                 descricao:descricao,
                 id_user:usuario?.id
           
@@ -151,6 +159,9 @@ export default function CaixaMovimentar(){
 
 return(
 <>
+<div style={{display:'none'}}>
+<Fechamento dataFim={dataFinal} dataInicio={dataInicial} usuario={usuario?.nome??''}  ref={currentePage}/>
+</div>
 
 <ModalLancamentosCaixa listarLancamentos={listarLancamentos}  empresaAPI={empresaApi} arrayLanc={lancamentos} setLancamentos={setLancamentos} setMov={setMov} mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={planos}  grupo={grupos}/>
 
@@ -216,7 +227,7 @@ return(
        
         <div className="overflow-y-auto mt-1 px-2 max-h-[72vh] ">
         <Tooltip id="tooltip-hora"/>
-        <Table hoverable theme={{ body: { cell: { base: "px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg" } } }} 
+        <Table hoverable theme={{ body: { cell: { base: "px-4 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-gray-700" } } }} 
     >
         <Table.Head >
         
@@ -265,13 +276,13 @@ return(
             
             
            
-            <Table.Cell>{item.ccustos_desc  }</Table.Cell>
+            <Table.Cell className="whitespace-nowrap">{item.ccustos_desc  }</Table.Cell>
             <Table.Cell>  {item.notafiscal?item.notafiscal.toUpperCase():item?.descricao?.toUpperCase()}</Table.Cell>
             <Table.Cell> {item.historico}</Table.Cell>
             <Table.Cell className={`font-semibold ${item.tipo==='RECEITA'?"text-green-500":"text-red-500"}`}> {item.tipo}</Table.Cell>
             <Table.Cell>{Number(item.valor).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
           
-            <Table.Cell className="space-x-4">
+            <Table.Cell className="space-x-4 whitespace-nowrap">
             <button disabled={item.conta==='1.01.002'||!permissoes.includes('ADM2.1.3')} onClick={(event)=>{
                                event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                                setMov({...item,empresa:empresaApi})
@@ -317,6 +328,7 @@ return(
   </div>
 
 
+  <Button onClick={()=>imprimir()} className="ml-auto" size={'sm'}>Imprimir Caixa</Button>
   <Button onClick={()=>setFecModal(true)} className="ml-auto" size={'sm'}>Fechar Caixa</Button>
     </div>
 

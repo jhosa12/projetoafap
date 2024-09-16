@@ -7,12 +7,14 @@ import React, { useContext, useRef, useState } from 'react';
 import { FaHandshake } from 'react-icons/fa';
 import { IoIosClose } from 'react-icons/io';
 import { IoPrint } from 'react-icons/io5';
-import { MdDeleteForever } from 'react-icons/md';
+import { MdDeleteForever, MdReceipt } from 'react-icons/md';
 import { RiAddCircleFill } from 'react-icons/ri';
 import { TbAlertTriangle } from 'react-icons/tb';
 import { toast } from 'react-toastify'
 import { AuthContext, MensalidadeProps } from '@/contexts/AuthContext';
 import { ModalMensalidade } from './modalmensalidade';
+import { Scanner } from './modalScanner';
+import { ModalEditarMensalidade } from './modalEditarMensalidade';
 
 
 
@@ -58,12 +60,12 @@ interface DadosAssociadoGeral{
 
 interface DadosProps{
     usuario:{id:number,nome:string}
-    carregarDados:()=>Promise<void>
+    carregarDados:(id:number)=>Promise<void>
     setarDados:(fields:Partial<SetAssociadoProps>)=>void
     dados:SetAssociadoProps
     dadosAssociado:DadosAssociadoGeral
 }
-export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,dados,usuario}:DadosProps) {
+export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDados,usuario}:DadosProps) {
     const [checkMensal, setCheck] = useState(false)
     const [excluir, setExcluir] = useState(false)
     const [linhasSelecionadas, setLinhasSelecionadas] = useState<Array<Partial<MensalidadeProps>>>([]);
@@ -72,10 +74,50 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
     const componentRef =useRef<ImpressaoCarne>(null);
     const {setarDadosAssociado,permissoes} = useContext(AuthContext)
     const [openModalMens,setModalMens]= useState<boolean>(false)
-    
+    const [mensalidadeSelect,setMensalidade] = useState<Partial<MensalidadeProps>>();
+    const [openScanner,setOpenScanner] =useState<boolean>(false);
+    const [openEditar,setOpenEditar] =useState<boolean>(false);
    
 
     let currentAcordoId: string;
+
+
+    const verificarBaixa = (scannedCode:string)=>{
+        if (!scannedCode) {
+            toast.error('Erro ao escanear');
+            return;
+        }
+            const mensalidadeScan = dadosAssociado?.arrayMensalidade?.find(item =>
+                item.n_doc === scannedCode && (item.status === 'A' || item.status === 'E')
+            );
+            const primeiraAberta = dadosAssociado.arrayMensalidade.find(item=>item.status==='A')
+            
+            if (!mensalidadeScan) {
+                toast.error('Mensalidade inexistente ou já baixada!');
+                return 
+            }
+            if(primeiraAberta?.id_mensalidade!==mensalidadeScan.id_mensalidade){
+                toast.error('Referencia incorreta')
+                return
+            }
+
+
+
+
+                setMensalidade({...mensalidadeScan,valor_total:mensalidadeScan.valor_principal})
+                setModalMens(true)
+            
+        
+
+    }
+
+
+
+
+
+
+
+
 
     const imprimirCarne =useReactToPrint({
         pageStyle: `
@@ -170,16 +212,13 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                 }
 
             )
-            const novoArray = [...dadosAssociado.arrayMensalidade]
+         
+       
 
-            for (const value of linhasSelecionadas){
-                const index = novoArray.findIndex(item=>item.id_mensalidade===value.id_mensalidade)
-                novoArray.splice(index,1)
-            }
-            console.log(response.data)
-           // await carregarDados()
+       
+            await carregarDados(dadosAssociado.id_associado)
            // setarDados({ mensalidade: {} })
-           setarDadosAssociado({mensalidade:novoArray})
+          // setarDadosAssociado({mensalidade:mensalidades})
 
         } catch (err) {
             console.log(err)
@@ -210,7 +249,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
           const response =  await toast.promise(
                 api.post('/mensalidade/adicionar', {
                     id_contrato: dadosAssociado.id_contrato,
-                    id_associado: dados.id_associado,
+                    id_associado: dadosAssociado.id_associado,
                     status: 'A',
                     valor_principal: dadosAssociado.valor_mensalidade,
                     parcela_n: ultimaMensalidade?.parcela_n && ultimaMensalidade?.parcela_n + 1,
@@ -257,6 +296,12 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
 
 
 
+                    
+  {openScanner && <Scanner verficarTicket={verificarBaixa} openModal={openScanner} setModal={setOpenScanner}   />}
+
+<ModalEditarMensalidade mensalidade={mensalidadeSelect??{}} openModal={openEditar} setMensalidade={setMensalidade} setOpenModal={setOpenEditar}/>
+
+
     <div className="flex w-full  gap-2">
     <div style={{display:'none'}}>
     <ImpressaoCarne
@@ -285,10 +330,20 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                 <RiAddCircleFill size={20} />
                 Adicionar
             </button>
-            <button disabled={!permissoes.includes('ADM1.2.2')} type="button" onClick={() => setarModalAcordo({open:true,visible:true})} className="inline-flex items-center px-4 py-1 gap-1 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed font-medium  border-t border-b disabled:text-gray-400  bg-gray-200 border-gray-400 text-gray-600 hover:text-white hover:bg-gray-400">
+            <button disabled={!permissoes.includes('ADM1.2.2')} type="button" onClick={() => setarModalAcordo({open:true,visible:true})} className="inline-flex items-center px-4 py-1 gap-1 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed font-medium border-r border-t border-b disabled:text-gray-400  bg-gray-200 border-gray-400 text-gray-600 hover:text-white hover:bg-gray-400">
                 <FaHandshake size={20} />
                 Acordo
             </button>
+            <button disabled={!permissoes.includes('ADM1.2.2')} type="button" onClick={() => setOpenScanner(true)} className="inline-flex items-center px-4 py-1 gap-1 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed font-medium border-r border-t border-b disabled:text-gray-400  bg-gray-200 border-gray-400 text-gray-600 hover:text-white hover:bg-gray-400">
+                <MdReceipt size={20} />
+                Baixar
+            </button>
+            
+            <button  type="button"  onClick={imprimirCarne}  className="inline-flex items-center px-4 py-1 gap-1 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed font-medium  border-t border-b disabled:text-gray-400  bg-gray-200 border-gray-400 text-gray-600 hover:text-white hover:bg-gray-400">
+            <IoPrint size={20}/>
+                Imprimir
+            </button>
+            
             <button disabled={!permissoes.includes('ADM1.2.3')} onClick={() => setExcluir(!excluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium disabled:bg-gray-100 disabled:cursor-not-allowed border 0 rounded-e-lg  focus:z-10 focus:ring-2 disabled:text-gray-400   bg-gray-200 border-gray-400 text-gray-600 enable:hover:text-white hover:bg-gray-400 ">
                 <MdDeleteForever size={20} />
                 Excluir
@@ -318,7 +373,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
         </div>
 
 
-        <button onClick={imprimirCarne} className="flex p-1 rounded-lg justify-center bg-gray-500 gap-1 items-center text-[14px] z-40 text-white"><IoPrint size={18}/>Imprimir Carnê</button>
+      
 
     </div>
 <div className="flex w-full p-2 max-h-[calc(100vh-255px)]">
@@ -396,7 +451,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                                         <td className="px-2 py-1">{ }</td>
                                         <td className="px-2 py-1">{ }</td>
                                         <td className="px-2 py-1">{ }</td>
-                                        {/* Renderizar mais colunas se necessário */}
+                                      
                                         <td className="px-2 py-1">
                                             <button onClick={(event) => {
                                                 
@@ -483,7 +538,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                             <tr key={index}
                                 onClick={() => toggleSelecionada(item)}
                                 //className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600  ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":item.status==='P'? 'text-blue-500':'text-white'}`}>
-                                className={`${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"} border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-100" : "bg-gray-50"}  ${item.status === 'P' && "text-blue-600"} border-gray-400  hover:bg-gray-500 hover:text-black   ${item.parcela_n === 0 ? "hidden" : ''}`}>
+                                className={`${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"} border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : "bg-gray-50"}  ${item.status === 'P' && "text-blue-600"} border-gray-400  hover:bg-gray-300 hover:text-black   ${item.parcela_n === 0 ? "hidden" : ''}`}>
                                 <th scope="row" className={`px-5 py-1 font-medium `}>
                                     {item.parcela_n}
                                 </th>
@@ -522,30 +577,13 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                                 <td className="px-4 py-1">
                                     {calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) <= 0 ? 0 : calcularDiferencaEmDias(new Date(), new Date(item.vencimento))}
                                 </td>
-                                <td className="px-8 py-1 text-right">
+                                <td className=" px-4 py-1 ">
+
                                     <button onClick={(event) => {
                                         event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                                        setModalMens(true)
-                                        setarDados(
-                                            {
-                                                mensalidadeAnt: dadosAssociado?.arrayMensalidade && dadosAssociado.arrayMensalidade[index - 1],
-
-                                                mensalidade: {
-                                                    parcela_n: Number(item.parcela_n),
-                                                    cobranca: item.cobranca,
-                                                    vencimento: item.vencimento,
-                                                    valor_principal: Number(item.valor_principal),
-                                                    status: item.status,
-                                                    usuario: item.usuario,
-                                                    referencia: item.referencia,
-                                                    id_mensalidade: item.id_mensalidade,
-                                                    valor_total: item.valor_total,
-                                                    motivo_bonus: item.motivo_bonus,
-                                                    data_pgto: item.data_pgto ? item.data_pgto : new Date(),
-                                                    index: index
-                                                }
-                                            })
-                                    }} className={`font-medium ${item.status === 'E' ? "hidden" : ''}  hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>Baixar/Editar</button>
+                                        setOpenEditar(true)
+                                        setMensalidade({...item,valor_total:item.status==='A'?item.valor_principal:item.valor_total})
+                                    }} className={`font-medium ${item.status === 'E' ? "hidden" : ''}  hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>Editar</button>
                                 </td>
                             </tr>
                         ) : item.status === 'A' ? (
@@ -592,31 +630,12 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
                                 <td className="px-4 py-1">
                                     {calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) <= 0 ? 0 : calcularDiferencaEmDias(new Date(), new Date(item.vencimento))}
                                 </td>
-                                <td className=" px-8 py-1 text-right">
+                                <td className=" px-4 py-1 ">
                                     <button onClick={(event) => {
                                         event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                                        setModalMens(true),
-                                        setarDados(
-                                            {
-                                                mensalidadeAnt: dadosAssociado.arrayMensalidade && dadosAssociado.arrayMensalidade[index - 1],
-
-                                                mensalidade: {
-                                                    parcela_n: Number(item.parcela_n),
-                                                    cobranca: item.cobranca,
-                                                    vencimento: item.vencimento,
-                                                    valor_principal: Number(item.valor_principal),
-                                                    status: item.status,
-                                                    usuario: item.usuario,
-                                                    referencia: item.referencia,
-                                                    id_mensalidade: item.id_mensalidade,
-                                                    
-                                                    valor_total: item.valor_total,
-                                                    motivo_bonus: item.motivo_bonus,
-                                                    data_pgto: item.data_pgto ? item.data_pgto : new Date(),
-                                                    index: index
-                                                }
-                                            })
-                                    }} className={`font-medium   hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>Baixar/Editar</button>
+                                        setOpenEditar(true),
+                                        setMensalidade({...item,valor_total:item.status==='A'?item.valor_principal:item.valor_total})
+                                    }} className={`font-medium   hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>Editar</button>
                                 </td>
                             </tr>
 
@@ -632,7 +651,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,setarDados,da
     </table>
     </div>
   
-<ModalMensalidade openModal={openModalMens} setOpenModal={setModalMens}/>
+<ModalMensalidade mensalidade={mensalidadeSelect??{}} setMensalidade={setMensalidade} openModal={openModalMens} setOpenModal={setModalMens}/>
 </div>
   )
 }

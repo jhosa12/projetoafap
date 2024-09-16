@@ -49,14 +49,15 @@ export interface FiltroProps{
 }
 
 export interface ListaProps{
-    valor_mensalidade:number,
+        planos:{acrescimo:number,valor:number},
         id_contrato: number,
         mensalidade: Array< {vencimento: Date}>,
         associado: {
             nome: string,
             endereco: string,
             bairro: string,
-            id_associado:number
+            id_associado:number,
+            _count:{dependentes:number}
         }
     }
 
@@ -151,7 +152,7 @@ const handleRenovacao = async()=>{
 
         const response = await toast.promise(
             api.post('/renovacao',{
-                contratos:array?.map(item=>{ return {id_contrato:item.id_contrato,valor_mensalidade:item.valor_mensalidade,id_associado:item.associado.id_associado}}),
+                contratos:array?.map(item=>{ return {id_contrato:item.id_contrato,valor_mensalidade:item.planos.valor,id_associado:item.associado.id_associado,acrescimo:item.planos.acrescimo,dependentes:item.associado._count.dependentes}}),
                 quantidade:parcelas
             }),
             {
@@ -182,7 +183,7 @@ const filtrar = async()=>{
         })
 
         setArray(response.data)
-        
+        console.log(response.data)
     } catch (error) {
         console.log(error)
     }

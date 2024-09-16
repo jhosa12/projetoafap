@@ -51,7 +51,7 @@ interface DadosAcordoProps{
     mensalidade:Array<MensalidadeProps>
     contrato:number
     associado:number
-    carregarDados:()=>Promise<void>
+    carregarDados:(id:number)=>Promise<void>
 }
 export function ModalAcordos({closeModal,acordo,usuario,mensalidade,contrato,associado,carregarDados,openModal}:DadosAcordoProps){
  
@@ -139,7 +139,7 @@ export function ModalAcordos({closeModal,acordo,usuario,mensalidade,contrato,ass
 
         }catch(err){console.log(err)}
      
-        await carregarDados()
+        await carregarDados(associado)
       }
 
       async function baixarAcordo(){
@@ -169,7 +169,7 @@ export function ModalAcordos({closeModal,acordo,usuario,mensalidade,contrato,ass
             console.log(err)
             
         }
-        await carregarDados();
+        await carregarDados(associado);
     
       
       }

@@ -19,11 +19,11 @@ interface DataProps {
   x: string,
   dt: Date
   z: number,
-  c: number,
-  cancelamentos: number
+ 
+  
 }
 
-export function Grafico({lancamentos,completo }:
+export function GraficoMensalidade({lancamentos,completo }:
   {
     lancamentos: Array<DataProps>,
    completo:boolean
@@ -33,10 +33,9 @@ export function Grafico({lancamentos,completo }:
 
   useEffect(()=>{
     const datas= lancamentos.map(item => item.x);
-    const receitaMensalidade = lancamentos.map(item => Number(item.y.toFixed(2)));
+    const receitaMensalidade = lancamentos.map(item => Number(item?.y?.toFixed(2)));
     const quantMensal = lancamentos.map(item => item.z);
-    const ativos= lancamentos.map(item => item.c);
-    const cancel =  lancamentos.map(item => item.cancelamentos);
+ 
 
     const chartOptions = {
       plotOptions: {
@@ -126,7 +125,7 @@ export function Grafico({lancamentos,completo }:
     };
     let chartSeries
     
-if(completo){
+
   chartSeries = [
     {
       name: "RECEITA COM MENSALIDADES",
@@ -143,23 +142,7 @@ if(completo){
   ];
 
 
-}else{
 
-  chartSeries = [
-
-    {
-      name: "CONTRATOS ATIVOS",
-      data: ativos,
-      color: '#2c9171'
-    },
-    {
-      name: "CANCELAMENTOS",
-      data: cancel,
-      color: '#B32824'
-    },
-  ];
-
-}
   
 
     setOptions(chartOptions); // Define as opções do gráfico no estado
@@ -177,7 +160,7 @@ if(completo){
             series={series}
             type="bar"
             width={'100%'}
-            height={400}
+           height='400'
           />
         </div>
       </div>
@@ -185,4 +168,4 @@ if(completo){
   );
 }
 
-export default Grafico;
+export default GraficoMensalidade;
