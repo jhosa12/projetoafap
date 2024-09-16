@@ -12,7 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 function isLoginPage(pathname: string) {
-  return pathname === '/' //|| pathname==='/sorteio';
+  return pathname === '/' || pathname==='/404';
 }
 
 

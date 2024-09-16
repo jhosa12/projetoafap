@@ -45,7 +45,7 @@ export function ModalDependentes({openModal,setModal}:DataProps){
             success:'Adicionado com Sucesso!'
         }
     )
-   await carregarDados()
+    dadosassociado?.id_associado &&  await carregarDados(dadosassociado?.id_associado)
    
  }
 
@@ -65,7 +65,7 @@ export function ModalDependentes({openModal,setModal}:DataProps){
             success:'Atualizado com Sucesso!'
         }
     )
-   await carregarDados()
+    dadosassociado?.id_associado &&  await carregarDados(dadosassociado?.id_associado)
  }
 
  async function resgatarDep(){
@@ -88,7 +88,7 @@ export function ModalDependentes({openModal,setModal}:DataProps){
              }
          )
          
-        await carregarDados()
+      dadosassociado?.id_associado &&  await carregarDados(dadosassociado?.id_associado)
        
      }catch(err){
          console.log(err)

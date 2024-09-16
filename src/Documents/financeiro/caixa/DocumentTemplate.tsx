@@ -5,7 +5,7 @@ import logo from "../../../../public/novaLogo.png"
 
 import React from 'react';
 import { SomaProps, TagsProps } from "@/components/financeiro/caixa";
-import { CaixaProps, CcustosProps } from "@/pages/financeiro/login";
+import { CaixaProps, CcustosProps } from "@/pages/financeiro";
 import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
 
 

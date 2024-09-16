@@ -170,7 +170,7 @@ const handleCheckTitular=()=>{
     }
 
     useEffect(() => {
-        componenteMounted && carregarDados();
+        componenteMounted && dadosassociado?.id_associado && carregarDados(dadosassociado.id_associado);
         setParticular(false);
         setMounted(true)
     }, [data.id_associado])

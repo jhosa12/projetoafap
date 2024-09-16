@@ -1,6 +1,6 @@
 
 import { Table, Select, Dropdown, Checkbox, Avatar, Datepicker, Button, ModalFooter, Modal, ModalHeader, ModalBody, Label, FileInput, TextInput, TableHead, TableHeadCell, TableBody, TableCell, TableRow } from "flowbite-react";
-import { CaixaProps, CcustosProps } from "@/pages/financeiro/login";
+import { CaixaProps, CcustosProps } from "@/pages/financeiro";
 import { useEffect, useRef, useState } from "react";
 import { api } from "@/services/apiClient";
 import { GiMoneyStack } from "react-icons/gi";

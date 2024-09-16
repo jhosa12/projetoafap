@@ -115,7 +115,7 @@ export default function TesteLayout() {
    }
    useEffect(()=>{
     //setarDadosTitular({...titular})
-    mounted && carregarDados()
+    mounted && data.id_associado && carregarDados(data.id_associado)
     setMounted(true)
    },[data.id_associado])
 
