@@ -3,6 +3,7 @@ import { AuthContext, AuthProvider, useAuth } from '@/contexts/AuthContext'
 import { api } from '@/services/apiClient';
 import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
+import Error from 'next/error';
 import { useRouter } from 'next/router';
 import { parseCookies } from 'nookies';
 import { memo, StrictMode, useEffect } from 'react';
@@ -12,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 function isLoginPage(pathname: string) {
-  return pathname === '/' || pathname==='/404';
+  return pathname === '/' || pathname==='_error';
 }
 
 
@@ -55,6 +56,7 @@ async function GetPermissions() {
 
     if( !userLogged() && !isLoginPage(router.pathname)){
       router.push('/')
+      
     }
      
  !isLoginPage(router.pathname) &&  usuario?.id &&  GetPermissions()
@@ -63,6 +65,11 @@ async function GetPermissions() {
    
    
   },[router.pathname,usuario])
+
+
+  if (pageProps.statusCode === 404) {
+    return <Error statusCode={404} />; // Renderiza a página padrão de erro do Next.js para 404
+  }
 
   if (!isLoginPage(router.pathname)) {
     return (

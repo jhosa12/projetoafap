@@ -25,7 +25,8 @@ import { FaRepeat } from "react-icons/fa6";
 
 import {Caixa} from "@/components/financeiro/caixa";
 import Conferencia from "../../components/financeiro/conferencia/conferencia";
-import { PlanodeContas } from "@/components/financeiro/planodeContas";
+import { PlanodeContas } from "@/components/financeiro/planodeContas/planodeContas";
+import { ContasPagarReceber } from "@/components/financeiro/contasPagarReceber/contasPagarReceber";
 
 interface DataProps {
   y: number,
@@ -49,18 +50,6 @@ export interface PlanoContasProps {
   contaf: string,
   check: boolean
 
-  metas: Array<{
-    id_meta: number,
-    id_conta: string,
-    id_grupo: number,
-    descricao: string,
-    valor: number,
-    date: Date,
-    grupo: {
-      id_grupo: number,
-      descricao: string
-    }
-  }>
 }
 
 export interface GruposProps {
@@ -154,14 +143,8 @@ export interface CaixaProps{
 
 export default function LoginFinaceiro() {
   const { usuario } = useContext(AuthContext)
-  const [excluir, setExcluir] = useState<number>(0)
 
-  const [despesas, setDespesas] = useState<number>(0)
-  const [receitas, setReceitas] = useState<number>(0)
-  const [remessa, setRemessa] = useState<number>(0)
-  const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
   const [grupos, setGrupos] = useState<Array<GruposProps>>()
-  const [setorSelect, setSetor] = useState<number>(0)
   const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
   const [endDate, setEndDate] = useState(new Date())
   const [startDateContas, setStartDateContas] = useState(new Date())
@@ -176,12 +159,11 @@ export default function LoginFinaceiro() {
   const [escalaMes, setMes] = useState(true)
   const [escalaAno, setAno] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [todos, setTodos] = useState(true)
-  const [dropPlanos, setDropPlanos] = useState(false)
-  const [modalButton, setModal] = useState(false)
+
+
   const [dadosConta, setDadosConta] = useState<Partial<ContaProps>>({})
   const [listaContas, setListaContas] = useState<Array<Partial<ContaProps>>>([])
-  const [abertoFinalizado, setAbertoFinalizado] = useState<number>(1)
+
   const [ccustos,setCcustos] = useState<Array<CcustosProps>>([])
   const [caixa,setCaixa] = useState<Array<CaixaProps>>([])
 
@@ -226,17 +208,7 @@ useEffect(()=>{
 
 
 
-  const setarDadosConta = (fields: Partial<ContaProps>) => {
-    setDadosConta((prev: Partial<ContaProps>) => {
-      if (prev) {
-        return { ...prev, ...fields }
-      }
-      else {
-        return { ...fields }
-      }
-    })
-  }
-
+  
 
   const reqCcustos =async ()=>{
     try {
@@ -268,7 +240,7 @@ useEffect(()=>{
     console.log(response.data)
     const { mensalidade, contratosGeral } = response.data
 
-    const timezone = 'America/Distrito_Federal';
+  
     let dataLancamento: string;
 
     const resultado = mensalidade?.reduce((acumulador, atual) => {
@@ -416,11 +388,6 @@ useEffect(()=>{
 
  
 
-  let formatter = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL'
-  });
-
   /*useEffect(() => {
     /// const diaAtual = new Date()
     // setStartDate(new Date(diaAtual.getFullYear(),diaAtual.getMonth(),1))
@@ -456,53 +423,8 @@ useEffect(()=>{
   
 
 
-  async function contasReq() {
-    try {
-      const response =   await toast.promise(
-        api.post('/conta/adicionar', {
-          dataLanc: new Date(),
-          dataprev: dadosConta.dataprev,
-          descricao: dadosConta.descricao,
-          tipo: dadosConta.tipo,
-          valor: dadosConta.valor,
-          parcelas: dadosConta.parcela
-  
-        }),
-        {
-          error: 'Erro ao realizar requisição',
-          pending: 'Salvando Dados...',
-          success: 'Dados salvos com sucesso'
-        }
-      )
-      
-    } catch (error) {
-      toast.error('Erro')
-    }
 
-    
 
-  }
-  async function contaDelete() {
-  const response =   await toast.promise(
-      api.delete('/conta/deletar', {
-        data: {
-          id_conta: dadosConta.id_conta
-
-        }
-
-      }),
-      {
-        error: 'Erro ao Deletar',
-        pending: 'Deletando Dados...',
-        success: 'Dados Deletados com sucesso'
-      }
-    )
-    const index = listaContas.findIndex(item=>item.id_conta===dadosConta.id_conta)
-    const novoArray = [...listaContas]
-    novoArray.splice(index,1);
-    setListaContas(novoArray)
-
-  }
   async function listarContasReq() {
     setLoading(true)
     const response = await api.post('/conta/listarContas', {
@@ -548,7 +470,7 @@ useEffect(()=>{
       conta: '1.0',
       todoPeriodo: todoPeriodo
     });
-    const novoArray = response.data.planosdeContas.map((item: PlanoContasProps) => { return { ...item, check: true } })
+    const novoArray = response?.data?.planosdeContas?.map((item: PlanoContasProps) => { return { ...item, check: true } })
     //setArrayGeral(novoArray);
    // setLancamentos(response.data.planosdeContas);
     setGrupos(response.data.grupos)
@@ -665,9 +587,11 @@ useEffect(()=>{
 
           {menuIndex===5 && <Conferencia />}
 
+          {menuIndex===4 && <ContasPagarReceber planodeContas={listaPlanoContas} />}
+
           {menuIndex===1 && <Caixa handleFiltro={caixaReq} setCaixa={setCaixa} setCcustos={setCcustos} arrayCaixa={caixa} arrayCcustos={ccustos}/>}
 
-          {menuIndex === 2 && <PlanodeContas listaContas={listaPlanoContas}/>}
+          {menuIndex === 2 && <PlanodeContas setListaContas={setListaPlanoContas} listaContas={listaPlanoContas}/>}
 
           {menuIndex === 3 && <div className="flex flex-col p-2 bg-gray-50  ml-2 w-full overflow-y-auto h-[calc(100vh-120px)]  rounded-lg ">
             <div className="flex w-full text-black border-b-[1px] border-gray-500 px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
@@ -757,301 +681,7 @@ useEffect(()=>{
 
           </div>}
 
-          {menuIndex === 4 && <> <div className="flex flex-col px-2  gap-2 w-full overflow-y-auto h-[calc(100vh-120px)] text-white  rounded-lg ">
-            <div className="flex flex-row gap-10 text-sm w-full px-2 justify-between  " id="Area Resumo/Filtro">
-              <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
-                <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense size={25} /></div>
-                <h2 className="flex flex-col" >TOTAL A PAGAR <span>{formatter.format(despesas)}</span></h2>
-              </div>
-
-              <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
-                <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense size={25} /></div>
-                <h2 className="flex flex-col" >TOTAL A RECEBER <span>{formatter.format(despesas)}</span></h2>
-              </div>
-
-              <div className=" inline-flex text-white p-2 gap-4 bg-[#2b2e3b] rounded-lg min-w-[180px]">
-                <div className="flex items-center h-full rounded-lg bg-[#2a355a] text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense size={25} /></div>
-                <h2 className="flex flex-col" >REAGENDADOS<span>{formatter.format(despesas)}</span></h2>
-              </div>
-
-
-            </div>
-
-            <div className="flex  w-full bg-[#2b2e3b] px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
-              <label className="flex bg-gray-700 border p-1 rounded-lg border-gray-600" >FILTROS</label>
-              <div className="inline-flex  items-center  gap-3">
-                <div className="flex items-center ">
-                  <input type="checkbox" checked={abertoFinalizado === 1} onChange={() => { abertoFinalizado === 1 ? setAbertoFinalizado(0) : setAbertoFinalizado(1) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap text-gray-300">ABERTO</label>
-                </div>
-                <div className="flex items-center ">
-                  <input type="checkbox" checked={abertoFinalizado === 2} onChange={() => { abertoFinalizado === 2 ? setAbertoFinalizado(0) : setAbertoFinalizado(2) }} className="w-3 h-3 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                  <label className="ms-2  text-xs whitespace-nowrap text-gray-300">FINALIZADO</label>
-                </div>
-                <DatePicker
-                  dateFormat={"dd/MM/yyyy"}
-                  locale={pt}
-                  selected={startDateContas}
-                  onChange={(date) => date && setStartDateContas(date)}
-                  selectsStart
-                  startDate={startDateContas}
-                  endDate={endDateContas}
-                  className="flex py-1 pl-2 text-xs  border rounded-lg   bg-gray-700 border-gray-600  text-white"
-                />
-                <span>até</span>
-
-                <DatePicker
-                  dateFormat={"dd/MM/yyyy"}
-                  locale={pt}
-                  selected={endDateContas}
-                  onChange={(date) => date && setEndDateContas(date)}
-                  selectsEnd
-                  startDate={startDateContas}
-                  endDate={endDateContas}
-                  minDate={startDateContas}
-                  className=" flex py-1 pl-2 text-xs  border rounded-lg  bg-gray-700 border-gray-600  text-white "
-                />
-
-              </div>
-              {
-                !loading ? <button onClick={() => listarContasReq()} className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCAR<IoSearch size={18} /></button> :
-                  <button className="inline-flex items-center justify-center bg-blue-600 p-1 rounded-lg text-xs gap-1">BUSCANDO..<AiOutlineLoading3Quarters size={20} className="animate-spin" /></button>
-              }
-              <button onClick={() => setModal(true)} className="inline-flex p-1 gap-1 items-center bg-green-600 rounded-lg" ><IoIosAddCircle size={20} /> NOVO</button>
-            </div>
-            {excluir === 1 && (<div id="excluir lancamento" className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-              <div className="flex items-center justify-center p-2 w-full h-full">
-                <div className="relative rounded-lg shadow bg-gray-800">
-                  <button type="button" onClick={() => setExcluir(0)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                    <button type="button" onClick={() => setExcluir(0)} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                      <IoIosClose size={30} />
-                    </button>
-                  </button>
-                  <div className="p-4 md:p-5 text-center">
-                    <div className="flex w-full justify-center items-center">
-                      <TbAlertTriangle className='text-gray-400' size={60} />
-                    </div>
-                    <h3 className="mb-5 text-lg font-normal  text-gray-400">Realmente deseja deletar esse lançamento ?</h3>
-
-                    <button onClick={() => contaDelete()} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
-                      Sim, tenho certeza
-                    </button>
-                    <button onClick={() => setExcluir(0)} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
-                  </div>
-                </div>
-              </div>
-            </div>)}
-
-
-
-            {/*excluir === 2 && (<div id="Lançar conta no caixa" className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-              <div className="flex items-center justify-center p-2 w-full h-full">
-                <div className="relative rounded-lg shadow bg-gray-800">
-                  <button type="button" onClick={() => setExcluir(0)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                    <button type="button" onClick={() => setExcluir(0)} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                      <IoIosClose size={30} />
-                    </button>
-                  </button>
-                  <div className="p-4 md:p-5 text-center">
-                    <div className="flex w-full justify-center items-center">
-                      <TbAlertTriangle className='text-gray-400' size={60} />
-                    </div>
-                    <h3 className="mb-5 text-lg font-normal  text-gray-400">{dadosConta.status==='FINALIZADO'?'SELECIONE OS DETALHES DO LANÇAMENTO':'REALMENTE DESEJA REALIZAR O ESTORNO ?'}</h3>
-                   {dadosConta.status ==='FINALIZADO' && <div className="flex flex-col w-full gap-3 mb-2">
-
-
-                      <select defaultValue={dadosConta.id_grupo} onChange={e => {
-                        const item = grupos?.find(item => item.id_grupo === Number(e.target.value))
-
-                        setarDadosConta({ ...dadosConta, id_grupo: Number(item?.id_grupo), descricao_grupo: item?.descricao })
-                      }
-
-                      } className="block  pt-1 pb-1.5 w-full pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                        <option value={''}>SETOR</option>
-                        {grupos?.map((item, index) => (
-                          <option key={index} value={item.id_grupo}>{item.descricao}</option>
-
-                        ))
-                        }
-
-
-                      </select>
-
-                      <select defaultValue={dadosConta.descricao_conta} onChange={e => {
-                        const item = arraygeral.find(item => item.conta === e.target.value)
-                        setarDadosConta({ ...dadosConta, conta: item?.conta, descricao_conta: item?.descricao, tipo_conta: item?.tipo })
-                      }} className="block  pt-1 pb-1.5 w-full pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                        <option value={''}>PLANO DE CONTA</option>
-                        {arraygeral?.map((item, index) => (
-                          <option key={index} value={item.conta}>{item.descricao}</option>
-                        ))}
-                      </select>
-
-
-                    </div>}
-
-
-                    <button onClick={() => lancarMovimentacao()} data-modal-hide="popup-modal" type="button" className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
-                      {dadosConta.status==='FINALIZADO'?'LANÇAR':'Sim, tenho certeza'}
-                    </button>
-                    <button onClick={() => setExcluir(0)} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
-                  </div>
-                </div>
-              </div>
-            </div>)*/}
-
-            <div className="flex flex-col  px-4 w-full overflow-y-auto max-h-[calc(100vh-210px)] text-white bg-[#2b2e3b] rounded-lg ">
-              <ul className="flex flex-col w-full p-2 gap-1 text-sm">
-                <li className="flex flex-col w-full  text-xs pl-4 border-b-[1px] ">
-                  <div className="inline-flex w-full items-center">
-                    <div className="flex w-full gap-8  items-center">
-                      <span className="flex w-full font-semibold">DESCRIÇÃO</span>
-                      <span className="flex w-full text-start whitespace-nowrap ">TIPO</span>
-                      <span className="flex w-full text-start whitespace-nowrap">VALOR</span>
-                      <span className="flex w-full text-start whitespace-nowrap ">DATA PREVISTA</span>
-                      <span className="flex w-full text-start whitespace-nowrap ">REAGENDADO PARA</span>
-                      <span className="flex w-full text-start whitespace-nowrap ">DATA PAG.</span>
-                      <span className="flex w-full text-start whitespace-nowrap ">STATUS</span>
-                      <span className="flex w-full text-start whitespace-nowrap justify-end ">AÇÕES</span>
-                    </div>
-                  </div>
-                </li>
-                {
-                  listaContas?.map((item, index) => {
-                    return (
-                      <li className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
-                        <div className="inline-flex w-full items-center">
-                          <div className="flex w-full gap-8  items-center">
-                            <span className="flex w-full font-semibold">{item.descricao}</span>
-                            <span className="inline-flex w-full text-start whitespace-nowrap"><span className={`inline-flex  rounded-lg ${item.tipo == 'PAGAR' ? "bg-red-500" : "bg-green-500"}   p-1`}>{item.tipo}</span></span>
-                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{formatter.format(Number(item.valor))}</span>
-                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.dataprev && new Date(new Date(item.dataprev).getUTCFullYear(), new Date(item.dataprev).getUTCMonth(), new Date(item.dataprev).getUTCDate()).toLocaleDateString('pt-BR')}</span>
-                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.dataReag && new Date(new Date(item.dataReag).getUTCFullYear(), new Date(item.dataReag).getUTCMonth(), new Date(item.dataReag).getUTCDate()).toLocaleDateString('pt-BR')}</span>
-                            <span className="flex w-full text-start whitespace-nowrap font-semibold">{item.datapag && new Date(new Date(item.datapag).getUTCFullYear(), new Date(item.datapag).getUTCMonth(), new Date(item.datapag).getUTCDate()).toLocaleDateString('pt-BR')}</span>
-                            <span className="inline-flex w-full text-start whitespace-nowrap"><span className={`inline-flex  rounded-lg ${item.status == 'ABERTO' ? "bg-yellow-500" : "bg-green-500"}   p-1`}>{item.status}</span></span>
-                            <div className="inline-flex w-full text-start justify-end whitespace-nowrap">
-                              <button onClick={() => { setDadosConta({ id_conta: item.id_conta }), setExcluir(1) }} className="rounded-lg text-red-600 hover:bg-gray-300 p-1"><MdDelete size={18} /></button>
-                              <button className="rounded-lg text-blue-500 hover:bg-gray-300 p-1"><MdModeEditOutline size={18} /></button>
-                              {item.status === 'FINALIZADO' ? <button onClick={() => {
-                                setarDadosConta({
-                                  ...dadosConta,
-                                  dataLanc: item.dataLanc,
-                                  descricao: item.descricao,
-                                  tipo: item.tipo,
-                                  status: 'ABERTO',
-                                  valor: item.valor,
-                                  id_conta: item.id_conta,
-                                  dataprev: item.dataprev,
-                                  dataReag: item.dataReag
-                                });
-                                 setExcluir(2)
-                              
-
-                              }}
-                                className="rounded-lg text-yellow-500 hover:bg-gray-300 p-1">
-                                <FaRepeat size={15} />
-                              </button> :
-                               <button onClick={() => {
-                                setarDadosConta({
-                                  ...dadosConta,
-                                  dataLanc: item.dataLanc,
-                                  descricao: item.descricao,
-                                  tipo: item.tipo,
-                                  status: 'FINALIZADO',
-                                  valor: item.valor,
-                                  id_conta: item.id_conta,
-                                  dataprev: item.dataprev,
-                                  dataReag: item.dataReag
-                                })
-                                setExcluir(2)
-                              }}
-                                className="rounded-lg text-green-500 hover:bg-gray-300 p-1">
-                                <IoCheckmarkDoneCircleSharp size={18} />
-                              </button>}
-                            </div>
-
-                          </div>
-                        </div>
-
-                      </li>
-                    )
-                  })
-                }
-              </ul>
-            </div>
-          </div>
-
-            {modalButton &&
-              <div className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
-                <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
-                  <div className="fixed flex flex-col  w-2/4 p-4 rounded-lg  shadow bg-gray-800">
-                    <button type="button" onClick={() => setModal(false)} className="absolute cursor-pointer top-0 right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                      <IoIosClose size={30} />
-                    </button>
-                    <form>
-
-                      <label className="flex flex-row justify-start mb-4 border-b-[1px] text-lg border-gray-500 font-semibold mt-2 gap-2 text-white">NOVO LANÇAMENTO</label>
-
-
-                      <div className="p-2   grid mt-2 w-full gap-2 grid-flow-row-dense grid-cols-4">
-                        <div className="mb-1  col-span-1 w-full ">
-                          <label className="block  mb-1 text-xs font-medium  text-white">TIPO</label>
-                          <select value={dadosConta.tipo} onChange={e => setarDadosConta({ ...dadosConta, tipo: e.target.value })} className="block  pt-1 pb-1.5 w-full pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                            <option value={''}></option>
-                            <option value={'PAGAR'}>PAGAR</option>
-                            <option value={'RECEBER'}>RECEBER</option>
-                          </select>
-
-                        </div>
-                        <div className="ml-2 justify-start ">
-                          <label className="block w-full mb-1 text-xs font-medium  text-white">DATA PREVISTA</label>
-                          <DatePicker selected={dadosConta.dataprev} onChange={e => e && setarDadosConta({ ...dadosConta, dataprev: e })} dateFormat={"dd/MM/yyyy"} locale={pt} required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm  border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
-                        </div>
-
-                        <div className="mb-1  col-span-1 w-full ">
-                          <label className="block  mb-1 text-xs font-medium  text-white">PARCELAS</label>
-                          <select defaultValue={dadosConta.parcela} onChange={e => setarDadosConta({ ...dadosConta, parcela: Number(e.target.value) })} className="block w-full pt-1 pb-1.5 pl-2 pr-2  border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                            <option value={''}></option>
-                            <option value={1}>1</option>
-                            <option value={2}>2</option>
-                            <option value={3}>3</option>
-                            <option value={4}>4</option>
-                            <option value={5}>5</option>
-                            <option value={6}>5</option>
-                            <option value={7}>5</option>
-                            <option value={8}>8</option>
-                            <option value={9}>9</option>
-                            <option value={10}>10</option>
-                            <option value={11}>11</option>
-                            <option value={12}>12</option>
-                          </select>
-
-                        </div>
-
-
-                        <div className="mb-1 col-span-4">
-                          <label className="block mb-1 text-xs font-medium  text-white">DESCRIÇÃO</label>
-                          <input type="text" value={dadosConta.descricao} onChange={e => setarDadosConta({ ...dadosConta, descricao: e.target.value })} className="block w-full  pt-1.5 pb-1.5 pl-2 pr-2  border  rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
-                        </div>
-                        <div className="mb-1 col-span-1">
-                          <label className="block mb-1 text-xs font-medium  text-white">VALOR</label>
-                          <input value={dadosConta.valor} onChange={e => { setarDadosConta({ ...dadosConta, valor: Number(e.target.value) }) }} type="number" inputMode="decimal" className="block w-full  pt-1.5 pb-1.5 pl-2 pr-2 border rounded-lg  sm:text-xs bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" />
-                        </div>
-                        <div className=" gap-2 col-span-4  flex flex-row justify-end">
-
-
-                          <button onClick={() => contasReq()} type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22} />SALVAR</button>
-                        </div>
-                      </div>
-
-                    </form>
-                  </div>
-                </div>
-              </div>
-            }
-
-
-          </>}
+         
          
         </div>
       </div>

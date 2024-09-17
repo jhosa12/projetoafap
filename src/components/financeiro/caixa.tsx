@@ -1,8 +1,7 @@
 
-import { Table, Select, Dropdown, Checkbox, Avatar, Datepicker, Button, ModalFooter, Modal, ModalHeader, ModalBody, Label, FileInput, TextInput, TableHead, TableHeadCell, TableBody, TableCell, TableRow } from "flowbite-react";
+import { Table, Select, Dropdown, Checkbox, Avatar, Button, ModalFooter, Modal, ModalHeader, ModalBody,  TableHead, TableHeadCell, TableBody, TableCell, TableRow } from "flowbite-react";
 import { CaixaProps, CcustosProps } from "@/pages/financeiro";
 import { useEffect, useRef, useState } from "react";
-import { api } from "@/services/apiClient";
 import { GiMoneyStack } from "react-icons/gi";
 import { FaMoneyBillAlt } from "react-icons/fa";
 import { FaPix } from "react-icons/fa6";
@@ -11,7 +10,8 @@ import { FaCreditCard } from "react-icons/fa";
 import { PiPrinterFill } from "react-icons/pi";
 import DocumentTemplate from "@/Documents/financeiro/caixa/DocumentTemplate";
 import { useReactToPrint } from "react-to-print";
-
+import DatePicker, { registerLocale } from "react-datepicker";
+import pt from 'date-fns/locale/pt-BR';
 
 interface DataProps {
   arrayCcustos: Array<CcustosProps>
@@ -38,8 +38,8 @@ export interface TagsProps{
 }
 
 export function Caixa({ arrayCcustos, arrayCaixa, setCcustos, setCaixa, handleFiltro }: DataProps) {
-  const [data, setData] = useState<Date>(new Date());
-  const [dataFim, setDataFim] = useState<Date>(new Date())
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date())
   const [somaValor, setSoma] = useState<SomaProps>({ boleto: 0, cartao: 0, deposito: 0, dinheiro: 0, pix: 0, total: 0, transferencia: 0 })
   const [openModal, setOpenModal] = useState(false)
   const [tagSelect, setTag] = useState<Array<CaixaProps>>([])
@@ -61,7 +61,7 @@ const ImprimirRelatorio = useReactToPrint({
 
 const filtro = async()=>{
   setLoading(true)
- await handleFiltro(arrayCcustos, data, dataFim)
+ await handleFiltro(arrayCcustos, startDate, endDate)
  setLoading(false)
 }
 
@@ -303,9 +303,14 @@ const filtro = async()=>{
               <Dropdown.Item className="flex gap-2" onChange={() => handleSelectCheck(item)} key={item.id_ccustos}><Checkbox defaultChecked={item.check} /><Avatar img={`data:image/jpeg;base64,${item.image}`} rounded />{item.descricao}</Dropdown.Item>
             ))}
           </Dropdown>
-        <div className=" inline-flex gap-4 items-center">  <Datepicker labelClearButton="Limpar" labelTodayButton="Hoje" onSelectedDateChanged={e => setData(new Date(e))} value={data.toLocaleDateString('pt-BR')} language="pt-BR" style={{ padding: 6, paddingLeft: 34 }} />
+        <div className=" inline-flex gap-4 items-center"> 
+
+           <DatePicker dateFormat={'dd/MM/YYYY'} className="rounded-lg py-1.5 text-sm bg-gray-50 text-black"  onChange={e =>e && setStartDate(e)} selected={startDate} locale={pt} />
+
           <span className="text-gray-700">até</span>
-          <Datepicker labelClearButton="Limpar" labelTodayButton="Hoje" onSelectedDateChanged={e => setDataFim(e)} value={dataFim.toLocaleDateString('pt-BR')} language="pt-BR" style={{ padding: 6, paddingLeft: 34 }} />
+
+          <DatePicker dateFormat={'dd/MM/YYYY'} className="rounded-lg py-1.5 text-sm bg-gray-50 text-black" selected={endDate} onChange={e =>e && setEndDate(e)} locale={pt}  />
+
           </div>
             <Button onClick={filtro} size={'sm'} isProcessing={loadind}>FILTRAR</Button>
             
@@ -357,7 +362,7 @@ const filtro = async()=>{
         </div>
       </div>
       <div className="hidden">
-      <DocumentTemplate dataInical={data} dataFinal={dataFim} ccustos={arrayCcustos.filter(item=>item.check)} somaValor={somaValor} tag={arrayTags} caixa={arrayCaixa} ref={current}/>
+      <DocumentTemplate dataInical={startDate} dataFinal={endDate} ccustos={arrayCcustos.filter(item=>item.check)} somaValor={somaValor} tag={arrayTags} caixa={arrayCaixa} ref={current}/>
       </div>
    
     </>
