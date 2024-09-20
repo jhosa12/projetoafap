@@ -12,6 +12,8 @@ import DocumentTemplate from "@/Documents/financeiro/caixa/DocumentTemplate";
 import { useReactToPrint } from "react-to-print";
 import DatePicker, { registerLocale } from "react-datepicker";
 import pt from 'date-fns/locale/pt-BR';
+import { api } from "@/services/apiClient";
+import { toast } from "react-toastify";
 
 interface DataProps {
   arrayCcustos: Array<CcustosProps>
@@ -52,6 +54,26 @@ export function Caixa({ arrayCcustos, arrayCaixa, setCcustos, setCaixa, handleFi
     {id:5,desc:'DINHEIRO',check:true},
     {id:6,desc:'BOLETO',check:true},
   ]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const current = useRef<DocumentTemplate>(null)
 const [loadind,setLoading] = useState<boolean>(false)
 

@@ -11,13 +11,15 @@ import { Tooltip } from "react-tooltip";
 import { AuthContext } from "@/contexts/AuthContext";
 import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
-import { Button, Label, Select, Table, TextInput } from "flowbite-react";
+import { Button, Label, Modal, Select, Spinner, Table, TextInput } from "flowbite-react";
 import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
 import { toast } from "react-toastify";
 import { ModalExcluir } from "@/components/modalExcluir";
 import { ModalFechamento } from "../../components/caixa/modalFechamento";
 import  Fechamento  from "@/Documents/caixa/Fechamento";
 import { useReactToPrint } from "react-to-print";
+import { Scanner } from "@/components/admContrato/historicoMensalidade/modalScanner";
+import { ModalDadosMensalidade } from "@/components/caixa/modalDadosMensalidade";
 
 
 registerLocale('pt', pt)
@@ -48,6 +50,30 @@ interface GrupoPrps{
     descricao:string
 }
 
+export interface MensalidadeProps{
+    id_mensalidade:number,
+    associado:{
+        nome:string,
+        endereco:string,
+        mensalidade:Array<{
+            id_mensalidade:number,
+            referencia:string,
+            vencimento:Date,
+            valor_principal:number,
+            n_doc:string
+        }>
+    },
+    id_contrato:number,
+    referencia:string,
+    status:string,
+    valor_principal:number,
+    vencimento:Date,
+    valor_total:number,
+    form_pagto:string,
+    banco_dest:string,
+    motivo_bonus:string
+}
+
 
 export default function CaixaMovimentar(){
     const[lancamentos,setLancamentos]=useState<Array<LancamentosProps>>([]);
@@ -57,7 +83,6 @@ export default function CaixaMovimentar(){
     const[descricao,setDescricao] =useState('');
     const[saldo,setSaldo]=useState(0);
     const[grupos,setGrupos] = useState<Array<GrupoPrps>>([])
-    const[saldoInicial,setSaldoInicial]=useState(0);
     const[despesas,setDespesas]=useState(0);
     const [empresaApi,setApiEmpresa] = useState('')
     const [selectEmpresa,setSelectEmpresa] = useState('')
@@ -68,15 +93,71 @@ export default function CaixaMovimentar(){
     const [openModalExc,setModalExc] = useState<boolean>(false);
     const [loading,setLoading] = useState<boolean>(false);
     const [openFecModal,setFecModal]= useState<boolean>(false)
+    const [scanner,setScanner] = useState<boolean>(false)
+    const [mensalidade,setMensalidade] = useState<Partial<MensalidadeProps>>()
+    const [modalDados,setModalDados] = useState<boolean>(false)
+
 
 
     const currentePage = useRef<Fechamento>(null)
     
 
+
+
+
+    useEffect(()=>{
+
+
+
+        const handleScanner=(event:KeyboardEvent)=>{
+
+            if(event.key==='F2'){
+                setScanner(true)
+            }
+           
+        }
+
+        document.addEventListener('keydown',handleScanner)
+
+        return () => {
+            document.removeEventListener('keydown', handleScanner);
+        };
+
+
+
+    },[])
+
     const imprimir = useReactToPrint({
         content:()=>currentePage.current,
 
     })
+
+
+
+    const buscarMensalidade = async(n_doc:string)=>{
+        setLoading(true)
+        try {
+         const response = await api.post('/mensalidade/baixaDireta',{
+           n_doc
+         })
+         setMensalidade({...response.data,valor_total:response.data.valor_principal})
+         setModalDados(true)
+        } catch (error:any) {
+            console.log('Erro:', error); // Verifique o erro mais claramente
+        if (error.response && error.response.data && error.response.data.error) {
+            toast.error(error.response.data.error);
+        } else {
+            toast.error('Ocorreu um erro desconhecido.');
+        }
+        } 
+
+        setLoading(false)
+       }
+       
+  
+
+
+
 
 
 
@@ -121,7 +202,6 @@ export default function CaixaMovimentar(){
             })
 
             setLancamentos(response.data.lista)
-            setSaldoInicial(response.data.dif)
             setPlanos(response.data.plano_de_contas)
             setGrupos(response.data.grupos)
             setApiEmpresa(response.data.empresa)
@@ -167,12 +247,22 @@ return(
 
 <ModalExcluir openModal={openModalExc} handleExcluir={handleExcluir} setOpenModal={setModalExc}/>
 
+<ModalDadosMensalidade setMensalidade={setMensalidade} mensalidade={mensalidade??{}} open={modalDados} setOpen={setModalDados}/>
 
+<Modal size={'sm'} popup show={loading}>
+    <Modal.Body>
+        <div className=" flex flex-col mt-6 w-full justify-center items-center">
+        <Spinner size={'lg'} color={'warning'}/>
+        <span>Localizando dados....</span>
+        </div>
+       
+    </Modal.Body>
+</Modal>
 
 <div className="flex flex-col w-full border  rounded-lg shadow  border-gray-600 max-h-[89vh]">
     <div className="text-gray-600 bg-gray-50 rounded-t-lg inline-flex items-center w-full justify-between">
     <h1 className="flex  text-lg items-end pl-3 font-medium whitespace-nowrap">Movimentação de Caixa</h1>
-    <div className="flex w-full flex-row justify-end p-1 gap-2">
+    <div className="flex w-full flex-row justify-end p-1 gap-4">
 
 
 
@@ -214,12 +304,17 @@ return(
         <TextInput value={descricao} onChange={e=>setDescricao(e.target.value)}   sizing={'sm'}  />
       </div> 
          
-                   <div className="flex items-end">
+                   <div className="flex items-end gap-4">
                    <Button isProcessing={loading}  size={'sm'} onClick={()=>listarLancamentos()} ><IoSearchSharp size={20}/> Buscar</Button>
+
+                   <Button onClick={()=>setScanner(true)} size={'sm'} color={'warning'} >{`Receber ( F2 )`}</Button>
                    </div>
                    <div className="flex   items-end justify-end pr-2 ">
                    <Button disabled={!permissoes.includes('ADM2.1.1')} color={'success'} size={'sm'} onClick={()=>{setMov({conta:'',conta_n:'',ccustos_desc:'',data:undefined,datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal(true)}} ><MdOutlineAddCircle size={20}/> Novo</Button>
+
+                 
                    </div>
+                   
         </div>
     </div>
     <div className="flex flex-col border-t-2">
@@ -227,7 +322,7 @@ return(
        
         <div className="overflow-y-auto mt-1 px-2 max-h-[72vh] ">
         <Tooltip id="tooltip-hora"/>
-        <Table hoverable theme={{ body: { cell: { base: "px-4 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-gray-700" } } }} 
+        <Table hoverable theme={{ body: { cell: { base: " px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }} 
     >
         <Table.Head >
         
@@ -338,10 +433,9 @@ return(
 
 <ModalFechamento lancamentos={lancamentos} id_usuario={usuario?.id??''} openModal={openFecModal} setOpenModal={setFecModal}/>
 
+{scanner && <Scanner openModal={scanner} setModal={setScanner} verficarTicket={buscarMensalidade}/>}
+
 </>
 )
-
-
-
 
 }

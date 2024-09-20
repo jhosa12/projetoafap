@@ -41,11 +41,11 @@ export function Scanner({openModal,setModal,verficarTicket}:DataProps){
         };
     
         // Adiciona o ouvinte de eventos para capturar as teclas pressionadas
-        document.addEventListener('keypress', handleKeyPress);
+        document.addEventListener('keydown', handleKeyPress);
     
         // Remove o ouvinte de eventos quando o componente é desmontado
         return () => {
-          document.removeEventListener('keypress', handleKeyPress);
+          document.removeEventListener('keydown', handleKeyPress);
         };
       }, []);
 
