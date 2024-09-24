@@ -13,7 +13,10 @@ type CidadesProps = {
     cidade: string
 }
 
-
+export interface EmpresaProps{
+    id:string,
+    nome:string
+}
 
 
 type DependentesProps = {
@@ -80,6 +83,7 @@ export type MensalidadeProps = {
 
 }
 type DadosCadastro = {
+    id_empresa:string
     empresa:string
     name: string,
     nasc: Date,
@@ -203,6 +207,8 @@ type AuthContextData = {
     setarDadosAssociado:(fields:Partial<AssociadoProps>)=>void
     permissoes:Array<string>
     setPermissoes:(array:Array<string>)=>void
+    getEmpresas:()=>Promise<void>
+    empresas:Array<EmpresaProps>
 }
 
 type SignInProps = {
@@ -439,6 +445,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod: [] });
     const [dadosassociado, setDadosAssociado] = useState<Partial<AssociadoProps>>({});
     const [data, setData] = useState<Partial<DadosCadastro>>({});
+    const [empresas,setEmpresas] = useState<Array<EmpresaProps>>([])
    
     const [servico, setServico] = useState<Partial<ObitoProps>>({ hr_sepultamento: new Date(), end_hora_falecimento: new Date(), end_hora_informaram: new Date() });
     const [permissoes,setPermissoes] =useState<Array<string>>([])
@@ -458,6 +465,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return true;
         }
         return false;
+      }, []);
+
+
+      const getEmpresas = useCallback(async() => {
+
+        if(empresas.length>0){
+            return;
+        }
+        try {
+            const response = await api.get("/empresa/listar")
+
+            setEmpresas(response.data)
+        } catch (error) {
+            
+        }
+       
       }, []);
 
 
@@ -506,6 +529,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(()=>{
         const { "@nextauth.token": token } = parseCookies();
         if (token) userToken(token)
+        getEmpresas()
             
     },[])
 
@@ -540,7 +564,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         limparDados();
         try {
             const response = await api.post('/associado', {
-                id_associado: id,
+                id_global: id,
                 empresa: data.empresa
             });
            
@@ -582,7 +606,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <AuthContext.Provider value={{permissoes,setPermissoes, setarDadosAssociado, limparDados, usuario, userLogged, sign, signOut, data, closeModa, dadosassociado, carregarDados, setarServico, servico, listaConv, setarListaConv }}>
+        <AuthContext.Provider value={{empresas,getEmpresas,permissoes,setPermissoes, setarDadosAssociado, limparDados, usuario, userLogged, sign, signOut, data, closeModa, dadosassociado, carregarDados, setarServico, servico, listaConv, setarListaConv }}>
             {children}
         </AuthContext.Provider>
     );
