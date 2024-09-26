@@ -14,9 +14,10 @@ interface DataProps{
     setArrayEstoque:(fields:Array<ConvProps>)=>void
     usuario:string,
     id_usuario:string
+    reqDadosEstoq:()=>Promise<void>
 }
 
-export function Estoque({arrayEstoque,arrayProdutos,setArrayEstoque,id_usuario,usuario}:DataProps){
+export function Estoque({arrayEstoque,arrayProdutos,setArrayEstoque,id_usuario,usuario,reqDadosEstoq}:DataProps){
     const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
     const [mov,setMov]= useState<boolean>(false)
     const [openModal,setOpenModal]= useState<boolean>(false)
@@ -37,7 +38,7 @@ export function Estoque({arrayEstoque,arrayProdutos,setArrayEstoque,id_usuario,u
     return(
         <div className="flex-col w-full px-2   ">
 
-      { mov && <ModalMov id_usuario={id_usuario} usuario={usuario} empresas={empresas} produtos={arrayEstoque}  setOpenModal={setMov}/>}
+      { mov && <ModalMov reqDadosEstoq={reqDadosEstoq} id_usuario={id_usuario} usuario={usuario} empresas={empresas} produtos={arrayEstoque}  setOpenModal={setMov}/>}
       <ModalNovoProduto empresas={empresas} estoque={arrayEstoque} setEstoque={setArrayEstoque} produtos={arrayProdutos} openModal={openModal} setOpenModal={setOpenModal}/>
 
                 <div className="inline-flex w-full justify-end items-end gap-4">

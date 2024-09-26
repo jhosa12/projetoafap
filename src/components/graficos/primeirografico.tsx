@@ -52,6 +52,9 @@ export function Grafico({lancamentos,completo }:
         },
       },
       dataLabels: {
+        style:{
+          colors:['#000000']
+        },
         offsetY: -20,
         formatter: function (value:number, { seriesIndex }:{seriesIndex:number}) {
           if (seriesIndex === 0) {

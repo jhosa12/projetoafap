@@ -49,7 +49,9 @@ interface DadosAssociadoGeral{
     bairro:string,
     numero:number,
     cidade:string,
-    uf:string
+    uf:string,
+    id_contrato_global:number|null,
+    id_global:number|null,
     id_contrato:number,
     id_associado:number,
     arrayMensalidade:Array<MensalidadeProps>,
@@ -216,7 +218,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
        
 
        
-            await carregarDados(dadosAssociado.id_associado)
+           dadosAssociado.id_global && await carregarDados(dadosAssociado.id_global)
            // setarDados({ mensalidade: {} })
           // setarDadosAssociado({mensalidade:mensalidades})
 
@@ -248,6 +250,8 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
         try {
           const response =  await toast.promise(
                 api.post('/mensalidade/adicionar', {
+                    id_contrato_global:dadosAssociado.id_contrato_global,
+                    id_global:dadosAssociado.id_global,
                     id_contrato: dadosAssociado.id_contrato,
                     id_associado: dadosAssociado.id_associado,
                     status: 'A',
@@ -480,7 +484,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                                         </td>
                                     </tr>
                                     {i.mensalidade?.map((ii, ee) => (
-                                        <tr className={`border-b ${!showSublinhas && "hidden"} ${ii.status !== 'E' && "hidden"} text-yellow-500 border-gray-300  hover:bg-gray-500 hover:text-black `} key={ee}>
+                                        <tr className={`border-b font-semibold ${!showSublinhas && "hidden"} ${ii.status !== 'E' && "hidden"} text-yellow-500 border-gray-300  hover:bg-gray-500 hover:text-black `} key={ee}>
                                             <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
                                                 {ii.parcela_n}
                                             </th>
@@ -538,8 +542,8 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                             <tr key={index}
                                 onClick={() => toggleSelecionada(item)}
                                 //className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600  ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":item.status==='P'? 'text-blue-500':'text-white'}`}>
-                                className={`${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"} border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : "bg-gray-50"}  ${item.status === 'P' && "text-blue-600"} border-gray-400  hover:bg-gray-300 hover:text-black   ${item.parcela_n === 0 ? "hidden" : ''}`}>
-                                <th scope="row" className={`px-5 py-1 font-medium `}>
+                                className={`font-semibold ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"} border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : "bg-gray-50"}  ${item.status === 'P' && "text-blue-600"} border-gray-400  hover:bg-gray-300 hover:text-black   ${item.parcela_n === 0 ? "hidden" : ''}`}>
+                                <th scope="row" className={`px-5 py-1  `}>
                                     {item.parcela_n}
                                 </th>
                                 <td className={`px-2 py-1 `}>
@@ -583,7 +587,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                                         event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                                         setOpenEditar(true)
                                         setMensalidade({...item,valor_total:item.status==='A'?item.valor_principal:item.valor_total})
-                                    }} className={`font-medium ${item.status === 'E' ? "hidden" : ''}  hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>Editar</button>
+                                    }} className={` ${item.status === 'E' ? "hidden" : ''}  hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>Editar</button>
                                 </td>
                             </tr>
                         ) : item.status === 'A' ? (
@@ -592,8 +596,8 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                                 // status:item.status
                                 // }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600 ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-white'}`}>
                                 onClick={() => toggleSelecionada(item)}
-                                className={`${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && "text-red-600"}  border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : "bg-gray-50"}   border-gray-400  hover:bg-gray-300 hover:text-black   ${item.parcela_n === 0 ? "hidden" : ''}`}>
-                                <th className="px-5 py-1 font-medium  ">
+                                className={`font-semibold ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && "text-red-600"}  border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : "bg-gray-50"}   border-gray-400  hover:bg-gray-300 hover:text-black   ${item.parcela_n === 0 ? "hidden" : ''}`}>
+                                <th className="px-5 py-1   ">
                                     {item.parcela_n}
                                 </th>
                                 <td className="px-2 py-1">
@@ -635,7 +639,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                                         event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                                         setOpenEditar(true),
                                         setMensalidade({...item,valor_total:item.status==='A'?item.valor_principal:item.valor_total})
-                                    }} className={`font-medium   hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>Editar</button>
+                                    }} className={`hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>Editar</button>
                                 </td>
                             </tr>
 

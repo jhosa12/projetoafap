@@ -15,7 +15,8 @@ interface DataProps {
     produtos: Array<ConvProps>
     empresas: Array<EmpresaProps>
     usuario: string,
-    id_usuario: string
+    id_usuario: string,
+    reqDadosEstoq:()=>Promise<void>
 }
 interface MovProps {
     id_produto: number,
@@ -23,7 +24,7 @@ interface MovProps {
     quantidade: number
 }
 
-export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario }: DataProps) {
+export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario,reqDadosEstoq }: DataProps) {
     const [scannedCode, setScannedCode] = useState<string>('')
     const [arrayMov, setArrayMov] = useState<Array<MovProps>>([])
     const [quantidadeManual, setQuantidadeManual] = useState<number>(0);
@@ -117,6 +118,7 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
                 usuario: usuario,
                  produtos:arrayMov
             })
+            reqDadosEstoq()
         } catch (error) {
             console.log(error)
         }
@@ -230,16 +232,21 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
 
 
                             </div>
+                            <div className="inline-flex w-full justify-around">
+                    <Button color={'success'}>ENTRADA</Button>
+                    <Button color={'failure'} onClick={()=>handleMovimentar('SAIDA')}>SAÍDA</Button>
+                    </div>
                         </> : <Spinner aria-label="Extra large spinner example" size="xl" />
                         }
                     </div>
 
-                </Modal.Body>
-                <Modal.Footer className="justify-around ">
-                    <Button color={'success'}>ENTRADA</Button>
-                    <Button color={'failure'} onClick={()=>handleMovimentar('SAIDA')}>SAÍDA</Button>
+                   
 
-                </Modal.Footer>
+                </Modal.Body>
+               
+                  
+
+                
 
             </Modal>
         </>

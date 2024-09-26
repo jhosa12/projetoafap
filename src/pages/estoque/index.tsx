@@ -29,6 +29,8 @@ export default function AdministrarEstoque(){
     const [arrayConv,setArrayConv]= useState<Array<ConvProps>>([]) 
     const [arrayProdutos,setArrayProdutos] = useState<Array<ProdutosProps>>([])
     const {usuario,empresas} = useContext(AuthContext);
+    const [tab,setTab] = useState<number>(0)
+    
    
 
 
@@ -73,14 +75,14 @@ const reqProdutos = useCallback(async() => {
       <Tabs theme={{tabpanel:'py-1',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
         on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
         off:"border-b-2 border-transparent text-gray-200 hover:border-gray-300 hover:text-gray-400 "
-      }}}}}}}  variant="underline">
+      }}}}}}}  variant="underline"   onActiveTabChange={e=>setTab(e)}>
 
-      <Tabs.Item  active title="Estoque" icon={FaStore}>
-        <Estoque  id_usuario={usuario?.id??''} usuario={usuario?.nome??''} setArrayEstoque={setArrayConv} arrayProdutos={arrayProdutos} arrayEstoque={arrayConv}/>
+      <Tabs.Item  active={tab===0} title="Estoque" icon={FaStore}>
+       {tab===0 && <Estoque reqDadosEstoq={reqDadosEstoque}  id_usuario={usuario?.id??''} usuario={usuario?.nome??''} setArrayEstoque={setArrayConv} arrayProdutos={arrayProdutos} arrayEstoque={arrayConv}/>}
      
       </Tabs.Item>
-      <Tabs.Item title="Histórico de Movimentação" icon={RiHistoryLine}>
-      <HistoricoMov  id_usuario={usuario?.id??''} usuario={usuario?.nome??''} setArrayEstoque={setArrayConv} arrayProdutos={arrayProdutos} arrayEstoque={arrayConv}/>
+      <Tabs.Item  active={tab===1} title="Histórico de Movimentação" icon={RiHistoryLine}>
+     {tab===1 && <HistoricoMov  id_usuario={usuario?.id??''} usuario={usuario?.nome??''} setArrayEstoque={setArrayConv} arrayProdutos={arrayProdutos} arrayEstoque={arrayConv}/>}
       </Tabs.Item>
 
     

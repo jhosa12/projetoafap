@@ -393,6 +393,8 @@ export default function AdmContrato() {
                                 dados={{ acordo: data.acordo ?? {}, closeModalPlano: data.closeModalPlano ?? false, id_associado: dadosassociado?.id_associado ?? 0, mensalidade: data.mensalidade ?? {}, mensalidadeAnt: data.mensalidadeAnt ?? {} }}
                                 dadosAssociado={{
                                     nome: dadosassociado?.nome ?? '',
+                                    id_contrato_global:dadosassociado?.contrato?.id_contrato_global??null,
+                                    id_global:dadosassociado?.id_global??null,
                                     endereco: dadosassociado?.endereco ?? '',
                                     bairro: dadosassociado?.bairro ?? '',
                                     cidade: dadosassociado?.cidade ?? '',

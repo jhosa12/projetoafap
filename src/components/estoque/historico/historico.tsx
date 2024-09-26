@@ -7,7 +7,7 @@
 
 import { ConvProps, ProdutosProps } from "@/pages/estoque"
 import { Button, Table} from "flowbite-react"
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 
 import { AuthContext } from "@/contexts/AuthContext";
@@ -46,13 +46,13 @@ export function HistoricoMov({arrayEstoque,arrayProdutos,setArrayEstoque,id_usua
 
 
 
-    const handleFiltro = async({startDate,endDate,id_empresa}:{startDate:Date,endDate:Date,id_empresa:string})=>{
+    const handleFiltro = async({startDate,endDate,id_empresa,signal}:{startDate:Date,endDate:Date,id_empresa:string,signal?:AbortSignal})=>{
         try {
             const response = await api.post('/estoque/historico/filtro',{
                 startDate,
                 endDate,
                 id_empresa
-            })
+            },{signal})
 
             setHistorico(response.data)
             
@@ -60,6 +60,16 @@ export function HistoricoMov({arrayEstoque,arrayProdutos,setArrayEstoque,id_usua
             console.log(error)
         }
     }
+
+    useEffect(()=>{
+        const controller = new AbortController()
+        const signal = controller.signal
+        handleFiltro({startDate:new Date(),endDate:new Date(),id_empresa:'',signal})
+
+        return ()=>{
+            controller.abort()
+        }
+    },[])
   
 
     const toogleAberto = (index: number) => {

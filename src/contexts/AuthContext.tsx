@@ -56,6 +56,8 @@ type DependentesProps = {
 }
 export type MensalidadeProps = {
     id_usuario: number,
+    id_mensalidade_global:number,
+    id_contrato_global:number,
     id_contrato: number,
     estorno_dt: Date,
     estorno_user: string,
@@ -125,6 +127,7 @@ type PlanosProps = {
 }
 
 type ContratoProps = {
+    id_contrato_global:number|null,
     id_contrato: number,
     plano: string,
     id_plano: number,
@@ -167,6 +170,7 @@ type AcordoProps = {
 }
 
 export type AssociadoProps = {
+    id_global:number|null,
     nome: string,
     data_nasc: Date,
     sexo: string,

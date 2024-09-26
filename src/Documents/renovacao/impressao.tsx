@@ -75,7 +75,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
                                 <h1 className="mt-2 " style={{ fontSize: '13px' }} >ASSISTENCIA FAMILIAR PARAÍSO</h1>
                                 <div className="inline-flex pl-8 w-full ">
                                     <span>{it.parcela_n}</span>
-                                    <span className="flex w-full justify-end">{it.vencimento && new Date(it.vencimento).toLocaleDateString('pt-BR')}</span>
+                                    <span className="flex w-full justify-end">{it.vencimento && new Date(it.vencimento).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
                                 </div>
 
 
@@ -117,7 +117,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
 
                                 <div className="inline-flex  pt-1 w-full ">
                                     <span className="pl-2 whitespace-nowrap">RUA ADAUTO CASTELO - 393 CENTRO CEDRO/CE</span>
-                                    <span className=" pl-[110px] ">{it.vencimento && new Date(it.vencimento).toLocaleDateString('pt-BR')}</span>
+                                    <span className=" pl-[110px] ">{it.vencimento && new Date(it.vencimento).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
                                     <span className=" flex w-full justify-end pl-10">{it.parcela_n}</span>
                                 </div>
                                 <div className="inline-flex  w-full pt-1 ">

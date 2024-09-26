@@ -299,9 +299,9 @@ export function PlanodeContas({listaContas,setListaContas}:DataProps){
                     //  }
 
                     return (
-                      <li onClick={() => { handleListaLanc(conta.conta, index), toogleAberto(index) }} className={`flex flex-col w-full p-1.5 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-300" : "bg-slate-200"} uppercase cursor-pointer`}>
+                      <li onClick={() => { handleListaLanc(conta.conta, index), toogleAberto(index) }} className={`font-semibold flex flex-col w-full p-1.5 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-300" : "bg-slate-200"} uppercase cursor-pointer`}>
                         <div className="inline-flex w-full items-center">
-                          <span className="flex w-full font-semibold">{listaContas?.map((item, ind) => {
+                          <span className="flex w-full ">{listaContas?.map((item, ind) => {
                               if (item.conta == conta?.conta && item.tipo !== null) {
                                 return item.descricao
                               }

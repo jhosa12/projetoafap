@@ -39,7 +39,7 @@ export function DadosAssociado({dadosassociado}:DataProps){
 
                                 <h2 className="inline-flex gap-3 mb-3 text-xl font-semibold tracking-tight text-gray-600">
                                     {dadosassociado?.contrato?.id_contrato}-{dadosassociado?.nome}
-                                    <span>PLANO:
+                                    <span>CATEGORIA:
 
                                         <span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato?.plano}</span>
                                     </span>

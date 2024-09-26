@@ -58,22 +58,6 @@ export function Caixa({ arrayCcustos, arrayCaixa, setCcustos, setCaixa, handleFi
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   const current = useRef<DocumentTemplate>(null)
 const [loadind,setLoading] = useState<boolean>(false)
 
@@ -129,41 +113,52 @@ const filtro = async()=>{
   }
 
 
+  const calcularSoma = (array:Array<CaixaProps>) => {
+    return array.reduce((acumulador, atual) => {
+      const valor = Number(atual.valor); // Converte o valor uma vez para melhorar a performance
+      acumulador.total += valor;
+
+      switch (atual?.mensalidade?.form_pagto) {
+        case 'PIX':
+          acumulador.pix += valor;
+          break;
+        case 'BOLETO':
+          acumulador.boleto += valor;
+          break;
+        case 'CARTAO':
+          acumulador.cartao += valor;
+          break;
+        case 'DINHEIRO':
+          acumulador.dinheiro += valor;
+          break;
+        default:
+          break; // Adicione uma ação padrão se necessário
+      }
+
+      return acumulador;
+    }, { pix: 0, boleto: 0, cartao: 0, dinheiro: 0, deposito: 0, total: 0, transferencia: 0 } as SomaProps);
+  };
+
   useEffect(() => {
-
     if (arrayCaixa.length > 0) {
+      const novaSoma = calcularSoma(arrayCaixa);
 
-      const soma = arrayCaixa.reduce((acumulador, atual) => {
-        if (atual?.mensalidade?.form_pagto === 'PIX') {
-          acumulador.pix += Number(atual.valor)
-        }
-        if (atual?.mensalidade?.form_pagto === 'BOLETO') {
-          acumulador.boleto += Number(atual.valor)
-        }
-        if (atual?.mensalidade?.form_pagto === 'CARTAO') {
-          acumulador.cartao += Number(atual.valor)
-        }
-        if (atual?.mensalidade?.form_pagto === 'DINHEIRO') {
-          acumulador.dinheiro += Number(atual.valor)
-        }
-        acumulador.total += Number(atual.valor)
-        return acumulador
-
-      }, { pix: 0, boleto: 0, cartao: 0, dinheiro: 0, deposito: 0, total: 0, transferencia: 0 } as SomaProps)
-    
-      setSoma(soma)
-    }else{
+      // Verifica se a nova soma é diferente da atual antes de atualizar o estado
+      if (JSON.stringify(novaSoma) !== JSON.stringify(somaValor)) {
+        setSoma(novaSoma);
+      }
+    } else {
       setSoma({
-        boleto:0,
-        cartao:0,
-        deposito:0,
-        dinheiro:0,
-        pix:0,
-        total:0,
-        transferencia:0
-      })
+        boleto: 0,
+        cartao: 0,
+        deposito: 0,
+        dinheiro: 0,
+        pix: 0,
+        total: 0,
+        transferencia: 0,
+      });
     }
-  }, [arrayCaixa])
+  }, [arrayCaixa]);
 
 
   const handleSelectCheck = (select: CcustosProps) => {

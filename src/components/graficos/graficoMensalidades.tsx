@@ -14,27 +14,35 @@ interface ContratosGeral {
   dt_cancelamento: Date
 }
 
-interface DataProps {
+interface EixosProps{
   y: number,
   x: string,
-  dt: Date
+ // dt: Date
   z: number,
+}
+
+
+interface GraficoProps{
+  name:string,
+  data:Array<EixosProps>
+ // color:string
+}
+
+
+interface DataProps {
  
+ dados:Array<GraficoProps>
   
 }
 
-export function GraficoMensalidade({lancamentos,completo }:
-  {
-    lancamentos: Array<DataProps>,
-   completo:boolean
-  }) {
+export function GraficoMensalidade({dados}:DataProps) {
   const [options, setOptions] = useState({}); // Estado para opções do gráfico
-  const [series, setSeries] = useState<{ name: string; data: Array<number>; color: string }[]>([]); // Estado para série de dados do gráfico
-
+  const [series, setSeries] = useState<Array<{ name: string; data: Array<EixosProps> }>>([]); // Estado para série de dados do gráfico
+console.log(dados)
   useEffect(()=>{
-    const datas= lancamentos.map(item => item.x);
-    const receitaMensalidade = lancamentos.map(item => Number(item?.y?.toFixed(2)));
-    const quantMensal = lancamentos.map(item => item.z);
+  //  const datas= lancamentos.map(item => item.x);
+    //const receitaMensalidade = lancamentos.map(item => Number(item?.y?.toFixed(2)));
+   // const quantMensal = lancamentos.map(item => item.z);
  
 
     const chartOptions = {
@@ -51,19 +59,22 @@ export function GraficoMensalidade({lancamentos,completo }:
         },
       },
       dataLabels: {
+        style:{
+          colors:['#000000']
+        },
         offsetY: -20,
-        formatter: function (value:number, { seriesIndex }:{seriesIndex:number}) {
-          if (seriesIndex === 0) {
-            if(completo){
-              return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-            }
+        formatter: function (value:number, { dataPointIndex,seriesIndex }:{dataPointIndex:number,seriesIndex:number}) {
+              const total = dados[seriesIndex]?.data[dataPointIndex].z
+            
+              return `${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)}
+              (${total})`;
+            
            
-          }
-          return value;
+        
         },
       },
       title: {
-        text: completo?'MENSALIDADE/QUANTIDADE':'ATIVOS/CANCELAMENTOS'
+        text: 'MENSALIDADE/QUANTIDADE'
       },
       theme:{
         mode: 'light',
@@ -73,12 +84,12 @@ export function GraficoMensalidade({lancamentos,completo }:
         theme:false,
         
         y: {
-         formatter:completo &&  function (value:number, { seriesIndex }:{seriesIndex:number}) {
+         formatter:  function (value:number, { seriesIndex }:{seriesIndex:number}) {
             if (seriesIndex === 0) {
 
-              if(completo){
+             
                 return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-              }
+              
               
             }
             return value;
@@ -95,22 +106,11 @@ export function GraficoMensalidade({lancamentos,completo }:
         },
       },
       
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            legend: {
-              position: "bottom",
-              offsetX: -10,
-              offsetY: 0
-            }
-          }
-        }
-      ],
+
       xaxis: {
-        categories: datas,
-        type: 'category',
-        min: new Date("01 Mar 2012").getTime(),
+       // categories: datas,
+        type: 'bar',
+       
         responsive: [{
           breakpoint: 480,
           options: {
@@ -122,24 +122,21 @@ export function GraficoMensalidade({lancamentos,completo }:
           }
         }],
       },
+
+      yaxis:{
+        labels:{
+          formatter:function(value:number){
+            return value.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})
+          }
+        }
+      }
     };
     let chartSeries
     
 
-  chartSeries = [
-    {
-      name: "RECEITA COM MENSALIDADES",
-      data: receitaMensalidade,
-      color: '#1056b5'
-    },
-    {
-      name: "QUANT. MENSALIDADES",
-      data: quantMensal,
-      color: '#fede72'
-    },
-
-    
-  ];
+  chartSeries = dados.map(item=>{
+    return {name:item.name,data:item.data}
+  });
 
 
 
@@ -148,7 +145,7 @@ export function GraficoMensalidade({lancamentos,completo }:
     setOptions(chartOptions); // Define as opções do gráfico no estado
     setSeries(chartSeries); // Define a série de dados do gráfico no estado
 
-  },[lancamentos]);
+  },[dados]);
   
   // Renderiza o gráfico somente se as opções e a série de dados estiverem disponíveis
   return (
