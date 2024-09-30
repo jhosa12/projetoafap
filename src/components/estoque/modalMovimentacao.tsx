@@ -107,7 +107,7 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
             toast.info('Selecione a empresa de destino')
         }
         try {
-            const response = await api.put("/estoque/movimentar", {
+            const response = await toast.promise(api.put("/estoque/movimentar", {
                 descricao: descricao,
                 tipo,
                // quantidade: number
@@ -118,8 +118,12 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
                 id_usuario:id_usuario,
                 usuario: usuario,
                  produtos:arrayMov
-            })
-           // reqDadosEstoq()
+            }),
+        {error:'Erro ao movimentar',
+            success:'Movimentado com sucesso',
+            pending:'Movimentando...'
+        }) 
+            reqDadosEstoq({descricao:'',id_produto:null,grupo:''})
         } catch (error) {
             console.log(error)
         }

@@ -1,5 +1,5 @@
 import { AuthContext, EmpresaProps } from "@/contexts/AuthContext";
-import { EstoqueProps, ProdutosProps } from "@/pages/estoque";
+import { EstoqueProps, FormProps, ProdutosProps } from "@/pages/estoque";
 import { api } from "@/services/apiClient";
 import { Button, Label, Modal, ModalHeader, Select, TextInput } from "flowbite-react";
 import { useCallback, useContext, useEffect, useState } from "react";
@@ -13,6 +13,8 @@ interface DataProps{
     openModal:boolean,
     setOpenModal:(open:boolean)=>void
     empresas:Array<EmpresaProps>
+    reqDadosEstoq:(dados:FormProps)=>Promise<void>
+    reqProdutos:()=>Promise<void>
 }
 
 interface FormDataProps{
@@ -25,7 +27,7 @@ interface FormDataProps{
   alerta:number
 }
 
-export function ModalNovoProduto({openModal,setOpenModal,empresas}:DataProps){
+export function ModalNovoProduto({openModal,setOpenModal,empresas,reqProdutos}:DataProps){
 
  const [form,setForm] = useState<Partial<FormDataProps>>()
 
@@ -43,7 +45,7 @@ const novoProduto= async()=>{
 
     )
 
-    
+    reqProdutos()
   //  setEstoque([...estoque,response.data as EstoqueProps]);
      
   } catch (error:any) {
