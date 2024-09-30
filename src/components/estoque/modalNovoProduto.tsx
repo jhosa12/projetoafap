@@ -1,5 +1,5 @@
 import { AuthContext, EmpresaProps } from "@/contexts/AuthContext";
-import { ConvProps, ProdutosProps } from "@/pages/estoque";
+import { EstoqueProps, ProdutosProps } from "@/pages/estoque";
 import { api } from "@/services/apiClient";
 import { Button, Label, Modal, ModalHeader, Select, TextInput } from "flowbite-react";
 import { useCallback, useContext, useEffect, useState } from "react";
@@ -12,9 +12,6 @@ import { toast } from "react-toastify";
 interface DataProps{
     openModal:boolean,
     setOpenModal:(open:boolean)=>void
-    produtos:Array<ProdutosProps>
-    setEstoque:(fields:Array<ConvProps>)=>void
-    estoque:Array<ConvProps>
     empresas:Array<EmpresaProps>
 }
 
@@ -22,13 +19,13 @@ interface FormDataProps{
   id_usuario:number,
   cod_prod:string,
   descricao:string,
-  id_empresa:string,
-  id_produto:number,
-  quantidade:number,
+  grupo:string,
+ // id_empresa:string,
+ // id_produto:number,
   alerta:number
 }
 
-export function ModalNovoProduto({openModal,setOpenModal,produtos,setEstoque,estoque,empresas}:DataProps){
+export function ModalNovoProduto({openModal,setOpenModal,empresas}:DataProps){
 
  const [form,setForm] = useState<Partial<FormDataProps>>()
 
@@ -47,7 +44,7 @@ const novoProduto= async()=>{
     )
 
     
-    setEstoque([...estoque,response.data as ConvProps]);
+  //  setEstoque([...estoque,response.data as EstoqueProps]);
      
   } catch (error:any) {
     toast.warning(error.response.data.error)
@@ -58,31 +55,12 @@ const novoProduto= async()=>{
             <ModalHeader>Administrar Produto</ModalHeader>
             <Modal.Body>
                 <form className="grid grid-cols-2 gap-4">
-                <div>
-        <div className=" block">
-          <Label htmlFor="empresa" value="Empresa" />
-        </div>
-        <Select className="font-semibold" onChange={e=>setForm({...form,id_empresa:e.target.value})} sizing={'sm'} id="empresa"  required >
-            <option value={''}></option>
-           {empresas.map(item=>(
-            <option className="font-semibold" key={item.id} value={item.id}>{item.nome}</option>
-           ))}
-        </Select>
-      </div>
+        
                 <div>
         <div className=" block">
           <Label htmlFor="produto" value="Produto" />
         </div>
-        <Select className="font-semibold" onChange={e=>{
-          const prod = produtos?.find(at =>at.id_produto===Number(e.target.value))
-
-          setForm({...form,descricao:prod?.descricao,id_produto:prod?.id_produto})
-        }} sizing={'sm'} id="produto"  required >
-            <option value={''}></option>
-           {produtos.map(item=>(
-            <option className="font-semibold" value={item.id_produto} key={item.id_produto}>{item.descricao}</option>
-           ))}
-        </Select>
+        <TextInput className="font-semibold" onChange={e=>setForm({...form,descricao:e.target.value.toUpperCase()})} sizing={'sm'} id="produto" value={form?.descricao}  required />
       </div>
 
 
@@ -93,15 +71,24 @@ const novoProduto= async()=>{
         <TextInput className="font-semibold" value={form?.cod_prod} onChange={e=>setForm({...form,cod_prod:e.target.value})} sizing={'sm'} id="cod_produto"  required />
       
       </div>
-
-      
       <div>
         <div className=" block">
-          <Label htmlFor="quantidade" value="Quantidade" />
+          <Label htmlFor="categoria" value="Categoria" />
         </div>
-        <TextInput className="font-semibold" type="number" onChange={e=>setForm({...form,quantidade:Number(e.target.value)})} sizing={'sm'} id="quantidade"  required />
-      
+
+        <Select id="categoria" onChange={e => setForm({ ...form, grupo: e.target.value })} className="font-semibold" sizing={'sm'}>
+                        <option value={''}>{''}</option>
+                        <option value={'cs'} className="font-semibold">CONSUMO</option>
+                        <option value={'cv'} className="font-semibold">CONVALESCENTE</option>
+                        <option value={'fn'}  className="font-semibold">FUNEBRE</option>
+                        <option  value={'ot'} className="font-semibold">ÓTICA</option>
+
+                    </Select>
+       
       </div>
+     
+      
+     
       <div>
         <div className=" block">
           <Label htmlFor="alerta" value="Alertar em " />

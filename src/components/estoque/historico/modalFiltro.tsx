@@ -4,7 +4,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { useState } from "react";
-import { ConvProps } from "@/pages/estoque";
+import { EstoqueProps } from "@/pages/estoque";
 
 interface DataProps{
     empresas:Array<EmpresaProps>

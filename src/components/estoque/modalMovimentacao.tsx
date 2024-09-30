@@ -1,4 +1,4 @@
-import { ConvProps } from "@/pages/estoque";
+import { EstoqueProps, FormProps, ProdutosProps } from "@/pages/estoque";
 import { Button, FloatingLabel, Modal, Select, Spinner, Table, Textarea, TextInput, ToggleSwitch } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiTrash } from "react-icons/hi";
@@ -12,11 +12,11 @@ import { api } from "@/services/apiClient";
 interface DataProps {
 
     setOpenModal: (open: boolean) => void
-    produtos: Array<ConvProps>
+    produtos: Array<ProdutosProps>
     empresas: Array<EmpresaProps>
     usuario: string,
     id_usuario: string,
-    reqDadosEstoq:()=>Promise<void>
+    reqDadosEstoq:(dados:FormProps)=>Promise<void>
 }
 interface MovProps {
     id_produto: number,
@@ -40,6 +40,7 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
 
     const analisarProduto = (scanned: string) => {
         const item = produtos.find(obj => obj.cod_prod === scanned);
+        console.log(produtos)
 
         if (!item) {
             toast.info('Produto não cadastrado');
@@ -118,7 +119,7 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
                 usuario: usuario,
                  produtos:arrayMov
             })
-            reqDadosEstoq()
+           // reqDadosEstoq()
         } catch (error) {
             console.log(error)
         }
@@ -220,6 +221,7 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
                                             setEmpresa({ empresa: '', id_empresa: '' })
                                             return
                                         }
+                                        console.log(empresa)
                                         setEmpresa({ id_empresa: empresa.id, empresa: empresa.nome })
                                     }} sizing={'sm'} id="empresa" required >
                                         <option value={''}>Selecione a empresa de destino</option>
@@ -230,17 +232,17 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
 
                                 </div>
 
-
+                  
                             </div>
-                            <div className="inline-flex w-full justify-around">
-                    <Button color={'success'}>ENTRADA</Button>
-                    <Button color={'failure'} onClick={()=>handleMovimentar('SAIDA')}>SAÍDA</Button>
-                    </div>
+                   
                         </> : <Spinner aria-label="Extra large spinner example" size="xl" />
                         }
                     </div>
 
-                   
+                    <div className="inline-flex w-full justify-around mt-2">
+                    <Button onClick={()=>handleMovimentar('ENTRADA')} color={'success'}>ENTRADA</Button>
+                    <Button color={'failure'} onClick={()=>handleMovimentar('SAIDA')}>SAÍDA</Button>
+                    </div>
 
                 </Modal.Body>
                

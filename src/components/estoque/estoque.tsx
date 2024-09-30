@@ -1,28 +1,42 @@
-import { ConvProps, ProdutosProps } from "@/pages/estoque"
+import { EstoqueProps, FormProps, ProdutosProps } from "@/pages/estoque"
 import { Button, Select, Table, TextInput } from "flowbite-react"
-import { useContext, useState } from "react";
-import { IoIosArrowDown, IoMdAlert } from "react-icons/io";
+import { useContext, useEffect, useState } from "react";
 import { ModalMov } from "./modalMovimentacao";
 import { ModalNovoProduto } from "./modalNovoProduto";
-import { AuthContext } from "@/contexts/AuthContext";
-import { RiAlertFill, RiAlertLine } from "react-icons/ri";
+import { AuthContext, EmpresaProps } from "@/contexts/AuthContext";
+import {RiAlertLine} from "react-icons/ri";
+import { MdKeyboardArrowDown, MdOutlinePlaylistAdd } from "react-icons/md";
+import { FiltroEstoque } from "./PopoverFiltro";
+import { get } from "http";
+import { TbTransferVertical } from "react-icons/tb";
+import useApi from "@/hooks/useApi";
+
 
 
 interface DataProps{
-    arrayEstoque:Array<ConvProps>
-    arrayProdutos:Array<ProdutosProps>
-    setArrayEstoque:(fields:Array<ConvProps>)=>void
+   
+    empresas:Array<EmpresaProps>
     usuario:string,
-    id_usuario:string
-    reqDadosEstoq:()=>Promise<void>
+    id_usuario:string,
+    selectProdutos:Array<ProdutosProps>,
+     
 }
 
-export function Estoque({arrayEstoque,arrayProdutos,setArrayEstoque,id_usuario,usuario,reqDadosEstoq}:DataProps){
+export function Estoque({id_usuario,usuario,empresas,selectProdutos}:DataProps){
     const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
     const [mov,setMov]= useState<boolean>(false)
     const [openModal,setOpenModal]= useState<boolean>(false)
-    const {empresas} = useContext(AuthContext)
+    const {data,error,loading,postData} = useApi<Array<EstoqueProps>,FormProps>('/estoque/listar')
   
+    const handleFiltroEstoque = async()=>{
+
+     await postData({grupo:'',descricao:'',id_produto:null}) 
+    
+    }
+
+    useEffect(()=>{
+      handleFiltroEstoque()
+    },[])
 
     const toogleAberto = (index: number) => {
         setAbertos((prev: { [key: number]: boolean }) => ({
@@ -38,36 +52,22 @@ export function Estoque({arrayEstoque,arrayProdutos,setArrayEstoque,id_usuario,u
     return(
         <div className="flex-col w-full px-2   ">
 
-      { mov && <ModalMov reqDadosEstoq={reqDadosEstoq} id_usuario={id_usuario} usuario={usuario} empresas={empresas} produtos={arrayEstoque}  setOpenModal={setMov}/>}
-      <ModalNovoProduto empresas={empresas} estoque={arrayEstoque} setEstoque={setArrayEstoque} produtos={arrayProdutos} openModal={openModal} setOpenModal={setOpenModal}/>
+      { mov && <ModalMov reqDadosEstoq={postData} id_usuario={id_usuario} usuario={usuario} empresas={empresas} produtos={selectProdutos??[]}  setOpenModal={setMov}/>}
+      <ModalNovoProduto empresas={empresas}  openModal={openModal} setOpenModal={setOpenModal}/>
 
                 <div className="inline-flex w-full justify-end items-end gap-4">
-                <Select className="font-semibold" sizing={'sm'}>
-                        <option>EMPRESA</option>
-                       {empresas.map(item=>(
-                        <option  className="font-semibold" key={item.id}>{item.nome}</option>
-                       ))}
+             
+                    <FiltroEstoque produtos={selectProdutos??[]} loading={loading}  filtroEstoque={postData}/>
+                    <Button  onClick={()=>setMov(true)} color={'green'} size={'sm'}><TbTransferVertical className="mr-2 h-5 w-5" /> Movimentar</Button>
 
-                    </Select>
-                    <Select className="font-semibold" sizing={'sm'}>
-                        <option>CATEGORIA DE ESTOQUE</option>
-                        <option  className="font-semibold">CONSUMO</option>
-                        <option  className="font-semibold">CONVALESCENTE</option>
-                        <option  className="font-semibold">FUNEBRE</option>
-                        <option  className="font-semibold">ÓTICA</option>
-
-                    </Select>
-                    <TextInput className="w-2/12 font-semibold" placeholder="DESCRIÇÃO" sizing={'sm'}/>
-                    <Button size={'sm'}>Buscar</Button>
-                    <Button onClick={()=>setMov(true)} color={'success'} size={'sm'}>Movimentar</Button>
-                    <Button onClick={()=>setOpenModal(true)}  size={'sm'}>Novo Produto</Button>
+                    <Button color={'blue'} onClick={()=>setOpenModal(true)}  size={'sm'}><MdOutlinePlaylistAdd className="mr-2 h-5 w-5"/>Novo Produto</Button>
 
 
 
                 </div>
 
-        <div className="overflow-y-auto mt-1 px-2 max-h-[79vh] ">
-        <Table hoverable theme={{ body: { cell: { base: " px-6 py-1 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }}  >
+        <div className="overflow-y-auto mt-1 px-2 max-h-[74vh] ">
+        <Table hoverable theme={{ body: { cell: { base: " px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }}  >
                     <Table.Head >
                             <Table.HeadCell >
                                 DESCRIÇÃO
@@ -79,34 +79,48 @@ export function Estoque({arrayEstoque,arrayProdutos,setArrayEstoque,id_usuario,u
                                CODIGO PRODUTO
                             </Table.HeadCell> 
                             <Table.HeadCell >
-                                EMPRESA
+
                             </Table.HeadCell>
+                           
                         
                     </Table.Head>
                     <Table.Body className="divide-y">
-                        {arrayEstoque?.map((item,index)=>(
+                        {data?.map((item,index)=>(
                            
-                
+                <>
                      <Table.Row className="bg-white  " key={index} onClick={()=>toogleAberto(index)} >
                       
-                        <Table.Cell className="font-semibold">
+                        <Table.Cell className="font-semibold text-[14px]">
                            {item.descricao} 
                         </Table.Cell>   
                     
                     
                         <Table.Cell className="text-black font-semibold text-[14px] inline-flex items-center gap-2">
-                         {item.quantidade} {item.quantidade<=item.alerta?<RiAlertLine size={18} color="red" />:''}
+                         {item.estoque.reduce((acc,curr)=>(acc+curr.quantidade),0)} {item.quantidade<=item.alerta?<RiAlertLine size={18} color="red" />:''}
                         </Table.Cell>
                         <Table.Cell className="text-black font-semibold text-[14px]">
                          {item.cod_prod}
                         </Table.Cell>
-                        <Table.Cell className="text-black font-semibold text-[14px]" >
-                         {empresas.map(emp=>{
-                           if( emp.id===item.id_empresa)return emp.nome
-                         })}
+                        <Table.Cell className="text-black font-semibold" >
+                        <MdKeyboardArrowDown size={16}/>
                           
                         </Table.Cell>
+                        
                        </Table.Row>
+                       {
+                        abertos[index] && item.estoque.map(prod=>(
+                            <Table.Row className="bg-slate-100 font-semibold text-[14px] " key={prod.id_estoque}>
+                                <Table.Cell className="text-blue-600 text-[15px]">{prod.empresa}</Table.Cell>
+                                <Table.Cell className="text-blue-600 text-[15px]"> {prod.quantidade}</Table.Cell>
+                                <Table.Cell className="text-blue-600 text-[15px]"></Table.Cell>
+                                <Table.Cell className="text-blue-600 text-[15px]"></Table.Cell>
+                                
+                               
+                            </Table.Row>
+
+                        ))
+                       }
+                       </>
                        ))}
             
                         
@@ -114,7 +128,7 @@ export function Estoque({arrayEstoque,arrayProdutos,setArrayEstoque,id_usuario,u
                     </Table.Body>
                 
                 </Table>
-        
+               
         
         
         </div>

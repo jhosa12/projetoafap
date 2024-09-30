@@ -5,66 +5,77 @@ import { AuthContext } from "@/contexts/AuthContext"
 import {  Tabs } from "flowbite-react"
 import {  FaStore } from "react-icons/fa"
 import { Estoque } from "@/components/estoque/estoque"
-import { RiHistoryLine, RiProductHuntFill } from "react-icons/ri"
+import { RiHistoryLine} from "react-icons/ri"
 import { HistoricoMov } from "@/components/estoque/historico/historico"
+import useApi from "@/hooks/useApi"
 
+export interface FormProps{
+  grupo:string,
+  id_produto:number|null,
+  descricao:string
+}
 
-export interface ConvProps{
+export interface EstoqueProps{
     id_produto:number,
     descricao:string,
-    quantidade:number
+    quantidade:number,
+    tipo:string,
     grupo:string
     cod_prod:string
-    id_empresa:string,
-    alerta:number
+    alerta:number,
+    estoque:Array<{
+      id_estoque:number,
+      quantidade:number,
+      descricao:string,
+      id_empresa:string,
+      empresa:string
+    }>
    // estoque:Array<EstoqueProps>
 }
 export interface ProdutosProps{
   id_produto:number,
-  descricao:string
+  descricao:string,
+  cod_prod:string
 }
 
 export default function AdministrarEstoque(){
   
-    const [arrayConv,setArrayConv]= useState<Array<ConvProps>>([]) 
-    const [arrayProdutos,setArrayProdutos] = useState<Array<ProdutosProps>>([])
+    const [arrayConv,setArrayConv]= useState<Array<EstoqueProps>>([]) 
     const {usuario,empresas} = useContext(AuthContext);
     const [tab,setTab] = useState<number>(0)
-    
+    const {getData,data}  = useApi<Array<ProdutosProps>,undefined>("/estoque/selectProdutos")
+   
    
 
 
 
-const reqProdutos = useCallback(async() => {
-   try {
-    const response= await api.get("/estoque/selectProdutos")
-    setArrayProdutos(response.data)
-   } catch (error) {
-    console.log(error)
-   }
-},[]
-)  
+
+
+
+
+
 
     useEffect(()=>{
-        reqDadosEstoque()
-        reqProdutos()
+     getData()
+        //reqDadosEstoque()
+        
     },[])
 
-    const reqDadosEstoque= useCallback(async()=> {
-        try {
-            const response =await api.post('/estoque/listar')
-            console.log(response.data)
-
-          //  const novoArrayConv = response.data.produtos.filter((item:ConvProps)=>item.)
-            setArrayConv(response.data)
+  //   const reqDadosEstoque= useCallback(async()=> {
+  //       try {
+  //           const response =await api.post('/estoque/listar')
            
 
-        } catch (error) {
-            console.log(error)
-        }
+  //         //  const novoArrayConv = response.data.produtos.filter((item:ConvProps)=>item.)
+  //           setArrayConv(response.data)
+           
+
+  //       } catch (error) {
+  //           console.log(error)
+  //       }
         
-    },[]
-  )
+  //   },[]
+  // )
     return(
         <>
             <Head>
@@ -78,11 +89,11 @@ const reqProdutos = useCallback(async() => {
       }}}}}}}  variant="underline"   onActiveTabChange={e=>setTab(e)}>
 
       <Tabs.Item  active={tab===0} title="Estoque" icon={FaStore}>
-       {tab===0 && <Estoque reqDadosEstoq={reqDadosEstoque}  id_usuario={usuario?.id??''} usuario={usuario?.nome??''} setArrayEstoque={setArrayConv} arrayProdutos={arrayProdutos} arrayEstoque={arrayConv}/>}
+       {tab===0 && <Estoque selectProdutos={data??[]} empresas={empresas}  id_usuario={usuario?.id??''} usuario={usuario?.nome??''}   />}
      
       </Tabs.Item>
       <Tabs.Item  active={tab===1} title="Histórico de Movimentação" icon={RiHistoryLine}>
-     {tab===1 && <HistoricoMov  id_usuario={usuario?.id??''} usuario={usuario?.nome??''} setArrayEstoque={setArrayConv} arrayProdutos={arrayProdutos} arrayEstoque={arrayConv}/>}
+     {tab===1 && <HistoricoMov  id_usuario={usuario?.id??''} usuario={usuario?.nome??''} />}
       </Tabs.Item>
 
     

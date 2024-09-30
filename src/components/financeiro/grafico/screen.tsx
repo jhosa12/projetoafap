@@ -12,7 +12,7 @@ import { IoSearch } from "react-icons/io5";
 import { Item } from "@/components/dadosTitular";
 import { BiCaretDown } from "react-icons/bi";
 import { HiFilter } from "react-icons/hi";
-import usePost from "@/hooks/usePost";
+import useApi from "@/hooks/useApi";
 
 interface ContratosProps {
   dt_adesao: Date,
@@ -95,14 +95,14 @@ export function GraficoScreen({ empresas }:
 
   }) {
   // const [loading, setLoading] = useState(false);
-  const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth() - 8, 1));
+  const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
   const [endDate, setEndDate] = useState(new Date());
   const [filtroAteE, setFiltroAteE] = useState<number>(0);
   const [lancamentoFiltroMensalidade, setFiltroMensalidade] = useState<DataProps[]>([]);
   const [selectEmpresa, setSelectEmpresa] = useState<Partial<EmpresaSelectProps>[]>(empresas);
   const [escala, setEscala] = useState<EscalaProps>({ mes: true, dia: false, ano: false })
   const [arrayGraf, setArrayGrafico] = useState<Array<Organizacao2>>([])
-  const { data, error, loading, postData } = usePost<ResponseProps, ApiProps>('/financeiro/filtroMensalidade')
+  const { data, error, loading, postData } = useApi<ResponseProps, ApiProps>('/financeiro/filtroMensalidade')
 
   const [open, setOpen] = useState<boolean>(false)
 
@@ -146,22 +146,22 @@ export function GraficoScreen({ empresas }:
       const porc = quantAtivos?._count.id_contrato_global ? (item.quant / quantAtivos?._count.id_contrato_global) * 100 : 0
 
       return name ? { name: name?.nome, data: [{ x: '', y: porc, z: item.quant }] } : undefined
-    }).filter(item => item !== undefined)
+    }).filter((item): item is { name: string; data: { x: string; y: number; z: number; }[] } => item !== undefined)
 
-    setArrayGrafico(data)
+   data && setArrayGrafico(data)
   }
 
 
-  const filtroMensalidade = useCallback(async () => {
+  const filtroMensalidade = async () => {
     setArrayGrafico([])
     
     try {
      await postData({
-        dataInicial: startDate, dataFinal: endDate, filtroAteE, empresas: selectEmpresa.map(item => {
+        dataInicial: startDate, dataFinal: endDate, filtroAteE, empresas: selectEmpresa?.map(item => {
           if (item.check) {
             return item.id
           }
-        }).filter(item => item !== undefined), escalaDia: escala.dia, escalaMes: escala.mes, escalaAno: escala.ano
+        }).filter((item): item is string => item !== undefined), escalaDia: escala.dia, escalaMes: escala.mes, escalaAno: escala.ano
       })
 
       data?.mensalidade && CriarArrayGeral(data?.mensalidade)
@@ -170,14 +170,8 @@ export function GraficoScreen({ empresas }:
       console.log(error)
     }
 
-
-
-
-    
-
-
-  }, [startDate, endDate, filtroAteE, escala]
-  )
+  }
+  
 
 
 

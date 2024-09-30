@@ -5,7 +5,7 @@
 
 
 
-import { ConvProps, ProdutosProps } from "@/pages/estoque"
+import { EstoqueProps, ProdutosProps } from "@/pages/estoque"
 import { Button, Table} from "flowbite-react"
 import { useContext, useEffect, useState } from "react";
 
@@ -19,9 +19,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 
 
 interface DataProps{
-    arrayEstoque:Array<ConvProps>
-    arrayProdutos:Array<ProdutosProps>
-    setArrayEstoque:(fields:Array<ConvProps>)=>void
+   
     usuario:string,
     id_usuario:string
 }
@@ -36,7 +34,7 @@ interface HistoricoProps{
     usuario:string
     }
 
-export function HistoricoMov({arrayEstoque,arrayProdutos,setArrayEstoque,id_usuario,usuario}:DataProps){
+export function HistoricoMov({id_usuario,usuario}:DataProps){
     const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
     const [openModal,setOpenModal]= useState<boolean>(false)
     const {empresas} = useContext(AuthContext)
