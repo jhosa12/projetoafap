@@ -44,6 +44,7 @@ const novoProduto= async()=>{
       }
 
     )
+    console.log(response.data)
 
     reqProdutos()
   //  setEstoque([...estoque,response.data as EstoqueProps]);
