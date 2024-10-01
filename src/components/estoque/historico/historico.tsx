@@ -7,15 +7,18 @@
 
 import { EstoqueProps, ProdutosProps } from "@/pages/estoque"
 import { Button, Table} from "flowbite-react"
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 
 import { AuthContext } from "@/contexts/AuthContext";
 import { RiAlertLine } from "react-icons/ri";
 import { ModalFiltroMov } from "./modalFiltro";
 import { api } from "@/services/apiClient";
-import { HiArrowDown } from "react-icons/hi2";
+import { HiArrowDown, HiDocumentArrowUp } from "react-icons/hi2";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { BiSolidPrinter } from "react-icons/bi";
+import { useReactToPrint } from "react-to-print";
+import RelatorioMov from "@/Documents/estoque/RelatorioMov";
 
 
 interface DataProps{
@@ -24,7 +27,7 @@ interface DataProps{
     id_usuario:string
 }
 
-interface HistoricoProps{
+export interface HistoricoProps{
     data:Date,
     descricao:string,
     empresa:string,
@@ -39,9 +42,48 @@ export function HistoricoMov({id_usuario,usuario}:DataProps){
     const [openModal,setOpenModal]= useState<boolean>(false)
     const {empresas} = useContext(AuthContext)
     const [historico,setHistorico] = useState<Array<HistoricoProps>>([])
+    const [dadosMov,setDadosMov] = useState<Partial<HistoricoProps>>()
+    const componentRef = useRef<RelatorioMov>(null)
    
 
 
+    useEffect(()=>{
+
+        if(dadosMov){
+            handleImpressao()
+        }
+        
+    },[dadosMov])
+
+
+const handleImpressao = useReactToPrint({
+    pageStyle: `
+    @page {
+        margin: 1rem;
+    }
+    @media print {
+        body {
+            -webkit-print-color-adjust: exact;
+        }
+        @page {
+            size: auto;
+            margin: 1rem;
+        }
+        @page {
+            @top-center {
+                content: none;
+            }
+            @bottom-center {
+                content: none;
+            }
+        }
+    }
+`,
+documentTitle:'MOVIMENTAÇÃO DE ESTOQUE',
+
+   content: () => componentRef.current, 
+
+})
 
 
     const handleFiltro = async({startDate,endDate,id_empresa,signal}:{startDate:Date,endDate:Date,id_empresa:string,signal?:AbortSignal})=>{
@@ -83,6 +125,13 @@ export function HistoricoMov({id_usuario,usuario}:DataProps){
 
     return(
         <>
+
+        <div style={{display:'none'}}>
+
+            <RelatorioMov ref={componentRef}  dados={dadosMov ??{}} />
+
+        </div>
+
         <ModalFiltroMov handleFiltro={handleFiltro} openModal={openModal} setOpenModal={setOpenModal} empresas={empresas}/>
         <div className="flex-col w-full px-2   ">
         
@@ -115,6 +164,9 @@ export function HistoricoMov({id_usuario,usuario}:DataProps){
                                 TIPO
                             </Table.HeadCell>
                             <Table.HeadCell >
+                               AÇÕES
+                               </Table.HeadCell>
+                            <Table.HeadCell >
                                
                             </Table.HeadCell>
                         
@@ -131,7 +183,7 @@ export function HistoricoMov({id_usuario,usuario}:DataProps){
                     
                     
                         <Table.Cell className="text-black font-semibold  inline-flex items-center gap-2">
-                         {new Date(item.data).toLocaleDateString('pt-BR')}
+                         {new Date(item.data).toLocaleDateString('pt-BR',{timeZone:'UTC'})}
                         </Table.Cell>
                         <Table.Cell className="text-black font-semibold ">
                          {item.empresa}
@@ -140,11 +192,17 @@ export function HistoricoMov({id_usuario,usuario}:DataProps){
                        {item.usuario}
                           
                         </Table.Cell>
-                        <Table.Cell className="text-black font-semibold" >
+                        <Table.Cell className={`font-semibold ${item.tipo==='ENTRADA'?'text-green-500':'text-red-500'}  }`} >
                        {item.tipo}
                           
                         </Table.Cell>
-                        <Table.Cell className="text-black font-semibold" >
+
+                        <Table.Cell onClick={e=>{
+                            e.stopPropagation();setDadosMov(item)}} className="text-black hover:text-blue-600 font-semibold" >
+                        <BiSolidPrinter size={18} />
+                          
+                        </Table.Cell>
+                        <Table.Cell className="text-black  font-semibold" >
                         <MdKeyboardArrowDown size={16}/>
                           
                         </Table.Cell>

@@ -6,6 +6,8 @@ import { toast } from "react-toastify";
 import { ModalQuant } from "./modalQuantidade";
 import { EmpresaProps } from "@/contexts/AuthContext";
 import { api } from "@/services/apiClient";
+import { ModalManual } from "./modalProdutoManual";
+
 
 
 
@@ -17,25 +19,46 @@ interface DataProps {
     usuario: string,
     id_usuario: string,
     reqDadosEstoq:(dados:FormProps)=>Promise<void>
+
+    setModalNovo: (open: boolean) => void
 }
 interface MovProps {
     id_produto: number,
     produto: string,
-    quantidade: number
+    quant_anterior:number,
+    quantidade: number,
+    quant_atual:number
 }
 
-export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario,reqDadosEstoq }: DataProps) {
-    const [scannedCode, setScannedCode] = useState<string>('')
+export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario,reqDadosEstoq,setModalNovo }: DataProps) {
+   
     const [arrayMov, setArrayMov] = useState<Array<MovProps>>([])
     const [quantidadeManual, setQuantidadeManual] = useState<number>(0);
     const [descricao, setDescricao] = useState<string>('')
     const [modalQuant, setModalQuant] = useState<boolean>(false)
-    const [manual, setManual] = useState<boolean>(false)
+    const [modalManual, setModalManual] = useState<boolean>(false)
     const [selectEmpresa, setEmpresa] = useState<{ id_empresa: string, empresa: string }>({ empresa: '', id_empresa: '' })
 
 
 
 
+
+const handleAdicionarManual = ({ id_produto, quantidade,produto }: { id_produto: number, quantidade: number,produto:string }) => {
+if(!id_produto){
+    toast.info('Selecione um item')
+    return
+}
+
+setArrayMov((prevArrayMov) => {
+    return [
+        ...prevArrayMov,
+        { id_produto, quantidade,produto,quant_anterior: 0, quant_atual: 0 }
+    ]
+})
+
+
+    
+}
 
 
     const analisarProduto = (scanned: string) => {
@@ -66,6 +89,8 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
                     {
                         id_produto: item.id_produto,
                         produto: item.descricao,
+                        quant_anterior: 0,
+                        quant_atual: 0, 
                         quantidade: 1 // Começa com 1 unidade
                     }
                 ];
@@ -117,22 +142,26 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
                 // status: '',
                 id_usuario:id_usuario,
                 usuario: usuario,
-                 produtos:arrayMov
+                 produtos:arrayMov.map((produto)=>{
+                    const produtoMov = produtos.find(obj => obj.id_produto === produto.id_produto);
+                    const estoqueAtual = produtoMov?.estoque.find(obj => obj.id_empresa === selectEmpresa.id_empresa)?.quantidade
+                    const number = Number(estoqueAtual)
+
+                    return { ...produto,
+                    quant_anterior:number,
+                    quant_atual:tipo==='SAIDA'?number-Number(produto.quantidade):number+Number(produto.quantidade)}
+                 }),
             }),
+
         {error:'Erro ao movimentar',
             success:'Movimentado com sucesso',
             pending:'Movimentando...'
         }) 
-            reqDadosEstoq({descricao:'',id_produto:null,grupo:''})
+           await reqDadosEstoq({descricao:'',id_produto:null,grupo:''})
         } catch (error) {
             console.log(error)
         }
     }
-
-
-
-
-
 
     useEffect(() => {
         let currentBarcode = '';
@@ -150,7 +179,16 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
             } if (event.key === 'F2') {
                 setModalQuant(true)
 
-            } else {
+            }
+            if (event.key === 'F4') {
+                setModalManual(true)
+
+            }
+            if (event.key === 'F9') {
+                setModalNovo(true)
+
+            }
+             else {
                 // Acumula os caracteres do código de barras
                 currentBarcode += event.key;
             }
@@ -176,23 +214,26 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
     return (
         <>
             <ModalQuant setOpen={setModalQuant} setQuantidade={setQuantidadeManual} openModal={modalQuant} produto={arrayMov[arrayMov.length - 1]?.produto} quantidade={quantidadeManual} handleQuantidadeChange={handleQuantidadeChange} />
-            <Modal size={'4xl'} show onClose={() => setOpenModal(false)} popup>
+
+
+
+           {modalManual && <ModalManual  produtos={produtos} handleAdd={handleAdicionarManual}  setOpenModal={setModalManual} />}
+
+          
+            <Modal size={'5xl'} show onClose={() => setOpenModal(false)} popup>
                 <Modal.Header>
-                    <ToggleSwitch
-                        checked={manual}
-                        label="Manual"
-                        onChange={() => setManual(!manual)}
-                        theme={{ toggle: { base: "relative rounded-full border after:absolute after:rounded-full after:bg-white after:transition-all " } }}
-                    />
+                 
 
 
                 </Modal.Header>
 
                 <Modal.Body>
                     <div className="inline-flex divide-x-2 gap-2 w-full justify-center items-center">
-                        {arrayMov.length > 0 ? <> <div className="flex flex-col justify-center w-full p-2 gap-3 " >
-                            <h1 className="text-lg border-b-2 text-center font-semibold">{arrayMov[arrayMov.length - 1]?.produto} - {arrayMov[arrayMov.length - 1].quantidade}</h1>
+                      <div className="flex flex-col justify-center w-full p-2 gap-3 " >
+                            <h1 className="text-lg border-b-2 text-center font-semibold">{arrayMov[arrayMov?.length - 1]?.produto} - {arrayMov[arrayMov?.length - 1]?.quantidade}</h1>
                             <span>{'F2 - ALTERAR QUANTIDADE'}</span>
+                            <span>{'F4 - ADICIONAR MANUALMENTE'}</span>
+                           <span>{'F9 - CRIAR NOVO PRODUTO'}</span>
 
                         </div>
                             <div className="flex flex-col justify-center w-full p-2" >
@@ -227,8 +268,8 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
                                         }
                                         console.log(empresa)
                                         setEmpresa({ id_empresa: empresa.id, empresa: empresa.nome })
-                                    }} sizing={'sm'} id="empresa" required >
-                                        <option value={''}>Selecione a empresa de destino</option>
+                                    }} id="empresa" required >
+                                        <option value={''}>SELECIONE A EMPRESA</option>
                                         {empresas.map(item => (
                                             <option className="font-semibold" key={item.id} value={item.id}>{item.nome}</option>
                                         ))}
@@ -239,8 +280,8 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
                   
                             </div>
                    
-                        </> : <Spinner aria-label="Extra large spinner example" size="xl" />
-                        }
+                   
+                      
                     </div>
 
                     <div className="inline-flex w-full justify-around mt-2">

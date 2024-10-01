@@ -35,7 +35,8 @@ export interface EstoqueProps{
 export interface ProdutosProps{
   id_produto:number,
   descricao:string,
-  cod_prod:string
+  cod_prod:string,
+  estoque:Array<{quantidade:number,id_empresa:string}>
 }
 
 export default function AdministrarEstoque(){

@@ -46,7 +46,7 @@ export function FiltroEstoque({ produtos, loading, filtroEstoque }: DataProps) {
                        ))}
                     </Select>
                  
-                    <TextInput onChange={e => setFormData({ ...formData, descricao: e.target.value })} className=" font-semibold" placeholder="DESCRIÇÃO" sizing={'sm'}/>
+                    <TextInput onChange={e => setFormData({ ...formData, descricao: e.target.value.toUpperCase() })} className=" font-semibold" placeholder="DESCRIÇÃO" sizing={'sm'}/>
 
           <Button color="success" isProcessing={loading} onClick={() => filtroEstoque(formData)}>
             Aplicar Filtro
