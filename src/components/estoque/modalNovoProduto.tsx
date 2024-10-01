@@ -27,7 +27,7 @@ interface FormDataProps{
   alerta:number
 }
 
-export function ModalNovoProduto({openModal,setOpenModal,empresas,reqProdutos}:DataProps){
+export function ModalNovoProduto({openModal,setOpenModal,empresas,reqProdutos,reqDadosEstoq}:DataProps){
 
  const [form,setForm] = useState<Partial<FormDataProps>>()
 
@@ -45,8 +45,8 @@ const novoProduto= async()=>{
 
     )
     console.log(response.data)
-
-    reqProdutos()
+   await reqDadosEstoq({descricao:'',grupo:'',id_produto:null})
+   await reqProdutos()
   //  setEstoque([...estoque,response.data as EstoqueProps]);
      
   } catch (error:any) {
