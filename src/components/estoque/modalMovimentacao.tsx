@@ -67,7 +67,7 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
     const analisarProduto = (scanned: string) => {
         const item = produtos.find(obj => obj.cod_prod === scanned);
         console.log(produtos)
-
+        console.log(scanned)
         if (!item) {
             toast.info('Produto não cadastrado');
             return;
@@ -192,7 +192,7 @@ useEffect(() => {
       setModalManual(true);
     } else if (event.key === 'F9') {
       setModalNovo(true);
-    } else {
+    } else if (event.key.length === 1) {
       // Acumula os caracteres do código de barras
       currentBarcode += event.key;
     }
