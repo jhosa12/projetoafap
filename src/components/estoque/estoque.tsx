@@ -54,7 +54,7 @@ export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos}
         <div className="flex-col w-full px-2   ">
 
       { mov && <ModalMov   setModalNovo={setOpenModal} reqDadosEstoq={postData} id_usuario={id_usuario} usuario={usuario} empresas={empresas} produtos={selectProdutos??[]}  setOpenModal={setMov}/>}
-      <ModalNovoProduto reqProdutos={reqProdutos} reqDadosEstoq={postData} empresas={empresas}  openModal={openModal} setOpenModal={setOpenModal}/>
+    { openModal && <ModalNovoProduto reqProdutos={reqProdutos} reqDadosEstoq={postData} empresas={empresas}  openModal={openModal} setOpenModal={setOpenModal}/>}
 
                 <div className="inline-flex w-full justify-end items-end gap-4">
              
@@ -111,7 +111,7 @@ export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos}
                        {
                         abertos[index] && item.estoque.map(prod=>(
                             <Table.Row className="bg-slate-100 font-semibold text-[14px] " key={prod.id_estoque}>
-                                <Table.Cell className="text-blue-600 text-[15px]">{prod.empresa}</Table.Cell>
+                                <Table.Cell className="text-blue-600 text-[15px] text-end">{prod.empresa}</Table.Cell>
                                 <Table.Cell className="text-blue-600 text-[15px]"> {prod.quantidade}</Table.Cell>
                                 <Table.Cell className="text-blue-600 text-[15px]"></Table.Cell>
                                 <Table.Cell className="text-blue-600 text-[15px]"></Table.Cell>

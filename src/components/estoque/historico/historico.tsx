@@ -82,6 +82,9 @@ const handleImpressao = useReactToPrint({
 documentTitle:'MOVIMENTAÇÃO DE ESTOQUE',
 
    content: () => componentRef.current, 
+   onAfterPrint:()=>{
+       setDadosMov(undefined)
+   }
 
 })
 
@@ -192,7 +195,7 @@ documentTitle:'MOVIMENTAÇÃO DE ESTOQUE',
                        {item.usuario}
                           
                         </Table.Cell>
-                        <Table.Cell className={`font-semibold ${item.tipo==='ENTRADA'?'text-green-500':'text-red-500'}  }`} >
+                        <Table.Cell className={`font-bold ${item.tipo==='ENTRADA'?'text-green-500':'text-red-500'}  }`} >
                        {item.tipo}
                           
                         </Table.Cell>
@@ -210,8 +213,9 @@ documentTitle:'MOVIMENTAÇÃO DE ESTOQUE',
                        {
                         abertos[index] && item.produtos.map(prod=>(
                             <Table.Row className="bg-slate-100" key={prod.id_produto}>
-                                <Table.Cell className="text-black ">{prod.produto}</Table.Cell>
-                                <Table.Cell className="text-black ">QUANTIDADE: {prod.quantidade}</Table.Cell>
+                                <Table.Cell className="text-black font-semibold pl-12 italic ">{prod.produto}</Table.Cell>
+                                <Table.Cell className="text-black font-semibold ">QUANT.: {prod.quantidade}</Table.Cell>
+                                <Table.Cell className="text-black "></Table.Cell>
                                 <Table.Cell className="text-black "></Table.Cell>
                                 <Table.Cell className="text-black "></Table.Cell>
                                 <Table.Cell className="text-black "></Table.Cell>

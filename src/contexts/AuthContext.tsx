@@ -472,7 +472,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }, []);
 
 
-      const getEmpresas = useCallback(async() => {
+      const getEmpresas = async() => {
 
         if(empresas.length>0){
             return;
@@ -485,14 +485,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             
         }
        
-      }, []);
+      };
 
 
 
 
     const sign = useCallback(async ({ user, password }: SignInProps) => {
         try {
-            const response = await api.post('/session', { usuario: user, password });
+            const response = await api.post('/session', { usuario: user.trim(), password });
             const { id, tokenAuth, cargo, dir, nome, image, permissoes } = response.data;
 
             if (typeof window !== 'undefined') {

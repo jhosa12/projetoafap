@@ -69,15 +69,8 @@ export function Usuario() {
   const [dadosFuncionario, setDadosFuncionario] = useState<Partial<FuncionarioProps>>({})
   const [dadosPermissoes, setDadosPermissoes] = useState<Array<string>>([])
 
-
-
+  
   async function handleNovoCadastro() {
-    if(dadosUser.password!==dadosUser.repSenha){
-      toast.error('Senhas não coincidem !')
-      return
-    }
-    
-    
     const data = new FormData();
     data.append('nome',dadosUser.nome??'');
     data.append('usuario',dadosUser.usuario??'');

@@ -32,6 +32,18 @@ export function ModalNovoProduto({openModal,setOpenModal,empresas,reqProdutos,re
  const [form,setForm] = useState<Partial<FormDataProps>>()
 
 const novoProduto= async()=>{
+  if(!form?.descricao){
+    toast.warning('Preencha o campo Descrição')
+    return
+  }
+  if(!form?.grupo){
+    toast.warning('Preencha o campo Categoria')
+    return
+  }
+  if(!form.cod_prod){
+    toast.warning('Preencha o campo Codigo')
+    return
+  }
   try {
     const response = await toast.promise(
       api.post("/estoque/novoProduto",form),
@@ -44,13 +56,15 @@ const novoProduto= async()=>{
       }
 
     )
-    console.log(response.data)
+ 
    await reqDadosEstoq({descricao:'',grupo:'',id_produto:null})
    await reqProdutos()
   //  setEstoque([...estoque,response.data as EstoqueProps]);
+  setForm({alerta:0,descricao:'',grupo:'',cod_prod:''}) 
      
   } catch (error:any) {
-    toast.warning(error.response.data.error)
+ 
+    toast.warning(error.response.data.error||'ERRO INESPERADO')
   }
 }
     return (
