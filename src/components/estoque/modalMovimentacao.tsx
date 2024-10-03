@@ -1,5 +1,5 @@
 import { EstoqueProps, FormProps, ProdutosProps } from "@/pages/estoque";
-import { Button, FloatingLabel, Modal, Select, Spinner, Table, Textarea, TextInput, ToggleSwitch } from "flowbite-react";
+import { Button, Card, FloatingLabel, Modal, Select, Spinner, Table, Textarea, TextInput, ToggleSwitch } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiTrash } from "react-icons/hi";
 import { toast } from "react-toastify";
@@ -20,7 +20,7 @@ interface DataProps {
     usuario: string,
     id_usuario: string,
     reqDadosEstoq: (dados: FormProps) => Promise<void>
-
+    permissoes: Array<string>
     setModalNovo: (open: boolean) => void
 }
 interface MovProps {
@@ -31,7 +31,7 @@ interface MovProps {
     quant_atual: number
 }
 
-export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario, reqDadosEstoq, setModalNovo }: DataProps) {
+export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario, reqDadosEstoq, setModalNovo,permissoes }: DataProps) {
 
     const [arrayMov, setArrayMov] = useState<Array<MovProps>>([])
     const [quantidadeManual, setQuantidadeManual] = useState<number>(0);
@@ -225,7 +225,7 @@ useEffect(() => {
             <ModalConfirm handleMovimentar={handleMovimentar} open={modalConfirm} setOpen={setModalConfirm} status={status}/>
 
 
-            <Modal  size={'5xl'} show onClose={() => setOpenModal(false)} popup>
+            <Modal  size={'6xl'} show onClose={() => setOpenModal(false)} popup>
                 <Modal.Header>
 
 
@@ -233,14 +233,15 @@ useEffect(() => {
                 </Modal.Header>
 
                 <Modal.Body>
-                    <div className="inline-flex divide-x-2 gap-2 w-full justify-center items-center">
-                        <div className="flex flex-col justify-center w-full p-2 gap-3 " >
+                    <div className="inline-flex gap-4 w-full  items-center">
+                        <Card  theme={{root:{children:"flex flex-col  gap-4 p-4"}}} className="w-1/2 " >
                             <h1 className="text-lg border-b-2 text-center font-semibold">{arrayMov[arrayMov?.length - 1]?.produto} - {arrayMov[arrayMov?.length - 1]?.quantidade}</h1>
                             <span>{'F2 - ALTERAR QUANTIDADE'}</span>
                             <span>{'F4 - ADICIONAR MANUALMENTE'}</span>
                             <span>{'F9 - CRIAR NOVO PRODUTO'}</span>
-                        </div>
-                        <div className="flex flex-col justify-center w-4/6 p-2" >
+                        </Card>
+                        <Card className="w-4/5"  theme={{root:{children:"flex  flex-col  gap-2 p-4"}}}>
+                       
                             <h1 className="text-lg border-b-2 text-center p-2 font-semibold">MOVIMENTAÇÃO</h1>
 
                             <div className="overflow-x-auto overflow-y-auto max-h-[40vh]">
@@ -282,15 +283,17 @@ useEffect(() => {
                             </div>
 
 
-                        </div>
+                        
+                        </Card>
+                      
 
 
 
                     </div>
 
-                    <div className="inline-flex w-full justify-around mt-2">
-                        <Button onClick={() => {setStatus('ENTRADA');setModalConfirm(true)}} color={'success'}>ENTRADA</Button>
-                        <Button color={'failure'} onClick={() =>{setStatus('SAIDA');setModalConfirm(true)}}>SAÍDA</Button>
+                    <div className="inline-flex w-full justify-between mt-2">
+                        <Button disabled={!permissoes.includes('EST1.3')} onClick={() => {setStatus('ENTRADA');setModalConfirm(true)}} color={'success'}>ENTRADA</Button>
+                        <Button disabled={!permissoes.includes('EST1.2')} color={'failure'} onClick={() =>{setStatus('SAIDA');setModalConfirm(true)}}>SAÍDA</Button>
                     </div>
 
                 </Modal.Body>

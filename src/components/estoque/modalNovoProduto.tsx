@@ -12,9 +12,9 @@ import { toast } from "react-toastify";
 interface DataProps{
     openModal:boolean,
     setOpenModal:(open:boolean)=>void
-    empresas:Array<EmpresaProps>
     reqDadosEstoq:(dados:FormProps)=>Promise<void>
     reqProdutos:()=>Promise<void>
+    permissoes:Array<string>
 }
 
 interface FormDataProps{
@@ -25,9 +25,12 @@ interface FormDataProps{
  // id_empresa:string,
  // id_produto:number,
   alerta:number
+
 }
 
-export function ModalNovoProduto({openModal,setOpenModal,empresas,reqProdutos,reqDadosEstoq}:DataProps){
+export function ModalNovoProduto({openModal,setOpenModal,reqProdutos,reqDadosEstoq,permissoes}:DataProps){
+
+
 
  const [form,setForm] = useState<Partial<FormDataProps>>()
 
@@ -117,7 +120,7 @@ const novoProduto= async()=>{
 
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={novoProduto}>Salvar</Button>
+              <Button disabled={!permissoes.includes('EST1.1')} onClick={novoProduto}>Salvar</Button>
             </Modal.Footer>
         </Modal>
     )

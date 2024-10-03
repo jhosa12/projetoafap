@@ -42,10 +42,10 @@ export interface ProdutosProps{
 export default function AdministrarEstoque(){
   
     const [arrayConv,setArrayConv]= useState<Array<EstoqueProps>>([]) 
-    const {usuario,empresas} = useContext(AuthContext);
+    const {usuario,empresas,permissoes} = useContext(AuthContext);
     const [tab,setTab] = useState<number>(0)
     const {getData,data}  = useApi<Array<ProdutosProps>,undefined>("/estoque/selectProdutos")
-   
+
    
 
 
@@ -90,7 +90,7 @@ export default function AdministrarEstoque(){
       }}}}}}}  variant="underline"   onActiveTabChange={e=>setTab(e)}>
 
       <Tabs.Item  active={tab===0} title="Estoque" icon={FaStore}>
-       {tab===0 && <Estoque reqProdutos={getData} selectProdutos={data??[]} empresas={empresas}  id_usuario={usuario?.id??''} usuario={usuario?.nome??''}   />}
+       {tab===0 && <Estoque permissoes={permissoes} reqProdutos={getData} selectProdutos={data??[]} empresas={empresas}  id_usuario={usuario?.id??''} usuario={usuario?.nome??''}   />}
      
       </Tabs.Item>
       <Tabs.Item  active={tab===1} title="Histórico de Movimentação" icon={RiHistoryLine}>

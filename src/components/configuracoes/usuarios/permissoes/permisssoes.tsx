@@ -4,6 +4,8 @@ import { TabAdministrativo } from "./administrativo/administrativo";
 import { TabComercial } from "./comercial/comercial";
 import { TabAfapSaude } from "./afapSaude/afapSaude";
 import { TabServicos } from "./servicos/servicos";
+import { TabConfiguracoes } from "./configuracoes/configuracoes";
+import { TabEstoque } from "./estoque/estoquePermissions";
 
 
 interface DataProps{
@@ -27,7 +29,7 @@ export function Permissoes({permissions,handlePermission}:DataProps){
      <TabAfapSaude handlePermission={handlePermission} permissions={permissions}/>
       </Tabs.Item>
       <Tabs.Item active title="Estoque" icon={HiUserCircle}>
-      TESTE22222
+      <TabEstoque handlePermission={handlePermission} permissions={permissions}/>
       </Tabs.Item>
       <Tabs.Item active title="Serviços" icon={HiUserCircle}>
      <TabServicos handlePermission={handlePermission} permissions={permissions}/>
@@ -36,7 +38,7 @@ export function Permissoes({permissions,handlePermission}:DataProps){
       TESTE22222
       </Tabs.Item>
       <Tabs.Item active title="Configurações" icon={HiUserCircle}>
-      TESTE22222
+      <TabConfiguracoes permissions={permissions} handlePermission={handlePermission}/>
       </Tabs.Item>
   
       

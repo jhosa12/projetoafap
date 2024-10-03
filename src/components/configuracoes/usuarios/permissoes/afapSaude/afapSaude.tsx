@@ -3,8 +3,7 @@
 
 
 import { Card, Tabs, ToggleSwitch } from "flowbite-react";
-import { useState } from "react";
-import { HiUserCircle } from "react-icons/hi2";
+
 
 
 interface DataProps{

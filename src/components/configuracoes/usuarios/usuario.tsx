@@ -1,5 +1,5 @@
 import { api } from "@/services/apiClient"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import { BiSolidLockOpenAlt } from "react-icons/bi";
 import { MdEdit } from "react-icons/md";
@@ -7,6 +7,7 @@ import { MdDelete } from "react-icons/md";
 import { IoIosAddCircle } from "react-icons/io";
 import { MenuMultiStep } from "../multiStep/multStep"
 import { ModalNovoUsuario } from "./modalNovoUsuario";
+import { AuthContext } from "@/contexts/AuthContext";
 
 
 
@@ -68,6 +69,7 @@ export function Usuario() {
   const [dadosUser, setDadosUser] = useState<Partial<UsuarioProps>>({})
   const [dadosFuncionario, setDadosFuncionario] = useState<Partial<FuncionarioProps>>({})
   const [dadosPermissoes, setDadosPermissoes] = useState<Array<string>>([])
+
 
   
   async function handleNovoCadastro() {

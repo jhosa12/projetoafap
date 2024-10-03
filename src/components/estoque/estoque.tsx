@@ -20,10 +20,11 @@ interface DataProps{
     id_usuario:string,
     selectProdutos:Array<ProdutosProps>,
     reqProdutos:()=>Promise<void>,
+    permissoes:Array<string>
      
 }
 
-export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos}:DataProps){
+export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos,permissoes}:DataProps){
     const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
     const [mov,setMov]= useState<boolean>(false)
     const [openModal,setOpenModal]= useState<boolean>(false)
@@ -53,8 +54,8 @@ export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos}
     return(
         <div className="flex-col w-full px-2   ">
 
-      { mov && <ModalMov   setModalNovo={setOpenModal} reqDadosEstoq={postData} id_usuario={id_usuario} usuario={usuario} empresas={empresas} produtos={selectProdutos??[]}  setOpenModal={setMov}/>}
-    { openModal && <ModalNovoProduto reqProdutos={reqProdutos} reqDadosEstoq={postData} empresas={empresas}  openModal={openModal} setOpenModal={setOpenModal}/>}
+      { mov && <ModalMov permissoes={permissoes}  setModalNovo={setOpenModal} reqDadosEstoq={postData} id_usuario={id_usuario} usuario={usuario} empresas={empresas} produtos={selectProdutos??[]}  setOpenModal={setMov}/>}
+    { openModal && <ModalNovoProduto reqProdutos={reqProdutos} reqDadosEstoq={postData} permissoes={permissoes}  openModal={openModal} setOpenModal={setOpenModal}/>}
 
                 <div className="inline-flex w-full justify-end items-end gap-4">
              
