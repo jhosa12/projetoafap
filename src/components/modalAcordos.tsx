@@ -8,7 +8,8 @@ import { api } from "@/services/apiClient";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-
+import { useForm,SubmitHandler } from 'react-hook-form';
+import { Button, Label, Modal, Table, TextInput } from "flowbite-react";
 
 
 
@@ -29,13 +30,28 @@ interface MensalidadeProps {
     index: number
 }
 
+interface FormProps{
+    total_acordo: number,
+    data_inicio: Date,
+    data_fim: Date,
+    realizado_por: string,
+    dt_pgto: Date,
+  // mensalidade: Array<MensalidadeProps>,
+    status: string,
+    descricao: string,
+    metodo: string
+    closeAcordo: boolean,
+    id_acordo: number,
+    visibilidade: boolean
+}
+
 interface AcordoProps {
     total_acordo: number,
     data_inicio: Date,
     data_fim: Date,
     realizado_por: string,
     dt_pgto: Date,
-    mensalidade: Array<Partial<MensalidadeProps>>,
+    mensalidade: Array<MensalidadeProps>,
     status: string,
     descricao: string,
     metodo: string
@@ -54,62 +70,45 @@ interface DadosAcordoProps{
     carregarDados:(id:number)=>Promise<void>
 }
 export function ModalAcordos({closeModal,acordo,usuario,mensalidade,contrato,associado,carregarDados,openModal}:DadosAcordoProps){
- 
-    const [arrayAcordo,setArrayAcordo] = useState<Partial<AcordoProps>>(acordo)
+ const [mensalidadesAcordo, setMensalidadesAcordo] = useState<MensalidadeProps[]>(acordo.mensalidade??[]);
+
+    const {register,handleSubmit,formState:{errors},watch,setValue} = useForm<FormProps>({
+        defaultValues:acordo
+    });
 
 
-    const setarDadosAcordo = (fields:Partial<AcordoProps>)=>{
-        setArrayAcordo((prev:Partial<AcordoProps>)=>{
-            if(prev){
-                return {...prev,...fields}
-            }
-            else{
-                return{...fields}
+const onSubmit:SubmitHandler<FormProps> = (data) => {
+    console.log(data)
+   
+    
+}
 
-            }
-        })
-
-    }
-
-
-    function adicionarProxima(){
-     //   let ultimoIndex:number|undefined =-1;
-         //   if(dadosassociado?.mensalidade){
-          //  for (let i = dadosassociado?.mensalidade.length -1;i>=0;i--){
-            //    if(dadosassociado.mensalidade[i].status==='E'){
-                //    ultimoIndex =i;
-                 //   break;
-             //   }
-           // }
-       // }
-     const ultimoIndex = mensalidade.findLastIndex(item=>item.status==='E')
-        if(ultimoIndex){
-            const novoArray = arrayAcordo.mensalidade && [...arrayAcordo.mensalidade]
-      novoArray && novoArray.push(mensalidade[ultimoIndex+1])
-         
-            setarDadosAcordo({...arrayAcordo,mensalidade:novoArray,total_acordo:novoArray?.reduce((total,mensalidade)=>total+Number(mensalidade.valor_principal),0)})
+    function adicionarProxima() {
+        const ultimoIndex = mensalidade.findLastIndex((item) => item.status === 'E');
+        if (ultimoIndex >= 0) {
+            setMensalidadesAcordo((prevState) =>
+                prevState ? [...prevState, mensalidade[ultimoIndex + 1]] : [mensalidade[ultimoIndex + 1]]
+            );
         }
     }
 
-        useEffect(()=>{
+        
             
             
         
-       const valor_total =arrayAcordo?.mensalidade?.reduce((total,mensalidade)=>total+Number(mensalidade.valor_principal),0)
+       const valor_total =mensalidadesAcordo.reduce((total,mensalidade)=>total+Number(mensalidade.valor_principal),0)
        // if(!arrayAcordo.total_acordo && !arrayAcordo?.data_inicio) 
           //   closeModa({acordo:{...data.acordo, mensalidade:data.acordo?.mensalidade,total_acordo:valor_total,//data_inicio:new Date()}});
-      },[])
 
-      async function criarAcordo() {
-
-        const novasMensalidades = arrayAcordo.mensalidade?.map(mensal=>{
-            return {...mensal,status:'E',cobranca:arrayAcordo.data_fim}
+       const criarAcordo:SubmitHandler<FormProps> = async (data) => {
+        const novasMensalidades = mensalidadesAcordo.map(mensal=>{
+            return {...mensal,status:'E',cobranca:watch('data_fim')}
         })
-        if(!arrayAcordo.mensalidade){
+        if(!mensalidadesAcordo){
         toast.info("Selecione as referências do acordo!")
         return;
         }
-        if(!arrayAcordo.data_inicio||!arrayAcordo.data_fim||!arrayAcordo.descricao||!arrayAcordo.realizado_por){
+        if(!data.data_inicio||!data.data_fim||!data.descricao||!data.realizado_por){
             toast.info("Preencha todos os campos!")
             return;
         }
@@ -119,38 +118,40 @@ export function ModalAcordos({closeModal,acordo,usuario,mensalidade,contrato,ass
                     id_contrato:contrato,
                     status:'A',
                     id_associado:associado,
-                    data_inicio:arrayAcordo.data_inicio,
-                    data_fim:arrayAcordo?.data_fim,
-                    total_acordo:arrayAcordo?.total_acordo,
-                    realizado_por:arrayAcordo?.realizado_por ,
-                    descricao:arrayAcordo.descricao,
-                    metodo:arrayAcordo.metodo,
+                    data_inicio:data.data_inicio,
+                    data_fim:data.data_fim,
+                    total_acordo:data.total_acordo,
+                    realizado_por:data.realizado_por ,
+                    descricao:data.descricao,
+                    metodo:data.metodo,
                     dt_criacao:new Date() ,
-                    user_criacao:usuario,
-                    mensalidades:novasMensalidades
+                    mensalidade:novasMensalidades
                 }),
                 {
-                    error:'Erro ao Criar Acordo!',
-                    pending:'Adicionando novo acordo!',
-                    success:'Acordo Adicionado com Sucesso'
-            }
+                    error:'Erro na requisição',
+                    success:'Acordo criado com sucesso',
+                    pending:'Criando acordo'
+                }
             )
-            
+            toast.success("Acordo criado com sucesso")
+            closeModal({open:false,visible:false})
 
-        }catch(err){console.log(err)}
+        }catch(err){
+            console.log(err)
+        }
+    }
+    
      
-        await carregarDados(associado)
-      }
 
       async function baixarAcordo(){
-        const novasMensalidades = arrayAcordo.mensalidade?.map(mensal=>{
+        const novasMensalidades = mensalidadesAcordo.map(mensal=>{
             return {...mensal,status:'P',data_pgto:new Date(),usuario:usuario,valor_total:mensal.valor_principal}
         }
         )
         try{
             const response = await toast.promise(
                 api.put('/editarAcordo',{
-               id_acordo:arrayAcordo?.id_acordo,
+               id_acordo:watch('id_acordo'),
                id_usuario:usuario?.id,
                id_contrato:contrato,
                 status:'P',
@@ -175,7 +176,7 @@ export function ModalAcordos({closeModal,acordo,usuario,mensalidade,contrato,ass
       }
 
       async function editarAcordo(){
-        const novasMensalidades = arrayAcordo.mensalidade?.map(mensal=>{
+        const novasMensalidades = mensalidadesAcordo.map(mensal=>{
             return {...mensal,status:'E'}
         }
         )
@@ -183,13 +184,13 @@ export function ModalAcordos({closeModal,acordo,usuario,mensalidade,contrato,ass
         try{
             const response = await toast.promise(
                 api.put('/editarAcordo',{
-               id_acordo:arrayAcordo.id_acordo,
+               id_acordo:watch('id_acordo'),
                 status:'A',
                 dt_pgto:new Date(),
-                data_inicio:arrayAcordo?.data_inicio,
-                data_fim:arrayAcordo?.data_fim,
-                descricao:arrayAcordo?.descricao,
-                total_acordo:arrayAcordo?.total_acordo,
+                data_inicio:watch('data_inicio')?watch('data_inicio'):acordo.data_inicio,
+                data_fim:watch('data_fim')?watch('data_fim'):acordo.data_fim,
+                descricao:watch('descricao')?watch('descricao'):acordo.descricao,
+                total_acordo:watch('total_acordo')?watch('total_acordo'):acordo.total_acordo,
                 mensalidade:novasMensalidades
                 }),
                 {
@@ -208,123 +209,148 @@ export function ModalAcordos({closeModal,acordo,usuario,mensalidade,contrato,ass
       }
      
     return(
-    <div  className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[100%] max-h-full ">
-    <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-20 bg-gray-100 ">
-    <div className="fixed flex flex-col  w-2/4  max-h-[calc(100vh-150px)] rounded-lg  shadow bg-gray-800">
-    <button  type="button" onClick={()=>closeModal({open:false,visible:false})} className="absolute cursor-pointer right-0 text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-    <IoIosClose size={30}/>
-        </button>
-        <form>
-        <label className="flex w-full flex-row px-4 py-2 border-b-[1px] rounded-t-lg  text-lg col-start-1 font-semibold whitespace-nowrap gap-2 text-white">ADMINISTRAR ACORDO</label>
-        <div className="p-2  border-b border-gray-600 grid mt-2 gap-2 grid-flow-row-dense grid-cols-4">
+   
+  <Modal show size={'4xl'} onClose={()=>closeModal({open:false,visible:false})}>
+    <Modal.Header>Administrar Acordo</Modal.Header>
+    <Modal.Body>
+        <form  onSubmit={handleSubmit(criarAcordo)}>
        
+        <div className="  border-gray-600 grid  gap-2 grid-flow-row-dense grid-cols-4">
+       
+        <div>
+       
+          <Label  htmlFor="startDate" value="Data Início" />
+    
+        <DatePicker selected={watch('data_inicio')} showMonthDropdown  onChange={e=>e && setValue('data_inicio',e)}  dateFormat={"dd/MM/yyyy"} locale={pt}   required className="flex w-full  sm:text-xs  border  rounded-lg bg-gray-50 
+      border-gray-300 placeholder-gray-400  "/>
+      </div>
+
+      <div>
+       
+       <Label  htmlFor="endDate" value="Data Fim" />
+ 
+     <DatePicker selected={watch('data_fim')} showMonthDropdown  onChange={e=>e && setValue('data_fim',e)} dateFormat={"dd/MM/yyyy"} locale={pt}   required className="flex w-full  sm:text-xs  border  rounded-lg bg-gray-50 
+      border-gray-300 placeholder-gray-400  "/>
+   </div>
+
+   <div>
+       
+       <Label  htmlFor="total" value="Total Acordo" />
+ 
+    <TextInput {...register("total_acordo")} sizing={'sm'}/>
+   </div>
+
+   <div>
+       
+       <Label  htmlFor="realizado" value="Realizado Por" />
+ 
+    <TextInput {...register("realizado_por")} sizing={'sm'}/>
+   </div>
 
 
 
-<div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-white">DATA INICIO</label>
-    <DatePicker   dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={arrayAcordo.data_inicio} onChange={(e)=>e && setarDadosAcordo({...arrayAcordo,data_inicio:e})}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-</div>
-<div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-white">DATA FIM</label>
-    <DatePicker   dateFormat={"dd/MM/yyyy"} locale={"pt"} selected={arrayAcordo.data_fim} onChange={(e)=>e && setarDadosAcordo({...arrayAcordo,data_fim:e})}  required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-xs  border  rounded-lg bg-gray-50  dark:bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-</div>
-<div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-white">TOTAL ACORDO</label>
-    <input disabled type="text" value={arrayAcordo.total_acordo}  className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
-</div>
-<div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-white">REALIZADO POR</label>
-    <input type="text" value={arrayAcordo.realizado_por} onChange={e=>setarDadosAcordo({...arrayAcordo,realizado_por:e.target.value})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
-</div>
+
+   
+   <div className="col-span-3">
+       
+       <Label  htmlFor="descricao" value="Descrição" />
+ 
+    <TextInput placeholder="Descreve os detalhers do acordo" {...register("descricao")} sizing={'sm'}/>
+   </div>
+ 
 
 
-<div className="mb-1 col-span-3">
-    <label  className="block mb-1 text-xs font-medium  text-white">DESCRIÇÃO</label>
-    <input value={arrayAcordo.descricao} onChange={e=>setArrayAcordo({...arrayAcordo,descricao:e.target.value})} type="text" placeholder="Descreva aqui todos os detalhes do acordo" className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
+
+   <div>
+       
+       <Label  htmlFor="metodo" value="Método" />
+ 
+    <TextInput{...register("metodo")} sizing={'sm'}/>
+   </div>
+
+
+
 </div>
-<div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-white">MÉTODO</label>
-    <input type="text" value={arrayAcordo.metodo} onChange={e=>setarDadosAcordo({...arrayAcordo,metodo:e.target.value})} className="block w-full  pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-xs  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
-</div>
-<div className=" gap-2 col-span-4  flex flex-row justify-end">
+<div className=" gap-2 col-span-4 mt-2 flex flex-row justify-end">
 {openModal.visible?(
-<button onClick={()=>criarAcordo()} type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>APLICAR</button>):(
+<Button size={'sm'} color={'success'}  type="submit" ><MdSaveAlt size={22}/>Criar Acordo</Button>):(
 <div className=" inline-flex w-full justify-between">
-<button onClick={()=>editarAcordo()} type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 text-white"><MdSaveAlt size={22}/>SALVAR</button>
-<button onClick={()=>baixarAcordo()} type="button" className="flex flex-row justify-center  bg-green-600 rounded-lg p-2 gap-2 text-white"><IoIosArrowDropdownCircle size={22}/>BAIXAR ACORDO</button>
+<button onClick={()=>editarAcordo()} type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 "><MdSaveAlt size={22}/>SALVAR</button>
+<button onClick={()=>baixarAcordo()} type="button" className="flex flex-row justify-center  bg-green-600 rounded-lg p-2 gap-2 "><IoIosArrowDropdownCircle size={22}/>BAIXAR ACORDO</button>
 </div>
 )}
 </div>
-    </div>
+   
 
 </form>
-<label className="flex w-full justify-center text-white font-semibold pt-1">REFERÊNCIAS</label>
+</Modal.Body>
+<Modal.Footer className="flex flex-col">
+<label className="flex w-full justify-center  font-semibold pt-1">REFERÊNCIAS</label>
 <div className="inline-flex w-full justify-start  rounded-md shadow-sm pl-2 pb-2">
-  <button disabled={!!!arrayAcordo.id_acordo} onClick={adicionarProxima}  type="button" className="inline-flex items-center px-2 py-1 gap-1 text-sm font-medium  border  rounded-lg  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+  <button disabled={!!!acordo.id_acordo} onClick={adicionarProxima}  type="button" className="inline-flex items-center px-2 py-1 gap-1 text-sm font-medium  border  rounded-lg  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600  hover: hover:bg-gray-600 focus:ring-blue-500 focus:">
     Adicionar Próxima
   </button>
 
  
 </div>
-<div className="flex-col overflow-auto w-full justify-center items-center max-h-[350px] bg-gray-800 rounded-lg mb-4 pl-2 pr-2">
-    <table 
-    className="flex-col w-full p-2 overflow-y-auto overflow-x-auto  text-xs text-center rtl:text-center border-collapse  rounded-lg text-gray-400">
-    <thead className=" text-xs uppercase bg-gray-700 text-gray-400">
-            <tr >
-                <th scope="col" className="px-2 py-1">
+<div className=" max-h-[350px] overflow-y-auto w-full">
+    <Table >
+    <Table.Head >
+          
+                <Table.HeadCell>
                     NP
-                </th>
-                <th scope="col" className=" px-2 py-1">
+                </Table.HeadCell>
+                <Table.HeadCell >
                     DATA VENC.
-                </th>
-                <th scope="col" className=" px-2 py-1">
+                </Table.HeadCell>
+                <Table.HeadCell >
                     REF
-                </th>
-                <th scope="col" className="px-4 py-1">
+                </Table.HeadCell>
+                <Table.HeadCell >
                     DATA AGEND.
-                </th>
-                <th scope="col" className="px-2 py-1">
+                </Table.HeadCell>
+                <Table.HeadCell>
                     VALOR
-                </th>
-                <th scope="col" className="px-2 py-1">
+                </Table.HeadCell>
+                <Table.HeadCell>
                     status
-                </th>
-            </tr>
-        </thead>
-        <tbody  >
-            {arrayAcordo.mensalidade?.map((item,index)=>(  
-                <tr key={index} 
-                className={` border-b "bg-gray-800"} border-gray-700 `}>
-                <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
+                </Table.HeadCell>
+           
+        </Table.Head>
+        <Table.Body className="divide-y" >
+            {mensalidadesAcordo.map((item,index)=>(  
+                <Table.Row key={index} 
+                className="text-gray-900"
+               >
+                <Table.Cell >
                     {item.parcela_n}
-                </th>
-                <td className={`px-2 py-1 `}>
+                </Table.Cell>
+                <Table.Cell>
                    {new Date(item.vencimento || '').toLocaleDateString('pt',{timeZone:'UTC'})}
                    
-                </td>
-                <td className="px-2 py-1">
+                </Table.Cell>
+                <Table.Cell >
                    {item.referencia}
-                </td>
-                <td className="px-5 py-1">
+                </Table.Cell>
+                <Table.Cell >
                 {new Date(item.cobranca || '').toLocaleDateString('pt',{timeZone:'UTC'})}
-                </td>
-                <td className="px-3 py-1">
+                </Table.Cell>
+                <Table.Cell >
                {`R$${item.valor_principal}`}
-                </td>
-                <td className={`px-4 py-1 font-bold text-red-600`}>
+                </Table.Cell>
+                <Table.Cell >
                   {item.status}
-                </td>
+                </Table.Cell>
 
-            </tr>
+            </Table.Row>
                 
             ))}
             
-        </tbody>
+        </Table.Body>
     
-    </table>
+    </Table>
     </div>
-</div>
-</div>
-</div>)
+    </Modal.Footer>
+    </Modal>
+)
 }

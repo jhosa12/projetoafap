@@ -106,9 +106,6 @@ const novoProduto= async()=>{
                     </Select>
        
       </div>
-     
-      
-     
       <div>
         <div className=" block">
           <Label htmlFor="alerta" value="Alertar em " />

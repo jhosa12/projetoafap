@@ -482,7 +482,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             setEmpresas(response.data)
         } catch (error) {
-            
+            console.log(error)
         }
        
       };
@@ -505,7 +505,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setToken(tokenAuth)
 
            // await userToken();
-         const  parsedPermissoes = typeof permissoes === 'string' ? JSON.parse(permissoes) : permissoes ?? [];
+       //  const  parsedPermissoes = typeof permissoes === 'string' ? JSON.parse(permissoes) : permissoes ?? [];
             api.defaults.headers["Authorization"] = `Bearer ${tokenAuth}`;
            setUser({ id: id, nome: nome.toUpperCase(), cargo, dir, image: image ?? '' });
             Router.push("/admcontrato");
@@ -532,10 +532,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     useEffect(()=>{
         const { "@nextauth.token": token } = parseCookies();
-        if (token) userToken(token)
+        if (token) {userToken(token)}
         getEmpresas()
             
-    },[])
+    },[token])
 
     const userToken = useCallback(async (token:string) => {
        

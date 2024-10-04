@@ -90,7 +90,7 @@ export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos,
                         {data?.map((item,index)=>(
                            
                 <>
-                     <Table.Row className="bg-white  " key={index} onClick={()=>toogleAberto(index)} >
+                     <Table.Row className="bg-white cursor-pointer " key={index} onClick={()=>toogleAberto(index)} >
                       
                         <Table.Cell className="font-semibold text-[14px]">
                            {item.descricao} 

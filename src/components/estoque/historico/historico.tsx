@@ -19,6 +19,8 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { BiSolidPrinter } from "react-icons/bi";
 import { useReactToPrint } from "react-to-print";
 import RelatorioMov from "@/Documents/estoque/RelatorioMov";
+import { GrRevert } from "react-icons/gr";
+import { Tooltip } from "react-tooltip";
 
 
 interface DataProps{
@@ -200,13 +202,20 @@ documentTitle:'MOVIMENTAÇÃO DE ESTOQUE',
                           
                         </Table.Cell>
 
-                        <Table.Cell onClick={e=>{
-                            e.stopPropagation();setDadosMov(item)}} className="text-black hover:text-blue-600 font-semibold" >
-                        <BiSolidPrinter size={18} />
+                        <Table.Cell className="inline-flex gap-6 text-gray-600  font-semibold" >
+                                <button onClick={e=>{
+                            e.stopPropagation();setDadosMov(item)}}  data-tooltip-id="tooltip" data-tooltip-content="Imprimir" className="hover:text-blue-600">  <BiSolidPrinter   size={18} />
+                                </button>
+                      <button disabled data-tooltip-id="tooltip" data-tooltip-content="Estornar" className="hover:text-yellow-500 disabled:cursor-not-allowed">
+                      <GrRevert  size={16} />
+                      </button>
+                      
                           
                         </Table.Cell>
                         <Table.Cell className="text-black  font-semibold" >
                         <MdKeyboardArrowDown size={16}/>
+
+                  
                           
                         </Table.Cell>
                        </Table.Row>
@@ -224,7 +233,7 @@ documentTitle:'MOVIMENTAÇÃO DE ESTOQUE',
 
                         ))
                        }
-                       
+                       <Tooltip id="tooltip"/>
                        </>
                     
                     )

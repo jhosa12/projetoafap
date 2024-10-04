@@ -193,7 +193,7 @@ export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,
         </div>
         <Select value={Number(mov.id_grupo)} onChange={e=>setMov({...mov,id_grupo:Number(e.target.value)})} sizing={'sm'}    >
                     <option value={''}></option>
-        {grupo.map((item,index)=>
+        {grupo?.map((item,index)=>
             
             (
                 <option key={index} value={Number(item.id_grupo)}>{item.descricao.toUpperCase()}</option>
@@ -228,7 +228,7 @@ export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,
         setMov({...mov,descricao:tipo?.descricao,tipo:tipo?.tipo,conta:tipo?.conta})
         }} sizing={'sm'}    >
       <option value={''}></option>
-        {planos.map((item,index)=>
+        {planos?.map((item,index)=>
             
             (
               item.perm_lanc==='S' &&  <option key={index} value={item.conta}>{item.descricao.toUpperCase()}</option>
