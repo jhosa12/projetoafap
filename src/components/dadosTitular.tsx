@@ -53,14 +53,14 @@ export function Item(){
     return(
       
         <div className="flex flex-col w-full h-full ">
-        <div  className="grid gap-2    md:grid-cols-4" >
+        <div  className="grid gap-2  font-semibold grid-cols-4" >
 
 
         <div className="col-span-2">
         <div className="mb-1 block">
           <Label htmlFor="nome" value="Nome" />
         </div>
-        <TextInput id="nome" value={data.name} onChange={e=>closeModa({...data,name:e.target.value.toUpperCase()})} type="text" required />
+        <TextInput sizing={'sm'} id="nome" value={data.name} onChange={e=>closeModa({...data,name:e.target.value.toUpperCase()})} type="text" required />
       </div>
         
       
@@ -68,13 +68,13 @@ export function Item(){
           <div className="mb-1 block">
           <Label htmlFor="nome" value="Nascimento" />
         </div>
-          <DatePicker  selected={data.nasc} locale={pt} onChange={e=>e && closeModa({...data,nasc:e})}  required className="flex w-full uppercase  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
+          <DatePicker  selected={data.nasc} locale={pt} onChange={e=>e && closeModa({...data,nasc:e})}  required className="flex w-full uppercase  text-xs   border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
           </div>
           <div className="col-span-1">
           <div className="mb-1 block">
           <Label htmlFor="sexo" value="Sexo" />
         </div>
-            <Select className="flex w-full" value={data.sexo} onChange={e=>closeModa({...data,sexo:e.target.value.toUpperCase()})} >
+            <Select  sizing={'sm'} className="flex w-full" value={data.sexo} onChange={e=>closeModa({...data,sexo:e.target.value.toUpperCase()})} >
               <option   selected></option>
               <option   value="M">MASCULINO</option>
               <option   value="F">FEMININO</option>
@@ -85,34 +85,34 @@ export function Item(){
         <div className="mb-1 block">
           <Label htmlFor="cep" value="CEP" />
         </div>
-          <InputMask value={data.cep} onChange={e=>closeModa({...data,cep:e.target.value})} mask={'99999-9999'} type="text" required className="flex uppercase w-full  pr-2 pl-2  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
+          <InputMask value={data.cep} onChange={e=>closeModa({...data,cep:e.target.value})} mask={'99999-9999'} type="text" required className="flex uppercase w-full  text-xs  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
           </div>
           <div className="col-span-2">
           <div className="mb-1 block">
           <Label htmlFor="endereco" value="Endereço" />
         </div>
-        <TextInput id="endereco" value={data.endereco} onChange={e=>closeModa({...data,endereco:e.target.value.toUpperCase()})} type="text" required />
+        <TextInput  sizing={'sm'} id="endereco" value={data.endereco} onChange={e=>closeModa({...data,endereco:e.target.value.toUpperCase()})} type="text" required />
           </div>
 
           <div className="col-span-1">
           <div className="mb-1 block">
           <Label htmlFor="numero" value="Numero" />
         </div>
-        <TextInput id="numero" value={data.numero} onChange={e=>closeModa({...data,numero:Number(e.target.value)})}  type="number" required />
+        <TextInput  sizing={'sm'} id="numero" value={data.numero} onChange={e=>closeModa({...data,numero:Number(e.target.value)})}  type="number" required />
           </div>
         
           <div className="col-span-1">
           <div className="mb-1 block">
           <Label htmlFor="bairro" value="Bairro" />
         </div>
-        <TextInput id="bairro" value={data.bairro} onChange={e=>closeModa({...data,bairro:e.target.value.toUpperCase()})} type="text" required />
+        <TextInput  sizing={'sm'} id="bairro" value={data.bairro} onChange={e=>closeModa({...data,bairro:e.target.value.toUpperCase()})} type="text" required />
           </div>
 
           <div className="col-span-2">
           <div className="mb-1 block">
           <Label htmlFor="ref" value="Referencia" />
         </div>
-        <TextInput id="referencia" value={data.referencia} onChange={e=>closeModa({...data,referencia:e.target.value.toUpperCase()})}  type="text" required />
+        <TextInput  sizing={'sm'} id="referencia" value={data.referencia} onChange={e=>closeModa({...data,referencia:e.target.value.toUpperCase()})}  type="text" required />
           </div>
 
           
@@ -120,7 +120,7 @@ export function Item(){
           <div className="mb-1 block">
           <Label htmlFor="uf" value="UF" />
         </div>
-            <Select value={data.uf} onChange={e=>closeModa({...data,uf:e.target.value.toUpperCase()})} >
+            <Select   sizing={'sm'} value={data.uf} onChange={e=>closeModa({...data,uf:e.target.value.toUpperCase()})} >
               <option selected></option>
              
                   <option>AC</option>
@@ -157,7 +157,7 @@ export function Item(){
           <div className="mb-1 block">
           <Label htmlFor="cidade" value="Cidade" />
         </div>
-            <Select value={data.cidade} onChange={e=>closeModa({...data,cidade:e.target.value.toUpperCase()})} >
+            <Select  sizing={'sm'} value={data.cidade} onChange={e=>closeModa({...data,cidade:e.target.value.toUpperCase()})} >
               <option selected></option>
                 {data.cidades?.map((item)=>{
                   return(
@@ -171,14 +171,14 @@ export function Item(){
           <div className="mb-1 block">
           <Label htmlFor="rg" value="RG" />
         </div>
-        <TextInput id="rg"value={data.rg} onChange={e=>closeModa({...data,rg:e.target.value})} type="number" required />
+        <TextInput   sizing={'sm'} id="rg"value={data.rg} onChange={e=>closeModa({...data,rg:e.target.value})} type="number" required />
           </div>
 
           <div className="col-span-1">
           <div className="mb-1 block">
           <Label  value="CPF" />
         </div>
-          <InputMask mask={'999.999.999-99'}  value={data.cpf} onChange={e=>closeModa({cpf:e.target.value})} autoComplete="off" type="text" required className="flex uppercase w-full  pr-2 pl-2  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
+          <InputMask mask={'999.999.999-99'}  value={data.cpf} onChange={e=>closeModa({cpf:e.target.value})} autoComplete="off" type="text" required className="flex uppercase w-full text-xs border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
           </div>
 
 
@@ -186,7 +186,7 @@ export function Item(){
           <div className="mb-1 block">
           <Label htmlFor="naturalidade" value="Naturalidade" />
         </div>
-        <TextInput id="rg"value={data.naturalidade} onChange={e=>closeModa({...data,naturalidade:e.target.value.toUpperCase()})} type="text" required />
+        <TextInput  sizing={'sm'} id="rg"value={data.naturalidade} onChange={e=>closeModa({...data,naturalidade:e.target.value.toUpperCase()})} type="text" required />
           </div>
 
 
@@ -194,7 +194,7 @@ export function Item(){
           <div className="mb-1 block">
           <Label  value="Email" />
         </div>
-        <TextInput value={data.email} onChange={e=>closeModa({...data,email:e.target.value.toUpperCase()})} type="text" required />
+        <TextInput   sizing={'sm'} value={data.email} onChange={e=>closeModa({...data,email:e.target.value.toUpperCase()})} type="text" required />
           </div>
 
       
@@ -202,19 +202,19 @@ export function Item(){
           <div className="mb-1 block">
           <Label  value="Celular 1" />
         </div>
-          <InputMask value={data.celular1} onChange={e=>closeModa({...data,celular1:e.target.value})} mask={'(99) 9 9999-9999'} type="text" required className="flex uppercase w-full  pr-2 pl-2  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
+          <InputMask value={data.celular1} onChange={e=>closeModa({...data,celular1:e.target.value})} mask={'(99) 9 9999-9999'} type="text" required className="flex uppercase w-full  text-xs  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
           </div>
           <div className="col-span-1">
           <div className="mb-1 block">
           <Label  value="Celular 2" />
         </div>
-          <InputMask value={data.celular2} onChange={e=>closeModa({...data,celular2:e.target.value})} mask={'(99) 9 9999-9999'} type="text"  className="flex uppercase w-full  pr-2 pl-2  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400  "/>
+          <InputMask value={data.celular2} onChange={e=>closeModa({...data,celular2:e.target.value})} mask={'(99) 9 9999-9999'} type="text"  className="flex uppercase w-full  text-xs  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400  "/>
           </div>
           <div className="col-span-1">
           <div className="mb-1 block">
           <Label  value="Telefone" />
         </div>
-          <InputMask value={data.telefone} onChange={e=>closeModa({...data,telefone:e.target.value})} mask={'(99) 9 9999-9999'} type="text"  className="flex uppercase w-full  pr-2 pl-2  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400  "/>
+          <InputMask value={data.telefone} onChange={e=>closeModa({...data,telefone:e.target.value})} mask={'(99) 9 9999-9999'} type="text"  className="flex uppercase w-full  text-xs  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400  "/>
           </div>
         </div>
         </div>

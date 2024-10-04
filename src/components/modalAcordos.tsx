@@ -15,6 +15,7 @@ import { Button, Label, Modal, Table, TextInput } from "flowbite-react";
 
 
 interface MensalidadeProps {
+    id_mensalidade_global: number,
     id_acordo: number,
     parcela_n: number,
     vencimento: Date,
@@ -51,7 +52,7 @@ interface AcordoProps {
     data_fim: Date,
     realizado_por: string,
     dt_pgto: Date,
-    mensalidade: Array<MensalidadeProps>,
+    mensalidade: Array<Partial<MensalidadeProps>>,
     status: string,
     descricao: string,
     metodo: string
@@ -70,7 +71,7 @@ interface DadosAcordoProps{
     carregarDados:(id:number)=>Promise<void>
 }
 export function ModalAcordos({closeModal,acordo,usuario,mensalidade,contrato,associado,carregarDados,openModal}:DadosAcordoProps){
- const [mensalidadesAcordo, setMensalidadesAcordo] = useState<MensalidadeProps[]>(acordo.mensalidade??[]);
+ const [mensalidadesAcordo, setMensalidadesAcordo] = useState<Array<Partial<MensalidadeProps>>>(acordo.mensalidade??[]);
 
     const {register,handleSubmit,formState:{errors},watch,setValue} = useForm<FormProps>({
         defaultValues:acordo
@@ -171,8 +172,6 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
             
         }
         await carregarDados(associado);
-    
-      
       }
 
       async function editarAcordo(){
@@ -189,7 +188,7 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
                 dt_pgto:new Date(),
                 data_inicio:watch('data_inicio')?watch('data_inicio'):acordo.data_inicio,
                 data_fim:watch('data_fim')?watch('data_fim'):acordo.data_fim,
-                descricao:watch('descricao')?watch('descricao'):acordo.descricao,
+                descricao:watch('descricao').toUpperCase(),
                 total_acordo:watch('total_acordo')?watch('total_acordo'):acordo.total_acordo,
                 mensalidade:novasMensalidades
                 }),
@@ -213,19 +212,19 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
   <Modal show size={'4xl'} onClose={()=>closeModal({open:false,visible:false})}>
     <Modal.Header>Administrar Acordo</Modal.Header>
     <Modal.Body>
-        <form  onSubmit={handleSubmit(criarAcordo)}>
+        <form className="font-semibold" onSubmit={handleSubmit(criarAcordo)}>
        
         <div className="  border-gray-600 grid  gap-2 grid-flow-row-dense grid-cols-4">
        
-        <div>
+        <div className="flex flex-col w-full">
        
-          <Label  htmlFor="startDate" value="Data Início" />
+          <Label htmlFor="startDate" value="Data Início" />
     
         <DatePicker selected={watch('data_inicio')} showMonthDropdown  onChange={e=>e && setValue('data_inicio',e)}  dateFormat={"dd/MM/yyyy"} locale={pt}   required className="flex w-full  sm:text-xs  border  rounded-lg bg-gray-50 
       border-gray-300 placeholder-gray-400  "/>
       </div>
 
-      <div>
+      <div  className="flex flex-col w-full">
        
        <Label  htmlFor="endDate" value="Data Fim" />
  
@@ -233,14 +232,14 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
       border-gray-300 placeholder-gray-400  "/>
    </div>
 
-   <div>
+   <div  className="flex flex-col w-full">
        
        <Label  htmlFor="total" value="Total Acordo" />
  
     <TextInput {...register("total_acordo")} sizing={'sm'}/>
    </div>
 
-   <div>
+   <div  className="flex flex-col w-full">
        
        <Label  htmlFor="realizado" value="Realizado Por" />
  
@@ -251,17 +250,17 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
 
 
    
-   <div className="col-span-3">
+   <div className="col-span-3 flex flex-col w-full">
        
        <Label  htmlFor="descricao" value="Descrição" />
  
-    <TextInput placeholder="Descreve os detalhers do acordo" {...register("descricao")} sizing={'sm'}/>
+    <TextInput value={watch('descricao')?.toUpperCase()} className="uppercase" placeholder="Descreve os detalhers do acordo" {...register("descricao")} sizing={'sm'}/>
    </div>
  
 
 
 
-   <div>
+   <div  className=" flex flex-col w-full">
        
        <Label  htmlFor="metodo" value="Método" />
  
@@ -284,17 +283,20 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
 
 </form>
 </Modal.Body>
-<Modal.Footer className="flex flex-col">
+<Modal.Footer className="flex flex-col w-full">
 <label className="flex w-full justify-center  font-semibold pt-1">REFERÊNCIAS</label>
-<div className="inline-flex w-full justify-start  rounded-md shadow-sm pl-2 pb-2">
-  <button disabled={!!!acordo.id_acordo} onClick={adicionarProxima}  type="button" className="inline-flex items-center px-2 py-1 gap-1 text-sm font-medium  border  rounded-lg  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600  hover: hover:bg-gray-600 focus:ring-blue-500 focus:">
-    Adicionar Próxima
-  </button>
 
- 
+<div className="flex w-full justify-end">
+<Button disabled={!!!acordo.id_acordo} color={'blue'}  size={'xs'}  onClick={adicionarProxima}  >
+   Incluir Parcela
+  </Button>
 </div>
+
+
+
+
 <div className=" max-h-[350px] overflow-y-auto w-full">
-    <Table >
+    <Table theme={{ body: { cell: { base: " px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }}   >
     <Table.Head >
           
                 <Table.HeadCell>
@@ -320,23 +322,23 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
         <Table.Body className="divide-y" >
             {mensalidadesAcordo.map((item,index)=>(  
                 <Table.Row key={index} 
-                className="text-gray-900"
+                className="text-gray-900 font-semibold"
                >
                 <Table.Cell >
                     {item.parcela_n}
                 </Table.Cell>
                 <Table.Cell>
-                   {new Date(item.vencimento || '').toLocaleDateString('pt',{timeZone:'UTC'})}
+                   {new Date(item.vencimento || '').toLocaleDateString('pt-BR',{timeZone:'UTC'})}
                    
                 </Table.Cell>
                 <Table.Cell >
                    {item.referencia}
                 </Table.Cell>
                 <Table.Cell >
-                {new Date(item.cobranca || '').toLocaleDateString('pt',{timeZone:'UTC'})}
+                {new Date(item.cobranca || '').toLocaleDateString('pt-BR',{timeZone:'UTC'})}
                 </Table.Cell>
                 <Table.Cell >
-               {`R$${item.valor_principal}`}
+               {Number(item.valor_principal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
                 </Table.Cell>
                 <Table.Cell >
                   {item.status}
