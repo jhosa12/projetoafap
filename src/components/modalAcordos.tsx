@@ -12,8 +12,6 @@ import { useForm,SubmitHandler } from 'react-hook-form';
 import { Button, Label, Modal, Table, TextInput } from "flowbite-react";
 
 
-
-
 interface MensalidadeProps {
     id_mensalidade_global: number,
     id_acordo: number,
