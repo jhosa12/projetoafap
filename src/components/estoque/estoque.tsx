@@ -68,7 +68,7 @@ export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos,
 
                 </div>
 
-        <div className="overflow-y-auto mt-1 px-2 max-h-[74vh] ">
+        <div className="overflow-y-auto mt-1 px-2 max-h-[74vh] rounded-lg ">
         <Table hoverable theme={{ body: { cell: { base: " px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }}  >
                     <Table.Head >
                             <Table.HeadCell >

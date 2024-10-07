@@ -1,162 +1,17 @@
-import { FormEvent, useEffect, useState,useContext} from "react"
+import { FormEvent, useState,useContext} from "react"
 import { AuthContext } from "@/contexts/AuthContext";
-import { IoIosClose } from "react-icons/io";
 import { api } from "@/services/apiClient";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { Modal } from "flowbite-react";
 import { HiSearch } from "react-icons/hi";
 
 
-interface MensalidadeProps{
-    id_acordo:number,
-    parcela_n:number,
-    vencimento:Date,
-    cobranca:Date,
-    valor_principal:number,
-    close:boolean,
-    status:string,
-    usuario:string,
-    id_mensalidade:number,
-    valor_total:number,
-    motivo_bonus: string,
-    data_pgto:Date,
-    referencia:string,
-    index:number
-}
 
 
-interface ConvProps {
-    editar: boolean
-    id_conv: number | null,
-    id_contrato: number | null,
-    id_associado: number | null,
-    id_dependente: number | null,
-    id_contrato_st: string,
-    tipo_entrada: string,
-    nome: string,
-    cpf_cnpj: string,
-    data: Date,
-    status: string,
-    forma_pag: string,
-    logradouro: string,
-    numero: number | null,
-    complemento: string,
-    bairro: string,
-    cep: string,
-    cidade: string,
-    uf: string,
-    subtotal: number | null,
-    descontos: number | null,
-    total: number | null,
-    logradouro_r: string,
-    numero_r: number | null,
-    complemento_r: string,
-    bairro_r: string,
-    cep_r: string,
-    cidade_r: string,
-    uf_r: string,
-    data_inc: Date,
-    hora_inc: Date,
-    usuario: string,
-    obs: string,
-    convalescenca_prod: Partial<{
-        id_conv: number,
-        id_produto: number,
-        descricao: string,
-        unidade: string,
-        grupo: string,
-        data: Date,
-        data_dev: Date,
-        quantidade: number,
-        valor: number,
-        descontos: number,
-        total: number,
-        hora: Date,
-        cortesia: string,
-        retornavel: string,
-        status: string
-    }>,
-    contrato: {
-        situacao: string,
-        carencia: string,
-        associado: {
-            nome: string
-        }
 
-    }
 
-}
 
-interface ContratoProps{
-    id_contrato: number,
-    plano: string,
-    id_plano: number,
-    valor_mensalidade: number,
-    dt_adesao: Date,
-    dt_carencia: Date,
-    situacao: string,
-    anotacoes: string,
-    consultor: string,
-    cobrador: string,
-    data_vencimento: Date,
-    n_parcelas: number,
-    origem: string,
-    supervisor: string,
-    convalescencia: Array<ConvProps>,
-    categoria_inativo: string,
-    motivo_inativo: string,
-    dt_cancelamento: true,
-}
-interface AcordoProps{
-    total_acordo: number,
-    data_inicio: Date,
-    data_fim: Date,
-    realizado_por: string,
-    dt_pgto: Date,
-    mensalidade: Array<Partial<MensalidadeProps>>,
-    status: string,
-    descricao: string,
-    metodo: string
-    closeAcordo: boolean,
-    id_acordo: number,
-    visibilidade: boolean
-}
 
-interface DependentesProps {
-    nome: string,
-    data_nasc: Date,
-    grau_parentesco: string,
-    data_adesao: Date,
-    carencia: Date,
-    id_dependente: number,
-    cad_dh: Date,
-    close: boolean,
-    sexo: string,
-    saveAdd: boolean,
-    excluido: boolean,
-    dt_exclusao: Date,
-    user_exclusao: string,
-    exclusao_motivo: string,
-    convalescenca: {
-        convalescenca_prod: Partial<{
-            id_conv: number,
-            id_produto: number,
-            descricao: string,
-            unidade: string,
-            grupo: string,
-            data: Date,
-            data_dev: Date,
-            quantidade: number,
-            valor: number,
-            descontos: number,
-            total: number,
-            hora: Date,
-            cortesia: string,
-            retornavel: string,
-            status: string
-        }>,
-    }
-}
 interface ContratoProps{
     id_contrato:number
 }
@@ -182,8 +37,9 @@ export function ModalBusca(){
     const [loading,setLoading] = useState(false)
     const [input,setInput] =useState('')
     const [array,setarray]=useState<DadosProps[]>([])
-    const [dropOpen,setDrop] = useState(0)
+    const [dropOpen,setDrop] = useState<boolean>(false)
     const [criterio,setCriterio]=useState("Contrato")
+    const [dropEmpresa,setDropEmp] = useState<boolean>(false)
  
    
   
@@ -195,18 +51,14 @@ export function ModalBusca(){
    setLoading(false)
   }
  
-  useEffect(()=>{
-
-    getEmpresas()
-  
- },[])
+ 
 
   async function buscar(){
 
     if(criterio ==="Contrato"){
         const response =  await api.post('/buscar',{
             id_contrato:Number(input),
-            empresa:data.empresa
+            id_empresa:data.id_empresa
         })
         setarray(response.data)
 
@@ -214,28 +66,28 @@ export function ModalBusca(){
       if(criterio ==="Titular"){
         const response =  await api.post('/buscar',{
             nome:input.toUpperCase(),
-            empresa:data.empresa
+            id_empresa:data.id_empresa
         })
         setarray(response.data)
       }
       if(criterio ==="Dependente"){
         const response =  await api.post('/buscar',{
             dependente:input.toUpperCase(),
-            empresa:data.empresa
+            id_empresa:data.id_empresa
         })
         setarray(response.data)
       }
       if(criterio ==="Endereço"){
         const response =  await api.post('/buscar',{
             endereco:input.toUpperCase(),
-            empresa:data.empresa
+            id_empresa:data.id_empresa
         })
         setarray(response.data)
       }
       if(criterio ==="Bairro"){
         const response =  await api.post('/buscar',{
             bairro:input.toUpperCase(),
-            empresa:data.empresa
+            id_empresa:data.id_empresa
         })
         setarray(response.data)
       }
@@ -248,48 +100,51 @@ export function ModalBusca(){
    
             <form onSubmit={onSubmit} className="flex w-full">
    
-    <button onClick={()=>setDrop(1)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-s-lg focus:outline-none border-e-2 border-gray-200  bg-gray-100 hover:bg-gray-200  " type="button">{data.empresa} 
+    <button onClick={()=>setDropEmp(!dropEmpresa)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-s-lg focus:outline-none border-e-2 border-gray-200  bg-gray-100 hover:bg-gray-200  " type="button">{data.empresa} 
     <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
   </svg></button>
-    <button onClick={()=>setDrop(2)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center  focus:outline-none  border-gray-200  bg-gray-100  hover:bg-gray-300   " type="button">{criterio} 
+    <button onClick={()=>setDrop(!dropOpen)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center  focus:outline-none  border-gray-200  bg-gray-100  hover:bg-gray-300   " type="button">{criterio} 
     <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
   </svg></button>
  
-      {dropOpen===2 && (
-          <div className="absolute top-[80px] divide-gray-100 rounded-lg shadow w-44 bg-gray-700">
-          <ul className="py-2 text-sm text-gray-200">
+      {dropOpen && (
+          <div className="absolute top-[65px] left-36 divide-gray-100 rounded-lg shadow w-44 bg-gray-200">
+          <ul className="py-2 text-sm text-black">
           <li >
-              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:" onClick={()=>{setCriterio('Contrato'),setDrop(0)}}>Contrato</a>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-300 hover:" onClick={()=>{setCriterio('Contrato'),setDrop(false)}}>Contrato</a>
           </li>
           <li>
-              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:" onClick={()=>{setCriterio('Titular'),setDrop(0)}}>Titular</a>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-300 hover:" onClick={()=>{setCriterio('Titular'),setDrop(false)}}>Titular</a>
           </li>
           <li>
-              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:" onClick={()=>{setCriterio('Dependente'),setDrop(0)}}>Dependente</a>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-300 hover:" onClick={()=>{setCriterio('Dependente'),setDrop(false)}}>Dependente</a>
           </li>
           <li>
-              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:"  onClick={()=>{setCriterio('Endereço'),setDrop(0)}}>Endereço</a>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-300 hover:"  onClick={()=>{setCriterio('Endereço'),setDrop(false)}}>Endereço</a>
           </li>
           <li>
-              <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:"  onClick={()=>{setCriterio('Bairro'),setDrop(0)}}>Bairro</a>
+              <a href="#" className="block px-4 py-2  hover:bg-gray-300 hover:"  onClick={()=>{setCriterio('Bairro'),setDrop(false)}}>Bairro</a>
           </li>
           </ul>
       </div>
       )}
-   {dropOpen ===1 && (
-          <div className="absolute top-[80px] divide-gray-100 rounded-lg shadow w-44 bg-gray-700">
-          <ul className="py-2 text-sm text-gray-200">
+   {dropEmpresa && (
+       
+          <ul className=" absolute top-[65px]  rounded-lg shadow w-44 bg-gray-200 py-2 text-sm text-black divide-y divide-gray-300">
+            <li  onClick={()=>{closeModa({...data,empresa:'TODAS',id_empresa:''}),setDropEmp(false)}}  className="block px-4 py-2  hover:bg-gray-300 hover:cursor-pointer" >
+ TODAS
+</li>
          {empresas.map(item=>(
 
-<li key={item.id} >
-<a href="#" className="block px-4 py-2  hover:bg-gray-300 hover:" onClick={()=>{closeModa({...data,empresa:item.nome,id_empresa:item.id}),setDrop(0)}}>{item.nome}</a>
+<li key={item.id} onClick={()=>{closeModa({...data,empresa:item.nome,id_empresa:item.id}),setDropEmp(false)}}  className="block px-4 py-2  hover:bg-gray-300 hover:cursor-pointer" >
+ {item.nome}
 </li>
 
          )) }
           </ul>
-      </div>
+     
       )}
 <div className="inline-flex  w-[25vw]">
     <input 
@@ -312,13 +167,13 @@ export function ModalBusca(){
                 
          
     </Modal.Header>
+      <Modal.Body>
       
-        <div className=" flex flex-col   max-h-[500px] min-h-min ">
            
             {loading?((<div className="flex flex-col h-full justify-center items-center p-2"><AiOutlineLoading3Quarters color='white' size={40} className="animate-spin"/></div>)):(
-                <div className="flex flex-col overflow-y-auto mb-1 p-2 md:p-2">
+                <div className="flex flex-col  mb-1 ">
                 <p className="text-gray-600 mb-2">Selecione o Contrato:</p>
-                <ul className="overflow-y-visible space-y-2 mb-2">
+                <ul className="overflow-y-auto space-y-2 mb-2">
                                 {array.map((item,index)=>(
                                      <li onClick={()=>{carregarDados(item.id_global),closeModa({closeModalPlano:false})}}>
                                      <label  className="inline-flex items-center justify-between w-full p-2 rounded-lg cursor-pointer border-gray-500 peer-checked:text-blue-500 peer-checked:border-blue-600  bg-gray-200 hover:bg-gray-300">                           
@@ -339,7 +194,8 @@ export function ModalBusca(){
             </div>
             )}
             
-        </div>
+     
+        </Modal.Body>
         </Modal>
 
 

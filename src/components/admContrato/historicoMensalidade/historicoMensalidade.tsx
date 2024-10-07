@@ -1,20 +1,19 @@
 
-import { ModalAcordos } from '@/components/modalAcordos';
+import { ModalAcordos } from '@/components/admContrato/historicoMensalidade/modalAcordos';
 import ImpressaoCarne from '@/Documents/carne/ImpressaoCarne';
 import { api } from '@/services/apiClient';
 import { useReactToPrint } from 'react-to-print';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { FaHandshake } from 'react-icons/fa';
-import { IoIosClose } from 'react-icons/io';
 import { IoPrint } from 'react-icons/io5';
 import { MdDeleteForever, MdReceipt } from 'react-icons/md';
 import { RiAddCircleFill } from 'react-icons/ri';
-import { TbAlertTriangle } from 'react-icons/tb';
 import { toast } from 'react-toastify'
 import { AuthContext, MensalidadeProps } from '@/contexts/AuthContext';
 import { ModalMensalidade } from './modalmensalidade';
 import { Scanner } from './modalScanner';
 import { ModalEditarMensalidade } from './modalEditarMensalidade';
+import { ModalExcluirMens } from './modalExcluirMens';
 
 
 
@@ -69,21 +68,57 @@ interface DadosProps{
 }
 export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDados,usuario}:DadosProps) {
     const [checkMensal, setCheck] = useState(false)
-    const [excluir, setExcluir] = useState(false)
+    const [openExcluir, setOpenExcluir] = useState(false)
     const [linhasSelecionadas, setLinhasSelecionadas] = useState<Array<Partial<MensalidadeProps>>>([]);
     const [openModalAcordo,setModalAcordo]= useState({open:false,visible:false})
-    const [showSublinhas, setShowSublinhas] = useState<boolean>(false);
     const componentRef =useRef<ImpressaoCarne>(null);
     const {setarDadosAssociado,permissoes} = useContext(AuthContext)
     const [openModalMens,setModalMens]= useState<boolean>(false)
     const [mensalidadeSelect,setMensalidade] = useState<Partial<MensalidadeProps>>();
     const [openScanner,setOpenScanner] =useState<boolean>(false);
     const [openEditar,setOpenEditar] =useState<boolean>(false);
+    const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
+    const [arrayMensal,setArrayMensal] = useState<Array<MensalidadeProps>>([]);
+
+
+
+    const TratarArrayMensal = useCallback(
+        () => {
+          const tratado = dadosAssociado.arrayMensalidade.reduce((acumulador, atual) => {
+            const exists = acumulador.some(
+              (item) => item.status === 'E' && item.id_acordo === atual.id_acordo && atual.id_acordo!==null
+            );
+            if (!exists) {
+              acumulador.push(atual);
+            }
+            return acumulador;
+          }, [] as Array<MensalidadeProps>);
+      
+       
+         setArrayMensal(tratado);
+        },
+        [dadosAssociado.arrayMensalidade]
+      );
+
+      useEffect(()=>{
+        TratarArrayMensal()
+      },[dadosAssociado.arrayMensalidade])
+      
+
+    const toogleAberto = (index: number) => {
+        setAbertos((prev: { [key: number]: boolean }) => ({
+          ...Object.keys(prev).reduce((acc, key) => {
+            acc[Number(key)] = false;
+            return acc;
+          }, {} as { [key: number]: boolean }),
+          [index]: !prev[index]
+        }));
+      };
    
 
-    let currentAcordoId: string;
+    let currentAcordoId: number;
 
-
+   
     const verificarBaixa = (scannedCode:string)=>{
         if (!scannedCode) {
             toast.error('Erro ao escanear');
@@ -149,16 +184,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
 
    })
 
-    const setarModalAcordo = (fields:{open:boolean,visible:boolean})=>{
-        setModalAcordo((prev:{open:boolean,visible:boolean})=>{
-            if(prev){
-                return {...prev,...fields}
-            }else{
-                return {...fields}
-            }
-
-        })
-    }
+   
 
 
     const toggleSelecionada = (item: MensalidadeProps) => {
@@ -199,7 +225,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
 
         })
 
-        setExcluir(false)
+     
         try {
             const response = await toast.promise(
                 api.delete('/mensalidade/delete', {
@@ -221,26 +247,16 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
            dadosAssociado.id_global && await carregarDados(dadosAssociado.id_global)
            // setarDados({ mensalidade: {} })
           // setarDadosAssociado({mensalidade:mensalidades})
-
+          setOpenExcluir(false)
+          setLinhasSelecionadas([])
+          setarDados({acordo: { mensalidade: [],id_acordo:0 } })
         } catch (err) {
             console.log(err)
         }
     }
 
 
-    function calcularDiferencaEmDias(data1: Date, data2: Date) {
-        // Convertendo as datas para objetos Date
-        const timestamp1 = data1.getTime();
-        const timestamp2 = data2.getTime();
 
-        // Calculando a diferença em milissegundos
-        const diferencaEmMilissegundos = timestamp1 - timestamp2;
-
-        // Convertendo a diferença em dias (1 dia = 24 horas x 60 minutos x 60 segundos x 1000 milissegundos)
-        const diferencaEmDias = Math.ceil(diferencaEmMilissegundos / (1000 * 60 * 60 * 24));
-
-        return diferencaEmDias;
-    }
    
 
     async function adicionarMensalidade() {
@@ -269,6 +285,8 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
 
             )
            // carregarDados()
+           setLinhasSelecionadas([])
+           setarDados({acordo: { mensalidade: [],id_acordo:0 } })
 
             setarDadosAssociado({...dadosAssociado,mensalidade:[...dadosAssociado.arrayMensalidade,response.data]})
 
@@ -291,10 +309,12 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                  contrato={dadosAssociado?.id_contrato??0}
                   mensalidade={dadosAssociado?.arrayMensalidade??[]}
                    usuario={{nome:usuario?.nome??'',id:Number(usuario?.id)}}
-                   closeModal={setarModalAcordo}
+                   closeModal={setModalAcordo}
                    associado={dadosAssociado?.id_associado??0}
                    carregarDados={carregarDados}
                    openModal={openModalAcordo}
+                   id_contrato_global={dadosAssociado?.id_contrato_global??0}
+                   id_global={dadosAssociado?.id_global??0}
                      />)}
 
 
@@ -304,6 +324,8 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
   {openScanner && <Scanner verficarTicket={verificarBaixa} openModal={openScanner} setModal={setOpenScanner}   />}
 
 <ModalEditarMensalidade mensalidade={mensalidadeSelect??{}} openModal={openEditar} setMensalidade={setMensalidade} setOpenModal={setOpenEditar}/>
+
+<ModalExcluirMens  openModal={openExcluir} setOpenModal={setOpenExcluir} handleExcluirMensalidade={excluirMesal}/>
 
 
     <div className="flex w-full  gap-2">
@@ -334,7 +356,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                 <RiAddCircleFill size={20} />
                 Adicionar
             </button>
-            <button disabled={!permissoes.includes('ADM1.2.2')} type="button" onClick={() => setarModalAcordo({open:true,visible:true})} className="inline-flex items-center px-4 py-1 gap-1 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed font-medium border-r border-t border-b disabled:text-gray-400  bg-gray-200 border-gray-400 text-gray-600 hover:text-white hover:bg-gray-400">
+            <button disabled={!permissoes.includes('ADM1.2.2')} type="button" onClick={() => setModalAcordo({open:true,visible:true})} className="inline-flex items-center px-4 py-1 gap-1 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed font-medium border-r border-t border-b disabled:text-gray-400  bg-gray-200 border-gray-400 text-gray-600 hover:text-white hover:bg-gray-400">
                 <FaHandshake size={20} />
                 Acordo
             </button>
@@ -348,36 +370,12 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                 Imprimir
             </button>
             
-            <button disabled={!permissoes.includes('ADM1.2.3')} onClick={() => setExcluir(!excluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium disabled:bg-gray-100 disabled:cursor-not-allowed border 0 rounded-e-lg  focus:z-10 focus:ring-2 disabled:text-gray-400   bg-gray-200 border-gray-400 text-gray-600 enable:hover:text-white hover:bg-gray-400 ">
+            <button disabled={!permissoes.includes('ADM1.2.3')} onClick={() => setOpenExcluir(!openExcluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium disabled:bg-gray-100 disabled:cursor-not-allowed border 0 rounded-e-lg  focus:z-10 focus:ring-2 disabled:text-gray-400   bg-gray-200 border-gray-400 text-gray-600 enable:hover:text-white hover:bg-gray-400 ">
                 <MdDeleteForever size={20} />
                 Excluir
             </button>
-            {excluir ? (<div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                <div className="flex items-center justify-center p-2 w-full h-full">
-                    <div className="relative rounded-lg shadow bg-gray-800">
-                        <button type="button" onClick={() => setExcluir(!excluir)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                            <button type="button" onClick={() => setarDados({ closeModalPlano: false })} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                                <IoIosClose size={30} />
-                            </button>
-                        </button>
-                        <div className="p-4 md:p-5 text-center">
-                            <div className="flex w-full justify-center items-center">
-                                <TbAlertTriangle className='text-gray-400' size={60} />
-                            </div>
-                            <h3 className="mb-5 text-lg font-normal  text-gray-400">Realmente deseja deletar esssa mensalidade?</h3>
-
-                            <button onClick={excluirMesal} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
-                                Sim, tenho certeza
-                            </button>
-                            <button onClick={() => setExcluir(!excluir)} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>) : ''}
+          
         </div>
-
-
-      
 
     </div>
 <div className="flex w-full p-2 max-h-[calc(100vh-255px)]">
@@ -429,26 +427,24 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
         <tbody  >
 
 
-            {dadosAssociado.arrayMensalidade.map((item, index) => {
+            {arrayMensal.map((item, index) => {
 
-                const idAcordoMudou = currentAcordoId !== item.status;
-                currentAcordoId = item.status;
-                return (idAcordoMudou && item.id_acordo !== null ? (
+                
+                return ( item.status==='E'? (
+                   
                     <React.Fragment key={index}>
 
                         {dadosAssociado.arrayAcordo?.map((i, l) => {
-                            return (
-
-
-
+                           
+                            return  i.id_acordo===item.id_acordo && (
                                 <React.Fragment key={l}>
-                                    <tr onAuxClick={() => setShowSublinhas(!showSublinhas)} className={` ${i.status !== 'A' && "hidden"} cursor-pointer hover:bg-gray-600 font-semibold text-yellow-500 border-b bg-gray-50 border-gray-300`} onClick={() => setShowSublinhas(!showSublinhas)} key={l}>
+                                    <tr  className={`  ${i.status !== 'A' && "hidden"} cursor-pointer hover:bg-gray-300 font-semibold text-yellow-500 border-b bg-gray-50 border-gray-300`} onClick={() => toogleAberto(l)} key={i.id_acordo}>
                                         <td className="px-2 py-1">{/* Renderizar algo aqui */}</td>
                                         <td className="px-2 py-1">ACORDO</td>
-                                        <td className="px-2 py-1">VALOR:R${i.total_acordo}</td>
-                                        <td className="px-2 py-1">VENC.:{new Date(i.data_fim).toLocaleDateString('pt',{timeZone:'UTC'})}</td>
+                                        <td className="px-2 py-1">{Number(i.total_acordo).toLocaleString('pt', { style: 'currency', currency: 'BRL' })}</td>
+                                        <td className="px-2 py-1">{new Date(i.data_fim).toLocaleDateString('pt',{timeZone:'UTC'})}</td>
                                         <td className="px-2 py-1">RESP.:{i.realizado_por}</td>
-                                        <td className="px-2 py-1">Método:{i.metodo}</td>
+                                        <td className="px-2 py-1">PAGAR POR:{i.metodo}</td>
                                         <td className="px-2 py-1">{i.status}</td>
                                         <td className="px-2 py-1">{ }</td>
                                         <td className="px-2 py-1">{ }</td>
@@ -463,20 +459,13 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
 
                                                 setarDados({
                                                     acordo: {
-                                                        mensalidade: i.mensalidade,
-                                                        id_acordo: i.id_acordo,
-                                                        data_fim: i.data_fim,
-                                                        data_inicio: i.data_inicio,
-                                                        dt_pgto: i.dt_pgto,
-                                                        realizado_por: i.realizado_por,
-                                                        status: i.status,
-                                                        total_acordo: i.total_acordo,
-                                                        descricao: i.descricao,
+                                                        ...i,
+                                                        
                                                         visibilidade: true,
                                                         closeAcordo: true,
                                                     }
                                                 })
-                                                setarModalAcordo({open:true,visible:false})
+                                                setModalAcordo({open:true,visible:false})
 
                                             }} className={`font-medium hover:underline ${item.vencimento && new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>
                                                 Baixar/Editar
@@ -484,7 +473,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                                         </td>
                                     </tr>
                                     {i.mensalidade?.map((ii, ee) => (
-                                        <tr className={`border-b font-semibold ${!showSublinhas && "hidden"} ${ii.status !== 'E' && "hidden"} text-yellow-500 border-gray-300  hover:bg-gray-500 hover:text-black `} key={ee}>
+                                      abertos[l] &&  <tr className={`border-b font-semibold ${ii.status !== 'E' && "hidden"} text-yellow-500 border-gray-300  hover:bg-gray-300 hover:text-black `} key={ee}>
                                             <th scope="row" className={`px-5 py-1 font-medium  whitespace-nowrap  `}>
                                                 {ii.parcela_n}
                                             </th>
@@ -499,7 +488,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                                                 {ii.cobranca && new Date(ii.cobranca).toLocaleDateString('pt',{timeZone:'UTC'})}
                                             </td>
                                             <td className="px-3 py-1">
-                                                {`R$${ii.valor_principal}`}
+                                                {Number(ii.valor_principal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                             </td>
                                             <td className={`px-4 py-1 ${ii.status === 'A' && ii.vencimento && calcularDiferencaEmDias(new Date(), new Date(ii.vencimento)) >= 1 ? "font-bold text-red-600" : item.status == 'P' ? "font-bold text-blue-600" : ''}`}>
                                                 {ii.status}
@@ -514,7 +503,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                                                 {ii.usuario}
                                             </td>
                                             <td className={`px-6 py-1`}>
-                                                {ii.valor_total ? `R$${ii.valor_total}` : ''}
+                                                { Number(ii.valor_total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                             </td>
                                             <td className="px-4 py-1">
                                                 {ii.form_pagto}
@@ -557,7 +546,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                                     {new Date(item.cobranca).toLocaleDateString('pt',{timeZone:'UTC'})}
                                 </td>
                                 <td className="px-3 py-1">
-                                    {`R$${item.valor_principal}`}
+                                    {Number(item.valor_principal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                 </td>
                                 <td className={`px-4 py-1  font-bold ${item.status === 'A' && "text-red-600"}`}>
                                     {item.status}
@@ -572,7 +561,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                                     {item.usuario}
                                 </td>
                                 <td className={`px-6 py-1`}>
-                                    {item.valor_total ? `R$${item.valor_total}` : ''}
+                                    {Number(item.valor_total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                 </td>
                                 <td className="px-4 py-1">
                                     {item.form_pagto}
@@ -611,7 +600,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                                     {new Date(item.cobranca).toLocaleDateString('pt',{timeZone:'UTC'})}
                                 </td>
                                 <td className="px-3 py-1">
-                                    {`R$${item.valor_principal}`}
+                                    {Number(item.valor_principal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                 </td>
                                 <td className={`px-4 py-1 ${item.status === 'A' && "font-bold text-red-600"}`}>
                                     {item.status}
@@ -626,7 +615,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                                     {item.usuario}
                                 </td>
                                 <td className={`px-6 py-1`}>
-                                    {item.valor_total ? `R$${item.valor_total}` : ''}
+                                    {Number(item.valor_total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                 </td>
                                 <td className="px-4 py-1">
                                     {item.form_pagto}
@@ -659,3 +648,21 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
 </div>
   )
 }
+
+
+
+function calcularDiferencaEmDias(data1: Date, data2: Date) {
+    // Convertendo as datas para objetos Date
+    const timestamp1 = data1.getTime();
+    const timestamp2 = data2.getTime();
+
+    // Calculando a diferença em milissegundos
+    const diferencaEmMilissegundos = timestamp1 - timestamp2;
+
+    // Convertendo a diferença em dias (1 dia = 24 horas x 60 minutos x 60 segundos x 1000 milissegundos)
+    const diferencaEmDias = Math.ceil(diferencaEmMilissegundos / (1000 * 60 * 60 * 24));
+
+    return diferencaEmDias;
+}
+
+

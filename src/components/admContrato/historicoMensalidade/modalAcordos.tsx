@@ -9,7 +9,7 @@ import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { useForm,SubmitHandler } from 'react-hook-form';
-import { Button, Label, Modal, Table, TextInput } from "flowbite-react";
+import { Button, Label, Modal, Select, Table, TextInput } from "flowbite-react";
 
 
 interface MensalidadeProps {
@@ -64,16 +64,25 @@ interface DadosAcordoProps{
     acordo:Partial<AcordoProps>,
     usuario:{nome:string,id:number},
     mensalidade:Array<MensalidadeProps>
-    contrato:number
+    contrato:number,
+    id_contrato_global:number,
+    id_global:number,
     associado:number
     carregarDados:(id:number)=>Promise<void>
 }
-export function ModalAcordos({closeModal,acordo,usuario,mensalidade,contrato,associado,carregarDados,openModal}:DadosAcordoProps){
+export function ModalAcordos({closeModal,acordo,usuario,mensalidade,contrato,associado,carregarDados,openModal,id_contrato_global,id_global}:DadosAcordoProps){
  const [mensalidadesAcordo, setMensalidadesAcordo] = useState<Array<Partial<MensalidadeProps>>>(acordo.mensalidade??[]);
 
     const {register,handleSubmit,formState:{errors},watch,setValue} = useForm<FormProps>({
-        defaultValues:acordo
+        defaultValues:{...acordo,total_acordo:acordo.mensalidade?.reduce((acc,at)=>{
+            return acc+Number(at?.valor_principal)
+        },0)}
     });
+
+
+
+
+
 
 
 const onSubmit:SubmitHandler<FormProps> = (data) => {
@@ -115,6 +124,8 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
             const response = await toast.promise(
                 api.post('/novoAcordo',{
                     id_contrato:contrato,
+                    id_contrato_global,
+                    id_global,
                     status:'A',
                     id_associado:associado,
                     data_inicio:data.data_inicio,
@@ -124,7 +135,7 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
                     descricao:data.descricao,
                     metodo:data.metodo,
                     dt_criacao:new Date() ,
-                    mensalidade:novasMensalidades
+                    mensalidades:novasMensalidades
                 }),
                 {
                     error:'Erro na requisição',
@@ -144,7 +155,7 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
 
       async function baixarAcordo(){
         const novasMensalidades = mensalidadesAcordo.map(mensal=>{
-            return {...mensal,status:'P',data_pgto:new Date(),usuario:usuario,valor_total:mensal.valor_principal}
+            return {...mensal,status:'P',data_pgto:new Date(),usuario:usuario.nome,valor_total:mensal.valor_principal}
         }
         )
         try{
@@ -261,8 +272,18 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
    <div  className=" flex flex-col w-full">
        
        <Label  htmlFor="metodo" value="Método" />
+
+       <Select sizing={'sm'} {...register("metodo")} >
+        <option value="">Selecione</option>
+
+        <option value="DINHEIRO">DINHEIRO</option>
+        <option value="CARTAO">CARTÃO</option>
+        <option value="PIX">PIX</option>
+        <option value="TRANSFERENCIA">TRANSFERÊNCIA</option>
+
+       </Select>
  
-    <TextInput{...register("metodo")} sizing={'sm'}/>
+ 
    </div>
 
 
@@ -272,8 +293,8 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
 {openModal.visible?(
 <Button size={'sm'} color={'success'}  type="submit" ><MdSaveAlt size={22}/>Criar Acordo</Button>):(
 <div className=" inline-flex w-full justify-between">
-<button onClick={()=>editarAcordo()} type="button" className="flex flex-row justify-center  bg-blue-600 rounded-lg p-2 gap-2 "><MdSaveAlt size={22}/>SALVAR</button>
-<button onClick={()=>baixarAcordo()} type="button" className="flex flex-row justify-center  bg-green-600 rounded-lg p-2 gap-2 "><IoIosArrowDropdownCircle size={22}/>BAIXAR ACORDO</button>
+<Button size={'sm'} color={'blue'} onClick={()=>editarAcordo()} type="button" ><MdSaveAlt className="mr-2 h-5 w-5"/>SALVAR</Button>
+<Button size={'sm'} onClick={()=>baixarAcordo()} type="button" ><IoIosArrowDropdownCircle className="mr-2 h-5 w-5"/>BAIXAR ACORDO</Button>
 </div>
 )}
 </div>

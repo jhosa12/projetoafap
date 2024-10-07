@@ -1,4 +1,4 @@
-import { IoIosClose } from "react-icons/io";
+
 import { IoMdSearch } from "react-icons/io";
 import 'react-tabs/style/react-tabs.css';
 import { ModalBusca } from '../../components/modal'
@@ -7,33 +7,17 @@ import React, { useState, useContext, useEffect, useRef } from "react";
 import { RiFileAddLine } from "react-icons/ri";
 import { AuthContext } from "../../contexts/AuthContext"
 import { toast } from "react-toastify";
-
-import { RiAddCircleFill } from "react-icons/ri";
-import { MdDashboard, MdDeleteForever } from "react-icons/md";
 import { api } from "@/services/apiClient";
-import { TbAlertTriangle } from "react-icons/tb";
-import { ModalDependentes } from "@/components/admContrato/dependentes/modalDependentes";
-import { FaEdit } from "react-icons/fa";
-import { ModalEditarDados } from "@/components/admContrato/dadosAssociado/modalEditar/modalEditarDados";
-import { Tooltip } from 'react-tooltip';
-import { BiSave } from "react-icons/bi";
-import { IoMdEye } from "react-icons/io";
-import { IoMdEyeOff } from "react-icons/io";
 import 'react-tooltip/dist/react-tooltip.css';
-import { canSRRAuth } from "@/utils/canSSRAuth";
 import Head from "next/head";
-import PrintButtonContrato from "@/Documents/contratoAdesão/PrintButton";
-import { TbWheelchair } from "react-icons/tb";
-import PrintButton from "@/Documents/carteiraAssociado/PrintButton";
 import CarteirasDep from "../../components/admContrato/carteiras/carteirasDep";
 import { HistoricoMensalidade } from "@/components/admContrato/historicoMensalidade/historicoMensalidade";
-import PrintButtonCarne from "@/Documents/carne/PrintButton";
 import ObitosAssociado from "@/components/admContrato/obitos/obitos";
 import { Button, Tabs } from "flowbite-react";
 import { HiIdentification, HiMiniInbox, HiMiniWallet, HiOutlineUserGroup, HiPrinter, HiUserCircle, HiUserGroup } from "react-icons/hi2";
-import { HiAdjustments, HiClipboardList } from "react-icons/hi";
 import { DadosAssociado } from "@/components/admContrato/dadosAssociado/screen";
 import { Dependentes } from "@/components/admContrato/dependentes/dependentes";
+
 
 
 
@@ -231,14 +215,14 @@ interface AssociadoProps {
 
 export default function AdmContrato() {
 
-    const { usuario, data, closeModa, dadosassociado, carregarDados,permissoes } = useContext(AuthContext)
-    const [indexTab, setIndex] = useState<number>(2)
-   
+    const { usuario, data, closeModa, dadosassociado, carregarDados, permissoes } = useContext(AuthContext)
+    const [indexTab, setIndex] = useState<number>(0)
 
-   
-  
-    
-   
+
+
+
+
+
 
 
 
@@ -283,14 +267,15 @@ export default function AdmContrato() {
         })
     }
 
-  
+
 
 
 
     useEffect(() => {
         async function listaCadastro() {
             const response = await api.get('/listarDadosCadastro')
-            closeModa({ ...data, cidades: response.data.cidades, planos: response.data.planos })}
+            closeModa({ ...data, cidades: response.data.cidades, planos: response.data.planos })
+        }
         listaCadastro()
     }, [])
 
@@ -310,7 +295,7 @@ export default function AdmContrato() {
 
             )
 
-          //  await carregarDados()
+            //  await carregarDados()
 
         } catch (err) {
             console.log(err)
@@ -321,7 +306,7 @@ export default function AdmContrato() {
 
 
 
-    
+
 
 
 
@@ -353,7 +338,7 @@ export default function AdmContrato() {
 
 
 
-   
+
     return (
         <>
 
@@ -364,14 +349,14 @@ export default function AdmContrato() {
             <div className="flex flex-col w-full mr-2  justify-center">
                 {data.closeModalPlano && (<ModalBusca />)}
                 {data.closeModalCadastro && (<Teste />)}
-               
-               
-               
+
+
+
 
 
                 <div className="flex  flex-col p-4  ">
                     <div className="flex  flex-row justify-start gap-2 items-center w-full mt-2 pb-1">
-                        <Button theme={{color:{light:"border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100"}}} size={'sm'} onClick={() => closeModa({ closeModalPlano: true, mensalidade: {} })} type="button" color={'light'}>
+                        <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100" } }} size={'sm'} onClick={() => closeModa({ closeModalPlano: true, mensalidade: {} })} type="button" color={'light'}>
                             <IoMdSearch size={20} />
                             Buscar Cliente
                         </Button>
@@ -381,66 +366,66 @@ export default function AdmContrato() {
                         </Button>
                     </div>
                     <div className="flex-col w-full border  rounded-lg shadow  border-gray-700">
-                    <Tabs   theme={{base:'bg-white rounded-lg',tablist:{tabitem:{base:"flex items-center justify-center rounded-t-lg p-4 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 "}}}} aria-label="Tabs with icons" variant="underline">
+                        <Tabs theme={{ base: 'bg-white rounded-lg', tablist: { tabitem: { base: "flex items-center justify-center rounded-t-lg p-4 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 " } } }} aria-label="Tabs with icons" variant="underline" onActiveTabChange={e=>setIndex(e)} >
 
-      <Tabs.Item active title="Dados Associado" icon={HiUserCircle}>
-      <DadosAssociado dadosassociado={dadosassociado??{}}/>
-      </Tabs.Item>
+                            <Tabs.Item active={indexTab === 0} title="Dados Associado" icon={HiUserCircle}>
+                            {   indexTab===0 && <DadosAssociado dadosassociado={dadosassociado ?? {}} />}
+                            </Tabs.Item>
 
-      <Tabs.Item disabled={!permissoes.includes('ADM1.2')} title="Histórico/Mensalidade" icon={HiMiniWallet}> 
-      <HistoricoMensalidade
-                                carregarDados={carregarDados}
-                                dados={{ acordo: data.acordo ?? {}, closeModalPlano: data.closeModalPlano ?? false, id_associado: dadosassociado?.id_associado ?? 0, mensalidade: data.mensalidade ?? {}, mensalidadeAnt: data.mensalidadeAnt ?? {} }}
-                                dadosAssociado={{
-                                    nome: dadosassociado?.nome ?? '',
-                                    id_contrato_global:dadosassociado?.contrato?.id_contrato_global??null,
-                                    id_global:dadosassociado?.id_global??null,
-                                    endereco: dadosassociado?.endereco ?? '',
-                                    bairro: dadosassociado?.bairro ?? '',
-                                    cidade: dadosassociado?.cidade ?? '',
-                                    plano: dadosassociado?.contrato?.plano ?? '',
-                                    numero: Number(dadosassociado?.numero),
-                                    uf: dadosassociado?.uf ?? '',
-                                    arrayAcordo: dadosassociado?.acordo ?? [],
-                                    arrayMensalidade: dadosassociado?.mensalidade ?? [],
-                                    id_associado: dadosassociado?.id_associado ?? 0,
-                                    id_contrato: dadosassociado?.contrato?.id_contrato ?? 0,
-                                    valor_mensalidade: dadosassociado?.contrato?.valor_mensalidade ?? 0
-                                }}
-                                setarDados={closeModa}
-                                usuario={{ id: Number(usuario?.id), nome: usuario?.nome ?? '' }}
+                            <Tabs.Item active={indexTab === 1} disabled={!permissoes.includes('ADM1.2')} title="Histórico/Mensalidade" icon={HiMiniWallet}>
+                            {  indexTab===1 &&   <HistoricoMensalidade
+                                    carregarDados={carregarDados}
+                                    dados={{ acordo: data.acordo ?? {}, closeModalPlano: data.closeModalPlano ?? false, id_associado: dadosassociado?.id_associado ?? 0, mensalidade: data.mensalidade ?? {}, mensalidadeAnt: data.mensalidadeAnt ?? {} }}
+                                    dadosAssociado={{
+                                        nome: dadosassociado?.nome ?? '',
+                                        id_contrato_global: dadosassociado?.contrato?.id_contrato_global ?? null,
+                                        id_global: dadosassociado?.id_global ?? null,
+                                        endereco: dadosassociado?.endereco ?? '',
+                                        bairro: dadosassociado?.bairro ?? '',
+                                        cidade: dadosassociado?.cidade ?? '',
+                                        plano: dadosassociado?.contrato?.plano ?? '',
+                                        numero: Number(dadosassociado?.numero),
+                                        uf: dadosassociado?.uf ?? '',
+                                        arrayAcordo: dadosassociado?.acordo ?? [],
+                                        arrayMensalidade: dadosassociado?.mensalidade ?? [],
+                                        id_associado: dadosassociado?.id_associado ?? 0,
+                                        id_contrato: dadosassociado?.contrato?.id_contrato ?? 0,
+                                        valor_mensalidade: dadosassociado?.contrato?.valor_mensalidade ?? 0
+                                    }}
+                                    setarDados={closeModa}
+                                    usuario={{ id: Number(usuario?.id), nome: usuario?.nome ?? '' }}
 
 
-                            />
-      </Tabs.Item>
-      <Tabs.Item disabled={!permissoes.includes('ADM1.3')} title="Dependentes" icon={HiUserGroup
-      }>
-       <Dependentes/>
-      </Tabs.Item>
-      <Tabs.Item title="Carteiras" icon={HiIdentification}>
-      <CarteirasDep
-                                     titular={dadosassociado?.nome??''}
-                                      dependentes={dadosassociado?.dependentes ?? []} 
-                                      contrato={dadosassociado?.contrato?.id_contrato ?? 0}
-                                       plano={dadosassociado?.contrato?.plano ?? ''}
-                                       bairro={dadosassociado?.bairro??''}
-                                       celular={dadosassociado?.celular1??''}
-                                       cidade={dadosassociado?.cidade??''}
-                                       endereco={dadosassociado?.endereco??''}
-                                       numero={dadosassociado?.numero??null}
-                                       uf={dadosassociado?.uf??''}
-                                       />
-      </Tabs.Item>
-      <Tabs.Item disabled={!permissoes.includes('ADM1.5')} title="Óbitos" icon={HiMiniInbox
-      }>
-       <ObitosAssociado
-                                obitos={dadosassociado?.contrato?.obitos ?? []}
-                            />
-      </Tabs.Item>
+                                />}
+                            </Tabs.Item>
+                            <Tabs.Item active={indexTab === 2} disabled={!permissoes.includes('ADM1.3')} title="Dependentes" icon={HiUserGroup
+                            }>
+                           {  indexTab===2 &&   <Dependentes />}
+                            </Tabs.Item>
+                            <Tabs.Item active={indexTab === 3} title="Carteiras" icon={HiIdentification}>
+                               {indexTab===3 && <CarteirasDep
+                                    titular={dadosassociado?.nome ?? ''}
+                                    dependentes={dadosassociado?.dependentes ?? []}
+                                    contrato={dadosassociado?.contrato?.id_contrato ?? 0}
+                                    plano={dadosassociado?.contrato?.plano ?? ''}
+                                    bairro={dadosassociado?.bairro ?? ''}
+                                    celular={dadosassociado?.celular1 ?? ''}
+                                    cidade={dadosassociado?.cidade ?? ''}
+                                    endereco={dadosassociado?.endereco ?? ''}
+                                    numero={dadosassociado?.numero ?? null}
+                                    uf={dadosassociado?.uf ?? ''}
+                                />}
+                            </Tabs.Item>
+                            <Tabs.Item active={indexTab === 4} disabled={!permissoes.includes('ADM1.5')} title="Óbitos" icon={HiMiniInbox
+                            }>
+                             {  indexTab===4 && <ObitosAssociado
+                                    obitos={dadosassociado?.contrato?.obitos ?? []}
+                                />}
+                            </Tabs.Item>
 
-      <Tabs.Item title="Impressões" icon={HiPrinter
-      }>
-           {/* <div className="flex flex-col w-full rounded-lg p-6   gap-5">
+                            <Tabs.Item active={indexTab === 4} title="Impressões" icon={HiPrinter
+                            }>
+                                {/*indexTab===5 &&  <div className="flex flex-col w-full rounded-lg p-6   gap-5">
                                     <div className="flex flex-row text-white gap-6 w-full">
                                         <PrintButtonContrato />
                                         <PrintButton />
@@ -463,13 +448,13 @@ export default function AdmContrato() {
                                     </div>
 
                                 </div>*/}
-      </Tabs.Item>
- 
-   
-    </Tabs>
+                            </Tabs.Item>
+
+
+                        </Tabs>
                         <div className="flex flex-col">
 
-                          
+
 
                         </div>
                     </div>

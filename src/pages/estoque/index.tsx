@@ -1,5 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react"
-import { api } from "@/services/apiClient"
+import {  useContext, useEffect, useState } from "react"
 import Head from "next/head"
 import { AuthContext } from "@/contexts/AuthContext"
 import {  Tabs } from "flowbite-react"

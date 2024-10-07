@@ -19,7 +19,7 @@ export interface EmpresaProps{
 }
 
 
-type DependentesProps = {
+export type DependentesProps = {
     nome: string,
     data_nasc: Date,
     grau_parentesco: string,

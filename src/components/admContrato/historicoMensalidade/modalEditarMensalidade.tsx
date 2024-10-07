@@ -1,14 +1,15 @@
 
-import { MdSaveAlt } from "react-icons/md";
-import { IoIosArrowDropdownCircle } from "react-icons/io";
+
 import { GiReturnArrow } from "react-icons/gi";
 import { AuthContext, MensalidadeProps } from "@/contexts/AuthContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext} from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import "react-datepicker/dist/react-datepicker.css";
-import { Modal, ModalBody, ModalHeader, TextInput,Datepicker,Select,Checkbox, Button } from "flowbite-react";
-import { Scanner } from "./modalScanner";
+import { Modal, ModalBody, ModalHeader, TextInput, Button } from "flowbite-react";
+import DatePicker,{registerLocale} from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import pt from 'date-fns/locale/pt-BR';
 
 
 
@@ -82,18 +83,18 @@ export function ModalEditarMensalidade({openModal,setOpenModal,mensalidade,setMe
 <TextInput disabled style={{padding:6}} value={mensalidade?.referencia} onChange={e=>setMensalidade({...(mensalidade || {}),referencia:e.target.value})} placeholder="REFERÊNCIA"/>
 </div>
 
-<div className="mb-1 col-span-1">
+<div className="flex flex-col w-full mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-black">VENCIMENTO</label>
-    <Datepicker disabled={!permissoes.includes('ADM1.2.8')} className="absolute" labelClearButton="Limpar" labelTodayButton="Hoje" onSelectedDateChanged={e=>setMensalidade({...mensalidade,vencimento:new Date(e)})} value={mensalidade?.vencimento && new Date(mensalidade?.vencimento).toLocaleDateString('pt-BR',{timeZone:'UTC'})} language="pt-BR" style={{padding:6,paddingLeft:34}}/>
+    <DatePicker className="flex w-full p-1.5 text-sm rounded-lg bg-gray-50 border-gray-300" disabled={!permissoes.includes('ADM1.2.8')}  onChange={e=>e && setMensalidade({...mensalidade,vencimento:e})} value={mensalidade?.vencimento && new Date(mensalidade?.vencimento).toLocaleDateString('pt-BR',{timeZone:'UTC'})} locale={pt} />
 </div>
-<div className="mb-1 col-span-1">
+<div className="flex flex-col w-full mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-black">COBRANÇA</label>
-    <Datepicker disabled={!permissoes.includes('ADM1.2.9')} className="absolute" labelClearButton="Limpar" labelTodayButton="Hoje" onSelectedDateChanged={e=>setMensalidade({...mensalidade,cobranca:new Date(e)})} value={mensalidade?.cobranca && new Date(mensalidade?.cobranca).toLocaleDateString('pt-BR',{timeZone:'UTC'})} language="pt-BR" style={{padding:6,paddingLeft:34}}/>
+    <DatePicker  disabled={!permissoes.includes('ADM1.2.9')} className="flex w-full text-sm p-1.5 rounded-lg bg-gray-50 border-gray-300" onChange={e=>e && setMensalidade({...mensalidade,cobranca:e})} value={mensalidade?.cobranca && new Date(mensalidade?.cobranca).toLocaleDateString('pt-BR',{timeZone:'UTC'})} locale={pt}/>
 </div>
 
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-black">VALOR</label>
-    <TextInput disabled style={{padding:6}} value={mensalidade?.valor_principal} onChange={e=>setMensalidade({...mensalidade ,valor_principal:Number(e.target.value)})} placeholder="VALOR PRINCIPAL"/>
+    <TextInput  style={{padding:6}} value={mensalidade?.valor_principal} onChange={e=>setMensalidade({...mensalidade ,valor_principal:Number(e.target.value)})} placeholder="VALOR PRINCIPAL"/>
 </div>
 
 <div className="mb-1 col-span-1">
