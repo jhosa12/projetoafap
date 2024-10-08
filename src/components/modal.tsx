@@ -6,12 +6,6 @@ import { Modal } from "flowbite-react";
 import { HiSearch } from "react-icons/hi";
 
 
-
-
-
-
-
-
 interface ContratoProps{
     id_contrato:number
 }

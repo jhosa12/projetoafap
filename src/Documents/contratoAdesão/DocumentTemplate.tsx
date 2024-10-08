@@ -74,27 +74,27 @@ class DocumentTemplate extends Component<DadosProps> {
           <p className='text-center'>TELEFONES: (88) 997113362 (88)992791293</p>
         </div><br />
         <span style={{ fontSize: '18px' }} className="font-semibold ">Contrato: {contrato}</span>
-        <p className="inline-flex justify-between gap-5">
+        <div className="inline-flex justify-between gap-5">
           <span>Contratante: {nome}</span>
           <span>Data Adesão: {new Date(adesao).toLocaleDateString()}</span>
-        </p>
+        </div>
 
 
-        <p className="inline-flex justify-between gap-5">
+        <div className="inline-flex justify-between gap-5">
           <span>Endereço: {endereco}</span>
           <span>Bairro: {bairro}</span>
-        </p>
+        </div>
 
-        <p className="inline-flex justify-between gap-5">
+        <div className="inline-flex justify-between gap-5">
           <span>Cidade: {cidade}</span>
           <span>Est.: {estado}</span>
           <span>Compl.: {complemento}</span>
-        </p>
-        <p className="inline-flex justify-between gap-5">
+        </div>
+        <div className="inline-flex justify-between gap-5">
           <span>RG: {rg}</span>
           <span>CPF: {cpf}</span>
           <span>Telefone: {telefone}</span>
-        </p>
+        </div>
 
         <h1 className='text-xl text-center font-semibold mt-2'>RELAÇÃO DE DEPENDENTES</h1>
 
@@ -172,7 +172,7 @@ class DocumentTemplate extends Component<DadosProps> {
 
           <h1 className='text-center font-semibold '>CONTRATO PARTICULAR DE PRESTAÇÃO DE SERVIÇOS ASSISTENCIAL FAMILIAR & FUNERÁRIO</h1>
         </div>
-        <p className='uppercase mx-5 p-2 text-justify'>
+        <div className='uppercase mx-5 p-2 text-justify' style={{ textAlign: 'justify' }}>
           Pelo presente instrumento particular as partes doravante denominas isoladamente.
           Parte e conjunto. Partes, de um lado na qualidade de CONTRATADA e doravante assim
           denominada pelo nome fantasia ASSISTÊNCIA FAMILIAR PARAÍSO (AFAP), razão social FREITAS
@@ -260,14 +260,14 @@ class DocumentTemplate extends Component<DadosProps> {
 
 
 
-        </p><br /><br />
+        </div><br /><br />
 
        
       
           <div className="inline-flex   w-full gap-6 ">
 
 
-            <p className="flex flex-col  w-1/2  justify-center items-center "style={{paddingTop:85,position:'relative'}}>
+            <div className="flex flex-col  w-1/2  justify-center items-center "style={{paddingTop:85,position:'relative'}}>
             <div  style={{position:'absolute', top:5}}>
             <Image className=" object-cover" width={300} alt="imagemAss" src={assinatura} />
             </div>
@@ -278,11 +278,11 @@ class DocumentTemplate extends Component<DadosProps> {
             <span  style={{position:'absolute',top:85}}>CONTRATADA(O)</span>
            
 
-            </p>
-            <p className="flex flex-col w-1/2 justify-center items-center" style={{paddingTop:85,position:'relative'}}>
+            </div>
+            <div className="flex flex-col w-1/2 justify-center items-center" style={{paddingTop:85,position:'relative'}}>
               <span className=" absolute top-[20px]  flex  w-full border-b-[1px] border-black "></span>
               <span  style={{position:'absolute',top:85}} >CONTRATANTE</span>
-            </p>
+            </div>
 
 
           </div>
@@ -290,14 +290,14 @@ class DocumentTemplate extends Component<DadosProps> {
        
         <br /><br /><br /><br />
         <div className="inline-flex w-full gap-6 pt-8">
-          <p className="flex flex-col w-1/2 justify-center items-center">
+          <div className="flex flex-col w-1/2 justify-center items-center">
             <span className="flex w-full border-b-[1px] border-black "></span>
             <span>TESTEMUNHA</span>
-          </p>
-          <p className="flex flex-col w-1/2 justify-center items-center">
+          </div>
+          <div className="flex flex-col w-1/2 justify-center items-center">
             <span className="flex w-full border-b-[1px] border-black "></span>
             <span>TESTEMUNHA</span>
-          </p>
+          </div>
 
         </div>
 

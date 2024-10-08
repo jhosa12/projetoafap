@@ -17,6 +17,8 @@ import { Button, Tabs } from "flowbite-react";
 import { HiIdentification, HiMiniInbox, HiMiniWallet, HiOutlineUserGroup, HiPrinter, HiUserCircle, HiUserGroup } from "react-icons/hi2";
 import { DadosAssociado } from "@/components/admContrato/dadosAssociado/screen";
 import { Dependentes } from "@/components/admContrato/dependentes/dependentes";
+import { Impressoes } from "@/components/admContrato/impressoes/screen";
+
 
 
 
@@ -373,7 +375,7 @@ export default function AdmContrato() {
                             </Tabs.Item>
 
                             <Tabs.Item active={indexTab === 1} disabled={!permissoes.includes('ADM1.2')} title="Histórico/Mensalidade" icon={HiMiniWallet}>
-                            {  indexTab===1 &&   <HistoricoMensalidade
+                            {   <HistoricoMensalidade
                                     carregarDados={carregarDados}
                                     dados={{ acordo: data.acordo ?? {}, closeModalPlano: data.closeModalPlano ?? false, id_associado: dadosassociado?.id_associado ?? 0, mensalidade: data.mensalidade ?? {}, mensalidadeAnt: data.mensalidadeAnt ?? {} }}
                                     dadosAssociado={{
@@ -425,29 +427,7 @@ export default function AdmContrato() {
 
                             <Tabs.Item active={indexTab === 4} title="Impressões" icon={HiPrinter
                             }>
-                                {/*indexTab===5 &&  <div className="flex flex-col w-full rounded-lg p-6   gap-5">
-                                    <div className="flex flex-row text-white gap-6 w-full">
-                                        <PrintButtonContrato />
-                                        <PrintButton />
-                                        <PrintButtonCarne
-                                            arrayMensalidade={dadosassociado?.mensalidade ?? []}
-                                            dadosAssociado={{
-                                                nome: dadosassociado?.nome ?? '',
-                                                bairro: dadosassociado?.bairro ?? '',
-                                                cidade: dadosassociado?.cidade ?? '',
-                                                endereco: dadosassociado?.endereco ?? '',
-                                                id_contrato: Number(dadosassociado?.contrato?.id_contrato),
-                                                numero: Number(dadosassociado?.numero),
-                                                plano: dadosassociado?.contrato?.plano ?? '',
-                                                uf: dadosassociado?.uf ?? ''
-                                            }}
-
-
-                                        />
-
-                                    </div>
-
-                                </div>*/}
+                                {indexTab===5 && <Impressoes />}
                             </Tabs.Item>
 
 

@@ -52,7 +52,7 @@ export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos,
 
 
     return(
-        <div className="flex-col w-full px-2   ">
+        <div className="flex-col w-full p-2  bg-white h-[82vh] rounded-lg ">
 
       { mov && <ModalMov permissoes={permissoes}  setModalNovo={setOpenModal} reqDadosEstoq={postData} id_usuario={id_usuario} usuario={usuario} empresas={empresas} produtos={selectProdutos??[]}  setOpenModal={setMov}/>}
     { openModal && <ModalNovoProduto reqProdutos={reqProdutos} reqDadosEstoq={postData} permissoes={permissoes}  openModal={openModal} setOpenModal={setOpenModal}/>}

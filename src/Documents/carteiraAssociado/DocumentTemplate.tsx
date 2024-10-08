@@ -82,13 +82,23 @@ class DocumentTemplate extends React.Component<DadosProps> {
   const venc = new Date(dataAtual.getFullYear() + 1, dataAtual.getMonth(), dataAtual.getDate())
 
     return (
-      <div className="flex flex-col w-full px-2">
+      <div className="flex flex-col w-full ">
         <div className="grid  grid-cols-2 grid-rows-5 w-full justify-items-center gap-1">
 
-       {cartTitular && <div className="relative inline-flex col-span-2 w-full justify-center">
-          <Image alt={'carteiraDep'} height={210} width={362} src={titularFrente} className="object-cover" />
-          <Image alt={'carteiraDep'} height={210} width={362} src={titularVerso} className="object-cover " />
-          <div className="absolute flex flex-col justify-center items-center" style={{left:145,top:135,gap:2,width:235}}>
+       {cartTitular && <div style={{
+                            display: 'flex',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundImage: "url('/carteiraTitular.png')",
+                            pageBreakInside: 'avoid',
+                            height: '230px',
+                            fill: 'black',
+                            width: '100%',
+                            backgroundSize: 'contain',
+                            backgroundPosition: 'center',
+                        }}  className="relative inline-flex col-span-2 w-full justify-center">
+        {/*  <Image alt={'carteiraDep'} height={210} width={362} src={titularFrente} className="object-cover" />
+          <Image alt={'carteiraDep'} height={210} width={362} src={titularVerso} className="object-cover " />*/}
+          <div className="absolute flex flex-col justify-center items-center" style={{left:145,top:120,gap:2,width:235}}>
            <span style={{fontSize:10}}>{titular}</span> 
           
            <div className="inline-flex gap-10 ">
@@ -96,9 +106,9 @@ class DocumentTemplate extends React.Component<DadosProps> {
             <span className="font-semibold" style={{fontSize:6}}>CATEGORIA: {plano}</span> 
            </div>
          
-            <span className="font-semibold" style={{fontSize:7}}>{endereco} - {numero}</span>
+            <span className="font-semibold" style={{fontSize:7}}>{endereco} - {numero!=0 && numero}</span>
             <span className="font-semibold" style={{fontSize:7}}>{bairro}/{cidade},{uf}</span>
-            <span className="font-semibold" style={{fontSize:7}}>FONE:{celular}</span>
+           {celular && <span className="font-semibold" style={{fontSize:7}}>FONE:{celular}</span>}
             <span className="font-semibold" style={{fontSize:7}}>CARTÃO VÁLIDO ATÉ:{venc.toLocaleDateString()}</span>
             </div>
           {<ol className="absolute" style={{right:110,top:50,fontSize:8,listStyleType:'decimal'}}>

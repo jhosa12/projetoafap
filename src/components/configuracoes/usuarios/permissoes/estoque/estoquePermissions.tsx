@@ -38,7 +38,7 @@ export function TabEstoque({permissions,handlePermission}:DataProps){
                     <Card  theme={{root:{children:"flex h-full flex-col  gap-2 p-4"}}}>
                       <h1 className="text-sm font-semibold">Historico</h1>
                       <ToggleSwitch  sizing={'sm'} checked={permissions.includes('EST2.1')} onChange={()=>handlePermission('EST2.1')} label="Adicionar"/>
-                      <ToggleSwitch sizing={'sm'} checked={permissions.includes('EST2.2')} onChange={()=>handlePermission('EST2.2')} label="Editar"/>
+                      <ToggleSwitch sizing={'sm'} checked={permissions.includes('EST2.2')} onChange={()=>handlePermission('EST2.2')} label="Estornar"/>
                       <ToggleSwitch sizing={'sm'} checked={permissions.includes('EST2.3')} onChange={()=>handlePermission('EST2.3')} label="Excluir"/>
                          
                     </Card>

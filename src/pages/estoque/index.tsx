@@ -93,7 +93,7 @@ export default function AdministrarEstoque(){
      
       </Tabs.Item>
       <Tabs.Item  active={tab===1} title="Histórico de Movimentação" icon={RiHistoryLine}>
-     {tab===1 && <HistoricoMov  id_usuario={usuario?.id??''} usuario={usuario?.nome??''} />}
+     {tab===1 && <HistoricoMov permissoes={permissoes}  id_usuario={usuario?.id??''} usuario={usuario?.nome??''} />}
       </Tabs.Item>
 
     

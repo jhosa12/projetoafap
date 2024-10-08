@@ -9,7 +9,7 @@ import { AuthContext } from '@/contexts/AuthContext';
 
 
 
-  export function PrintButton( ){
+  export function PrintButtonContrato( ){
   const componentRef = useRef<DocumentTemplate>(null);
   const {dadosassociado}=useContext(AuthContext)
   const cadastrado = !!dadosassociado?.contrato?.id_contrato
@@ -49,4 +49,4 @@ import { AuthContext } from '@/contexts/AuthContext';
   );
 };
 
-export default PrintButton;
+export default PrintButtonContrato;

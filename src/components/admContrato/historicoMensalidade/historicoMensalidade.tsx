@@ -531,7 +531,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                             <tr key={index}
                                 onClick={() => toggleSelecionada(item)}
                                 //className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600  ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":item.status==='P'? 'text-blue-500':'text-white'}`}>
-                                className={`font-semibold ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"} border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : "bg-gray-50"}  ${item.status === 'P' && "text-blue-600"} border-gray-400  hover:bg-gray-300 hover:text-black   ${item.parcela_n === 0 ? "hidden" : ''}`}>
+                                className={`font-semibold divide-y text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"}  ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : "bg-gray-50"}  ${item.status === 'P' && "text-blue-600"}   hover:bg-gray-300 hover:text-black   ${item.parcela_n === 0 ? "hidden" : ''}`}>
                                 <th scope="row" className={`px-5 py-1  `}>
                                     {item.parcela_n}
                                 </th>
@@ -548,7 +548,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                                 <td className="px-3 py-1">
                                     {Number(item.valor_principal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                 </td>
-                                <td className={`px-4 py-1  font-bold ${item.status === 'A' && "text-red-600"}`}>
+                                <td className={`px-4 py-1  font-bold ${item.status !== 'P' && "text-red-600"}`}>
                                     {item.status}
                                 </td>
                                 <td className="px-4 py-1">
@@ -579,16 +579,13 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                                     }} className={` ${item.status === 'E' ? "hidden" : ''}  hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>Editar</button>
                                 </td>
                             </tr>
-                        ) : item.status === 'A' ? (
-                            <tr key={index} //onClick={()=>{setarDados({mensalidade:{
-                                // id_mensalidade:item.id_mensalidade,
-                                // status:item.status
-                                // }})}} className={` border-b ${item.id_mensalidade===data.mensalidade?.id_mensalidade?"bg-gray-600":"bg-gray-800"}  border-gray-700  hover:bg-gray-600 ${new Date(item.vencimento)<new Date()&& item.status==='A'?"text-red-500":'text-white'}`}>
+                        ) : item.status === 'A' || item.status === 'R' ? (
+                            <tr key={index}
                                 onClick={() => toggleSelecionada(item)}
-                                className={`font-semibold ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && "text-red-600"}  border-b ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : "bg-gray-50"}   border-gray-400  hover:bg-gray-300 hover:text-black   ${item.parcela_n === 0 ? "hidden" : ''}`}>
-                                <th className="px-5 py-1   ">
+                                className={`font-semibold  divide-y text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && "text-red-600"}   ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : ""}   hover:bg-gray-300 hover:text-black   ${item.parcela_n === 0 ? "hidden" : ''}`}>
+                                <td className="px-5 py-1   ">
                                     {item.parcela_n}
-                                </th>
+                                </td>
                                 <td className="px-2 py-1">
                                     {new Date(item.vencimento).toLocaleDateString('pt',{timeZone:'UTC'})}
 
@@ -602,7 +599,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                                 <td className="px-3 py-1">
                                     {Number(item.valor_principal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                 </td>
-                                <td className={`px-4 py-1 ${item.status === 'A' && "font-bold text-red-600"}`}>
+                                <td className={`px-4 py-1  font-bold text-red-600`}>
                                     {item.status}
                                 </td>
                                 <td className="px-4 py-1">
