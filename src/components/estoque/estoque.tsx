@@ -52,7 +52,7 @@ export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos,
 
 
     return(
-        <div className="flex-col w-full p-2  bg-white h-[82vh] rounded-lg ">
+        <div className="flex-col w-full p-2  bg-white h-[79vh] rounded-lg ">
 
       { mov && <ModalMov permissoes={permissoes}  setModalNovo={setOpenModal} reqDadosEstoq={postData} id_usuario={id_usuario} usuario={usuario} empresas={empresas} produtos={selectProdutos??[]}  setOpenModal={setMov}/>}
     { openModal && <ModalNovoProduto reqProdutos={reqProdutos} reqDadosEstoq={postData} permissoes={permissoes}  openModal={openModal} setOpenModal={setOpenModal}/>}
@@ -68,7 +68,7 @@ export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos,
 
                 </div>
 
-        <div className="overflow-y-auto mt-1 px-2 max-h-[74vh] rounded-lg ">
+        <div className="overflow-y-auto mt-1 px-2 max-h-[70vh] rounded-lg ">
         <Table hoverable theme={{ body: { cell: { base: " px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }}  >
                     <Table.Head >
                             <Table.HeadCell >

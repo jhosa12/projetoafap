@@ -183,7 +183,7 @@ export function HistoricoMov({ id_usuario, usuario,permissoes }: DataProps) {
 
           {  <ModalConfirm status={'ESTORNO'} handleMovimentar={handleEstorno} open={openModalConfirm} setOpen={setOpenModalConfirm} />}
     
-            <div className="flex-col w-full p-2  rounded-lg bg-white h-[82vh] ">
+            <div className="flex-col w-full p-2  rounded-lg bg-white h-[79vh] ">
 
                 <Button theme={{
                     color: {
@@ -197,7 +197,7 @@ export function HistoricoMov({ id_usuario, usuario,permissoes }: DataProps) {
                 >FILTRO
                 </Button>
 
-                <div className="overflow-y-auto mt-1 px-2 max-h-[74vh] ">
+                <div className="overflow-y-auto mt-1 px-2 max-h-[70vh] ">
                     <Table hoverable theme={{ body: { cell: { base: " px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }}  >
                         <Table.Head >
                             <Table.HeadCell >
