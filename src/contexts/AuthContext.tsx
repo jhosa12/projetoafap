@@ -20,6 +20,7 @@ export interface EmpresaProps{
 
 
 export type DependentesProps = {
+    id_dependente_global:number,
     nome: string,
     data_nasc: Date,
     grau_parentesco: string,
@@ -181,7 +182,8 @@ export type AssociadoProps = {
     numero: number,
     cidade: string,
     cep: string,
-    cpf: string, rg: string
+    cpfcnpj: string,
+     rg: string
     email: string,
     profissao: string,
     guia_rua: string,
@@ -595,7 +597,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             endereco: '',
             mensalidade: [],
             data_nasc: undefined,
-            cpf: undefined,
+            cpfcnpj: undefined,
             dependentes: [],
             telefone: undefined,
             uf: undefined,

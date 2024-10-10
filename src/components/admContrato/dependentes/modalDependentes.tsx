@@ -2,42 +2,83 @@ import { IoIosClose } from "react-icons/io";
 import { MdSaveAlt } from "react-icons/md";
 import { RiAddCircleFill } from "react-icons/ri";
 import { TfiReload } from "react-icons/tfi";
-import { AuthContext } from "@/contexts/AuthContext";
-import { useContext, useEffect, useState } from "react";
+import { AuthContext, DependentesProps } from "@/contexts/AuthContext";
+import { useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
-import DatePicker,{registerLocale, setDefaultLocale} from "react-datepicker";
+import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { Button, Label, Modal, Select, TextInput } from "flowbite-react";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 registerLocale('pt', pt)
+
+
+
+interface FormDataProps{
+  
+  nome:string
+  data_nasc:Date
+  grau_parentesco:string
+  data_adesao:Date
+  carencia:Date
+  sexo:string,
+  exclusao_motivo:string
+}
 
 
 interface DataProps{
     openModal:boolean,
     setModal:(open:boolean)=>void
+    data:DependentesProps
 }
 
 
 
 
-export function ModalDependentes({openModal,setModal}:DataProps){
-    const {closeModa,data,usuario,dadosassociado,carregarDados}=useContext(AuthContext)
+export function ModalDependentes({openModal,setModal,data}:DataProps){
+    const {usuario,dadosassociado,carregarDados}=useContext(AuthContext)
+    const {setValue,register,watch,handleSubmit} = useForm<FormDataProps>()
 
- async function addDependente(){
+useEffect(()=>{
+  setValue('carencia',data.carencia)
+  setValue('data_adesao',data.data_adesao)
+  setValue('data_nasc',data.data_nasc)
+  setValue('grau_parentesco',data.grau_parentesco)
+  setValue('nome',data.nome)
+  setValue('sexo',data.sexo)
+},[data])
+
+    const handleApiFunction:SubmitHandler<FormDataProps> = async(dadosForm)=>{
+      if (data.excluido) {
+        // Se o dependente está excluído, você resgata ele.
+        await resgatarDep();
+      } else if (data.id_dependente) {
+        // Se já existe um dependente (tem ID), então você atualiza.
+        await atualizarDependente(dadosForm);
+      } else {
+        // Se é um novo dependente, você adiciona.
+        await addDependente(dadosForm);
+      }
+
+    }
+
+ async function addDependente(dados:FormDataProps){
     const response = await toast.promise(
         api.post('/novoDependente',{
+          id_global:dadosassociado?.id_global,
+          id_contrato_global:dadosassociado?.contrato?.id_contrato_global,
             id_contrato:dadosassociado?.contrato?.id_contrato,
             id_associado:dadosassociado?.id_associado,
-            nome:data.dependente?.nome,
-            data_nasc:data.dependente?.data_nasc,
-            grau_parentesco:data.dependente?.grau_parentesco,
-            data_adesao:data.dependente?.data_adesao,
+            nome:dados.nome.toUpperCase(),
+            data_nasc:dados.data_nasc,
+            grau_parentesco:dados.grau_parentesco,
+            data_adesao:dados.data_adesao,
             cad_usu:usuario?.nome,
             cad_dh:new Date(),
-            carencia:data.dependente?.carencia,
-            sexo:data.dependente?.sexo
+            carencia:dados.carencia,
+            sexo:dados.sexo
         }),
         {
             error:'Erro ao adicionar dependente',
@@ -45,19 +86,21 @@ export function ModalDependentes({openModal,setModal}:DataProps){
             success:'Adicionado com Sucesso!'
         }
     )
-    dadosassociado?.id_associado &&  await carregarDados(dadosassociado?.id_associado)
+    dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
    
  }
 
- async function atualizarDependente(){
+ async function atualizarDependente(dados:FormDataProps){
     const response = await toast.promise(
         api.put('/atualizarDependente',{
-            id_dependente:data.dependente?.id_dependente,
-            nome:data.dependente?.nome,
-            data_nasc:data.dependente?.data_nasc,
-            grau_parentesco:data.dependente?.grau_parentesco,
-            data_adesao:data.dependente?.data_adesao,
-            carencia:data.dependente?.carencia
+          id_dependente_global:data.id_dependente_global,
+            id_dependente:data.id_dependente,
+            nome:dados.nome,
+            data_nasc:dados.data_nasc,
+            grau_parentesco:dados.grau_parentesco,
+            data_adesao:dados.data_adesao,
+            carencia:dados.carencia,
+            sexo:dados.sexo
         }),
         {
             error:'Erro ao atualizar dependente',
@@ -65,12 +108,12 @@ export function ModalDependentes({openModal,setModal}:DataProps){
             success:'Atualizado com Sucesso!'
         }
     )
-    dadosassociado?.id_associado &&  await carregarDados(dadosassociado?.id_associado)
+    dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
  }
 
  async function resgatarDep(){
 
-    if(!data.dependente?.id_dependente){
+    if(!data.id_dependente){
      toast.info("Selecione um dependente!")
      return;
     }
@@ -78,7 +121,7 @@ export function ModalDependentes({openModal,setModal}:DataProps){
      try{
          await toast.promise(
              api.put('/excluirDependente',{
-                 id_dependente:Number(data.dependente?.id_dependente),
+                 id_dependente:Number(data.id_dependente),
                  excluido:false,
              }),
              {
@@ -88,7 +131,7 @@ export function ModalDependentes({openModal,setModal}:DataProps){
              }
          )
          
-      dadosassociado?.id_associado &&  await carregarDados(dadosassociado?.id_associado)
+      dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
        
      }catch(err){
          console.log(err)
@@ -99,21 +142,18 @@ export function ModalDependentes({openModal,setModal}:DataProps){
 <Modal show={openModal} onClose={()=>setModal(false)} popup>
 <Modal.Header>Administrar Dependente</Modal.Header>
     <Modal.Body>
-        <form>
-        <div className="  grid gap-2 grid-cols-4">
-
-
+        <form className="  grid gap-2 grid-cols-4 font-semibold" onSubmit={handleSubmit(handleApiFunction)}>
         <div className="col-span-2" >
   <div className=" block">
     <Label  value="Nome" />
   </div>
-  <TextInput  sizing={'sm'}value={data.dependente?.nome} onChange={e=>closeModa({dependente:{...(data.dependente || {}),nome:e.target.value.toUpperCase()}})}type="text" placeholder="Nome" required />
+  <TextInput className="font-semibold" value={watch('nome')?.toUpperCase()} sizing={'sm'} {...register('nome')} type="text" placeholder="Nome" required />
 </div>
 <div className="col-span-1" >
   <div className=" block">
     <Label  value="Nascimento" />
   </div>
- <DatePicker selected={data.dependente?.data_nasc} onChange={e=>e && closeModa({dependente:{...(data.dependente || {}),data_nasc:e}})}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+ <DatePicker selected={watch('data_nasc')} onChange={e=>e && setValue('data_nasc',e)}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
 </div>
 
 
@@ -122,20 +162,20 @@ export function ModalDependentes({openModal,setModal}:DataProps){
   <div className=" block">
     <Label  value="Parentesco" />
   </div>
-  <Select sizing={'sm'} defaultValue={data.dependente?.grau_parentesco} onChange={e=>closeModa({dependente:{...(data.dependente || {}),grau_parentesco:e.target.value}})}>
+  <Select sizing={'sm'} {...register('grau_parentesco')}>
   <option selected className="text-gray-200">PARENTESCO</option>
-                    <option>CONJUGE</option>
-                    <option>PAI</option>
-                    <option>MÃE</option>
-                    <option>FILHO(A)</option>,
-                    <option>IRMÃO(Ã)</option>
-                    <option>PRIMO(A)</option>
-                    <option>SOBRINHA(A)</option>
-                    <option>NORA</option>
-                    <option>GENRO</option>
-                    <option>TIO(A)</option>
-                    <option>AVÔ(Ó)</option>
-                    <option>OUTROS</option>
+                    <option value={'CONJUGE'}>CONJUGE</option>
+                    <option value={'PAI'}>PAI</option>
+                    <option value={'MÃE'}>MÃE</option>
+                    <option value={'FILHO'}>FILHO(A)</option>,
+                    <option value={'IRMÃO(Ã)'}>IRMÃO(Ã)</option>
+                    <option value={'PRIMO'}>PRIMO(A)</option>
+                    <option   value={'SOBRINHO(A)'}>SOBRINHO(A)</option>
+                    <option value={'NORA'}>NORA</option>
+                    <option value={'GENRO'}>GENRO</option>
+                    <option value={'TIO(A)'}>TIO(A)</option>
+                    <option value={'AVÔ(Ó)'}>AVÔ(Ó)</option>
+                    <option value={'OUTROS'}>OUTROS</option>
             </Select >
 </div>
 
@@ -143,34 +183,45 @@ export function ModalDependentes({openModal,setModal}:DataProps){
   <div className=" block">
     <Label  value="Adesão" />
   </div>
- <DatePicker selected={data.dependente?.data_adesao} onChange={e=>e && closeModa({dependente:{...(data.dependente || {}),data_adesao:e}})}   dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+ <DatePicker selected={watch('data_adesao')} onChange={e=>e && setValue('data_adesao',e)}   dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
 </div>
 
 <div className="col-span-1" >
   <div className=" block">
     <Label  value="Carência" />
   </div>
- <DatePicker  selected={data.dependente?.carencia} onChange={e=>e && closeModa({dependente:{...(data.dependente || {}),carencia:e}})}    dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+ <DatePicker  selected={watch('carencia')} onChange={e=>e && setValue('carencia',e)}    dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
 </div>
 
 
 
-{data.dependente?.exclusao_motivo && (
+{data.exclusao_motivo && (
      <div className="col-span-2" >
      <div className=" block">
        <Label  value="Motivo exclusão" />
      </div>
-     <TextInput disabled={data.dependente?.excluido}   sizing={'sm'} value={data.dependente?.exclusao_motivo} onChange={e=>closeModa({dependente:{...(data.dependente || {}),exclusao_motivo:e.target.value.toUpperCase()}})}  type="text" placeholder="Motivo" required />
+     <TextInput disabled={data.excluido}   sizing={'sm'} {...register('exclusao_motivo')}  type="text" placeholder="Motivo" required />
    </div>
  )}
 
 <div className=" gap-2 col-span-4  flex flex-row justify-end">
-{data.dependente?.saveAdd && !data.dependente.excluido?(<Button onClick={()=>atualizarDependente()} ><MdSaveAlt size={22}/>Salvar</Button>):data.dependente?.excluido?(
-<Button onClick={()=>resgatarDep()} ><TfiReload size={20}/>Resgatar</Button>):
-(<Button onClick={()=>addDependente()}><RiAddCircleFill size={22}/>Adicionar</Button>)
-}
+<Button size={'sm'} type="submit">
+    {data.excluido ? (
+      <>
+        <TfiReload size={20} /> Resgatar
+      </>
+    ) : data.id_dependente ? (
+      <>
+        <MdSaveAlt size={22} /> Salvar
+      </>
+    ) : (
+      <>
+        <RiAddCircleFill size={22} /> Adicionar
+      </>
+    )}
+  </Button>
 </div>
-    </div>
+  
 </form>
 </Modal.Body>
 </Modal>

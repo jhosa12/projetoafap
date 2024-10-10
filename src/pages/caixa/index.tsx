@@ -1,7 +1,7 @@
 import { BiTransfer } from "react-icons/bi";
 import { api } from "@/services/apiClient";
 import { MdOutlineAddCircle } from "react-icons/md";
-import { useContext, useEffect, useRef, useState } from "react";
+import { use, useContext, useEffect, useRef, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -20,6 +20,7 @@ import  Fechamento  from "@/Documents/caixa/Fechamento";
 import { useReactToPrint } from "react-to-print";
 import { Scanner } from "@/components/admContrato/historicoMensalidade/modalScanner";
 import { ModalDadosMensalidade } from "@/components/caixa/modalDadosMensalidade";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 
 registerLocale('pt', pt)
@@ -74,20 +75,23 @@ export interface MensalidadeProps{
     motivo_bonus:string
 }
 
+interface FormProps{
+    startDate:Date,
+    endDate:Date,
+    id_empresa:string,
+    descricao:string
+}
+
 
 export default function CaixaMovimentar(){
     const[lancamentos,setLancamentos]=useState<Array<LancamentosProps>>([]);
     const[mov,setMov]=useState<Partial<LancamentosProps>>();
-    const[dataInicial,setDataInicial] =useState<Date>(new Date());
-    const[dataFinal,setDataFinal] =useState<Date>(new Date());
-    const[descricao,setDescricao] =useState('');
     const[saldo,setSaldo]=useState(0);
     const[grupos,setGrupos] = useState<Array<GrupoPrps>>([])
     const[despesas,setDespesas]=useState(0);
     const [empresaApi,setApiEmpresa] = useState('')
-    const [selectEmpresa,setSelectEmpresa] = useState('')
     const [planos,setPlanos]=useState([]);
-    const {usuario,permissoes} =useContext(AuthContext);
+    const {usuario,permissoes,empresas} =useContext(AuthContext);
     const[visible,setVisible] = useState(false);
     const [openModal,setModal] = useState<boolean>(false);
     const [openModalExc,setModalExc] = useState<boolean>(false);
@@ -96,7 +100,13 @@ export default function CaixaMovimentar(){
     const [scanner,setScanner] = useState<boolean>(false)
     const [mensalidade,setMensalidade] = useState<Partial<MensalidadeProps>>()
     const [modalDados,setModalDados] = useState<boolean>(false)
-
+    const {register,watch,setValue,handleSubmit}= useForm<FormProps>({
+        defaultValues:{
+            startDate:new Date(),
+            endDate:new Date(),
+            id_empresa:empresas[1]?.id,
+        }
+    })
 
 
     const currentePage = useRef<Fechamento>(null)
@@ -156,7 +166,11 @@ export default function CaixaMovimentar(){
        
   
 
+       useEffect(()=>{
 
+        listarLancamentos()
+           
+       },[])
 
 
 
@@ -189,14 +203,14 @@ export default function CaixaMovimentar(){
 
    
 
-    async function listarLancamentos() {
+   const listarLancamentos = async()=> {
         try{
             setLoading(true)
             const response = await api.post('/listarLancamentos',{
-                empresa:selectEmpresa,
-                dataInicial:dataInicial,
-                dataFinal:dataFinal,
-                descricao:descricao,
+                empresa:watch('id_empresa'),
+                dataInicial:watch('startDate'),
+                dataFinal:watch('endDate'),
+                descricao:  watch('descricao'),
                 id_user:usuario?.id
           
             })
@@ -240,10 +254,10 @@ export default function CaixaMovimentar(){
 return(
 <>
 <div style={{display:'none'}}>
-<Fechamento dataFim={dataFinal} dataInicio={dataInicial} usuario={usuario?.nome??''}  ref={currentePage}/>
+<Fechamento dataFim={watch('endDate')} dataInicio={watch('startDate')} usuario={usuario?.nome??''}  ref={currentePage}/>
 </div>
 
-<ModalLancamentosCaixa listarLancamentos={listarLancamentos}  empresaAPI={empresaApi} arrayLanc={lancamentos} setLancamentos={setLancamentos} setMov={setMov} mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={planos}  grupo={grupos}/>
+<ModalLancamentosCaixa empresas={empresas} listarLancamentos={listarLancamentos}  empresaAPI={empresaApi} arrayLanc={lancamentos} setLancamentos={setLancamentos}  mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={planos}  grupo={grupos}/>
 
 <ModalExcluir openModal={openModalExc} handleExcluir={handleExcluir} setOpenModal={setModalExc}/>
 
@@ -259,10 +273,10 @@ return(
     </Modal.Body>
 </Modal>
 
-<div className="flex flex-col w-full border  rounded-lg shadow  border-gray-600 max-h-[89vh]">
+<div className="flex flex-col px-2 w-full mt-1  max-h-[89vh] overflow-y-auto">
     <div className="text-gray-600 bg-gray-50 rounded-t-lg inline-flex items-center w-full justify-between">
-    <h1 className="flex  text-lg items-end pl-3 font-medium whitespace-nowrap">Movimentação de Caixa</h1>
-    <div className="flex w-full flex-row justify-end p-1 gap-4">
+   
+    <form  className="flex w-full flex-row justify-end p-1 gap-4 text-black font-semibold">
 
 
 
@@ -270,13 +284,11 @@ return(
         <div className=" block">
           <Label value="Empresa" />
         </div>
-     <Select value={selectEmpresa} onChange={e=>setSelectEmpresa(e.target.value)} sizing={'sm'}>
-        <option value={''}></option>
-        <option value={'AFAP CEDRO'}>AFAP CEDRO</option>
-        <option value={'AFAP LAVRAS'}>AFAP LAVRAS</option>
-        <option value={'OTICA FREITAS'}>OTICA FREITAS</option>
-        <option value={'AFAP VIVAMAIS'}>AFAP VIVAMAIS</option>
-        <option value={'AFAP SAUDE'}>AFAP SAUDE</option>
+     <Select {...register('id_empresa')}  className="flex w-full uppercase  z-50 text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  "   sizing={'sm'}>
+        <option value={''}>Selecione a empresa</option>
+        {empresas?.map(item=>(
+            <option key={item.id} value={item.id}>{item.nome}</option>
+        ))}
      </Select>
       </div>
 
@@ -285,7 +297,7 @@ return(
         <div className=" block">
           <Label  value="Data inicial" />
         </div>
-       <DatePicker selected={new Date(dataInicial)} onChange={e=>e && setDataInicial(new Date(e))}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase  z-50 text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+       <DatePicker selected={watch('startDate')} onChange={e=>e && setValue('startDate',e)}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase  z-50 text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
       </div>
 
 
@@ -294,18 +306,18 @@ return(
         <div className=" block">
           <Label  value="Data final" />
         </div>
-       <DatePicker selected={new Date(dataFinal)} onChange={e=>e && setDataFinal(new Date(e))}   dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase  z-50 text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+       <DatePicker selected={watch('endDate')} onChange={e=>e && setValue('endDate',e)}     dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase  z-50 text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
       </div>
       
       <div className="w-1/4" >
         <div className=" block">
           <Label  value="Buscar" />
         </div>
-        <TextInput value={descricao} onChange={e=>setDescricao(e.target.value)}   sizing={'sm'}  />
+        <TextInput {...register('descricao')}   sizing={'sm'}  />
       </div> 
          
                    <div className="flex items-end gap-4">
-                   <Button isProcessing={loading}  size={'sm'} onClick={()=>listarLancamentos()} ><IoSearchSharp size={20}/> Buscar</Button>
+                   <Button isProcessing={loading}  size={'sm'} onClick={listarLancamentos} ><IoSearchSharp size={20}/> Buscar</Button>
 
                    <Button onClick={()=>setScanner(true)} size={'sm'} color={'warning'} >{`Receber ( F2 )`}</Button>
                    </div>
@@ -315,13 +327,13 @@ return(
                  
                    </div>
                    
-        </div>
+        </form>
     </div>
-    <div className="flex flex-col border-t-2">
+    <div className="flex flex-col border-t-2 bg-white">
     
        
-        <div className="overflow-y-auto mt-1 px-2 max-h-[72vh] ">
-        <Tooltip id="tooltip-hora"/>
+        <div className="overflow-y-auto mt-1 px-2 h-[72vh] max-h-[72vh] ">
+       
         <Table hoverable theme={{ body: { cell: { base: " px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }} 
     >
         <Table.Head >
@@ -359,13 +371,13 @@ return(
         </Table.Head>
         <Table.Body className="divide-y">
             {lancamentos?.map((item,index)=>(
-            <Table.Row className="bg-white  ">
+            <Table.Row className=" text-black font-semibold ">
 
-<Table.Cell className="whitespace-nowrap font-medium text-gray-900 ">
+<Table.Cell className="whitespace-nowrap   ">
 {item.num_seq}
             </Table.Cell>
-            <Table.Cell  data-tooltip-id="tooltip-hora" data-tooltip-place="bottom" data-tooltip-content={new Date(item.data).toLocaleTimeString()} >
-            {new Date(item.data).toLocaleDateString('pt-BR',{timeZone:'UTC'})}
+            <Table.Cell  data-tooltip-id="tooltip-hora" data-tooltip-place="bottom" data-tooltip-content={new Date(item.datalanc).toLocaleTimeString()} >
+            {new Date(item.datalanc).toLocaleDateString('pt-BR',{timeZone:'UTC'})}
             </Table.Cell>
             <Table.Cell>{item.conta}</Table.Cell>
             
@@ -403,20 +415,21 @@ return(
 
    
 
-    <div className="inline-flex gap-2 text-white w-full p-2">
+    <div className="inline-flex gap-2  rounded-b-lg text-black w-full bg-white p-2">
         <button onClick={()=>setVisible(!visible)} className="justify-center items-center">
-           {visible? <IoMdEye size={20}/>:<IoMdEyeOff size={20}/>}
+           {visible? <IoMdEye size={20}/>:<IoMdEyeOff color="blue" size={20}/>}
             </button>
    
-    <div><span className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border  rounded-s-lg  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+    <div className="text-black">
+        <span className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border  rounded-s-lg  focus:z-10 focus:ring-2  bg-gray-300 border-gray-400 " >
 
    {visible?`Saldo: ${Number(saldo).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`:"------"}
   </span>
-  <span className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b  focus:z-10 focus:ring-2  bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+  <span className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b    bg-gray-300 border-gray-400  ">
    
   {visible?`Receitas:  ${Number(saldo+despesas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`:"------"}
   </span>
-  <span className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg  focus:z-10 focus:ring-2   bg-gray-700 border-gray-600 text-white hover:text-white hover:bg-gray-600 focus:ring-blue-500 focus:text-white">
+  <span className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg    bg-gray-300 border-gray-400 ">
 
   {visible?`Despesas: ${Number(despesas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`:"------"}
   </span>
@@ -434,7 +447,7 @@ return(
 <ModalFechamento lancamentos={lancamentos} id_usuario={usuario?.id??''} openModal={openFecModal} setOpenModal={setFecModal}/>
 
 {scanner && <Scanner openModal={scanner} setModal={setScanner} verficarTicket={buscarMensalidade}/>}
-
+<Tooltip id="tooltip-hora"/>
 </>
 )
 

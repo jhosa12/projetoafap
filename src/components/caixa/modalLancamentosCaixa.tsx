@@ -2,7 +2,7 @@ import { IoIosClose } from "react-icons/io";
 import { MdSaveAlt } from "react-icons/md";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { GiReturnArrow } from "react-icons/gi";
-import { AuthContext } from "@/contexts/AuthContext";
+import { AuthContext, EmpresaProps } from "@/contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import { Button, Label, Modal, Select, TextInput } from "flowbite-react";
 import { LancamentosProps } from "@/pages/caixa";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 
 
@@ -21,11 +22,13 @@ interface ModalProps{
     openModal:boolean,
     setOpenModal:(open:boolean)=>void
     mov:Partial<LancamentosProps>
-    setMov:(fields:Partial<LancamentosProps>)=>void
+   // setMov:(fields:Partial<LancamentosProps>)=>void
     arrayLanc:Array<LancamentosProps>,
     setLancamentos:(array:Array<LancamentosProps>)=>void,
     empresaAPI:string,
-    listarLancamentos:()=>Promise<void>
+    listarLancamentos:()=>Promise<void>,
+    empresas:Array<EmpresaProps>
+
 
 }
 interface PlanosProps{
@@ -38,31 +41,55 @@ interface GruposProps{
     id_grupo:number|null,
     descricao:string
 }
-export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,setOpenModal,mov,setMov,arrayLanc,setLancamentos}:ModalProps){
+export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,setOpenModal,mov,empresas}:ModalProps){
     const {usuario}=useContext(AuthContext)
+    const {register,setValue,handleSubmit,watch} = useForm<LancamentosProps>()
    
 
-  
+
+
+    useEffect(()=>{
+   setValue('conta',mov.conta??'')
+    setValue('descricao',mov.descricao??'')
+    
+  setValue('valor',mov.valor??null)
+      setValue('historico',mov?.historico??'')
+   setValue('data',mov.data??new Date())
+   setValue('tipo',mov.tipo??'')
+      setValue('empresa',mov.empresa??'')
+    
+    },[mov.lanc_id])
+
+
+  const handleSubmitForm:SubmitHandler<LancamentosProps> = (data)=>{
+
+    if(mov.lanc_id){
+      editarMovimentacao(data)
+    }else{
+      lancarMovimentacao(data)
+    }
+
+  }
     
 
 
 
-   async function editarMovimentacao(){
+   async function editarMovimentacao(data:LancamentosProps){
     try {
       await toast.promise(
         api.put('/atualizarLancamento',{
         lanc_id:mov.lanc_id,
         num_seq:mov.num_seq,
-        conta:mov.conta,
-        descricao:mov.descricao,
-        historico:mov.historico,
+        conta:data.conta,
+        descricao:data.descricao,
+        historico:data.historico,
         ccustos_desc:usuario?.nome,
         ccustos_id:undefined,
-        valor:mov.valor,
+        valor:data.valor,
         usuario:usuario?.nome,
-        data:mov.data,
-        tipo:mov.tipo,
-        empresa:mov.empresa
+        data:data.data,
+        tipo:data.tipo,
+        empresa:data.empresa
         }),
         {pending:'Atualizando.....',
         error:'Erro ao atualizar',
@@ -78,27 +105,27 @@ export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,
     
    }
 
-     async function lancarMovimentacao() {
+     async function lancarMovimentacao(data:LancamentosProps){ 
 
-      if(!mov.empresa){
+      if(!data?.empresa){
         toast.info('Selecione a empresa')
         return;
       }
-      if(!mov.id_grupo){
+      if(!data?.id_grupo){
         toast.info('Selecione o setor')
         return;
       }
 
-       if(!mov.descricao||!mov.historico){
+       if(!data.descricao||!data.historico){
             toast.warn('Preencha todos os campos obrigatórios')
             return;
       }
 
-        if(mov.descricao==='SANGRIA'){
+        if(data.descricao==='SANGRIA'){
             await toast.promise(
                 api.post('/notification/adicionar',{
                     titulo:'Sangria',
-                    descricao:`Sangria - Descrição: ${mov.historico} - Origem: ${usuario?.nome} - Valor: ${mov.valor}`,
+                    descricao:`Sangria - Descrição: ${data.historico} - Origem: ${usuario?.nome} - Valor: ${data.valor}`,
                     id_usuario:'2',
                     id_destino:'3',
                     data:new Date(),
@@ -122,17 +149,17 @@ export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,
         const response =   await toast.promise(
             api.post('/novoLancamento',{
             id_usuario:usuario?.id,
-            id_grupo:Number(mov.id_grupo),
+            id_grupo:Number(data.id_grupo),
             datalanc:new Date().toISOString(),
-            conta:mov.conta,
-            conta_n:mov.conta_n,
-            descricao:mov.descricao,
-            historico:mov?.historico?.toUpperCase(),
-            valor:mov.valor,
+            conta:data.conta,
+            conta_n:data.conta_n,
+            descricao:data.descricao,
+            historico:data?.historico?.toUpperCase(),
+            valor:data.valor,
             usuario:usuario?.nome.toUpperCase(),
-            data:mov.data  && new Date(mov.data).toISOString(), 
-            tipo:mov.tipo,
-            empresa:mov.empresa
+            data:data.data  && new Date(data.data).toISOString(), 
+            tipo:data.tipo,
+            empresa:data.empresa
             }),
             {
                 error:'Erro realizar Lançamento',
@@ -145,6 +172,8 @@ export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,
         listarLancamentos()
          // setLancamentos([...arrayLanc,response.data])
         } catch (error) {
+
+          console.log(error)
           
         }
     
@@ -155,13 +184,13 @@ export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,
    
        
  
-  <Modal  show={openModal} onClose={()=>setOpenModal(false)}>
+  <Modal size={'3xl'} show={openModal} onClose={()=>setOpenModal(false)}>
     <Modal.Header>Adminstrar Lançamento</Modal.Header>
     <Modal.Body>
 
-        <form> 
+        <form onSubmit={handleSubmit(handleSubmitForm)}> 
 
-<div className="inline-flex gap-4 w-full">
+<div className="inline-flex gap-4 w-full text-black font-semibold">
 
 
 
@@ -169,7 +198,7 @@ export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,
         <div className=" block">
           <Label  value="Data" />
         </div>
-       <DatePicker  onChange={e=>e && setMov({...mov,data:e})}  selected={mov.data}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+       <DatePicker  onChange={e=>e && setValue('data',e)}  selected={watch('data')}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
       </div>
 
 
@@ -177,13 +206,11 @@ export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,
         <div className=" block">
           <Label  value="Empresa" />
         </div>
-     <Select value={mov.empresa} onChange={e=>setMov({...mov,empresa:e.target.value})} disabled={!!mov.lanc_id} sizing={'sm'}>
+     <Select {...register('empresa')} disabled={!!mov.lanc_id} sizing={'sm'}>
         <option value={''}></option>
-        <option value={'AFAP CEDRO'}>AFAP CEDRO</option>
-        <option value={'AFAP LAVRAS'}>AFAP LAVRAS</option>
-        <option value={'OTICA FREITAS'}>OTICA FREITAS</option>
-        <option value={'AFAP VIVAMAIS'}>AFAP VIVAMAIS</option>
-        <option value={'AFAP SAUDE'}>AFAP SAUDE</option>
+       {empresas?.map(item=>(
+        <option key={item.id} value={item.id}>{item.nome}</option>
+       ))}
      </Select>
       </div>
 
@@ -191,7 +218,7 @@ export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,
         <div className=" block">
           <Label  value="Setor" />
         </div>
-        <Select value={Number(mov.id_grupo)} onChange={e=>setMov({...mov,id_grupo:Number(e.target.value)})} sizing={'sm'}    >
+        <Select {...register('id_grupo')} sizing={'sm'}    >
                     <option value={''}></option>
         {grupo?.map((item,index)=>
             
@@ -207,14 +234,14 @@ export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,
 
 </div>
 
-        <div className="p-2   grid mt-2 gap-2 grid-flow-row-dense grid-cols-4">
+        <div className="p-2   grid mt-2 gap-2 grid-flow-row-dense grid-cols-4 text-black font-semibold">
 
 
         <div className=" col-span-1 " >
         <div className=" block">
           <Label  value="Conta" />
         </div>
-        <TextInput disabled sizing={'sm'} required type="text" value={mov.conta}     />
+        <TextInput disabled sizing={'sm'} required type="text" {...register('conta')}     />
       </div> 
    
 
@@ -223,9 +250,12 @@ export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,
         <div className=" block">
           <Label  value="Descrição" />
         </div>
-        <Select value={mov.conta}  onChange={e=>{
+        <Select value={watch('conta')} className="text-black"   onChange={e=>{
         const tipo = planos.find((item)=>item.conta===e.target.value)
-        setMov({...mov,descricao:tipo?.descricao,tipo:tipo?.tipo,conta:tipo?.conta})
+       
+     if(tipo){ setValue('descricao',tipo.descricao)
+        setValue('tipo',tipo.tipo)
+        setValue('conta',e.target.value)}
         }} sizing={'sm'}    >
       <option value={''}></option>
         {planos?.map((item,index)=>
@@ -242,7 +272,7 @@ export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,
         <div className=" block">
           <Label  value="Tipo" />
         </div>
-        <TextInput disabled sizing={'sm'} required type="text" value={mov.tipo}     />
+        <TextInput disabled sizing={'sm'} required type="text" value={watch('tipo')}     />
       </div> 
 
 
@@ -250,7 +280,7 @@ export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,
         <div className=" block">
           <Label  value="Histórico" />
         </div>
-        <TextInput  sizing={'sm'} required type="text" value={mov.historico} onChange={e=>setMov({...mov,historico:e.target.value.toUpperCase()})}    />
+        <TextInput  sizing={'sm'} required type="text" value={watch('historico')?.toUpperCase()} {...register('historico')}    />
       </div> 
 
 
@@ -258,16 +288,18 @@ export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,
         <div className=" block">
           <Label  value="Valor" />
         </div>
-        <TextInput  sizing={'sm'} required type="number"  value={Number(mov.valor)} onChange={e=>e && setMov({...mov,valor:Number(e.target.value)})}   />
+        <TextInput  sizing={'sm'} required type="number"  {...register('valor')}   />
       </div> 
 
 
 <div className=" gap-2 col-span-4  flex flex-row justify-end">
 
-{mov.num_seq ?
-<Button size={'sm'}   onClick={()=>editarMovimentacao()} >Editar</Button>
- :
-<Button size={'sm'}  onClick={()=>lancarMovimentacao()} >Salvar</Button>}
+
+<Button size={'sm'}   type="submit" >
+  {mov.lanc_id ? 'Alterar':'Cadastrar'}
+</Button>
+ 
+
 </div>
     </div>
 

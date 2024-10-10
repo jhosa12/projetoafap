@@ -25,6 +25,7 @@ export function Scanner({openModal,setModal,verficarTicket}:DataProps){
           // Verifica se a tecla "Enter" foi pressionada
           if (event.key === 'Enter') {
           //  setScannedCode(currentBarcode);
+          event.stopPropagation();
           verficarTicket(currentBarcode)
             currentBarcode = ''; // Reinicia o código de barras após a leitura
             setModal(false)

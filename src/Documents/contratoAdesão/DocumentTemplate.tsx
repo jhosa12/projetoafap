@@ -118,7 +118,7 @@ class DocumentTemplate extends Component<DadosProps> {
               </tr>
             </thead>
             <tbody>
-              {dependentes?.map((item, index) => (
+              {dependentes?.filter(item=>!item.excluido).map((item, index) => (
                 <tr key={index} className={` border-t border-black`}>
                   <td className="px-10 py-1 border-r border-black">
                     {item.nome}

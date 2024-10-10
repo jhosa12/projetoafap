@@ -1,4 +1,4 @@
-import carteiraDep from "../../../public/CarteiraDep2019.jpg"
+import carteiraDep from "../../../public/carteiraDep.jpeg"
 import Image from "next/image";
 
 export default function CarteiraDep(){

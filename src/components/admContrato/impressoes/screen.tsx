@@ -83,7 +83,7 @@ export function Impressoes() {
             cidade={dadosassociado?.cidade ?? ''}
             complemento={dadosassociado?.guia_rua ?? ''}
             contrato={dadosassociado?.contrato?.id_contrato ?? 0}
-            cpf={dadosassociado?.cpf ?? ''}
+            cpf={dadosassociado?.cpfcnpj ?? ''}
             dependentes={dadosassociado?.dependentes ?? []}
             endereco={dadosassociado?.endereco ?? ''}
             estado={dadosassociado?.uf ?? ''}

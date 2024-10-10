@@ -40,6 +40,7 @@ export function ModalEditarMensalidade({openModal,setOpenModal,mensalidade,setMe
             const response = await  toast.promise(
                 api.put('/mensalidade/estorno',{
                     id_mensalidade:mensalidade.id_mensalidade,
+                    id_mensalidade_global:mensalidade.id_mensalidade_global
                 })  ,
 
                 {error:'Erro na tentativa de estorno, consulte o TI',
@@ -51,6 +52,7 @@ export function ModalEditarMensalidade({openModal,setOpenModal,mensalidade,setMe
                
                 novoArray[index] = response.data
                 setarDadosAssociado({mensalidade:novoArray})
+                setOpenModal(false)
             
           
         } catch (error) {

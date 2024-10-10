@@ -1,7 +1,6 @@
 import Image from "next/image";
-import carteiraDep from "../../../public/CarteiraDep2019.jpg";
-import titularFrente from "../../../public/titular1.jpeg";
-import titularVerso from "../../../public/titular2.jpeg";
+import carteiraDep from "../../../public/carteiraDep.jpeg";
+
 // DocumentTemplate.js
 
 import React from 'react';
@@ -98,7 +97,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
                         }}  className="relative inline-flex col-span-2 w-full justify-center">
         {/*  <Image alt={'carteiraDep'} height={210} width={362} src={titularFrente} className="object-cover" />
           <Image alt={'carteiraDep'} height={210} width={362} src={titularVerso} className="object-cover " />*/}
-          <div className="absolute flex flex-col justify-center items-center" style={{left:145,top:120,gap:2,width:235}}>
+          <div className="absolute  flex flex-col justify-center items-center" style={{left:161,top:130,gap:2,width:222}}>
            <span style={{fontSize:10}}>{titular}</span> 
           
            <div className="inline-flex gap-10 ">
@@ -112,25 +111,54 @@ class DocumentTemplate extends React.Component<DadosProps> {
             <span className="font-semibold" style={{fontSize:7}}>CARTÃO VÁLIDO ATÉ:{venc.toLocaleDateString()}</span>
             </div>
           {<ol className="absolute" style={{right:110,top:50,fontSize:8,listStyleType:'decimal'}}>
-           {dependentesTitular.map(item=>(
+           {dependentesTitular.filter(it=>!it.excluido).map(item=>(
             <li key={item.id_dependente} >{item.nome}</li>
            )) }
             </ol>}
           </div>}
-          {dependentes.map((item, index) => {
+          {dependentes.filter(it=>!it.excluido).map((item, index) => {
             return (
-              <div key={index} className="flex col-span-1  relative w-full  text-sm text-black items-center justify-center">
-                <Image alt={'carteiraDep'} src={carteiraDep} style={{objectFit:'cover',width:355, height:210}}/>
-                <span className="absolute " style={{left:40,top:100}}>{item.nome}</span>
-                <span className="absolute  " style={{left:40,top:128}}>{contrato}</span>
-                <span className="absolute  " style={{left:135,top:128}}>{item.data_nasc && new Date(item.data_nasc).toLocaleDateString()
-               
-                }</span>
-                <span className="absolute" style={{left:245,top:128}}>{item.grau_parentesco}</span>
-                <span className="absolute "  style={{left:40,top:158}}>{plano}</span>
-                <span className="absolute"  style={{left:40,top:185}}>{venc.toLocaleDateString()}</span>
-                <span className="absolute"  style={{left:145,top:185}}>{item.data_adesao && new Date(item.data_adesao).toLocaleDateString()}</span>
-                <span className="absolute" style={{left:258,top:185}}>{item.carencia && new Date(item.carencia).toLocaleDateString()}</span>
+              <div key={index}
+              style={{
+                display: 'flex',
+                backgroundRepeat: 'no-repeat',
+                backgroundImage: "url('/carteiraDep.jpeg')",
+                pageBreakInside: 'avoid',
+                height: '230px',
+                fill: 'black',
+                width: '100%',
+              
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+            }} 
+               className="flex col-span-1  relative w-full  text-sm text-black items-center justify-center">
+
+                <div className="justify-center  " style={{display:'flex',fontSize:8,flexDirection:'column',position:'absolute',bottom:20,left:150,width:200,alignItems:'center',maxWidth:220,lineHeight:2}}>
+                  <div style={{margin:0,padding:0,display:'flex',flexDirection:'column',gap:1,lineHeight:1}}>
+                    <span style={{fontSize:6,paddingLeft:5}}>Dependente:</span>
+                  <h1 style={{fontWeight:'inherit',fontSize:10}}>{item.nome}</h1>
+                  </div>
+              
+                <div style={{fontSize:6}} className="flex w-full justify-around">
+                <span >CONTRATO: {contrato}</span>
+                <span >CATEGORIA: {plano}</span>
+                </div>
+                <div style={{fontSize:6}} className="flex w-full justify-around">
+                <span>PARENTESCO: {item.grau_parentesco}</span>
+                <span >NASC.: {item.data_nasc && new Date(item.data_nasc).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+                </div>
+              
+                <div style={{fontSize:6}} className="flex w-full justify-around">
+                
+                <span  >ADESÃO: {item.data_adesao && new Date(item.data_adesao).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+                <span >CARÊNCIA: {item.carencia && new Date(item.carencia).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+                </div>
+              
+              <span style={{fontStyle:'oblique'}}>Esta carteirinha é de uso individual e intransferível</span>
+              <span style={{fontSize:6,fontWeight:'bold'}}  >CARTÃO VÁLIDO ATÉ:	{venc.toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+                </div>
+              
+              
               </div>
             );
           })}

@@ -1,5 +1,6 @@
 
 import DocumentTemplate from "@/Documents/carteiraAssociado/DocumentTemplate";
+import { it } from "node:test";
 import { useEffect, useRef, useState } from "react";
 import { IoPrint } from "react-icons/io5";
 import {useReactToPrint} from "react-to-print";
@@ -134,9 +135,9 @@ export default function CarteirasDep({dependentes,contrato,plano,titular,enderec
                                         </tr>
                                       </thead> 
                                       <tbody>
-                                        {dependentes.map((item,index)=>(
-                                            <tr onClick={()=>toggleSelecionada(item)} className={`cursor-pointer hover:bg-gray-200  border-b  ${linhasSelecionadas.some(linha=>linha.id_dependente===item.id_dependente)?"bg-gray-300":"bg-gray-50"} border-gray-300`}>
-                                            <th scope="row" className="px-2 py-1 font-medium  whitespace-nowrap">{item.nome}</th>
+                                        {dependentes.filter(item=>!item.excluido).map((item,index)=>(
+                                            <tr key={item.id_dependente} onClick={()=>toggleSelecionada(item)} className={`text-black font-semibold cursor-pointer hover:bg-gray-200  border-b  ${linhasSelecionadas.some(linha=>linha.id_dependente===item.id_dependente)?"bg-gray-300":"bg-gray-50"} border-gray-300`}>
+                                            <td scope="row" className="px-2 py-1  whitespace-nowrap">{item.nome}</td>
                                             <td className="px-10 py-1">
                                                         {new Date(item.data_adesao).toLocaleDateString()}
                                                     </td>

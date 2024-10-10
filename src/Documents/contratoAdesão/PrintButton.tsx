@@ -29,7 +29,7 @@ import { AuthContext } from '@/contexts/AuthContext';
         <DocumentTemplate
           ref={componentRef}
           nome={dadosassociado?.nome ??''}
-          cpf={dadosassociado?.cpf??''}
+          cpf={dadosassociado?.cpfcnpj??''}
           rg={dadosassociado?.rg??''}
           endereco={dadosassociado?.endereco??''}
           numero={String(dadosassociado?.numero)??''}

@@ -56,7 +56,7 @@ class RelatorioMov extends React.Component<DadosProps> {
        </div>
 
 
-       <span className="pl-5">Observações:</span>
+       <span className="pl-5">Observações: {dados?.descricao}</span>
     
        <br/>
        <br/>
