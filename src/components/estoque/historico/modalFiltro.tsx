@@ -1,10 +1,10 @@
-import { EmpresaProps } from "@/contexts/AuthContext";
+
 import { Button, Label, Modal, Select } from "flowbite-react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { useState } from "react";
-import { EstoqueProps } from "@/pages/estoque";
+import { EmpresaProps } from "@/types/empresa";
 
 interface DataProps{
     empresas:Array<EmpresaProps>
@@ -13,11 +13,6 @@ interface DataProps{
     handleFiltro:({startDate,endDate,id_empresa}:{startDate:Date,endDate:Date,id_empresa:string})=>Promise<void>
    
 }
-
-
-
-
-
 
 
 export function ModalFiltroMov({empresas,openModal,setOpenModal,handleFiltro}:DataProps){

@@ -1,7 +1,7 @@
 
 
 import { GiReturnArrow } from "react-icons/gi";
-import { AuthContext, MensalidadeProps } from "@/contexts/AuthContext";
+import { AuthContext} from "@/contexts/AuthContext";
 import { useContext} from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
@@ -10,6 +10,7 @@ import { Modal, ModalBody, ModalHeader, TextInput, Button } from "flowbite-react
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
+import { MensalidadeProps } from "@/types/financeiro";
 
 
 

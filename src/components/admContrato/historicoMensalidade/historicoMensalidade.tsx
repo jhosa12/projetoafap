@@ -9,11 +9,12 @@ import { IoPrint } from 'react-icons/io5';
 import { MdDeleteForever, MdReceipt } from 'react-icons/md';
 import { RiAddCircleFill } from 'react-icons/ri';
 import { toast } from 'react-toastify'
-import { AuthContext, MensalidadeProps } from '@/contexts/AuthContext';
+import { AuthContext } from '@/contexts/AuthContext';
 import { ModalMensalidade } from './modalmensalidade';
 import { Scanner } from './modalScanner';
 import { ModalEditarMensalidade } from './modalEditarMensalidade';
 import { ModalExcluirMens } from './modalExcluirMens';
+import { MensalidadeProps } from '@/types/financeiro';
 
 
 

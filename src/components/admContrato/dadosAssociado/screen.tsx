@@ -1,13 +1,12 @@
 import { ModalEditarDados } from "@/components/admContrato/dadosAssociado/modalEditar/modalEditarDados";
-import { AssociadoProps, AuthContext } from "@/contexts/AuthContext";
+import {  AuthContext } from "@/contexts/AuthContext";
+import { AssociadoProps } from "@/types/associado";
 import { Button, Card } from "flowbite-react";
 import { useContext, useState } from "react";
 import { BiSave } from "react-icons/bi";
-import { FaEdit } from "react-icons/fa";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { TbWheelchair } from "react-icons/tb";
-import { toast } from "react-toastify";
-import { Tooltip } from "react-tooltip";
+
 
 
 
@@ -37,14 +36,14 @@ export function DadosAssociado({dadosassociado}:DataProps){
     return(
         <div className={`p-4  rounded-b-lg `}>
 
-                                <h2 className="inline-flex gap-3 mb-3 text-xl font-semibold tracking-tight text-gray-600">
+                                <div className="inline-flex gap-3 mb-3 pl-2 text-xl font-semibold tracking-tight text-black">
                                     {dadosassociado?.contrato?.id_contrato}-{dadosassociado?.nome}
                                     <span>CATEGORIA:
 
                                         <span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato?.plano}</span>
                                     </span>
 
-                                    <span className={`inline-flex items-center  text-sm font-medium px-2.5 py-0.5 rounded-full ${dadosassociado?.contrato?.situacao === 'ATIVO' ? "bg-green-900 text-green-300" : "bg-red-900 text-red-300"}`}>
+                                    <span className={`inline-flex items-center  text-sm font-medium px-2.5 py-0.5 rounded-full ${dadosassociado?.contrato?.situacao === 'ATIVO' ? "bg-green-600 text-green-300" : "bg-red-600 text-red-300"}`}>
                                         <span className={`w-2 h-2 me-1 ${dadosassociado?.contrato?.situacao === 'ATIVO' ? "bg-green-500 " : "bg-red-500"}  rounded-full`}></span>
                                         {dadosassociado?.contrato?.situacao}
                                     </span>
@@ -57,7 +56,7 @@ export function DadosAssociado({dadosassociado}:DataProps){
                                         </>
                                     ))}
 
-                                </h2>
+                                </div>
                                 <div className="flex w-full flex-row gap-2">
 
                                    <Card onClick={() => {
@@ -99,21 +98,21 @@ closeModa({
     uf: dadosassociado.uf
 }),
 setModalEdit(true)
-}}  className="w-full text-gray-600 text-sm cursor-pointer">
-                                        <h2 className="text-sm font-semibold mb-4  text-gray-500">DADOS  DO TITULAR </h2>
+}}  className="w-full text-black text-sm cursor-pointer">
+                                        <h2 className="text-sm font-semibold mb-4  text-black">DADOS  DO TITULAR </h2>
 
-                                        <h5 className="mb-1 inline-flex justify-between  gap-2 font-semibold tracking-tight  ">
-                                            <p className="mb-1 "><span  className="font-semibold">ENDEREÇO: </span>{dadosassociado?.endereco}</p>
-                                            <p className="mb-1  "><span  className="font-semibold">Nº: </span>{dadosassociado?.numero}</p>
-                                            <p className="mb-1 "><span  className="font-semibold">BAIRRO: </span>{dadosassociado?.bairro}</p>
-                                            <p className="mb-1 "><span  className="font-semibold">CIDADE: </span>{dadosassociado?.cidade}</p>
-                                        </h5>
-                                        <h5 className="mb-1 flex flex-row justify-between gap-2 ">
-                                            <p ><span  className="font-semibold">PONTO REF: </span>{dadosassociado?.guia_rua}</p>
+                                        <div className="mb-1 inline-flex justify-between  gap-2 font-semibold tracking-tight  ">
+                                            <p className="mb-1  ">ENDEREÇO: {dadosassociado?.endereco}</p>
+                                            <p className="mb-1  ">Nº: {dadosassociado?.numero}</p>
+                                            <p className="mb-1 ">BAIRRO: {dadosassociado?.bairro}</p>
+                                            <p className="mb-1 ">CIDADE:{dadosassociado?.cidade}</p>
+                                        </div>
+                                        <div className="mb-1 flex flex-row justify-between gap-2 font-semibold ">
+                                            <p >PONTO REF: {dadosassociado?.guia_rua}</p>
                                             <p><span  className="font-semibold" >CELULAR1: </span>{dadosassociado?.celular1}</p>
-                                            <p className="mb-1 "><span className="font-semibold" >CELULAR2: </span>{dadosassociado?.celular2}</p>
+                                            <p className="mb-1 ">CELULAR2:{dadosassociado?.celular2}</p>
 
-                                        </h5>
+                                        </div>
 
                                     
                                       
@@ -155,22 +154,22 @@ setModalEdit(true)
                                                     uf: dadosassociado.uf
                                                 }),
                                                 setModalEdit(true)
-                                            }} className="flex w-full text-gray-600 text-sm cursor-pointer">
+                                            }} className="flex w-full text-black text-sm cursor-pointer">
                                    
                                         <h2 className="text-sm font-semibold mb-4 ">DADOS  DO PLANO</h2>
 
-                                        <h5 className="mb-1 flex flex-row justify-between gap-2">
+                                        <div className="mb-1 flex flex-row justify-between gap-2 font-semibold">
 
-                                            <p className="mb-1 "><span className=" font-semibold">CATEGORIA: </span>{dadosassociado?.contrato?.plano}</p>
-                                            <p className="mb-1 "><span className=" font-semibold">VALOR: </span>R$ {dadosassociado?.contrato?.valor_mensalidade}</p>
-                                            <p className="mb-1 "><span className=" font-semibold">ADESÃO: </span> {dadosassociado.contrato?.dt_adesao && new Date(dadosassociado?.contrato?.dt_adesao).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</p>
-                                            <p className="mb-1 "><span className=" font-semibold">CARÊNCIA: </span>{dadosassociado.contrato?.dt_carencia && new Date(dadosassociado?.contrato?.dt_carencia).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</p>
-                                        </h5>
-                                        <h5 className="mb-1 flex flex-row justify-between gap-2  tracking-tight  ">
-                                            <p className="  "><span className=" font-semibold">ORIGEM: </span>{dadosassociado?.contrato?.origem}</p>
-                                            <p className=" "><span className=" font-semibold">CONSULTOR: </span>{dadosassociado?.contrato?.consultor}</p>
-                                            <p className=" "><span className=" font-semibold">COBRADOR: </span>{dadosassociado?.contrato?.cobrador}</p>
-                                        </h5>
+                                            <p className="mb-1 ">CATEGORIA: {dadosassociado?.contrato?.plano}</p>
+                                            <p className="mb-1 ">VALOR: R$ {dadosassociado?.contrato?.valor_mensalidade}</p>
+                                            <p className="mb-1 ">ADESÃO:  {dadosassociado.contrato?.dt_adesao && new Date(dadosassociado?.contrato?.dt_adesao).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</p>
+                                            <p className="mb-1 ">CARÊNCIA: {dadosassociado.contrato?.dt_carencia && new Date(dadosassociado?.contrato?.dt_carencia).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</p>
+                                        </div>
+                                        <div className="mb-1 flex flex-row justify-between gap-2  tracking-tight font-semibold  ">
+                                            <p className="  ">ORIGEM: {dadosassociado?.contrato?.origem}</p>
+                                            <p className=" ">CONSULTOR: {dadosassociado?.contrato?.consultor}</p>
+                                            <p className=" ">COBRADOR: {dadosassociado?.contrato?.cobrador}</p>
+                                        </div>
 
                                       
                                     
@@ -200,7 +199,7 @@ setModalEdit(true)
                                     </div>
                                 </div>
 
-                                <ModalEditarDados setModalEdit={setModalEdit} openEdit={openEdit} />
+                                {openEdit && <ModalEditarDados dataForm={dadosassociado} setModalEdit={setModalEdit} openEdit={openEdit} />}
                             </div>
     )
 }

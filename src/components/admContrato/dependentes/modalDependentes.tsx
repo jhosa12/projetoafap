@@ -2,7 +2,7 @@ import { IoIosClose } from "react-icons/io";
 import { MdSaveAlt } from "react-icons/md";
 import { RiAddCircleFill } from "react-icons/ri";
 import { TfiReload } from "react-icons/tfi";
-import { AuthContext, DependentesProps } from "@/contexts/AuthContext";
+import { AuthContext} from "@/contexts/AuthContext";
 import { useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
@@ -11,6 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { Button, Label, Modal, Select, TextInput } from "flowbite-react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { DependentesProps } from "@/types/associado";
 
 registerLocale('pt', pt)
 
@@ -44,7 +45,7 @@ export function ModalDependentes({openModal,setModal,data}:DataProps){
 useEffect(()=>{
   setValue('carencia',data.carencia)
   setValue('data_adesao',data.data_adesao)
-  setValue('data_nasc',data.data_nasc)
+ data.data_nasc &&  setValue('data_nasc',data.data_nasc)
   setValue('grau_parentesco',data.grau_parentesco)
   setValue('nome',data.nome)
   setValue('sexo',data.sexo)

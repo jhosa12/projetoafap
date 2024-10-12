@@ -5,7 +5,7 @@ import assinatura from "../../../public/assinatura.jpg"
 
 // DocumentTemplate.js
 
-import React, { useContext, Component } from 'react';
+import React, {  Component } from 'react';
 interface DadosProps {
   nome: string,
   cpf: string,
@@ -21,7 +21,7 @@ interface DadosProps {
   contrato: number,
   dependentes: Array<{
     nome: string,
-    data_nasc: Date,
+    data_nasc: Date|null,
     grau_parentesco: string,
     data_adesao: Date,
     carencia: Date,

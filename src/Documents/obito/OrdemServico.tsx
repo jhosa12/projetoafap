@@ -19,7 +19,7 @@ interface DadosProps {
  cidade_dec:string,
  uf_dec:string,
  nome_falecido:string,
- data_nasc_falecido:Date,
+ data_nasc_falecido:Date|null,
  nome_pai:string,
  nome_mae:string,
  estado_civil:string,

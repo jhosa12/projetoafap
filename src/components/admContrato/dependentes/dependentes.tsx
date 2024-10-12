@@ -1,4 +1,4 @@
-import { AuthContext, DependentesProps } from "@/contexts/AuthContext"
+import { AuthContext} from "@/contexts/AuthContext"
 import { api } from "@/services/apiClient"
 import { useContext, useEffect, useRef, useState } from "react"
 import { IoIosClose } from "react-icons/io"
@@ -13,6 +13,7 @@ import DeclaracaoExclusao from "@/Documents/dependentes/DeclaracaoExclusao"
 import { IoPrint } from "react-icons/io5"
 import { useReactToPrint } from "react-to-print"
 import { set } from "date-fns"
+import { DependentesProps } from "@/types/associado"
 
 
 

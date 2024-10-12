@@ -1,5 +1,4 @@
 import GraficoMensalidade from "@/components/graficos/graficoMensalidades"
-import { EmpresaProps } from "@/contexts/AuthContext";
 import { api } from "@/services/apiClient";
 import { Button, Checkbox, Dropdown, Label, Popover, TextInput } from "flowbite-react";
 import { useCallback, useEffect, useState } from "react";
@@ -8,11 +7,9 @@ import { toast } from "react-toastify";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { IoSearch } from "react-icons/io5";
-import { Item } from "@/components/dadosTitular";
-import { BiCaretDown } from "react-icons/bi";
 import { HiFilter } from "react-icons/hi";
 import useApi from "@/hooks/useApi";
+import { EmpresaProps } from "@/types/empresa";
 
 interface ContratosProps {
   dt_adesao: Date,

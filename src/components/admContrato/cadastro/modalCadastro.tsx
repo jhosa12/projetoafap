@@ -1,20 +1,21 @@
 
-import { MultiStep } from "../../components/multiStep";
-import { Item } from "../../components/dadosTitular";
-import { DadosPlano } from "../../components/dadosPlano";
-import { FaCircleArrowRight } from "react-icons/fa6";
-import { FaCircleArrowLeft } from "react-icons/fa6";
-import {FormEvent, useEffect, useState} from 'react'
+
+
+import { useEffect, useState} from 'react'
 import { DadosDependentes } from "@/components/dadosDependentes";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
-import { MdSaveAlt } from "react-icons/md";
 import { ResumoCadastro } from "@/components/resumoCadastro";
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
 import { Modal } from "flowbite-react";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi2";
 import { HiInboxIn } from "react-icons/hi";
+import { SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
+import { DadosTitular } from "@/components/dadosTitular";
+import { DadosPlano } from "@/components/dadosPlano";
+import { MultiStep } from "@/components/multiStep";
+import { DadosCadastro } from '@/types/associado';
 
 
 interface ParcelaData {
@@ -26,24 +27,37 @@ interface ParcelaData {
   referencia: string;
 }
 
+export interface ChildrenProps{
+    register:UseFormRegister<DadosCadastro>,
+    setValue:UseFormSetValue<DadosCadastro>,
+    watch:UseFormWatch<DadosCadastro>
+    trigger:UseFormTrigger<DadosCadastro>
+  }
 
 
+interface ModalProps {
+    isOpen: boolean;
+    onClose: (open:boolean) => void;
+  
+  }
 
 
-export default function TesteLayout() {
-    const {usuario,data,closeModa,carregarDados} = useContext(AuthContext)
-    const [mounted,setMounted] = useState(false)
+export default function ModalCadastro({isOpen,onClose}:ModalProps) {
+    const {usuario,carregarDados} = useContext(AuthContext)
+    const {register,handleSubmit,setValue,watch,trigger,reset} = useForm<DadosCadastro>()
+
+   
   
  
    function gerarMensalidade(){
     const mensalidades : Array<ParcelaData> = []
-    let currentDate = new Date(data.contrato?.data_vencimento?data.contrato.data_vencimento:'');
-    for (let i = 0;i<Number(data.contrato?.n_parcelas);i++){
+    let currentDate = new Date(watch('contrato.data_vencimento')??new Date());
+    for (let i = 0;i<Number(watch('contrato.n_parcelas'));i++){
       const dataMensalidade: ParcelaData = {
         parcela_n: i + 1,
         vencimento: new Date(currentDate), // Copia da data atual
         cobranca: new Date(currentDate), // Copia da data atual
-        valor_principal:Number(data.contrato?.valor_mensalidade),
+        valor_principal:Number(watch('contrato.valor_mensalidade')),
         status:'A',
         referencia: `${String(new Date(currentDate).getMonth()+1).padStart(2,'0')}/${new Date(currentDate).getFullYear()%100}`
     };
@@ -55,15 +69,21 @@ export default function TesteLayout() {
     return mensalidades
    }
 
-  async function save(){
+ const handleSave = async(data:DadosCadastro)=>{
+
+    if(!watch('id_empresa')){
+        toast.warn('Selecione uma empresa')
+        return
+    }
     try{
       const response = await toast.promise(
         api.post('/novoAssociado',{
-            nome:data.name,
+            id_empresa:data.id_empresa,
+            nome:data.name.toUpperCase(),
             cep:data.cep,
             endereco:data.endereco,
             bairro:data.bairro,
-            numero:data.numero,
+            numero:Number(data.numero),
             cidade:data.cidade,
             uf:data.uf,
             guia_rua:data.referencia,
@@ -87,7 +107,7 @@ export default function TesteLayout() {
               dt_adesao:data.contrato?.dt_adesao?new Date(data.contrato?.dt_adesao):new Date(),
               cobrador:data.contrato?.cobrador,
               data_vencimento:data.contrato?.data_vencimento?new Date(data.contrato.data_vencimento):null,
-              n_parcelas:data.contrato?.n_parcelas,
+              n_parcelas:Number(data.contrato?.n_parcelas),
               origem:data.contrato?.origem,
               carencia:"",
               dt_carencia:data.contrato?.dt_carencia?new Date(data.contrato.dt_carencia):null
@@ -100,11 +120,14 @@ export default function TesteLayout() {
           success: `Cadastrado com sucesso`,
           error: `Erro ao efetuar Cadastro`
          }
-        
-   
       )
-      
-      closeModa({id_associado:response.data.novoassociado.id_associado,contrato:{...data.contrato,id_contrato:response.data.novoContrato.id_contrato}})
+
+
+      console.log(response.data)
+     setValue('contrato.id_contrato',response.data.id_contrato)
+       carregarDados(response.data.id_global)
+       
+     // closeModa({id_associado:response.data.novoassociado.id_associado,contrato:{...data.contrato,id_contrato:response.data.novoContrato.id_contrato}})
      
     }catch(err){
       console.log(err)
@@ -113,39 +136,36 @@ export default function TesteLayout() {
    
     
    }
-   useEffect(()=>{
-    //setarDadosTitular({...titular})
-    mounted && data.id_associado && carregarDados(data.id_associado)
-    setMounted(true)
-   },[data.id_associado])
+
+   
+ 
 
   const {steps,currentStepIndex,step,next,back} =MultiStep([
-    <Item  />,
-    <DadosPlano />,
-    <DadosDependentes />,
-    <ResumoCadastro/>
+    <DadosTitular trigger={trigger} key={1} register={register} setValue={setValue} watch={watch} />,
+    <DadosPlano trigger={trigger} key={2} register={register} setValue={setValue} watch={watch}  />,
+    <DadosDependentes key={3} trigger={trigger} register={register} setValue={setValue} watch={watch}  />,
+    <ResumoCadastro key={4} trigger={trigger} register={register} setValue={setValue} watch={watch} />
   ])
-  function onSubmit(e:FormEvent){
-    e.preventDefault()
-    next()
+  const onSubmit:SubmitHandler<DadosCadastro>=(data)=>{
+    steps.length-1===currentStepIndex ? handleSave(data):next()
   }
   return ( 
      
         <Modal
-          show={data.closeModalCadastro}
+          show={isOpen}
           position={'center'}
-          onClose={()=>closeModa({closeModalCadastro:false})}
+          onClose={()=>onClose(false)}
           size={'5xl'}
          //dismissible
         >
           <Modal.Header>Cadastro de Contrato</Modal.Header>
           <Modal.Body>
-          <form onSubmit={onSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             {step}
             <div className="flex mt-4 gap-8 p-2 justify-end">
              {currentStepIndex!==0 &&(<button className="bg-blue-600 p-2 rounded-lg justify-center items-center" type="button" onClick={back}><HiOutlineChevronLeft color="white" size={25}/></button>)} 
           
-               {steps.length-1===currentStepIndex ?(<button onClick={save} className="flex flex-row bg-blue-600 rounded-lg p-2 gap-2 text-white" type="button" ><HiInboxIn size={22}/> SALVAR</button>):
+               {steps.length-1===currentStepIndex ?(<button  className="flex flex-row bg-blue-600 rounded-lg p-2 gap-2 text-white" type="submit" ><HiInboxIn size={22}/> SALVAR</button>):
                
                
                <button  className="bg-blue-600 p-2 rounded-lg justify-center items-center" type="submit"><HiOutlineChevronRight color="white" size={25}/></button>} 

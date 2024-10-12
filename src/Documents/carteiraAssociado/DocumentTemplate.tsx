@@ -7,7 +7,7 @@ import React from 'react';
 interface DadosProps {
   dependentes: Array<Partial<{
     nome: string,
-    data_nasc: Date,
+    data_nasc: Date | null,
     grau_parentesco: string,
     data_adesao: Date,
     carencia: Date,
@@ -35,7 +35,7 @@ interface DadosProps {
   cartTitular:boolean
   dependentesTitular:Array<Partial<{
     nome: string,
-    data_nasc: Date,
+    data_nasc: Date | null,
     grau_parentesco: string,
     data_adesao: Date,
     carencia: Date,

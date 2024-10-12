@@ -2,7 +2,7 @@
 import { IoMdSearch } from "react-icons/io";
 import 'react-tabs/style/react-tabs.css';
 import { ModalBusca } from '../../components/modal'
-import Teste from '@/pages/teste/index';
+
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { RiFileAddLine } from "react-icons/ri";
 import { AuthContext } from "../../contexts/AuthContext"
@@ -18,6 +18,8 @@ import { HiIdentification, HiMiniInbox, HiMiniWallet, HiOutlineUserGroup, HiPrin
 import { DadosAssociado } from "@/components/admContrato/dadosAssociado/screen";
 import { Dependentes } from "@/components/admContrato/dependentes/dependentes";
 import { Impressoes } from "@/components/admContrato/impressoes/screen";
+import ModalCadastro from "@/components/admContrato/cadastro/modalCadastro";
+
 
 
 
@@ -219,6 +221,7 @@ export default function AdmContrato() {
 
     const { usuario, data, closeModa, dadosassociado, carregarDados, permissoes } = useContext(AuthContext)
     const [indexTab, setIndex] = useState<number>(0)
+    const [openCadastro, setCadastro] = useState<boolean>(false)
 
 
 
@@ -234,40 +237,7 @@ export default function AdmContrato() {
 
 
 
-    const limparDadosCadastro = () => {
-        closeModa({
-            closeModalCadastro: true,
-            acordo: undefined,
-            arraydep: [],
-            bairro: undefined,
-            celular1: undefined,
-            celular2: undefined,
-            cep: undefined,
-            cidade: undefined,
-            closeModalPlano: undefined,
-            contrato: undefined,
-            cpf: undefined,
-            dependente: undefined,
-            email: undefined,
-            empresa: undefined,
-            endereco: undefined,
-            id_associado: undefined,
-            mensalidade: undefined,
-            mensalidadeAnt: undefined,
-            mensalidadeProx: undefined,
-            name: undefined,
-            nasc: undefined,
-            naturalidade: undefined,
-            numero: undefined,
-            origem: undefined,
-            profissao: undefined,
-            referencia: undefined,
-            rg: undefined,
-            sexo: undefined,
-            telefone: undefined,
-            uf: undefined
-        })
-    }
+
 
 
 
@@ -308,13 +278,6 @@ export default function AdmContrato() {
 
 
 
-
-
-
-
-
-
-
     useEffect(() => {
 
         if (dadosassociado?.contrato?.situacao === 'INATIVO') {
@@ -350,11 +313,7 @@ export default function AdmContrato() {
             </Head>
             <div className="flex flex-col w-full mr-2  justify-center">
                 {data.closeModalPlano && (<ModalBusca />)}
-                {data.closeModalCadastro && (<Teste />)}
-
-
-
-
+                {openCadastro && (<ModalCadastro onClose={setCadastro} isOpen={openCadastro} />)}
 
                 <div className="flex  flex-col p-4  ">
                     <div className="flex  flex-row justify-start gap-2 items-center w-full mt-2 pb-1">
@@ -362,20 +321,20 @@ export default function AdmContrato() {
                             <IoMdSearch size={20} />
                             Buscar Cliente
                         </Button>
-                        <Button size={'sm'} type="button" onClick={limparDadosCadastro} color={'warning'}>
+                        <Button size={'sm'} type="button" onClick={() => setCadastro(true)} color={'warning'}>
                             Add Plano
                             <RiFileAddLine size={20} />
                         </Button>
                     </div>
                     <div className="flex-col w-full border  rounded-lg shadow  border-gray-700">
-                        <Tabs theme={{ base: 'bg-white rounded-lg', tablist: { tabitem: { base: "flex items-center justify-center rounded-t-lg p-4 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 " } } }} aria-label="Tabs with icons" variant="underline" onActiveTabChange={e=>setIndex(e)} >
+                        <Tabs theme={{ base: 'bg-white rounded-lg', tablist: { tabitem: { base: "flex items-center justify-center rounded-t-lg p-4 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 " } } }} aria-label="Tabs with icons" variant="underline" onActiveTabChange={e => setIndex(e)} >
 
                             <Tabs.Item active={indexTab === 0} title="Dados Associado" icon={HiUserCircle}>
-                            {   indexTab===0 && <DadosAssociado dadosassociado={dadosassociado ?? {}} />}
+                                {indexTab === 0 && <DadosAssociado dadosassociado={dadosassociado ?? {}} />}
                             </Tabs.Item>
 
                             <Tabs.Item active={indexTab === 1} disabled={!permissoes.includes('ADM1.2')} title="Histórico/Mensalidade" icon={HiMiniWallet}>
-                            {   <HistoricoMensalidade
+                                {<HistoricoMensalidade
                                     carregarDados={carregarDados}
                                     dados={{ acordo: data.acordo ?? {}, closeModalPlano: data.closeModalPlano ?? false, id_associado: dadosassociado?.id_associado ?? 0, mensalidade: data.mensalidade ?? {}, mensalidadeAnt: data.mensalidadeAnt ?? {} }}
                                     dadosAssociado={{
@@ -402,10 +361,10 @@ export default function AdmContrato() {
                             </Tabs.Item>
                             <Tabs.Item active={indexTab === 2} disabled={!permissoes.includes('ADM1.3')} title="Dependentes" icon={HiUserGroup
                             }>
-                           {  indexTab===2 &&   <Dependentes />}
+                                {indexTab === 2 && <Dependentes />}
                             </Tabs.Item>
                             <Tabs.Item active={indexTab === 3} title="Carteiras" icon={HiIdentification}>
-                               {indexTab===3 && <CarteirasDep
+                                {indexTab === 3 && <CarteirasDep
                                     titular={dadosassociado?.nome ?? ''}
                                     dependentes={dadosassociado?.dependentes ?? []}
                                     contrato={dadosassociado?.contrato?.id_contrato ?? 0}
@@ -420,14 +379,14 @@ export default function AdmContrato() {
                             </Tabs.Item>
                             <Tabs.Item active={indexTab === 4} disabled={!permissoes.includes('ADM1.5')} title="Óbitos" icon={HiMiniInbox
                             }>
-                             {  indexTab===4 && <ObitosAssociado
+                                {indexTab === 4 && <ObitosAssociado
                                     obitos={dadosassociado?.contrato?.obitos ?? []}
                                 />}
                             </Tabs.Item>
 
                             <Tabs.Item active={indexTab === 4} title="Impressões" icon={HiPrinter
                             }>
-                                {indexTab===5 && <Impressoes />}
+                                {indexTab === 5 && <Impressoes />}
                             </Tabs.Item>
 
 

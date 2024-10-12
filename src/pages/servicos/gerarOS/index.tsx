@@ -159,7 +159,7 @@ const handleCheckTitular=()=>{
 }
  
 
-    function setarFalecidoDependente({ nome, data_nasc }: { nome: string, data_nasc: Date }) {
+    function setarFalecidoDependente({ nome, data_nasc }: { nome: string, data_nasc: Date|null }) {
         setarServico({
             nome_falecido: nome,
             data_nascimento: data_nasc,

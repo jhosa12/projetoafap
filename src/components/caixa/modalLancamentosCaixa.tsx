@@ -1,8 +1,5 @@
-import { IoIosClose } from "react-icons/io";
-import { MdSaveAlt } from "react-icons/md";
-import { IoIosArrowDropdownCircle } from "react-icons/io";
-import { GiReturnArrow } from "react-icons/gi";
-import { AuthContext, EmpresaProps } from "@/contexts/AuthContext";
+
+import { AuthContext } from "@/contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -12,6 +9,7 @@ import { api } from "@/services/apiClient";
 import { Button, Label, Modal, Select, TextInput } from "flowbite-react";
 import { LancamentosProps } from "@/pages/caixa";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { EmpresaProps } from "@/types/empresa";
 
 
 

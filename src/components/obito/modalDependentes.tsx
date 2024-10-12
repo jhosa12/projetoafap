@@ -6,7 +6,7 @@ import { useContext } from "react";
 
 
 interface DataProps{
-    setarFalecidoDependente:({nome,data_nasc}:{nome:string,data_nasc:Date})=>void
+    setarFalecidoDependente:({nome,data_nasc}:{nome:string,data_nasc:Date|null})=>void
     openModal:boolean,
     setOpenModal:(open:boolean)=>void
 }

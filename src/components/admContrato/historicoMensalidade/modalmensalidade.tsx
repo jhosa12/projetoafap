@@ -2,13 +2,14 @@
 import { MdSaveAlt } from "react-icons/md";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { GiReturnArrow } from "react-icons/gi";
-import { AuthContext, MensalidadeProps } from "@/contexts/AuthContext";
+import { AuthContext} from "@/contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import "react-datepicker/dist/react-datepicker.css";
 import { Modal, ModalBody, ModalHeader, TextInput,Datepicker,Select,Checkbox, Button } from "flowbite-react";
 import { Scanner } from "./modalScanner";
+import { MensalidadeProps } from "@/types/financeiro";
 
 
 type ToastType = 'success' | 'error' | 'info' | 'warn'

@@ -3,7 +3,7 @@
 
 import { Button, Modal } from "flowbite-react"
 import { HiOutlineExclamationCircle } from "react-icons/hi2"
-import { Item } from "./dadosTitular"
+
 
 
 interface DataProps{

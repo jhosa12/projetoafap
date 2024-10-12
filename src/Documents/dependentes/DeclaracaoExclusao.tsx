@@ -9,7 +9,7 @@ import logo from "../../../public/logoafap.png"
 import React from 'react';
 interface DadosProps {
     nome: string,
-    data_nasc: Date | undefined,
+    data_nasc: Date | null,
     endereco: string,
     numero: number | null,
     bairro: string,

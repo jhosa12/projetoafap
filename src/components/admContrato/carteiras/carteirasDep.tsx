@@ -21,13 +21,12 @@ interface DadosProps{
 
   interface DependentesProps{
     nome: string,
-    data_nasc: Date,
+    data_nasc: Date|null,
     grau_parentesco: string,
     data_adesao: Date,
     carencia: Date,
     id_dependente: number,
     cad_dh: Date,
-  
     sexo: string,
     saveAdd: boolean,
     excluido: boolean,

@@ -1,15 +1,6 @@
 
-
-
-
-
-
-
-import { EstoqueProps, ProdutosProps } from "@/pages/estoque"
 import { Button, Table } from "flowbite-react"
 import { useContext, useEffect, useRef, useState } from "react";
-
-
 import { AuthContext } from "@/contexts/AuthContext";
 import { RiAlertLine } from "react-icons/ri";
 import { ModalFiltroMov } from "./modalFiltro";
@@ -26,7 +17,6 @@ import { ModalConfirm } from "./modalConfirm";
 
 
 interface DataProps {
-
     usuario: string,
     id_usuario: string,
     permissoes: Array<string>

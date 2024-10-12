@@ -3,13 +3,14 @@ import { Button, Select, Table, TextInput } from "flowbite-react"
 import { useContext, useEffect, useState } from "react";
 import { ModalMov } from "./modalMovimentacao";
 import { ModalNovoProduto } from "./modalNovoProduto";
-import { AuthContext, EmpresaProps } from "@/contexts/AuthContext";
+import { AuthContext } from "@/contexts/AuthContext";
 import {RiAlertLine} from "react-icons/ri";
 import { MdKeyboardArrowDown, MdOutlinePlaylistAdd } from "react-icons/md";
 import { FiltroEstoque } from "./PopoverFiltro";
 import { get } from "http";
 import { TbTransferVertical } from "react-icons/tb";
 import useApi from "@/hooks/useApi";
+import { EmpresaProps } from "@/types/empresa";
 
 
 

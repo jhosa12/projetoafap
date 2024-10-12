@@ -2,7 +2,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 
 interface FalecidoProps{
     nome_falecido:string,
-    data_nascimento:Date,
+    data_nascimento:Date|null,
     religiao:string,
     sexo:string,
     rg:string

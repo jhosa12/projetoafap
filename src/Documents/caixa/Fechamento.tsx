@@ -14,8 +14,6 @@ interface DadosProps {
     dataFim:Date
 }
 
-
-
 class Fechamento extends React.Component<DadosProps> {
   render() {
     const {dataFim,dataInicio,usuario} = this.props;

@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { HiTrash } from "react-icons/hi";
 import { toast } from "react-toastify";
 import { ModalQuant } from "./modalQuantidade";
-import { EmpresaProps } from "@/contexts/AuthContext";
 import { api } from "@/services/apiClient";
 import { ModalManual } from "./modalProdutoManual";
 import { ModalConfirm } from "./historico/modalConfirm";
+import { EmpresaProps } from "@/types/empresa";
 
 
 

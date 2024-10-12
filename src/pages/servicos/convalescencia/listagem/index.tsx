@@ -12,7 +12,7 @@ import { MdAdd } from "react-icons/md";
 import ReactPaginate from 'react-paginate';
 import { Tooltip } from 'react-tooltip';
 import Link from "next/link";
-import PrintButtonComprovante from "@/Documents/convalescenca/comprovante/PrintButton";
+
 interface ConvProps {
     id_conv: number,
     id_contrato: number,

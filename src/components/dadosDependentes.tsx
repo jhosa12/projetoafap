@@ -10,53 +10,49 @@ import DatePicker,{registerLocale, setDefaultLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { Label, Select, Table, TextInput } from "flowbite-react";
+import { ChildrenProps } from "./admContrato/cadastro/modalCadastro";
+import { useForm } from "react-hook-form";
 registerLocale('pt', pt)
 
 interface UserProps{
   nome:string,
-    data_nasc:Date,
+    data_nasc:Date|undefined|null,
     grau_parentesco:string,
     data_adesao:Date,
+    celular:string,
     carencia:Date,
     cad_dh:Date
 }
 
-export function DadosDependentes(){
+export function DadosDependentes({register,setValue,watch,trigger}:ChildrenProps){
 
-const {data,closeModa}= useContext(AuthContext)
-const [nome,setNome]= useState("")
-const[celular,setCelular]=useState('')
-const [data_nasc,setNasc]= useState<Date>() 
-const [grau_parentesco,setPar]= useState("")
-const [data_adesao,setAdesao]= useState<Date>()
-const [carencia,setCarencia]= useState<Date>()
-const [arrayDependetes,setArray] =useState<Partial<UserProps[]>>([])
+const {register:registerDep,setValue:setValueDep,watch:watchDep,reset:resetDep} = useForm<UserProps>()
 
-useEffect(()=>{
- setCarencia(data.contrato?.dt_carencia)
- setAdesao(data.contrato?.dt_adesao)
-})
+
+
+
 
      function adicionar(){
-        if(nome!==''){
+        if(watchDep('nome')!==''){
           const dados = {
-            nome,data_nasc,grau_parentesco,data_adesao,carencia,cad_dh:new Date(),celular
-        }   
-           // setArray([...arrayDependetes,dados])
-            closeModa({...data,arraydep:[...data.arraydep || [],dados]})
-            setNome("")
-            setNasc(undefined)
-            setPar("")
-            setCelular('')    
+            nome:watchDep('nome'),data_nasc:watchDep('data_nasc')||null,grau_parentesco:watchDep('grau_parentesco'),data_adesao:watchDep('data_adesao'),carencia:watchDep('carencia'),cad_dh:new Date(),celular:watchDep('celular') }   
+   
+            const currentItens = watch('arraydep')||[]
+            setValue('arraydep',[...currentItens,dados]);
+          // trigger('arraydep')
+           resetDep()
         }   
         }
-        const handleExcluirDependente=(index:number)=>{
-            const novoArray = [...data.arraydep||[]]
-            novoArray.splice(index,1)
-            closeModa({...data,arraydep:novoArray})
-
-
-        }
+        const handleExcluirDependente = (index: number) => {
+          const currentArray = watch("arraydep") || []; // Obtendo o array atual
+      
+          // Criando um novo array com o item removido
+          const novoArray = [...currentArray];
+          novoArray.splice(index, 1);
+      
+          // Atualizando o valor do array no formulário
+          setValue("arraydep", novoArray);
+        };
 
     return(
  
@@ -68,7 +64,7 @@ useEffect(()=>{
           <div className="mb-1 block">
           <Label  value="Nome" />
         </div>
-        <TextInput  value={nome} onChange={e=>setNome(e.target.value.toUpperCase())} type="text"  />
+        <TextInput {...registerDep('nome')} type="text"  />
           </div>
              
              
@@ -76,14 +72,14 @@ useEffect(()=>{
           <div className="mb-1 block">
           <Label  value="Nascimento" />
         </div>
-          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={data_nasc} onChange={(date)=>date && setNasc(date)}   className="flex uppercase w-full  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
+          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={watchDep('data_nasc')||null} onChange={(date)=>date && setValueDep('data_nasc',date)}     className="flex uppercase w-full  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
           </div>
              
           <div className="col-span-1">
           <div className="mb-1 block">
           <Label  value="Parentesco" />
         </div>
-            <Select  value={grau_parentesco} onChange={e=>setPar(e.target.value)} >
+            <Select  {...registerDep('grau_parentesco')}  >
 
             <option selected className="text-gray-200">PARENTESCO</option>
                     <option>CONJUGE</option>
@@ -106,7 +102,7 @@ useEffect(()=>{
           <div className="mb-1 block">
           <Label  value="Celular" />
         </div>
-          <InputMask  value={celular} onChange={e=>setCelular(e.target.value)} mask={'(99) 9 9999-9999'} type="text"  className="flex uppercase w-full  pr-2 pl-2  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
+          <InputMask  value={watchDep('celular')??''} onChange={e=>setValueDep('celular',e.target.value)} mask={'(99) 9 9999-9999'} type="text"  className="flex uppercase w-full  pr-2 pl-2  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
           </div>
             
               
@@ -115,7 +111,7 @@ useEffect(()=>{
           <div className="mb-1 block">
           <Label  value="Adesão" />
         </div>
-          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={data_adesao} onChange={(date)=>date && setAdesao(date)}   className="flex uppercase w-full  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
+          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={watchDep('data_adesao')} onChange={(date)=>date && setValueDep('data_adesao',date)}   className="flex uppercase w-full  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
           </div>
 
 
@@ -123,7 +119,7 @@ useEffect(()=>{
           <div className="mb-1 block">
           <Label  value="Carência" />
         </div>
-          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={carencia} onChange={(date)=>date && setCarencia(date)}   className="flex uppercase w-full  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
+          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={watchDep('carencia')} onChange={(date)=>date && setValueDep('carencia',date)}   className="flex uppercase w-full  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
           </div>
 
 
@@ -162,8 +158,8 @@ useEffect(()=>{
                   </Table.HeadCell>
                 </Table.Head>
                 <Table.Body>
-                {data.arraydep?.map((usuario, index) => (
-                           <Table.Row key={index} className="bg-white border-gray-700 p-1">
+                {watch('arraydep')?.map((usuario, index) => (
+                           <Table.Row key={index} className="bg-white font-semibold text-black text-xs border-gray-700 p-1">
                               <Table.Cell className="whitespace-nowrap" scope="row" >{usuario.nome}</Table.Cell>
                               <Table.Cell>{usuario.data_nasc?.toLocaleDateString()}</Table.Cell>
                               <Table.Cell>{usuario.grau_parentesco}</Table.Cell>
@@ -182,38 +178,7 @@ useEffect(()=>{
                 </Table.Body>
               </Table>
 
-            {/*<table 
-                className="block  overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse rounded-lg text-gray-400">
-                  <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
-                          <tr >
-                            <th scope="col" className=" px-4 py-1">Nome</th>
-                            <th scope="col" className=" px-4 py-1">Nasc</th>
-                            <th scope="col" className=" px-4 py-1">Parent.</th>
-                            <th scope="col" className=" px-4 py-1">Celular</th>
-                            <th scope="col" className=" px-4 py-1">Adesão</th>
-                            <th scope="col" className=" px-3 py-1">Carência</th>
-                            <th scope="col" className=" px-4 py-1">Ações</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {data.arraydep?.map((usuario, index) => (
-                            <tr className=" border-b border-l bg-gray-800 border-gray-700  " key={index}>
-                              <th scope="row" className="px-4 py-1 font-medium  whitespace-nowrap text-white">{usuario.nome}</th>
-                              <td className="px-4 py-1">{usuario.data_nasc?.toLocaleDateString()}</td>
-                              <td className="px-4 py-1">{usuario.grau_parentesco}</td>
-                              <td className="px-4 py-1 whitespace-nowrap">{usuario.celular}</td>
-                              <td className="px-4 py-1">{usuario.data_adesao?.toLocaleDateString()}</td>
-                              <td className="px-3 py-1">{usuario.carencia?.toLocaleDateString()}</td>
-                              <td className="px-4 py-1">
-                                <div className="flex gap-3">
-                               
-                                <button type="button" onClick={()=>handleExcluirDependente(index)}  className="flex justify-center items-center  hover:text-red-600 " ><MdDeleteForever  size={18}/></button>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>*/}
+         
             </div>
         </div>
      
