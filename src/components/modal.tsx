@@ -27,7 +27,7 @@ interface DadosProps{
 
 
 export function ModalBusca(){
-    const {carregarDados,data,closeModa,empresas,getEmpresas}= useContext(AuthContext)
+    const {carregarDados,data,closeModa,empresas}= useContext(AuthContext)
     const [loading,setLoading] = useState(false)
     const [input,setInput] =useState('')
     const [array,setarray]=useState<DadosProps[]>([])
