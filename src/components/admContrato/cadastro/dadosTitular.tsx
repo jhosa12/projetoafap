@@ -1,5 +1,5 @@
 
-import { FormWrapper } from "./organizador";
+import { FormWrapper } from "../../organizador";
 import InputMask from 'react-input-mask';
 import DatePicker from 'react-datepicker'
 import pt from "date-fns/locale/pt";
@@ -7,7 +7,7 @@ import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { Label, Select, TextInput } from "flowbite-react";
 import { UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
-import { ChildrenProps } from "./admContrato/cadastro/modalCadastro";
+import { ChildrenProps } from "./modalCadastro";
 
 
 
@@ -47,7 +47,7 @@ interface DadosProps{
 
 export function DadosTitular({register,setValue,watch}:ChildrenProps){
 
-  const {data,closeModa}= useContext(AuthContext)
+  const {cidades}= useContext(AuthContext)
  
 
 
@@ -67,7 +67,7 @@ export function DadosTitular({register,setValue,watch}:ChildrenProps){
       </div>
         
       
-          <div className="col-span-1">
+          <div className="flex flex-col w-full">
           <div className="mb-1 block">
           <Label htmlFor="nome" value="Nascimento" />
         </div>
@@ -101,7 +101,7 @@ export function DadosTitular({register,setValue,watch}:ChildrenProps){
           <div className="mb-1 block">
           <Label htmlFor="numero" value="Numero" />
         </div>
-        <TextInput  sizing={'sm'} id="numero" {...register('numero')}  type="number" required />
+        <TextInput  sizing={'sm'} id="numero" {...register('numero')}  type="number"  />
           </div>
         
           <div className="col-span-1">
@@ -115,7 +115,7 @@ export function DadosTitular({register,setValue,watch}:ChildrenProps){
           <div className="mb-1 block">
           <Label htmlFor="ref" value="Referencia" />
         </div>
-        <TextInput  sizing={'sm'} id="referencia" {...register('referencia')}  type="text" required />
+        <TextInput  sizing={'sm'} id="referencia" {...register('referencia')}  type="text"  />
           </div>
 
           
@@ -161,11 +161,11 @@ export function DadosTitular({register,setValue,watch}:ChildrenProps){
           <Label htmlFor="cidade" value="Cidade" />
         </div>
             <Select  sizing={'sm'} 
-            {...register('cidade')}  >
+            {...register('cidade')} required  >
               <option selected></option>
-                {data.cidades?.map((item)=>{
+                {cidades?.map((item)=>{
                   return(
-                      item.uf===data.uf?(<option>{item.cidade}</option>):''
+                      item.uf===watch('uf')?(<option>{item.cidade}</option>):''
                   )
                 })}
             </Select>
@@ -175,7 +175,7 @@ export function DadosTitular({register,setValue,watch}:ChildrenProps){
           <div className="mb-1 block">
           <Label htmlFor="rg" value="RG" />
         </div>
-        <TextInput   sizing={'sm'} id="rg" {...register('rg')} type="number" required />
+        <TextInput   sizing={'sm'} id="rg" {...register('rg')} type="number"  />
           </div>
 
           <div className="col-span-1">
@@ -190,7 +190,7 @@ export function DadosTitular({register,setValue,watch}:ChildrenProps){
           <div className="mb-1 block">
           <Label htmlFor="naturalidade" value="Naturalidade" />
         </div>
-        <TextInput  sizing={'sm'} id="rg" {...register('naturalidade')} type="text" required />
+        <TextInput  sizing={'sm'} id="rg" {...register('naturalidade')} type="text"  />
           </div>
 
 
@@ -198,7 +198,7 @@ export function DadosTitular({register,setValue,watch}:ChildrenProps){
           <div className="mb-1 block">
           <Label  value="Email" />
         </div>
-        <TextInput   sizing={'sm'} id="email" {...register('email')} type="text" required />
+        <TextInput   sizing={'sm'} id="email" {...register('email')} type="text"  />
           </div>
 
       

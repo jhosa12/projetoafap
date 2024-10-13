@@ -9,12 +9,15 @@ import { SignInProps, UserProps } from '@/types/auth';
 import { EmpresaProps } from '@/types/empresa';
 import { PlanosProps } from '@/types/planos';
 import { CidadesProps } from '@/types/cidades';
-
+import { ConsultoresProps } from '@/types/consultores';
 
 
 type AuthContextData = {
     usuario: UserProps | undefined,
     userLogged(): boolean,
+    consultores: Array<ConsultoresProps>,
+    cidades:Array<CidadesProps>,
+    planos:Array<PlanosProps>,
     sign: (credentials: SignInProps) => Promise<void>,
     signOut: () => void,
     closeModa: (fields: Partial<DadosCadastro>) => void,
@@ -29,7 +32,7 @@ type AuthContextData = {
     setarDadosAssociado:(fields:Partial<AssociadoProps>)=>void
     permissoes:Array<string>
     setPermissoes:(array:Array<string>)=>void
-    getEmpresas:()=>Promise<void>
+   // getEmpresas:()=>Promise<void>
     empresas:Array<EmpresaProps>
 }
 
@@ -60,8 +63,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [empresas,setEmpresas] = useState<Array<EmpresaProps>>([])
     const [planos, setPlanos] = useState<Array<PlanosProps>>([]);
    const [cidades, setCidades] = useState<Array<CidadesProps>>([]);
-   const [consultores, setConsultores] = useState<Array<string>>([]);
-   const [cobradores,setCobradores] = useState<Array<string>>([])
+   const [consultores, setConsultores] = useState<Array<ConsultoresProps>>([]);
+  
     const [servico, setServico] = useState<Partial<ObitoProps>>({ hr_sepultamento: new Date(), end_hora_falecimento: new Date(), end_hora_informaram: new Date() });
     const [permissoes,setPermissoes] =useState<Array<string>>([])
     const [token,setToken] = useState(()=>{
@@ -83,15 +86,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }, []);
 
 
-      const getEmpresas = async() => {
+      const getDadosFixos = async() => {
 
         if(empresas.length>0){
             return;
         }
         try {
-            const response = await api.get("/empresa/listar")
+            const response = await api.get("/dadosFixos")
 
-            setEmpresas(response.data)
+            setEmpresas(response.data.empresas||[]);
+            setCidades(response.data.cidades||[]);
+            setConsultores(response.data.consultores||[]);
+            setPlanos(response.data.planos||[]);
         } catch (error) {
             console.log(error)
         }
@@ -144,7 +150,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(()=>{
         const { "@nextauth.token": token } = parseCookies();
         if (token) {userToken(token)}
-        getEmpresas()
+        getDadosFixos()
             
     },[token])
 
@@ -175,7 +181,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
    
 
     const carregarDados = async (id:number) => {
-        console.log(id)
+     
         limparDados();
         try {
             const response = await api.post('/associado', {
@@ -231,7 +237,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <AuthContext.Provider value={{empresas,getEmpresas,permissoes,setPermissoes, setarDadosAssociado, limparDados, usuario, userLogged, sign, signOut, data, closeModa, dadosassociado, carregarDados, setarServico, servico, listaConv, setarListaConv }}>
+        <AuthContext.Provider value={{planos,consultores,cidades,empresas,permissoes,setPermissoes, setarDadosAssociado, limparDados, usuario, userLogged, sign, signOut, data, closeModa, dadosassociado, carregarDados, setarServico, servico, listaConv, setarListaConv }}>
             {children}
         </AuthContext.Provider>
     );

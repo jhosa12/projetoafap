@@ -1,21 +1,21 @@
 
 
-import { FormWrapper } from "./organizador";
+import { FormWrapper } from "../../organizador";
 import { AuthContext } from '@/contexts/AuthContext';
 import { useContext, useEffect, useState } from 'react';
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { Label, Select, TextInput } from "flowbite-react";
-import { ChildrenProps } from "./admContrato/cadastro/modalCadastro";
+import { ChildrenProps } from "./modalCadastro";
 import { set } from "date-fns";
 
 
 registerLocale('pt', pt)
 
 export function DadosPlano({register,setValue,watch}:ChildrenProps){
-  const {data,empresas} =useContext(AuthContext)
-  const [inicioDatas,setDatas] =useState(true)
+  const {empresas,consultores,planos} =useContext(AuthContext)
+ 
 
     return(
      
@@ -63,7 +63,7 @@ export function DadosPlano({register,setValue,watch}:ChildrenProps){
         </div>
             <Select value={watch('contrato.id_plano')} onChange={(e) => {
     const selectedPlanId = Number(e.target.value); 
-    const selectedPlan = data.planos?.find(plan =>plan.id_plano === selectedPlanId);
+    const selectedPlan = planos?.find(plan =>plan.id_plano === selectedPlanId);
     if(selectedPlan){
       setValue('contrato.id_plano',selectedPlanId);
       setValue('contrato.plano',selectedPlan.descricao);  
@@ -71,7 +71,7 @@ export function DadosPlano({register,setValue,watch}:ChildrenProps){
     }
   }} >
              <option></option>
-  {data.planos?.map((item)=>{
+  {planos?.map((item)=>{
     return (
       <option value={item.id_plano} key={item.id_plano} >{item.descricao}</option>
     )
@@ -96,8 +96,11 @@ export function DadosPlano({register,setValue,watch}:ChildrenProps){
             <Select value={watch('contrato.cobrador')} {...register('contrato.cobrador')}   >
 
             <option selected></option>
-              <option >JACKSON</option>
-              <option >SAMUEL</option>
+            {consultores?.map((item)=>
+               (
+               item.funcao==='COBRADOR (RDA)' && <option value={item.nome} key={item.id_consultor} >{item.nome}</option>
+              )
+            )}
             </Select>
           </div>
 
@@ -109,8 +112,11 @@ export function DadosPlano({register,setValue,watch}:ChildrenProps){
             <Select value={watch('contrato.consultor')} {...register('contrato.consultor')}  >
 
             <option selected></option>
-              <option >JACKSON</option>
-              <option >SAMUEL</option>
+            {consultores?.map((item,index)=>
+              (
+              item.funcao==='PROMOTOR(A) DE VENDAS' && <option value={item.nome} key={index} >{item.nome}</option>
+              )
+            )}
             </Select>
           </div>
 

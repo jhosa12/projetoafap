@@ -4,11 +4,13 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { UseFormAssociadoProps } from "./modalEditarDados";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
 
 
 
 export function TabTitular({register,setValue,watch}:UseFormAssociadoProps){
-
+  const {cidades} = useContext(AuthContext)
 
 
 
@@ -124,11 +126,11 @@ export function TabTitular({register,setValue,watch}:UseFormAssociadoProps){
   </div>
   <Select  sizing={'sm'} {...register('cidade')} id="cidade" required >
               <option selected></option>
-            { /* data.cidades?.map((item, index) => {
+            { cidades?.map((item, index) => {
                 return (
-                  item.uf === data.uf ? (<option value={item.cidade} key={item.id_cidade}>{item.cidade}</option>) : ''
+                  item.uf === watch('uf') ? (<option value={item.cidade} key={item.id_cidade}>{item.cidade}</option>) : ''
                 )
-              })*/}
+              })}
             </Select >
 </div>
           

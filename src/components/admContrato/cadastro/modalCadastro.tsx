@@ -2,7 +2,7 @@
 
 
 import { useEffect, useState} from 'react'
-import { DadosDependentes } from "@/components/dadosDependentes";
+
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { ResumoCadastro } from "@/components/resumoCadastro";
@@ -12,10 +12,13 @@ import { Modal } from "flowbite-react";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi2";
 import { HiInboxIn } from "react-icons/hi";
 import { SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
-import { DadosTitular } from "@/components/dadosTitular";
-import { DadosPlano } from "@/components/dadosPlano";
+
+
 import { MultiStep } from "@/components/multiStep";
 import { DadosCadastro } from '@/types/associado';
+import { DadosTitular } from './dadosTitular';
+import { DadosPlano } from './dadosPlano';
+import { DadosDependentes } from './dadosDependentes';
 
 
 interface ParcelaData {

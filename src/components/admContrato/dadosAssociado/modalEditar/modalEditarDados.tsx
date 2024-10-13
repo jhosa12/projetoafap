@@ -26,48 +26,24 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
   const { usuario,setarDadosAssociado,permissoes} = useContext(AuthContext)
   const [modalInativar,setmodalInat]= useState<boolean>(false)
   const {register,handleSubmit,watch,setValue,trigger} = useForm<AssociadoProps>({
-    defaultValues:dataForm
+    defaultValues:{...dataForm,contrato:{...dataForm?.contrato,dt_adesao:dataForm.contrato?.dt_adesao ? new Date(new Date(dataForm.contrato?.dt_adesao).getUTCFullYear(),new Date(dataForm.contrato?.dt_adesao).getUTCMonth(),new Date(dataForm.contrato?.dt_adesao).getUTCDate(),new Date(dataForm.contrato?.dt_adesao).getUTCHours()) : undefined,
+      data_vencimento:dataForm.contrato?.data_vencimento ? new Date(new Date(dataForm.contrato?.data_vencimento).getUTCFullYear(),new Date(dataForm.contrato?.data_vencimento).getUTCMonth(),new Date(dataForm.contrato?.data_vencimento).getUTCDate(),new Date(dataForm.contrato?.data_vencimento).getUTCHours()) : undefined,
+
+      dt_carencia:dataForm.contrato?.dt_carencia ? new Date(new Date(dataForm.contrato?.dt_carencia).getUTCFullYear(),new Date(dataForm.contrato?.dt_carencia).getUTCMonth(),new Date(dataForm.contrato?.dt_carencia).getUTCDate(),new Date(dataForm.contrato?.dt_carencia).getUTCHours()) : undefined,
+
+
+    },
+   
+  
+  
+  
+  }
   })
 
-  const [motivoFinanceiro, setMotivoFinanceiro] = useState(false)
-  const [motivoNaoLocalizado, setNaoLocalizado] = useState(false)
-  const [motivoDesagrado, setMotivoDesagrado] = useState(false)
 
 
-  async function inativarAtivarContrato(st: string) {
 
-    if (st === 'INATIVO' && !motivoDesagrado && !motivoFinanceiro && !motivoNaoLocalizado) {
-      toast.warning('Selecione a categoria do motivo')
-
-      return;
-    }
-    if (st === 'INATIVO' && !dataForm ?.contrato?.motivo_inativo) {
-      toast.warning('Descreva o motivo da Inattivação')
-      return;
-    }
-
-    const response = await toast.promise(
-      api.put('/contrato/inativar',
-        {
-          id_contrato: dataForm.contrato?.id_contrato,
-          motivo_inativo: st === 'INATIVO' ? dataForm.contrato?.motivo_inativo : undefined,
-          categoria_inativo: st === 'INATIVO' ? dataForm.contrato?.categoria_inativo : undefined,
-          dt_cancelamento: st === 'INATIVO' ? new Date() : undefined,
-          situacao: st
-        }
-      ),
-      {
-        error: 'Erro ao Inativar/Ativar Contrato',
-        pending: 'Realizando Alteração....',
-        success: 'Alteração realizada com sucesso'
-
-      }
-    )
-   // await carregarDados()
-   
-    setarDadosAssociado({...dataForm,contrato:{...dataForm?.contrato,...response.data}})
-
-  }
+  
 
 
 
@@ -134,7 +110,7 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
         <Modal.Body>
           
            
-        <Tabs  theme={{tablist:{tabitem:{base:"flex  items-center justify-center rounded-t-lg p-2 text-sm font-medium first:ml-0 focus:outline-none disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{fullWidth:{active:{off:'bg-gray-50',on:'bg-gray-100 text-black'}}}}}}} aria-label="Full width tabs" variant="fullWidth">
+        <Tabs  theme={{tablist:{tabitem:{base:"flex z-0 items-center justify-center rounded-t-lg p-2 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 ",variant:{fullWidth:{active:{off:'bg-gray-50',on:'bg-gray-100 text-black'}}}}}}} aria-label="Full width tabs" variant="fullWidth">
         <Tabs.Item active title="Dados Titular" >
 
           <TabTitular register={register} setValue={setValue} watch={watch} trigger={trigger}/>
@@ -153,14 +129,14 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
               
           <div className="inline-flex w-full justify-end p-2 gap-4">
         
-          {dataForm?.contrato?.situacao==='ATIVO'?<Button disabled={!permissoes.includes('ADM1.1.3')}  onClick={()=>setmodalInat(true)} color={'failure'} >Inativar</Button>:  <Button disabled={!permissoes.includes('ADM1.1.3')} onClick={()=>inativarAtivarContrato('ATIVO')} color={'success'} >Ativar</Button>}
+         
             <Button onClick={()=>handleAtualizarDados()} disabled={!permissoes.includes('ADM1.1.1')} >Salvar</Button>
 
           </div>
           </Modal.Body>
 
 
-          <ModalInativar inativarAtivarContrato={inativarAtivarContrato} motivoDesagrado={motivoDesagrado} motivoFinanceiro={motivoFinanceiro} motivoNaoLocalizado={motivoNaoLocalizado} openModal={modalInativar} setModal={setmodalInat} setMotivoDesagrado={setMotivoDesagrado} setMotivoFinanceiro={setMotivoFinanceiro}  setNaoLocalizado={setNaoLocalizado} />
+       
           </Modal>
 
   )

@@ -96,7 +96,7 @@ export default function CarteirasDep({dependentes,contrato,plano,titular,enderec
     },[arrayPrint])
     
     return (
-        <div className="flex flex-col w-full px-2 text-gray-600">
+        <div className="flex flex-col w-full px-2 text-black font-semibold">
             <div className="flex px-2 mb-2">
             <div className="flex items-center px-2 py-1">
             <input onChange={() =>setTitular(!cartTitular)} type="checkbox" checked={cartTitular} />

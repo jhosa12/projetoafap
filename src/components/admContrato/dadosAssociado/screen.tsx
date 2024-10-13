@@ -1,11 +1,15 @@
 import { ModalEditarDados } from "@/components/admContrato/dadosAssociado/modalEditar/modalEditarDados";
 import {  AuthContext } from "@/contexts/AuthContext";
 import { AssociadoProps } from "@/types/associado";
-import { Button, Card } from "flowbite-react";
+import { Badge, Button, ButtonGroup, Card } from "flowbite-react";
 import { useContext, useState } from "react";
 import { BiSave } from "react-icons/bi";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { TbWheelchair } from "react-icons/tb";
+import { ModalAlterarPlano } from "./modalAlterarPlano";
+import { ModalInativar } from "./modalEditar/modalInativar";
+import { toast } from "react-toastify";
+import { api } from "@/services/apiClient";
 
 
 
@@ -17,10 +21,12 @@ interface DataProps{
 
 
 export function DadosAssociado({dadosassociado}:DataProps){
-         const {usuario,closeModa,permissoes}= useContext(AuthContext)
+         const {usuario,closeModa,permissoes,setarDadosAssociado}= useContext(AuthContext)
         const [openEdit,setModalEdit]=useState<boolean>(false)
          const [verObs, setVerObs] = useState(false)
          const [observacao, setObservacao] = useState('');
+         const [openAltPlano,setOpenAltPlano] = useState<boolean>(false)
+         const [openInativar,setOpenInativar] = useState<boolean>(false)
 
 
          function handleObservacao() {
@@ -33,20 +39,26 @@ export function DadosAssociado({dadosassociado}:DataProps){
                 setObservacao('')
             }
         }
-    return(
-        <div className={`p-4  rounded-b-lg `}>
 
-                                <div className="inline-flex gap-3 mb-3 pl-2 text-xl font-semibold tracking-tight text-black">
+     
+
+
+
+
+
+
+    return(
+        <div className={`p-4  rounded-b-lg w-full `}>
+
+                                <div className="inline-flex w-full justify-between  gap-3 mb-3 pl-2 text-xl font-semibold tracking-tight text-black">
+                                    <div className="inline-flex gap-3 items-center ">
                                     {dadosassociado?.contrato?.id_contrato}-{dadosassociado?.nome}
                                     <span>CATEGORIA:
 
                                         <span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato?.plano}</span>
                                     </span>
 
-                                    <span className={`inline-flex items-center  text-sm font-medium px-2.5 py-0.5 rounded-full ${dadosassociado?.contrato?.situacao === 'ATIVO' ? "bg-green-600 text-green-300" : "bg-red-600 text-red-300"}`}>
-                                        <span className={`w-2 h-2 me-1 ${dadosassociado?.contrato?.situacao === 'ATIVO' ? "bg-green-500 " : "bg-red-500"}  rounded-full`}></span>
-                                        {dadosassociado?.contrato?.situacao}
-                                    </span>
+                                   <Badge size={'sm'} color={dadosassociado.contrato?.situacao === 'ATIVO' ? 'success' : `failure`}>{dadosassociado?.contrato?.situacao}</Badge>
 
                                     {dadosassociado?.contrato?.convalescencia?.map(item => (
                                         <>
@@ -56,47 +68,19 @@ export function DadosAssociado({dadosassociado}:DataProps){
                                         </>
                                     ))}
 
+</div>
+<ButtonGroup outline >
+    <Button color={'gray'} size={'sm'} onClick={()=>setOpenAltPlano(true)}>ALTERAR CATEGORIA</Button>
+   <Button  disabled={!permissoes.includes('ADM1.1.3')}  onClick={()=>setOpenInativar(true)} color={'gray'} size={'sm'} >{dadosassociado?.contrato?.situacao === 'ATIVO' ? "INATIVAR CONTRATO" : "ATIVAR CONTRATO"}</Button>
+    
+</ButtonGroup>
+
                                 </div>
                                 <div className="flex w-full flex-row gap-2">
 
                                    <Card onClick={() => {
 
-closeModa({
-   
-    name: dadosassociado.nome,
-    nasc: dadosassociado?.data_nasc??new Date(),
-    bairro: dadosassociado.bairro,
-    celular1: dadosassociado.celular1,
-    celular2: dadosassociado.celular2,
-    telefone: dadosassociado.telefone,
-    cidade: dadosassociado.cidade,
-    cep: dadosassociado.cep,
-    cpf: dadosassociado.cpfcnpj,
-    endereco: dadosassociado.endereco,
-    email: dadosassociado.email,
-    id_associado: dadosassociado.id_associado,
-    contrato: {
-        id_contrato: dadosassociado?.contrato?.id_contrato,
-        cobrador: dadosassociado?.contrato?.cobrador,
-        consultor: dadosassociado?.contrato?.consultor,
-        data_vencimento: dadosassociado?.contrato?.data_vencimento,
-        dt_adesao: dadosassociado?.contrato?.dt_adesao,
-        dt_carencia: dadosassociado?.contrato?.dt_carencia,
-        id_plano: dadosassociado?.contrato?.id_plano,
-        origem: dadosassociado?.contrato?.origem,
-        plano: dadosassociado?.contrato?.plano,
-        situacao: dadosassociado?.contrato?.situacao,
-        supervisor: dadosassociado?.contrato?.supervisor,
-        valor_mensalidade: dadosassociado?.contrato?.valor_mensalidade
-    },
-    //  planos:usuario?.planos,
-    // cidades:usuario?.cidades,
-    numero: dadosassociado.numero,
-    profissao: dadosassociado.profissao,
-    rg: dadosassociado.rg,
-    referencia: dadosassociado.guia_rua,
-    uf: dadosassociado.uf
-}),
+
 setModalEdit(true)
 }}  className="w-full text-black text-sm cursor-pointer">
                                         <h2 className="text-sm font-semibold mb-4  text-black">DADOS  DO TITULAR </h2>
@@ -119,40 +103,7 @@ setModalEdit(true)
                                         </Card>
 
                                     <Card onClick={() => {
-                                                 closeModa({
-                                                    name: dadosassociado.nome,
-                                                    nasc: dadosassociado.data_nasc ??new Date(),
-                                                    bairro: dadosassociado.bairro,
-                                                    celular1: dadosassociado.celular1,
-                                                    celular2: dadosassociado.celular2,
-                                                    telefone: dadosassociado.telefone,
-                                                    cidade: dadosassociado.cidade,
-                                                    cep: dadosassociado.cep,
-                                                    cpf: dadosassociado.cpfcnpj,
-                                                    endereco: dadosassociado.endereco,
-                                                    email: dadosassociado.email,
-                                                    id_associado: dadosassociado.id_associado,
-                                                    contrato: {
-                                                        id_contrato: dadosassociado?.contrato?.id_contrato,
-                                                        cobrador: dadosassociado?.contrato?.cobrador,
-                                                        consultor: dadosassociado?.contrato?.consultor,
-                                                        data_vencimento: dadosassociado?.contrato?.data_vencimento,
-                                                        dt_adesao: dadosassociado?.contrato?.dt_adesao,
-                                                        dt_carencia: dadosassociado?.contrato?.dt_carencia,
-                                                        id_plano: dadosassociado?.contrato?.id_plano,
-                                                        origem: dadosassociado?.contrato?.origem,
-                                                        plano: dadosassociado?.contrato?.plano,
-                                                        situacao: dadosassociado?.contrato?.situacao,
-                                                        supervisor: dadosassociado?.contrato?.supervisor,
-                                                        valor_mensalidade: dadosassociado?.contrato?.valor_mensalidade
-                                                    },
-
-                                                    numero: dadosassociado.numero,
-                                                    profissao: dadosassociado.profissao,
-                                                    rg: dadosassociado.rg,
-                                                    referencia: dadosassociado.guia_rua,
-                                                    uf: dadosassociado.uf
-                                                }),
+                                               
                                                 setModalEdit(true)
                                             }} className="flex w-full text-black text-sm cursor-pointer">
                                    
@@ -200,6 +151,9 @@ setModalEdit(true)
                                 </div>
 
                                 {openEdit && <ModalEditarDados dataForm={dadosassociado} setModalEdit={setModalEdit} openEdit={openEdit} />}
+
+                                <ModalAlterarPlano   openModal={openAltPlano} setOpenModal={setOpenAltPlano}/>
+                               {openInativar && <ModalInativar openModal={openInativar} setModal={setOpenInativar} />}
                             </div>
     )
 }

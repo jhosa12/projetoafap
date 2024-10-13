@@ -1,5 +1,5 @@
 import {  useContext, useEffect, useState } from "react"
-import { FormWrapper } from "./organizador"
+import { FormWrapper } from "../../organizador"
 import InputMask from 'react-input-mask'
 import { TiDeleteOutline } from "react-icons/ti";
 import { TiDelete } from "react-icons/ti";
@@ -10,7 +10,7 @@ import DatePicker,{registerLocale, setDefaultLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { Label, Select, Table, TextInput } from "flowbite-react";
-import { ChildrenProps } from "./admContrato/cadastro/modalCadastro";
+import { ChildrenProps } from "./modalCadastro";
 import { useForm } from "react-hook-form";
 registerLocale('pt', pt)
 
