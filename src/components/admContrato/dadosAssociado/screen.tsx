@@ -48,7 +48,7 @@ export function DadosAssociado({dadosassociado}:DataProps){
 
 
     return(
-        <div className={`p-4  rounded-b-lg w-full `}>
+        <div className={`flex flex-col h-[calc(100vh-190px)]   p-4  rounded-b-lg w-full `}>
 
                                 <div className="inline-flex w-full justify-between  gap-3 mb-3 pl-2 text-xl font-semibold tracking-tight text-black">
                                     <div className="inline-flex gap-3 items-center ">
@@ -70,8 +70,8 @@ export function DadosAssociado({dadosassociado}:DataProps){
 
 </div>
 <ButtonGroup outline >
-    <Button color={'gray'} size={'sm'} onClick={()=>setOpenAltPlano(true)}>ALTERAR CATEGORIA</Button>
-   <Button  disabled={!permissoes.includes('ADM1.1.3')}  onClick={()=>setOpenInativar(true)} color={'gray'} size={'sm'} >{dadosassociado?.contrato?.situacao === 'ATIVO' ? "INATIVAR CONTRATO" : "ATIVAR CONTRATO"}</Button>
+    <Button className="text-black font-semibold" color={'gray'} size={'xs'} onClick={()=>setOpenAltPlano(true)}>ALTERAR CATEGORIA</Button>
+   <Button  className="text-black font-semibold" disabled={!permissoes.includes('ADM1.1.3')}  onClick={()=>setOpenInativar(true)} color={'gray'} size={'xs'} >{dadosassociado?.contrato?.situacao === 'ATIVO' ? "INATIVAR CONTRATO" : "ATIVAR CONTRATO"}</Button>
     
 </ButtonGroup>
 
@@ -82,7 +82,7 @@ export function DadosAssociado({dadosassociado}:DataProps){
 
 
 setModalEdit(true)
-}}  className="w-full text-black text-sm cursor-pointer">
+}}  className="w-full text-black text-xs cursor-pointer">
                                         <h2 className="text-sm font-semibold mb-4  text-black">DADOS  DO TITULAR </h2>
 
                                         <div className="mb-1 inline-flex justify-between  gap-2 font-semibold tracking-tight  ">
@@ -105,7 +105,7 @@ setModalEdit(true)
                                     <Card onClick={() => {
                                                
                                                 setModalEdit(true)
-                                            }} className="flex w-full text-black text-sm cursor-pointer">
+                                            }} className="flex w-full text-black text-xs cursor-pointer">
                                    
                                         <h2 className="text-sm font-semibold mb-4 ">DADOS  DO PLANO</h2>
 
@@ -144,7 +144,7 @@ setModalEdit(true)
                                         </div>
                                         <div className="px-4 py-2 rounded-b-lg bg-gray-100">
 
-                                            <textarea value={verObs ? dadosassociado.contrato?.anotacoes : ''} disabled rows={4} className="w-full px-0 text-sm pl-2  border-0  focus:ring-0 bg-gray-100 text-gray-400 placeholder-gray-400" />
+                                            <textarea value={verObs ? dadosassociado.contrato?.anotacoes : ''} disabled rows={3} className="w-full px-0 text-sm pl-2  border-0  focus:ring-0 bg-gray-100 text-gray-400 placeholder-gray-400" />
                                         </div>
 
                                     </div>

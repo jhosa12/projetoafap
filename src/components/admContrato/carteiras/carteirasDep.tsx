@@ -96,11 +96,11 @@ export default function CarteirasDep({dependentes,contrato,plano,titular,enderec
     },[arrayPrint])
     
     return (
-        <div className="flex flex-col w-full px-2 text-black font-semibold">
-            <div className="flex px-2 mb-2">
+        <div className="flex flex-col   max-h-[calc(100vh-200px)]  w-full  p-2 ">
+            <div className="flex px-2 mb-2 w-full text-black font-semibold">
             <div className="flex items-center px-2 py-1">
             <input onChange={() =>setTitular(!cartTitular)} type="checkbox" checked={cartTitular} />
-            <label className="ms-2  text-xs whitespace-nowrap ">CARTEIRA TITULAR</label>
+            <label className="ms-2  text-xs whitespace-nowrap  ">CARTEIRA TITULAR</label>
             </div>
             <div className="flex items-center px-2 py-1">
             <input onChange={() =>setTodosDep(!todosDep)} type="checkbox" checked={todosDep} />
@@ -108,10 +108,10 @@ export default function CarteirasDep({dependentes,contrato,plano,titular,enderec
             </div>
             <button onClick={()=>ButtonPrintGeral()} className="flex p-1 rounded-lg justify-center bg-gray-500 gap-1 items-center text-xs z-40 text-white"><IoPrint size={18}/> PRINT</button>
             </div>
-            <div className="flex max-h-[calc(100vh-250px)]" id="DIV DA TABELA">
+          
             <table
-                                    className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-600">
-                                    <thead className="sticky top-0  text-xs uppercase bg-gray-100 ">
+                                    className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-600 ">
+                                    <thead className="sticky top-0  text-xs uppercase bg-gray-100 text-gray-600">
                                        <tr>
                                             <th scope="col" className=" px-2 py-1">
                                                 NOME
@@ -190,7 +190,7 @@ export default function CarteirasDep({dependentes,contrato,plano,titular,enderec
 
             </div>
 
-            </div>
+     
 
         
         

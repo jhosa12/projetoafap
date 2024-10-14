@@ -63,17 +63,17 @@ const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     }
 
 
-    return <Modal show={openModal}  popup dismissible onClose={() => setOpenModal(false)}> 
+    return <Modal size={'lg'} show={openModal}  popup dismissible onClose={() => setOpenModal(false)}> 
      
         <Modal.Header />
         <Modal.Body>
           <form onSubmit={handleSubmit(handleAlterarPlano)} className="text-center">
             <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
            <div className="mb-5 flex flex-col justify-center items-center w-full">
-           <h3 className="mb-1 text-lg font-normal text-gray-800 dark:text-gray-400">
+           <h3 className="mb-1 text-sm font-normal text-gray-800 dark:text-gray-400">
               Selecione a nova categoria !
             </h3>
-            <Select required className="w-1/2"
+            <Select sizing={'sm'} required className="w-1/2"
                   onChange={handleChangeSelect}
             >
                 <option selected value={''}></option>
@@ -84,13 +84,13 @@ const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
                 
 
             </Select>
-            <span className="text-red-600">Ao confirmar a alteração todas as mensalidades terão os valores reajustados!</span>
+            <span className="text-red-600 text-sm">Ao confirmar a alteração todas as mensalidades terão os valores reajustados!</span>
             </div> 
             <div className="flex justify-center gap-4">
-              <Button color="failure" type="submit">
+              <Button size={'sm'} color="failure" type="submit">
                 {"Entendi, quero proseguir"}
               </Button>
-              <Button color="gray" onClick={() => setOpenModal(false)}>
+              <Button size={'sm'} color="gray" onClick={() => setOpenModal(false)}>
                 Não, cancelar
               </Button>
             </div>

@@ -19,6 +19,9 @@ import { DadosAssociado } from "@/components/admContrato/dadosAssociado/screen";
 import { Dependentes } from "@/components/admContrato/dependentes/dependentes";
 import { Impressoes } from "@/components/admContrato/impressoes/screen";
 import ModalCadastro from "@/components/admContrato/cadastro/modalCadastro";
+import { HiClipboardList } from "react-icons/hi";
+import { FaHandshake } from "react-icons/fa";
+import { AcordosScreen } from "@/components/admContrato/acordos/screen";
 
 
 
@@ -315,25 +318,25 @@ export default function AdmContrato() {
                 {data.closeModalPlano && (<ModalBusca />)}
                 {openCadastro && (<ModalCadastro onClose={setCadastro} isOpen={openCadastro} />)}
 
-                <div className="flex  flex-col p-4  ">
+                <div className="flex  flex-col px-4  ">
                     <div className="flex  flex-row justify-start gap-2 items-center w-full mt-2 pb-1">
-                        <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100" } }} size={'sm'} onClick={() => closeModa({ closeModalPlano: true, mensalidade: {} })} type="button" color={'light'}>
-                            <IoMdSearch size={20} />
-                            Buscar Cliente
+                        <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100" } }} size={'xs'} onClick={() => closeModa({ closeModalPlano: true, mensalidade: {} })} type="button" color={'light'}>
+                            <IoMdSearch size={15} />
+                            BUSCAR CLIENTE
                         </Button>
-                        <Button size={'sm'} type="button" onClick={() => setCadastro(true)} color={'warning'}>
-                            Add Plano
-                            <RiFileAddLine size={20} />
+                        <Button size={'xs'} type="button" onClick={() => setCadastro(true)} color={'warning'}>
+                            NOVO ASSOCIADO
+                            <RiFileAddLine size={15} />
                         </Button>
                     </div>
                     <div className="flex-col w-full border  rounded-lg shadow  border-gray-700">
-                        <Tabs theme={{ base: 'bg-white rounded-lg', tablist: { tabitem: { base: "flex items-center justify-center rounded-t-lg p-4 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 " } } }} aria-label="Tabs with icons" variant="underline" onActiveTabChange={e => setIndex(e)} >
+                        <Tabs theme={{ base: 'bg-white rounded-lg', tablist: { tabitem: { base: "flex items-center justify-center enabled:text-black rounded-t-lg p-4 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 " } } }} aria-label="Tabs with icons" variant="underline" onActiveTabChange={e => setIndex(e)} >
 
-                            <Tabs.Item active={indexTab === 0} title="Dados Associado" icon={HiUserCircle}>
+                            <Tabs.Item  active={indexTab === 0} title="DADOS ASSOCIADO" icon={HiUserCircle}>
                                 {indexTab === 0 && <DadosAssociado dadosassociado={dadosassociado ?? {}} />}
                             </Tabs.Item>
 
-                            <Tabs.Item active={indexTab === 1} disabled={!permissoes.includes('ADM1.2')} title="Histórico/Mensalidade" icon={HiMiniWallet}>
+                            <Tabs.Item active={indexTab === 1} disabled={!permissoes.includes('ADM1.2')} title="HISTÓRICO/MENSALIDADE" icon={HiMiniWallet}>
                                 {<HistoricoMensalidade
                                     carregarDados={carregarDados}
                                     dados={{ acordo: data.acordo ?? {}, closeModalPlano: data.closeModalPlano ?? false, id_associado: dadosassociado?.id_associado ?? 0, mensalidade: data.mensalidade ?? {}, mensalidadeAnt: data.mensalidadeAnt ?? {} }}
@@ -359,12 +362,17 @@ export default function AdmContrato() {
 
                                 />}
                             </Tabs.Item>
-                            <Tabs.Item active={indexTab === 2} disabled={!permissoes.includes('ADM1.3')} title="Dependentes" icon={HiUserGroup
-                            }>
-                                {indexTab === 2 && <Dependentes />}
+                            <Tabs.Item active={indexTab === 2}  title="ACORDOS" icon={FaHandshake}>
+
+                                <AcordosScreen/>
+
                             </Tabs.Item>
-                            <Tabs.Item active={indexTab === 3} title="Carteiras" icon={HiIdentification}>
-                                {indexTab === 3 && <CarteirasDep
+                            <Tabs.Item active={indexTab === 3} disabled={!permissoes.includes('ADM1.3')} title="DEPENDENTES" icon={HiUserGroup
+                            }>
+                                {indexTab === 3 && <Dependentes />}
+                            </Tabs.Item>
+                            <Tabs.Item active={indexTab === 4} title="CARTEIRAS" icon={HiIdentification}>
+                                {indexTab === 4 && <CarteirasDep
                                     titular={dadosassociado?.nome ?? ''}
                                     dependentes={dadosassociado?.dependentes ?? []}
                                     contrato={dadosassociado?.contrato?.id_contrato ?? 0}
@@ -377,16 +385,16 @@ export default function AdmContrato() {
                                     uf={dadosassociado?.uf ?? ''}
                                 />}
                             </Tabs.Item>
-                            <Tabs.Item active={indexTab === 4} disabled={!permissoes.includes('ADM1.5')} title="Óbitos" icon={HiMiniInbox
+                            <Tabs.Item active={indexTab === 5} disabled={!permissoes.includes('ADM1.5')} title="ÓBITOS" icon={HiMiniInbox
                             }>
-                                {indexTab === 4 && <ObitosAssociado
+                                {indexTab === 5 && <ObitosAssociado
                                     obitos={dadosassociado?.contrato?.obitos ?? []}
                                 />}
                             </Tabs.Item>
 
-                            <Tabs.Item active={indexTab === 4} title="Impressões" icon={HiPrinter
+                            <Tabs.Item active={indexTab === 6} title="IMPRESSÕES" icon={HiPrinter
                             }>
-                                {indexTab === 5 && <Impressoes />}
+                                {indexTab === 6 && <Impressoes />}
                             </Tabs.Item>
 
 

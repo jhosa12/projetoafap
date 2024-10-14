@@ -303,7 +303,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
 
 
   return (
-    <div className="flex flex-col rounded-lg  max-h-[calc(100vh-220px)]    sm:rounded-lg">
+    <div className="flex flex-col rounded-lg  max-h-[calc(100vh-190px)]    sm:rounded-lg">
   
                 {openModalAcordo.open && (<ModalAcordos
                  acordo={dados?.acordo??{}} 
@@ -353,25 +353,25 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
             <span className="ms-3 text-sm font-medium  text-gray-600">Exibir Pagas</span>
         </label>
         <div className="inline-flex rounded-md shadow-sm" role="group">
-            <button disabled={!permissoes.includes('ADM1.2.1')}  onClick={adicionarMensalidade} type="button" className="inline-flex items-center px-4 py-1 gap-1 disabled:bg-gray-100 disabled:cursor-not-allowed text-sm font-medium  border  rounded-s-lg  disabled:text-gray-400   bg-gray-200 border-gray-400 text-gray-600 enable:hover:text-white hover:bg-gray-500 ">
+            <button disabled={!permissoes.includes('ADM1.2.1')}  onClick={adicionarMensalidade} type="button" className="inline-flex items-center px-4 py-1 gap-1 disabled:bg-gray-100 disabled:cursor-not-allowed text-sm font-medium  border  rounded-s-lg  disabled:text-gray-400   bg-gray-100 border-gray-400  enable:hover:text-white hover:bg-gray-300 ">
                 <RiAddCircleFill size={20} />
                 Adicionar
             </button>
-            <button disabled={!permissoes.includes('ADM1.2.2')} type="button" onClick={() => setModalAcordo({open:true,visible:true})} className="inline-flex items-center px-4 py-1 gap-1 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed font-medium border-r border-t border-b disabled:text-gray-400  bg-gray-200 border-gray-400 text-gray-600 hover:text-white hover:bg-gray-400">
+            <button disabled={!permissoes.includes('ADM1.2.2')} type="button" onClick={() => setModalAcordo({open:true,visible:true})} className="inline-flex items-center px-4 py-1 gap-1 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed font-medium border-r border-t border-b disabled:text-gray-400  bg-gray-100 border-gray-400   hover:bg-gray-300">
                 <FaHandshake size={20} />
                 Acordo
             </button>
-            <button disabled={!permissoes.includes('ADM1.2.2')} type="button" onClick={() => setOpenScanner(true)} className="inline-flex items-center px-4 py-1 gap-1 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed font-medium border-r border-t border-b disabled:text-gray-400  bg-gray-200 border-gray-400 text-gray-600 hover:text-white hover:bg-gray-400">
+            <button disabled={!permissoes.includes('ADM1.2.2')} type="button" onClick={() => setOpenScanner(true)} className="inline-flex items-center px-4 py-1 gap-1 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed font-medium border-r border-t border-b disabled:text-gray-400  bg-gray-100 border-gray-400   hover:bg-gray-300">
                 <MdReceipt size={20} />
                 Baixar
             </button>
             
-            <button  type="button"  onClick={imprimirCarne}  className="inline-flex items-center px-4 py-1 gap-1 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed font-medium  border-t border-b disabled:text-gray-400  bg-gray-200 border-gray-400 text-gray-600 hover:text-white hover:bg-gray-400">
+            <button  type="button"  onClick={imprimirCarne}  className="inline-flex items-center px-4 py-1 gap-1 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed font-medium  border-t border-b disabled:text-gray-400  bg-gray-100 border-gray-400  hover:bg-gray-300">
             <IoPrint size={20}/>
                 Imprimir
             </button>
             
-            <button disabled={!permissoes.includes('ADM1.2.3')} onClick={() => setOpenExcluir(!openExcluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium disabled:bg-gray-100 disabled:cursor-not-allowed border 0 rounded-e-lg  focus:z-10 focus:ring-2 disabled:text-gray-400   bg-gray-200 border-gray-400 text-gray-600 enable:hover:text-white hover:bg-gray-400 ">
+            <button disabled={!permissoes.includes('ADM1.2.3')} onClick={() => setOpenExcluir(!openExcluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium disabled:bg-gray-100 disabled:cursor-not-allowed border 0 rounded-e-lg  focus:z-10 focus:ring-2 disabled:text-gray-400   bg-gray-100 border-gray-400  enable:hover:text-white hover:bg-gray-300 ">
                 <MdDeleteForever size={20} />
                 Excluir
             </button>
@@ -379,10 +379,10 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
         </div>
 
     </div>
-<div className="flex w-full p-2 max-h-[calc(100vh-255px)]">
+<div className="flex w-full p-2 max-h-[calc(100vh-205px)]">
     <table
-        className="block  overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse rounded-lg text-gray-600">
-        <thead className="sticky top-0  text-xs uppercase  bg-gray-100 text-gray-600">
+        className="block w-full overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse rounded-lg text-gray-600">
+        <thead className="sticky w-full top-0  text-xs uppercase  bg-gray-100 text-gray-600">
             <tr >
                 <th scope="col" className="px-6 py-1">
                     NP
@@ -634,7 +634,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
 
                 )
             })}
-            {/* Encontrar a primeira mensalidade com status 'E' */}
+          
 
 
         </tbody>

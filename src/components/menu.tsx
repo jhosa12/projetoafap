@@ -19,6 +19,7 @@ import { BsInboxesFill } from "react-icons/bs";
 import { MdHealthAndSafety } from "react-icons/md";
 import { useRouter } from "next/router";
 import SideBar from "./menu/menuSide";
+import { Avatar } from "flowbite-react";
 
 
 
@@ -68,33 +69,25 @@ async function contagem() {
  
     <div className='flex flex-col w-full'>
     <header className='border-b-[1px] border-gray-500'>
-<nav className="border-gray-200 px-4 lg:px-6 py-2.5  " >
+<nav className="border-gray-200 px-4 lg:px-6 py-2  " >
     <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
         <div className="flex items-center">
-            <Image onClick={()=>setIsOpen(!isOpen)}  src={logo}  className="cursor-pointer w-full mr-2 h-8 sm:h-11" alt="Flowbite Logo" />
-            <h1 className="whitespace-nowrap pt-4 w-full text-xl font-semibold  text-white">SISTEMA DE GERENCIAMENTO AFAP</h1>
+            <Image onClick={()=>setIsOpen(!isOpen)}  src={logo}  className="cursor-pointer w-full mr-2 h-6 sm:h-8" alt="Flowbite Logo" />
+            <h1 className="whitespace-nowrap pt-4 w-full text-base font-semibold  text-white">SISTEMA DE GERENCIAMENTO AFAP</h1>
         </div>
         <div className="flex relative items-center gap-4">
   <div className="relative">      
 <Link href={"/notifications"}   className="relative inline-flex items-center p-1 text-sm font-medium text-center text-white  rounded-lg  hover:bg-gray-700 ">
-<IoNotifications size={22}/>
+<IoNotifications size={20}/>
   {!!notifyCount && <div className="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-green-500 border-2  rounded-full -top-1 -end-1 border-gray-900">{notifyCount}</div>}
 </Link>
 </div> 
           <button data-tooltip-id='logout' data-tooltip-content='Deslogar' onClick={signOut}>
-          <MdLogout color='white' size={25}/>
+          <MdLogout color='white' size={23}/>
           </button>
           <Tooltip id='logout'/>
-          <div className="w-11 h-11 rounded-full overflow-hidden">
-   {usuario?.image && <img 
-        className="object-cover" 
-        src={ `data:image/jpeg;base64,${usuario.image}` } 
-        width={100} 
-        height={100} 
-        alt=""
-    />}
-</div>
-<div className  ="font-medium text-white">
+          {usuario?.image && <Avatar img={ `data:image/jpeg;base64,${usuario.image}` }  alt="avatar of Jese" rounded />}
+<div className  ="font-medium text-sm text-white">
     <span>{usuario?.nome}</span>
     <div className="text-sm  text-gray-400">{usuario?.cargo}</div>
 </div>

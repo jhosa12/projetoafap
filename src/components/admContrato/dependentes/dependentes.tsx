@@ -116,7 +116,7 @@ export function Dependentes(){
 
 
     return(
-        <div className="flex flex-col rounded-lg  max-h-[calc(100vh-200px)]  max-w-[calc(100vw-350px)]  p-4 shadow-md sm:rounded-lg">
+        <div className="flex flex-col   max-h-[calc(100vh-200px)]  w-full  p-2 ">
                                 <div className="flex w-full mb-2 gap-2">
                                     <label className="relative inline-flex w-[150px] justify-center  items-center mb-1 cursor-pointer">
                                         <input disabled={!permissoes.includes('ADM1.3.1')} checked={checkDependente} onChange={() => setCheckDependente(!checkDependente)} type="checkbox" value="2" className="sr-only peer" />
