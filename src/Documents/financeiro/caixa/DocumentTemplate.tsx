@@ -4,62 +4,26 @@ import logo from "../../../../public/novaLogo.png"
 // DocumentTemplate.js
 
 import React from 'react';
-import { SomaProps, TagsProps } from "@/components/financeiro/caixa";
-import { CaixaProps, CcustosProps } from "@/pages/financeiro";
+import {  CcustosProps } from "@/pages/financeiro";
 import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
+import { ArrayGeral } from "@/components/financeiro/caixa/modalRelatorio";
 
 
 interface DadosProps {
-  tag: Array<TagsProps>,
-  caixa:Array<CaixaProps>
-  somaValor:SomaProps,
+  caixa:Array<ArrayGeral>
   ccustos:Array<CcustosProps>
   dataInical:Date,
   dataFinal:Date
 }
 
-interface ArrayGeral{
-  nome:string
-  lancamentos:Array<CaixaProps>
-  pix:number,
-  boleto:number,
-  cartao:number,
-  dinheiro:number,
-  transferencia:number,
-  deposito:number
-}
+
 
 class DocumentTemplate extends React.Component<DadosProps> {
   render() {
-    const { tag, caixa,somaValor,ccustos,dataInical,dataFinal} = this.props;
-    const teste = caixa.reduce((acumulador,atual)=>{
-          const itemexistente = acumulador.find(item=>item.nome===atual.ccustos_desc)
+    const {  caixa,ccustos,dataInical,dataFinal} = this.props;
+   
 
-          if(itemexistente){
-            itemexistente?.lancamentos?.push(atual)
-            if(atual?.mensalidade?.form_pagto==='BOLETO') itemexistente.boleto+=Number(atual.valor)
-           else if (atual?.mensalidade?.form_pagto==='PIX') itemexistente.pix+=Number(atual.valor)
-           else if (atual?.mensalidade?.form_pagto==='CARTAO') itemexistente.cartao+=Number(atual.valor)
-           else if (atual?.mensalidade?.form_pagto==='DEPOSITO') itemexistente.deposito+=Number(atual.valor)
-           else if (atual?.mensalidade?.form_pagto==='DINHEIRO') itemexistente.dinheiro+=Number(atual.valor)
-           else if (atual?.mensalidade?.form_pagto==='TRANSFERENCIA') itemexistente.transferencia+=Number(atual.valor)
-          }
-          else{
-            acumulador.push({nome:atual.ccustos_desc,
-              lancamentos:[atual],
-              boleto:atual?.mensalidade?.form_pagto==='BOLETO'?Number(atual.valor):0,
-              pix:atual?.mensalidade?.form_pagto==='PIX'?Number(atual.valor):0,
-              cartao:atual?.mensalidade?.form_pagto==='CARTAO'?Number(atual.valor):0,
-              deposito:atual?.mensalidade?.form_pagto==='DEPOSITO'?Number(atual.valor):0,
-              dinheiro:atual?.mensalidade?.form_pagto==='DINHEIRO'?Number(atual.valor):0,
-              transferencia:atual?.mensalidade?.form_pagto==='TRANSFERENCIA'?Number(atual.valor):0
-            })
-          }
-
-          return acumulador
-    },[] as Array<ArrayGeral>)
-
-    console.log(teste)
+    console.log('CHAMOU A IMPRESSAO')
     return (
       <div className='flex flex-col w-full p-2 relative items-center '>
         <span className="absolute" style={{top:0,right:5}}>{new Date().toLocaleDateString()}</span>
@@ -67,7 +31,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
           <Image className="flex w-44 h-16  " src={logo} alt="" />
         </div>
         <h2 className='text-xl text-gray-600 text-center font-semibold mt-4 '>RELATÓRIO DE MOVIMENTAÇÃO DE CAIXA</h2>
-    {teste.map((item,index)=>(
+    {caixa.map((item,index)=>(
      item.lancamentos.length>0 && <div>
       <div key={index} className="inline-flex w-full items-center justify-center gap-4">
            

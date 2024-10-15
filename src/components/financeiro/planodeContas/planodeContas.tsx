@@ -1,6 +1,5 @@
 import { GruposProps, PlanoContasProps } from "@/pages/financeiro"
-import { useCallback, useEffect, useState } from "react"
-import { AiOutlineLoading3Quarters } from "react-icons/ai"
+import { useCallback, useContext, useEffect, useState } from "react"
 import { BiTransferAlt } from "react-icons/bi"
 import { FaBalanceScale } from "react-icons/fa"
 import { GiExpense, GiReceiveMoney } from "react-icons/gi"
@@ -11,8 +10,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { api } from "@/services/apiClient"
 import { LancamentosProps } from "@/pages/caixa"
-import { Button } from "flowbite-react"
+import { Button, Card, Select } from "flowbite-react"
 import { FiAlertTriangle } from "react-icons/fi";
+import { SubmitHandler, useForm } from "react-hook-form"
+import { watch } from "fs"
+import { id } from "date-fns/locale"
+import { AuthContext } from "@/contexts/AuthContext"
+import { EmpresaProps } from "@/types/empresa"
 
 
 
@@ -32,6 +36,7 @@ interface MetaProps{
 interface DataProps{
   listaContas:Array<PlanoContasProps>
   setListaContas:(array:Array<PlanoContasProps>)=>void
+  empresas:Array<EmpresaProps>
 }
 
 interface TotalProps{
@@ -39,33 +44,46 @@ interface TotalProps{
   receita:number,
 }
 
+interface FiltroFormProps{
+  setor:number,
+  id_empresa:string,
+  startDate:Date,
+  endDate:Date
+}
 
 
-export function PlanodeContas({listaContas,setListaContas}:DataProps){
+
+export function PlanodeContas({listaContas,setListaContas,empresas}:DataProps){
   const [subListaLanc, setSubLista] = useState<Array<LancamentosProps>>()
-    const [startDate,setStartDate] = useState<Date>()
-    const [endDate,setEndDate] = useState<Date>()
     const [setorSelect, setSetor] = useState<number>(0)
     const [gruposSelect, setGruposSelect] = useState<Array<GruposProps>>()
     const [resumoConta, setResumoConta] = useState<Array<SomaValorConta>>([])
     const [dropPlanos, setDropPlanos] = useState(false)
     const [todos, setTodos] = useState(true)
-    const [todoPeriodo, setPeriodo] = useState(true)
     const [loading,setLoading] = useState(false)
     const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
     const [metas,setMetas] = useState<Array<MetaProps>>([])
     const [total,setTotal] = useState<TotalProps>({despesa:0,receita:0})
+
+const {watch,setValue,handleSubmit,register} = useForm<FiltroFormProps>({
+  defaultValues:{
+    startDate:new Date(),
+    endDate:new Date(),
+  }
+})
     
 
 
 
 
-  const filtrar = async()=>{
+  const handleFiltrar:SubmitHandler<FiltroFormProps> = async(data)=>{
 
       try {
         const response = await api.post("/financeiro/resumoLancamentos",{
-          startDate:startDate,
-          endDate:endDate,
+          startDate:data.startDate,
+          endDate:data.endDate,
+          id_empresa:data.id_empresa,
+          setor:data.setor,
           contas:listaContas.filter(item=>item.check).map(item=>item.conta),
           grupos:[]
         })
@@ -142,63 +160,69 @@ export function PlanodeContas({listaContas,setListaContas}:DataProps){
 
      
     
-      async function handleListaLanc(conta: string, index: number) {
-        setSubLista([])
-        if (!abertos[index]) {
-          try {
-            const response = await api.post('/financeiro/listaLancamentos', {
-              todoPeriodo: todoPeriodo,
-              startDate: startDate,
-              endDate: endDate,
-              conta: conta
-            })
-            setSubLista(response.data)
-    
-          } catch (error) {
-            console.log(error)
-          }
-    
+   const  handleListaLanc= useCallback(
+   async (conta: string, index: number)=> {
+      setSubLista([])
+      if (!abertos[index]) {
+        try {
+          const response = await api.post('/financeiro/listaLancamentos', {
+            id_empresa: watch('id_empresa'),
+            startDate: watch('startDate'),
+            endDate: watch('endDate'),
+            conta: conta
+          })
+          setSubLista(response.data??[])
+        
+        } catch (error) {
+          console.log(error)
         }
-        return true
-    
+  
       }
+      return true
+  
+    },[abertos]
+   )
     
     
 
 
 
     return(
-        <div>
-            <div className="flex flex-row w-full text-xs text-black justify-between  mb-1">
-              <div className=" inline-flex  p-2 gap-4 bg-white rounded-lg min-w-[180px]">
+        <div className="bg-white rounded-lg h-[calc(100vh-112px)] ">
+            <div className="flex flex-row w-full text-xs text-black justify-between font-semibold p-2 mb-1">
+              <Card theme={{root:{children:"inline-flex h-full p-2 gap-2"}}} >
                 <div className="flex items-center h-full rounded-lg  text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiExpense size={25} /></div>
                 <h2 className="flex flex-col" >DESPESAS <span>{Number(total.despesa).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span></h2>
-              </div>
-              <div className=" inline-flex  p-2 gap-4 bg-white rounded-lg min-w-[180px]">
+              </Card>
+              <Card theme={{root:{children:"inline-flex h-full p-2 gap-2"}}}>
                 <div className="flex items-center h-full rounded-lg  text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><GiReceiveMoney size={25} /></div>
                 <h2 className="flex flex-col" >RECEITAS <span>{Number(total.receita).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span></h2>
-              </div>
-              <div className=" inline-flex  p-2 gap-4 bg-white rounded-lg min-w-[180px]">
+              </Card>
+              <Card theme={{root:{children:"inline-flex h-full p-2 gap-2"}}}>
 
                 <div className="flex items-center h-full rounded-lg  text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><BiTransferAlt size={25} /></div>
                 <h2 className="flex flex-col" >REMESSA + RECEITA <span>{Number().toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span></h2>
-              </div>
-              <div className=" inline-flex  p-2 gap-4 bg-white rounded-lg min-w-[180px]">
+              </Card>
+              <Card theme={{root:{children:"inline-flex h-full p-2 gap-2"}}}>
 
                 <div className="flex items-center h-full rounded-lg  text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><FaBalanceScale size={25} /></div>
                 <h2 className={`flex flex-col`} >SALDO <span className={`font-semibold  ${(0) < 0 ? "text-red-600" : ""}`}>{Number().toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span></h2>
-              </div>
+              </Card>
 
             </div>
 
 
-            <div className="flex text-black w-full bg-white px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
+            <form onSubmit={handleSubmit(handleFiltrar)} className="flex text-black font-semibold w-full bg-white px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
+
+              
               <label className="flex bg-gray-200 border p-1 rounded-lg border-gray-300" >FILTROS</label>
 
 
-              <select value={setorSelect} onChange={e => {
+
+
+              <Select sizing={'sm'} value={setorSelect} onChange={e => {
                 setSetor(Number(e.target.value))
-              }} className="flex pt-1 pb-1 pl-2 pr-2  border rounded-lg  text-xs bg-gray-200 border-gray-300 placeholder-gray-400 ">
+              }}>
                 <option value={0}>SETOR (TODOS)</option>
 
                 {gruposSelect?.map((item, index) => (
@@ -207,10 +231,32 @@ export function PlanodeContas({listaContas,setListaContas}:DataProps){
                   </option>
 
                 ))}
-              </select>
+              </Select>
+
+
+
+              
+              <Select sizing={'sm'} {...register("id_empresa")}>
+                <option value={''}>EMPRESAS</option>
+
+                {empresas?.map((item, index) => (
+                  <option className="text-xs " key={item.id} value={item.id}>
+                    {item.nome}
+                  </option>
+
+                ))}
+              </Select>
+
+
+
+
+
+
+
+
               <div className="flex h-full relative text-black w-1/4">
                 <div onClick={() => setDropPlanos(!dropPlanos)}
-                  className="flex w-full h-full justify-between items-center py-1.5 pl-2 pr-2 uppercase border rounded-lg  text-xs bg-gray-200 border-gray-300 placeholder-gray-400  focus:ring-blue-500 focus:border-blue-500">
+                  className="flex w-full h-full justify-between items-center py-2 pl-2 pr-2 uppercase border rounded-lg  text-xs bg-gray-50 border-gray-300 placeholder-gray-400  focus:ring-blue-500 focus:border-blue-500">
 
                   {todos ? 'TODOS' : 'PERSONALIZADO'}
                   <IoIosArrowDown />
@@ -218,7 +264,7 @@ export function PlanodeContas({listaContas,setListaContas}:DataProps){
 
                 </div>
 
-                {dropPlanos && <ul className="absolute w-full top-7 -left-1 max-h-64 overflow-y-auto  bg-gray-100 p-1 rounded-lg">
+                {dropPlanos && <ul className="absolute w-full top-10 left-1 max-h-64 overflow-y-auto  bg-gray-100 p-1 rounded-lg">
                   <li className="flex items-center px-2 py-1">
                     <input onChange={() => setTodos(!todos)} type="checkbox" checked={todos} />
                     <label className="ms-2  text-xs whitespace-nowrap  text-gray-600">TODOS</label>
@@ -240,38 +286,35 @@ export function PlanodeContas({listaContas,setListaContas}:DataProps){
 
 
               <div className="inline-flex  items-center text-black gap-3">
-                <div className="flex items-center ">
-                  <input type="checkbox" checked={todoPeriodo} onChange={() => setPeriodo(!todoPeriodo)} className="w-4 h-4 text-blue-600  rounded    bg-gray-300 border-gray-400" />
-                  <label className="ms-2  text-xs whitespace-nowrap  text-gray-600">TODO PERÍODO</label>
-                </div>
+             
                 <DatePicker
-                  disabled={todoPeriodo}
+                 
                   dateFormat={"dd/MM/yyyy"}
                   locale={pt}
-                  selected={startDate}
-                  onChange={(date) => date && setStartDate(date)}
-                  className="flex py-1.5 pl-2 text-xs  border rounded-lg   bg-gray-200 border-gray-300  "
+                  selected={watch('startDate')}
+                  onChange={(date) => date && setValue('startDate',date)}
+                  className="flex py-2 pl-2 text-xs  border rounded-lg  bg-gray-50 border-gray-300  "
                 />
                 <span>até</span>
 
                 <DatePicker
-                  disabled={todoPeriodo}
+                  
                   dateFormat={"dd/MM/yyyy"}
                   locale={pt}
-                  selected={endDate}
-                  onChange={(date) => date && setEndDate(date)}
+                  selected={watch('endDate')}
+                  onChange={(date) => date && setValue('endDate',date)}
                   selectsEnd
                 
-                  className=" flex py-1.5 pl-2 text-xs  border rounded-lg  bg-gray-200 border-gray-300   "
+                  className=" flex py-2 pl-2 text-xs  border rounded-lg  bg-gray-50 border-gray-300   "
                 />
 
               </div>
-             <Button color={'blue'} size={'xs'} isProcessing={loading} onClick={() => filtrar()}>BUSCAR<IoSearch size={18} /></Button> 
-            </div>
-            <div className="flex flex-col text-black px-4 w-full overflow-y-auto max-h-[calc(100vh-210px)]  bg-white rounded-lg ">
+             <Button color={'blue'} size={'xs'} isProcessing={loading} type="submit">BUSCAR<IoSearch size={18} /></Button> 
+            </form>
+            <div className="flex flex-col text-black px-4 w-full overflow-y-auto max-h-[calc(100vh-240px)]  bg-white rounded-lg ">
               <ul className="flex flex-col w-full p-2 gap-1 text-sm">
-                <li className="flex flex-col w-full  text-xs pl-4 border-b-[1px] ">
-                  <div className="inline-flex w-full items-center"><span className="flex w-full font-semibold">DESCRIÇÃO</span>
+                <li className="flex flex-col w-full  text-xs pl-4 border-b-[1px] font-semibold">
+                  <div className="inline-flex w-full items-center"><span className="flex w-full ">DESCRIÇÃO</span>
                     <div className="flex w-full gap-8  items-center">
                       <span className="flex w-full text-start whitespace-nowrap ">CONSUMO</span>
                       <span className="flex w-full text-start whitespace-nowrap ">META</span>

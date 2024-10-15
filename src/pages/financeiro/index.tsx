@@ -7,7 +7,7 @@ import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
 import { IoIosArrowDown } from "react-icons/io";
 import { AuthContext } from "@/contexts/AuthContext";
-import {Caixa} from "@/components/financeiro/caixa";
+import {Caixa} from "@/components/financeiro/caixa/caixa";
 import Conferencia from "../../components/financeiro/conferencia/conferencia";
 import { PlanodeContas } from "@/components/financeiro/planodeContas/planodeContas";
 import { ContasPagarReceber } from "@/components/financeiro/contasPagarReceber/contasPagarReceber";
@@ -104,14 +104,12 @@ type MensalidadeProps = {
 };
 
 export default function LoginFinaceiro() {
-  const { usuario, empresas } = useContext(AuthContext);
+  const { empresas } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [menuIndex, setMenuIndex] = useState(1);
   const [listaPlanoContas, setListaPlanoContas] = useState<PlanoContasProps[]>([]);
-  const [caixa,setCaixa] = useState<Array<CaixaProps>>([])
+ 
   const [ccustos,setCcustos] = useState<Array<CcustosProps>>([])
-
-
 
 
   const reqPlanoConta = useCallback(async () => {
@@ -123,8 +121,22 @@ export default function LoginFinaceiro() {
     }
   }, []);
 
+
+  const handleReqCcustos = async () =>{
+    try {
+
+      const response = await api.get('/financeiro/caixa/listarCcustos')
+
+      setCcustos(response.data)
+      
+    }catch(error){
+      toast.error('Erro ao carregar plano de contas.');
+    }
+  }
+
   useEffect(() => {
     reqPlanoConta();
+    handleReqCcustos()
   }, []);
 
   
@@ -134,9 +146,9 @@ export default function LoginFinaceiro() {
   const renderMenuContent = () => {
     switch (menuIndex) {
       case 1:
-       return <Caixa handleFiltro={caixaReq} setCaixa={setCaixa} setCcustos={setCcustos} arrayCaixa={caixa} arrayCcustos={ccustos}/>
+       return <Caixa empresas={empresas}   setCcustos={setCcustos}  arrayCcustos={ccustos}/>
       case 2:
-        return <PlanodeContas setListaContas={setListaPlanoContas} listaContas={listaPlanoContas} />;
+        return <PlanodeContas empresas={empresas} setListaContas={setListaPlanoContas} listaContas={listaPlanoContas} />;
       case 3:
         return <ContasPagarReceber planodeContas={listaPlanoContas}  />;
       case 4:
@@ -148,23 +160,16 @@ export default function LoginFinaceiro() {
     }
   };
 
-  const caixaReq = useCallback(async (array:Array<CcustosProps>,dataInicio:Date,dataFim:Date)=>{
-    const response = await api.post('/financeiro/caixa/lancamentos',{
-      array : array.map(item=>{if(item.check)return item.id_ccustos}).filter(item=>item),
-      dataInicio,
-      dataFim
-    })
-    setCaixa(response.data)
-  },[]) 
+ 
 
 
 
   return (
     <div className="px-2">
       <div className="flex flex-col  px-4 w-full ">
-          <ul className="flex flex-wrap mb-1 text-sm font-medium text-center  border-b  rounded-t-lg  .border-gray-700 text-gray-400 "  >
+          <ul className="flex flex-wrap mb-1 text-sm font-medium text-center  border-b  rounded-t-lg  .border-gray-700 text-gray-100 "  >
           <li className="me-2">
-              <button type="button" onClick={() => setMenuIndex(1)} className={`inline-block p-2 border-blue-600 rounded-t-lg hover:border-b-[1px]  hover:text-gray-300  `}>Caixa</button>
+              <button type="button" onClick={() => setMenuIndex(1)} className={`inline-block p-2 border-blue-600 rounded-t-lg hover:border-b-[2px]  hover:text-gray-200  `}>Caixa</button>
             </li>
             <li className="me-2">
               <button type="button" onClick={() => setMenuIndex(2)} className={`inline-block p-2 border-blue-600 rounded-t-lg hover:border-b-[1px]  hover:text-gray-300  `}>Plano de Contas</button>
@@ -183,7 +188,7 @@ export default function LoginFinaceiro() {
 </div>
    
 
-      <div className="mt-2">
+      <div className=" px-4">
         {loading ? (
           <div>Loading...</div>
         ) : (

@@ -4,6 +4,8 @@ import { toast } from "react-toastify"
 import { MdDelete } from "react-icons/md";
 import { RiSaveFill } from "react-icons/ri";
 import { IoMdAddCircle } from "react-icons/io";
+import { TextInput } from "flowbite-react";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 
 interface PlanosProps{
@@ -20,15 +22,19 @@ interface DadosProps{
 
 }
 
+interface FormProps{
+    descricao:string,
+    limite:number,
+    valor:number
+}
+
 export function GerenciarPlanos({carregarDados,arrayPlanos,setarPlanos}:DadosProps){
-    const [descricao,setDescricao] =useState('')
-    const [limite,setLimite]=useState<number>()
-    const [valor,setValor]=useState<number>()
+    const {register,watch,setValue,handleSubmit} = useForm<FormProps>()
 
 
 const handleDescricao=(index:number,event:React.ChangeEvent<HTMLInputElement>)=>{
     const novoArray = [...arrayPlanos]
-    novoArray[index].descricao = event.target.value
+    novoArray[index].descricao = event.target.value.toUpperCase()
     setarPlanos(novoArray)
 
 }
@@ -84,17 +90,17 @@ carregarDados()
 
 
 
-const adicionarPlano = async()=>{
-    if(!descricao||!limite||!valor){
+const adicionarPlano:SubmitHandler<FormProps> = async(data)=>{
+    if(!data.descricao||!data.limite||!data.valor){
         toast.info('Preencha todos os campos!')
         return;
     }
     try{
         await toast.promise(
             api.post('/gerenciarAdministrativo/adicionarPlano',{
-                    limite_dep:limite,
-                    descricao:descricao.toUpperCase(),
-                    valor  
+                    limite_dep:Number(data.limite),
+                    descricao:data.descricao.toUpperCase(),
+                    valor :Number(data.valor) 
             }),
             {
                 error:'Erro ao adicionar Plano',
@@ -121,59 +127,62 @@ const adicionarPlano = async()=>{
 
 
     return(
-        <div className="inline-flex justify-between pl-6 pt-2 pr-6 w-full max-h-[calc(100vh-150px)]   gap-4">
+        <div className="flex flex-col text-black font-semibold bg-white rounded-lg justify-between p-2 w-full max-h-[calc(100vh-130px)]   gap-2">
      
-        <div className="flex bg-slate-600 flex-col rounded-lg  p-2 max-w-[900px] w-full  shadow-md sm:rounded-lg">
-        <h1 className="flex w-full text-gray-400 font-medium">PLANOS</h1>
-            <div className="flex flex-row p-2 gap-2">
+       
+        <h1 className="flex w-full  font-medium">PLANOS</h1>
+
+
+     
+            <form onSubmit={handleSubmit(adicionarPlano)}  className="flex flex-row p-2 gap-2 w-5/12">
           
            
-          <input value={descricao} onChange={e=>setDescricao(e.target.value)} placeholder="Descrição" autoComplete="off" type="text" required className=" uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-          <input value={limite!=0?limite:''} onChange={e=>setLimite(Number(e.target.value))} placeholder="Limite" autoComplete="off" type="number" required className=" uppercase w-1/4 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-          <input value={valor!=0?valor:''} onChange={e=>setValor(Number(e.target.value))} placeholder="valor" autoComplete="off" type="number" required className=" uppercase w-1/4 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-          <button onClick={()=>adicionarPlano()} className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"><IoMdAddCircle size={20}/></button>
-            </div>
+          <TextInput sizing={"sm"} value={watch('descricao')?.toUpperCase()} {...register('descricao')} placeholder="DESCRIÇÃO" autoComplete="off" type="text" required className="w-full "/>
+          <TextInput sizing={"sm"}  {...register('limite')} placeholder="LIMITE" autoComplete="off" type="number" required className="  w-1/4  "/>
+          <TextInput sizing={"sm"} {...register('valor')} placeholder="VALOR" autoComplete="off" type="number" required className="  w-1/4  "/>
+          <button type="submit" className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"><IoMdAddCircle size={20}/></button>
+            </form>
         <table 
-         className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
-            <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
+         className="block  overflow-y-auto overflow-x-auto text-xs text-left rtl:text-center border-collapse rounded-lg ">
+            <thead className="sticky top-0 z-10  text-xs uppercase bg-gray-200 ">
                 <tr>
-                    <th scope="col" className=" px-4 py-1">
+                    <th scope="col" className=" px-4 py-2 whitespace-nowrap">
                         ID PLANO
                     </th>
                
-                    <th scope="col" className="px-10 py-1">
+                    <th scope="col" className="px-10 py-2">
                         DESCRIÇÃO
                     </th>
-                    <th scope="col" className="px-10 py-1  whitespace-nowrap">
+                    <th scope="col" className="px-10 py-2  whitespace-nowrap">
                         Limite Dep.
                     </th> 
-                    <th scope="col" className="px-12 py-1 whitespace-nowrap">
+                    <th scope="col" className="px-12 py-2 whitespace-nowrap">
                         VALOR R$
                     </th> 
-                    <th scope="col" className="px-10 py-1">
+                    <th scope="col" className="px-10 py-2">
                         AÇÕES
                     </th>
                 </tr> 
             </thead>
-            <tbody>
+            <tbody className="">
                 {arrayPlanos?.map((item,index)=>(
-               <tr key={index}  className={ `border-b bg-gray-800 border-gray-700 w-full hover:bg-gray-600`}>
-                <th scope="row"  className="px-5 py-1 font-medium  whitespace-nowrap">
+               <tr key={index}  className={ `border-b  bg-gray-100 border-gray-300 w-full  `}>
+                <td scope="row"  className="px-5 py-1  whitespace-nowrap">
                        {item.id_plano}
-                </th>
+                </td>
                 <td className="px-10 py-1 w-full whitespace-nowrap">
-                    <input onChange={(event)=>handleDescricao(index,event)}  value={item.descricao} className="flex bg-transparent w-full " type="text" />
+                    <TextInput sizing={'sm'} onChange={(event)=>handleDescricao(index,event)}  value={item.descricao} className="flex bg-transparent w-full " type="text" />
                 </td>   
                 <td className="px-10 py-1 w-full ">
-                <input onChange={(event)=>handleLimite(index,event)}  value={item.limite_dep} className="flex bg-transparent w-full pl-2" type="text" />
+                <TextInput sizing={'sm'} onChange={(event)=>handleLimite(index,event)}  value={item.limite_dep} className="flex bg-transparent w-full pl-2" type="text" />
                    
                 </td>
                 <td className="px-12 py-1 w-full ">
-                    <span className="inline-flex">R$<input onChange={(event)=>handleValor(index,event)}  value={item.valor} className="flex bg-transparent w-full"/></span>
+                    <TextInput sizing={'sm'} onChange={(event)=>handleValor(index,event)}  value={item.valor} className="flex bg-transparent w-full"/>
                 </td>
-                <td className="px-10 py-1 inline-flex text-right gap-2">
-                    <button onClick={()=>editarPlano(index)} className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"><RiSaveFill size={17}/></button>
-                    <button onClick={()=>deletarPlano(item.id_plano)} className=" rounded-lg bg-red-600 px-1 py-1 text-white hover:underline"><MdDelete size={17}/></button>
+                <td className="px-10 py-4 flex  text-center h-full text-gray-500 gap-2 ">
+                    <button onClick={()=>editarPlano(index)} className=" hover:text-blue-600 "><RiSaveFill size={17}/></button>
+                    <button onClick={()=>deletarPlano(item.id_plano)} className="  hover:text-red-600"><MdDelete size={17}/></button>
                 </td>
                </tr>
                ))}
@@ -184,7 +193,7 @@ const adicionarPlano = async()=>{
         
         </table>
     
-        </div>
+        
         </div>
 
     )

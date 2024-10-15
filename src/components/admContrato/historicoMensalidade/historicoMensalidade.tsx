@@ -357,10 +357,7 @@ export function HistoricoMensalidade({dadosAssociado,carregarDados,dados,setarDa
                 <RiAddCircleFill size={20} />
                 Adicionar
             </button>
-            <button disabled={!permissoes.includes('ADM1.2.2')} type="button" onClick={() => setModalAcordo({open:true,visible:true})} className="inline-flex items-center px-4 py-1 gap-1 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed font-medium border-r border-t border-b disabled:text-gray-400  bg-gray-100 border-gray-400   hover:bg-gray-300">
-                <FaHandshake size={20} />
-                Acordo
-            </button>
+          
             <button disabled={!permissoes.includes('ADM1.2.2')} type="button" onClick={() => setOpenScanner(true)} className="inline-flex items-center px-4 py-1 gap-1 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed font-medium border-r border-t border-b disabled:text-gray-400  bg-gray-100 border-gray-400   hover:bg-gray-300">
                 <MdReceipt size={20} />
                 Baixar

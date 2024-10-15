@@ -128,9 +128,9 @@ async function carregarDados() {
 <Head>
     <title>Gerenciar setor Administrativo</title>
 </Head>
-<div className="flex flex-col w-full p-2  justify-center">
 
-<div className="flex-col w-full p-2 mt-2 border  rounded-lg shadow  border-gray-700">
+
+<div className="flex-col w-full  mt-1 p-2 justify-center  rounded-lg shadow  ">
     <ul className="flex flex-wrap text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 "  >
         <li className="me-2">
             <button  type="button" onClick={()=>{setPlanos(false);setPlanosContas(true),setConv(false),setMetas(false)}}    className={`inline-block p-2  rounded-t-lg hover:bg-gray-700 ${PlanosContas && "text-blue-500"} hover:text-gray-300  `}>Plano de Contas</button>
@@ -152,6 +152,6 @@ async function carregarDados() {
  {Convalescencia && <GerenciarConvalescenca carregarDados={carregarDados}  setarConv={setarConv} arrayConv={arrayConv}/>}
  {metas && <GerenciarMetas carregarDados={carregarDados} setarMetas={setarMetas} arrayMetas={arrayMetas} arraygrupos={arraygrupos} arrayPlanoContas={arrayPlanoContas}/>}
 </div>
-</div>
+
 </>)
 }

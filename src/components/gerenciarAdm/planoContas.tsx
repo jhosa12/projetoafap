@@ -6,6 +6,7 @@ import { RiSaveFill } from "react-icons/ri";
 import { IoMdAddCircle } from "react-icons/io";
 import InputMask from 'react-input-mask'
 import { AuthContext } from "@/contexts/AuthContext";
+import { Card, Select, TextInput } from "flowbite-react";
 
 
 interface PlanoContas{
@@ -39,7 +40,6 @@ export function PlanoContas({carregarDados,arrayPlanoContas,arraygrupos,setarDad
     const [conta,setConta]=useState('')
     const [descricaoPlanoContas,setDescricaoPlanoC]=useState('')
     const [tipo,setTipo]=useState<string>()
-    const {usuario} = useContext(AuthContext)
  
 
 
@@ -145,7 +145,7 @@ const adicionarGrupo = async()=>{
         return;
     }
     try{
-        await toast.promise(
+      const response =   await toast.promise(
             api.post('/gerenciarAdministrativo/adicionarGrupo',{
                
                     descricao:descricaoGrupo.toUpperCase(),
@@ -159,11 +159,13 @@ const adicionarGrupo = async()=>{
             }
         )
 
+        setarDados(arrayPlanoContas,[...arraygrupos,response.data])
+
     }catch(erro:any){
         toast.error(erro.response.data.error)
 
     }
-    carregarDados()
+    
 }
 
 const adicionarPlanoContas = async()=>{
@@ -172,7 +174,7 @@ const adicionarPlanoContas = async()=>{
         return;
     }
     try{
-        await toast.promise(
+       const response =  await toast.promise(
             api.post('/gerenciarAdministrativo/adicionarPlanoContas',{
                     conta,
                     descricao:descricaoPlanoContas.toUpperCase(),
@@ -186,12 +188,14 @@ const adicionarPlanoContas = async()=>{
             }
         )
 
+        setarDados([...arrayPlanoContas,response.data],arraygrupos)
+
     }catch(erro:any){
         toast.warn(erro.response.data.error)
 
     }
 
-    carregarDados()
+  
 
 
 
@@ -203,45 +207,44 @@ const adicionarPlanoContas = async()=>{
 
 
     return(
-        <div className="inline-flex justify-between pl-6 pt-2 pr-6 w-full max-h-[calc(100vh-150px)]   gap-4">
-        <div className="flex flex-col rounded-lg p-2 max-w-[600px] h-full bg-slate-600  shadow-md sm:rounded-lg">
-        <h1 className="flex w-full text-gray-400 font-medium">SETORES</h1>
+        <div className="inline-flex rounded-lg gap-2 bg-white justify-between p-2 w-full max-h-[calc(100vh-120px)]  ">
+        <Card className="w-full text-black font-semibold" theme={{root:{children:"flex h-full flex-col  gap-2 p-4"}}}>
+        <h1 className="flex w-full text-gray-800 font-medium">SETORES</h1>
             <div className="flex flex-row p-2 gap-2">
           
-         
-          <input  onChange={e=>setDescricaoGrupo(e.target.value)} placeholder="Novo Setor" autoComplete="off" type="text" required className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
+          <TextInput className="w-full" sizing={'sm'} onChange={e=>setDescricaoGrupo(e.target.value)} placeholder="Novo Setor" autoComplete="off" type="text" required />
           <button onClick={()=>adicionarGrupo()}  className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"><IoMdAddCircle size={20}/></button>
             </div>
         <table 
-         className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
-            <thead className="sticky top-0 text-xs  uppercase bg-gray-700 text-gray-400">
+         className="table-auto  w-full overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-black">
+            <thead className="sticky w-full top-0 text-xs  uppercase bg-gray-300 text-gray-600">
                 <tr>
-                    <th scope="col" className=" px-2 py-1">
+                    <th scope="col" className=" px-2 py-2">
                         ID_SETOR
                     </th>
                
-                    <th scope="col" className="px-4 py-1">
+                    <th scope="col" className="px-4 py-2">
                         DESCRIÇÃO
                     </th>
-                    <th scope="col" className="px-10 py-1">
+                    <th scope="col" className="px-4 py-2">
                         <span >AÇÕES</span>
                     </th>
                 </tr> 
             </thead>
-            <tbody>
+            <tbody className="bg-gray-100">
                 {arraygrupos?.map((item,index)=>(
-               <tr key={index}  className={ `border-b bg-gray-800 border-gray-700  hover:bg-gray-600`}>
+               <tr key={index}  className={ `border-b font-semibold  border-gray-300  `}>
                   <td className="px-2 py-1">
                 {item.id_grupo}
                 </td> 
-                <th scope="row"  className="px-2 py-1 font-medium  whitespace-nowrap">
-                <input onChange={(event)=>handleGrupoChange(index,event)} value={item.descricao} className="flex bg-transparent w-full " type="text" />
-                </th>
+                <td scope="row"  className="px-2 py-1   whitespace-nowrap">
+                <TextInput sizing={'sm'} onChange={(event)=>handleGrupoChange(index,event)} value={item.descricao} className="flex bg-transparent w-full " type="text" />
+                </td>
                   
                 
-                <td className="px-10 py-1 inline-flex text-right gap-2">
-                    <button onClick={()=>editarGrupo(index)} className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"><RiSaveFill size={17}/></button>
-                    <button onClick={()=>deletarGrupo(item.id_grupo)} className=" rounded-lg bg-red-600 px-1 py-1 text-white hover:underline"><MdDelete size={17}/></button>
+                <td className="px-4 py-2 inline-flex text-gray-500  text-right gap-2 ">
+                    <button onClick={()=>editarGrupo(index)} className="font-semibold  px-2 py-1 hover:text-blue-600 hover:underline"><RiSaveFill size={17}/></button>
+                    <button onClick={()=>deletarGrupo(item.id_grupo)} className="   px-1 py-1 hover:text-red-600 hover:underline"><MdDelete size={17}/></button>
                 </td>
                
                </tr>
@@ -253,58 +256,60 @@ const adicionarPlanoContas = async()=>{
         
         </table>
     
-        </div>
-        <div className="flex bg-slate-600 flex-col rounded-lg  p-2 max-w-[700px] w-full  shadow-md sm:rounded-lg">
-        <h1 className="flex w-full text-gray-400 font-medium">PLANO DE CONTAS</h1>
+        </Card>
+        <Card className="w-full text-black font-semibold" theme={{root:{children:"flex h-full flex-col w-full gap-2 p-4"}}}>
+        <h1 className="flex w-full text-gray-800 font-medium">PLANO DE CONTAS</h1>
             <div className="flex flex-row p-2 gap-2">
           
-            <InputMask mask={'9.99.999'}  onChange={e=>setConta(e.target.value)} placeholder="CONTA" autoComplete="off" type="text" required className=" uppercase w-1/6 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-          <input  onChange={e=>setDescricaoPlanoC(e.target.value)} placeholder="Descrição" autoComplete="off" type="text" required className=" uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white "/>
-          <select value={tipo} onChange={e=>setTipo(e.target.value)} className=" uppercase w-1/4 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white ">
+            <InputMask mask={'9.99.999'}  onChange={e=>setConta(e.target.value)} placeholder="CONTA" autoComplete="off" type="text" required className=" uppercase w-1/6 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-50 border-gray-300 placeholder-gray-400 text-white "/>
+          <TextInput className="w-1/2" value={descricaoPlanoContas} sizing={'sm'}  onChange={e=>setDescricaoPlanoC(e.target.value.toUpperCase())} placeholder="DESCRICÃO" autoComplete="off" type="text" required/>
+          <Select sizing={'sm'} value={tipo} onChange={e=>setTipo(e.target.value)} className="  w-1/4  ">
             <option value={''}>TIPO</option>
             <option value={'DESPESA'}>DESPESA</option>
             <option value={'RECEITA'}>RECEITA</option>
-          </select>
+          </Select>
           <button onClick={()=>adicionarPlanoContas()} className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"><IoMdAddCircle size={20}/></button>
             </div>
+
+       
         <table 
-         className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
-            <thead className="sticky top-0  text-xs uppercase bg-gray-700 text-gray-400">
+         className=" block  w-full  max-h-[calc(100vh-150px)]  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center  text-black">
+            <thead className=" sticky top-0 z-10 w-full text-xs uppercase bg-gray-300 ">
                 <tr>
-                    <th scope="col" className=" px-4 py-1">
+                    <th scope="col" className=" px-4 py-2">
                         CONTA
                     </th>
                
-                    <th scope="col" className="px-10 py-1">
+                    <th scope="col" className="px-2 py-2">
                         DESCRIÇÃO
                     </th>
-                    <th scope="col" className="px-10 py-1">
+                    <th scope="col" className="px-2 py-2">
                         TIPO
                     </th> 
-                    <th scope="col" className="px-10 py-1">
+                    <th scope="col" className="px-2 py-2">
                         AÇÕES
                     </th>
                 </tr> 
             </thead>
             <tbody>
                 {arrayPlanoContas?.map((item,index)=>(
-               <tr key={index}  className={ `border-b bg-gray-800 border-gray-700 w-full hover:bg-gray-600`}>
+               <tr key={index}  className={ `border-b bg-gray-200 border-gray-300 w-full `}>
                 <th scope="row"  className="px-5 py-1 font-medium  whitespace-nowrap">
                        {item.conta}
                 </th>
-                <td className="px-10 py-1 w-full whitespace-nowrap">
-                    <input onChange={(event)=>handleDescricaoChange(index,event)} value={item.descricao} className="flex bg-transparent w-full " type="text" />
+                <td className="px-2 py-1 w-full whitespace-nowrap">
+                    <TextInput sizing={'sm'} onChange={(event)=>handleDescricaoChange(index,event)} value={item.descricao} className="flex bg-transparent w-full " type="text" />
                 </td>   
-                <td className="px-10 py-1">
-                    <select className="bg-transparent" value={item.tipo} onChange={(event) => handleTipoChange(index, event)} name="TIPO" >
+                <td className="px-2 py-1 w-full whitespace-nowrap">
+                    <Select sizing={'sm'} className="flex min-w-[100px] bg-transparent" value={item.tipo} onChange={(event) => handleTipoChange(index, event)} name="TIPO" >
                         <option className="bg-transparent" value="RECEITA">RECEITA</option>
                         <option className="bg-transparent" value={"DESPESA"}>DESPESA</option>
-                    </select>
+                    </Select>
                 </td>
              
-                <td className="px-10 py-1 inline-flex text-right gap-2">
-                    <button onClick={()=>editarPlanoConta(index)} className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"><RiSaveFill size={17}/></button>
-                    <button onClick={()=>deletarPlanoConta(item.conta)} className=" rounded-lg bg-red-600 px-1 py-1 text-white hover:underline"><MdDelete size={17}/></button>
+                <td className="px-2 py-2 inline-flex text-right gap-2 text-gray-500">
+                    <button onClick={()=>editarPlanoConta(index)} className="font-semibold rounded-lg  px-2 py-1 hover:text-blue-600"><RiSaveFill size={17}/></button>
+                    <button onClick={()=>deletarPlanoConta(item.conta)} className=" rounded-lg  px-1 py-1  hover:text-red-600"><MdDelete size={17}/></button>
                 </td>
                </tr>
                ))}
@@ -315,7 +320,7 @@ const adicionarPlanoContas = async()=>{
         
         </table>
     
-        </div>
+        </Card>
         </div>
 
     )

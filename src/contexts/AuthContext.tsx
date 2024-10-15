@@ -32,7 +32,7 @@ type AuthContextData = {
     setarDadosAssociado:(fields:Partial<AssociadoProps>)=>void
     permissoes:Array<string>
     setPermissoes:(array:Array<string>)=>void
-   // getEmpresas:()=>Promise<void>
+  
     empresas:Array<EmpresaProps>
 }
 
@@ -88,12 +88,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const getDadosFixos = async() => {
 
-        if(empresas.length>0){
-            return;
-        }
+     
         try {
             const response = await api.get("/dadosFixos")
-
+            console.log(response.data)
             setEmpresas(response.data.empresas||[]);
             setCidades(response.data.cidades||[]);
             setConsultores(response.data.consultores||[]);

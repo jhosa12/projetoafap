@@ -273,7 +273,7 @@ return(
     </Modal.Body>
 </Modal>
 
-<div className="flex flex-col px-2 w-full mt-1  max-h-[89vh] overflow-y-auto">
+<div className="flex flex-col px-2 w-full mt-1  h-[calc(100vh-145px)]">
     <div className="text-gray-600 bg-gray-50 rounded-t-lg inline-flex items-center w-full justify-between">
    
     <form  className="flex w-full flex-row justify-end p-1 gap-4 text-black font-semibold">
@@ -332,7 +332,7 @@ return(
     <div className="flex flex-col border-t-2 bg-white">
     
        
-        <div className="overflow-y-auto mt-1 px-2 h-[72vh] max-h-[72vh] ">
+        <div className="overflow-y-auto mt-1 px-2  max-h-[calc(100vh-190px)] ">
        
         <Table hoverable theme={{ body: { cell: { base: " px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }} 
     >
