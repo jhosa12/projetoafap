@@ -1,6 +1,4 @@
-import Image from "next/image";
-import logo from "../../../public/logoafap.png"
-import carne from "../../../public/carneAtualizado.png"
+
 import BarCode from 'react-barcode';
 
 // DocumentTemplate.js
@@ -42,10 +40,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
 
     render() {
         const { dadosAssociado, arrayMensalidade } = this.props;
-        const formatter = new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-          });
+      
           return (
             <ul className="flex flex-col w-full justify-center items-center gap-4 ">
                 {arrayMensalidade.map((item, index) => (

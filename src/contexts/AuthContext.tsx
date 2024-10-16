@@ -87,7 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
       const getDadosFixos = async() => {
-
+            if(empresas.length>0) return
      
         try {
             const response = await api.get("/dadosFixos")

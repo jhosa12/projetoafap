@@ -1,8 +1,8 @@
 import { BiTransfer } from "react-icons/bi";
 import { api } from "@/services/apiClient";
 import { MdOutlineAddCircle } from "react-icons/md";
-import { use, useContext, useEffect, useRef, useState } from "react";
-import { IoSearchSharp } from "react-icons/io5";
+import { use, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { IoPrint, IoSearchSharp } from "react-icons/io5";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
@@ -16,11 +16,12 @@ import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
 import { toast } from "react-toastify";
 import { ModalExcluir } from "@/components/modalExcluir";
 import { ModalFechamento } from "../../components/caixa/modalFechamento";
-import  Fechamento  from "@/Documents/caixa/Fechamento";
+import  Fechamento  from "@/Documents/caixa/RelatorioMovimentacao";
 import { useReactToPrint } from "react-to-print";
 import { Scanner } from "@/components/admContrato/historicoMensalidade/modalScanner";
 import { ModalDadosMensalidade } from "@/components/caixa/modalDadosMensalidade";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { ModalImpressao } from "@/components/caixa/modalImpressao";
 
 
 registerLocale('pt', pt)
@@ -89,7 +90,7 @@ export default function CaixaMovimentar(){
     const[saldo,setSaldo]=useState(0);
     const[grupos,setGrupos] = useState<Array<GrupoPrps>>([])
     const[despesas,setDespesas]=useState(0);
-    const [empresaApi,setApiEmpresa] = useState('')
+    const [openModalPrint,setPrint] = useState<boolean>(false);
     const [planos,setPlanos]=useState([]);
     const {usuario,permissoes,empresas} =useContext(AuthContext);
     const[visible,setVisible] = useState(false);
@@ -100,7 +101,7 @@ export default function CaixaMovimentar(){
     const [scanner,setScanner] = useState<boolean>(false)
     const [mensalidade,setMensalidade] = useState<Partial<MensalidadeProps>>()
     const [modalDados,setModalDados] = useState<boolean>(false)
-    const {register,watch,setValue,handleSubmit}= useForm<FormProps>({
+    const {register,watch,handleSubmit,control}= useForm<FormProps>({
         defaultValues:{
             startDate:new Date(),
             endDate:new Date(),
@@ -109,9 +110,7 @@ export default function CaixaMovimentar(){
     })
 
 
-    const currentePage = useRef<Fechamento>(null)
-    
-
+  
 
 
 
@@ -122,6 +121,10 @@ export default function CaixaMovimentar(){
         const handleScanner=(event:KeyboardEvent)=>{
 
             if(event.key==='F2'){
+               if (!watch('id_empresa')) {
+                toast.info('Selecione uma empresa')
+                return
+               }
                 setScanner(true)
             }
            
@@ -137,18 +140,13 @@ export default function CaixaMovimentar(){
 
     },[])
 
-    const imprimir = useReactToPrint({
-        content:()=>currentePage.current,
-
-    })
-
-
 
     const buscarMensalidade = async(n_doc:string)=>{
         setLoading(true)
         try {
          const response = await api.post('/mensalidade/baixaDireta',{
-           n_doc
+           n_doc,
+           id_empresa:watch('id_empresa')
          })
          setMensalidade({...response.data,valor_total:response.data.valor_principal})
          setModalDados(true)
@@ -168,7 +166,7 @@ export default function CaixaMovimentar(){
 
        useEffect(()=>{
 
-        listarLancamentos()
+        listarLancamentos({endDate:new Date(),startDate:new Date(),id_empresa:empresas[1]?.id,descricao:''})
            
        },[])
 
@@ -181,7 +179,7 @@ export default function CaixaMovimentar(){
 
     try {
       await toast.promise(
-            api.delete(`/caixa/deletar/${empresaApi}/${mov?.lanc_id}`),
+            api.delete(`/caixa/deletar/${watch('id_empresa')}/${mov?.lanc_id}`),
             {
                 error:'Erro ao deletar lancamento',
                 pending:'Solicitando exclusão..',
@@ -203,14 +201,14 @@ export default function CaixaMovimentar(){
 
    
 
-   const listarLancamentos = async()=> {
+   const listarLancamentos:SubmitHandler<FormProps> = async(data)=> {
         try{
             setLoading(true)
             const response = await api.post('/listarLancamentos',{
-                empresa:watch('id_empresa'),
-                dataInicial:watch('startDate'),
-                dataFinal:watch('endDate'),
-                descricao:  watch('descricao'),
+                id_empresa:data.id_empresa,
+                dataInicial:data.startDate,
+                dataFinal:data.endDate,
+                descricao:  data.descricao,
                 id_user:usuario?.id
           
             })
@@ -218,7 +216,7 @@ export default function CaixaMovimentar(){
             setLancamentos(response.data.lista)
             setPlanos(response.data.plano_de_contas)
             setGrupos(response.data.grupos)
-            setApiEmpresa(response.data.empresa)
+          
           
             setLoading(false)
             
@@ -253,11 +251,9 @@ export default function CaixaMovimentar(){
 
 return(
 <>
-<div style={{display:'none'}}>
-<Fechamento dataFim={watch('endDate')} dataInicio={watch('startDate')} usuario={usuario?.nome??''}  ref={currentePage}/>
-</div>
 
-<ModalLancamentosCaixa empresas={empresas} listarLancamentos={listarLancamentos}  empresaAPI={empresaApi} arrayLanc={lancamentos} setLancamentos={setLancamentos}  mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={planos}  grupo={grupos}/>
+
+<ModalLancamentosCaixa empresas={empresas}   arrayLanc={lancamentos} setLancamentos={setLancamentos}  mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={planos}  grupo={grupos}/>
 
 <ModalExcluir openModal={openModalExc} handleExcluir={handleExcluir} setOpenModal={setModalExc}/>
 
@@ -273,18 +269,18 @@ return(
     </Modal.Body>
 </Modal>
 
-<div className="flex flex-col px-2 w-full mt-1  h-[calc(100vh-145px)]">
+<div className="flex flex-col px-2 w-full mt-1 ">
     <div className="text-gray-600 bg-gray-50 rounded-t-lg inline-flex items-center w-full justify-between">
    
-    <form  className="flex w-full flex-row justify-end p-1 gap-4 text-black font-semibold">
+    <form onSubmit={handleSubmit(listarLancamentos)}  className="flex w-full flex-row justify-end p-1 gap-4 text-black font-semibold">
 
 
 
     <div >
         <div className=" block">
-          <Label value="Empresa" />
+          <Label className="text-xs"  value="Empresa" />
         </div>
-     <Select {...register('id_empresa')}  className="flex w-full uppercase  z-50 text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  "   sizing={'sm'}>
+     <Select {...register('id_empresa')}    sizing={'sm'}>
         <option value={''}>Selecione a empresa</option>
         {empresas?.map(item=>(
             <option key={item.id} value={item.id}>{item.nome}</option>
@@ -295,34 +291,48 @@ return(
 
     <div >
         <div className=" block">
-          <Label  value="Data inicial" />
+          <Label className="text-xs"  value="Data inicial" />
         </div>
-       <DatePicker selected={watch('startDate')} onChange={e=>e && setValue('startDate',e)}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase  z-50 text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+        <Controller
+        control={control}
+        name="startDate"
+        render={({ field:{ onChange, value} }) => (
+            <DatePicker selected={value} onChange={e=>e && onChange(e)}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase  z-50 text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+        )}
+        />
+      
       </div>
 
 
 
       <div >
         <div className=" block">
-          <Label  value="Data final" />
+          <Label className="text-xs" value="Data final" />
         </div>
-       <DatePicker selected={watch('endDate')} onChange={e=>e && setValue('endDate',e)}     dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase  z-50 text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+        <Controller
+        control={control}
+        name="endDate" 
+        render={({ field:{ onChange, value} })=>(
+                  <DatePicker selected={value} onChange={e=>e && onChange(e)}     dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase  z-50 text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+        )}
+        />
+ 
       </div>
       
       <div className="w-1/4" >
         <div className=" block">
-          <Label  value="Buscar" />
+          <Label className="text-xs" value="Buscar" />
         </div>
         <TextInput {...register('descricao')}   sizing={'sm'}  />
       </div> 
          
                    <div className="flex items-end gap-4">
-                   <Button isProcessing={loading}  size={'sm'} onClick={listarLancamentos} ><IoSearchSharp size={20}/> Buscar</Button>
+                   <Button isProcessing={loading}  size={'xs'} type="submit" ><IoSearchSharp size={15}/> Buscar</Button>
 
-                   <Button onClick={()=>setScanner(true)} size={'sm'} color={'warning'} >{`Receber ( F2 )`}</Button>
+                   <Button onClick={()=>setScanner(true)} size={'xs'} color={'warning'} >{`Receber ( F2 )`}</Button>
                    </div>
                    <div className="flex   items-end justify-end pr-2 ">
-                   <Button disabled={!permissoes.includes('ADM2.1.1')} color={'success'} size={'sm'} onClick={()=>{setMov({conta:'',conta_n:'',ccustos_desc:'',data:undefined,datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal(true)}} ><MdOutlineAddCircle size={20}/> Novo</Button>
+                   <Button disabled={!permissoes.includes('ADM2.1.1')} color={'success'} size={'xs'} onClick={()=>{setMov({conta:'',conta_n:'',ccustos_desc:'',data:undefined,datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal(true)}} ><MdOutlineAddCircle size={15}/> Novo</Button>
 
                  
                    </div>
@@ -332,13 +342,13 @@ return(
     <div className="flex flex-col border-t-2 bg-white">
     
        
-        <div className="overflow-y-auto mt-1 px-2  max-h-[calc(100vh-190px)] ">
+        <div className="overflow-y-auto mt-1 px-2  h-[calc(100vh-145px)]  max-h-[calc(100vh-190px)] ">
        
-        <Table hoverable theme={{ body: { cell: { base: " px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }} 
+        <Table hoverable theme={{ body: { cell: { base: " px-4 py-0 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }} 
     >
         <Table.Head >
         
-                <Table.HeadCell >
+                <Table.HeadCell className="whitespace-nowrap" >
                     Nº LANC.
                 </Table.HeadCell>
                 <Table.HeadCell >
@@ -392,7 +402,7 @@ return(
             <Table.Cell className="space-x-4 whitespace-nowrap">
             <button disabled={item.conta==='1.01.002'||!permissoes.includes('ADM2.1.3')} onClick={(event)=>{
                                event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                               setMov({...item,empresa:empresaApi})
+                               setMov({...item})
                               setModal(true)
                             }} className="font-medium text-gray-500 hover:text-cyan-600 disabled:cursor-not-allowed">
                     <HiPencil size={18} />
@@ -413,31 +423,30 @@ return(
     </div>
     </div>
 
-   
 
     <div className="inline-flex gap-2  rounded-b-lg text-black w-full bg-white p-2">
         <button onClick={()=>setVisible(!visible)} className="justify-center items-center">
            {visible? <IoMdEye size={20}/>:<IoMdEyeOff color="blue" size={20}/>}
             </button>
    
-    <div className="text-black">
-        <span className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border  rounded-s-lg  focus:z-10 focus:ring-2  bg-gray-300 border-gray-400 " >
+    <div className="text{-black">
+        <span className={`inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border  rounded-s-lg  focus:z-10 focus:ring-2  bg-gray-100 border-gray-400 ${saldo<0?"text-red-500":""}`}>
 
    {visible?`Saldo: ${Number(saldo).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`:"------"}
   </span>
-  <span className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b    bg-gray-300 border-gray-400  ">
+  <span className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b    bg-gray-100 border-gray-400  ">
    
   {visible?`Receitas:  ${Number(saldo+despesas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`:"------"}
   </span>
-  <span className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg    bg-gray-300 border-gray-400 ">
+  <span className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg    bg-gray-100 border-gray-400 ">
 
   {visible?`Despesas: ${Number(despesas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`:"------"}
   </span>
   </div>
 
 
-  <Button onClick={()=>imprimir()} className="ml-auto" size={'sm'}>Imprimir Caixa</Button>
-  <Button onClick={()=>setFecModal(true)} className="ml-auto" size={'sm'}>Fechar Caixa</Button>
+  <Button onClick={()=>setPrint(true)} className="ml-auto" size={'xs'}><IoPrint className="mr-2 h-4 w-4" /> Imprimir Caixa</Button>
+  <Button onClick={()=>setFecModal(true)} className="ml-auto" size={'xs'}>Fechar Caixa</Button>
     </div>
 
     </div>
@@ -445,6 +454,9 @@ return(
 
 
 <ModalFechamento lancamentos={lancamentos} id_usuario={usuario?.id??''} openModal={openFecModal} setOpenModal={setFecModal}/>
+
+
+{openModalPrint && <ModalImpressao array={lancamentos} openModal={openModalPrint} setOpenModal={setPrint} startDate={watch('startDate')} endDate={watch('endDate')} usuario={usuario?.nome??''}/>}
 
 {scanner && <Scanner openModal={scanner} setModal={setScanner} verficarTicket={buscarMensalidade}/>}
 <Tooltip id="tooltip-hora"/>

@@ -78,7 +78,7 @@ useEffect(
         <Modal show={openModal} onClose={()=>setOpenModal(false)}>
             <ModalHeader>Fechar Caixa</ModalHeader>
             <Modal.Body>
-                <div className="space-x-8 inline-flex">
+                <div className="space-x-8 inline-flex text-black font-semibold mb-2">
                     <FloatingLabel variant="standard" value={valores.cedulas} onChange={e=>setValores({...valores,cedulas:Number(e.target.value)})} label="Cédulas (R$)"/>
                     <FloatingLabel variant="standard" value={valores.pix} onChange={e=>setValores({...valores,pix:Number(e.target.value)})}  label="Pix (R$)"/>
                     <FloatingLabel variant="standard" value={valores.cartao} onChange={e=>setValores({...valores,cartao:Number(e.target.value)})}  label="Cartão (R$)"/>

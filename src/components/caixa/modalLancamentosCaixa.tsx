@@ -23,8 +23,7 @@ interface ModalProps{
    // setMov:(fields:Partial<LancamentosProps>)=>void
     arrayLanc:Array<LancamentosProps>,
     setLancamentos:(array:Array<LancamentosProps>)=>void,
-    empresaAPI:string,
-    listarLancamentos:()=>Promise<void>,
+  //  listarLancamentos:()=>Promise<void>,
     empresas:Array<EmpresaProps>
 
 
@@ -39,7 +38,7 @@ interface GruposProps{
     id_grupo:number|null,
     descricao:string
 }
-export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,setOpenModal,mov,empresas}:ModalProps){
+export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,empresas}:ModalProps){
     const {usuario}=useContext(AuthContext)
     const {register,setValue,handleSubmit,watch} = useForm<LancamentosProps>()
    
@@ -81,8 +80,8 @@ export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,
         conta:data.conta,
         descricao:data.descricao,
         historico:data.historico,
-        ccustos_desc:usuario?.nome,
-        ccustos_id:undefined,
+        ccustos_desc:mov.ccustos_desc,
+        ccustos_id:mov.ccustos_id,
         valor:data.valor,
         usuario:usuario?.nome,
         data:data.data,
@@ -94,7 +93,7 @@ export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,
         success:'Atualizado com sucesso!'
     }
     )
-      listarLancamentos()
+    //  listarLancamentos()
     } catch (error) {
       toast.warning('Consulte o TI')
       
@@ -167,7 +166,7 @@ export function ModalLancamentosCaixa({listarLancamentos,planos,grupo,openModal,
         )
         
 
-        listarLancamentos()
+     //   listarLancamentos()
          // setLancamentos([...arrayLanc,response.data])
         } catch (error) {
 

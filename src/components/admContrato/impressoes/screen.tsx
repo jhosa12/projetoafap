@@ -1,5 +1,5 @@
 import { AuthContext } from "@/contexts/AuthContext";
-import PrintButtonCarne from "@/Documents/carne/PrintButton";
+import PrintButtonCarne from "@/Documents/mensalidade/PrintButton";
 import DocumentTemplate from "@/Documents/contratoAdesão/DocumentTemplate";
 import Carteiras from "@/Documents/carteiraAssociado/DocumentTemplate";
 import { Button } from "flowbite-react";

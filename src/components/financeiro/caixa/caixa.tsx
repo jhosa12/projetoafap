@@ -19,6 +19,7 @@ import { api } from "@/services/apiClient";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ModalResumoTags } from "./modalResumoTags";
 import { ModalRelatorio } from "./modalRelatorio";
+import { BiCalendarMinus } from "react-icons/bi";
 
 
 interface DataProps {
@@ -60,7 +61,7 @@ export function Caixa({ arrayCcustos, setCcustos, empresas }: DataProps) {
   
 const [loadind,setLoading] = useState<boolean>(false)
 const [arrayCaixa,setCaixa] = useState<Array<CaixaProps>>([])
-const {register,setValue,handleSubmit,watch,control} = useForm<FormProps>({
+const {register,handleSubmit,watch,control} = useForm<FormProps>({
   defaultValues:{
     startDate:new Date(),
     endDate:new Date(),
@@ -70,10 +71,10 @@ const {register,setValue,handleSubmit,watch,control} = useForm<FormProps>({
 
 
 const handleFiltro:SubmitHandler<FormProps> = useCallback(async (data)=>{
-  
+ const arrayCustos = arrayCcustos.map(item=>{if(item.check===true)return item.id_ccustos}).filter(item=>item)
     
   const response = await api.post('/financeiro/caixa/lancamentos',{
-    array : arrayCcustos.map(item=>{if(item.check===true)return item.id_ccustos}).filter(item=>item),
+    array : arrayCustos,
     id_empresa:data.id_empresa,
     dataInicio:data.startDate,
     dataFim:data.endDate
@@ -83,7 +84,7 @@ const handleFiltro:SubmitHandler<FormProps> = useCallback(async (data)=>{
 
 
 
-
+console.log('RENDERIZOU')
 
   
 
@@ -91,7 +92,7 @@ const handleFiltro:SubmitHandler<FormProps> = useCallback(async (data)=>{
   const calcularSoma =useCallback( (array:Array<CaixaProps>) => {
     return array.reduce((acumulador, atual) => {
       const valor = Number(atual.valor);
-      acumulador.total += valor;
+     
 
       switch (atual?.mensalidade?.form_pagto) {
         case 'PIX':
@@ -115,6 +116,9 @@ const handleFiltro:SubmitHandler<FormProps> = useCallback(async (data)=>{
 
       if (atual.tipo === 'DESPESA') {
         acumulador.despesas += valor;
+      }
+      if(atual.tipo === 'RECEITA'){
+        acumulador.total+= valor;
       }
 
       return acumulador;
@@ -176,7 +180,7 @@ const handleFiltro:SubmitHandler<FormProps> = useCallback(async (data)=>{
           </Card>
           <Card theme={{root:{children:"inline-flex h-full p-2 gap-2"}}} >
             <div className="flex items-center h-full rounded-lg  text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><MdOutput size={25} /></div>
-            <div className="flex flex-col " >DESPESA TOTAL <span className="text-sm">{somaValor.despesas }</span></div>
+            <div className="flex flex-col " >DESPESA TOTAL <span className="text-sm">{Number(somaValor.despesas ).toLocaleString('pt-BR',{style: 'currency',currency: 'BRL'})}</span></div>
           </Card>
           <Card onClick={() => {setTag('DINHEIRO'),setOpenModal(true)}} theme={{root:{children:"inline-flex h-full p-2 gap-2"}}} >
             <div className="flex items-center h-full rounded-lg  text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><FaMoneyBillAlt size={25} /></div>
@@ -216,7 +220,7 @@ const handleFiltro:SubmitHandler<FormProps> = useCallback(async (data)=>{
              <option value={item.id} key={item.id}>{item.nome}</option>
            ))}
           </Select>
-          <Dropdown  className="max-h-60 overflow-y-auto" size={'sm'} renderTrigger={() => <span className="text-xs font-semibold">CAIXA</span>} theme={{ content: 'p-1' }} dismissOnClick={false} label='Caixa'>
+          <Dropdown  className="max-h-60 overflow-y-auto" size={'sm'} renderTrigger={() => <span className="text-xs font-semibold border-[1px] rounded-lg py-1.5 px-2 w-1/6 border-gray-300 bg-gray-50">CAIXA</span>} theme={{ content: 'p-1' }} dismissOnClick={false} label='Caixa'>
 
             {arrayCcustos.map((item) => (
               <Dropdown.Item className="flex gap-2"  key={item.id_ccustos}>
@@ -231,21 +235,25 @@ const handleFiltro:SubmitHandler<FormProps> = useCallback(async (data)=>{
           name="startDate"
           render={({ field: { onChange, value } }) => (
             <DatePicker 
-            dateFormat={'dd/MM/YYYY'} 
+            dateFormat={'dd/MM/yyyy'} 
             className="rounded-lg py-1.5 text-xs bg-gray-50 text-black" 
-             onChange={e => onChange(e)} 
+             onChange={(date) =>date && onChange(date)} 
              selected={value} locale={pt} />
           )}
           
           />
-
-          <Controller
+<BiCalendarMinus />
+<Controller
           control={control}
           name="endDate"
           render={({ field: { onChange, value } }) => (
-            <DatePicker dateFormat={'dd/MM/YYYY'} className="rounded-lg py-1.5 text-xs bg-gray-50 text-black" selected={watch('endDate')} onChange={e => onChange(e)} locale={pt}  />
-            
+            <DatePicker 
+            dateFormat={'dd/MM/yyyy'} 
+            className="rounded-lg py-1.5 text-xs bg-gray-50 text-black" 
+             onChange={(date) =>date && onChange(date)} 
+             selected={value} locale={pt} />
           )}
+          
           />
     
 

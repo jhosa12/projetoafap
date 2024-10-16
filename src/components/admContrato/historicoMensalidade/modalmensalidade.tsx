@@ -7,10 +7,11 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import "react-datepicker/dist/react-datepicker.css";
-import { Modal, ModalBody, ModalHeader, TextInput,Datepicker,Select,Checkbox, Button } from "flowbite-react";
-import { Scanner } from "./modalScanner";
+import { Modal, ModalBody, ModalHeader, TextInput,Select,Checkbox, Button } from "flowbite-react";
 import { MensalidadeProps } from "@/types/financeiro";
-
+import DatePicker,{registerLocale} from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import pt from 'date-fns/locale/pt-BR';
 
 type ToastType = 'success' | 'error' | 'info' | 'warn'
 
@@ -105,6 +106,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
                 const response = await toast.promise(
                     api.put('/mensalidade/baixa', {
                         id_usuario: usuario?.id,
+                        id_mensalidade_global: mensalidade?.id_mensalidade_global,
                         id_mensalidade: mensalidade?.id_mensalidade,
                         data_pgto: new Date(),
                         hora_pgto: new Date().toLocaleTimeString('pt-BR', {
@@ -118,7 +120,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
                         associado: dadosassociado?.nome,
                         form_pagto: mensalidade?.form_pagto,
                         banco_dest: mensalidade.banco_dest,
-                        empresa: dadosassociado?.empresa
+                       
                     }),
                     {
                         pending: 'Efetuando baixa',
@@ -211,8 +213,8 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
     </Select>
 </div>
 <div className="mb-1 col-span-1">
-<label  className="block mb-1 text-xs font-medium  text-black">PAG.</label>
-<Datepicker disabled={!permissoes.includes('ADM1.2.7')} className="absolute" labelClearButton="Limpar" labelTodayButton="Hoje" onSelectedDateChanged={e=>setMensalidade({...mensalidade,data_pgto:new Date(e)})} value={mensalidade?.data_pgto && new Date(mensalidade?.data_pgto).toLocaleDateString('pt-BR',{timeZone:'UTC'})} language="pt-BR" style={{padding:6,paddingLeft:34,width:'80%'}}/>
+<label  className="block mb-1 text-xs font-medium  text-black">PAGAMENTO</label>
+<DatePicker className="flex w-full text-sm p-1.5 rounded-lg bg-gray-50 border-gray-300" disabled={!permissoes.includes('ADM1.2.7')} selected={mensalidade?.data_pgto}  onChange={e=>e && setMensalidade({...mensalidade,data_pgto:new Date(e)})}  dateFormat={'dd/MM/yyyy'} locale={pt} />
 </div>
 {((mensalidade?.valor_total ?? 0)<(mensalidade?.valor_principal ?? 0) && mensalidade?.valor_total!==undefined)&& mensalidade.valor_total>0?(
  <div className="col-span-4 gap-1 mt-1 inline-flex ">

@@ -120,7 +120,7 @@ export function ModalEditarMensalidade({openModal,setOpenModal,mensalidade,setMe
           <Modal.Footer>
           <div className={`inline-flex w-full ${mensalidade.status==="P"?"justify-between":"justify-end"}`}>
          {mensalidade.status==='P' && <Button disabled={!permissoes.includes('ADM1.2.6')} color={'failure'} type="button" onClick={()=>handleEstorno()} ><GiReturnArrow className="mr-2 h-5 w-5"/> ESTORNAR</Button>}
-          <Button disabled={!permissoes.includes('ADM1.2.6')} color={'success'} type="button" onClick={()=>{}} ><GiReturnArrow className="mr-2 h-5 w-5"/>Gravar Alterações</Button>
+          <Button disabled={!permissoes.includes('ADM1.2.6')||mensalidade.status==='P'} color={'success'} type="button" onClick={()=>{}} ><GiReturnArrow className="mr-2 h-5 w-5"/>Gravar Alterações</Button>
           </div>
           
        
