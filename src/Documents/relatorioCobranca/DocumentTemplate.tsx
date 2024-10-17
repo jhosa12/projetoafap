@@ -4,7 +4,8 @@ import logo from "../../../public/logoafap.png"
 // DocumentTemplate.js
 
 import React from 'react';
-import { Usuario } from "@/components/configuracoes/usuarios/usuario";
+import { UltimosPagProsps } from "@/pages/cobranca";
+
 interface CobrancaProps{
   id_mensalidade:number,
   id_contrato:number,
@@ -35,18 +36,13 @@ interface DadosProps{
   arrayCobranca:Array<Partial<CobrancaProps>>,
   dataInicial:Date,
   dataFinal:Date,
-  todos:boolean,
-  status:Array<string>,
   cobrador:Array<string>,
-  bairros:Array<Partial<{bairro:string,check:boolean}>>
+  
   usuario:string,
   ultimosPag:Array<UltimosPagProsps>
 }
 
-interface UltimosPagProsps{
-  id_contrato:number,
-  _max:{data_pgto:Date}
-}
+
 
 interface RefProps{
 
@@ -105,11 +101,9 @@ class DocumentTemplate extends React.Component<DadosProps> {
     return (
       <div className='flex flex-col w-full p-2  items-center  '>
         <span className="text-xs ml-auto">{usuario}-{new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</span>
-        <h1 className="font-semibold text-lg">ASSISTÊNCIA FAMILIAR PARAÍSO
-         
-        </h1>
-        <h1 className="  font-semibold text-base">RELATÓRIO DE COBRANÇA</h1>
-        <h2 className="text-xs font-medium">{new Date(dataInicial).toLocaleDateString()} a {new Date(dataFinal).toLocaleDateString()}</h2>
+        <h1 className="font-semibold text-lg">ASSISTÊNCIA FAMILIAR PARAÍSO</h1>
+        <h2 className="  font-semibold text-base">RELATÓRIO DE COBRANÇA</h2>
+        <h3 className="text-xs font-medium">{new Date(dataInicial).toLocaleDateString()} a {new Date(dataFinal).toLocaleDateString()}</h3>
        
        
   
@@ -124,9 +118,9 @@ return(
   <span className="block">REFERENCIA: {arrayRef && `${arrayRef[0]} até ${tamanho && arrayRef[tamanho-1]}`} - <b className="whitespace-nowrap">TOT.: {formatter.format(item.valor_principal??0)}</b></span>
   {item.associado?.celular1&&<span>CELULAR: {item.associado?.celular1}  NUMERO ATUAL: {'(___)__ _____-_____'}</span>}
 
- <span className="inline-flex w-full">{item.ultimoPag && 
+ <div className="inline-flex w-full">{item.ultimoPag && 
   <span className="whitespace-nowrap">ULTIMO PAGAMENTO: {new Date(item.ultimoPag?._max.data_pgto).toLocaleDateString('pt',{timeZone:'UTC'})}</span>} <span className="flex w-full justify-end">NOVA DATA: 
-  ___/___/______</span></span> 
+  ___/___/______</span></div> 
   <span className="flex pt-2">OBSERVAÇÃO:_____________________________________________________________________________________________________________</span>
   
   </li>

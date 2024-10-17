@@ -1,12 +1,6 @@
 import { api } from "@/services/apiClient";
-import { useContext, useEffect, useRef, useState } from "react"
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import pt from 'date-fns/locale/pt-BR';
-import { IoIosArrowDown } from "react-icons/io";
-import { IoSearch } from "react-icons/io5";
+import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { toast } from "react-toastify";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import Relatorio from '@/Documents/relatorioCobranca/DocumentTemplate';
 import { useReactToPrint } from "react-to-print";
 import { IoPrint } from "react-icons/io5";
@@ -14,7 +8,12 @@ import { AuthContext } from "@/contexts/AuthContext";
 import ReactPaginate from "react-paginate";
 import { HiFilter } from "react-icons/hi";
 import { Button, Table } from "flowbite-react";
-import { ModalFiltroCobranca } from "@/components/relatorioCobranca/modalCobranca";
+import { ModalFiltroCobranca } from "@/components/cobranca/modalCobranca";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { ConsultoresProps } from "@/types/consultores";
+import { is } from "date-fns/locale";
+import { watch } from "fs";
+
 interface CobrancaProps {
   id_mensalidade: number,
   id_contrato: number,
@@ -40,11 +39,21 @@ interface CobrancaProps {
   }
 
 }
-export interface CobradorProps {
-  id_consultor: number,
-  nome: string
+
+export interface FormProps{
+  startDate:Date,
+  endDate:Date,
+  id_empresa:string,
+  status:string,
+  cobrador:Array<ConsultoresProps>
+  bairros:Array<Partial<{ bairro: string, check: boolean }>>
 }
-interface UltimosPagProsps {
+
+
+
+
+
+export interface UltimosPagProsps {
   id_contrato: number,
   _max: { data_pgto: Date }
 }
@@ -54,26 +63,26 @@ let formatter = new Intl.NumberFormat('pt-BR', {
   currency: 'BRL'
 });
 
+
+
+
 export default function Cobranca() {
+  const [dataInicial, setDataicial] = useState<Date>(new Date())
+  const [dataFinal, setDataFinal] = useState<Date>(new Date())
   const [arrayCobranca, setArrayCobranca] = useState<Array<Partial<CobrancaProps>>>([]);
-  const [selectCobrador, setSelectCobrador] = useState<Array<CobradorProps>>([]);
   const [valorTotal, setValor] = useState<number>(0);
-  const [arrayBairros, setArrayBairros] = useState<Array<Partial<{ bairro: string, check: boolean }>>>([])
-  const [todos, setTodos] = useState(true)
-  const [startDate, setStartDate] = useState(new Date())
-  const [endDate, setEndDate] = useState(new Date())
-  const [loading, setLoading] = useState(false)
-  const [reqListaBairros, setReq] = useState<boolean>()
-  const [status, setStatus] = useState<Array<string>>(['A', 'R'])
+  const [arrayBairros, setArrayBairros] = useState<Array<Partial<{ bairro: string, check: boolean,id_empresa:string }>>>([])
+  const [loading, setLoading] = useState(false) 
   const componenteRef = useRef<Relatorio>(null)
-  const { usuario,permissoes } = useContext(AuthContext)
+  const { permissoes } = useContext(AuthContext)
   const [ultimosPag, setUltimosPag] = useState<Array<UltimosPagProsps>>([])
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 20;
   const [filtro, setFiltro] = useState<boolean>(false)
-  const [empresa,setEmpresa] =useState<string>('')
+  const {empresas,consultores,usuario} = useContext(AuthContext)
+  const [isPrint,setIsPrint] = useState<boolean>(false)
 
 
+  const itemsPerPage = 19;
   const handlePageClick = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected)
 
@@ -110,8 +119,20 @@ export default function Cobranca() {
           }
       }
   `,
+  onBeforeGetContent:()=>{
+    setIsPrint(true)
+  },
+  onAfterPrint:()=>{
+    setIsPrint(false)
+  },
     content: () => componenteRef.current
   })
+
+
+  useEffect(()=>{
+    isPrint && imprimirRelatorio()
+
+  },[isPrint])
 
 
   useEffect(() => {
@@ -120,107 +141,74 @@ export default function Cobranca() {
 
   }, [])
 
-  useEffect(() => {
 
 
+ const listarBairros =  useCallback(
+  async()=> {
 
-   reqListaBairros && listarCobranca()
-
-
-
-  }, [reqListaBairros])
-  async function listarBairros() {
     const bairros = await api.get("/bairros");
     const bairrosProps: Array<Partial<{ bairro: string, check: boolean }>> = bairros.data
-    const checkBairros = bairrosProps.map(item => { return { ...item, check: true } })
-    setArrayBairros(checkBairros)
-    setReq(true)
-  }
+  
+    setArrayBairros(bairrosProps)
+    
+  },[arrayBairros]
+ ) 
 
 
 
-  const handleChangeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
-
-    const value = e.target.value;
-    // Converter o valor para um array de strings
-    const selectedValues = value.split(',');
-    setStatus(selectedValues);
-
-  };
 
 
-  function handleOptionChange(index: number) {
-
-    if (todos) {
-      return;
-    }
-    const novoArray = [...arrayBairros]
-    novoArray[index].check = !novoArray[index].check
-    setArrayBairros(novoArray)
-
-  }
-
-  useEffect(() => {
-    let novoArray
-    if (todos) {
-      novoArray = arrayBairros.map(item => { return { ...item, check: true } })
-    }
-    if (!todos) {
-      novoArray = arrayBairros.map(item => { return { ...item, check: false } })
-    }
-    novoArray && setArrayBairros(novoArray)
-  }, [todos])
-
-  async function listarCobranca() {
+ const handleListarCobranca:SubmitHandler<FormProps> = async(data) => {
+    setDataicial(data.startDate)
+    setDataFinal(data.endDate)
     if (arrayBairros.length > 0) {
       try {
         console.log('CHAMOU')
         setLoading(true)
         const response = await api.post("/cobranca/lista", {
-          dataInicial:startDate,
-          dataFinal:endDate,
-          status: status,
-          bairros: arrayBairros.map(item => { if (item.check) { return item.bairro } }).filter(item => item != null)
+          dataInicial:data.startDate,
+          dataFinal:data.endDate,
+          cobradores:data.cobrador?.map(item => { if (item.check) { return item.nome} }).filter(item => item != null),
+          id_empresa:data.id_empresa,
+          status: data.status.split(','),
+          bairros: data.bairros.map(item => { if (item.check) { return item.bairro } }).filter(item => item != null)
         })
         const valor = response.data.cobranca.reduce((acumulador: number, item: CobrancaProps) => {
           return acumulador += Number(item.valor_principal)
         }, 0)
         console.log(response.data)
         setArrayCobranca(response.data.cobranca)
-        setSelectCobrador(response.data.cobrador)
         setValor(valor)
-        setLoading(false)
         setUltimosPag(response.data.ultimosPag)
       } catch (error) {
+        console.log(error)
         toast.error('Erro na Requisição')
       }
     }
 
+    setLoading(false)
+
   }
   return (
     <div className="flex  w-full justify-center px-1">
-      <div style={{ display: 'none' }}>
+     {isPrint && <div style={{ display: 'none' }}>
         <Relatorio
           ref={componenteRef}
           arrayCobranca={arrayCobranca}
-          bairros={arrayBairros}
+        
           cobrador={[]}
-          dataFinal={startDate}
-          dataInicial={endDate}
+          dataFinal={dataFinal}
+          dataInicial={dataInicial}
           ultimosPag={ultimosPag}
-          status={status}
-          todos={todos}
           usuario={usuario?.nome ?? ''}
-
         />
-      </div>
-      <div className="flex flex-col w-full border  rounded-lg shadow bg-white border-gray-700 max-h-[92vh] ">
+      </div>}
+      <div className="flex flex-col bg-white w-full border  rounded-lg shadow  border-gray-700 h-[calc(100vh-60px)] ">
         <div className="text-gray-600 bg-gray-50 rounded-t-lg inline-flex items-center p-2 justify-between   ">
           <h1 className=" text-lg  pl-3 font-medium">Relatórios de Cobrança</h1>
           <div id="divFiltro" className="inline-flex gap-4">
           
           
-
             <div className="flex   items-end gap-2">
               <Button 
                 disabled={!permissoes.includes('ADM3.1')}
@@ -269,7 +257,7 @@ export default function Cobranca() {
                 </Table.HeadCell>
              
             </Table.Head>
-            <Table.Body className="divide-y bg-white">
+            <Table.Body className="divide-y text-xs text-black font-semibold ">
               {currentItems.map((item, index) => (
                 <Table.Row key={item.id_mensalidade} >
                   <Table.Cell scope="row" >
@@ -307,9 +295,9 @@ export default function Cobranca() {
 </Table.Body>
             <tfoot>
               <tr>
-                <td colSpan={5} align="right" className="text-white  font-semibold">TOTAL MENSALIDADES: {arrayCobranca.length}</td>
+                <td colSpan={5} align="right" className="  font-semibold">TOTAL MENSALIDADES: {arrayCobranca.length}</td>
 
-                <td align="right" className="text-white  font-semibold">VALOR: {formatter.format(valorTotal)}</td>
+                <td align="right" className="  font-semibold">VALOR: {formatter.format(valorTotal)}</td>
 
 
               </tr>
@@ -319,7 +307,7 @@ export default function Cobranca() {
 
           </div>
     
-          <div className="flex w-full justify-end pr-8 ">
+          <div className="flex w-full  justify-end mt-auto pr-8 ">
             <ReactPaginate
               previousLabel={'Anterior'}
               nextLabel={'Próximo'}
@@ -336,11 +324,7 @@ export default function Cobranca() {
           </div>
        
       </div>
-      <ModalFiltroCobranca empresa={empresa} setEmpresa={setEmpresa} selectCobrador={selectCobrador} setEndDate={setEndDate} startDate={startDate} endDate={endDate} handleChangeStatus={handleChangeStatus} listarCobranca={listarCobranca} loading={loading} setFiltro={setFiltro} setStartDate={setStartDate} show={filtro} arrayBairros={arrayBairros}
-      handleOptionChange={handleOptionChange}
-      setTodos={setTodos}
-      todos={todos}
-      />
+   {filtro && <ModalFiltroCobranca   setArrayBairros={setArrayBairros}  empresas={empresas}   selectCobrador={consultores} listarCobranca={handleListarCobranca} loading={loading} setFiltro={setFiltro}  show={filtro} arrayBairros={arrayBairros}/>}
     </div>
   )
 }

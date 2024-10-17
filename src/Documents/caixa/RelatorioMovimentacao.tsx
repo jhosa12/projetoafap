@@ -71,7 +71,7 @@ class RelatorioMovimentacao extends React.Component<DadosProps> {
         <div className="flex flex-col gap-2 pl-5 ">
           <span>Usuário: {usuario}</span>
           <span>Data Expedição: {new Date().toLocaleDateString('pt-BR')}</span>
-          <span>Periodo do Caixa:  {new Date().toLocaleDateString('pt-BR')} -  {new Date().toLocaleDateString('pt-BR')}</span>
+          <span>Periodo do Caixa:  {new Date(startDate).toLocaleDateString('pt-BR')} -  {new Date(endDate).toLocaleDateString('pt-BR')}</span>
         </div>
 
 
