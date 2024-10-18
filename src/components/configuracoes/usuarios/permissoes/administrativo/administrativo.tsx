@@ -65,6 +65,7 @@ export function TabAdministrativo({permissions,handlePermission}:DataProps){
                     <ToggleSwitch  sizing={'sm'} checked={permissions.includes('ADM2.1.1')} onChange={()=>handlePermission('ADM2.1.1')}  label="Adicionar"/>
                     <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM2.1.3')} onChange={()=>handlePermission('ADM2.1.3')}  label="Editar"/>
                     <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM2.1.4')} onChange={()=>handlePermission('ADM2.1.4')}  label="Excluir"/>
+                    <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM2.1.5')} onChange={()=>handlePermission('ADM2.1.5')}  label="Vizualizar Valores"/>
                    
                        
                   </Card>

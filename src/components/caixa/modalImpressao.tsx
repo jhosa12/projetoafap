@@ -37,7 +37,7 @@ export function ModalImpressao({openModal,setOpenModal,startDate,endDate,usuario
         const valor = Number(atual.valor);
        
   
-        switch (atual?.mensalidade?.form_pagto) {
+    if( atual.tipo==='RECEITA' )  switch (atual?.mensalidade?.form_pagto) {
           case 'PIX':
             acumulador.pix += valor;
             break;

@@ -17,7 +17,7 @@ interface AgendamentoProps {
 
 
 export default function Reagendamento() {
-    const {data,closeModa,dadosassociado,setarDadosAssociado}= useContext(AuthContext)
+    const {data,closeModa,dadosassociado,setarDadosAssociado,usuario}= useContext(AuthContext)
     const {setValue,watch} = useForm<AgendamentoProps>({defaultValues:{dataAge:new Date()}})
     const [selecionadas,setSelecionadas] = useState<Array<number>>([])
 
@@ -29,7 +29,8 @@ export default function Reagendamento() {
                 api.put('/mensalidade/reagendamento', {
                     data: watch('dataAge'),
                     mensalidades:selecionadas,
-                    id_global: dadosassociado?.id_global
+                    id_global: dadosassociado?.id_global,
+                    usuario:usuario?.id
                 }),
                 {
                     error: 'Erro na Requisição',

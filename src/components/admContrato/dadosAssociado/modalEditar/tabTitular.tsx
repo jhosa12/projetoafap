@@ -6,10 +6,11 @@ import pt from 'date-fns/locale/pt-BR';
 import { UseFormAssociadoProps } from "./modalEditarDados";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
+import { Controller } from "react-hook-form";
 
 
 
-export function TabTitular({register,setValue,watch}:UseFormAssociadoProps){
+export function TabTitular({register,setValue,watch,control}:UseFormAssociadoProps){
   const {cidades} = useContext(AuthContext)
 
 
@@ -27,7 +28,13 @@ export function TabTitular({register,setValue,watch}:UseFormAssociadoProps){
   <div className=" block">
     <Label  value="Nascimento" />
   </div>
- <DatePicker selected={watch('data_nasc')}  onChange={e => { e && setValue('data_nasc',e) }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+  <Controller 
+    name="data_nasc"
+    control={control}
+    render={({ field:{onChange,value} }) => (
+      <DatePicker selected={value}  onChange={e => { e && onChange(e) }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+    )}
+  />
 </div>
 
 <div className="col-span-1" >
@@ -45,7 +52,14 @@ export function TabTitular({register,setValue,watch}:UseFormAssociadoProps){
   <div className=" block">
     <Label  value="CEP" />
   </div>
-  <InputMask  onChange={e=>setValue('cep',e.target.value)} value={watch('cep')} mask={'99999-9999'}  required className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+  <Controller 
+    name="cep"
+    control={control}
+    render={({ field:{onChange,value} }) => (
+      <InputMask  onChange={e=>onChange(e.target.value)} value={value} mask={'99999-9999'}  required className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+    )}
+  />
+ 
 </div>
 
 
@@ -146,7 +160,15 @@ export function TabTitular({register,setValue,watch}:UseFormAssociadoProps){
   <div className=" block">
     <Label  value="CPF" />
   </div>
-  <InputMask onChange={e=>setValue('cpfcnpj',e.target.value)} value={watch('cpfcnpj')} mask={'999.999.999-99'}  required className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+
+  <Controller
+    name="cpfcnpj"
+    control={control}
+    render={({ field:{onChange,value} }) => (
+      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'999.999.999-99'}  required className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+    )}
+  />
+ 
 </div>   
 
  <div className="col-span-1" >
@@ -161,14 +183,28 @@ export function TabTitular({register,setValue,watch}:UseFormAssociadoProps){
   <div className=" block">
     <Label  value="Celular1" />
   </div>
-  <InputMask onChange={e=>setValue('celular1',e.target.value)} value={watch('celular1')} mask={'(99) 9 9999-9999'}  required className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+  <Controller
+    name="celular1"
+    control={control}
+    render={({ field:{onChange,value} }) => (
+      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'}  required className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+    )}
+  />
+ 
 </div>  
 
 <div className="col-span-1" >
   <div className=" block">
     <Label  value="Celular2" />
   </div>
-  <InputMask onChange={e=>setValue('celular2',e.target.value)} value={watch('celular2')} mask={'(99) 9 9999-9999'}  required className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+  <Controller
+    name="celular2"
+    control={control}
+    render={({ field:{onChange,value} }) => (
+      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'}  required className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+    )}
+    />
+ 
 </div>  
         
              
@@ -176,7 +212,14 @@ export function TabTitular({register,setValue,watch}:UseFormAssociadoProps){
   <div className=" block">
     <Label  value="Telefone" />
   </div>
-  <InputMask onChange={e=>setValue('telefone',e.target.value)} value={watch('telefone')} mask={'(99) 9 9999-9999'}  required className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+  <Controller
+    name="telefone"
+    control={control}
+    render={({ field:{onChange,value} }) => (
+      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'}  required className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+    )}
+  />
+ 
 </div>     
 
 <div className="col-span-2" >

@@ -6,14 +6,14 @@ registerLocale('pt', pt)
 import { UseFormAssociadoProps } from "./modalEditarDados";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
+import { Controller } from "react-hook-form";
 
 
 
 
 
 
-
-export function TabContrato({register,setValue,trigger,watch}:UseFormAssociadoProps){
+export function TabContrato({register,setValue,trigger,watch,control}:UseFormAssociadoProps){
 
   const {consultores,planos} = useContext(AuthContext)
    
@@ -35,21 +35,42 @@ export function TabContrato({register,setValue,trigger,watch}:UseFormAssociadoPr
         <div className=" block">
           <Label  value="Vencimento" />
         </div>
-       <DatePicker selected={watch('contrato.data_vencimento')}  onChange={e => { e && setValue('contrato.data_vencimento',e )}} dateFormat={"dd/MM/yyyy"} locale={"pt"} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+        <Controller
+          name="contrato.data_vencimento"
+          control={control}
+          render={({ field:{onChange,value} }) => (
+            <DatePicker disabled selected={value}  onChange={e => { e && onChange(e )}} dateFormat={"dd/MM/yyyy"} locale={"pt"} required className="flex w-full uppercase  disabled:hover:cursor-not-allowed  text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+          )}
+        />
+
       </div>
 
       <div className="col-span-1" >
         <div className=" block">
           <Label  value="Adesão" />
         </div>
-       <DatePicker selected={watch('contrato.dt_adesao')} onChange={e => { e && setValue('contrato.dt_adesao',e)}} dateFormat={"dd/MM/yyyy"}  locale={"pt"} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+        <Controller
+          name="contrato.dt_adesao"
+          control={control}
+          render={({ field:{onChange,value} }) => (
+            <DatePicker selected={value} onChange={e => { e && onChange(e)}} dateFormat={"dd/MM/yyyy"}  locale={"pt"} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+          )}
+        />
+      
       </div>
 
       <div className="col-span-1" >
         <div className=" block">
           <Label  value="Carência" />
         </div>
-       <DatePicker selected={watch('contrato.dt_carencia')} onChange={e => { e && setValue('contrato.dt_carencia',e) }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase  z-50 text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+        <Controller
+          name="contrato.dt_carencia"
+          control={control}
+          render={({ field:{onChange,value} }) => (
+            <DatePicker selected={value} onChange={e => { e && onChange(e) }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase  z-50 text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+          )}
+        />
+       
       </div>
 
       <div className="col-span-1" >

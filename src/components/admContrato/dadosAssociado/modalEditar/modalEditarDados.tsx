@@ -6,7 +6,7 @@ import { Button, Modal,  Tabs } from "flowbite-react";
 import { TabTitular } from "./tabTitular";
 import { TabContrato } from "./tabContrato";
 import { ModalInativar } from "./modalInativar";
-import { useForm, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
+import { Control, useForm, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
 import { AssociadoProps } from "@/types/associado";
 
 interface ModalProps {
@@ -20,12 +20,13 @@ export interface UseFormAssociadoProps{
   watch:UseFormWatch<AssociadoProps>
   trigger:UseFormTrigger<AssociadoProps>
   setValue:UseFormSetValue<AssociadoProps>
+  control:Control<AssociadoProps,any>
 }
 
 export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps) {
   const { usuario,setarDadosAssociado,permissoes} = useContext(AuthContext)
   const [modalInativar,setmodalInat]= useState<boolean>(false)
-  const {register,handleSubmit,watch,setValue,trigger} = useForm<AssociadoProps>({
+  const {register,handleSubmit,watch,setValue,trigger,control} = useForm<AssociadoProps>({
     defaultValues:{...dataForm,contrato:{...dataForm?.contrato,dt_adesao:dataForm.contrato?.dt_adesao ? new Date(new Date(dataForm.contrato?.dt_adesao).getUTCFullYear(),new Date(dataForm.contrato?.dt_adesao).getUTCMonth(),new Date(dataForm.contrato?.dt_adesao).getUTCDate(),new Date(dataForm.contrato?.dt_adesao).getUTCHours()) : undefined,
       data_vencimento:dataForm.contrato?.data_vencimento ? new Date(new Date(dataForm.contrato?.data_vencimento).getUTCFullYear(),new Date(dataForm.contrato?.data_vencimento).getUTCMonth(),new Date(dataForm.contrato?.data_vencimento).getUTCDate(),new Date(dataForm.contrato?.data_vencimento).getUTCHours()) : undefined,
 
@@ -113,12 +114,12 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
         <Tabs  theme={{tablist:{tabitem:{base:"flex z-0 items-center justify-center rounded-t-lg p-2 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 ",variant:{fullWidth:{active:{off:'bg-gray-50',on:'bg-gray-100 text-black'}}}}}}} aria-label="Full width tabs" variant="fullWidth">
         <Tabs.Item active title="Dados Titular" >
 
-          <TabTitular register={register} setValue={setValue} watch={watch} trigger={trigger}/>
+          <TabTitular control={control} register={register} setValue={setValue} watch={watch} trigger={trigger}/>
           
         </Tabs.Item>
         <Tabs.Item title="Dados Contrato" >
 
-       <TabContrato register={register} setValue={setValue} watch={watch} trigger={trigger}/> 
+       <TabContrato control={control} register={register} setValue={setValue} watch={watch} trigger={trigger}/> 
        
         </Tabs.Item>
     

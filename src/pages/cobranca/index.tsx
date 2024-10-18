@@ -187,6 +187,8 @@ export default function Cobranca() {
     }
 
     setLoading(false)
+    setFiltro(false)
+   
 
   }
   return (

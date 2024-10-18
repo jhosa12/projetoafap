@@ -11,7 +11,7 @@ interface DataProps{
    n_doc:string,
    vencimento:Date|null,
    referencia:string
-   data_pgto:Date|null
+   data_pgto:Date
 }
 
 
@@ -19,7 +19,7 @@ export  class ReciboMensalidade extends Component<DataProps> {
 
 render(){
 
-    const {valor,associado,contrato,n_doc,vencimento,referencia} = this.props;
+    const {valor,associado,contrato,n_doc,vencimento,referencia,data_pgto} = this.props;
 
 
     return(
@@ -48,7 +48,7 @@ render(){
                    </div>
                    <div style={{display:'flex',flexDirection:'row',justifyContent:'center',alignItems:'center',width:'100%',gap:'10px',border:'2px solid gray',padding:'20px',borderRadius:'10px'}}>
                     <span>CEDRO,</span>
-                    <span>{new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</span>
+                    <span>{new Date(data_pgto).toLocaleDateString('pt-BR',{timeZone:'UTC',day:'2-digit',month:'long',year:'numeric'})}</span>
                    </div>
 
                    <div style={{display:'flex',flexDirection:'row',width:'100%',justifyContent:'space-between',alignItems:'end'}}>

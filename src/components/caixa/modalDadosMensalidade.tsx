@@ -1,4 +1,5 @@
 import { AuthContext } from "@/contexts/AuthContext";
+import useBaixaMensalidade from "@/hooks/useBaixaMensalidade";
 import { MensalidadeProps } from "@/pages/caixa";
 import { api } from "@/services/apiClient";
 import { Button, Checkbox, Modal, ModalHeader, Select, TextInput } from "flowbite-react";
@@ -10,14 +11,16 @@ interface DataProps{
     open:boolean,
     setOpen:(opne:boolean)=>void,
     setMensalidade:(fields:Partial<MensalidadeProps>)=>void
+    handleChamarFiltro:()=>void
 }
 
 
 type ToastType = 'success' | 'error' | 'info' | 'warn'
 
-export function ModalDadosMensalidade({mensalidade,open,setOpen,setMensalidade}:DataProps){
+export function ModalDadosMensalidade({mensalidade,open,setOpen,setMensalidade,handleChamarFiltro}:DataProps){
    const [desconto,setDesconto] = useState<boolean>()
    const {usuario} = useContext(AuthContext)
+   const {error,postData} = useBaixaMensalidade('/mensalidade/baixa')
 
 
 
@@ -47,84 +50,34 @@ export function ModalDadosMensalidade({mensalidade,open,setOpen,setMensalidade}:
     }
 
    
-
-  /*  if (mensalidade?.n_doc !== scannedCode) {
-        return exibirToastERetornar('Ticket incorreto!', 'error');
-    }*/
-
-    // Verifica se existe a mensalidade no array
- 
-
-    // Pega as mensalidades anterior e próxima
-   
    let mensalidadeProx = mensalidade.associado?.mensalidade[1];
   
 
  
 
-    // Função auxiliar para aplicar desconto na próxima mensalidade
-    const aplicarDescontoProximaMensalidade = async (diferenca:number, operacao:string) => {
-        if (mensalidadeProx?.id_mensalidade) {
-            try {
-                const proxima = await api.put('/mensalidade/editar', {
-                    id_mensalidade: mensalidadeProx.id_mensalidade,
-                    valor_principal: operacao === 'subtrair'
-                        ? Number(mensalidadeProx.valor_principal) - diferenca
-                        : Number(mensalidadeProx.valor_principal) + diferenca,
-                    empresa: ''
-                });
-              
-             
-            } catch (err) {
-                toast.error('Erro ao aplicar desconto na próxima mensalidade');
-            }
-        }
-    };
-
-    // Tentativa de baixar a mensalidade
-    try {
-        const response = await toast.promise(
-            api.put('/mensalidade/baixa', {
+              await postData ({
+       
                 id_usuario: usuario?.id,
                 id_mensalidade: mensalidade?.id_mensalidade,
+                id_mensalidade_global: mensalidade?.id_mensalidade_global,
                 data_pgto: new Date(),
                 hora_pgto: new Date().toLocaleTimeString('pt-BR', {
                     hour: '2-digit',
                     minute: '2-digit',
                     second: '2-digit'
                 }),
-                usuario: usuario?.nome.toUpperCase(),
                 valor_total: mensalidade?.valor_total,
                 motivo_bonus: mensalidade?.motivo_bonus?.toUpperCase(),
-               // associado: dadosassociado?.nome,
+                associado: mensalidade?.associado?.nome,
                 form_pagto: mensalidade?.form_pagto,
                 banco_dest: mensalidade.banco_dest,
-             //   empresa: dadosassociado?.empresa
-            }),
-            {
-                pending: 'Efetuando baixa',
-                success: 'Baixa efetuada com sucesso',
-                error: 'Erro ao efetuar baixa de mensalidade'
-            }
-        );
+                desconto: desconto,
+                id_proximaMensalidade: mensalidadeProx?.id_mensalidade_global
+                
+            }).finally(()=>handleChamarFiltro())
 
-        const diferenca = Number(mensalidade?.valor_total) - Number(mensalidade?.valor_principal);
-
-        // Aplicar desconto na próxima mensalidade, se necessário
-        if (diferenca > 0) {
-            await aplicarDescontoProximaMensalidade(diferenca, 'subtrair');
-        } else if (diferenca < 0 && !desconto) {
-            await aplicarDescontoProximaMensalidade(-diferenca, 'adicionar');
-        }
-
-        // Atualiza a mensalidade atual no array
        
-    
-       
-    } catch (err) {
-        toast.error('Erro ao baixar mensalidade');
-        console.error(err);
-    }
+   
 }
 
 
@@ -193,7 +146,7 @@ export function ModalDadosMensalidade({mensalidade,open,setOpen,setMensalidade}:
 
 
 </div>
-<Button className="ml-auto">Baixar</Button>
+<Button onClick={handleBaixar} className="ml-auto">Baixar</Button>
                 </div>
             </Modal.Body>
         </Modal>

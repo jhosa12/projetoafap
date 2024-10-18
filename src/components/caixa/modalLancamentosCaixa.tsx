@@ -14,7 +14,7 @@ import { EmpresaProps } from "@/types/empresa";
 
 
 interface ModalProps{
-    
+    handleFiltro:()=>void,
     planos:Array<PlanosProps>
     grupo:Array<GruposProps>
     openModal:boolean,
@@ -38,7 +38,7 @@ interface GruposProps{
     id_grupo:number|null,
     descricao:string
 }
-export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,empresas}:ModalProps){
+export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,empresas,handleFiltro}:ModalProps){
     const {usuario}=useContext(AuthContext)
     const {register,setValue,handleSubmit,watch} = useForm<LancamentosProps>()
    
@@ -93,7 +93,7 @@ export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,e
         success:'Atualizado com sucesso!'
     }
     )
-    //  listarLancamentos()
+    handleFiltro()
     } catch (error) {
       toast.warning('Consulte o TI')
       
@@ -173,7 +173,7 @@ export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,e
           console.log(error)
           
         }
-    
+    handleFiltro()
         
      }
 

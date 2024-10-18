@@ -54,10 +54,12 @@ interface GrupoPrps{
 
 export interface MensalidadeProps{
     id_mensalidade:number,
+    id_mensalidade_global:number,
     associado:{
         nome:string,
         endereco:string,
         mensalidade:Array<{
+            id_mensalidade_global:number,
             id_mensalidade:number,
             referencia:string,
             vencimento:Date,
@@ -98,7 +100,7 @@ export default function CaixaMovimentar(){
     const [openModalExc,setModalExc] = useState<boolean>(false);
     const [loading,setLoading] = useState<boolean>(false);
     const [openFecModal,setFecModal]= useState<boolean>(false)
-    const [scanner,setScanner] = useState<boolean>(false)
+   
     const [mensalidade,setMensalidade] = useState<Partial<MensalidadeProps>>()
     const [modalDados,setModalDados] = useState<boolean>(false)
     const {register,watch,handleSubmit,control}= useForm<FormProps>({
@@ -110,11 +112,44 @@ export default function CaixaMovimentar(){
     })
 
 
-  
+    useEffect(() => {
+        let currentBarcode = '';
+        let timeout: ReturnType<typeof setTimeout>;
+        
+    
+        const handleKeyPress = (event: KeyboardEvent) => {
+          // Verifica se a tecla "Enter" foi pressionada
+          if (event.key === 'Enter') {
+          //  setScannedCode(currentBarcode);
+          event.preventDefault();
+          event.stopPropagation();
+          buscarMensalidade(currentBarcode)
+            currentBarcode = ''; // Reinicia o código de barras após a leitura
+            setModal(false)
+          } else {
+            // Acumula os caracteres do código de barras
+            currentBarcode += event.key;
+          }
+    
+          // Limpa o buffer se não houver atividade por 300ms
+          clearTimeout(timeout);
+          timeout = setTimeout(() => {
+            currentBarcode = '';
+          }, 300);
+        };
+    
+        // Adiciona o ouvinte de eventos para capturar as teclas pressionadas
+        document.addEventListener('keydown', handleKeyPress);
+    
+        // Remove o ouvinte de eventos quando o componente é desmontado
+        return () => {
+          document.removeEventListener('keydown', handleKeyPress);
+        };
+      }, []);
 
 
 
-    useEffect(()=>{
+  /*  useEffect(()=>{
 
 
 
@@ -138,7 +173,7 @@ export default function CaixaMovimentar(){
 
 
 
-    },[])
+    },[])*/
 
 
     const buscarMensalidade = async(n_doc:string)=>{
@@ -199,6 +234,9 @@ export default function CaixaMovimentar(){
   }
     
 
+  const handleChamarFiltro =()=>{
+    listarLancamentos({endDate:watch('endDate'),startDate:watch('startDate'),id_empresa:watch('id_empresa'),descricao:watch('descricao')})
+  }
    
 
    const listarLancamentos:SubmitHandler<FormProps> = async(data)=> {
@@ -219,6 +257,7 @@ export default function CaixaMovimentar(){
           
           
             setLoading(false)
+
             
          }catch(err){
             console.log(err)
@@ -253,11 +292,11 @@ return(
 <>
 
 
-<ModalLancamentosCaixa empresas={empresas}   arrayLanc={lancamentos} setLancamentos={setLancamentos}  mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={planos}  grupo={grupos}/>
+<ModalLancamentosCaixa handleFiltro={handleChamarFiltro} empresas={empresas}   arrayLanc={lancamentos} setLancamentos={setLancamentos}  mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={planos}  grupo={grupos}/>
 
 <ModalExcluir openModal={openModalExc} handleExcluir={handleExcluir} setOpenModal={setModalExc}/>
 
-<ModalDadosMensalidade setMensalidade={setMensalidade} mensalidade={mensalidade??{}} open={modalDados} setOpen={setModalDados}/>
+<ModalDadosMensalidade  handleChamarFiltro={handleChamarFiltro} setMensalidade={setMensalidade} mensalidade={mensalidade??{}} open={modalDados} setOpen={setModalDados}/>
 
 <Modal size={'sm'} popup show={loading}>
     <Modal.Body>
@@ -329,7 +368,7 @@ return(
                    <div className="flex items-end gap-4">
                    <Button isProcessing={loading}  size={'xs'} type="submit" ><IoSearchSharp size={15}/> Buscar</Button>
 
-                   <Button onClick={()=>setScanner(true)} size={'xs'} color={'warning'} >{`Receber ( F2 )`}</Button>
+                  
                    </div>
                    <div className="flex   items-end justify-end pr-2 ">
                    <Button disabled={!permissoes.includes('ADM2.1.1')} color={'success'} size={'xs'} onClick={()=>{setMov({conta:'',conta_n:'',ccustos_desc:'',data:undefined,datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal(true)}} ><MdOutlineAddCircle size={15}/> Novo</Button>
@@ -425,8 +464,8 @@ return(
 
 
     <div className="inline-flex gap-2  rounded-b-lg text-black w-full bg-white p-2">
-        <button onClick={()=>setVisible(!visible)} className="justify-center items-center">
-           {visible? <IoMdEye size={20}/>:<IoMdEyeOff color="blue" size={20}/>}
+        <button disabled={!permissoes.includes('ADM2.1.5')} onClick={()=>setVisible(!visible)} className="justify-center items-center disabled:hover:cursor-not-allowed">
+           {visible? <IoMdEye color="blue" size={20}/>:<IoMdEyeOff color="blue" size={20}/>}
             </button>
    
     <div className="text{-black">
@@ -458,8 +497,7 @@ return(
 
 {openModalPrint && <ModalImpressao array={lancamentos} openModal={openModalPrint} setOpenModal={setPrint} startDate={watch('startDate')} endDate={watch('endDate')} usuario={usuario?.nome??''}/>}
 
-{scanner && <Scanner openModal={scanner} setModal={setScanner} verficarTicket={buscarMensalidade}/>}
-<Tooltip id="tooltip-hora"/>
+
 </>
 )
 

@@ -364,7 +364,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                     referencia={mensalidadeRecibo?.referencia ?? ''}
                     valor={mensalidadeRecibo?.valor_principal ?? 0}
                     vencimento={mensalidadeRecibo?.vencimento ?? null}
-                    data_pgto={mensalidadeRecibo?.data_pgto ?? null}
+                    data_pgto={mensalidadeRecibo?.data_pgto ?? new Date()}
                 />
             </div>}
 
@@ -446,22 +446,22 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                                 VALOR
                             </th>
                             <th scope="col" className="px-6 py-1">
-                                status
+                                STATUS
                             </th>
                             <th scope="col" className=" px-6 py-1">
-                                Data Pag.
+                                DATA PAG.
                             </th>
                             <th scope="col" className=" px-6 py-1">
-                                Hr Pag.
+                                HR PAG.
                             </th>
                             <th scope="col" className=" px-6 py-1">
-                                usuário
+                                USUÁRIO
                             </th>
                             <th scope="col" className=" px-6 py-1">
-                                val pago
+                                VAL. PAGO
                             </th>
                             <th scope="col" className=" px-6 py-1">
-                                forma
+                                FORMA
                             </th>
                             <th scope="col" className=" px-6 py-1">
                                 ATRASO
@@ -511,8 +511,8 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                                             <td className="px-4 py-1">
                                                 {item.hora_pgto}
                                             </td>
-                                            <td className="px-6 py-1">
-                                                {item.usuario}
+                                            <td className="px-6 py-1 whitespace-nowrap">
+                                                {item.usuario?.toUpperCase()}
                                             </td>
                                             <td className={`px-6 py-1`}>
                                                 {Number(item.valor_total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
@@ -524,20 +524,20 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                                             <td className="px-4 py-1">
                                                 {calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) <= 0 ? 0 : calcularDiferencaEmDias(new Date(), new Date(item.vencimento))}
                                             </td>
-                                            <td className={`inline-flex items-centerpx-4 py-1 space-x-2 ${item.status === 'E' ? "hidden" : ''}`}>
+                                            <td className={`inline-flex items-centerpx-4 py-1 space-x-2 whitespace-nowrap`}>
 
                                                 <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                                                     setOpenEditar(true)
                                                     setMensalidade({ ...item, valor_total: item.status === 'A' ? item.valor_principal : item.valor_total })
-                                                }} className={`  hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>Editar</button>
+                                                }} className={`  hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-600'}`}>Editar</button>
                                                 <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                                                     setModalMens(true)
                                                     setMensalidade({ ...item, valor_total: item.status === 'A' || item.status === 'R' || item.status === 'R' ? item.valor_principal : item.valor_total, data_pgto: item.data_pgto ? item.data_pgto : new Date() })
-                                                }} className={`   hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>Baixar</button>
+                                                }} className={`   hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-600'}`}>Baixar</button>
 
-                                                <button type="button" onClick={(e) => { e.stopPropagation(); setMensalidadeRecibo({ ...item, data_pgto: item.data_pgto ? item.data_pgto : new Date() }) }} >
+                                                <button type="button" className='text-blue-600 hover:underline' onClick={(e) => { e.stopPropagation(); setMensalidadeRecibo({ ...item, data_pgto: item.data_pgto ? item.data_pgto : new Date() }) }} >
                                                     Recibo
 
                                                 </button>
@@ -572,8 +572,8 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                                             <td className="px-4 py-1">
                                                 {item.hora_pgto}
                                             </td>
-                                            <td className="px-6 py-1">
-                                                {item.usuario}
+                                            <td className="px-6 py-1 whitespace-nowrap">
+                                                {item.usuario?.toUpperCase()}
                                             </td>
                                             <td className={`px-6 py-1`}>
                                                 {Number(item.valor_total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
@@ -584,19 +584,27 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                                             <td className="px-4 py-1">
                                                 {calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) <= 0 ? 0 : calcularDiferencaEmDias(new Date(), new Date(item.vencimento))}
                                             </td>
-                                            <td className=" px-4 py-1 space-x-2">
+                                            <td className=" px-4 py-1 space-x-2 whitespace-nowrap">
                                                 <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                                                     setOpenEditar(true),
                                                         setMensalidade({ ...item, valor_total: item.status === 'A' ? item.valor_principal : item.valor_total })
-                                                }} className={`hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>Editar</button>
+                                                }} className={`hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-600" : 'text-blue-600'}`}>Editar</button>
 
 
                                                 <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                                                     setModalMens(true)
                                                     setMensalidade({ ...item, valor_total: item.status === 'A' || item.status === 'E' || item.status === 'R' ? item.valor_principal : item.valor_total, data_pgto: item.data_pgto ? item.data_pgto : new Date() })
-                                                }} className={`  hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-500'}`}>Baixar</button>
+                                                }} className={`  hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-600" : 'text-blue-600'}`}>Baixar</button>
+
+
+
+                                                
+<button type="button" className='text-blue-600 hover:underline' onClick={(e) => { e.stopPropagation(); setMensalidadeRecibo({ ...item, data_pgto: item.data_pgto ? item.data_pgto : new Date() }) }} >
+                                                    Recibo
+
+                                                </button>
                                             </td>
                                         </tr>
 
