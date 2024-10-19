@@ -36,7 +36,7 @@ interface DadosProps {
 }
 
 
-class DocumentTemplate extends React.Component<DadosProps> {
+class ImpressaoCarne extends React.Component<DadosProps> {
 
     render() {
         const { dadosAssociado, arrayMensalidade } = this.props;
@@ -171,4 +171,4 @@ class DocumentTemplate extends React.Component<DadosProps> {
     }
 }
 
-export default DocumentTemplate;
+export default ImpressaoCarne;

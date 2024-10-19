@@ -91,7 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
      
         try {
             const response = await api.get("/dadosFixos")
-            console.log(response.data)
+           
             setEmpresas(response.data.empresas||[]);
             setCidades(response.data.cidades||[]);
             setConsultores(response.data.consultores||[]);

@@ -1,13 +1,13 @@
 import { api } from "@/services/apiClient"
-import { useContext, useEffect, useState } from "react"
+import {  useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import { BiSolidLockOpenAlt } from "react-icons/bi";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { IoIosAddCircle } from "react-icons/io";
-import { MenuMultiStep } from "../multiStep/multStep"
 import { ModalNovoUsuario } from "./modalNovoUsuario";
-import { AuthContext } from "@/contexts/AuthContext";
+import { Button } from "flowbite-react";
+
 
 
 
@@ -142,7 +142,7 @@ export function Usuario() {
      toast.info('Insira a nova senha')
      return ;
    }
-    console.log(dadosFuncionario.id_consultor)
+   
     const data = new FormData();
    dadosUser.id_user && data.append('id',dadosUser.id_user?.toString());
    dadosFuncionario.id_consultor && data.append('id_consultor',dadosFuncionario.id_consultor?.toString());
@@ -258,7 +258,7 @@ export function Usuario() {
 
       setUserDados(response.data)
 
-      console.log(response.data)
+   
     } catch (error) {
       toast.error('ERRO NA REQUISIÇÃO')
 
@@ -268,9 +268,9 @@ export function Usuario() {
 
 
   return (
-    <div className="ms-2 me-2">
-      <div className="flex w-full justify-end">
-        <button onClick={() => {
+    <div className="flex w-full flex-col px-2 bg-white rounded-lg text-black">
+    
+        <Button size={'sm'}  onClick={() => {
           setarDadosUsuario({
             cargo: '',
             consultor: [],
@@ -286,15 +286,15 @@ export function Usuario() {
             avatarUrl: ''
           }),
           setModalAdicionar(!modalAdicionar)
-        }} className="inline-flex justify-items-center gap-1 p-1 bg-green-500 rounded-lg mb-1 font-semibold text-sm"><IoIosAddCircle size={20} />ADD</button>
-      </div>
-      <div className="flex flex-col  px-4 w-full overflow-y-auto max-h-[calc(100vh-210px)] text-white bg-[#2b2e3b] rounded-lg ">
+        }} className="inline-flex justify-items-center ml-auto bg-green-500  "><IoIosAddCircle size={20} />Adicionar</Button>
+    
+      <div className="flex flex-col  px-4 w-full overflow-y-auto h-[calc(100vh-175px)]  ">
 
         <ul className="flex flex-col w-full p-2 gap-1 text-sm">
-          <li className="flex flex-col w-full  text-xs pl-4 border-b-[1px] ">
+          <li className="flex flex-col w-full  text-xs pl-4 border-b-[1px] font-bold ">
             <div className="inline-flex w-full items-center">
-              <span className="flex w-40 me-2 justify-center font-semibold">#</span>
-              <span className="flex w-full text-start font-semibold">NOME</span>
+              <span className="flex w-40 me-2 justify-center ">#</span>
+              <span className="flex w-full text-start whitespace-nowrap">NOME</span>
               <span className="flex w-full text-start whitespace-nowrap ">CARGO</span>
               <span className="flex w-full text-start whitespace-nowrap">E-MAIL</span>
               <span className="flex w-full text-start whitespace-nowrap ">TELEFONE</span>
@@ -306,23 +306,22 @@ export function Usuario() {
           {
             userDados?.map((item, index) => {
 
-
               return (
-                <li className={`flex flex-col w-full p-1 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-700" : "bg-slate-600"} uppercase cursor-pointer`}>
+                <li className={`flex flex-col w-full p-2 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-300" : "bg-slate-200"} uppercase cursor-pointer`}>
                   <div className="inline-flex w-full items-center">
-                    <span className="flex w-40 me-2 text-start font-semibold">
-                      {item.image && <img className="w-[26px] h-[26px] rounded-full" src={`data:image/jpeg;base64,${item.image}`} alt="Rounded avatar"></img>}</span>
+                    <div className="flex w-40 me-2 text-start font-semibold">
+                      {item.image && <img className="w-[26px] h-[26px] rounded-full" src={`data:image/jpeg;base64,${item.image}`} alt="Rounded avatar"></img>}</div>
                     <span className="flex w-full text-start font-semibold">{item?.nome}</span>
                     <span className="flex w-full text-start font-semibold">{item.cargo}</span>
                     <span className="flex w-full text-start font-semibold">{''}</span>
                     <span className="flex w-full text-start ">{''}</span>
                     <div className="flex w-full justify-center text-orange-400 ">
-                      <button className="hover:bg-gray-500 p-1 rounded-lg " >
+                      <button >
                         <BiSolidLockOpenAlt size={17} />
                       </button>
 
                     </div>
-                    <div className="flex w-full justify-end gap-2 ">
+                    <div className="flex w-full justify-end gap-3 text-gray-500 ">
                       <button onClick={() => {
                         setarDadosUsuario({
                           ...item, password: '', repSenha: '', editar: true, avatarUrl: ''
@@ -331,10 +330,10 @@ export function Usuario() {
                        // setarDadosPermissoes([...item.permissoes]??[]),
                         setModalAdicionar(true)
                       }}
-                        className="hover:bg-gray-500 p-1 text-blue-500 rounded-lg ">
+                        className="hover:text-blue-500   rounded-lg ">
                         <MdEdit size={17} />
                       </button>
-                      <button className="hover:bg-gray-500 p-1 rounded-lg text-red-500 ">
+                      <button className="hover:text-red-500  rounded-lg  ">
                         <MdDelete size={17} />
                       </button>
                     </div>
@@ -348,10 +347,10 @@ export function Usuario() {
           }
         </ul>
         {/*modalAdicionar && <MenuMultiStep setarModalAdicionar={setarModalAdicionar} getUsers={getUsers} dadosFuncionario={dadosFuncionario} dadosPermissoes={dadosPermissoes} dadosUser={dadosUser} setarDadosFuncionario={setarDadosFuncionario} setarDadosPermissoes={setarDadosPermissoes} setarDadosUsuario={setarDadosUsuario} />*/}
-        <ModalNovoUsuario handleEditarCadastro={handleEditarCadastro}  handleNovoCadastro={handleNovoCadastro}  handlePermission={handlePermission}  dadosUser={dadosUser} setModal={setModalAdicionar} setarDadosUsuario={setarDadosUsuario} show={modalAdicionar} />
+       
       </div>
 
-
+      <ModalNovoUsuario handleEditarCadastro={handleEditarCadastro}  handleNovoCadastro={handleNovoCadastro}  handlePermission={handlePermission}  dadosUser={dadosUser} setModal={setModalAdicionar} setarDadosUsuario={setarDadosUsuario} show={modalAdicionar} />
     </div>
   )
 }

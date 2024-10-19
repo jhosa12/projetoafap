@@ -3,8 +3,9 @@ import PrintButtonCarne from "@/Documents/mensalidade/PrintButton";
 import DocumentTemplate from "@/Documents/contratoAdesão/DocumentTemplate";
 import Carteiras from "@/Documents/carteiraAssociado/DocumentTemplate";
 import { Button } from "flowbite-react";
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
+import ImpressaoCarne from "@/Documents/mensalidade/ImpressaoCarne";
 
 
 
@@ -12,9 +13,52 @@ export function Impressoes() {
     const { dadosassociado } = useContext(AuthContext)
     const componentContrato = useRef<DocumentTemplate>(null)
     const componentCarteira = useRef<Carteiras>(null)
+    const componentCarne = useRef<ImpressaoCarne>(null)
+    const [printCarne, setPrintCarne] = useState(false)
+    const [printContrato, setPrintContrato] = useState(false)
+    const [printCarteira, setPrintCarteira] = useState(false)
 
 
 
+    useEffect(()=>{
+        printCarne && imprimirCarne()
+        printContrato && imprimirContrato()
+        printCarteira && imprimirCarteira()
+    },[printCarne,printContrato,printCarteira])
+
+
+    const imprimirCarne =useReactToPrint({
+        pageStyle: `
+            @page {
+                margin: 1rem;
+            }
+            @media print {
+                body {
+                    -webkit-print-color-adjust: exact;
+                }
+                @page {
+                    size: auto;
+                    margin: 1rem;
+                }
+                @page {
+                    @top-center {
+                        content: none;
+                    }
+                    @bottom-center {
+                        content: none;
+                    }
+                }
+            }
+        `,
+        documentTitle:'CARNÊ ASSOCIADO',
+        content:()=>componentCarne.current,
+     
+        onAfterPrint:()=>{
+            setPrintCarne(false)
+        }
+        
+
+   })
 
     
     const imprimirContrato =useReactToPrint({
@@ -41,7 +85,10 @@ export function Impressoes() {
             }
         `,
         documentTitle:'CONTRATO ASSOCIADO',
-        content:()=>componentContrato.current
+        content:()=>componentContrato.current,
+        onAfterPrint:()=>{
+            setPrintContrato(false)
+        }
 
    })
 
@@ -70,14 +117,17 @@ export function Impressoes() {
         }
     `,
     documentTitle:'CONTRATO ASSOCIADO',
-    content:()=>componentCarteira.current
+    content:()=>componentCarteira.current,
+    onAfterPrint:()=>{
+        setPrintCarteira(false)
+    }
 
 })
 
     return (
         <>
         <div style={{ display: 'none' }}>
-            <DocumentTemplate
+    {  printContrato &&      <DocumentTemplate
             adesao={new Date(dadosassociado?.contrato?.dt_adesao ?? '')}
             bairro={dadosassociado?.bairro ?? ''}
             cidade={dadosassociado?.cidade ?? ''}
@@ -92,9 +142,9 @@ export function Impressoes() {
             rg={dadosassociado?.rg ?? ''}
             telefone={dadosassociado?.celular1 ?? ''}
             
-        ref={componentContrato} />
+        ref={componentContrato} />}
 
-        <Carteiras
+       { printCarteira && <Carteiras
             dependentes={dadosassociado?.dependentes ?? []}
             plano={dadosassociado?.contrato?.plano ?? ''}
             ref={componentCarteira}
@@ -108,27 +158,30 @@ export function Impressoes() {
              numero={Number(dadosassociado?.numero)}
              titular={dadosassociado?.nome ?? ''}
                 uf={dadosassociado?.uf ?? ''}
-        />
+        />}
+
+        {printCarne && <ImpressaoCarne
+            ref={componentCarne}
+          arrayMensalidade={dadosassociado?.mensalidade?.filter(mensalidade => mensalidade.status !== 'P') ?? []}
+            dadosAssociado={
+                {bairro: dadosassociado?.bairro ?? '',
+                    cidade: dadosassociado?.cidade ?? '',
+                    endereco: dadosassociado?.endereco ?? '',
+                    id_contrato: dadosassociado?.contrato?.id_contrato ?? 0,
+                    nome: dadosassociado?.nome ?? '',
+                    uf: dadosassociado?.uf ?? '',
+                    numero: Number(dadosassociado?.numero),
+                    plano: dadosassociado?.contrato?.plano ?? '',
+                }
+            }
+        
+        />}
         </div>
         <div className="flex flex-col w-full rounded-lg p-6   gap-5">
                                     <div className="flex flex-row text-white gap-6 w-full">
-                                       <Button size={'sm'} onClick={imprimirContrato}>Contrato</Button>
-                                        <Button size={'sm'} onClick={imprimirCarteira}>Carteiras</Button>
-                                        <PrintButtonCarne
-                                            arrayMensalidade={dadosassociado?.mensalidade ?? []}
-                                            dadosAssociado={{
-                                                nome: dadosassociado?.nome ?? '',
-                                                bairro: dadosassociado?.bairro ?? '',
-                                                cidade: dadosassociado?.cidade ?? '',
-                                                endereco: dadosassociado?.endereco ?? '',
-                                                id_contrato: Number(dadosassociado?.contrato?.id_contrato),
-                                                numero: Number(dadosassociado?.numero),
-                                                plano: dadosassociado?.contrato?.plano ?? '',
-                                                uf: dadosassociado?.uf ?? ''
-                                            }}
-
-
-                                        />
+                                       <Button size={'sm'} onClick={()=>setPrintContrato(true)}>Contrato</Button>
+                                        <Button size={'sm'} onClick={()=>setPrintCarteira(true)}>Carteiras</Button>
+                                        <Button size={'sm'} onClick={()=>setPrintCarne(true)}>Carnê</Button>
 
                                     </div>
 

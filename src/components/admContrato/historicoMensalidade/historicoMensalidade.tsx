@@ -297,7 +297,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
 
 
     async function adicionarMensalidade() {
-        const ultimaMensalidade = dadosAssociado.arrayMensalidade && dadosAssociado.arrayMensalidade[dadosAssociado.arrayMensalidade.length - 1]
+        const ultimaMensalidade = dadosAssociado.arrayMensalidade && dadosAssociado?.arrayMensalidade[dadosAssociado?.arrayMensalidade?.length - 1]
         const vencimento = new Date(ultimaMensalidade?.vencimento ? ultimaMensalidade?.vencimento : '')
         const proxData = vencimento.setMonth(vencimento.getMonth() + 1)
         try {
@@ -372,7 +372,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                 <div style={{ display: 'none' }}>
                     <ImpressaoCarne
                         ref={componentRef}
-                        arrayMensalidade={linhasSelecionadas.length > 0 ? linhasSelecionadas : dadosAssociado.arrayMensalidade.filter((item) => item.status !== 'P')}
+                        arrayMensalidade={linhasSelecionadas.length > 0 ? linhasSelecionadas : dadosAssociado.arrayMensalidade?.filter((item) => item.status !== 'P')}
                         dadosAssociado={{
                             nome: dadosAssociado.nome,
                             endereco: dadosAssociado.endereco,
@@ -474,7 +474,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                     <tbody  >
 
 
-                        {dadosAssociado.arrayMensalidade.map((item, index) => {
+                        {dadosAssociado?.arrayMensalidade?.map((item, index) => {
 
 
                             return (
