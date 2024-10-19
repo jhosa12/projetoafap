@@ -474,7 +474,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                     <tbody  >
 
 
-                        {dadosAssociado?.arrayMensalidade?.map((item, index) => {
+                        {Array.isArray(dadosAssociado?.arrayMensalidade) && dadosAssociado?.arrayMensalidade?.map((item, index) => {
 
 
                             return (
