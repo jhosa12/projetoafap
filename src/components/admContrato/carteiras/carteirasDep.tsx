@@ -134,7 +134,7 @@ export default function CarteirasDep({dependentes,contrato,plano,titular,enderec
                                         </tr>
                                       </thead> 
                                       <tbody>
-                                        {dependentes.filter(item=>!item.excluido).map((item,index)=>(
+                                        {dependentes?.filter(item=>!item.excluido)?.map((item,index)=>(
                                             <tr key={item.id_dependente} onClick={()=>toggleSelecionada(item)} className={`text-black font-semibold cursor-pointer hover:bg-gray-200  border-b  ${linhasSelecionadas.some(linha=>linha.id_dependente===item.id_dependente)?"bg-gray-300":"bg-gray-50"} border-gray-300`}>
                                             <td scope="row" className="px-2 py-1  whitespace-nowrap">{item.nome}</td>
                                             <td className="px-10 py-1">

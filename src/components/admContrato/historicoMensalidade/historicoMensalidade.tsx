@@ -254,7 +254,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
             return;
         }
 
-        linhasSelecionadas.map((mensalidade) => {
+        linhasSelecionadas?.map((mensalidade) => {
             if (mensalidade.status === 'P') {
                 toast.warn('Mensalidade Paga! Para excluir solite ao gerente');
                 return;

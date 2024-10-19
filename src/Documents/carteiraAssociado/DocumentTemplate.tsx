@@ -111,12 +111,12 @@ class DocumentTemplate extends React.Component<DadosProps> {
             <span className="font-semibold" style={{fontSize:7}}>CARTÃO VÁLIDO ATÉ:{venc.toLocaleDateString()}</span>
             </div>
           {<ol className="absolute" style={{right:110,top:50,fontSize:8,listStyleType:'decimal'}}>
-           {dependentesTitular.filter(it=>!it.excluido).map(item=>(
+           {dependentesTitular?.filter(it=>!it.excluido)?.map(item=>(
             <li key={item.id_dependente} >{item.nome}</li>
            )) }
             </ol>}
           </div>}
-          {dependentes.filter(it=>!it.excluido).map((item, index) => {
+          {dependentes.filter(it=>!it.excluido)?.map((item, index) => {
             return (
               <div key={index}
               style={{

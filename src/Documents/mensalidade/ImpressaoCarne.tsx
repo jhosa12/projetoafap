@@ -43,7 +43,7 @@ class ImpressaoCarne extends React.Component<DadosProps> {
       
           return (
             <ul className="flex flex-col w-full justify-center items-center gap-4 ">
-                {arrayMensalidade.map((item, index) => (
+                {arrayMensalidade?.map((item, index) => (
 
                
                         <li style={{

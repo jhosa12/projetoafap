@@ -109,7 +109,7 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
           //   closeModa({acordo:{...data.acordo, mensalidade:data.acordo?.mensalidade,total_acordo:valor_total,//data_inicio:new Date()}});
 
        const criarAcordo:SubmitHandler<FormProps> = async (data) => {
-        const novasMensalidades = mensalidadesAcordo.map(mensal=>{
+        const novasMensalidades = mensalidadesAcordo?.map(mensal=>{
             return {...mensal,status:'E',cobranca:watch('data_fim')}
         })
         if(!mensalidadesAcordo){
@@ -154,7 +154,7 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
      
 
       async function baixarAcordo(){
-        const novasMensalidades = mensalidadesAcordo.map(mensal=>{
+        const novasMensalidades = mensalidadesAcordo?.map(mensal=>{
             return {...mensal,status:'P',data_pgto:new Date(),usuario:usuario.nome,valor_total:mensal.valor_principal}
         }
         )
@@ -184,7 +184,7 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
       }
 
       async function editarAcordo(){
-        const novasMensalidades = mensalidadesAcordo.map(mensal=>{
+        const novasMensalidades = mensalidadesAcordo?.map(mensal=>{
             return {...mensal,status:'E'}
         }
         )
@@ -339,7 +339,7 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
            
         </Table.Head>
         <Table.Body className="divide-y" >
-            {mensalidadesAcordo.map((item,index)=>(  
+            {mensalidadesAcordo?.map((item,index)=>(  
                 <Table.Row key={index} 
                 className="text-gray-900 font-semibold"
                >

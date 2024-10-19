@@ -62,7 +62,7 @@ export function DadosAssociado({dadosassociado}:DataProps){
 
                                     {dadosassociado?.contrato?.convalescencia?.map(item => (
                                         <>
-                                            {item.convalescenca_prod.map((dados, index) => (!item.id_dependente || item.id_dependente === null) && item.status === 'ABERTO' && <button data-tooltip-id="my-tooltip" data-tooltip-content={dados?.descricao ?? ''} className="text-yellow-500">
+                                            {item.convalescenca_prod?.map((dados, index) => (!item.id_dependente || item.id_dependente === null) && item.status === 'ABERTO' && <button data-tooltip-id="my-tooltip" data-tooltip-content={dados?.descricao ?? ''} className="text-yellow-500">
                                                 <TbWheelchair size={20} />
                                             </button>)}
                                         </>
