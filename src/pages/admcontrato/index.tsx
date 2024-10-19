@@ -288,7 +288,7 @@ export default function AdmContrato() {
         }
         let x = 0;
 
-        dadosassociado?.mensalidade?.map((item, index) => {
+        Array.isArray(dadosassociado?.mensalidade) &&  dadosassociado?.mensalidade?.map((item, index) => {
             new Date() >= new Date(item.vencimento) && item.status === 'A' || item.status === 'E' ? (x = x + 1) : '';
         });
         if (x > 1) {
