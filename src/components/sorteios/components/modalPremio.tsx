@@ -33,7 +33,7 @@ export default function ModalPremio({ dadosPremio,setModal,empresas,conveniados,
                 api.post('/sorteio/cadastroPremio', {
                     ordem: data.ordem,
                     id_empresa: data.id_empresa,
-                   id_conveniados:data.id_conveniados,
+                   id_conveniados:Number(data.id_conveniados),
                    conveniado:conveniados.find(item=>item.id_conveniados==Number(data.id_conveniados))?.conveniado,
                     descricao: data.descricao,
                     data: new Date(),
