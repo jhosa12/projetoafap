@@ -1,22 +1,24 @@
 import { useEffect, useState } from "react"
-import  CadastroPremio  from "./cadastroPremio"
+import  CadastroPremio  from "../../../components/sorteios/configuracoes/cadastroPremio"
 import { api } from "@/services/apiClient"
 import { toast } from "react-toastify"
-import  ConsultarGanhadores  from "./consultar"
-import ConfigParams from "./configParams"
+import  ConsultarGanhadores  from "../../../components/sorteios/configuracoes/consultar"
+import ConfigParams from "../../../components/sorteios/configuracoes/configParams"
+import { Tabs } from "flowbite-react"
+import { PiListBulletsFill } from "react-icons/pi"
+import { GiPodiumWinner } from "react-icons/gi"
 
-interface PremiosProps{
-    id_produto:string,
-    descricao: string,
-    unidade: string,
-
-    valor_custo: number,
-    quantidade: number,
-    situacao: string,
-    grupo: string,
-    tipo: string,
-    openModal:boolean
-}
+export interface PremioProps{
+    id_premio:number,
+    status:string,
+    ordem:number,
+    id_conveniados:number,
+    conveniado:string,
+    id_empresa:string,
+    descricao:string,
+    data:Date,
+    conveniados:{filename:string}
+  }
 interface GanhadoresProps{
     id_contrato:number,
     titular:string,
@@ -29,7 +31,7 @@ interface GanhadoresProps{
 }
 export default function ConfigSort(){
     const [menuIndex, setMenuIndex] = useState(1)
-    const [arrayPremios,setArrayPremios]=useState<Array<Partial<PremiosProps>>>([])
+   
     const [dataSorteio,setDataSorteio] = useState<Date>(new Date())
     const [arrayGanhadores,setGanhadores] = useState<Array<Partial<GanhadoresProps>>>([])
     const [loading, setLoading] = useState(false)
@@ -42,20 +44,11 @@ export default function ConfigSort(){
     }
 
     useEffect(()=>{
-        listarPremios()
+    
         listarGanhadores()
     },[])
 
-    async function listarPremios() {
-        const response = await toast.promise(
-             api.get('/sorteio/listarPremios'),
-            {error:'Erro ao Requisitar Dados',
-                pending:'Listando dados.....',
-                success:'Dados Carregados'
-            }
-        )
-        setArrayPremios(response.data)
-    }
+
 
     async function listarGanhadores() {
         setLoading(true)
@@ -74,27 +67,19 @@ export default function ConfigSort(){
     }
 
 return(
-    <div className="flex flex-col  px-4 w-full ">
-<ul className="flex flex-wrap mb-1 text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 "  >
-  <li className="me-2">
-    <button type="button" onClick={() => setMenuIndex(1)} className={`inline-block p-2 border-blue-600 rounded-t-lg hover:border-b-[1px]  hover:text-gray-300  `}>Cadastrar Prêmios</button>
-  </li>
-  <li className="me-2">
-    <button type="button" onClick={() => setMenuIndex(2)} className={`inline-block p-2 border-blue-600  hover:border-b-[1px]  rounded-t-lg   hover:text-gray-300  `}>Consultar Ganhadores</button>
-  </li>
-  <li className="me-2">
-    <button type="button" onClick={() => setMenuIndex(3)} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Configurar Parâmetros</button>
-  </li>
-  <li className="me-2">
-    <button type="button" onClick={() => setMenuIndex(4)} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Relatório Vendas</button>
-  </li>
-
-</ul>
-
-{menuIndex===1 && (<CadastroPremio listarPremios={listarPremios} arrayPremios={arrayPremios}/>)}
-{menuIndex===2 && (<ConsultarGanhadores loading={loading} listarGanhadores={listarGanhadores} setarDataSorteio={setarDataSorteio} dataSorteio={dataSorteio} arrayGanhadores={arrayGanhadores}/>)}
-{menuIndex===3 && (<ConfigParams/>)}
-</div>
+    <div className="flex flex-col  w-full text-white">
+    <Tabs theme={{base: 'bg-white rounded-b-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-105px)]',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
+        on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
+        off:"border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
+      }}}}}}}  variant="underline">
+    <Tabs.Item active title="Prêmios" icon={PiListBulletsFill}>
+            <CadastroPremio/>    
+    </Tabs.Item>
+    <Tabs.Item title="Empresas" icon={GiPodiumWinner}>
+ 
+    </Tabs.Item>
+  </Tabs>
+  </div>
 
 )
 

@@ -337,8 +337,8 @@ const buscarConsultas = async ({startDate,endDate}:{startDate:Date,endDate:Date}
 
   return (
     <>
-      <div className="flex flex-col px-4 w-full text-white">
-      <Tabs theme={{tabpanel:'py-1',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
+      <div className="flex flex-col px-2 w-full text-white">
+      <Tabs theme={{base:'flex flex-col',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-105px)]',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
         on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
         off:"border-b-2 border-transparent text-gray-200 hover:border-gray-300 hover:text-gray-400 "
       }}}}}}}  variant="underline">
@@ -347,7 +347,7 @@ const buscarConsultas = async ({startDate,endDate}:{startDate:Date,endDate:Date}
       <Calendario consultas={consultas} setConsultas={setConsultas} pre={pre} setPre={setPre} deletarEvento={deletarEvento} setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />
       </Tabs.Item>
       <Tabs.Item title="Pré Agendamentos" icon={MdAccessTimeFilled}>
-      <PreAgend setArrayEvent={setArrayEvent} events={events.filter(item => new Date(item.end) >= new Date())} setPre={setPre} arrayMedicos={medicos} pre={pre} />
+      <PreAgend  events={events.filter(item => new Date(item.end) >= new Date())} setPre={setPre} arrayMedicos={medicos} pre={pre} />
       </Tabs.Item>
 
       <Tabs.Item title="Consultas" icon={HiClipboardList}>

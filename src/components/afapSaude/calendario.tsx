@@ -1,7 +1,7 @@
 
 
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
@@ -18,6 +18,10 @@ import { TiCancel } from "react-icons/ti";
 import { Tooltip } from 'react-tooltip';
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
+import { ModalPreAgend } from "./components/modalPreAgend";
+import { AuthContext } from "@/contexts/AuthContext";
+import { ModalAgendCliente } from "./components/modalAgendCliente";
+import { set } from "date-fns";
 
 // Configura o moment para usar o idioma português
 moment.locale('pt-BR');
@@ -60,6 +64,11 @@ export default function Calendario({pre,setPre, medicos, events, setArrayEvent, 
 
   const [isOpen, setIsOpen] = useState(false);
   const [modalDelete, setModalDel] = useState(false)
+  const [modalAgeCliente,setAgeCliente]=useState(false)
+  const {usuario} = useContext(AuthContext)
+
+
+  
 
   const gerarConsulta = async ({evento,id_med}:{evento:ClientProps,id_med:number}) => {
   
@@ -111,29 +120,29 @@ export default function Calendario({pre,setPre, medicos, events, setArrayEvent, 
       return (
         <Accordion collapseAll onClick={(e) => e.stopPropagation()}  >
           <Accordion.Panel>
-            <Accordion.Title className="flex w-full border-green-500 bg-white text-cyan-700  border-l-8 py-2 focus:outline-none focus:ring-0 focus:ring-offset-0 "  >
-              <div className="inline-flex w-full items-center gap-8">
+            <Accordion.Title className="flex w-full border-green-500 bg-white text-cyan-700  border-l-8 py-2"  >
+              <div className="inline-flex w-full items-center gap-8 text-sm">
                 {event.status === 'AB' ? 'ABERTO' : event.status === 'AD' ? 'ADIADO' : 'CANCELADO'} - {event.title}
                 <button data-tooltip-id="event" data-tooltip-content={'Adicionar Agendamento'} className="hover:text-blue-600" onClick={(e) => {
                   e.stopPropagation()
-                  setarDataEvento({ ...event, tipoAg: 'ct', nome: '', celular: '', clientes: [], endereco: '', editar: false, id_agcli: undefined })
-                  toggleDrawer()
+                  setarDataEvento({ ...event, tipoAg: 'ct', nome: '', celular: '', clientes: event.clientes, endereco: '', editar: false, id_agcli: undefined })
+                  setAgeCliente(true)
                 }} >
-                  <MdAddBox size={26} />
+                  <MdAddBox size={22} />
 
                 </button>
                 <button data-tooltip-id="event" data-tooltip-content={'Deletar'} onClick={() => {
                   setarDataEvento({ ...event, tipoAg: 'md', id_agcli: undefined }),
                     setModalDel(true)
                 }} className="hover:text-red-600">
-                  <MdDelete size={26} />
+                  <MdDelete size={22} />
                 </button>
               </div>
               <span className="text-sm">Clientes: {event?.clientes?.length}</span>
 
             </Accordion.Title >
             <Accordion.Content>
-              <Timeline theme={{ item: { root: { vertical: 'mb-1 ml-6 ' }, content: { body: { base: "mb-4 text-sm font-normal text-gray-500 dark:text-gray-400" }, title: { base: "flex justify-between text-sm font-semibold text-gray-900 dark:text-white" } } } }}>
+              <Timeline theme={{ item: { root: { vertical: 'mb-1 ml-6 ' }, content: { body: { base: "mb-4 text-sm font-normal text-gray-500" }, title: { base: "flex justify-between text-sm font-semibold text-gray-900 " } } } }}>
                 {event?.clientes?.map((item, index) => (
                   <Timeline.Item key={item.id_agcli}>
                     <Timeline.Point icon={HiCalendar} />
@@ -149,7 +158,7 @@ export default function Calendario({pre,setPre, medicos, events, setArrayEvent, 
                         
                         </Timeline.Title>
                       <Timeline.Body>
-                        {item.endereco}
+                       <span className="text-xs font-semibold text-black"> {item.endereco}</span>
                       </Timeline.Body>
                     </Timeline.Content>
                   </Timeline.Item>
@@ -217,7 +226,7 @@ export default function Calendario({pre,setPre, medicos, events, setArrayEvent, 
 
   const handleEventClick = (event: Partial<EventProps>) => {
     setarDataEvento({ ...event })
-    toggleDrawer()
+    setAgeCliente(true)
   }
 
   const toggleDrawer = () => {
@@ -225,18 +234,18 @@ export default function Calendario({pre,setPre, medicos, events, setArrayEvent, 
   };
 
 
-  const handleNovoEvento = useCallback(({ start, end }: { start: Date, end: Date }) => {
+  const handleNovoEvento = ({ start, end }: { start: Date, end: Date }) => {
     setarDataEvento({ start, end, data: undefined, id_agmed: undefined, id_med: undefined, obs: '', status: 'AB', title: '', celular: '', nome: '', tipoAg: 'md', endereco: '', editar: true })
     toggleDrawer()
-  }, [setArrayEvent])
+  }
 
 
   return (
     <>
       <div >
 
-
-        <ModalDrawer deletarEvento={deletarEvento} setArrayEvent={setArrayEvent} events={events} dataEvent={dataEvent} setarDataEvent={setarDataEvento} arrayMedicos={medicos} isOpen={isOpen} toggleDrawer={toggleDrawer} />
+    { modalAgeCliente &&  <ModalAgendCliente dataEvent={dataEvent} arrayMedicos={medicos} openModal={modalAgeCliente} setOpenModal={setAgeCliente} />}
+        <ModalDrawer deletarEvento={deletarEvento} setArrayEvent={setArrayEvent} events={events} dataEvent={dataEvent}  arrayMedicos={medicos} isOpen={isOpen} toggleDrawer={toggleDrawer} />
         <Calendar
           localizer={localizer}
           events={events.filter((item) => item.tipoAg !== 'tp')}
@@ -245,9 +254,8 @@ export default function Calendario({pre,setPre, medicos, events, setArrayEvent, 
           endAccessor="end"
           selectable
           onSelectSlot={handleNovoEvento}
-          // onSelectEvent={handleEventClick}
           selected={true}
-          style={{ height: 'calc(100vh - 125px)' }}
+          style={{ height: 'calc(100vh - 110px)'}}
           messages={{
             next: "Próximo",
             previous: "Anterior",
@@ -266,8 +274,8 @@ export default function Calendario({pre,setPre, medicos, events, setArrayEvent, 
           <Modal.Header />
           <Modal.Body>
             <div className="text-center">
-              <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
-              <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 " />
+              <h3 className="mb-5 text-lg font-normal text-gray-500 ">
                 Realmente deseja deletar esse agendamento?
                 Todos os dados vinculados a ele também serão apagados
               </h3>

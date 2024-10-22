@@ -18,9 +18,6 @@ export default function TabsConfig() {
     <Tabs.Item title="Empresas" icon={MdAddBusiness}>
     <Empresas/>
     </Tabs.Item>
-   
-    
-   
   </Tabs>
    
   )

@@ -1,5 +1,5 @@
 
-import { Card,Modal,ModalHeader,ModalBody,Button,Label,FileInput,TextInput,Textarea,Dropdown,DropdownItem, FloatingLabel } from "flowbite-react";
+import { Card,Modal,ModalHeader,ModalBody,Button,Label,FileInput,Textarea,Dropdown, FloatingLabel } from "flowbite-react";
 import { MedicoProps } from "@/pages/afapSaude";
 import { IoAddOutline } from "react-icons/io5";
 import { ChangeEvent, useState } from "react";
@@ -40,9 +40,7 @@ export default function AdmMedico({medicos,setArray}:DataProps){
         }
 
 const imagem = e.target.files[0];
-if(!imagem ){
-    return;
-}
+
 if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
    setarDadosMedico({...dataMedico,imageUrl:'',tmpUrl:URL.createObjectURL(e.target.files[0]),file:e.target.files[0]})
     }

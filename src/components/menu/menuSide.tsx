@@ -2,7 +2,7 @@
 
 
 import { AuthContext, signOut } from "@/contexts/AuthContext";
-import { Button, Drawer, Sidebar } from "flowbite-react";
+import {  Drawer, Sidebar } from "flowbite-react";
 import Link from "next/link";
 import { useContext } from "react";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
@@ -45,6 +45,7 @@ export default function SideBar({ isOpen, setClose }: DataProps) {
                 </Sidebar.Collapse>
                 <Sidebar.Collapse icon={HiBriefcase} label="Comercial">
                   <Sidebar.Item as={Link} href='/vendas' >Vendas</Sidebar.Item>
+                  <Sidebar.Item as={Link} href='/conveniados' >Conveniados</Sidebar.Item>
                 </Sidebar.Collapse>
                 <Sidebar.Item as={Link} href='/afapSaude' icon={MdMedicalServices}>
                   Afap Saúde

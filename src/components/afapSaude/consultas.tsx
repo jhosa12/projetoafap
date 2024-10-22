@@ -199,7 +199,7 @@ const medico = medicos.find(item=>item.id_med===data.id_med)
 
 
   return (
-    <div className="flex flex-col py-2 gap-2">
+    <div className="flex flex-col p-2 gap-2">
       <div className="ml-auto inline-flex gap-4">
         <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 " } }} color={'light'} size={'sm'} onClick={() => setModalFiltro(true)}>  <HiFilter className="mr-2 h-5 w-5" /> Filtro</Button>
         <Button size={'sm'} onClick={() =>{setData({celular:'',cpf:'',data:new Date(),espec:'',exames:[],id_consulta:null,id_med:null,nome:'',tipoDesc:'',vl_consulta:0,vl_desc:0,vl_final:0}), setOpenModal(true)}}>Nova Consulta</Button>
