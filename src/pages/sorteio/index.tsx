@@ -188,6 +188,9 @@ setLoading(false)
      
       }
   },[])
+
+
+
   
   return (
     <>
@@ -241,7 +244,7 @@ setLoading(false)
     <div className='flex gap-2'>
      <Button 
         isProcessing={loading}
-        disabled={ativarConfete||loading} 
+        disabled={ativarConfete||loading||!premioAtual?.id_premio} 
         onClick={sortearNumero}
         className="bg-blue-600 hover:bg-blue-700  font-bold py-2 px-4 rounded"
       >
