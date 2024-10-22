@@ -220,7 +220,7 @@ setLoading(false)
     <div className='flex flex-row w-full   border-slate-300 justify-center items-center'>
 
     <div className='flex flex-row gap-2  text-black  '>
-      <img src={`${process.env.NEXT_PUBLIC_API_URL}/file/${premioAtual}`} className='w-40 h-40 rounded-lg' />
+      <img src={`${process.env.NEXT_PUBLIC_API_URL}/file/${premioAtual?.conveniados.filename}`} className='w-40 h-40 rounded-lg' />
       <div className='flex flex-col gap-2 justify-center'>
       <span className='font-semibold text-3xl'>{premioAtual?.conveniado}</span>
       <span className='font-semibold text-2xl'>{premioAtual?.descricao}</span>
