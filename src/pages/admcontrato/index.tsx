@@ -1,5 +1,5 @@
 
-import { IoMdSearch } from "react-icons/io";
+import { IoMdAdd, IoMdSearch } from "react-icons/io";
 import 'react-tabs/style/react-tabs.css';
 import { ModalBusca } from '../../components/modal'
 
@@ -320,13 +320,13 @@ export default function AdmContrato() {
 
                 <div className="flex  flex-col px-4  ">
                     <div className="flex  flex-row justify-start gap-2 items-center w-full mt-2 pb-1">
-                        <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100" } }} size={'xs'} onClick={() => closeModa({ closeModalPlano: true, mensalidade: {} })} type="button" color={'light'}>
-                            <IoMdSearch size={15} />
+                        <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100" } }} size={'sm'} onClick={() => closeModa({ closeModalPlano: true, mensalidade: {} })} type="button" color={'light'}>
+                            <IoMdSearch size={18} />
                             BUSCAR CLIENTE
                         </Button>
-                        <Button size={'xs'} type="button" onClick={() => setCadastro(true)} color={'warning'}>
+                        <Button size={'sm'} type="button" onClick={() => setCadastro(true)} color={'warning'}>
+                        <IoMdAdd size={18} />
                             NOVO ASSOCIADO
-                            <RiFileAddLine size={15} />
                         </Button>
                     </div>
                     <div className="flex-col w-full border  rounded-lg shadow  border-gray-700">

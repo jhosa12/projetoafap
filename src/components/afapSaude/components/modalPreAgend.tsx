@@ -1,5 +1,5 @@
 import { Button, Label, Modal, Select, TextInput } from "flowbite-react"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import ReactInputMask from "react-input-mask"
 import { DadosInputs } from "../preAgendamento"
 import { ClientProps, EventProps, MedicoProps } from "@/pages/afapSaude"
@@ -41,8 +41,6 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                     id_agcli: data?.id_agcli,
                     id_agmed: data?.id_agmed,
                     nome: data?.nome,
-                    start: data?.start,
-                    end: data?.end,
                     title: data?.title,
                     tipoAg: 'ct',
                     celular: data?.celular,
@@ -58,19 +56,13 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
             )
             let novo: Array<ClientProps> = [...pre]
             const index = pre.findIndex(item => item.id_agcli === data?.id_agcli)
-            if (index !== -1 && index !== undefined) {
-                if (data?.id_agmed) {
-                    const indexEvent = events.findIndex(item => item.id_agmed === data.id_agmed)
-                    const arrayEvent = [...events]
-                    arrayEvent[indexEvent].clientes.push(evento.data)
-                    novo.splice(Number(index), 1)
-                } else {
+         
 
                     novo[index] = { ...evento.data }
-                }
+              
                 setPre(novo)
 
-            }
+            
 
 
 
@@ -80,27 +72,29 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
         }
     }
 
+    const handleOnSubmit:SubmitHandler<DadosInputs> = async(data)=>{
+        data.id_agcli ? editarEvento(data) : novoEvento(data)
+    }
+
 
     const novoEvento = async (data: DadosInputs) => {
-
-
         try {
-
+          const dadosMedico =arrayMedicos.find(item=>item.id_med===Number(data?.id_med))
             setLoading(true)
             const evento = await toast.promise(
-                api.post("/agenda/novoEvento", {
+                api.post("/agenda/agendamentoCliente/adicionar", {
                     data: new Date(),
                     id_usuario: id_usuario,
                     nome: data?.nome,
-                    id_med: Number(data?.id_agmed),
+                    id_med: Number(data?.id_med),
+                    medico:`${dadosMedico?.nome} (${dadosMedico?.espec})`,
                     endereco: data?.endereco,
                     celular: data?.celular,
-                    start: data?.start,
-                    end: data?.end,
                     title: data?.title,
-                    status: 'AB',
-                    // obs: dataEvent.obs,
-                    tipoAg: 'ct'
+                    id_agmed: Number(data?.id_agmed),
+                    data_prev: data?.data_prev,
+                    //obs: dataEvent.obs,
+                   
 
                 }),
                 {
@@ -132,9 +126,10 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
             const medico = arrayMedicos.find(item => item.id_med === evento?.id_med)
 
             setValue( 'id_agmed', Number(e.target.value) )
+          evento?.start && setValue('data_prev', evento?.start)
 
-            if (evento && medico)
-                gerarIntervalos({ clientes: evento.clientes, start: evento.start, end: evento.end, time: medico.time })
+           /* if (evento && medico)
+             gerarIntervalos({ clientes: evento.clientes, start: evento.start, end: evento.end, time: medico.time })*/
 
         }
         else setIntervalo([])
@@ -171,9 +166,9 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
 
     return (
         <Modal dismissible show={openModal} onClose={() => setOpenModal(!openModal)}>
-        <Modal.Header>Cadastrar Pré Agendamento</Modal.Header>
+        <Modal.Header>Administrar Pré Agendamento</Modal.Header>
         <Modal.Body >
-            <div className="flex flex-col gap-3 w-full text-black font-semibold">
+            <form onSubmit={handleSubmit(handleOnSubmit)} className="flex flex-col gap-3 w-full text-black font-semibold">
 
                 <div >
                     <div className="mb-1 block">
@@ -190,7 +185,7 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                             name="celular"
                             control={control}
                             render={({ field:{onChange,value} }) => (
-                                <ReactInputMask mask={'(99) 9 9999-9999'} value={value} onChange={e => onChange('celular', e.target.value )} className="block py-2 px-2 w-full rounded-lg border 0  bg-gray-50 text-xs border-gray-300 " />
+                                <ReactInputMask mask={'(99) 9 9999-9999'} value={value} onChange={e => onChange(e.target.value )} className="block py-2 text-black px-2 w-full rounded-lg border 0  bg-gray-50 text-xs border-gray-300 " />
                             )}
                         />
                        
@@ -201,7 +196,10 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                         </div>
                         <TextInput {...register('endereco')}  type="text" sizing="sm" />
                     </div>
+                  
+
                 </div>
+                
                 <div className="w-full">
                     <div className="mb-1 block">
                         <Label htmlFor="small" value="Especialista" />
@@ -213,7 +211,7 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                         ))}
                     </Select>
                 </div>
-                {watch('id_agcli') &&
+                
                     <div className="inline-flex gap-4 w-full">
                         <div className="w-full">
                             <div className="mb-1 block">
@@ -230,22 +228,24 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                             <div className="mb-1 block">
                                 <Label htmlFor="small" value="Horário" />
                             </div>
-                            <Select id="small" onChange={e => {
-                                setValue( 'start', intervals[Number(e.target.value)].start),
-                                setValue( 'end' ,intervals[Number(e.target.value)].end )
+                            <Select disabled id="small" onChange={e => {
+                               // setValue( 'start', intervals[Number(e.target.value)].start),
+                               // setValue( 'end' ,intervals[Number(e.target.value)].end )
                             }} sizing="sm" >
-                                <option value={''}></option>
+                                <option selected value={''}></option>
                                 {intervals?.map((item, index) => (
                                     <option disabled={item.reserv} key={index} value={index}>{new Date(item.start).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</option>
                                 ))}
                             </Select>
                         </div>
-                    </div>}
-            </div>
+                    </div>
+
+                    <Button className="ml-auto" type="submit" isProcessing={loading}>{!watch('id_agcli') ?"Salvar":"Alterar"}</Button> 
+            </form>
         </Modal.Body>
-        <Modal.Footer>
-             <Button isProcessing={loading}>{!watch('id_agcli') ?"Salvar":"Alterar"}</Button> 
-        </Modal.Footer>
+        
+           
+     
     </Modal>
     )
 

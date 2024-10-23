@@ -124,7 +124,7 @@ const impressao = useReactToPrint({
             <Button isProcessing={loading} size="sm" color='blue' className="" onClick={()=>listarGanhadores({date:dataSorteio,id_empresa:id_empresa})}><IoSearch className="mr-2 h-5 w-5" /> BUSCAR</Button>
 
             <Button 
-             isProcessing={loading}
+           
               size="sm" 
               color='green' 
               onClick={impressao}

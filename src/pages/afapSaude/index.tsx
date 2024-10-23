@@ -84,8 +84,9 @@ export interface MedicoProps {
 }
 
 export interface ClientProps {
-
+  data_prev:Date,
   id_agcli: number,
+  medico: string,
   id_agmed: number|null,
   id_med: number,
   id_usuario: number
@@ -101,7 +102,7 @@ export interface ClientProps {
   tipoAg: string
 }
 export interface EventProps {
-  clientes: Array<ClientProps>
+
   id_agcli: number,
   id_agmed: number|null
   id_med: number,
@@ -126,7 +127,6 @@ export default function AfapSaude() {
   const [isOpen, setIsOpen] = useState(false);
   const [dataEvent, setDataEvent] = useState<Partial<EventProps>>({})
   const [menuIndex, setMenuIndex] = useState(1)
-  const [pre, setPre] = useState<Array<ClientProps>>([])
   const [consultas,setConsultas] =useState<Array<ConsultaProps>>([])
   const [exames,setExames] = useState<Array<ExamesProps>>([])
   const [loading,setLoading] =useState<boolean>(false)
@@ -188,8 +188,8 @@ const buscarConsultas = async ({startDate,endDate}:{startDate:Date,endDate:Date}
     try {
 
 
-      if (dataEvent.tipoAg === 'md') {
-        const novo = await toast.promise(
+     
+        const response = await toast.promise(
           api.delete(`/agenda/deletarEvento/${dataEvent.tipoAg}/${dataEvent.id_agmed}`),
           {
             error: 'Erro ao deletar dados',
@@ -201,30 +201,8 @@ const buscarConsultas = async ({startDate,endDate}:{startDate:Date,endDate:Date}
         const index = novoArray.findIndex(item => item.id_agmed === dataEvent.id_agmed)
         novoArray.splice(index, 1)
         setArrayEvent(novoArray)
-      }
-      else if (dataEvent.tipoAg === 'ct') {
-        const novo = await toast.promise(
-          api.delete(`/agenda/deletarEvento/${dataEvent.tipoAg}/${dataEvent.id_agcli}`),
-
-
-          {
-            error: 'Erro ao deletar dados',
-            pending: 'Apagando dados...',
-            success: 'Dados deletados com sucesso!'
-          }
-        )
-
-        const novoArray = [...events]
-        const indexMd = novoArray?.findIndex(item => item.id_agmed === dataEvent.id_agmed)
-        const indexCt = novoArray[indexMd]?.clientes?.findIndex(item => item.id_agcli === dataEvent.id_agcli)
-        novoArray[Number(indexMd)]?.clientes?.splice(Number(indexCt), 1)
-        setArrayEvent(novoArray)
-        setIsOpen(false)
-      }
-
-
-
-
+      
+ 
     } catch (error) {
       toast.error('erro na requisição')
     }
@@ -284,7 +262,7 @@ const buscarConsultas = async ({startDate,endDate}:{startDate:Date,endDate:Date}
    
       getMedicos()
       agenda()
-      preAgendamento()
+     
       
     buscarConsultas({startDate:new Date(),endDate:new Date})
     buscarExames()
@@ -317,15 +295,6 @@ const buscarConsultas = async ({startDate,endDate}:{startDate:Date,endDate:Date}
   }
 
 
-  const preAgendamento = async () => {
-    try {
-      const lista = await api.get("/agenda/preagendamento")
-      setPre(lista.data)
-
-    } catch (error) {
-      console.error('Erro na requisição pre')
-    }
-  }
 
   /*    const handleNovoEvento = useCallback(({start,end}:{start:Date,end:Date})=>{
              setDataEvent({start,end})  
@@ -337,17 +306,17 @@ const buscarConsultas = async ({startDate,endDate}:{startDate:Date,endDate:Date}
 
   return (
     <>
-      <div className="flex flex-col px-2 w-full text-white">
-      <Tabs theme={{base:'flex flex-col',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-105px)]',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
+      <div className="flex flex-col  w-full text-white">
+      <Tabs theme={{base: 'bg-white rounded-b-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-104px)]',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
         on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
-        off:"border-b-2 border-transparent text-gray-200 hover:border-gray-300 hover:text-gray-400 "
+        off:"border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
       }}}}}}}  variant="underline">
 
       <Tabs.Item  active title="Agenda" icon={FaCalendarAlt}>
-      <Calendario consultas={consultas} setConsultas={setConsultas} pre={pre} setPre={setPre} deletarEvento={deletarEvento} setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />
+      <Calendario consultas={consultas} setConsultas={setConsultas}  deletarEvento={deletarEvento} setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />
       </Tabs.Item>
       <Tabs.Item title="Pré Agendamentos" icon={MdAccessTimeFilled}>
-      <PreAgend  events={events.filter(item => new Date(item.end) >= new Date())} setPre={setPre} arrayMedicos={medicos} pre={pre} />
+      <PreAgend  events={events.filter(item => new Date(item.end) >= new Date())}  arrayMedicos={medicos} />
       </Tabs.Item>
 
       <Tabs.Item title="Consultas" icon={HiClipboardList}>

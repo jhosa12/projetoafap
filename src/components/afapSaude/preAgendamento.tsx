@@ -10,45 +10,53 @@ import ReactInputMask from "react-input-mask";
 import { MdAdd } from "react-icons/md";
 import { AuthContext } from "@/contexts/AuthContext";
 import { ModalPreAgend } from "./components/modalPreAgend";
+import { HiFilter } from "react-icons/hi";
+import { PopoverFiltro } from "./components/PopoverFiltro";
 
 
 
 
 
 interface DataProps {
-    pre: Array<ClientProps>
     arrayMedicos: Array<MedicoProps>
-    setPre: (array: Array<ClientProps>) => void
     events: Array<EventProps>
-   
 }
 
 
 export interface DadosInputs {
     id_agcli: number,
     id_med: number,
+    status: string,
+    data_prev: Date,
     nome: string,
     celular: string,
     id_agmed: number,
     espec: string,
     endereco: string,
     title: string,
-    start: Date,
-    end: Date,
+
 }
 
-export default function PreAgend({ arrayMedicos, pre, setPre, events }: DataProps) {
+export default function PreAgend({ arrayMedicos, events }: DataProps) {
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [dados, setDados] = useState<Partial<DadosInputs>>()
     const { usuario } = useContext(AuthContext)
+    const [filtrar, setFiltrar] = useState<boolean>(false)
+    const [pre, setPre] = useState<Array<ClientProps>>([])
 
 
 
+ 
 
-    const deletarEvento = async () => {
-
-    }
-
+    const preAgendamento = async () => {
+        try {
+          const lista = await api.get("/agenda/preagendamento")
+          setPre(lista.data)
+    
+        } catch (error) {
+          console.error('Erro na requisição pre')
+        }
+      }
   
 
     const handleDeletarEvent = async (id: number) => {
@@ -66,9 +74,7 @@ export default function PreAgend({ arrayMedicos, pre, setPre, events }: DataProp
 
             )
 
-            const novoArray = [...pre]
-            const index = novoArray.findIndex(item => item.id_agmed === dados?.id_agmed)
-            novoArray.splice(index, 1)
+            const novoArray = pre.filter(item => item.id_agcli !== deletado.data.id_agcli)
             setPre(novoArray)
         } catch (error) {
             console.log(error)
@@ -113,41 +119,51 @@ export default function PreAgend({ arrayMedicos, pre, setPre, events }: DataProp
 
             {/* TABELA DE PRE AGENDAMENTOS */}
             <div className="flex flex-col overflow-x-auto overflow-y-auto p-2 gap-1">
-                <Button className="ml-auto" size={'sm'} onClick={() => { setIsOpen(true), setDados({ celular: '', end: undefined, start: undefined, endereco: '', espec: '', id_agmed: undefined, nome: '', title: '', id_agcli: undefined }) }} ><MdAdd size={20} /> Adicionar</Button>
-                <Table>
+                <div className="inline-flex ml-auto gap-4"> 
+                <PopoverFiltro arrayMedicos={arrayMedicos} openModal={filtrar} setOpenModal={()=>setFiltrar(!filtrar)} filtroAgenda={async() => {}} loading={false} />
+                <Button size={'sm'} onClick={() => { setIsOpen(true), setDados({ celular: '',  endereco: '', espec: '', id_agmed: undefined, nome: '', title: '', id_agcli: undefined }) }} ><MdAdd size={20} /> Adicionar</Button>
+                </div>
+             
+                <Table  theme={{ body: { cell: { base: " px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }}>
                     <Table.Head>
                         <Table.HeadCell>Nome</Table.HeadCell>
                         <Table.HeadCell>Medico</Table.HeadCell>
                         <Table.HeadCell>Telefone</Table.HeadCell>
                         <Table.HeadCell>Data Solicitação</Table.HeadCell>
+                        <Table.HeadCell>Data Prevista</Table.HeadCell>
+                        <Table.HeadCell>STATUS</Table.HeadCell>
                         <Table.HeadCell>
                             <span className="sr-only">Edit</span>
                         </Table.HeadCell>
                     </Table.Head>
-                    <Table.Body className="divide-y">
+                    <Table.Body className="divide-y ">
                         {pre.map((item, index) =>
                         (
-                            <Table.Row key={item.id_agcli} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                            <Table.Row key={item.id_agcli} className="bg-white text-black">
                                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                                     {item.nome}
                                 </Table.Cell>
-                                <Table.Cell>{item.title}</Table.Cell>
+                                <Table.Cell>{item.medico}</Table.Cell>
                                 <Table.Cell>{item.celular}</Table.Cell>
                                 <Table.Cell>{item.data && new Date(item.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
-                                <Table.Cell>
+
+                                <Table.Cell>{item.data_prev && new Date(item.data_prev).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
+
+                                <Table.Cell>{item.status}</Table.Cell>
+                                <Table.Cell className="text-slate-500">
                                     <div className="inline-flex gap-4">
                                         <button onClick={() => handleWhatsAppClick(item.celular ?? '')} className="hover:text-green-400">
-                                            <IoLogoWhatsapp size={20} />
+                                            <IoLogoWhatsapp size={18} />
                                         </button>
                                         <button onClick={() => handleDeletarEvent(Number(item.id_agcli))} className="hover:text-red-500">
-                                            <MdDelete size={22} />
+                                            <MdDelete size={20} />
                                         </button>
                                         <button onClick={() => {
                                             // setarDataEvent({...item,start:undefined,end:undefined})
                                             setDados({ ...dados, celular: item.celular, endereco: item.endereco, nome: item.nome, title: item.title, id_agcli: item.id_agcli, id_agmed: undefined,id_med: item.id_med })
                                             setIsOpen(true)
                                         }} className="hover:text-blue-500">
-                                            <BsFillCalendarDateFill size={20} />
+                                            <BsFillCalendarDateFill size={18} />
                                         </button>
 
                                     </div>

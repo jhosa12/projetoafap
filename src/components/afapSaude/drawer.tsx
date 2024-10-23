@@ -56,7 +56,7 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
 
     try {
 
-      if (data.tipoAg === 'md') {
+   
         const evento = await toast.promise(
           api.post("/agenda/novoEvento", {
 
@@ -85,40 +85,7 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
         setArrayEvent(ed)
         toggleDrawer()
 
-      } else if (dataEvent.tipoAg === 'ct') {
-        const evento = await toast.promise(
-          api.post("/agenda/novoEvento", {
-            id_agmed: Number(dataEvent.id_agmed),
-            id_med: Number(dataEvent.id_med),
-            data: new Date(),
-            id_usuario: Number(usuario?.id),
-            nome: dataEvent.nome,
-            endereco: dataEvent.endereco,
-            celular: dataEvent.celular,
-            start: dataEvent.start,
-            end: dataEvent.end,
-            title: dataEvent.title,
-            status: dataEvent.status,
-            obs: dataEvent.obs,
-            tipoAg: dataEvent.tipoAg
-
-          }),
-          {
-            error: 'Erro na requisição',
-            pending: 'Gerando Evento..',
-            success: 'Evento Gerado com sucesso'
-          }
-
-        )
-        const index = events.findIndex(item => item.id_agmed === dataEvent.id_agmed)
-        const novo = [...events]
-        novo[index].clientes?.push(evento.data)
-
-        // const ed = novo.map(item =>{return {...item,start:item.start ? new Date(item.start):new Date(),end:item.end?new Date(item.end):new Date()}})
-        setArrayEvent(novo)
-        toggleDrawer()
-
-      }
+      
 
       /*  */
     } catch (error) {
@@ -161,19 +128,12 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
       const novo = [...events]
       const index = novo.findIndex(item => item.id_agmed === dataEvent.id_agmed)
 
-      if (dataEvent.tipoAg === 'md') {
+   
         novo[index] = { ...evento.data }
         const ed = novo.map(item => { return { ...item, start: item.start ? new Date(item.start) : new Date(), end: item.end ? new Date(item.end) : new Date() } })
         setArrayEvent(ed)
-      }
-      else if (dataEvent.tipoAg === 'ct' && index !== undefined) {
-
-        const indexct = novo[index].clientes?.findIndex(item => item.id_agcli === dataEvent.id_agcli)
-        if (indexct !== undefined && indexct !== -1 && novo[index].clientes) {
-          novo[index].clientes![Number(indexct)] = { ...evento.data };
-        }
-
-      }
+      
+     
 
 
       toggleDrawer()
@@ -210,28 +170,6 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
   </select>
 </form>*/}
 <form onSubmit={handleSubmit(handleEvento)}  className="flex flex-col gap-5 p-2 text-black" >
-        {dataEvent.tipoAg !== 'md' && <div className="flex flex-col gap-4">
-          <div >
-            <label className="block mb-1 text-sm font-medium ">NOME</label>
-            <input {...register('nome')} className="block p-2.5 w-full text-sm rounded-lg border 0  bg-gray-50 border-gray-300 placeholder-gray-400 " placeholder="NOME"></input>
-          </div>
-          <div className="inline-flex gap-4">
-            <div className="w-full" >
-              <label className="block mb-1 text-sm font-medium ">CELULAR</label>
-              <Controller
-                control={control}
-                name="celular"
-                render={({ field: { onChange, value } }) => <ReactInputMask mask={'(99) 9 9999-9999'} onChange={onChange} value={value}  className="block p-2.5 w-full text-sm rounded-lg border 0  bg-gray-50 border-gray-300 placeholder-gray-400 " placeholder="CELULAR" />}
-              />
-              
-            </div>
-            <div className="w-full">
-              <label className="block mb-1 text-sm font-medium ">ENDEREÇO</label>
-              <input {...register('endereco')} className="block p-2.5 w-full text-sm rounded-lg border 0  bg-gray-50 border-gray-300 placeholder-gray-400 " placeholder="ENDEREÇO"></input>
-            </div>
-          </div>
-        </div>}
-
         <Dropdown  label="MEDICO" renderTrigger={()=>(<button  className="flex-shrink-0 w-full justify-between  inline-flex items-center py-2.5 px-4 text-sm font-medium text-center   border  rounded-lg    bg-gray-50    border-gray-300" type="button">
       
       {!watch('title') ?"SELECIONE O ESPECIALISTA":watch('title') }<svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -257,9 +195,9 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
           <label className="block mb-2 text-sm font-medium  ">STATUS</label>
           <select   {...register('status')} className=" border  text-sm rounded-lg bg-gray-50 block w-full p-2.5  border-gray-300 placeholder-gray-400 text-black ">
             <option selected>SELECIONE O STATUS</option>
-            <option value="AB">ABERTO</option>
-            <option value="C">CANCELADO</option>
-            <option value="AD">ADIADO</option>
+            <option value="ABERTO">ABERTO</option>
+            <option value="CANCELADO">CANCELADO</option>
+            <option value="ADIADO">ADIADO</option>
           </select>
         </div>
 

@@ -10,7 +10,7 @@ import { HiCalendar, HiClipboardCheck } from "react-icons/hi";
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
 import { ModalDrawer } from "@/components/afapSaude/drawer";
-import { Timeline, Accordion, Button, Modal } from "flowbite-react";
+import { Timeline, Accordion, Button, Modal, Alert } from "flowbite-react";
 import { ClientProps, ConsultaProps, EventProps, MedicoProps } from "@/pages/afapSaude";
 import { MdAddBox } from "react-icons/md";
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
@@ -20,7 +20,7 @@ import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
 import { ModalPreAgend } from "./components/modalPreAgend";
 import { AuthContext } from "@/contexts/AuthContext";
-import { ModalAgendCliente } from "./components/modalAgendCliente";
+
 import { set } from "date-fns";
 
 // Configura o moment para usar o idioma português
@@ -37,8 +37,6 @@ interface DataProps {
   dataEvent: Partial<EventProps>
   setarDataEvento: (fields: Partial<EventProps>) => void
   deletarEvento: () => Promise<void>
-  pre:Array<ClientProps>
-  setPre:(array:Array<ClientProps>)=>void
   consultas:Array<ConsultaProps>
   setConsultas:(array:Array<ConsultaProps>)=>void
  
@@ -59,12 +57,10 @@ interface ObjectArrayMod {
 
 }
 
-export default function Calendario({pre,setPre, medicos, events, setArrayEvent, dataEvent, setarDataEvento, deletarEvento,consultas,setConsultas }: DataProps) {
-
+export default function Calendario({ medicos, events, setArrayEvent, dataEvent, setarDataEvento, deletarEvento,consultas,setConsultas }: DataProps) {
 
   const [isOpen, setIsOpen] = useState(false);
   const [modalDelete, setModalDel] = useState(false)
-  const [modalAgeCliente,setAgeCliente]=useState(false)
   const {usuario} = useContext(AuthContext)
 
 
@@ -118,12 +114,14 @@ export default function Calendario({pre,setPre, medicos, events, setArrayEvent, 
   const components: any = {
     event: ({ event, index }: { event: EventProps, index: number }) => {
       return (
-        <Accordion collapseAll onClick={(e) => e.stopPropagation()}  >
-          <Accordion.Panel>
-            <Accordion.Title className="flex w-full border-green-500 bg-white text-cyan-700  border-l-8 py-2"  >
-              <div className="inline-flex w-full items-center gap-8 text-sm">
-                {event.status === 'AB' ? 'ABERTO' : event.status === 'AD' ? 'ADIADO' : 'CANCELADO'} - {event.title}
-                <button data-tooltip-id="event" data-tooltip-content={'Adicionar Agendamento'} className="hover:text-blue-600" onClick={(e) => {
+        <Alert   icon={HiCalendar}>
+       
+           
+     
+                {event.status} - {event.title}
+
+            
+              {/*  <button data-tooltip-id="event" data-tooltip-content={'Adicionar Agendamento'} className="hover:text-blue-600" onClick={(e) => {
                   e.stopPropagation()
                   setarDataEvento({ ...event, tipoAg: 'ct', nome: '', celular: '', clientes: event.clientes, endereco: '', editar: false, id_agcli: undefined })
                   setAgeCliente(true)
@@ -136,39 +134,16 @@ export default function Calendario({pre,setPre, medicos, events, setArrayEvent, 
                     setModalDel(true)
                 }} className="hover:text-red-600">
                   <MdDelete size={22} />
-                </button>
-              </div>
-              <span className="text-sm">Clientes: {event?.clientes?.length}</span>
+                </button>*/
+           }
+                
+           
+             
 
-            </Accordion.Title >
-            <Accordion.Content>
-              <Timeline theme={{ item: { root: { vertical: 'mb-1 ml-6 ' }, content: { body: { base: "mb-4 text-sm font-normal text-gray-500" }, title: { base: "flex justify-between text-sm font-semibold text-gray-900 " } } } }}>
-                {event?.clientes?.map((item, index) => (
-                  <Timeline.Item key={item.id_agcli}>
-                    <Timeline.Point icon={HiCalendar} />
-                    <Timeline.Content>
-                      <Timeline.Time>{new Date(item.start).toLocaleDateString('pt-BR', { timeZone: 'America/Fortaleza', weekday: 'long', day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit' })}</Timeline.Time>
-                      <Timeline.Title>
-                        {item.nome}
-                        <div className="inline-flex gap-5">
-                        <button data-tooltip-id="event" data-tooltip-content={'Editar Agendamento'} className="text-gray-500 hover:text-blue-600" onClick={() => handleEventClick({ ...item, tipoAg: 'ct', id_med: event.id_med })} ><HiCalendar size={20} /></button>
-                        <button data-tooltip-id="event" data-tooltip-content={'Cancelar'} className="text-gray-500 hover:text-red-600" onClick={() => CancelarAgendamento({id_agmed:item.id_agmed,id_agcli:item.id_agcli})} ><TiCancel size={23}  /></button>
-                        <button data-tooltip-id="event" data-tooltip-content={'Gerar Consulta'} className="text-gray-500 hover:text-green-600" onClick={() => gerarConsulta({evento:item,id_med:event.id_med})} ><HiClipboardCheck size={23}  /></button>
-                        </div>
-                        
-                        </Timeline.Title>
-                      <Timeline.Body>
-                       <span className="text-xs font-semibold text-black"> {item.endereco}</span>
-                      </Timeline.Body>
-                    </Timeline.Content>
-                  </Timeline.Item>
-                ))}
-              </Timeline>
-              <Tooltip id="event"/>
-            </Accordion.Content>
-          </Accordion.Panel>
+           
+  
           
-        </Accordion>
+        </Alert>
 
 
 
@@ -178,55 +153,13 @@ export default function Calendario({pre,setPre, medicos, events, setArrayEvent, 
     }
   }
 
-  const CancelarAgendamento = async ({id_agmed,id_agcli}:{id_agmed:number|null,id_agcli:number}) => {
- 
-    try {
-      const evento = await toast.promise(
-        api.put("/agenda/editarEvento", {
-          id_agcli:id_agcli,
-          id_agmed:null,
-          tipoAg: 'ct',
-          
-
-        }),
-        {
-          error: 'Erro na requisição',
-          pending: 'Gerando Evento..',
-          success: 'Evento Gerado com sucesso'
-        }
-
-      )
-
-
-
-      const novo = [...events]
-      const index = novo.findIndex(item => item.id_agmed === id_agmed)
-
-
-     
-
-        const indexct = novo[index].clientes?.findIndex(item => item.id_agcli === id_agcli)
-        if (indexct !== undefined && indexct !== -1 && novo[index].clientes) {
-          novo[index].clientes.splice(indexct,1)
-          setArrayEvent(novo)
-        setPre([...pre,evento.data])
-        }
-
-      
-
-
-
-    } catch (error) {
-      toast.error('Erro ao gerar evento')
-      console.log(error)
-    }
-  }
+  
 
 
 
   const handleEventClick = (event: Partial<EventProps>) => {
     setarDataEvento({ ...event })
-    setAgeCliente(true)
+    
   }
 
   const toggleDrawer = () => {
@@ -244,7 +177,7 @@ export default function Calendario({pre,setPre, medicos, events, setArrayEvent, 
     <>
       <div >
 
-    { modalAgeCliente &&  <ModalAgendCliente dataEvent={dataEvent} arrayMedicos={medicos} openModal={modalAgeCliente} setOpenModal={setAgeCliente} />}
+  
         <ModalDrawer deletarEvento={deletarEvento} setArrayEvent={setArrayEvent} events={events} dataEvent={dataEvent}  arrayMedicos={medicos} isOpen={isOpen} toggleDrawer={toggleDrawer} />
         <Calendar
           localizer={localizer}
