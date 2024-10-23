@@ -30,7 +30,7 @@ useEffect(()=>{
     const time =arrayMedicos.find(item=>item.id_med === dataEvent.id_med)?.time
     if(dataEvent.start && dataEvent.end  && time){
        
-        gerarIntervalos({end:dataEvent.end,start:dataEvent.start,time,clientes:dataEvent.clientes??[]})
+       // gerarIntervalos({end:dataEvent.end,start:dataEvent.start,time,clientes:dataEvent.clientes??[]})
     }
    
 },[])
