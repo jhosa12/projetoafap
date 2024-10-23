@@ -8,7 +8,7 @@ import { toast } from "react-toastify"
 
 
 export interface ConveniadosProps {
-        id_conveniados:number,
+        id_conveniados:number|null,
         usuario: string
         conveniado: string
         endereco :string
@@ -46,9 +46,16 @@ export default function Conveniados() {
     },[])
     return (
         <>
-       { openNovoConveniado &&<ModalNovoConveniado conveniado={conveniado} usuario={usuario?.nome??''} openModal={openNovoConveniado} setOpenModal={setOpenNovoConveniado}/>}
+       { openNovoConveniado &&<ModalNovoConveniado conveniados={conveniados} setConveniados={setConveniados} conveniado={conveniado} usuario={usuario?.nome??''} openModal={openNovoConveniado} setOpenModal={setOpenNovoConveniado}/>}
         <div className="bg-white h-[calc(100vh-59px)] flex flex-col p-2 ">
-            <Button theme={{color:{blue:"border border-transparent bg-blue-700 text-white   enabled:hover:bg-blue-800 "}}} onClick={()=>setOpenNovoConveniado(true)} color={"blue"} className="ml-auto">Novo Conveniado</Button>
+            <Button theme={{color:{blue:"border border-transparent bg-blue-700 text-white   enabled:hover:bg-blue-800 "}}} onClick={()=>{setOpenNovoConveniado(true),setConveniado({
+              conveniado:'',
+              fone:'',
+              endereco:'',
+              filename:'',
+              id_conveniados:null,
+              usuario:usuario?.nome??''
+            })}} color={"blue"} className="ml-auto">Novo Conveniado</Button>
 
             <div className="grid grid-cols-5 gap-4">
             {conveniados.map(item=>(

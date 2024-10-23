@@ -7,6 +7,8 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 
 interface DataProps{
+    conveniados:Array<ConveniadosProps>,
+    setConveniados:(conveniados:Array<ConveniadosProps>)=>void
     openModal:boolean
     setOpenModal:(open:boolean)=>void
     usuario:string,
@@ -14,7 +16,7 @@ interface DataProps{
 }
 
 
-export  function ModalNovoConveniado({openModal,setOpenModal,usuario,conveniado}:DataProps) {
+export  function ModalNovoConveniado({openModal,setOpenModal,usuario,conveniado,conveniados,setConveniados}:DataProps) {
     const {register, handleSubmit,watch} = useForm<ConveniadosProps>({
         defaultValues:{
             ...conveniado,
@@ -41,8 +43,13 @@ export  function ModalNovoConveniado({openModal,setOpenModal,usuario,conveniado}
         setTpmUrl(URL.createObjectURL(image));
     };
 
-    const handleNovo:SubmitHandler<ConveniadosProps> = async(data)=>{
-        console.log(data)
+
+   const handleOnSubmit:SubmitHandler<ConveniadosProps> = async(data)=>{
+        conveniado.id_conveniados ? handleEdit(data) : handleNovo(data)
+    }
+
+    const handleNovo = async(data:ConveniadosProps)=>{
+       
         const formData = new FormData();
 
       
@@ -52,7 +59,7 @@ export  function ModalNovoConveniado({openModal,setOpenModal,usuario,conveniado}
         formData.append("fone",data.fone);
         file && formData.append("file",file);
      
-        console.log(formData)
+  
         try {
             const response =await toast.promise(
                 api.post('/conveniados/novoConveniado',formData),
@@ -62,17 +69,53 @@ export  function ModalNovoConveniado({openModal,setOpenModal,usuario,conveniado}
                     success:'Dados Carregados'
                 }
             )
+            setConveniados([...conveniados,response.data])
         } catch (error) {
             console.log(error)
         }
     }
+
+
+    const handleEdit = async(data:ConveniadosProps)=>{
+       
+        const formData = new FormData();
+
+        formData.append("id_conveniados",String(data.id_conveniados));
+        formData.append("usuario",watch('usuario'));
+        formData.append("conveniado",data.conveniado);
+        formData.append("endereco",data.endereco);
+        formData.append("fone",data.fone);
+        file && formData.append("file",file);
+     
+       
+        try {
+            const response =await toast.promise(
+                api.put('/conveniados/editarConveniado',formData),
+                {
+                    error:'Erro ao Requisitar Dados',
+                    pending:'Listando dados.....',
+                    success:'Dados Carregados'
+                }
+            )
+            const index = conveniados.findIndex(item=>item.id_conveniados===data.id_conveniados)
+            conveniados[index]={...response.data}
+            setConveniados([...conveniados])
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
+
+
  
     return (
 
         <Modal show={openModal} size={'md'} onClose={() => setOpenModal(false)}>
             <Modal.Header>Administrar Conveniado</Modal.Header>
             <Modal.Body>
-            <form onSubmit={handleSubmit(handleNovo)} className="flex flex-col space-y-2 px-2  max-h-[82vh] overflow-y-auto">
+            <form onSubmit={handleSubmit(handleOnSubmit)} className="flex flex-col space-y-2 px-2  max-h-[82vh] overflow-y-auto">
                 <Label
         htmlFor="dropzone-file"
         className="flex relative w-full cursor-pointer mt-2 p-1 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100   "
@@ -103,7 +146,7 @@ export  function ModalNovoConveniado({openModal,setOpenModal,usuario,conveniado}
       
       <FloatingLabel  label="Telefone" variant="outlined" {...register('fone')} type="number" />
   
-        <Button type="submit" className="w-full">Cadastrar</Button>
+        <Button type="submit" className="w-full">{conveniado.id_conveniados ? 'Editar' : 'Cadastrar'}</Button>
           </form>
             </Modal.Body>
         </Modal>

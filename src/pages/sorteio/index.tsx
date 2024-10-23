@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '@/contexts/AuthContext';
+import React, {  useEffect, useState } from 'react';
 import {useSpring,animated, a}from 'react-spring'
 import { toast } from 'react-toastify';
 import { api } from '@/services/apiClient';
@@ -10,7 +9,7 @@ import fotoFundo from "../../../public/fundoSorteio2.png";
 import Image from 'next/image';
 import { Button } from 'flowbite-react';
 import { PremioProps } from './configuracoes';
-
+import logo from "../../../public/grupoAfap.jpg"
 
 interface DadosProps{
   id_empresa:string,
@@ -91,6 +90,7 @@ async function listarPremios() {
           id_contrato:ganhador.id_contrato,
           bairro:ganhador.associado?.bairro,
           endereco:ganhador.associado?.endereco,
+          cidade:ganhador.associado?.cidade,
           numero:ganhador.associado?.numero,
           titular:ganhador.associado?.nome,
           premio:premioAtual,
@@ -133,21 +133,23 @@ setLoading(false)
    ganhador.id_contrato_global && salvarGanhador()
   },[ganhador.id_contrato_global])
 
-  const handleExibir= ()=>{
+  const handleExibir= async()=>{
+   const audio = new Audio('/audio/som2.mp3');
  
     if(sorteado!==0){
+  
+  await audio.play();
       setConfetes(true)
+   
     }else{
       setGanhador({associado:{nome:'',endereco:'',bairro:'',numero:null,cidade:''}})
      setConfetes(false);
      return;
     }
-
-
- 
-    
   }
   const sortearNumero = () => {
+
+
     if(premios[premios.length-1].status==='S'){
       toast.info('Sorteio Encerrado!')
       return
@@ -172,6 +174,7 @@ setLoading(false)
 
 
   useEffect(()=>{
+
       try {
         dadosContratos()
         listarPremios()
@@ -205,10 +208,10 @@ setLoading(false)
 }
    
 
-     <div className='p-2 bg-white text-black h-[calc(100vh-60px)] rounded-b-lg'>
       <div className='flex flex-col gap-3
-       w-full h-full items-center justify-center'>
+       w-full items-center justify-center p-2 bg-white text-black h-[calc(100vh-60px)] rounded-b-lg'>
 
+       
    <div  className='inline-flex w-60 h-40  bg-white  justify-center items-center text-xl  '>
     <animated.h1
   
@@ -220,17 +223,17 @@ setLoading(false)
     </animated.h1>
 
     </div>
-    <div className='flex flex-row w-full   border-slate-300 justify-center items-center'>
+    <div className='flex flex-row w-full   justify-center items-center'>
 
-    <div className='flex flex-row gap-2  text-black  '>
-      <img src={`${process.env.NEXT_PUBLIC_API_URL}/file/${premioAtual?.conveniados.filename}`} className='w-40 h-40 rounded-lg' />
+  { premioAtual?.descricao && <div className='flex flex-row gap-2 bg-gray-50 text-black rounded-s-lg border-[1px] border-gray-400 p-3'>
+    {premioAtual?.conveniados.filename &&  <img src={`${process.env.NEXT_PUBLIC_API_URL}/file/${premioAtual?.conveniados.filename}`} className='w-40 h-40 rounded-lg' />}
       <div className='flex flex-col gap-2 justify-center'>
       <span className='font-semibold text-3xl'>{premioAtual?.conveniado}</span>
       <span className='font-semibold text-2xl'>{premioAtual?.descricao}</span>
       </div>
-    </div>
+    </div>}
 
-    { ativarConfete &&   <div className='flex flex-col gap-2  text-black justify-center items-center p-4 rounded-lg h-60'> 
+    { ativarConfete &&   <div className='flex flex-col bg-gray-50 gap-2 h-full text-black justify-center items-center p-3 rounded-e-lg border-[1px] border-gray-400 '> 
      <span className='font-semibold text-3xl'> {ganhador.associado?.nome}</span>
     <span className='text-xl'>{ganhador.associado?.endereco} - {ganhador.associado?.bairro}</span>
     <span className='text-xl'>{ganhador.associado?.cidade}</span>
@@ -258,11 +261,11 @@ setLoading(false)
       </Button>
     
     </div>
-
+    <Image className='rounded-lg  '   src={logo} width={200} height={200} alt="logo" />
     </div>
     
      
-    </div>
+  
   
 {   /* <div className='relative w-full  h-full overflow-hidden flex items-center justify-center'>
     { ativarConfete &&  <Confetti

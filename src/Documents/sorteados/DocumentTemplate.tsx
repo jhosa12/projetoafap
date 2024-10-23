@@ -1,5 +1,5 @@
 import Image from "next/image";
-import logo from "../../../public/logoafap.png"
+import logo from "../../../public/novaLogo.png"
 
 
 
@@ -43,7 +43,7 @@ class DocumentTemplate extends Component<DadosProps> {
 
       
 
-        <h1 className='text-xl text-center font-semibold mt-2'>RELAÇÃO DE GANHADORES</h1>
+        <h1 className='text-xl text-center font-semibold mt-2'>RELAÇÃO DE GANHADORES - {winners[0]?.data_sorteio && new Date(winners[0]?.data_sorteio).toLocaleDateString('pt-BR',{timeZone:"UTC"})}</h1>
         <div className="flex  justify-center items-center w-full">
          
 
@@ -52,7 +52,7 @@ class DocumentTemplate extends Component<DadosProps> {
         </div>
 
         <div className="flex  justify-center items-center w-full">
-<table className="block  text-left rtl:text-center border-[1px] border-black border-solid">
+<table className="w-full text-[12px]  text-left rtl:text-center  border-black border-solid">
     <thead className="top-0 uppercase border-b-[1px] border-black border-solid">
         <tr>
         <th scope="col" className="px-2 py-1">
@@ -68,24 +68,31 @@ class DocumentTemplate extends Component<DadosProps> {
             <th scope="col" className="px-2 py-1">
                BAIRRO
             </th>
+            <th scope="col" className="px-1 py-1">
+               ASSINATURA
+            </th>
          
         </tr>
     </thead>
-    <tbody>
+    <tbody className="divide-y  divide-black">
         {winners?.map((item, index) => (
-            <tr key={index} className={` border-t border-black`}>
-               <td className="px-2 py-1 text-[12px] border-black">
+            <tr key={index} >
+               <td className="px-2 py-1 whitespace-nowrap text-[12px] border-black">
                     {item.premio}
                 </td>
              
                 <td className="px-2 py-1 whitespace-nowrap text-[12px]">
                    {item.id_contrato}-{item.titular}
                 </td>
-                <td className="px-2 py-1 whitespace-nowrap text-[12px]">
+                <td className="px-2 py-1  text-[12px]">
                     {item.endereco}
                 </td>
-                <td className="px-2 py-1 whitespace-nowrap text-[12px]">
+                <td className="px-2 py-1 text-[12px]">
                     {item.bairro}
+                </td>
+
+                <td className="px-1 py-1 w-2/3 whitespace-nowrap ">
+                    {}
                 </td>
                
             </tr>

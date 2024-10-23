@@ -36,14 +36,8 @@ export default function CadastroPremio(){
 
     const handleListarConveniados=async()=>{
 
-      const response = await toast.promise(
-          api.get('/conveniados/listar'),
-          {
-              error:'Erro ao Requisitar Dados',
-              pending:'Listando dados.....',
-              success:'Dados Carregados'
-          }
-      )
+      const response = await api.get('/conveniados/listar')
+  
 
       setConveniados(response.data)
   }
