@@ -92,7 +92,7 @@ export default function ModalPremio({ dadosPremio,setModal,empresas,conveniados,
         <Select {...register('id_conveniados')} required >
           <option value="">{}</option>  
           {conveniados?.map((item) => (
-            <option value={item.id_conveniados} key={item.id_conveniados}>{item.conveniado}</option>
+          item.id_conveniados &&  <option value={item.id_conveniados} key={item.id_conveniados}>{item.conveniado}</option>
           ))}
         </Select>
       </div>
