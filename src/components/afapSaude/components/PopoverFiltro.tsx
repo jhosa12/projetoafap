@@ -12,14 +12,15 @@ interface DataProps{
     arrayMedicos:Array<MedicoProps>
     setOpenModal:()=>void
     loading:boolean
-    filtroAgenda:()=>Promise<void>
+    filtroAgenda:({endDate,id_med,startDate,status}:{startDate:Date|undefined,endDate:Date|undefined,status:string|undefined,id_med:number|null})=>Promise<void>
+  
 }
 
 interface FiltroForm {
     startDate:Date|undefined
     endDate:Date|undefined
-    id_medico:number,
-    status:string
+    id_med:number|null,
+    status:string|undefined
 }
 
 
@@ -27,7 +28,7 @@ export function PopoverFiltro({openModal,setOpenModal,filtroAgenda,loading,array
 
     const [formData,setFormData] = useState<FiltroForm>({
         endDate:undefined,
-        id_medico:0,
+        id_med:null,
         startDate:undefined,
         status:''
     })
@@ -44,7 +45,7 @@ export function PopoverFiltro({openModal,setOpenModal,filtroAgenda,loading,array
 
          
 
-            <Select onChange={e=>setFormData({...formData,id_medico:+e.target.value})} className="font-semibold" sizing={'sm'}>
+            <Select onChange={e=>setFormData({...formData,id_med:+e.target.value})} className="font-semibold" sizing={'sm'}>
             <option value="">ESPECIALISTAS</option>
             {arrayMedicos.map(item=>(
               <option value={item.id_med} className="font-semibold" key={item.id_med}>{item.nome}</option>
@@ -52,7 +53,7 @@ export function PopoverFiltro({openModal,setOpenModal,filtroAgenda,loading,array
 
             </Select>
 
-            <Select onChange={e=>setFormData({...formData,id_medico:+e.target.value})} className="font-semibold" sizing={'sm'}>
+            <Select onChange={e=>setFormData({...formData,status:e.target.value})} className="font-semibold" sizing={'sm'}>
             <option value="">STATUS</option>
            
               <option className="font-semibold" >AGENDADO</option>
@@ -105,14 +106,14 @@ export function PopoverFiltro({openModal,setOpenModal,filtroAgenda,loading,array
 
 
 
-            <Button className="ml-auto" color="success" isProcessing={loading} onClick={() => filtroAgenda()}>
+            <Button className="ml-auto" color="success" isProcessing={loading} onClick={() => filtroAgenda({...formData})}>
               Aplicar Filtro
             </Button>
 
           </div>
         }
       >
-        <Button color={'light'} theme={{ color: { light: 'border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100' } }} size={'sm'}>
+        <Button onClick={()=>setFormData({endDate:undefined,startDate:undefined,id_med:null,status:''})} color={'light'} theme={{ color: { light: 'border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100' } }} size={'sm'}>
           <HiFilter className="mr-2 w-5 h-5" />   Filtrar
         </Button>
       </Popover>

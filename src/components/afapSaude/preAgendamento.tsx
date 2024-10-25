@@ -6,15 +6,11 @@ import { MdDelete } from "react-icons/md";
 import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
-import ReactInputMask from "react-input-mask";
 import { MdAdd } from "react-icons/md";
 import { AuthContext } from "@/contexts/AuthContext";
 import { ModalPreAgend } from "./components/modalPreAgend";
-import { HiFilter } from "react-icons/hi";
 import { PopoverFiltro } from "./components/PopoverFiltro";
-
-
-
+import { ModalStatusAgendamento } from "./components/modalStatusAgendamento";
 
 
 interface DataProps {
@@ -27,10 +23,10 @@ export interface DadosInputs {
     id_agcli: number,
     id_med: number,
     status: string,
-    data_prev: Date,
+    data_prev: Date|undefined,
     nome: string,
     celular: string,
-    id_agmed: number,
+    id_agmed: number|null,
     espec: string,
     endereco: string,
     title: string,
@@ -43,16 +39,30 @@ export default function PreAgend({ arrayMedicos, events }: DataProps) {
     const { usuario } = useContext(AuthContext)
     const [filtrar, setFiltrar] = useState<boolean>(false)
     const [pre, setPre] = useState<Array<ClientProps>>([])
+    const [openStatus,setOpenStatus] = useState<boolean>(false)
 
 
+useEffect(() => {
+    preAgendamento({endDate:undefined,id_med:null,startDate:undefined,status:undefined})
+}, [])
 
- 
 
-    const preAgendamento = async () => {
+const handleChangeStatus = ({event,item}:{event: ChangeEvent<HTMLSelectElement>,item:DadosInputs}) => {
+    const { value } = event.target
+    setDados({ ...item, status: value })
+    setOpenStatus(true)
+
+}
+    const preAgendamento = async ({endDate,id_med,startDate,status}:{startDate:Date|undefined,endDate:Date|undefined,status:string|undefined,id_med:number|null}) => {
+       
         try {
-          const lista = await api.get("/agenda/preagendamento")
-          setPre(lista.data)
-    
+          const response = await api.post("/agenda/preagendamento",{
+            startDate,
+            endDate,
+            status,
+            id_med
+          })
+          setPre(response.data)
         } catch (error) {
           console.error('Erro na requisição pre')
         }
@@ -115,12 +125,14 @@ export default function PreAgend({ arrayMedicos, events }: DataProps) {
             isOpen && <ModalPreAgend dados={dados??{}} openModal={isOpen} setOpenModal={setIsOpen} arrayMedicos={arrayMedicos} events={events}   id_usuario={usuario?.id??''} setPre={setPre} pre={pre}  />
         }
 
+        <ModalStatusAgendamento arrayPre={pre} setPre={setPre} cliente={{...dados}} openModal={openStatus} setOpenModal={setOpenStatus}/>
+
 
 
             {/* TABELA DE PRE AGENDAMENTOS */}
             <div className="flex flex-col overflow-x-auto overflow-y-auto p-2 gap-1">
                 <div className="inline-flex ml-auto gap-4"> 
-                <PopoverFiltro arrayMedicos={arrayMedicos} openModal={filtrar} setOpenModal={()=>setFiltrar(!filtrar)} filtroAgenda={async() => {}} loading={false} />
+                <PopoverFiltro arrayMedicos={arrayMedicos} openModal={filtrar} setOpenModal={()=>setFiltrar(!filtrar)} filtroAgenda={preAgendamento} loading={false} />
                 <Button size={'sm'} onClick={() => { setIsOpen(true), setDados({ celular: '',  endereco: '', espec: '', id_agmed: undefined, nome: '', title: '', id_agcli: undefined }) }} ><MdAdd size={20} /> Adicionar</Button>
                 </div>
              
@@ -132,6 +144,7 @@ export default function PreAgend({ arrayMedicos, events }: DataProps) {
                         <Table.HeadCell>Data Solicitação</Table.HeadCell>
                         <Table.HeadCell>Data Prevista</Table.HeadCell>
                         <Table.HeadCell>STATUS</Table.HeadCell>
+                        <Table.HeadCell>USUÁRIO</Table.HeadCell>
                         <Table.HeadCell>
                             <span className="sr-only">Edit</span>
                         </Table.HeadCell>
@@ -149,7 +162,23 @@ export default function PreAgend({ arrayMedicos, events }: DataProps) {
 
                                 <Table.Cell>{item.data_prev && new Date(item.data_prev).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
 
-                                <Table.Cell>{item.status}</Table.Cell>
+                                <Table.Cell>
+                                    <select   className={`font-semibold border-none focus:ring-0 hover:cursor-pointer  appearance-none outline-none text-xs ${
+    item.status === 'AGENDADO' ? 'text-blue-500' :
+    item.status === 'AGUARDANDO DATA' ? 'text-yellow-500' :
+    item.status === 'CONFIRMADO' ? 'text-green-500' :
+    item.status === 'CANCELADO' ? 'text-red-500' : ''
+  }`}  value={item.status} onChange={e => handleChangeStatus({item, event:e})}>
+                                        <option disabled className="font-semibold text-blue-500" value={'AGENDADO'}>
+                                        AGENDADO
+                                            </option>
+                                        <option className="text-yellow-500 font-semibold" value={'AGUARDANDO DATA'}>AGUARDANDO DATA</option>
+                                        <option className="text-green-500 font-semibold" value={'CONFIRMADO'}>CONFIRMADO</option>
+                                        <option className="text-red-500 font-semibold" value={'CANCELADO'}>CANCELADO</option>
+                                    </select>
+                                </Table.Cell>
+                                <Table.Cell>{}</Table.Cell>
+                                
                                 <Table.Cell className="text-slate-500">
                                     <div className="inline-flex gap-4">
                                         <button onClick={() => handleWhatsAppClick(item.celular ?? '')} className="hover:text-green-400">
@@ -160,7 +189,7 @@ export default function PreAgend({ arrayMedicos, events }: DataProps) {
                                         </button>
                                         <button onClick={() => {
                                             // setarDataEvent({...item,start:undefined,end:undefined})
-                                            setDados({ ...dados, celular: item.celular, endereco: item.endereco, nome: item.nome, title: item.title, id_agcli: item.id_agcli, id_agmed: undefined,id_med: item.id_med })
+                                            setDados({ ...item})
                                             setIsOpen(true)
                                         }} className="hover:text-blue-500">
                                             <BsFillCalendarDateFill size={18} />

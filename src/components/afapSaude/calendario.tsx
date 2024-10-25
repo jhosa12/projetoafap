@@ -5,7 +5,9 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
-import { MdDelete } from "react-icons/md";
+import { FaCheck } from "react-icons/fa";
+import { ImCancelCircle } from "react-icons/im";
+import { MdAccessTime } from "react-icons/md";
 import { HiCalendar, HiClipboardCheck } from "react-icons/hi";
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
@@ -114,10 +116,8 @@ export default function Calendario({ medicos, events, setArrayEvent, dataEvent, 
   const components: any = {
     event: ({ event, index }: { event: EventProps, index: number }) => {
       return (
-        <Alert   icon={HiCalendar}>
-       
-           
-     
+        <Alert className="text-xs" color={event.status === 'ABERTO'?'success':event.status === 'CANCELADO'?'failure':'warning'}  icon={event.status === 'ABERTO'?FaCheck:event.status === 'CANCELADO'?ImCancelCircle:MdAccessTime}>
+      
                 {event.status} - {event.title}
 
             
@@ -159,6 +159,7 @@ export default function Calendario({ medicos, events, setArrayEvent, dataEvent, 
 
   const handleEventClick = (event: Partial<EventProps>) => {
     setarDataEvento({ ...event })
+    toggleDrawer()
     
   }
 
@@ -178,11 +179,12 @@ export default function Calendario({ medicos, events, setArrayEvent, dataEvent, 
       <div >
 
   
-        <ModalDrawer deletarEvento={deletarEvento} setArrayEvent={setArrayEvent} events={events} dataEvent={dataEvent}  arrayMedicos={medicos} isOpen={isOpen} toggleDrawer={toggleDrawer} />
+      {isOpen &&  <ModalDrawer deletarEvento={deletarEvento} setArrayEvent={setArrayEvent} events={events} dataEvent={dataEvent}  arrayMedicos={medicos} isOpen={isOpen} toggleDrawer={toggleDrawer} />}
         <Calendar
           localizer={localizer}
           events={events.filter((item) => item.tipoAg !== 'tp')}
           components={components}
+          onSelectEvent={handleEventClick}
           startAccessor="start"
           endAccessor="end"
           selectable

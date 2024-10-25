@@ -35,16 +35,20 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
      
 
     const editarEvento = async (data: DadosInputs) => {
+        const dadosMedico =arrayMedicos.find(item=>item.id_med===Number(data?.id_med))
         try {
             const evento = await toast.promise(
-                api.put("/agenda/editarEvento", {
+                api.put("/agenda/preAgendamento/editar", {
                     id_agcli: data?.id_agcli,
                     id_agmed: data?.id_agmed,
+                    status: data?.id_agmed !== dados.id_agmed && data.id_agmed ? 'AGENDADO' : data?.status,
+                    id_med: Number(data?.id_med),
+                    medico:`${dadosMedico?.nome} (${dadosMedico?.espec})`,
                     nome: data?.nome,
                     title: data?.title,
-                    tipoAg: 'ct',
                     celular: data?.celular,
-                    endereco: data?.endereco
+                    endereco: data?.endereco,
+                    data_prev: data?.data_prev? data?.data_prev : null,
 
                 }),
                 {
@@ -62,10 +66,7 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
               
                 setPre(novo)
 
-            
-
-
-
+    
 
         } catch (error) {
             toast.error('Erro ao gerar evento')
@@ -125,14 +126,17 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
             const evento = events.find(item => item.id_agmed === Number(e.target.value))
             const medico = arrayMedicos.find(item => item.id_med === evento?.id_med)
 
-            setValue( 'id_agmed', Number(e.target.value) )
-          evento?.start && setValue('data_prev', evento?.start)
+            setValue( 'id_agmed', Number(e.target.value)??null )
+     setValue('data_prev', evento?.start??undefined)
 
            /* if (evento && medico)
              gerarIntervalos({ clientes: evento.clientes, start: evento.start, end: evento.end, time: medico.time })*/
 
         }
-        else setIntervalo([])
+        else {
+            setValue( 'id_agmed',null )
+            setValue('data_prev', undefined)
+        }
     }
 
     const gerarIntervalos = ({ start, end, time, clientes }: { start: Date, end: Date, time: number, clientes: Array<ClientProps> }) => {
@@ -217,7 +221,7 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                             <div className="mb-1 block">
                                 <Label htmlFor="small" value="Consulta/Data" />
                             </div>
-                            <Select id="small" onChange={selectMed} sizing="sm" >
+                            <Select id="small" value={watch('id_agmed')??''}  onChange={selectMed} sizing="sm" >
                                 <option value={''}></option>
                                 {events.map((item, index) => (
                                    item.id_med === Number(watch('id_med')) && <option key={item.id_agmed} value={item.id_agmed??''}>{new Date(item.start).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</option>

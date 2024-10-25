@@ -31,6 +31,9 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
   }) 
 
 
+  console.log(dataEvent)
+
+
 
   const handleEvento:SubmitHandler<EventProps> = (data) => {
 
@@ -94,6 +97,7 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
   }
 
   const editarEvento = async (data:EventProps) => {
+    console.log(data)
     if (!watch('status') || !dataEvent.id_med || !dataEvent.start || !dataEvent.end) {
       toast.info('Preencha todos os campos obrigatorios!')
       return;
@@ -101,19 +105,13 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
     try {
       const evento = await toast.promise(
         api.put("/agenda/editarEvento", {
-          id_agcli: Number(dataEvent.id_agcli),
-          id_agmed: Number(dataEvent.id_agmed),
-          id_med: Number(dataEvent.id_med),
-          nome: dataEvent.nome,
-          start: dataEvent.start,
-          end: dataEvent.end,
-          title: dataEvent.title,
-          status: dataEvent.status,
-          obs: dataEvent.obs,
-          tipoAg: dataEvent.tipoAg,
-          celular: dataEvent.celular,
-          endereco: dataEvent.endereco
-
+          id_agmed: Number(data.id_agmed),
+          id_med: Number(data.id_med),
+          start: data.start,
+          end: data.end,
+          title: data.title,
+          status: data.status,
+          obs: data.obs,
         }),
         {
           error: 'Erro na requisição',
@@ -194,7 +192,7 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
         <div className="w-full mx-auto">
           <label className="block mb-2 text-sm font-medium  ">STATUS</label>
           <select   {...register('status')} className=" border  text-sm rounded-lg bg-gray-50 block w-full p-2.5  border-gray-300 placeholder-gray-400 text-black ">
-            <option selected>SELECIONE O STATUS</option>
+            <option value={''}>SELECIONE O STATUS</option>
             <option value="ABERTO">ABERTO</option>
             <option value="CANCELADO">CANCELADO</option>
             <option value="ADIADO">ADIADO</option>

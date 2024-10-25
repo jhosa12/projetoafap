@@ -86,6 +86,7 @@ export interface MedicoProps {
 export interface ClientProps {
   data_prev:Date,
   id_agcli: number,
+  espec: string,
   medico: string,
   id_agmed: number|null,
   id_med: number,
@@ -312,7 +313,7 @@ const buscarConsultas = async ({startDate,endDate}:{startDate:Date,endDate:Date}
         off:"border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
       }}}}}}}  variant="underline">
 
-      <Tabs.Item  active title="Agenda" icon={FaCalendarAlt}>
+      <Tabs.Item  active title="Agenda Médica" icon={FaCalendarAlt}>
       <Calendario consultas={consultas} setConsultas={setConsultas}  deletarEvento={deletarEvento} setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />
       </Tabs.Item>
       <Tabs.Item title="Pré Agendamentos" icon={MdAccessTimeFilled}>
