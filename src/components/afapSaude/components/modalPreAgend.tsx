@@ -84,12 +84,15 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
 
 
     const novoEvento = async (data: ClientProps) => {
+
+        const dataAtual = new Date()
+        dataAtual.setHours(dataAtual.getHours() - dataAtual.getTimezoneOffset() / 60)
         try {
           const dadosMedico =arrayMedicos.find(item=>item.id_med===Number(data?.id_med))
             setLoading(true)
             const evento = await toast.promise(
                 api.post("/agenda/agendamentoCliente/adicionar", {
-                    data: new Date(),
+                    data: dataAtual.toISOString(),
                     id_usuario: id_usuario,
                     nome: data?.nome,
                     id_med: Number(data?.id_med),
@@ -243,7 +246,7 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                         </div>
                         <TextInput required {...register('complemento')}  type="text" sizing="sm" />
                     </div>
-                    
+
                 <div className="w-full">
                     <div className="mb-1 block">
                         <Label htmlFor="small" value="Especialista" />

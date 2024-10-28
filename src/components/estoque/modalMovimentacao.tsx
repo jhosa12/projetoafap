@@ -42,10 +42,6 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
     const [modalConfirm, setModalConfirm] = useState<boolean>(false)
     const [status,setStatus] = useState<string>('')
 
-
-
-
-
     const handleAdicionarManual = ({ id_produto, quantidade, produto }: { id_produto: number, quantidade: number, produto: string }) => {
         if (!id_produto) {
             toast.info('Selecione um item')
@@ -164,7 +160,7 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
                     success: 'Movimentado com sucesso',
                     pending: 'Movimentando...'
                 })
-            await reqDadosEstoq({ descricao: '', id_produto: null, grupo: '' })
+            await reqDadosEstoq({ descricao: '', id_produto: null, grupo: '',id_empresa:undefined })
             setArrayMov([])
             setOpenModal(false)
         } catch (err:any) {

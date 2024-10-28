@@ -12,6 +12,7 @@ export interface FormProps{
   grupo:string,
   id_produto:number|null,
   descricao:string
+  id_empresa:string|undefined
 }
 
 const HistoricoMov = lazy(()=>import('@/components/estoque/historico/historico'))
@@ -20,17 +21,9 @@ export interface EstoqueProps{
     id_produto:number,
     descricao:string,
     quantidade:number,
-    tipo:string,
-    grupo:string
-    cod_prod:string
-    alerta:number,
-    estoque:Array<{
-      id_estoque:number,
-      quantidade:number,
-      descricao:string,
-      id_empresa:string,
-      empresa:string
-    }>
+    empresa:string
+    produtos:{grupo:string,descricao:string,cod_prod:true, tipo:string},
+   
    // estoque:Array<EstoqueProps>
 }
 export interface ProdutosProps{
@@ -84,11 +77,11 @@ export default function AdministrarEstoque(){
                 <title>Estoque</title>
             </Head>
 
-            <div className="flex flex-col px-4 w-full text-white">
-      <Tabs theme={{tabpanel:'py-1',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
+            <div className="flex flex-col w-full text-white">
+      <Tabs theme={{base: 'bg-white rounded-b-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-104px)]',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
         on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
-        off:"border-b-2 border-transparent text-gray-200 hover:border-gray-300 hover:text-gray-400 "
-      }}}}}}}  variant="underline"   onActiveTabChange={e=>setTab(e)}>
+        off:"border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
+      }}}}}}}  variant="underline"  onActiveTabChange={e=>setTab(e)}>
 
       <Tabs.Item  active={tab===0} title="Estoque" icon={FaStore}>
        {tab===0 && <Estoque permissoes={permissoes} reqProdutos={getData} selectProdutos={data??[]} empresas={empresas}  id_usuario={usuario?.id??''} usuario={usuario?.nome??''}   />}

@@ -6,19 +6,20 @@ import pt from 'date-fns/locale/pt-BR';
 import { HiFilter } from "react-icons/hi";
 import { FormProps, ProdutosProps } from "@/pages/estoque";
 import { useState } from "react";
+import { EmpresaProps } from "@/types/empresa";
 
 
 interface DataProps {
   produtos: Array<Partial<ProdutosProps>>
-
+  empresas: Array<EmpresaProps>,
   loading: boolean,
   filtroEstoque: (dados:FormProps)=>Promise<void>
 }
 
 
-export function FiltroEstoque({ produtos, loading, filtroEstoque }: DataProps) {
+export function FiltroEstoque({ produtos, loading, filtroEstoque,empresas }: DataProps) {
   const [openFilter, setOpenFilter] = useState<boolean>(false)
-  const [formData,setFormData] = useState<FormProps>({grupo:'',descricao:'',id_produto:null})
+  const [formData,setFormData] = useState<FormProps>({grupo:'',descricao:'',id_produto:null,id_empresa:undefined})
 
 
   return (
@@ -31,6 +32,18 @@ export function FiltroEstoque({ produtos, loading, filtroEstoque }: DataProps) {
         <div className="flex w-96 flex-col gap-4 p-2 text-sm ">
 
           <h2 id="area-popover" className="text-base text-gray-500">Filtro</h2>
+
+
+          <Select onChange={e => setFormData({ ...formData, id_empresa: e.target.value })} className="font-semibold" sizing={'sm'}>
+                        <option value={''}>EMPRESA</option>
+                       {empresas.map(item=>(
+                        <option value={item.id} className="font-semibold" key={item.id}>{item.nome}</option>
+                       ))}
+
+                    </Select>
+
+
+
           <Select onChange={e => setFormData({ ...formData, grupo: e.target.value })} className="font-semibold" sizing={'sm'}>
                         <option value={''}>CATEGORIA</option>
                         <option value={'cs'} className="font-semibold">CONSUMO</option>

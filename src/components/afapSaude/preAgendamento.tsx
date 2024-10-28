@@ -13,7 +13,7 @@ import { PopoverFiltro } from "./components/PopoverFiltro";
 import { ModalConfirmar } from "./components/modalConfirmar";
 import { Tooltip } from "react-tooltip";
 import { FaNotesMedical } from "react-icons/fa";
-import { da } from "date-fns/locale";
+
 
 
 interface DataProps {
@@ -36,8 +36,7 @@ export default function PreAgend({ arrayMedicos, events,consultas,setConsultas }
     const [openConsulta,setOpenConsulta] = useState<boolean>(false)
 
 
-    let data = new Date()
-    data.setHours(data.getHours() - data.getTimezoneOffset() / 60)
+ 
     
 
 
@@ -200,7 +199,7 @@ const handleChangeStatus = ({event,item}:{event: ChangeEvent<HTMLSelectElement>,
    
             {/* TABELA DE PRE AGENDAMENTOS */}
             <div className="flex flex-col overflow-x-auto overflow-y-auto p-2 gap-1 text-black">
-             {data.toISOString()}
+          
                 <div className="inline-flex ml-auto gap-4"> 
                 <PopoverFiltro arrayMedicos={arrayMedicos} openModal={filtrar} setOpenModal={()=>setFiltrar(!filtrar)} filtroAgenda={preAgendamento} loading={false} />
                 <Button size={'sm'} onClick={() => { setIsOpen(true), setDados({ celular: '',  endereco: '', espec: '', id_agmed: undefined, nome: '', title: '', id_agcli: undefined }) }} ><MdAdd size={20} /> Adicionar</Button>
