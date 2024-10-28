@@ -34,6 +34,10 @@ export default function PreAgend({ arrayMedicos, events,consultas,setConsultas }
     const [pre, setPre] = useState<Array<ClientProps>>([])
     const [openStatus,setOpenStatus] = useState<boolean>(false)
     const [openConsulta,setOpenConsulta] = useState<boolean>(false)
+
+
+    let data = new Date()
+    data.setHours(data.getHours() - data.getTimezoneOffset() / 60)
     
 
 
@@ -192,10 +196,11 @@ const handleChangeStatus = ({event,item}:{event: ChangeEvent<HTMLSelectElement>,
         <ModalConfirmar pergunta="Realmente deseja gerar a consulta?" handleConfirmar={gerarConsulta} openModal={openConsulta} setOpenModal={setOpenConsulta}/>
   
 
-     <span className="text-black"> {new Date().toISOString()}</span>
+
    
             {/* TABELA DE PRE AGENDAMENTOS */}
-            <div className="flex flex-col overflow-x-auto overflow-y-auto p-2 gap-1">
+            <div className="flex flex-col overflow-x-auto overflow-y-auto p-2 gap-1 text-black">
+             {data.toISOString()}
                 <div className="inline-flex ml-auto gap-4"> 
                 <PopoverFiltro arrayMedicos={arrayMedicos} openModal={filtrar} setOpenModal={()=>setFiltrar(!filtrar)} filtroAgenda={preAgendamento} loading={false} />
                 <Button size={'sm'} onClick={() => { setIsOpen(true), setDados({ celular: '',  endereco: '', espec: '', id_agmed: undefined, nome: '', title: '', id_agcli: undefined }) }} ><MdAdd size={20} /> Adicionar</Button>
