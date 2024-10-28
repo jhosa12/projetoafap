@@ -46,7 +46,7 @@ class RelatorioEstoque extends React.Component<DadosProps> {
           {dados?.map((item,index)=>(
             <Table.Row key={index} >
             <Table.Cell className="text-black">{item?.empresa}</Table.Cell>
-            <Table.Cell className="text-black">{item?.produtos.descricao}</Table.Cell>
+            <Table.Cell className="text-black">{item?.produtos?.descricao}</Table.Cell>
             <Table.Cell className="text-black">{item?.quantidade}</Table.Cell>
          
         </Table.Row>

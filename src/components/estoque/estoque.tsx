@@ -143,7 +143,7 @@ export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos,
                     
                     
                         <Table.Cell className="text-black font-semibold text-[14px] inline-flex items-center gap-2">
-                         {item?.quantidade} {item.quantidade === 0 && <RiAlertLine size={18} color="red" />}
+                         {item?.quantidade} {item?.quantidade === 0 && <RiAlertLine size={18} color="red" />}
                         </Table.Cell>
                         <Table.Cell className="text-black font-semibold text-[14px]">
                          {item?.produtos?.cod_prod}

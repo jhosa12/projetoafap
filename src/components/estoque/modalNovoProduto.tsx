@@ -60,7 +60,7 @@ const novoProduto= async()=>{
 
     )
  
-   await reqDadosEstoq({descricao:'',grupo:'',id_produto:null})
+   await reqDadosEstoq({descricao:'',grupo:'',id_produto:null,id_empresa:undefined})
    await reqProdutos()
   //  setEstoque([...estoque,response.data as EstoqueProps]);
   setForm({alerta:0,descricao:'',grupo:'',cod_prod:''}) 
