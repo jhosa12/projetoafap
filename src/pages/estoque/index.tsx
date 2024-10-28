@@ -1,11 +1,11 @@
-import {  useContext, useEffect, useState } from "react"
+import {  Suspense, useContext, useEffect, useState,lazy } from "react"
 import Head from "next/head"
 import { AuthContext } from "@/contexts/AuthContext"
 import {  Tabs } from "flowbite-react"
 import {  FaStore } from "react-icons/fa"
 import { Estoque } from "@/components/estoque/estoque"
 import { RiHistoryLine} from "react-icons/ri"
-import { HistoricoMov } from "@/components/estoque/historico/historico"
+
 import useApi from "@/hooks/useApi"
 
 export interface FormProps{
@@ -13,6 +13,8 @@ export interface FormProps{
   id_produto:number|null,
   descricao:string
 }
+
+const HistoricoMov = lazy(()=>import('@/components/estoque/historico/historico'))
 
 export interface EstoqueProps{
     id_produto:number,
@@ -93,7 +95,13 @@ export default function AdministrarEstoque(){
      
       </Tabs.Item>
       <Tabs.Item  active={tab===1} title="Histórico de Movimentação" icon={RiHistoryLine}>
-     {tab===1 && <HistoricoMov permissoes={permissoes}  id_usuario={usuario?.id??''} usuario={usuario?.nome??''} />}
+     {tab===1 &&
+     <Suspense fallback={<div>Carregando...</div>}>
+       <HistoricoMov permissoes={permissoes}  id_usuario={usuario?.id??''} usuario={usuario?.nome??''} />
+     </Suspense>
+     
+      
+      }
       </Tabs.Item>
 
     

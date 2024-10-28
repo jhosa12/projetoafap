@@ -1,8 +1,8 @@
-import { ClientProps, EventProps, MedicoProps } from "@/pages/afapSaude"
+import { ClientProps, ConsultaProps, EventProps, MedicoProps } from "@/pages/afapSaude"
 import { Modal, Table, FloatingLabel, Label, TextInput, Select, Button } from "flowbite-react"
 import { IoLogoWhatsapp } from "react-icons/io";
 import { BsFillCalendarDateFill } from "react-icons/bs";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdEditDocument } from "react-icons/md";
 import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
@@ -10,36 +10,31 @@ import { MdAdd } from "react-icons/md";
 import { AuthContext } from "@/contexts/AuthContext";
 import { ModalPreAgend } from "./components/modalPreAgend";
 import { PopoverFiltro } from "./components/PopoverFiltro";
-import { ModalStatusAgendamento } from "./components/modalStatusAgendamento";
+import { ModalConfirmar } from "./components/modalConfirmar";
+import { Tooltip } from "react-tooltip";
+import { FaNotesMedical } from "react-icons/fa";
+import { da } from "date-fns/locale";
 
 
 interface DataProps {
     arrayMedicos: Array<MedicoProps>
-    events: Array<EventProps>
+    events: Array<EventProps>,
+    consultas:Array<ConsultaProps>
+    setConsultas: (array: Array<ConsultaProps>) => void
 }
 
 
-export interface DadosInputs {
-    id_agcli: number,
-    id_med: number,
-    status: string,
-    data_prev: Date|undefined,
-    nome: string,
-    celular: string,
-    id_agmed: number|null,
-    espec: string,
-    endereco: string,
-    title: string,
 
-}
 
-export default function PreAgend({ arrayMedicos, events }: DataProps) {
+export default function PreAgend({ arrayMedicos, events,consultas,setConsultas }: DataProps) {
     const [isOpen, setIsOpen] = useState<boolean>(false)
-    const [dados, setDados] = useState<Partial<DadosInputs>>()
-    const { usuario } = useContext(AuthContext)
+    const [dados, setDados] = useState<Partial<ClientProps>>()
+    const { usuario,cidades } = useContext(AuthContext)
     const [filtrar, setFiltrar] = useState<boolean>(false)
     const [pre, setPre] = useState<Array<ClientProps>>([])
     const [openStatus,setOpenStatus] = useState<boolean>(false)
+    const [openConsulta,setOpenConsulta] = useState<boolean>(false)
+    
 
 
 useEffect(() => {
@@ -47,7 +42,75 @@ useEffect(() => {
 }, [])
 
 
-const handleChangeStatus = ({event,item}:{event: ChangeEvent<HTMLSelectElement>,item:DadosInputs}) => {
+
+const gerarConsulta = async () => {
+  
+    try {
+
+      const response = await toast.promise(
+        api.post("/afapSaude/consultas/cadastro", {
+          nome: dados?.nome,
+          data: new Date(),
+          espec: dados?.espec,
+         // exames: data.exames,
+          id_med: dados?.id_med,
+         // tipoDesc: data.tipoDesc,
+         // vl_consulta: data.vl_consulta,
+         // vl_desc: data.vl_desc,
+        //  vl_final: data.vl_final,
+          celular: dados?.celular,
+          //cpf: data.cpf
+        }),
+        {
+          error: 'Erro ao gerar consulta',
+          pending: 'Cadastrando Consulta.....',
+          success: 'Consulta Cadastrada com sucesso'
+        }
+      )
+
+      setConsultas([...consultas, response.data])
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+const handleAlterarStatus = async () => {
+     
+    try {
+
+        const evento = await toast.promise(
+         
+            api.put("/agenda/preAgendamento/editar", {
+                id_agcli: dados?.id_agcli,
+                id_agmed:dados?.status === 'AGUARDANDO DATA' ? null : dados?.id_agmed,
+                
+                data_prev: dados?.status === 'AGUARDANDO DATA' ? null : dados?.data_prev,
+                status: dados?.status
+            }),
+            {
+                error: 'Erro na requisição',
+                pending: 'Alterando status..',
+                success: 'Status alterado com sucesso'
+            }
+
+        )
+        let novo: Array<ClientProps> = [...pre]
+        const index = pre.findIndex(item => item.id_agcli === dados?.id_agcli)
+                novo[index] = { ...evento.data }
+          
+            setPre(novo)
+
+          setOpenStatus(false)
+
+    } catch (error) {
+        toast.error('Erro ao gerar evento')
+    }
+}
+
+
+const handleChangeStatus = ({event,item}:{event: ChangeEvent<HTMLSelectElement>,item:ClientProps}) => {
     const { value } = event.target
     setDados({ ...item, status: value })
     setOpenStatus(true)
@@ -115,20 +178,22 @@ const handleChangeStatus = ({event,item}:{event: ChangeEvent<HTMLSelectElement>,
         }
     };
 
-
-
     return (
         <>
          
 
         {
-            isOpen && <ModalPreAgend dados={dados??{}} openModal={isOpen} setOpenModal={setIsOpen} arrayMedicos={arrayMedicos} events={events}   id_usuario={usuario?.id??''} setPre={setPre} pre={pre}  />
+            isOpen && <ModalPreAgend usuario={usuario?.nome} cidades={cidades} dados={dados??{}} openModal={isOpen} setOpenModal={setIsOpen} arrayMedicos={arrayMedicos} events={events}   id_usuario={usuario?.id??''} setPre={setPre} pre={pre}  />
         }
 
-        <ModalStatusAgendamento arrayPre={pre} setPre={setPre} cliente={{...dados}} openModal={openStatus} setOpenModal={setOpenStatus}/>
+        <ModalConfirmar pergunta="Realmente deseja alterar o status?" handleConfirmar={handleAlterarStatus} openModal={openStatus} setOpenModal={setOpenStatus}/>
 
 
+        <ModalConfirmar pergunta="Realmente deseja gerar a consulta?" handleConfirmar={gerarConsulta} openModal={openConsulta} setOpenModal={setOpenConsulta}/>
+  
 
+     <span className="text-black"> {new Date().toISOString()}</span>
+   
             {/* TABELA DE PRE AGENDAMENTOS */}
             <div className="flex flex-col overflow-x-auto overflow-y-auto p-2 gap-1">
                 <div className="inline-flex ml-auto gap-4"> 
@@ -136,13 +201,13 @@ const handleChangeStatus = ({event,item}:{event: ChangeEvent<HTMLSelectElement>,
                 <Button size={'sm'} onClick={() => { setIsOpen(true), setDados({ celular: '',  endereco: '', espec: '', id_agmed: undefined, nome: '', title: '', id_agcli: undefined }) }} ><MdAdd size={20} /> Adicionar</Button>
                 </div>
              
-                <Table  theme={{ body: { cell: { base: " px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }}>
+                <Table  theme={{ body: { cell: { base: " px-2 py-1 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } },head:{cell:{base:"bg-gray-50 text-xs px-2 py-2 group-first/head:first:rounded-tl-lg group-first/head:last:rounded-tr-lg "}} }}>
                     <Table.Head>
                         <Table.HeadCell>Nome</Table.HeadCell>
-                        <Table.HeadCell>Medico</Table.HeadCell>
-                        <Table.HeadCell>Telefone</Table.HeadCell>
-                        <Table.HeadCell>Data Solicitação</Table.HeadCell>
-                        <Table.HeadCell>Data Prevista</Table.HeadCell>
+                        <Table.HeadCell>Médico</Table.HeadCell>
+                        <Table.HeadCell>Cel.</Table.HeadCell>
+                        <Table.HeadCell>Data Solic.</Table.HeadCell>
+                        <Table.HeadCell>Data Prev.</Table.HeadCell>
                         <Table.HeadCell>STATUS</Table.HeadCell>
                         <Table.HeadCell>USUÁRIO</Table.HeadCell>
                         <Table.HeadCell>
@@ -157,7 +222,7 @@ const handleChangeStatus = ({event,item}:{event: ChangeEvent<HTMLSelectElement>,
                                     {item.nome}
                                 </Table.Cell>
                                 <Table.Cell>{item.medico}</Table.Cell>
-                                <Table.Cell>{item.celular}</Table.Cell>
+                                <Table.Cell className="whitespace-nowrap">{item.celular}</Table.Cell>
                                 <Table.Cell>{item.data && new Date(item.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
 
                                 <Table.Cell>{item.data_prev && new Date(item.data_prev).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
@@ -180,19 +245,27 @@ const handleChangeStatus = ({event,item}:{event: ChangeEvent<HTMLSelectElement>,
                                 <Table.Cell>{}</Table.Cell>
                                 
                                 <Table.Cell className="text-slate-500">
-                                    <div className="inline-flex gap-4">
-                                        <button onClick={() => handleWhatsAppClick(item.celular ?? '')} className="hover:text-green-400">
+                                    <div className="inline-flex gap-3">
+                                        <button data-tooltip-id="tooltip-agenda" data-tooltip-content={'Abrir conversa'} onClick={() => handleWhatsAppClick(item.celular ?? '')} className="hover:text-green-400">
                                             <IoLogoWhatsapp size={18} />
                                         </button>
-                                        <button onClick={() => handleDeletarEvent(Number(item.id_agcli))} className="hover:text-red-500">
+                                        <button data-tooltip-id="tooltip-agenda" data-tooltip-content={'Deletar'} onClick={() => handleDeletarEvent(Number(item.id_agcli))} className="hover:text-red-500">
                                             <MdDelete size={20} />
                                         </button>
-                                        <button onClick={() => {
+                                        <button data-tooltip-id="tooltip-agenda" data-tooltip-content={'Alterar'} onClick={() => {
                                             // setarDataEvent({...item,start:undefined,end:undefined})
                                             setDados({ ...item})
                                             setIsOpen(true)
                                         }} className="hover:text-blue-500">
-                                            <BsFillCalendarDateFill size={18} />
+                                            <MdEditDocument size={18} />
+                                        </button>
+
+                                        <button data-tooltip-id="tooltip-agenda" data-tooltip-content={'Gerar Consulta'} onClick={() => {
+                                            // setarDataEvent({...item,start:undefined,end:undefined})
+                                            setDados({ ...item,espec:item.medico})
+                                            setOpenConsulta(true)
+                                        }} className="hover:text-blue-500">
+                                            <FaNotesMedical  size={18} />
                                         </button>
 
                                     </div>
@@ -203,6 +276,7 @@ const handleChangeStatus = ({event,item}:{event: ChangeEvent<HTMLSelectElement>,
 
                     </Table.Body>
                 </Table>
+                <Tooltip id="tooltip-agenda"/>
             </div>
         </>
     )

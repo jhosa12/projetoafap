@@ -68,37 +68,7 @@ export default function Calendario({ medicos, events, setArrayEvent, dataEvent, 
 
   
 
-  const gerarConsulta = async ({evento,id_med}:{evento:ClientProps,id_med:number}) => {
-  
-    try {
-
-      const response = await toast.promise(
-        api.post("/afapSaude/consultas/cadastro", {
-          nome: evento.nome,
-          data: new Date(),
-          espec: evento.title,
-         // exames: data.exames,
-          id_med: id_med,
-         // tipoDesc: data.tipoDesc,
-         // vl_consulta: data.vl_consulta,
-         // vl_desc: data.vl_desc,
-        //  vl_final: data.vl_final,
-          celular: evento.celular,
-          //cpf: data.cpf
-        }),
-        {
-          error: 'Erro ao gerar consulta',
-          pending: 'Cadastrando Consulta.....',
-          success: 'Consulta Cadastrada com sucesso'
-        }
-      )
-
-      setConsultas([...consultas, response.data])
-
-    } catch (error) {
-      console.log(error)
-    }
-  }
+ 
 
   useEffect(() => {
 

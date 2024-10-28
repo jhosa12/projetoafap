@@ -1,6 +1,6 @@
 
 import { Button, Table } from "flowbite-react"
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState, useTransition } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { RiAlertLine } from "react-icons/ri";
 import { ModalFiltroMov } from "./modalFiltro";
@@ -33,13 +33,14 @@ export interface HistoricoProps {
     usuario: string
 }
 
-export function HistoricoMov({ id_usuario, usuario,permissoes }: DataProps) {
+export default function  HistoricoMov({ id_usuario, usuario,permissoes }: DataProps) {
     const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
     const [openModal, setOpenModal] = useState<boolean>(false)
     const { empresas } = useContext(AuthContext)
     const [historico, setHistorico] = useState<Array<HistoricoProps>>([])
     const [dadosMov, setDadosMov] = useState<Partial<HistoricoProps>>()
     const componentRef = useRef<RelatorioMov>(null)
+    const [isPending, startTransition] = useTransition();
     const [dadosEstorno,setDadosEstorno] = useState< {
         id_produto: number,
         id_mov: number,
@@ -123,19 +124,23 @@ export function HistoricoMov({ id_usuario, usuario,permissoes }: DataProps) {
 
 
     const handleFiltro = async ({ startDate, endDate, id_empresa, signal }: { startDate: Date, endDate: Date, id_empresa: string, signal?: AbortSignal }) => {
-        try {
-            const response = await api.post('/estoque/historico/filtro', {
-                startDate,
-                endDate,
-                id_empresa
-            }, { signal })
-
-            setHistorico(response.data)
-            console.log(response.data)
-
-        } catch (error) {
-            console.log(error)
-        }
+        startTransition(async() => {
+            try {
+                const response = await api.post('/estoque/historico/filtro', {
+                    startDate,
+                    endDate,
+                    id_empresa
+                }, { signal })
+    
+                setHistorico(response.data)
+                console.log(response.data)
+    
+            } catch (error) {
+                console.log(error)
+            }
+            
+        })
+       
     }
 
     useEffect(() => {
