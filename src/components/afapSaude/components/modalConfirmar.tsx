@@ -1,9 +1,6 @@
 import { Button, Modal } from "flowbite-react"
 import { HiOutlineExclamationCircle } from "react-icons/hi2"
-import { DadosInputs } from "../preAgendamento"
-import { toast } from "react-toastify"
-import { api } from "@/services/apiClient"
-import { ClientProps } from "@/pages/afapSaude"
+
 
 interface DataProps{
     openModal:boolean
