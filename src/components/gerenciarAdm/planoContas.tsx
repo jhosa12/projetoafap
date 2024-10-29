@@ -261,7 +261,7 @@ const adicionarPlanoContas = async()=>{
         <h1 className="flex w-full text-gray-800 font-medium">PLANO DE CONTAS</h1>
             <div className="flex flex-row p-2 gap-2">
           
-            <InputMask mask={'9.99.999'}  onChange={e=>setConta(e.target.value)} placeholder="CONTA" autoComplete="off" type="text" required className=" uppercase w-1/6 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-50 border-gray-300 placeholder-gray-400 text-white "/>
+            <InputMask mask={'9.99.999'}  onChange={e=>setConta(e.target.value)} placeholder="CONTA" autoComplete="off" type="text" required className=" uppercase w-1/6 pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg  bg-gray-50 border-gray-300 placeholder-gray-400  "/>
           <TextInput className="w-1/2" value={descricaoPlanoContas} sizing={'sm'}  onChange={e=>setDescricaoPlanoC(e.target.value.toUpperCase())} placeholder="DESCRICÃO" autoComplete="off" type="text" required/>
           <Select sizing={'sm'} value={tipo} onChange={e=>setTipo(e.target.value)} className="  w-1/4  ">
             <option value={''}>TIPO</option>
@@ -271,7 +271,6 @@ const adicionarPlanoContas = async()=>{
           <button onClick={()=>adicionarPlanoContas()} className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"><IoMdAddCircle size={20}/></button>
             </div>
 
-       
         <table 
          className=" block  w-full  max-h-[calc(100vh-150px)]  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center  text-black">
             <thead className=" sticky top-0 z-10 w-full text-xs uppercase bg-gray-300 ">

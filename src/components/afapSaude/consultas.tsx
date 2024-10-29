@@ -2,16 +2,20 @@
 
 import { ConsultaProps, ExamesData, ExamesProps, MedicoProps } from "@/pages/afapSaude";
 import { api } from "@/services/apiClient";
-import { Button, Table } from "flowbite-react";
-import { ChangeEvent, useRef, useState } from "react";
+import { Badge, Button, Dropdown, Table } from "flowbite-react";
+import { ChangeEvent, useCallback, useContext, useRef, useState } from "react";
 import { ModalConsulta } from "./components/modalNovaConsulta";
 import { toast } from "react-toastify";
 import { HiDocument, HiOutlineTrash, HiPencil } from "react-icons/hi2";
 import { ModalDeletarExame } from "./components/modalDeletarExame";
-import { HiFilter } from "react-icons/hi";
+import { HiDotsVertical, HiFilter } from "react-icons/hi";
 import { ModalFiltroConsultas } from "./components/modalFiltro";
 import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
 import { useReactToPrint } from "react-to-print";
+import { MdDelete } from "react-icons/md";
+import { FaMoneyCheckDollar } from "react-icons/fa6";
+import { BiMoneyWithdraw } from "react-icons/bi";
+import { AuthContext } from "@/contexts/AuthContext";
 
 
 
@@ -26,10 +30,8 @@ interface DataProps {
 }
 export default function Consultas({ medicos, consultas, exames, setConsultas, buscarConsultas, loading }: DataProps) {
   const [openModal, setOpenModal] = useState(false);
-  const [data, setData] = useState<ConsultaProps>({
-    data: new Date(), espec: '', exames: [], id_consulta: null, id_med: null, nome: '', tipoDesc: '', vl_consulta: 0, vl_desc: 0, vl_final: 0, celular: '', cpf: ''
-  })
-
+  const [data, setData] = useState<Partial<ConsultaProps>>()
+  const {usuario} = useContext(AuthContext)
   const [modalFiltro, setModalFiltro] = useState<boolean>(false)
   const [modalDeletar, setModalDeletar] = useState<boolean>(false)
   const [dataExame, setDataExam] = useState<ExamesData>({
@@ -48,80 +50,56 @@ const currentPage = useRef<FichaConsulta>(null)
 
 
 
-const imprimirFicha = useReactToPrint({
-  content:()=>currentPage.current
-})
+const imprimirFicha = useCallback(useReactToPrint({
+  content: () => currentPage.current,
+}), []);
 
-
-
-
-
-
-
-
-  const handleEditarConsulta = async () => {
-
-    if(!data.id_med){
-      toast.info('Selecione um especialista')
+const handleReceberConsulta = useCallback(async (item: Partial<ConsultaProps>)=>{
+try {
+  const response = await toast.promise(
+    api.put('/afapSaude/receberConsulta',{
+      id_consulta: item?.id_consulta,
+    id_usuario:usuario?.id,
+    datalancUTC:new Date(),
+    descricao:"CONSULTA",
+    historico:`CONSULT.${item?.id_consulta}-${item?.nome}-${item?.espec}`,
+    valor:item?.vl_final,
+    usuario:usuario?.nome,
+    }),
+    {
+      error: 'Erro ao receber consulta',
+      pending: 'Recebendo consulta....',
+      success: 'Consulta recebida com sucesso!'
     }
-    if(!data.tipoDesc){
-      toast.info('Selecione um tipo de desconto')
-    }
-    try {
-      const medico = medicos.find(item=>item.id_med===data.id_med)
-      const response = await toast.promise(
-        api.put('/afapSaude/consultas/Editarcadastro', {
-          ...data,
-          nome: data.nome,
-          data: new Date(),
-          espec: data.espec,
-          exames: data.exames,
-          id_med: data.id_med,
-          tipoDesc: data.tipoDesc,
-          vl_consulta:Number(medico?.particular)+data.exames.reduce((acc,at)=>{acc+=Number(at.valorBruto); return acc},0),
-          vl_desc:(data.tipoDesc==='Funeraria'?Number(medico?.particular)-Number(medico?.funeraria):data.tipoDesc==='Plano'?Number(medico?.particular)-Number(medico?.plano):0)+data.exames.reduce((acc,at)=>{acc+=Number(at.desconto); return acc},0),
+  )
+  buscarConsultas({startDate:new Date(),endDate:new Date()})
+} catch (error) {
+  console.log(error)
+}
+},[usuario])
 
-          vl_final:(data.tipoDesc==='Funeraria'?Number(medico?.funeraria):data.tipoDesc==='Plano'?Number(medico?.plano):Number(medico?.particular))+data.exames.reduce((acc,at)=>{acc+=Number(at.valorFinal); return acc},0), 
-          celular: data.celular,
-          cpf: data.cpf
-        }),
-        {
-          error: 'Erro ao editar dados',
-          pending: 'Alterando dados .....',
-          success: 'Dados alterados com sucesso!'
-        }
-      )
-      const novoArray = [...consultas]
-      const index = novoArray.findIndex(item => item.id_consulta === data.id_consulta)
-      novoArray[index] = { ...response.data }
-      setConsultas(novoArray)
-    } catch (error) {
-      toast.warning('Consulte o TI')
-    }
+
+
+const handleDeletar = useCallback(async () => {
+  try {
+    const response = await toast.promise(
+      api.delete(`/afapSaude/consultas/deletarCadastro/${data?.id_consulta}`),
+      {
+        error: 'Erro ao deletar dados',
+        pending: 'Deletando dados....',
+        success: 'Dados deletados com sucesso!',
+      }
+    );
+      setConsultas(consultas.filter(atual => atual.id_consulta !== data?.id_consulta));
+ 
+  } catch (error) {
+    console.log(error);
   }
-
-  const handleDeletar = async () => {
-    try {
-      const response = await toast.promise(
-        api.delete(`/afapSaude/consultas/deletarCadastro/${data.id_consulta}`),
-        {
-          error: 'Erro ao deletar dados',
-          pending: 'Deletando dados....',
-          success: 'Dados deletados com sucesso!'
-        }
-      )
-      const novoArray = [...consultas]
-      const index = novoArray.findIndex(item => item.id_consulta === data.id_consulta);
-      novoArray.splice(index, 1)
-      setConsultas(novoArray)
-    } catch (error) {
-
-    }
-  }
+}, [consultas, data, setConsultas]);
 
 
 
-  const handleExame = (event: ChangeEvent<HTMLSelectElement>) => {
+  const handleExame = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
 
     if (!event.target.value) {
       setDataExam({
@@ -151,51 +129,7 @@ const imprimirFicha = useReactToPrint({
       porcPart: item.porcPart,
       porcPlan: item.porcPlan
     })
-  }
-
-
-
-
-
-
-  const handleCadastrar = async () => {
-
-    if(!data.id_med){
-      toast.info('Selecione um especialista')
-    }
-    if(!data.tipoDesc){
-      toast.info('Selecione um tipo de desconto')
-    }
-    try {
-const medico = medicos.find(item=>item.id_med===data.id_med)
-      const response = await toast.promise(
-        api.post("/afapSaude/consultas/cadastro", {
-          nome: data.nome,
-          data: new Date(),
-          espec: data.espec,
-          exames: data.exames,
-          id_med: data.id_med,
-          tipoDesc: data.tipoDesc,
-          vl_consulta:Number(medico?.particular)+data.exames.reduce((acc,at)=>{acc+=Number(at.valorBruto); return acc},0),
-          vl_desc:(data.tipoDesc==='Funeraria'?Number(medico?.particular)-Number(medico?.funeraria):data.tipoDesc==='Plano'?Number(medico?.particular)-Number(medico?.plano):0)+data.exames.reduce((acc,at)=>{acc+=Number(at.desconto); return acc},0),
-
-          vl_final:(data.tipoDesc==='Funeraria'?Number(medico?.funeraria):data.tipoDesc==='Plano'?Number(medico?.plano):Number(medico?.particular))+data.exames.reduce((acc,at)=>{acc+=Number(at.valorFinal); return acc},0), 
-          celular: data.celular,
-          cpf: data.cpf
-        }),
-        {
-          error: 'Erro ao Cadastrar Dados',
-          pending: 'Cadastrando Consulta.....',
-          success: 'Consulta Cadastrada com sucesso'
-        }
-      )
-
-      setConsultas([...consultas, response.data])
-
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  },[exames])
 
 
   return (
@@ -208,17 +142,17 @@ const medico = medicos.find(item=>item.id_med===data.id_med)
 
 
 
-      <div className="overflow-x-auto">
-        <Table hoverable theme={{ body: { cell: { base: "px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg" } } }}  >
+      <div className="overflow-x-auto h-[calc(100vh-160px)]">
+        <Table hoverable theme={{ body: { cell: { base: "px-6 text-black py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs" } } }}  >
 
           <Table.Head>
             <Table.HeadCell>Nome</Table.HeadCell>
             <Table.HeadCell>Especialidade</Table.HeadCell>
             <Table.HeadCell>Data</Table.HeadCell>
-            <Table.HeadCell>Valor Bruto</Table.HeadCell>
             <Table.HeadCell>Tipo Desc.</Table.HeadCell>
             <Table.HeadCell>Valor Desc.</Table.HeadCell>
             <Table.HeadCell>Valor Final</Table.HeadCell>
+            <Table.HeadCell>Status</Table.HeadCell>
             <Table.HeadCell>
               <span className="sr-only">Edit</span>
             </Table.HeadCell>
@@ -231,19 +165,25 @@ const medico = medicos.find(item=>item.id_med===data.id_med)
                 </Table.Cell>
                 <Table.Cell>{item.espec}</Table.Cell>
                 <Table.Cell>{new Date(item.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
-                <Table.Cell>{Number(item.vl_consulta).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
                 <Table.Cell>{item.tipoDesc}</Table.Cell>
                 <Table.Cell>{Number(item.vl_desc).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
                 <Table.Cell>{Number(item.vl_final).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
-                <Table.Cell className="space-x-6">
+                <Table.Cell>
+                
+              <Badge color={item.status==='PENDENTE'?'yellow':item.status==='CANCELADO'?'red':'green'}>{item.status}</Badge>
+                </Table.Cell>
+                <Table.Cell className="space-x-4">
                   <button onClick={() => { setData({ ...item }), setOpenModal(true) }} className="font-medium text-gray-500 hover:text-cyan-600">
-                    <HiPencil size={18} />
+                    <HiPencil size={16} />
                   </button>
                   <button onClick={() => { setModalDeletar(true), setData({ ...item }) }} className="font-medium text-gray-500 hover:text-red-600 ">
-                    <HiOutlineTrash size={20} />
+                    <MdDelete size={18} />
                   </button>
                   <button onClick={() => imprimirFicha()} className="font-medium text-gray-500 hover:text-blue-600 ">
-                    <HiDocument size={20} />
+                    <HiDocument size={16} />
+                  </button>
+                  <button onClick={() => handleReceberConsulta(item)} className="font-medium text-gray-500 hover:text-blue-600 ">
+                    <BiMoneyWithdraw size={18} />
                   </button>
                 </Table.Cell>
 
@@ -253,7 +193,7 @@ const medico = medicos.find(item=>item.id_med===data.id_med)
         </Table>
       </div>
 
-      <ModalConsulta handleEditarConsulta={handleEditarConsulta} dataExame={dataExame}  handleExame={handleExame} handleCadastrar={handleCadastrar} data={data} setData={setData} exames={exames} medicos={medicos} openModal={openModal} setOpenModal={setOpenModal} />
+     {openModal && <ModalConsulta  consultas={consultas}  dataExame={dataExame}  handleExame={handleExame}  consulta={data ??{}} setConsultas={setConsultas} exames={exames} medicos={medicos} openModal={openModal} setOpenModal={setOpenModal} />}
 
       <ModalDeletarExame setOpenModal={setModalDeletar} show={modalDeletar} handleDeletarExame={handleDeletar} />
       <ModalFiltroConsultas buscarConsultas={buscarConsultas} loading={loading} setFiltro={setModalFiltro} show={modalFiltro} />

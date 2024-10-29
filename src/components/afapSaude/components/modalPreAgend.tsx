@@ -244,7 +244,7 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                         <div className="mb-1 block">
                             <Label htmlFor="small" value="Complemento" />
                         </div>
-                        <TextInput required {...register('complemento')}  type="text" sizing="sm" />
+                        <TextInput  {...register('complemento')}  type="text" sizing="sm" />
                     </div>
 
                 <div className="w-full">

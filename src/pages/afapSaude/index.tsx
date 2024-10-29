@@ -19,6 +19,7 @@ import {HiClipboardList } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
 import { MdAccessTimeFilled } from "react-icons/md";
 import Configuracoes from "@/components/afapSaude/configuracoes";
+import { BiSolidInjection } from "react-icons/bi";
 
 // Configura o moment para usar o idioma português
 moment.locale('pt-br');
@@ -60,12 +61,28 @@ export interface ConsultaProps{
   celular:string,
   cpf:string,
   espec:string,
-  vl_consulta:number,
+  status:string,
+  vl_consulta:number|null,
   tipoDesc:string,
-  vl_desc:number,
-  vl_final:number,
+  vl_desc:number|null,
+  vl_final:number|null,
   data:Date,
-  exames:Array<ExamesData>
+  exames:Array<ExamesData>,
+  nascimento:Date,
+  endereco:string,
+  bairro:string,
+  numero:number,
+  cidade:string,
+  responsavel:string,
+  grau_parentesco:string,
+  informacoes:string,
+  receita:string,
+  peso:number,
+  altura:number,
+  temperatura:number,
+  idade:number,
+  identidade:string,
+  observacao:string
 }
 
 export interface MedicoProps {
@@ -331,6 +348,9 @@ const buscarConsultas = async ({startDate,endDate}:{startDate:Date,endDate:Date}
       </Tabs.Item>
 
       <Tabs.Item title="Consultas" icon={HiClipboardList}>
+      <Consultas loading={loading} buscarConsultas={buscarConsultas} setConsultas={setConsultas} exames={exames} consultas={consultas} medicos={medicos}/>
+      </Tabs.Item>
+      <Tabs.Item title="Exames" icon={BiSolidInjection}>
       <Consultas loading={loading} buscarConsultas={buscarConsultas} setConsultas={setConsultas} exames={exames} consultas={consultas} medicos={medicos}/>
       </Tabs.Item>
       <Tabs.Item  icon={IoMdSettings}  title="Configurar">
