@@ -34,16 +34,17 @@ export default function Consultas({ medicos, consultas, exames, setConsultas, bu
   const {usuario} = useContext(AuthContext)
   const [modalFiltro, setModalFiltro] = useState<boolean>(false)
   const [modalDeletar, setModalDeletar] = useState<boolean>(false)
-  const [dataExame, setDataExam] = useState<ExamesData>({
+  const [dataExame, setDataExam] = useState<ExamesProps>({
     data: new Date,
-    desconto: 0,
-    id_exame: null,
+    id_exame:0,
     nome: '',
     valorBruto: 0,
     valorFinal: 0,
     porcFun: 0,
     porcPart: 0,
-    porcPlan: 0
+    porcPlan: 0,
+    usuario: '',
+    obs: '',
   })
 
 const currentPage = useRef<FichaConsulta>(null)
@@ -51,6 +52,28 @@ const currentPage = useRef<FichaConsulta>(null)
 
 
 const imprimirFicha = useCallback(useReactToPrint({
+  pageStyle: `
+  @page {
+      margin: 1rem;
+  }
+  @media print {
+      body {
+          -webkit-print-color-adjust: exact;
+      }
+      @page {
+          size: auto;
+          margin: 1rem;
+      }
+      @page {
+          @top-center {
+              content: none;
+          }
+          @bottom-center {
+              content: none;
+          }
+      }
+  }
+`,
   content: () => currentPage.current,
 }), []);
 
@@ -104,14 +127,15 @@ const handleDeletar = useCallback(async () => {
     if (!event.target.value) {
       setDataExam({
         data: new Date,
-        desconto: 0,
-        id_exame: null,
+        id_exame: 0,
         nome: '',
         valorBruto: 0,
         valorFinal: 0,
         porcFun: 0,
         porcPart: 0,
-        porcPlan: 0
+        porcPlan: 0,
+        usuario: '',
+        obs: '',
       })
       return
     }
@@ -119,7 +143,6 @@ const handleDeletar = useCallback(async () => {
 
 
     item?.id_exame && setDataExam({
-      desconto: 0,
       data: new Date(),
       id_exame: item?.id_exame,
       nome: item?.nome ?? '',
@@ -127,7 +150,9 @@ const handleDeletar = useCallback(async () => {
       valorFinal: item.valorBruto,
       porcFun: item.porcFun,
       porcPart: item.porcPart,
-      porcPlan: item.porcPlan
+      porcPlan: item.porcPlan,
+      usuario: item?.usuario ?? '',
+      obs: item?.obs ?? '',
     })
   },[exames])
 
@@ -200,7 +225,7 @@ const handleDeletar = useCallback(async () => {
 
 
 
-      <div className="hidden">
+      <div className="hidden" style={{display:'none'}}>
         <FichaConsulta bairro="" cidade="" contrato={0} cpf="" logradouro="" material="" nome="" rg="" telefone="" uf="" ref={currentPage}/>
       </div>
     </div>

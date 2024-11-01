@@ -20,6 +20,7 @@ import { IoMdSettings } from "react-icons/io";
 import { MdAccessTimeFilled } from "react-icons/md";
 import Configuracoes from "@/components/afapSaude/configuracoes";
 import { BiSolidInjection } from "react-icons/bi";
+import Exames from "@/components/afapSaude/exames/exames";
 
 // Configura o moment para usar o idioma português
 moment.locale('pt-br');
@@ -30,19 +31,17 @@ const localizer = momentLocalizer(moment)
 
 
 export interface ExamesData{
-  id_exame:number|null,
+  id_exame:number,
   nome:string,
+  obs:string,
   data:Date,
-  porcFun:number,
-  porcPart:number,
-  porcPlan:number
-  valorBruto:number,
+  valorExame:number,
   desconto:number,
-  valorFinal:number
+  valorFinal:number,
 }
 
 export interface ExamesProps{
-  id_exame:number|null,
+  id_exame:number,
   nome:string,
   data:Date,
   usuario:string,
@@ -51,6 +50,7 @@ export interface ExamesProps{
   porcPart:number,
   porcPlan:number
   valorFinal:number
+  obs:string
 }
 
 
@@ -351,7 +351,7 @@ const buscarConsultas = async ({startDate,endDate}:{startDate:Date,endDate:Date}
       <Consultas loading={loading} buscarConsultas={buscarConsultas} setConsultas={setConsultas} exames={exames} consultas={consultas} medicos={medicos}/>
       </Tabs.Item>
       <Tabs.Item title="Exames" icon={BiSolidInjection}>
-      <Consultas loading={loading} buscarConsultas={buscarConsultas} setConsultas={setConsultas} exames={exames} consultas={consultas} medicos={medicos}/>
+     <Exames exames={exames}/>
       </Tabs.Item>
       <Tabs.Item  icon={IoMdSettings}  title="Configurar">
        <Configuracoes medicos={medicos} setMedicos={setArrayMedicos} setExames={setExames} exames={exames}/>

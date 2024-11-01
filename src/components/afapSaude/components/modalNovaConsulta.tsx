@@ -15,7 +15,7 @@ interface DataProps{
     consulta:Partial<ConsultaProps> ,
     setConsultas:(array:Array<ConsultaProps>)=>void
     handleExame: (event:ChangeEvent<HTMLSelectElement>)=>void
-  dataExame:ExamesData,
+  dataExame:ExamesProps,
 }
 
 export function ModalConsulta({openModal,setOpenModal,medicos,exames,consulta,setConsultas,handleExame,dataExame,consultas}:DataProps) {

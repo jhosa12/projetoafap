@@ -15,7 +15,7 @@ interface DataProps{
 
 export function AddEditExames({exames,setExames}:DataProps){
 const [openModal,setOpenModal]= useState<boolean>(false)
-const [data,setData] = useState<ExamesProps>({data:new Date(),id_exame:null,nome:'',porcFun:0,porcPart:0,porcPlan:0,usuario:'',valorBruto:0,valorFinal:0})
+const [data,setData] = useState<ExamesProps>({data:new Date(),id_exame:0,nome:'',porcFun:0,porcPart:0,porcPlan:0,usuario:'',valorBruto:0,valorFinal:0,obs:''})
 const {usuario} = useContext(AuthContext)
 
 const [openDeletar,setOpenDeletar] = useState<boolean>(false)
@@ -105,7 +105,7 @@ const handleEditarExame =async()=>{
 
     return(
         <div className="space-y-2">
-            <Button  onClick={()=>{setData({data:new Date(),id_exame:null,nome:'',porcFun:0,porcPart:0,porcPlan:0,usuario:usuario?.nome??'',valorBruto:0,valorFinal:0}),setOpenModal(true)}} size={'sm'} theme={{color:{light:"border border-gray-300 bg-white text-gray-900   enabled:hover:bg-gray-100  "}}} color={'light'} className="ml-auto mr-2">Adicionar</Button>
+            <Button  onClick={()=>{setData({data:new Date(),id_exame:0,nome:'',porcFun:0,porcPart:0,porcPlan:0,usuario:usuario?.nome??'',valorBruto:0,valorFinal:0,obs:''}),setOpenModal(true)}} size={'sm'} theme={{color:{light:"border border-gray-300 bg-white text-gray-900   enabled:hover:bg-gray-100  "}}} color={'light'} className="ml-auto mr-2">Adicionar</Button>
             <div className="overflow-x-auto">
       <Table theme={{body:{cell:{base:"px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg"}}}} hoverable>
         <Table.Head>

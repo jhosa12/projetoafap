@@ -1,8 +1,8 @@
 import { ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { api } from "../services/apiClient"
-import { destroyCookie, setCookie, parseCookies } from "nookies"
+import { destroyCookie, setCookie} from "nookies"
 import Router from 'next/router';
-import { decode } from 'jsonwebtoken'
+
 import { toast } from 'react-toastify';
 import {  AssociadoProps, ConvProps, DadosCadastro,  ObitoProps } from '@/types/associado';
 import { SignInProps, UserProps } from '@/types/auth';
@@ -10,11 +10,12 @@ import { EmpresaProps } from '@/types/empresa';
 import { PlanosProps } from '@/types/planos';
 import { CidadesProps } from '@/types/cidades';
 import { ConsultoresProps } from '@/types/consultores';
+import { NextRequest } from 'next/server';
 
 
 type AuthContextData = {
     usuario: UserProps | undefined,
-    userLogged(): boolean,
+   // userLogged(): boolean,
     consultores: Array<ConsultoresProps>,
     cidades:Array<CidadesProps>,
     planos:Array<PlanosProps>,
@@ -31,9 +32,9 @@ type AuthContextData = {
     limparDados:()=>void,
     setarDadosAssociado:(fields:Partial<AssociadoProps>)=>void
     permissoes:Array<string>
-    setPermissoes:(array:Array<string>)=>void
-  
+    setPermissoes:(array:Array<string>)=>void,
     empresas:Array<EmpresaProps>
+    getDadosFixos:()=>Promise<void>
 }
 
 
@@ -42,6 +43,7 @@ export const AuthContext = createContext({} as AuthContextData)
 
 
 export function signOut() {
+    
     try {
         destroyCookie(undefined, '@nextauth.token')
         Router.push('/')
@@ -67,23 +69,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
     const [servico, setServico] = useState<Partial<ObitoProps>>({ hr_sepultamento: new Date(), end_hora_falecimento: new Date(), end_hora_informaram: new Date() });
     const [permissoes,setPermissoes] =useState<Array<string>>([])
-    const [token,setToken] = useState(()=>{
+   /* const [token,setToken] = useState(()=>{
         const { "@nextauth.token": tokenAuth } = parseCookies();
         if(tokenAuth){
             return tokenAuth
         }
         return ""
-    })
+    })*/
     
 
 
-    const userLogged = useCallback(() => {
+  /*  const userLogged = useCallback(() => {
         const { "@nextauth.token": tokenAuth } = parseCookies();
         if (tokenAuth) {
           return true;
         }
         return false;
-      }, []);
+      }, []);*/
 
 
       const getDadosFixos = async() => {
@@ -115,9 +117,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
             setCookie(undefined, '@nextauth.token', tokenAuth, {
                 maxAge: 60 * 60 * 24 * 1,
-                path: "/"
+                path: "/",
+               // httpOnly: true,// Oculta o cookie do JavaScript no cliente
             });
-            setToken(tokenAuth)
+          //  setToken(tokenAuth)
 
            // await userToken();
        //  const  parsedPermissoes = typeof permissoes === 'string' ? JSON.parse(permissoes) : permissoes ?? [];
@@ -145,38 +148,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLista(prev => ({ ...prev, ...fields }));
     }, []);
 
-    useEffect(()=>{
-        const { "@nextauth.token": token } = parseCookies();
-        if (token) {userToken(token)}
-        getDadosFixos()
-            
-    },[token])
-
-    const userToken = useCallback(async (token:string) => {
-       
-       
-        try {
-         
-              
-                let image;
-                if (typeof window !== 'undefined') {
-                    image = localStorage.getItem('@user.image');
-                }
-                const decodeToken = decode(token);
-                if (decodeToken && typeof decodeToken === 'object') {
-                    const { nome, sub, dir, cargo, permissoes } = decodeToken;
-                    setUser({ id: String(sub), nome: nome.toUpperCase(), cargo, dir, image: image ?? '' });
-                }
-            
-        } catch (error) {
-            toast.error('Erro ao captar Usuário');
-        }
-    }, []);
-
-  
 
 
-   
 
     const carregarDados = async (id:number) => {
      
@@ -235,7 +208,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <AuthContext.Provider value={{planos,consultores,cidades,empresas,permissoes,setPermissoes, setarDadosAssociado, limparDados, usuario, userLogged, sign, signOut, data, closeModa, dadosassociado, carregarDados, setarServico, servico, listaConv, setarListaConv }}>
+        <AuthContext.Provider value={{getDadosFixos,planos,consultores,cidades,empresas,permissoes,setPermissoes, setarDadosAssociado, limparDados, usuario, sign, signOut, data, closeModa, dadosassociado, carregarDados, setarServico, servico, listaConv, setarListaConv }}>
             {children}
         </AuthContext.Provider>
     );

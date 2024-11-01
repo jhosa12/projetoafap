@@ -27,14 +27,15 @@ import { Avatar } from "flowbite-react";
 export function MenuLateral(){
    
     const [isOpen,setIsOpen]=useState(false);
-    const {usuario}= useContext(AuthContext);
+    const {usuario,getDadosFixos}= useContext(AuthContext);
   
     const[notifyCount,setCount] = useState<number>();
     
     
 
  useEffect(() => {
-    console.log("CHAMOU")
+    console.log("CHAMOU A REQUISIÇAÕ DE DADOS FIXOS")
+    getDadosFixos();
     const socket = io("https://www.testeapiafap.shop", {
       reconnection: true,
       reconnectionAttempts: 5,

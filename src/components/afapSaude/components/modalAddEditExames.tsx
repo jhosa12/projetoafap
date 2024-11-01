@@ -1,5 +1,5 @@
 import { ExamesProps } from "@/pages/afapSaude"
-import { Button, Label, Modal, TextInput } from "flowbite-react"
+import { Button, Label, Modal, Textarea, TextInput } from "flowbite-react"
 
 
 
@@ -15,46 +15,58 @@ interface DataProps{
 
 export function ModalEditExames({openModal,setOpenModal,data,setData,handleAdicionarExame,handleEditarExame}:DataProps){
 
+
+
     return(
         <Modal  dismissible show={openModal} size={'lg'} onClose={() => setOpenModal(false)}>
         <Modal.Header>Administrar Exame</Modal.Header>
         <Modal.Body>
-          <div className="space-y-4 p-4">
-          <div>
-              <div className="block">
-                <Label  htmlFor="exame" value="Exame" />
-              </div>
-              <TextInput value={data.nome} onChange={e=>setData({...data,nome:e.target.value})} id="exame"  placeholder="Nome Exame" required />
+          <div className=" grid grid-cols-2 gap-2">
+          <div className="col-span-2">
+           
+                <Label className="text-xs"  htmlFor="exame" value="Exame" />
+            
+              <TextInput sizing={'sm'} value={data.nome} onChange={e=>setData({...data,nome:e.target.value})} id="exame"  placeholder="Nome Exame" required />
             </div>
 
+            <div className="col-span-2"> 
+           <Label className="text-xs"  htmlFor="exame" value="Orientações sobre a realização do exame" />
+         <Textarea rows={3} className="text-xs" value={data.obs} onChange={e=>setData({...data,obs:e.target.value})} id="exame"  placeholder="Descreva todas as orientações que devem ser dadas ao cliente antes da realização do exame" required />
+       </div>
+
             <div>
-              <div  className="block">
-                <Label htmlFor="valor" value="Valor Bruto" />
-              </div>
-              <TextInput value={data.valorBruto} onChange={e=>setData({...data,valorBruto:Number(e.target.value)})}  inputMode="numeric" id="valor"  placeholder="Valor" required />
+              
+                <Label className="text-xs" htmlFor="valor" value="Valor Bruto(R$)" />
+             
+              <TextInput sizing={'sm'}  value={data.valorBruto} onChange={e=>setData({...data,valorBruto:Number(e.target.value)})}  inputMode="numeric" id="valor"  placeholder="Valor" required />
             </div>
 
-            <div className="inline-flex gap-2">
+          
             <div>
-              <div  className="block">
-                <Label htmlFor="particular" value="Particular(%)" />
-              </div>
-              <TextInput value={data.porcPart} onChange={e=>setData({...data,porcPart:Number(e.target.value)})}  inputMode="numeric" id="particular"  placeholder="Desconto" required />
+             
+                <Label className="text-xs" htmlFor="particular" value="Particular(%)" />
+             
+              <TextInput sizing={'sm'} value={data.porcPart} onChange={e=>setData({...data,porcPart:Number(e.target.value)})}  inputMode="numeric" id="particular"  placeholder="Desconto" required />
             </div>
             <div>
-              <div className="block">
-                <Label htmlFor="funeraria" value="Funerária(%)" />
-              </div>
-              <TextInput value={data.porcFun} onChange={e=>setData({...data,porcFun:Number(e.target.value)})} inputMode="numeric" id="funeraria"  placeholder="Desconto" required />
+             
+                <Label className="text-xs" htmlFor="funeraria" value="Funerária(%)" />
+             
+              <TextInput sizing={'sm'} value={data.porcFun} onChange={e=>setData({...data,porcFun:Number(e.target.value)})} inputMode="numeric" id="funeraria"  placeholder="Desconto" required />
             </div>
             <div>
-              <div className="block">
-                <Label htmlFor="plano" value="Plano(%)" />
-              </div>
-              <TextInput value={data.porcPlan} onChange={e=>setData({...data,porcPlan:Number(e.target.value)})} inputMode="numeric" id="plano"  placeholder="Desconto" required />
+              
+                <Label className="text-xs" htmlFor="plano" value="Plano(%)" />
+             
+              <TextInput sizing={'sm'} value={data.porcPlan} onChange={e=>setData({...data,porcPlan:Number(e.target.value)})} inputMode="numeric" id="plano"  placeholder="Desconto" required />
             </div>
 
+            <div className="col-span-2">
+            <span className="italic text-xs text-red-700">
+              Observação: O valor particular é calculado pelo valor bruto. O valor da funerária e do plano são calculados pelo valor particular.
+            </span>
             </div>
+
            
           </div>
         </Modal.Body>
