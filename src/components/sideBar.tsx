@@ -5,14 +5,7 @@ import { useState, useEffect, createContext } from "react"
 import Dropdownn from '../pages/Dropdownn'
 import Image from 'next/image'
 import logo from "../../public/logoafap.png"
-import { FaReadme } from "react-icons/fa";
-import { CgAdd } from "react-icons/cg";
-import { CgBriefcase } from "react-icons/cg";
-import { FaCross } from "react-icons/fa";
 
-import { split } from 'postcss/lib/list'
-import { stringify } from 'postcss'
-import { INTERNAL_HEADERS } from 'next/dist/shared/lib/constants'
 interface SubMenusProps {
   id: string,
   user: string,
