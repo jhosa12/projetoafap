@@ -3,31 +3,35 @@
 
 import { useCallback, useContext, useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { Calendar, momentLocalizer } from 'react-big-calendar'
+import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import { FaCheck } from "react-icons/fa";
 import { ImCancelCircle } from "react-icons/im";
 import { MdAccessTime } from "react-icons/md";
-import { HiCalendar, HiClipboardCheck } from "react-icons/hi";
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
 import { ModalDrawer } from "@/components/afapSaude/agendaMedico/drawer";
-import { Timeline, Accordion, Button, Modal, Alert } from "flowbite-react";
-import { ClientProps, ConsultaProps, EventProps, MedicoProps } from "@/pages/afapSaude";
-import { MdAddBox } from "react-icons/md";
+import {  Button, Modal, Alert } from "flowbite-react";
+import {ConsultaProps, EventProps, MedicoProps } from "@/pages/afapSaude";
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
-import { TiCancel } from "react-icons/ti";
-import { Tooltip } from 'react-tooltip';
-import { api } from "@/services/apiClient";
-import { toast } from "react-toastify";
-import { ModalPreAgend } from "../components/modalPreAgend";
+import ptBR from 'date-fns/locale/pt-BR';
+import { format, parse, startOfWeek } from 'date-fns';
 import { AuthContext } from "@/contexts/AuthContext";
+import { getDay } from "date-fns";
 
-import { set } from "date-fns";
+const locales = {
+  'pt-BR':ptBR,
+} 
+const localizer = dateFnsLocalizer({
+  format: (date: Date, formatStr: string) => format(date, formatStr, { locale: ptBR }),
+  parse: (dateString: string, formatString: string) => parse(dateString, formatString, new Date(), { locale: ptBR }),
+  startOfWeek: () => startOfWeek(new Date(), { locale: ptBR }),
+  getDay,
+  locales,
+});
 
 // Configura o moment para usar o idioma português
-moment.locale('pt-BR');
-const localizer = momentLocalizer(moment)
+
 
 
 

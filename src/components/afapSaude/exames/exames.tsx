@@ -14,6 +14,10 @@ import Orcamento from "@/Documents/afapSaude/orcamento";
 import { FaWhatsapp } from "react-icons/fa";
 import { GiReturnArrow } from "react-icons/gi";
 import { FiltroExames } from "./filtro";
+import { ModalReceber } from "./modalReceber";
+import { ModalConfirmar } from "../components/modalConfirmar";
+import { set } from "react-hook-form";
+import { start } from "repl";
 
 
 
@@ -31,7 +35,8 @@ export interface FiltroForm {
 
 
 export interface ExameRealizadoProps{
-  id_exame:number,
+  id_exame:number|null,
+  id_selected:number|null,
   celular:string,
   endereco:string,
   data_orcamento: Date,
@@ -49,13 +54,16 @@ export interface ExameRealizadoProps{
 }
 
 export default function Exames({exames}:DataProps) {
-  const valorInicial = {id_exame:0,celular:'',data_orcamento:new Date(),data_realizado:new Date(),exames:[],coleta:'',tipoDesc:'',cpf:'',data_nasc:new Date(),nome_responsavel:'',parentesco:'',nome:'',status:'',user:'',endereco:''}
+  const valorInicial = {id_exame:null,celular:'',data_orcamento:new Date(),data_realizado:new Date(),exames:[],coleta:'',tipoDesc:'',cpf:'',data_nasc:new Date(),nome_responsavel:'',parentesco:'',nome:'',status:'',user:'',endereco:'',id_selected:null}
     const [examesRealizados,setExames] = useState<Array<ExameRealizadoProps>>([])
     const [exameSelected, setExameSelected] = useState<ExameRealizadoProps>(valorInicial)
   const {usuario} = useContext(AuthContext)
   const [openModal, setOpenModal] = useState(false)
   const currentPage = useRef<Orcamento>(null)
   const [filtro,setFiltro] = useState<boolean>(false)
+  const [openModalReceber, setOpenModalReceber] = useState(false)
+  const [formPag,setFormPag] = useState<string>('')
+  const [openModalDeletar, setOpenModalDeletar] = useState(false)
 
 
 
@@ -77,7 +85,7 @@ export default function Exames({exames}:DataProps) {
 
 
 const handleWhatsAppClick = useCallback(()=>{
-  if (!exameSelected.id_exame) {
+  if (!exameSelected?.id_exame) {
     toast.warn('Selecione um exame para abrir o WhatsApp');
     return;
   }
@@ -94,12 +102,18 @@ const handleWhatsAppClick = useCallback(()=>{
       const whatsappURL = `whatsapp://send?phone=${formattedNumber}&text=${message}`;
       window.open(whatsappURL);
   }
-},[])
+},[exameSelected.id_exame])
 
 
 
 
   const handleReceberExame = useCallback(async ()=>{
+
+   // alert(formPag)
+
+    if (!formPag){
+      toast.warn('Selecione a forma de pagamento')
+      return}
 
     if(!exameSelected.id_exame){
       toast.warn('Selecione um exame para receber consulta')
@@ -122,6 +136,7 @@ const handleWhatsAppClick = useCallback(()=>{
         historico:`EXAME.${exameSelected?.id_exame}-${exameSelected?.nome}-${exameSelected?.tipoDesc}`,
         valor:exameSelected?.exames?.reduce((acc, item) => acc + item.valorFinal, 0),
         usuario:usuario?.nome,
+        forma_pagamento:formPag
         }),
         {
           error: 'Erro ao receber exame',
@@ -133,7 +148,7 @@ const handleWhatsAppClick = useCallback(()=>{
     } catch (error) {
       console.log(error)
     }
-    },[usuario])
+    },[exameSelected.id_exame,formPag])
 
 
   const imprimirOrcamento = useCallback(useReactToPrint({
@@ -163,7 +178,26 @@ const handleWhatsAppClick = useCallback(()=>{
   }), []);
 
 
-
+  const handleDeletar = useCallback(async () => {
+    if (!exameSelected?.id_exame) {
+      toast.warn('Selecione um exame para deletar');
+      return;
+    }
+    try {
+      await toast.promise(
+        api.delete(`/afapSaude/deletarExame/${exameSelected?.id_exame}`),
+        {
+          error: 'Erro ao deletar exame',
+          pending: 'Deletando exame....',
+          success: 'Exame deletado com sucesso!'
+        }
+      )
+      setExames(examesRealizados.filter(item => item.id_exame !== exameSelected.id_exame))
+    } catch (error) {
+      console.log(error)
+    }
+    
+  },[exameSelected.id_exame])
 
 
 
@@ -176,19 +210,45 @@ const handleWhatsAppClick = useCallback(()=>{
 
 
 
-const listarExamesRealizados = useCallback(async ({endDate,nome,startDate,status}:FiltroForm) => {
+const listarExamesRealizados =useCallback( async ({endDate,nome,startDate,status}:FiltroForm) => {
+  let dataIn
+  let dataOut
+  if(startDate && endDate && startDate>endDate){
+    toast.error('Data inicial maior que data final')
+    return
+  }
+ if(startDate && endDate){  dataIn = new Date(startDate)
+  //dataIn.setHours(dataIn.getHours() - dataIn.getTimezoneOffset() / 60)
+ //  dataOut = new Date(endDate)
+ // dataOut.setHours(dataOut.getHours() - dataOut.getTimezoneOffset() / 60)
+dataIn = new Date(startDate)
+dataOut = new Date(endDate)
+
+ //dataIn.setHours(0,0,0,0)
+// dataOut.setHours(23,59,59,999)
+dataIn.setTime(dataIn.getTime() - dataIn.getTimezoneOffset()*60*1000)
+//dataOut.setTime(dataOut.getTime() - dataOut.getTimezoneOffset()*60*1000)
+dataIn.setUTCHours(0,0,0,0)
+dataOut.setUTCHours(23,59,59,999)
+
+
+console.log(dataIn.toISOString(),dataOut.toISOString())
+
+ 
+}
+
   try {
     const response = await api.post("/afapSaude/examesRealizados/listar",{
-      endDate,
+      endDate:dataOut?.toISOString(),
       nome,
-      startDate,
+      startDate:dataIn?.toISOString(),
       status
     });
     setExames(response.data)
   } catch (error) {
     console.log(error);
   }
-}, []);
+},[]);
 
 const handleNovoExame = useCallback(async(data:ExameRealizadoProps) => {
   const dataAtual = new Date()
@@ -199,12 +259,12 @@ if(data.exames.length===0){
     return
 }
 
-
+  
 
     try {
         const response =await toast.promise(
           api.post("/afapSaude/examesRealizados/novoExame",
-            {...data,user:usuario?.nome,data_orcamento:dataAtual.toISOString()}
+            {...data,user:usuario?.nome,data_orcamento:dataAtual.toISOString(),data_realizado:undefined}
          ),
          {
           error:'Erro ao gerar novo exame',
@@ -219,10 +279,15 @@ if(data.exames.length===0){
        console.log(error) 
        toast.error('Erro ao gerar novo exame')
     }
-}, []);
+}, [examesRealizados,exameSelected.id_exame]);
 
 
 const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
+  
+  if(!data.id_exame){
+    toast.error('Selecione um exame para editar')
+    return
+  }
   try {
     const response =await toast.promise(
       api.put("/afapSaude/examesRealizados/editar",
@@ -240,7 +305,7 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
    console.log(error) 
    toast.error('Erro ao editar exame')
 }
-},[])
+},[exameSelected.id_exame])
 
 
 /*const handleDeletar = useCallback(async () => {
@@ -289,7 +354,7 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
         <HiPrinter className="mr-2 h-4 w-4" />
          Recibo
       </Button>
-      <Button onClick={handleReceberExame} size={'sm'} color="gray">
+      <Button onClick={()=>setOpenModalReceber(true)} size={'sm'} color="gray">
         <HiMiniArrowDownOnSquare className="mr-2 h-4 w-4" />
         Receber
       </Button>
@@ -298,7 +363,7 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
       <FaWhatsapp className="mr-2 h-4 w-4" />
         Abrir Conversa
       </Button>
-      <Button size={'sm'} color="gray">
+      <Button onClick={()=>setOpenModalDeletar(true)} size={'sm'} color="gray">
         <HiTrash className="mr-2 h-4 w-4" />
         Excluir
       </Button>
@@ -313,7 +378,7 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
             <Table.HeadCell>Nome</Table.HeadCell>
             <Table.HeadCell>Celular</Table.HeadCell>
             <Table.HeadCell>Data Orçamento</Table.HeadCell>
-            <Table.HeadCell>Data Realizado</Table.HeadCell>
+            <Table.HeadCell>Data Pag.</Table.HeadCell>
             <Table.HeadCell>Desconto</Table.HeadCell>
             <Table.HeadCell>Status</Table.HeadCell>
         
@@ -345,6 +410,15 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
 
        { openModal &&  <ModalAdministrarExame handleEditarExame={handleEditarExame}  handleNovoExame={handleNovoExame} arraySelectExames={exames} openModal={openModal} setOpenModal={()=>setOpenModal(false)} registro={exameSelected}/>}
 
+      { openModalReceber && <ModalReceber formPag={formPag} setFormPag={setFormPag} openModal={openModalReceber} setOpenModal={()=>setOpenModalReceber(false)} handleReceberExame={handleReceberExame} />
+}
+
+<ModalConfirmar 
+handleConfirmar={handleDeletar}
+ openModal={openModalDeletar}
+  pergunta="Tem certeza que deseja excluir esse exame?"
+  setOpenModal={setOpenModalDeletar}
+/>
 
         <div style={{display:'none'}}>
           <Orcamento dados={exameSelected} ref={currentPage} />

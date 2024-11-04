@@ -22,7 +22,7 @@ interface DataProps {
 export function ModalAdministrarExame({ openModal, setOpenModal, registro, arraySelectExames, handleNovoExame,handleEditarExame }: DataProps) {
 
   const { register, setValue, handleSubmit, watch, control } = useForm<ExameRealizadoProps>({
-    defaultValues: registro
+    defaultValues: {...registro}
   })
 
 
@@ -34,7 +34,7 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
 
 
   const handleAdicionarExame = () => {
-    const exame = arraySelectExames.find(item => item.id_exame === Number(watch('id_exame')));
+    const exame = arraySelectExames.find(item => item.id_exame === Number(watch('id_selected')));
 
 
     const tipo = watch('tipoDesc')
@@ -67,10 +67,10 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
 
 
 
-    const vl_particular = ((exame.valorBruto - exame.valorBruto * (exame.porcFun / 100)))
+    const vl_particular = ((Number(exame.valorBruto) + Number(exame.valorBruto) * (Number(exame.porcPart) / 100)))
 
     const desconto = tipo === 'PARTICULAR' ? 0 : tipo === 'FUNERARIA' ?
-      (vl_particular * (exame.porcFun / 100)) : (vl_particular * (exame.porcPlan / 100))
+      (vl_particular * (Number(exame.porcFun) / 100)) : (vl_particular * (Number(exame.porcPlan) / 100))
 
 
     setValue('exames', [...examesAtuais, {
@@ -89,7 +89,7 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
 
   const handleOnSubmit: SubmitHandler<ExameRealizadoProps> = (data) => {
     
-     data.id_exame ? handleEditarExame(data) :  handleNovoExame(data)
+     registro.id_exame ? handleEditarExame(data) :  handleNovoExame(data)
 
   }
 
@@ -231,7 +231,7 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
 
                 <Label htmlFor="exame" className="text-xs" value="Exame" />
 
-                <Select id="exame" sizing={'sm'} {...register('id_exame')} className="focus:outline-none" required >
+                <Select id="exame" sizing={'sm'} {...register('id_selected')} className="focus:outline-none" required ={!registro.id_exame} >
                   <option value={''}></option>
                   {arraySelectExames?.map((item, index) => (
                     <option value={item.id_exame} key={index}>{`${item.nome}-(${item.nome})`}</option>
