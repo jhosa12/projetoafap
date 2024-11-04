@@ -187,16 +187,16 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
             <form onSubmit={handleSubmit(handleOnSubmit)} className="grid grid-cols-3 gap-3 w-full text-black font-semibold">
 
                 <div className="col-span-2">
-                    <div className="mb-1 block">
-                        <Label htmlFor="small" value="Nome" />
-                    </div>
+                 
+                        <Label className="text-xs" htmlFor="small" value="Nome" />
+                  
                     <TextInput {...register('nome')} id="small" type="text" sizing="sm" required/>
                 </div>
              
                     <div className="w-full">
-                        <div className="mb-1 block">
-                            <Label htmlFor="small" value="Celular" />
-                        </div>
+                       
+                            <Label className="text-xs" htmlFor="small" value="Celular" />
+                     
                         <Controller
                             name="celular"
                             control={control}
@@ -207,31 +207,31 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                        
                     </div>
                     <div className="col-span-2">
-                        <div className="mb-1 block">
-                            <Label htmlFor="small" value="Endereço" />
-                        </div>
+                      
+                            <Label className="text-xs" htmlFor="small" value="Endereço" />
+                       
                         <TextInput required {...register('endereco')}  type="text" sizing="sm" />
                     </div>
 
 
                     <div className="">
-                        <div className="mb-1 block">
-                            <Label htmlFor="small" value="Numero" />
-                        </div>
+                      
+                            <Label className="text-xs" htmlFor="small" value="Numero" />
+                      
                         <TextInput {...register('numero')}  type="text" sizing="sm" />
                     </div>
 
                     <div className="col-span-2">
-                        <div className="mb-1 block">
-                            <Label htmlFor="small" value="Bairro" />
-                        </div>
+                       
+                            <Label className="text-xs" htmlFor="small" value="Bairro" />
+                       
                         <TextInput {...register('bairro')} required  type="text" sizing="sm" />
                     </div>
 
                     <div className="">
-                        <div className="mb-1 block">
-                            <Label htmlFor="small" value="Cidade"  />
-                        </div>
+                       
+                            <Label className="text-xs" htmlFor="small" value="Cidade"  />
+                       
                         <Select required {...register('cidade')} sizing="sm" >
                         <option value={''}></option>
                         {cidades?.map((item, index) => (
@@ -241,16 +241,16 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                     </div>
 
                     <div className="col-span-2">
-                        <div className="mb-1 block">
-                            <Label htmlFor="small" value="Complemento" />
-                        </div>
+                      
+                            <Label className="text-xs" htmlFor="small" value="Complemento" />
+                       
                         <TextInput  {...register('complemento')}  type="text" sizing="sm" />
                     </div>
 
                 <div className="w-full">
-                    <div className="mb-1 block">
-                        <Label htmlFor="small" value="Especialista" />
-                    </div>
+                   
+                        <Label className="text-xs" htmlFor="small" value="Especialista" />
+                    
                     <Select required {...register('id_med')} sizing="sm" >
                         <option value={''}></option>
                         {arrayMedicos?.map((item, index) => (
@@ -261,9 +261,9 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                 
                
                         <div className="w-full">
-                            <div className="mb-1 block">
-                                <Label htmlFor="small" value="Consulta/Data" />
-                            </div>
+                           
+                                <Label className="text-xs" htmlFor="small" value="Consulta/Data" />
+                          
                             <Select id="small" value={watch('id_agmed')??''}  onChange={selectMed} sizing="sm" >
                                 <option value={''}></option>
                                 {events?.map((item, index) => (
@@ -272,9 +272,9 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                             </Select>
                         </div>
                         <div className="w-full">
-                            <div className="mb-1 block">
-                                <Label htmlFor="small" value="Buscar na residência ?" />
-                            </div>
+                          
+                                <Label className="text-xs" htmlFor="small" value="Buscar na residência ?" />
+                        
                             <Select   sizing="sm" >
                                 <option selected value={''}></option>
                                 <option value={'SIM'}>SIM</option>

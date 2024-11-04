@@ -17,8 +17,9 @@ interface DataProps {
   registro: ExameRealizadoProps,
   arraySelectExames: ExamesProps[],
   handleNovoExame: (data: ExameRealizadoProps) => Promise<void>,
+  handleEditarExame: (data: ExameRealizadoProps) => Promise<void>,
 }
-export function ModalAdministrarExame({ openModal, setOpenModal, registro, arraySelectExames, handleNovoExame }: DataProps) {
+export function ModalAdministrarExame({ openModal, setOpenModal, registro, arraySelectExames, handleNovoExame,handleEditarExame }: DataProps) {
 
   const { register, setValue, handleSubmit, watch, control } = useForm<ExameRealizadoProps>({
     defaultValues: registro
@@ -27,7 +28,7 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
 
 
 
-  const handleDelExame = (id_exame: number) => {
+  const handleDelExameTable = (id_exame: number) => {
     setValue('exames', watch('exames').filter(item => item.id_exame !== id_exame))
   }
 
@@ -87,8 +88,8 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
 
 
   const handleOnSubmit: SubmitHandler<ExameRealizadoProps> = (data) => {
-    handleNovoExame(data)
-    // data.id_consulta ? handleEditarConsulta(data) :  handleCadastrar(data)
+    
+     data.id_exame ? handleEditarExame(data) :  handleNovoExame(data)
 
   }
 
@@ -117,8 +118,8 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
         <form onSubmit={handleSubmit(handleOnSubmit)}>
           <div className="grid grid-cols-4 gap-2 ">
             <div className="col-span-2 ">
-              <Label className="text-xs" htmlFor="email" value="Nome Paciente" />
-              <TextInput sizing={'sm'} {...register('nome')} className="focus:outline-none" id="email" placeholder="Nome" required />
+              <Label className="text-xs" htmlFor="nome" value="Nome Paciente" />
+              <TextInput sizing={'sm'} {...register('nome')} className="focus:outline-none" id="nome" placeholder="Nome" required />
             </div>
 
 
@@ -151,19 +152,39 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
             </div>
 
 
+
+            <div className="col-span-3 ">
+
+<Label className="text-xs" htmlFor="endereco" value="Endereço Completo" />
+
+<TextInput id="endereco" required={watch('coleta') === 'DOMICILIO'} sizing={'sm'} {...register('endereco')} className="focus:outline-none" placeholder="Endereço" />
+</div>
+
+
+<div className="col-span-1 ">
+
+<Label  className="text-xs" htmlFor="coleta" value="Coleta" />
+<Select sizing={'sm'} {...register('coleta')}  id="coleta"  className="focus:outline-none" required >
+                <option value={''}></option>
+                <option value={'CLINICA'}>CLÍNICA</option>
+                <option value={'DOMICILIO'}>DOMICÍLIO</option>
+              </Select>
+</div>
+
+
             <div className="col-span-2 ">
 
-              <Label className="text-xs" htmlFor="email" value="Nome Responsável (se for menor)" />
+              <Label className="text-xs" htmlFor="responsavel" value="Nome Responsável (se for menor)" />
 
-              <TextInput sizing={'sm'} {...register('nome_responsavel')} className="focus:outline-none" placeholder="Responsável, caso paciente seja menor de idade" />
+              <TextInput id="responsavel" sizing={'sm'} {...register('nome_responsavel')} className="focus:outline-none" placeholder="Responsável, caso paciente seja menor de idade" />
             </div>
 
 
             <div className="w-full">
 
-              <Label className="text-xs" value="Parentesco" />
+              <Label className="text-xs" htmlFor="parentesco" value="Parentesco" />
 
-              <Select sizing={'sm'} {...register('parentesco')} className="focus:outline-none"  >
+              <Select id="parentesco" sizing={'sm'} {...register('parentesco')} className="focus:outline-none"  >
                 <option selected className="text-gray-200">PARENTESCO</option>
                 <option value={'CONJUGE'}>CONJUGE</option>
                 <option value={'PAI'}>PAI</option>
@@ -185,25 +206,32 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
 
             <div className="w-full">
 
-              <Label className="text-xs" value="Desconto" />
+              <Label htmlFor="desconto" className="text-xs" value="Desconto" />
 
-              <Select sizing={'sm'} {...register('tipoDesc')} onChange={e => handleDesconto(e)} className="focus:outline-none" required >
+              <Select id="desconto" sizing={'sm'} {...register('tipoDesc')} onChange={e => handleDesconto(e)} className="focus:outline-none" required >
                 <option value={''}></option>
                 <option value={'PARTICULAR'}>PARTICULAR</option>
                 <option value={'FUNERARIA'}>FUNERÁRIA</option>
                 <option value={'PLANO DESCONTO'}>PLANO DESCONTO</option>
               </Select>
             </div>
+
+
+ 
           </div>
           <div>
+
+
+   
+
 
 
             <div className="inline-flex w-full gap-4 mb-1">
               <div className="w-1/2">
 
-                <Label className="text-xs" value="Exame" />
+                <Label htmlFor="exame" className="text-xs" value="Exame" />
 
-                <Select sizing={'sm'} {...register('id_exame')} className="focus:outline-none" required >
+                <Select id="exame" sizing={'sm'} {...register('id_exame')} className="focus:outline-none" required >
                   <option value={''}></option>
                   {arraySelectExames?.map((item, index) => (
                     <option value={item.id_exame} key={index}>{`${item.nome}-(${item.nome})`}</option>
@@ -236,7 +264,7 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
                       <Table.Cell>{Number(item.valorFinal ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
                       <Table.Cell>
 
-                        <button onClick={() => handleDelExame(item.id_exame)} className="font-medium text-gray-500 hover:text-red-600 ">
+                        <button onClick={() => handleDelExameTable(item.id_exame)} className="font-medium text-gray-500 hover:text-red-600 ">
                           <HiTrash size={16} />
                         </button>
                       </Table.Cell>
@@ -250,8 +278,8 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
 
 
 
-                  <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  <Table.Row >
+                    <Table.Cell className="whitespace-nowrap  font-semibold ">
                       Total
                     </Table.Cell>
 

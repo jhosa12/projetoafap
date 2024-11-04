@@ -63,7 +63,7 @@ export function ModalEditExames({openModal,setOpenModal,data,setData,handleAdici
 
             <div className="col-span-2">
             <span className="italic text-xs text-red-700">
-              Observação: O valor particular é calculado pelo valor bruto. O valor da funerária e do plano são calculados pelo valor particular.
+              Observação: O valor particular é calculado pelo valor bruto(valor dado pelo laboratório). O valor da funerária e do plano são calculados pelo valor particular.
             </span>
             </div>
 

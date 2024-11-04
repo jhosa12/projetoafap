@@ -46,17 +46,17 @@ class FichaConsulta extends React.Component<DadosProps> {
 
     return (
       <div className='flex flex-col w-full gap-3'>
-      <div style={{display:'flex',width:'100%',height:'112px',alignItems:'center',gap:'20px'}} >
+      <div style={{display:'flex',width:'100%',alignItems:'center',justifyContent:'center',gap:'20px'}} >
 
      
-          <Image width={150} height={150} src={logo} alt="logo" />
-          <h1 style={{fontWeight:'bold',fontSize:'30px'}}>PRONTUÁRIO MÉDICO N°</h1>
+          <Image width={70} height={70} src={logo} alt="logo" />
+          <h1 style={{fontWeight:'bold',fontSize:'20px'}}>PRONTUÁRIO MÉDICO N°</h1>
         
          </div>
 
          <div style={{display:'flex',flexDirection:'column',width:'100%',fontSize:'14px',gap:'5px'}}>
 
-         <h2 style={{fontWeight:'bold',fontSize:'12px',borderBottom:'1px solid gray',width:'100%',textAlign:'center'}}>Dados do Paciente</h2>
+         <h2 style={{fontWeight:'bold',fontSize:'12px',borderBottom:'2px solid gray',width:'100%',textAlign:'center'}}>Dados do Paciente</h2>
          <div style={{display:'flex',flexDirection:'column',width:'100%',fontSize:'14px',gap:'5px'}}>
           <div style={{display:'flex',justifyContent:'space-between',width:'100%'}} >
             <span >Paciente: </span>
@@ -84,7 +84,7 @@ class FichaConsulta extends React.Component<DadosProps> {
 
 
 <div style={{display:'flex',flexDirection:'column',width:'100%',fontSize:'14px',gap:'5px'}}>
-         <h2 style={{fontWeight:'bold',fontSize:'12px',borderBottom:'1px solid gray',width:'100%',textAlign:'center'}}>Dados da Consulta</h2>
+         <h2 style={{fontWeight:'bold',fontSize:'12px',borderBottom:'2px solid gray',width:'100%',textAlign:'center'}}>Dados da Consulta</h2>
          <div style={{display:'flex',flexDirection:'column',width:'100%',fontSize:'14px',gap:'5px'}}>
           <div style={{display:'flex',justifyContent:'space-between',width:'100%'}} >
             <span >Data da Consulta: </span>

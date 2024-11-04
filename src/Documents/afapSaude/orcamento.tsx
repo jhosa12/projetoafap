@@ -19,7 +19,7 @@ class Orcamento extends React.Component<DadosProps> {
 
     render() {
         const { dados } = this.props;
-
+        let total = 0;
         const options: Intl.DateTimeFormatOptions = {
             weekday: 'long', // Dia da semana por extenso
             year: 'numeric', // Ano completo
@@ -43,26 +43,37 @@ class Orcamento extends React.Component<DadosProps> {
                 <span>TIPO DE DESCONTO: {dados.tipoDesc}</span>
 
                 <div>
-                    <Table>
+                    <Table theme={{body:{cell:{base:"px-6 py-1 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-black"}}}}>
                         <Table.Head>
                             <Table.HeadCell>EXAME</Table.HeadCell>
                             <Table.HeadCell>VALOR</Table.HeadCell>
                             <Table.HeadCell>OBSERVAÇÕES</Table.HeadCell>
                         </Table.Head>
                         <Table.Body className="divide-y">
-                            {dados?.exames?.map((item, index) => (
-                                <Table.Row key={index}>
+                            {dados?.exames?.map((item, index) => {
+                            total += Number(item?.valorFinal)
+
+
+                             return  ( <Table.Row key={index}>
                                     <Table.Cell className="whitespace-nowrap font-medium text-gray-900 ">{item.nome}</Table.Cell>
                                     <Table.Cell>{Number(item.valorFinal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
                                     <Table.Cell className="whitespace-nowrap font-medium text-gray-900 ">{item.obs}</Table.Cell>
-                                </Table.Row>
-                            ))}
+                                </Table.Row>)
+    })}
+
+
+<Table.Row className="font-semibold" >
+                    <Table.Cell className="whitespace-nowrap  ">
+                      Total
+                    </Table.Cell>
+
+                    <Table.Cell>{Number(total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }</Table.Cell>
+                    <Table.Cell >{}</Table.Cell>
+                   
+                  </Table.Row>
                         </Table.Body>
                     </Table>
-                    <div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'flex-end', gap: '10px', padding: '10px' }}>
-                        <span style={{ fontWeight: 'bold', fontSize: '12px' }}>QUANTIDADE: {dados.exames?.length}</span>
-                        <span style={{ fontWeight: 'bold', fontSize: '12px' }}>TOTAL: {dados.exames?.reduce((acc, item) => acc + Number(item?.valorFinal), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                    </div>
+               
 
                 </div>
 

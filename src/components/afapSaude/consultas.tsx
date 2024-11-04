@@ -1,19 +1,18 @@
 
 
-import { ConsultaProps, ExamesData, ExamesProps, MedicoProps } from "@/pages/afapSaude";
+import { ConsultaProps,ExamesProps, MedicoProps } from "@/pages/afapSaude";
 import { api } from "@/services/apiClient";
-import { Badge, Button, Dropdown, Table } from "flowbite-react";
+import { Badge, Button, Table } from "flowbite-react";
 import { ChangeEvent, useCallback, useContext, useRef, useState } from "react";
 import { ModalConsulta } from "./components/modalNovaConsulta";
 import { toast } from "react-toastify";
-import { HiDocument, HiOutlineTrash, HiPencil } from "react-icons/hi2";
+import { HiDocument, HiPencil } from "react-icons/hi2";
 import { ModalDeletarExame } from "./components/modalDeletarExame";
-import { HiDotsVertical, HiFilter } from "react-icons/hi";
+import {  HiFilter } from "react-icons/hi";
 import { ModalFiltroConsultas } from "./components/modalFiltro";
 import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
 import { useReactToPrint } from "react-to-print";
 import { MdDelete } from "react-icons/md";
-import { FaMoneyCheckDollar } from "react-icons/fa6";
 import { BiMoneyWithdraw } from "react-icons/bi";
 import { AuthContext } from "@/contexts/AuthContext";
 
@@ -78,12 +77,15 @@ const imprimirFicha = useCallback(useReactToPrint({
 }), []);
 
 const handleReceberConsulta = useCallback(async (item: Partial<ConsultaProps>)=>{
+
 try {
+  const dataAtual = new Date()
+  dataAtual.setHours(dataAtual.getHours() - dataAtual.getTimezoneOffset() / 60)
   const response = await toast.promise(
     api.put('/afapSaude/receberConsulta',{
       id_consulta: item?.id_consulta,
     id_usuario:usuario?.id,
-    datalancUTC:new Date(),
+    datalancUTC:dataAtual,
     descricao:"CONSULTA",
     historico:`CONSULT.${item?.id_consulta}-${item?.nome}-${item?.espec}`,
     valor:item?.vl_final,

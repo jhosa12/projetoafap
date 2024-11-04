@@ -11,7 +11,7 @@ import { MdAccessTime } from "react-icons/md";
 import { HiCalendar, HiClipboardCheck } from "react-icons/hi";
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
-import { ModalDrawer } from "@/components/afapSaude/drawer";
+import { ModalDrawer } from "@/components/afapSaude/agendaMedico/drawer";
 import { Timeline, Accordion, Button, Modal, Alert } from "flowbite-react";
 import { ClientProps, ConsultaProps, EventProps, MedicoProps } from "@/pages/afapSaude";
 import { MdAddBox } from "react-icons/md";
@@ -20,7 +20,7 @@ import { TiCancel } from "react-icons/ti";
 import { Tooltip } from 'react-tooltip';
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
-import { ModalPreAgend } from "./components/modalPreAgend";
+import { ModalPreAgend } from "../components/modalPreAgend";
 import { AuthContext } from "@/contexts/AuthContext";
 
 import { set } from "date-fns";

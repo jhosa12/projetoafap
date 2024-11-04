@@ -10,7 +10,7 @@ import moment from 'moment'
 
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
-import Calendario from "@/components/afapSaude/calendario";
+import Calendario from "@/components/afapSaude/agendaMedico/calendario";
 import PreAgend from "@/components/afapSaude/preAgendamento";
 import Consultas from "@/components/afapSaude/consultas";
 import { Tabs } from "flowbite-react";
@@ -18,9 +18,10 @@ import { FaCalendarAlt } from "react-icons/fa";
 import {HiClipboardList } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
 import { MdAccessTimeFilled } from "react-icons/md";
-import Configuracoes from "@/components/afapSaude/configuracoes";
+
 import { BiSolidInjection } from "react-icons/bi";
 import Exames from "@/components/afapSaude/exames/exames";
+import Configuracoes from "@/components/afapSaude/configuracoes/configuracoes";
 
 // Configura o moment para usar o idioma português
 moment.locale('pt-br');

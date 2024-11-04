@@ -1,12 +1,15 @@
 import { ExamesProps } from "@/pages/afapSaude";
 import { Button, Table } from "flowbite-react";
-import { ModalEditExames } from "./components/modalAddEditExames";
-import { useContext, useState } from "react";
+import { ModalEditExames } from "../components/modalAddEditExames";
+import { useCallback, useContext, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
-import { ModalDeletarExame } from "./components/modalDeletarExame";
+import { ModalDeletarExame } from "../components/modalDeletarExame";
 import { AuthContext } from "@/contexts/AuthContext";
+import { IoIosPrint } from "react-icons/io";
+import { useReactToPrint } from "react-to-print";
+import RelatorioLucroExames from "@/Documents/afapSaude/relatorioLucroExames";
 
 interface DataProps{
     exames:Array<ExamesProps>
@@ -14,11 +17,41 @@ interface DataProps{
 }
 
 export function AddEditExames({exames,setExames}:DataProps){
+const resetValues ={data:new Date(),id_exame:0,nome:'',porcFun:0,porcPart:0,porcPlan:0,usuario:'',valorBruto:0,valorFinal:0,obs:''}
 const [openModal,setOpenModal]= useState<boolean>(false)
-const [data,setData] = useState<ExamesProps>({data:new Date(),id_exame:0,nome:'',porcFun:0,porcPart:0,porcPlan:0,usuario:'',valorBruto:0,valorFinal:0,obs:''})
+const [data,setData] = useState<ExamesProps>(resetValues)
 const {usuario} = useContext(AuthContext)
+const currentPage = useRef<RelatorioLucroExames>(null)
 
 const [openDeletar,setOpenDeletar] = useState<boolean>(false)
+
+
+
+const imprimirRelatorio = useCallback(useReactToPrint({
+    pageStyle: `
+    @page {
+        margin: 1rem;
+    }
+    @media print {
+        body {
+            -webkit-print-color-adjust: exact;
+        }
+        @page {
+            size: auto;
+            margin: 1rem;
+        }
+        @page {
+            @top-center {
+                content: none;
+            }
+            @bottom-center {
+                content: none;
+            }
+        }
+    }
+  `,
+    content: () => currentPage.current,
+  }), []);
 
 
 const handleAdicionarExame =async()=>{
@@ -105,12 +138,15 @@ const handleEditarExame =async()=>{
 
     return(
         <div className="space-y-2">
-            <Button  onClick={()=>{setData({data:new Date(),id_exame:0,nome:'',porcFun:0,porcPart:0,porcPlan:0,usuario:usuario?.nome??'',valorBruto:0,valorFinal:0,obs:''}),setOpenModal(true)}} size={'sm'} theme={{color:{light:"border border-gray-300 bg-white text-gray-900   enabled:hover:bg-gray-100  "}}} color={'light'} className="ml-auto mr-2">Adicionar</Button>
-            <div className="overflow-x-auto">
-      <Table theme={{body:{cell:{base:"px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg"}}}} hoverable>
+         <div className="flex flex-row justify-end gap-2 px-2">
+         <Button  onClick={()=>{setData({...resetValues,data:new Date()}),setOpenModal(true)}} size={'sm'} theme={{color:{light:"border border-gray-300 bg-white text-gray-900   enabled:hover:bg-gray-100  "}}} color={'light'} >Adicionar</Button>
+         <Button  onClick={imprimirRelatorio} size={'sm'} theme={{color:{light:"border border-gray-300 bg-white text-gray-900   enabled:hover:bg-gray-100  "}}} color={'light'}><IoIosPrint className="h-5 w-5 mr-2"/>Relatório</Button>
+            </div>  
+            <div className="overflow-x-auto ">
+      <Table theme={{body:{cell:{base:"px-6 py-1 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg"}}}} hoverable>
         <Table.Head>
           <Table.HeadCell>Exame</Table.HeadCell>
-          <Table.HeadCell>Valor</Table.HeadCell>
+          <Table.HeadCell>Valor Bruto</Table.HeadCell>
           <Table.HeadCell>Desconto Particular</Table.HeadCell>
           <Table.HeadCell>Desconto Funerária</Table.HeadCell>
           <Table.HeadCell>Desconto Plano</Table.HeadCell>
@@ -118,7 +154,7 @@ const handleEditarExame =async()=>{
             <span className="sr-only">Edit</span>
           </Table.HeadCell>
         </Table.Head>
-        <Table.Body className="divide-y">
+        <Table.Body className="divide-y text-black text-xs">
           {exames.map((item,index)=>(
             <Table.Row key={item.id_exame} className="bg-white dark:border-gray-700 dark:bg-gray-800 ">
             <Table.Cell  className="whitespace-nowrap font-medium text-gray-900 dark:text-white ">
@@ -128,12 +164,12 @@ const handleEditarExame =async()=>{
             <Table.Cell>{item.porcPart}%</Table.Cell>
             <Table.Cell>{item.porcFun}%</Table.Cell>
             <Table.Cell>{item.porcPlan}%</Table.Cell>
-            <Table.Cell className="space-x-8">
+            <Table.Cell className="space-x-4">
               <button onClick={()=>{setData({...item,data:new Date()}),setOpenModal(true)}} className="font-medium text-gray-500 hover:text-cyan-600 ">
-                <HiPencil size={20}/>
+                <HiPencil size={16}/>
               </button>
               <button onClick={()=>{setData({...item}),setOpenDeletar(true)}} className="font-medium text-gray-500 hover:text-red-600 ">
-                <HiOutlineTrash size={20}/>
+                <HiOutlineTrash size={16}/>
               </button>
             </Table.Cell>
           </Table.Row>
@@ -142,9 +178,16 @@ const handleEditarExame =async()=>{
       </Table>
     </div>
 
-    <ModalEditExames handleEditarExame={handleEditarExame} handleAdicionarExame={handleAdicionarExame} data={data} setData={setData} openModal={openModal} setOpenModal={setOpenModal}/>
+   {openModal && <ModalEditExames handleEditarExame={handleEditarExame} handleAdicionarExame={handleAdicionarExame} data={data} setData={setData} openModal={openModal} setOpenModal={setOpenModal}/>}
+{
+  openDeletar &&  <ModalDeletarExame handleDeletarExame={handleDeletarExame} setOpenModal={setOpenDeletar} show={openDeletar}/>}
 
-    <ModalDeletarExame handleDeletarExame={handleDeletarExame} setOpenModal={setOpenDeletar} show={openDeletar}/>
+
+  <div style={{display:'none'}}>
+
+    <RelatorioLucroExames  ref={currentPage} dados={exames}/>
+
+  </div>
         </div>
     )
 
