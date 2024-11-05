@@ -5,8 +5,8 @@ import { api } from "@/services/apiClient";
 import { Badge, Button, Table } from "flowbite-react";
 import {  useCallback, useContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import {  HiMiniArrowDownOnSquare, HiTrash} from "react-icons/hi2";
-import {  HiAdjustments, HiDocumentAdd, HiFilter, HiPrinter } from "react-icons/hi";
+import {  HiMiniArrowDownOnSquare} from "react-icons/hi2";
+import {  HiAdjustments, HiDocumentAdd, HiPrinter } from "react-icons/hi";
 import { useReactToPrint } from "react-to-print";
 import { AuthContext } from "@/contexts/AuthContext";
 import { ModalAdministrarExame } from "./modalAdministrarExame";
@@ -16,8 +16,13 @@ import { GiReturnArrow } from "react-icons/gi";
 import { FiltroExames } from "./filtro";
 import { ModalReceber } from "./modalReceber";
 import { ModalConfirmar } from "../components/modalConfirmar";
-import { set } from "react-hook-form";
-import { start } from "repl";
+import { ajustarData } from "@/utils/ajusteData";
+import handleWhatsAppClick from "@/utils/openWhats";
+import { MdDelete } from "react-icons/md";
+import { BiMoneyWithdraw } from "react-icons/bi";
+import pageStyle from "@/utils/pageStyle";
+import { ReciboMensalidade } from "@/Documents/mensalidade/Recibo";
+import { to } from "react-spring";
 
 
 
@@ -64,45 +69,15 @@ export default function Exames({exames}:DataProps) {
   const [openModalReceber, setOpenModalReceber] = useState(false)
   const [formPag,setFormPag] = useState<string>('')
   const [openModalDeletar, setOpenModalDeletar] = useState(false)
+  const currentRecibo = useRef<ReciboMensalidade>(null)
 
 
 
 
 
-  const formatPhoneNumber = (phoneNumber: string) => {
-    // Remove todos os caracteres que não sejam números
-    let cleaned = phoneNumber.replace(/\D/g, '');
-
-    // Verifica se o telefone tem 11 dígitos (2 dígitos DDD + 9 dígitos número)
-    if (cleaned.length === 11) {
-        // Adiciona o código do país (Brasil: +55)
-        return `55${cleaned}`;
-    } else {
-        console.error('Número de telefone inválido:', phoneNumber);
-        return null;
-    }
-};
 
 
-const handleWhatsAppClick = useCallback(()=>{
-  if (!exameSelected?.id_exame) {
-    toast.warn('Selecione um exame para abrir o WhatsApp');
-    return;
-  }
 
-  if (!exameSelected.celular) {
-    toast.warn('Número inexistente');
-    return;
-  }
-
-
-  const formattedNumber = formatPhoneNumber(exameSelected.celular);
-  if (formattedNumber) {
-      const message = encodeURIComponent("Olá, gostaria de agendar uma consulta ?");
-      const whatsappURL = `whatsapp://send?phone=${formattedNumber}&text=${message}`;
-      window.open(whatsappURL);
-  }
-},[exameSelected.id_exame])
 
 
 
@@ -151,31 +126,37 @@ const handleWhatsAppClick = useCallback(()=>{
     },[exameSelected.id_exame,formPag])
 
 
-  const imprimirOrcamento = useCallback(useReactToPrint({
-    pageStyle: `
-    @page {
-        margin: 1rem;
-    }
-    @media print {
-        body {
-            -webkit-print-color-adjust: exact;
-        }
-        @page {
-            size: auto;
-            margin: 1rem;
-        }
-        @page {
-            @top-center {
-                content: none;
-            }
-            @bottom-center {
-                content: none;
-            }
-        }
-    }
-  `,
+  const imprimirOrcamento = useCallback(
+    
+    useReactToPrint({
+    pageStyle:pageStyle,
     content: () => currentPage.current,
-  }), []);
+    onBeforeGetContent:()=>{
+      if(!exameSelected?.id_exame){
+        toast.error('Selecione um exame para imprimir')
+        return Promise.reject();
+      }
+      Promise.resolve();
+    
+    }
+  }), [exameSelected?.id_exame]);
+
+
+  const imprimirRecibo = useCallback(useReactToPrint({
+    pageStyle: pageStyle,
+    content: () => currentRecibo.current,
+    onBeforeGetContent: () => {
+      if (!exameSelected?.id_exame) {
+        toast.error('Selecione um exame para imprimir');
+        return Promise.reject();
+      }
+      if(exameSelected?.status!=='RECEBIDO'){
+          toast.error('Exame ainda não recebido')
+        return Promise.reject();
+      }
+      Promise.resolve();
+    }
+  }), [exameSelected?.id_exame]);
 
 
   const handleDeletar = useCallback(async () => {
@@ -211,13 +192,15 @@ const handleWhatsAppClick = useCallback(()=>{
 
 
 const listarExamesRealizados =useCallback( async ({endDate,nome,startDate,status}:FiltroForm) => {
-  let dataIn
-  let dataOut
+ 
   if(startDate && endDate && startDate>endDate){
     toast.error('Data inicial maior que data final')
     return
   }
- if(startDate && endDate){  dataIn = new Date(startDate)
+
+const {dataFim,dataIni} = ajustarData(startDate,endDate)
+
+/* if(startDate && endDate){  dataIn = new Date(startDate)
   //dataIn.setHours(dataIn.getHours() - dataIn.getTimezoneOffset() / 60)
  //  dataOut = new Date(endDate)
  // dataOut.setHours(dataOut.getHours() - dataOut.getTimezoneOffset() / 60)
@@ -232,16 +215,16 @@ dataIn.setUTCHours(0,0,0,0)
 dataOut.setUTCHours(23,59,59,999)
 
 
-console.log(dataIn.toISOString(),dataOut.toISOString())
+//console.log(dataIn.toISOString(),dataOut.toISOString())
 
  
-}
+}*/
 
   try {
     const response = await api.post("/afapSaude/examesRealizados/listar",{
-      endDate:dataOut?.toISOString(),
+      endDate:dataFim,
       nome,
-      startDate:dataIn?.toISOString(),
+      startDate:dataIni,
       status
     });
     setExames(response.data)
@@ -274,6 +257,7 @@ if(data.exames.length===0){
         )
 
         setExames([...examesRealizados,response.data])
+        setExameSelected(valorInicial)
   
     } catch (error) {
        console.log(error) 
@@ -301,6 +285,7 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
     )
 
     setExames([...examesRealizados.filter(item=>item.id_exame!==Number(data.id_exame)),response.data])
+    setExameSelected(valorInicial)
 } catch (error) {
    console.log(error) 
    toast.error('Erro ao editar exame')
@@ -350,8 +335,8 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
          Orçamento
       </Button>
 
-      <Button onClick={imprimirOrcamento} size={'sm'} color="gray">
-        <HiPrinter className="mr-2 h-4 w-4" />
+      <Button onClick={imprimirRecibo} size={'sm'} color="gray">
+        <BiMoneyWithdraw className="mr-2 h-4 w-4" />
          Recibo
       </Button>
       <Button onClick={()=>setOpenModalReceber(true)} size={'sm'} color="gray">
@@ -359,12 +344,12 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
         Receber
       </Button>
       <Button color="gray" type="button"  ><GiReturnArrow className="mr-2 h-4 w-4"/> Estornar</Button>
-      <Button onClick={handleWhatsAppClick} size={'sm'} color="gray">
+      <Button onClick={()=>handleWhatsAppClick(exameSelected?.celular)} size={'sm'} color="gray">
       <FaWhatsapp className="mr-2 h-4 w-4" />
         Abrir Conversa
       </Button>
       <Button onClick={()=>setOpenModalDeletar(true)} size={'sm'} color="gray">
-        <HiTrash className="mr-2 h-4 w-4" />
+        <MdDelete className="mr-2 h-4 w-4" />
         Excluir
       </Button>
     </Button.Group>
@@ -380,6 +365,7 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
             <Table.HeadCell>Data Orçamento</Table.HeadCell>
             <Table.HeadCell>Data Pag.</Table.HeadCell>
             <Table.HeadCell>Desconto</Table.HeadCell>
+            <Table.HeadCell>Total</Table.HeadCell>
             <Table.HeadCell>Status</Table.HeadCell>
         
           </Table.Head>
@@ -393,6 +379,7 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
                 <Table.Cell>{item.data_orcamento &&new Date(item.data_orcamento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
                 <Table.Cell>{item.data_realizado && new Date(item.data_realizado).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
                 <Table.Cell>{item.tipoDesc}</Table.Cell>
+                <Table.Cell>{Number(item.exames.reduce((total, exame) => total + exame.valorFinal, 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
                 
                 <Table.Cell>
                 
@@ -422,6 +409,21 @@ handleConfirmar={handleDeletar}
 
         <div style={{display:'none'}}>
           <Orcamento dados={exameSelected} ref={currentPage} />
+
+
+
+          
+          <ReciboMensalidade
+                associado={exameSelected.nome_responsavel?exameSelected?.nome_responsavel:exameSelected?.nome}
+                contrato={exameSelected?.id_exame??null}
+                data_pgto={exameSelected?.data_realizado??null}
+                n_doc=""
+                referencia=""
+                valor={exameSelected?.exames.reduce((total, exame) => total + exame.valorFinal, 0)}
+                vencimento={new Date()}
+                ref={currentRecibo}
+                referente={`Exames`}
+               />
         </div>
 
     </div>

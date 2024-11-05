@@ -238,7 +238,7 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
                   ))}
                 </Select>
               </div>
-              <Button size={'xs'} onClick={handleAdicionarExame} className="mt-auto p-1">Adicionar</Button>
+              <Button type="button" size={'xs'} onClick={handleAdicionarExame} className="mt-auto p-1">Adicionar</Button>
 
             </div>
             <div className="overflow-x-auto ">
@@ -264,7 +264,7 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
                       <Table.Cell>{Number(item.valorFinal ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
                       <Table.Cell>
 
-                        <button onClick={() => handleDelExameTable(item.id_exame)} className="font-medium text-gray-500 hover:text-red-600 ">
+                        <button type="button" onClick={() => handleDelExameTable(item.id_exame)} className="font-medium text-gray-500 hover:text-red-600 ">
                           <HiTrash size={16} />
                         </button>
                       </Table.Cell>
@@ -273,10 +273,6 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
 
 
                   ))}
-
-
-
-
 
                   <Table.Row >
                     <Table.Cell className="whitespace-nowrap  font-semibold ">

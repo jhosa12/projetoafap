@@ -39,8 +39,9 @@ class Orcamento extends React.Component<DadosProps> {
                     <span>NOME:{dados.nome}</span>
                     <span>CELULAR:{dados.celular}</span>
                 </div>
-
-                <span>TIPO DE DESCONTO: {dados.tipoDesc}</span>
+                <p className="italic " style={{ textAlign: 'justify' }}>
+                Importante: Os exames laboratoriais listados neste orçamento são realizados por um laboratório parceiro certificado. Nossa empresa atua apenas como intermediária, oferecendo o serviço de agendamento e recebimento dos resultados para facilitar o atendimento aos nossos clientes.
+                </p>
 
                 <div>
                     <Table theme={{body:{cell:{base:"px-6 py-1 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-black"}}}}>

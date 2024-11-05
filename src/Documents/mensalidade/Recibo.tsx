@@ -7,11 +7,12 @@ import BarCode from 'react-barcode';
 interface DataProps{
    valor:number
    associado:string,
-   contrato:number,
+   contrato:number|null,
    n_doc:string,
    vencimento:Date|null,
    referencia:string
-   data_pgto:Date
+   data_pgto:Date|null,
+   referente:string
 }
 
 
@@ -19,7 +20,7 @@ export  class ReciboMensalidade extends Component<DataProps> {
 
 render(){
 
-    const {valor,associado,contrato,n_doc,vencimento,referencia,data_pgto} = this.props;
+    const {valor,associado,contrato,n_doc,vencimento,referencia,data_pgto,referente} = this.props;
 
 
     return(
@@ -33,8 +34,8 @@ render(){
                    <div style={{display:'flex',flexDirection:'row',width:'100%',gap:'15px',border:'2px solid gray',paddingLeft:'20px',paddingRight:'20px',paddingTop:'5px',paddingBottom:'5px',borderRadius:'10px',justifyContent:'space-between',alignItems:'center'}}>
                     <div style={{display:'flex',flexDirection:'column'}}>
                     <span>{`Recebi(emos) de: ${associado}`}</span>
-                    
-                    <span>Referente a: Mensalidade {n_doc} com referência {referencia}</span>
+                    {/*Mensalidade {n_doc} com referência {referencia}*/}
+                    <span>Referente a: {referente} </span>
                     <span style={{fontSize:'10px'}}>Declaro que, com este pagamento, a mensalidade acima mencionada encontra-se quitada,<br/> não havendo mais valores pendentes relativos ao referido mês.</span>
                     </div>
                     <div style={{display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',width:'25%',height:'100%'}}>
@@ -48,7 +49,7 @@ render(){
                    </div>
                    <div style={{display:'flex',flexDirection:'row',justifyContent:'center',alignItems:'center',width:'100%',gap:'10px',border:'2px solid gray',padding:'20px',borderRadius:'10px'}}>
                     <span>CEDRO,</span>
-                    <span>{new Date(data_pgto).toLocaleDateString('pt-BR',{timeZone:'UTC',day:'2-digit',month:'long',year:'numeric'})}</span>
+                    <span>{data_pgto && new Date(data_pgto).toLocaleDateString('pt-BR',{timeZone:'UTC',day:'2-digit',month:'long',year:'numeric'})}</span>
                    </div>
 
                    <div style={{display:'flex',flexDirection:'row',width:'100%',justifyContent:'space-between',alignItems:'end'}}>
@@ -86,8 +87,8 @@ render(){
                    <div style={{display:'flex',flexDirection:'row',width:'100%',gap:'15px',border:'2px solid gray',paddingLeft:'20px',paddingRight:'20px',paddingTop:'5px',paddingBottom:'5px',borderRadius:'10px',justifyContent:'space-between',alignItems:'center'}}>
                     <div style={{display:'flex',flexDirection:'column'}}>
                     <span>{`Recebi(emos) de: ${associado}`}</span>
-                    
-                    <span>Referente a: Mensalidade {n_doc} com referência {referencia}</span>
+                    {/*Mensalidade {n_doc} com referência {referencia}*/}
+                    <span>Referente a: {referente} </span>
                     <span style={{fontSize:'10px'}}>Declaro que, com este pagamento, a mensalidade acima mencionada encontra-se quitada,<br/> não havendo mais valores pendentes relativos ao referido mês.</span>
                     </div>
                     <div style={{display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',width:'25%',height:'100%'}}>
@@ -101,7 +102,7 @@ render(){
                    </div>
                    <div style={{display:'flex',flexDirection:'row',justifyContent:'center',alignItems:'center',width:'100%',gap:'10px',border:'2px solid gray',padding:'20px',borderRadius:'10px'}}>
                     <span>CEDRO,</span>
-                    <span>{new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</span>
+                    <span>{data_pgto && new Date(data_pgto).toLocaleDateString('pt-BR',{timeZone:'UTC',day:'2-digit',month:'long',year:'numeric'})}</span>
                    </div>
 
                    <div style={{display:'flex',flexDirection:'row',width:'100%',justifyContent:'space-between',alignItems:'end'}}>

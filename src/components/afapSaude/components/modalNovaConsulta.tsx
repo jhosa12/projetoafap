@@ -45,15 +45,15 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
   const handleDesconto = (event:ChangeEvent<HTMLSelectElement>)=>{
     const {value} = event.target
   const medico =  medicos.find(item=>item.id_med===Number(watch('id_med')))
-  if(value ==='Particular'){
+  if(value ==='PARTICULAR'){
     setValue('vl_final',Number(medico?.particular))
     setValue('vl_desc',0)
   }
-  if(value ==='Funeraria'){
+  if(value ==='FUNERARIA'){
     setValue('vl_final',Number(medico?.funeraria))
     setValue('vl_desc',Number(medico?.particular)-Number(medico?.funeraria))
   }
-  if(value ==='Plano'){
+  if(value ==='PLANO'){
     setValue('vl_final',Number(medico?.plano))
     setValue('vl_desc',Number(medico?.particular)-Number(medico?.plano))
   }
@@ -291,10 +291,10 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
           
               <Select sizing={'sm'} {...register('tipoDesc')} onChange={e=>handleDesconto(e)} className="focus:outline-none"   required >
                     <option value={''}></option>
-                    <option value={'Particular'}>Particular</option>
+                    <option value={'PARTICULAR'}>PARTICULAR</option>
                     
-                    <option value={'Funeraria'}>Funerária</option>
-                    <option value={'Plano'}>Plano</option>
+                    <option value={'FUNERARIA'}>FUNERÁRIA</option>
+                    <option value={'PLANO'}>PLANO</option>
               </Select>
             </div>
 
@@ -302,10 +302,10 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
             
             <Label className="text-xs" value="Valor Final" />
        
-          <TextInput disabled sizing={'sm'} {...register('vl_final')} className="focus:outline-none disabled:text-black"  placeholder="Valor" required />
+          <TextInput theme={{field:{input:{base:"block w-full border disabled:cursor-not-allowed "}}}} disabled sizing={'sm'} {...register('vl_final')} className="focus:outline-none disabled:text-black"  placeholder="Valor" required />
         </div>
 
-          <div className="col-span-3">
+          <div className="col-span-3 op">
           <Button className="ml-auto" type="submit">{consulta?.id_consulta ? 'Atualizar' : 'Cadastrar'}</Button>
           </div>
       

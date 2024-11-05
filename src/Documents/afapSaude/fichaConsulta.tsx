@@ -11,29 +11,31 @@ interface DadosProps{
     nome:string, 
     cpf:string,
     rg:string,
-    logradouro:string,
+    endereco:string,
     bairro:string,
     cidade:string,
-    uf:string,
-    telefone:string,
-    contrato:number,
-    material:string
+    celular:string,
+    nascimento:Date|undefined
+    responsavel:string,
+    parentesco:string
+ 
 }
 
 
 class FichaConsulta extends React.Component<DadosProps> {
    
   render() {
-    const {  nome, 
+    const {nome, 
         cpf,
         rg,
-        logradouro,
+        endereco,
         bairro,
         cidade,
-        uf,
-        telefone,
-        contrato,
-        material } = this.props;
+       celular,
+       nascimento,
+       parentesco,
+        responsavel
+         } = this.props;
 
         const options:Intl.DateTimeFormatOptions = {
             weekday: 'long', // Dia da semana por extenso
@@ -59,24 +61,24 @@ class FichaConsulta extends React.Component<DadosProps> {
          <h2 style={{fontWeight:'bold',fontSize:'12px',borderBottom:'2px solid gray',width:'100%',textAlign:'center'}}>Dados do Paciente</h2>
          <div style={{display:'flex',flexDirection:'column',width:'100%',fontSize:'14px',gap:'5px'}}>
           <div style={{display:'flex',justifyContent:'space-between',width:'100%'}} >
-            <span >Paciente: </span>
-            <span>Nascimento:</span>
+            <span >Paciente: {nome} </span>
+            <span>Nascimento: {nascimento && new Date(nascimento).toLocaleDateString('pt-BR')}</span>
           </div>
           <div style={{display:'flex',justifyContent:'space-between',width:'100%'}} >
-            <span >CPF: </span>
-            <span>Identidade:</span>
-            <span>Celular:</span>
-          </div>
-
-          <div style={{display:'flex',justifyContent:'space-between',width:'100%'}} >
-            <span >Endereço: </span>
-            <span>Bairro:</span>
-            <span>Cidade:</span>
+            <span >CPF: {cpf} </span>
+            <span>Identidade: {rg}</span>
+            <span>Celular: {celular}</span>
           </div>
 
           <div style={{display:'flex',justifyContent:'space-between',width:'100%'}} >
-            <span >Responsável: </span>
-            <span>Parentesco:</span>
+            <span >Endereço: {endereco} </span>
+            <span>Bairro: {bairro}</span>
+            <span>Cidade: {cidade}</span>
+          </div>
+
+          <div style={{display:'flex',justifyContent:'space-between',width:'100%'}} >
+            <span >Responsável: {responsavel} </span>
+            <span>Parentesco: {parentesco}</span>
           </div>
 
           </div>
@@ -87,7 +89,7 @@ class FichaConsulta extends React.Component<DadosProps> {
          <h2 style={{fontWeight:'bold',fontSize:'12px',borderBottom:'2px solid gray',width:'100%',textAlign:'center'}}>Dados da Consulta</h2>
          <div style={{display:'flex',flexDirection:'column',width:'100%',fontSize:'14px',gap:'5px'}}>
           <div style={{display:'flex',justifyContent:'space-between',width:'100%'}} >
-            <span >Data da Consulta: </span>
+            <span >Data da Consulta: {new Date().toLocaleDateString('pt-BR',{timeZone:'America/Fortaleza'})}</span>
             <span>Horário da Consulta:</span>
           </div>
           <div style={{display:'flex',justifyContent:'space-between',width:'100%'}} >
