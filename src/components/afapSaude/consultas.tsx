@@ -181,11 +181,11 @@ const handleDeletar = useCallback(async () => {
        
         <Button.Group >
       
-      <Button onClick={() =>{setData(valorInicial), setOpenModal(true)}} size={'sm'} color="gray">
+      <Button  className="text-blue-500" onClick={() =>{setData(valorInicial), setOpenModal(true)}} size={'sm'} color="gray">
         <HiDocumentAdd className="mr-2 h-4 w-4" />
         Adicionar
       </Button>
-      <Button onClick={() =>  setOpenModal(true)} size={'sm'} color="gray">
+      <Button  onClick={() =>  setOpenModal(true)} size={'sm'} color="gray">
         <HiPencil className="mr-2 h-4 w-4" />
         Editar
       </Button>
@@ -198,16 +198,16 @@ const handleDeletar = useCallback(async () => {
         <BiMoneyWithdraw className="mr-2 h-4 w-4" />
          Recibo
       </Button>
-      <Button onClick={() => setModalReceber(true)} size={'sm'} color="gray">
+      <Button className="text-green-400" onClick={() => setModalReceber(true)} size={'sm'} color="gray">
         <HiMiniArrowDownOnSquare className="mr-2 h-4 w-4" />
         Receber
       </Button>
-      <Button color="gray" type="button"  ><GiReturnArrow className="mr-2 h-4 w-4"/> Estornar</Button>
+      <Button className="text-yellow-300" color="gray" type="button"  ><GiReturnArrow className="mr-2 h-4 w-4"/> Estornar</Button>
       <Button onClick={()=>handleWhatsAppClick(data?.celular)} size={'sm'} color="gray">
       <FaWhatsapp className="mr-2 h-4 w-4" />
         Abrir Conversa
       </Button>
-      <Button onClick={()=>setModalDeletar(true)} size={'sm'} color="gray">
+      <Button className="text-red-500" onClick={()=>setModalDeletar(true)} size={'sm'} color="gray">
         <MdDelete className="mr-2 h-4 w-4" />
         Excluir
       </Button>

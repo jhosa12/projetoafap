@@ -312,12 +312,12 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
 
         <Button.Group >
       
-      <Button onClick={() =>{ setOpenModal(true),setExameSelected(valorInicial)}} size={'sm'} color="gray">
+      <Button className="text-blue-500" onClick={() =>{ setOpenModal(true),setExameSelected(valorInicial)}} size={'sm'} color="gray">
         <HiDocumentAdd className="mr-2 h-4 w-4" />
         Adicionar
       </Button>
       <Button onClick={()=>setOpenModal(true)} size={'sm'} color="gray">
-        <HiAdjustments className="mr-2 h-4 w-4" />
+        <HiAdjustments  className="mr-2 h-4 w-4" />
         Editar
       </Button>
       <Button onClick={imprimirOrcamento} size={'sm'} color="gray">
@@ -329,16 +329,16 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
         <BiMoneyWithdraw className="mr-2 h-4 w-4" />
          Recibo
       </Button>
-      <Button onClick={()=>setOpenModalReceber(true)} size={'sm'} color="gray">
+      <Button className="text-green-400" onClick={()=>setOpenModalReceber(true)} size={'sm'} color="gray">
         <HiMiniArrowDownOnSquare className="mr-2 h-4 w-4" />
         Receber
       </Button>
-      <Button color="gray" type="button"  ><GiReturnArrow className="mr-2 h-4 w-4"/> Estornar</Button>
+      <Button  className="text-yellow-300" color="gray" type="button"  ><GiReturnArrow className="mr-2 h-4 w-4"/> Estornar</Button>
       <Button onClick={()=>handleWhatsAppClick(exameSelected?.celular)} size={'sm'} color="gray">
       <FaWhatsapp className="mr-2 h-4 w-4" />
         Abrir Conversa
       </Button>
-      <Button onClick={()=>setOpenModalDeletar(true)} size={'sm'} color="gray">
+      <Button className="text-red-500" onClick={()=>setOpenModalDeletar(true)} size={'sm'} color="gray">
         <MdDelete className="mr-2 h-4 w-4" />
         Excluir
       </Button>
