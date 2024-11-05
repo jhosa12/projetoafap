@@ -16,6 +16,7 @@ import { ModalEditarMensalidade } from './modalEditarMensalidade';
 import { ModalExcluirMens } from './modalExcluirMens';
 import { MensalidadeProps } from '@/types/financeiro';
 import { ReciboMensalidade } from '@/Documents/mensalidade/Recibo';
+import pageStyle from '@/utils/pageStyle';
 
 
 
@@ -193,28 +194,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
 
 
     const imprimirCarne = useReactToPrint({
-        pageStyle: `
-            @page {
-                margin: 1rem;
-            }
-            @media print {
-                body {
-                    -webkit-print-color-adjust: exact;
-                }
-                @page {
-                    size: auto;
-                    margin: 1rem;
-                }
-                @page {
-                    @top-center {
-                        content: none;
-                    }
-                    @bottom-center {
-                        content: none;
-                    }
-                }
-            }
-        `,
+        pageStyle:pageStyle,
         documentTitle: 'CARNÊ ASSOCIADO',
         content: () => componentRef.current,
         onBeforeGetContent: () => setIsPrinting(true),  // Ativa antes da impressão
@@ -365,6 +345,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                     valor={mensalidadeRecibo?.valor_principal ?? 0}
                     vencimento={mensalidadeRecibo?.vencimento ?? null}
                     data_pgto={mensalidadeRecibo?.data_pgto ?? new Date()}
+                    referente={`Mensalidade ${mensalidadeRecibo?.n_doc} com referência ${mensalidadeRecibo?.referencia}`}
                 />
             </div>}
 

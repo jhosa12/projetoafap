@@ -163,7 +163,7 @@ try {
 
 
       <div className="hidden">
-        <FichaConsulta bairro="" cidade="" contrato={0} cpf="" logradouro="" material="" nome="" rg="" telefone="" uf="" ref={currentPage}/>
+     <FichaConsulta nascimento={new Date()} parentesco="" responsavel="" bairro="" cidade=""  cpf="" endereco=""  nome="" rg="" celular=""  ref={currentPage}/>
       </div>
 
 
