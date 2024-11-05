@@ -68,7 +68,24 @@ const imprimirFicha = useCallback(useReactToPrint({
 const imprimirRecibo = useCallback(useReactToPrint({
   pageStyle: pageStyle,
   content: () => currentRecibo.current,
-}), []);
+  onBeforeGetContent: () => {
+    if(!data?.id_consulta){
+      toast.warning('Selecione uma consulta')
+      return Promise.reject();
+    }
+
+    if(data?.status !== 'RECEBIDO'){
+      toast.warning('Consulta não foi recebida!')
+      return Promise.reject();
+    }
+
+    if(data?.vl_final === 0||data?.vl_final === null){
+      toast.warning('Consulta sem valor definido!')
+      return Promise.reject();
+    }
+    Promise.resolve();
+  }
+}), [data?.id_consulta]);
 
 
 

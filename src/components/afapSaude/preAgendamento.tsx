@@ -47,6 +47,11 @@ useEffect(() => {
 
 
 const gerarConsulta = async () => {
+
+    if(dados?.status !== 'CONFIRMADO') {
+        toast.warning('Esse cliente ainda não foi confirmado')
+        return
+    }
   
     try {
 
