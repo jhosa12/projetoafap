@@ -73,18 +73,8 @@ export default function Exames({exames}:DataProps) {
 
 
 
-
-
-
-
-
-
-
-
-
   const handleReceberExame = useCallback(async ()=>{
 
-   // alert(formPag)
 
     if (!formPag){
       toast.warn('Selecione a forma de pagamento')

@@ -20,6 +20,9 @@ import { FaWhatsapp } from "react-icons/fa";
 import handleWhatsAppClick from "@/utils/openWhats";
 import pageStyle from "@/utils/pageStyle";
 import { ReciboMensalidade } from "@/Documents/mensalidade/Recibo";
+import { ModalConfirmar } from "./components/modalConfirmar";
+import { ModalReceber } from "./exames/modalReceber";
+import { formToJSON } from "axios";
 
 
 
@@ -27,12 +30,11 @@ import { ReciboMensalidade } from "@/Documents/mensalidade/Recibo";
 interface DataProps {
   medicos: Array<MedicoProps>,
   consultas: Array<ConsultaProps>
-  exames: Array<ExamesProps>
   setConsultas: (array: Array<ConsultaProps>) => void
   buscarConsultas: ({ startDate, endDate }: { startDate: Date, endDate: Date }) => Promise<void>
   loading: boolean
 }
-export default function Consultas({ medicos, consultas, exames, setConsultas, buscarConsultas, loading }: DataProps) {
+export default function Consultas({ medicos, consultas, setConsultas, buscarConsultas, loading }: DataProps) {
 
   const valorInicial ={celular:'',cpf:'',data:new Date(),espec:'',exames:[],id_consulta:null,id_med:null,nome:'',tipoDesc:'',vl_consulta:0,vl_desc:0,vl_final:0}
   const [openModal, setOpenModal] = useState(false);
@@ -40,18 +42,9 @@ export default function Consultas({ medicos, consultas, exames, setConsultas, bu
   const {usuario} = useContext(AuthContext)
   const [modalFiltro, setModalFiltro] = useState<boolean>(false)
   const [modalDeletar, setModalDeletar] = useState<boolean>(false)
-  const [dataExame, setDataExam] = useState<ExamesProps>({
-    data: new Date,
-    id_exame:0,
-    nome: '',
-    valorBruto: 0,
-    valorFinal: 0,
-    porcFun: 0,
-    porcPart: 0,
-    porcPlan: 0,
-    usuario: '',
-    obs: '',
-  })
+  const [modalReceber,setModalReceber] = useState<boolean>(false)
+  const [formPag,setFormPag] = useState<string>('')
+
 
 const currentPage = useRef<FichaConsulta>(null)
 const currentRecibo = useRef<ReciboMensalidade>(null)
@@ -105,6 +98,15 @@ const handleReceberConsulta = useCallback(async ()=>{
     toast.warning('Consulta ja foi recebida!')
     return
   }
+  if(data?.vl_final === 0||data?.vl_final === null){
+    toast.warning('Consulta sem valor definido!')
+    return;
+  }
+
+  if(!formPag){
+    toast.warning('Selecione uma forma de pagamento')
+    return
+  }
 
 try {
   const dataAtual = new Date()
@@ -141,6 +143,12 @@ const handleDeletar = useCallback(async () => {
     toast.warning('Selecione uma consulta')
     return
   }
+
+  
+  if(data?.status === 'RECEBIDO'){
+    toast.warning('Impossivel deletar. Consulta ja foi recebida!')
+    return
+  }
   try {
     const response = await toast.promise(
       api.delete(`/afapSaude/consultas/deletarCadastro/${data?.id_consulta}`),
@@ -163,42 +171,7 @@ const handleDeletar = useCallback(async () => {
 
 
 
-  const handleExame = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
-
-    if (!event.target.value) {
-      setDataExam({
-        data: new Date,
-        id_exame: 0,
-        nome: '',
-        valorBruto: 0,
-        valorFinal: 0,
-        porcFun: 0,
-        porcPart: 0,
-        porcPlan: 0,
-        usuario: '',
-        obs: '',
-      })
-      return
-    }
-    const item = exames.find(atual => atual.id_exame === Number(event.target.value))
-
-
-    
-
-
-    item?.id_exame && setDataExam({
-      data: new Date(),
-      id_exame: item?.id_exame,
-      nome: item?.nome ?? '',
-      valorBruto: item?.valorBruto ?? 0,
-      valorFinal: item.valorBruto,
-      porcFun: item.porcFun,
-      porcPart: item.porcPart,
-      porcPlan: item.porcPlan,
-      usuario: item?.usuario ?? '',
-      obs: item?.obs ?? '',
-    })
-  },[exames])
+ 
 
 
   return (
@@ -225,7 +198,7 @@ const handleDeletar = useCallback(async () => {
         <BiMoneyWithdraw className="mr-2 h-4 w-4" />
          Recibo
       </Button>
-      <Button onClick={() => handleReceberConsulta()} size={'sm'} color="gray">
+      <Button onClick={() => setModalReceber(true)} size={'sm'} color="gray">
         <HiMiniArrowDownOnSquare className="mr-2 h-4 w-4" />
         Receber
       </Button>
@@ -280,10 +253,12 @@ const handleDeletar = useCallback(async () => {
         </Table>
       </div>
 
-     {openModal && <ModalConsulta  consultas={consultas}  dataExame={dataExame}  handleExame={handleExame}  consulta={data ??{}} setConsultas={setConsultas} exames={exames} medicos={medicos} openModal={openModal} setOpenModal={setOpenModal} />}
+     {openModal && <ModalConsulta  consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={openModal} setOpenModal={setOpenModal} />}
 
       <ModalDeletarExame setOpenModal={setModalDeletar} show={modalDeletar} handleDeletarExame={handleDeletar} />
       <ModalFiltroConsultas buscarConsultas={buscarConsultas} loading={loading} setFiltro={setModalFiltro} show={modalFiltro} />
+
+   {modalReceber &&   <ModalReceber formPag={formPag} setFormPag={setFormPag} handleReceberExame={handleReceberConsulta}  openModal={modalReceber} setOpenModal={setModalReceber} />}
 
 
 

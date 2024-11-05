@@ -10,15 +10,13 @@ interface DataProps{
     openModal:boolean,
     setOpenModal:(toogle:boolean)=>void
     medicos:Array<MedicoProps>
-    exames:Array<ExamesProps>
     consultas:Array<ConsultaProps>
     consulta:Partial<ConsultaProps> ,
     setConsultas:(array:Array<ConsultaProps>)=>void
-    handleExame: (event:ChangeEvent<HTMLSelectElement>)=>void
-  dataExame:ExamesProps,
+
 }
 
-export function ModalConsulta({openModal,setOpenModal,medicos,exames,consulta,setConsultas,handleExame,dataExame,consultas}:DataProps) {
+export function ModalConsulta({openModal,setOpenModal,medicos,consulta,setConsultas,consultas}:DataProps) {
 
   const {register,setValue,handleSubmit,watch,control} =  useForm<ConsultaProps>({defaultValues:consulta})
    console.log(consulta)

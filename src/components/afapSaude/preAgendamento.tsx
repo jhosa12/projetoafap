@@ -13,6 +13,7 @@ import { PopoverFiltro } from "./components/PopoverFiltro";
 import { ModalConfirmar } from "./components/modalConfirmar";
 import { Tooltip } from "react-tooltip";
 import { FaNotesMedical } from "react-icons/fa";
+import handleWhatsAppClick from "@/utils/openWhats";
 
 
 
@@ -85,6 +86,11 @@ const gerarConsulta = async () => {
 
 
 const handleAlterarStatus = async () => {
+
+    if(!dados?.data_prev ) {
+        toast.warning('Cliente ainda não agendou data!')
+        return;
+    }
      
     try {
 
@@ -163,28 +169,9 @@ const handleChangeStatus = ({event,item}:{event: ChangeEvent<HTMLSelectElement>,
     }
 
 
-    const formatPhoneNumber = (phoneNumber: string) => {
-        // Remove todos os caracteres que não sejam números
-        let cleaned = phoneNumber.replace(/\D/g, '');
+  
 
-        // Verifica se o telefone tem 11 dígitos (2 dígitos DDD + 9 dígitos número)
-        if (cleaned.length === 11) {
-            // Adiciona o código do país (Brasil: +55)
-            return `55${cleaned}`;
-        } else {
-            console.error('Número de telefone inválido:', phoneNumber);
-            return null;
-        }
-    };
 
-    const handleWhatsAppClick = (phoneNumber: string) => {
-        const formattedNumber = formatPhoneNumber(phoneNumber);
-        if (formattedNumber) {
-            const message = encodeURIComponent("Olá, gostaria de agendar uma consulta ?");
-            const whatsappURL = `whatsapp://send?phone=${formattedNumber}&text=${message}`;
-            window.open(whatsappURL);
-        }
-    };
 
     return (
         <>
