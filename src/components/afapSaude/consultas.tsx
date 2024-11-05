@@ -61,7 +61,7 @@ const currentRecibo = useRef<ReciboMensalidade>(null)
 const imprimirFicha = useCallback(useReactToPrint({
   pageStyle: pageStyle,
   content: () => currentPage.current,
-}), []);
+}), [data?.id_consulta]);
 
 
 
@@ -131,7 +131,7 @@ try {
 } catch (error) {
   console.log(error)
 }
-},[usuario])
+},[usuario,data?.id_consulta,data?.status])
 
 
 
