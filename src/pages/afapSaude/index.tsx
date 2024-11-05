@@ -350,7 +350,7 @@ const buscarConsultas = async ({startDate,endDate}:{startDate:Date,endDate:Date}
       </Tabs.Item>
 
       <Tabs.Item title="Consultas" icon={HiClipboardList}>
-      <Consultas loading={loading} buscarConsultas={buscarConsultas} setConsultas={setConsultas} exames={exames} consultas={consultas} medicos={medicos}/>
+      <Consultas loading={loading} buscarConsultas={buscarConsultas} setConsultas={setConsultas}  consultas={consultas} medicos={medicos}/>
       </Tabs.Item>
       <Tabs.Item title="Exames" icon={BiSolidInjection}>
      <Exames exames={exames}/>
