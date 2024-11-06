@@ -105,6 +105,7 @@ export interface MedicoProps {
 export interface ClientProps {
   data_prev:Date|undefined,
   id_agcli: number,
+  user:string,
   espec: string,
   medico: string,
   id_agmed: number|null,

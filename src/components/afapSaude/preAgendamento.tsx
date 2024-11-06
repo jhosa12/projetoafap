@@ -217,19 +217,19 @@ const handleChangeStatus = ({event,item}:{event: ChangeEvent<HTMLSelectElement>,
                                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                                     {item.nome}
                                 </Table.Cell>
-                                <Table.Cell>{item.medico}</Table.Cell>
-                                <Table.Cell className="whitespace-nowrap">{item.celular}</Table.Cell>
-                                <Table.Cell>{item.data && new Date(item.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
+                                <Table.Cell>{item?.medico}</Table.Cell>
+                                <Table.Cell className="whitespace-nowrap">{item?.celular}</Table.Cell>
+                                <Table.Cell>{item?.data && new Date(item?.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
 
-                                <Table.Cell>{item.data_prev && new Date(item.data_prev).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
+                                <Table.Cell>{item?.data_prev && new Date(item?.data_prev).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
 
                                 <Table.Cell>
                                     <select   className={`font-semibold border-none focus:ring-0 hover:cursor-pointer  appearance-none outline-none text-xs ${
-    item.status === 'AGENDADO' ? 'text-blue-500' :
-    item.status === 'AGUARDANDO DATA' ? 'text-yellow-500' :
-    item.status === 'CONFIRMADO' ? 'text-green-500' :
-    item.status === 'CANCELADO' ? 'text-red-500' : ''
-  }`}  value={item.status} onChange={e => handleChangeStatus({item, event:e})}>
+    item?.status === 'AGENDADO' ? 'text-blue-500' :
+    item?.status === 'AGUARDANDO DATA' ? 'text-yellow-500' :
+    item?.status === 'CONFIRMADO' ? 'text-green-500' :
+    item?.status === 'CANCELADO' ? 'text-red-500' : ''
+  }`}  value={item?.status} onChange={e => handleChangeStatus({item, event:e})}>
                                         <option disabled className="font-semibold text-blue-500" value={'AGENDADO'}>
                                         AGENDADO
                                             </option>
@@ -238,7 +238,7 @@ const handleChangeStatus = ({event,item}:{event: ChangeEvent<HTMLSelectElement>,
                                         <option className="text-red-500 font-semibold" value={'CANCELADO'}>CANCELADO</option>
                                     </select>
                                 </Table.Cell>
-                                <Table.Cell>{}</Table.Cell>
+                                <Table.Cell>{item?.user}</Table.Cell>
                                 
                                 <Table.Cell className="text-slate-500">
                                     <div className="inline-flex gap-3">

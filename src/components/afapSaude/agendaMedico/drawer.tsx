@@ -57,6 +57,16 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
       return;
     }
 
+    if(new Date(data.end) <= new Date(data.start)){
+      toast.info('Data final deve ser maior que a data inicial')
+      return;
+    }
+    if(new Date(data.start).toLocaleDateString() !== new Date(data.end).toLocaleDateString()){
+      toast.info('Data final deve ser igual a data inicial')
+      return;
+      
+    }
+
     try {
 
    

@@ -34,9 +34,13 @@ interface DataProps {
   buscarConsultas: ({ startDate, endDate }: { startDate: Date, endDate: Date }) => Promise<void>
   loading: boolean
 }
+
+export const valorInicial ={celular:'',cpf:'',data:new Date(),espec:'',exames:[],id_consulta:null,id_med:null,nome:'',tipoDesc:'',vl_consulta:0,vl_desc:0,vl_final:0}
+
+
 export default function Consultas({ medicos, consultas, setConsultas, buscarConsultas, loading }: DataProps) {
 
-  const valorInicial ={celular:'',cpf:'',data:new Date(),espec:'',exames:[],id_consulta:null,id_med:null,nome:'',tipoDesc:'',vl_consulta:0,vl_desc:0,vl_final:0}
+
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState<Partial<ConsultaProps>>()
   const {usuario} = useContext(AuthContext)
@@ -130,10 +134,11 @@ try {
   )
   buscarConsultas({startDate:new Date(),endDate:new Date()})
   setData(valorInicial)
+  setModalReceber(false)
 } catch (error) {
   console.log(error)
 }
-},[usuario,data?.id_consulta,data?.status])
+},[usuario,data?.id_consulta,consultas,data?.vl_final,formPag])
 
 
 
@@ -253,7 +258,7 @@ const handleDeletar = useCallback(async () => {
         </Table>
       </div>
 
-     {openModal && <ModalConsulta  consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={openModal} setOpenModal={setOpenModal} />}
+     {openModal && <ModalConsulta setConsulta={setData} consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={openModal} setOpenModal={setOpenModal} />}
 
       <ModalDeletarExame setOpenModal={setModalDeletar} show={modalDeletar} handleDeletarExame={handleDeletar} />
       <ModalFiltroConsultas buscarConsultas={buscarConsultas} loading={loading} setFiltro={setModalFiltro} show={modalFiltro} />

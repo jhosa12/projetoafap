@@ -44,19 +44,19 @@ export function ModalEditExames({openModal,setOpenModal,data,setData,handleAdici
           
             <div>
              
-                <Label className="text-xs" htmlFor="particular" value="Particular(%)" />
+                <Label className="text-xs" htmlFor="particular" value="Valor Particular(R$)" />
              
               <TextInput sizing={'sm'} value={data.porcPart} onChange={e=>setData({...data,porcPart:Number(e.target.value)})}  inputMode="numeric" id="particular"  placeholder="Desconto" required />
             </div>
             <div>
              
-                <Label className="text-xs" htmlFor="funeraria" value="Funerária(%)" />
+                <Label className="text-xs" htmlFor="funeraria" value="Desconto Funerária(%)" />
              
               <TextInput sizing={'sm'} value={data.porcFun} onChange={e=>setData({...data,porcFun:Number(e.target.value)})} inputMode="numeric" id="funeraria"  placeholder="Desconto" required />
             </div>
             <div>
               
-                <Label className="text-xs" htmlFor="plano" value="Plano(%)" />
+                <Label className="text-xs" htmlFor="plano" value="Desconto Plano(%)" />
              
               <TextInput sizing={'sm'} value={data.porcPlan} onChange={e=>setData({...data,porcPlan:Number(e.target.value)})} inputMode="numeric" id="plano"  placeholder="Desconto" required />
             </div>

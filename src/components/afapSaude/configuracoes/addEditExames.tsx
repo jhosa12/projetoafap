@@ -10,6 +10,7 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { IoIosPrint } from "react-icons/io";
 import { useReactToPrint } from "react-to-print";
 import RelatorioLucroExames from "@/Documents/afapSaude/relatorioLucroExames";
+import pageStyle from "@/utils/pageStyle";
 
 interface DataProps{
     exames:Array<ExamesProps>
@@ -28,28 +29,7 @@ const [openDeletar,setOpenDeletar] = useState<boolean>(false)
 
 
 const imprimirRelatorio = useCallback(useReactToPrint({
-    pageStyle: `
-    @page {
-        margin: 1rem;
-    }
-    @media print {
-        body {
-            -webkit-print-color-adjust: exact;
-        }
-        @page {
-            size: auto;
-            margin: 1rem;
-        }
-        @page {
-            @top-center {
-                content: none;
-            }
-            @bottom-center {
-                content: none;
-            }
-        }
-    }
-  `,
+    pageStyle:pageStyle,
     content: () => currentPage.current,
   }), []);
 
@@ -147,7 +127,7 @@ const handleEditarExame =async()=>{
         <Table.Head>
           <Table.HeadCell>Exame</Table.HeadCell>
           <Table.HeadCell>Valor Bruto</Table.HeadCell>
-          <Table.HeadCell>Desconto Particular</Table.HeadCell>
+          <Table.HeadCell>Valor Particular</Table.HeadCell>
           <Table.HeadCell>Desconto Funerária</Table.HeadCell>
           <Table.HeadCell>Desconto Plano</Table.HeadCell>
           <Table.HeadCell>
@@ -161,7 +141,7 @@ const handleEditarExame =async()=>{
               {item.nome}
             </Table.Cell>
             <Table.Cell>{Number(item.valorBruto).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
-            <Table.Cell>{item.porcPart}%</Table.Cell>
+            <Table.Cell>{Number(item.porcPart).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
             <Table.Cell>{item.porcFun}%</Table.Cell>
             <Table.Cell>{item.porcPlan}%</Table.Cell>
             <Table.Cell className="space-x-4">

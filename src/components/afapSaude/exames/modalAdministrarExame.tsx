@@ -67,7 +67,7 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
 
 
 
-    const vl_particular = ((Number(exame.valorBruto) + Number(exame.valorBruto) * (Number(exame.porcPart) / 100)))
+    const vl_particular =Number(exame.porcPart)
 
     const desconto = tipo === 'PARTICULAR' ? 0 : tipo === 'FUNERARIA' ?
       (vl_particular * (Number(exame.porcFun) / 100)) : (vl_particular * (Number(exame.porcPlan) / 100))

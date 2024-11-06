@@ -5,6 +5,7 @@ import { ChangeEvent, useState } from "react";
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { valorInicial } from "../consultas";
 
 interface DataProps{
     openModal:boolean,
@@ -13,10 +14,11 @@ interface DataProps{
     consultas:Array<ConsultaProps>
     consulta:Partial<ConsultaProps> ,
     setConsultas:(array:Array<ConsultaProps>)=>void
+    setConsulta:(consulta:Partial<ConsultaProps>)=>void
 
 }
 
-export function ModalConsulta({openModal,setOpenModal,medicos,consulta,setConsultas,consultas}:DataProps) {
+export function ModalConsulta({openModal,setOpenModal,medicos,consulta,setConsultas,consultas,setConsulta}:DataProps) {
 
   const {register,setValue,handleSubmit,watch,control} =  useForm<ConsultaProps>({defaultValues:consulta})
    console.log(consulta)
@@ -24,6 +26,7 @@ export function ModalConsulta({openModal,setOpenModal,medicos,consulta,setConsul
   const handleOnSubmit:SubmitHandler<ConsultaProps> = (data)=>{
     
   data.id_consulta ? handleEditarConsulta(data) :  handleCadastrar(data)
+  
   
   }
 
@@ -86,6 +89,7 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
       const index = novoArray.findIndex(item => item.id_consulta === data?.id_consulta)
       novoArray[index] = { ...response.data }
       setConsultas(novoArray)
+      setConsulta(valorInicial)
     } catch (error) {
       toast.warning('Consulte o TI')
     }
@@ -120,6 +124,7 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
       )
 
       setConsultas([...consultas, response.data])
+      setOpenModal(false)
 
     } catch (error) {
       console.log(error)

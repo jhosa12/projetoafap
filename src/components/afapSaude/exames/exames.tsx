@@ -44,6 +44,9 @@ export interface ExameRealizadoProps{
   id_selected:number|null,
   celular:string,
   endereco:string,
+  numero:number|null,
+  bairro:string,
+  cidade:string,
   data_orcamento: Date,
   data_realizado:Date,
   exames:Array<ExamesData>,
@@ -59,7 +62,7 @@ export interface ExameRealizadoProps{
 }
 
 export default function Exames({exames}:DataProps) {
-  const valorInicial = {id_exame:null,celular:'',data_orcamento:new Date(),data_realizado:new Date(),exames:[],coleta:'',tipoDesc:'',cpf:'',data_nasc:new Date(),nome_responsavel:'',parentesco:'',nome:'',status:'',user:'',endereco:'',id_selected:null}
+  const valorInicial = {id_exame:null,celular:'',data_orcamento:new Date(),data_realizado:new Date(),exames:[],coleta:'',tipoDesc:'',cpf:'',data_nasc:new Date(),nome_responsavel:'',parentesco:'',nome:'',status:'',user:'',endereco:'',id_selected:null,numero:null,bairro:'',cidade:''}
     const [examesRealizados,setExames] = useState<Array<ExameRealizadoProps>>([])
     const [exameSelected, setExameSelected] = useState<ExameRealizadoProps>(valorInicial)
   const {usuario} = useContext(AuthContext)
@@ -398,7 +401,7 @@ handleConfirmar={handleDeletar}
 />
 
         <div style={{display:'none'}}>
-          <Orcamento dados={exameSelected} ref={currentPage} />
+          <Orcamento dados={exameSelected} usuario={usuario?.nome ??''} ref={currentPage} />
 
 
 

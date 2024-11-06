@@ -46,6 +46,7 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                     id_med: Number(data?.id_med),
                     medico:`${dadosMedico?.nome} (${dadosMedico?.espec})`,
                     nome: data?.nome,
+                    buscar: data?.buscar,
                     title: data?.title,
                     celular: data?.celular,
                     endereco: data?.endereco,
@@ -54,6 +55,7 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                     cidade:data?.cidade,
                     complemento:data?.complemento,
                     data_prev: data?.data_prev? data?.data_prev : null,
+                   
 
                 }),
                 {
@@ -106,7 +108,8 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                     title: data?.title,
                     id_agmed: Number(data?.id_agmed),
                     data_prev: data?.data_prev,
-                    //obs: dataEvent.obs,
+                    buscar: data?.buscar,
+                    obs: data?.obs,
                    
 
                 }),
@@ -271,11 +274,9 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                                 ))}
                             </Select>
                         </div>
-                        <div className="w-full">
-                          
+                        <div className="w-full"> 
                                 <Label className="text-xs" htmlFor="small" value="Buscar na residência ?" />
-                        
-                            <Select   sizing="sm" >
+                            <Select  {...register('buscar')} sizing="sm" >
                                 <option selected value={''}></option>
                                 <option value={'SIM'}>SIM</option>
                                 <option value={'NAO'}>NÃO</option>
@@ -284,8 +285,7 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                    
 <div className="col-span-3">
 <Button className="ml-auto" type="submit" isProcessing={loading}>{!watch('id_agcli') ?"Salvar":"Alterar"}</Button> 
-</div>
-                  
+</div>               
             </form>
         </Modal.Body>
         
