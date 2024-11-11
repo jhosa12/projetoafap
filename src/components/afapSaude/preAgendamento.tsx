@@ -190,7 +190,7 @@ const handleChangeStatus = ({event,item}:{event: ChangeEvent<HTMLSelectElement>,
 
    
             {/* TABELA DE PRE AGENDAMENTOS */}
-            <div className="flex flex-col overflow-x-auto overflow-y-auto p-2 gap-1 text-black">
+            <div className="flex flex-col overflow-x-auto overflow-y-auto max-h-[calc(100vh-100px)] min-h-[calc(100vh-200px)] p-2 gap-1 text-black">
           
                 <div className="inline-flex ml-auto gap-4"> 
                 <PopoverFiltro arrayMedicos={arrayMedicos} openModal={filtrar} setOpenModal={()=>setFiltrar(!filtrar)} filtroAgenda={preAgendamento} loading={false} />

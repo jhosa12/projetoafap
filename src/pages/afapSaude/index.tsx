@@ -162,7 +162,7 @@ export default function AfapSaude() {
   const buscarExames = async ()=>{
     try {
 
-        const response  = await api.get("/afapSaude/exames")
+        const response  = await api.post("/afapSaude/exames")
 
 
         setExames(response.data)
@@ -311,7 +311,7 @@ const buscarConsultas = async ({startDate,endDate}:{startDate:Date,endDate:Date}
   }
   async function getMedicos() {
     try {
-      const response = await api.get("/medico/lista")
+      const response = await api.post("/medico/lista")
       setMedicos(response.data)
     } catch (error) {
       toast.error('ERRO NA REQUISIÇÃO')

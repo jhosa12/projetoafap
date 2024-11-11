@@ -223,7 +223,7 @@ const handleDeletar = useCallback(async () => {
 
 
 
-      <div className="overflow-x-auto h-[calc(100vh-160px)]">
+      <div className="overflow-y-auto h-[calc(100vh-160px)]">
         <Table  theme={{ body: { cell: { base: "px-6 text-black py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs" } } }}  >
 
           <Table.Head>
