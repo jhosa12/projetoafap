@@ -164,8 +164,8 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
             setArrayMov([])
             setOpenModal(false)
         } catch (err:any) {
-            console.log(err)
-            toast.error(err.response?.data?.message || 'Erro inesperado!');
+           // console.log(err)
+            toast.warning(err.response?.data?.message || 'Erro inesperado!');
         }
         setModalConfirm(false)
     }

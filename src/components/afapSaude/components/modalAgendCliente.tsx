@@ -1,10 +1,9 @@
 import { ClientProps, EventProps, MedicoProps } from "@/pages/afapSaude"
-import { da } from "date-fns/locale"
 import { Button, Label, Modal, Select, TextInput } from "flowbite-react"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import ReactInputMask from "react-input-mask"
-import { a } from "react-spring"
+
 
 
 interface DataProps {

@@ -9,7 +9,7 @@ import { MdKeyboardArrowDown, MdOutlinePlaylistAdd } from "react-icons/md";
 import { FiltroEstoque } from "./PopoverFiltro";
 import { get } from "http";
 import { TbTransferVertical } from "react-icons/tb";
-import useApi from "@/hooks/useApi";
+import useApi from "@/hooks/useApiPost";
 import { EmpresaProps } from "@/types/empresa";
 import { HiPrinter } from "react-icons/hi2";
 import { useReactToPrint } from "react-to-print";

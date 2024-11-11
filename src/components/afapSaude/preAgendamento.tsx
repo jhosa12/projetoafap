@@ -62,7 +62,12 @@ const gerarConsulta = async () => {
           data: new Date(),
           espec: dados?.espec,
          // exames: data.exames,
+         endereco: dados?.endereco,
+          bairro: dados?.bairro,
+          numero: dados?.numero,
+          cidade: dados?.cidade,
           id_med: dados?.id_med,
+          hora_prev:dados?.hora_prev,
          // tipoDesc: data.tipoDesc,
          // vl_consulta: data.vl_consulta,
          // vl_desc: data.vl_desc,
@@ -190,7 +195,7 @@ const handleChangeStatus = ({event,item}:{event: ChangeEvent<HTMLSelectElement>,
 
    
             {/* TABELA DE PRE AGENDAMENTOS */}
-            <div className="flex flex-col overflow-x-auto overflow-y-auto max-h-[calc(100vh-100px)] min-h-[calc(100vh-200px)] p-2 gap-1 text-black">
+            <div className="flex flex-col overflow-x-auto overflow-y-auto max-h-[calc(100vh-105px)] min-h-[calc(100vh-200px)] p-2 gap-1 text-black">
           
                 <div className="inline-flex ml-auto gap-4"> 
                 <PopoverFiltro arrayMedicos={arrayMedicos} openModal={filtrar} setOpenModal={()=>setFiltrar(!filtrar)} filtroAgenda={preAgendamento} loading={false} />
@@ -204,6 +209,7 @@ const handleChangeStatus = ({event,item}:{event: ChangeEvent<HTMLSelectElement>,
                         <Table.HeadCell>Cel.</Table.HeadCell>
                         <Table.HeadCell>Data Solic.</Table.HeadCell>
                         <Table.HeadCell>Data Prev.</Table.HeadCell>
+                        <Table.HeadCell>Hora Prev.</Table.HeadCell>
                         <Table.HeadCell>STATUS</Table.HeadCell>
                         <Table.HeadCell>USUÁRIO</Table.HeadCell>
                         <Table.HeadCell>
@@ -222,6 +228,8 @@ const handleChangeStatus = ({event,item}:{event: ChangeEvent<HTMLSelectElement>,
                                 <Table.Cell>{item?.data && new Date(item?.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
 
                                 <Table.Cell>{item?.data_prev && new Date(item?.data_prev).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
+
+                                <Table.Cell>{item?.hora_prev && new Date(item?.hora_prev).toLocaleTimeString('pt-BR')}</Table.Cell>
 
                                 <Table.Cell>
                                     <select   className={`font-semibold border-none focus:ring-0 hover:cursor-pointer  appearance-none outline-none text-xs ${

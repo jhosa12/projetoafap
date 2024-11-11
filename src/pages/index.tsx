@@ -4,7 +4,6 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import Image from "next/image";
 import logo from "../../public/novaLogo.png"
 import {AuthContext} from "../contexts/AuthContext"
-import { canSSRGuest } from "@/utils/canSSRGuest";
 export default function Home() {
  
     const [user,setName]= useState("")

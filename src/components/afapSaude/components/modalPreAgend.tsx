@@ -6,6 +6,9 @@ import { toast } from "react-toastify"
 import { api } from "@/services/apiClient"
 import { ChangeEvent, useState } from "react"
 import { CidadesProps } from "@/types/cidades"
+import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import pt from 'date-fns/locale/pt-BR';
 
 
 interface DataProps {
@@ -46,6 +49,7 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                     id_med: Number(data?.id_med),
                     medico:`${dadosMedico?.nome} (${dadosMedico?.espec})`,
                     nome: data?.nome,
+                    hora_prev: data?.hora_prev,
                     buscar: data?.buscar,
                     title: data?.title,
                     celular: data?.celular,
@@ -55,8 +59,6 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                     cidade:data?.cidade,
                     complemento:data?.complemento,
                     data_prev: data?.data_prev? data?.data_prev : null,
-                   
-
                 }),
                 {
                     error: 'Erro na requisição',
@@ -103,6 +105,7 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                     numero:+data?.numero,
                     bairro: data?.bairro,
                     user:usuario,
+                    hora_prev:data?.hora_prev,
                     cidade: data?.cidade,
                     celular: data?.celular,
                     title: data?.title,
@@ -189,14 +192,14 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
         <Modal.Body >
             <form onSubmit={handleSubmit(handleOnSubmit)} className="grid grid-cols-3 gap-3 w-full text-black font-semibold">
 
-                <div className="col-span-2">
+            <div className="flex flex-col w-full col-span-2">
                  
                         <Label className="text-xs" htmlFor="small" value="Nome" />
                   
                     <TextInput {...register('nome')} id="small" type="text" sizing="sm" required/>
                 </div>
              
-                    <div className="w-full">
+                <div className="flex flex-col w-full">
                        
                             <Label className="text-xs" htmlFor="small" value="Celular" />
                      
@@ -209,7 +212,7 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                         />
                        
                     </div>
-                    <div className="col-span-2">
+                    <div className="flex flex-col w-full col-span-2">
                       
                             <Label className="text-xs" htmlFor="small" value="Endereço" />
                        
@@ -217,21 +220,21 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                     </div>
 
 
-                    <div className="">
+                    <div className="flex flex-col w-full">
                       
                             <Label className="text-xs" htmlFor="small" value="Numero" />
                       
                         <TextInput {...register('numero')}  type="text" sizing="sm" />
                     </div>
 
-                    <div className="col-span-2">
+                    <div className="flex flex-col w-full col-span-2">
                        
                             <Label className="text-xs" htmlFor="small" value="Bairro" />
                        
                         <TextInput {...register('bairro')} required  type="text" sizing="sm" />
                     </div>
 
-                    <div className="">
+                    <div className="flex flex-col w-full">
                        
                             <Label className="text-xs" htmlFor="small" value="Cidade"  />
                        
@@ -243,14 +246,14 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                     </Select>
                     </div>
 
-                    <div className="col-span-2">
+                    <div className="flex flex-col w-full col-span-2">
                       
                             <Label className="text-xs" htmlFor="small" value="Complemento" />
                        
                         <TextInput  {...register('complemento')}  type="text" sizing="sm" />
                     </div>
 
-                <div className="w-full">
+                    <div className="flex flex-col w-full">
                    
                         <Label className="text-xs" htmlFor="small" value="Especialista" />
                     
@@ -263,7 +266,7 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                 </div>
                 
                
-                        <div className="w-full">
+                <div className="flex flex-col w-full">
                            
                                 <Label className="text-xs" htmlFor="small" value="Consulta/Data" />
                           
@@ -274,7 +277,39 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                                 ))}
                             </Select>
                         </div>
-                        <div className="w-full"> 
+                        <div className="flex flex-col w-full">
+                           
+                           <Label className="text-xs" htmlFor="small" value="Hora Prevista" />
+
+                           <Controller
+                           control={control}
+                           name='hora_prev'
+                           render={({ field:{onChange,value} }) => (
+                            <DatePicker
+                            selected={value}
+                            onChange={(date) => onChange(date)}
+                            showTimeSelect
+                            showTimeSelectOnly
+                            timeIntervals={15}
+                            timeCaption="Time"
+                            dateFormat="h:mm"
+                            timeFormat="HH:mm"
+                            className="flex py-2 text-black px-2 w-full rounded-lg border 0  bg-gray-50 text-xs border-gray-300 "
+                          />
+                               
+                           )}
+                           
+                           />
+                     
+  
+                   </div>
+
+
+
+
+
+
+                   <div className="flex flex-col w-full">
                                 <Label className="text-xs" htmlFor="small" value="Buscar na residência ?" />
                             <Select  {...register('buscar')} sizing="sm" >
                                 <option selected value={''}></option>

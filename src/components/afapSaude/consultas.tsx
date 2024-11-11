@@ -3,7 +3,7 @@
 import { ConsultaProps,ExamesProps, MedicoProps } from "@/pages/afapSaude";
 import { api } from "@/services/apiClient";
 import { Badge, Button, Table } from "flowbite-react";
-import { ChangeEvent, useCallback, useContext, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ModalConsulta } from "./components/modalNovaConsulta";
 import { toast } from "react-toastify";
 import { HiDocument, HiMiniArrowDownOnSquare, HiPencil, HiPrinter, HiTrash } from "react-icons/hi2";
@@ -31,14 +31,13 @@ interface DataProps {
   medicos: Array<MedicoProps>,
   consultas: Array<ConsultaProps>
   setConsultas: (array: Array<ConsultaProps>) => void
-  buscarConsultas: ({ startDate, endDate }: { startDate: Date, endDate: Date }) => Promise<void>
-  loading: boolean
+ 
 }
 
 export const valorInicial ={celular:'',cpf:'',data:new Date(),espec:'',exames:[],id_consulta:null,id_med:null,nome:'',tipoDesc:'',vl_consulta:0,vl_desc:0,vl_final:0}
 
 
-export default function Consultas({ medicos, consultas, setConsultas, buscarConsultas, loading }: DataProps) {
+export default function Consultas({ medicos, consultas, setConsultas,  }: DataProps) {
 
 
   const [openModal, setOpenModal] = useState(false);
@@ -48,6 +47,7 @@ export default function Consultas({ medicos, consultas, setConsultas, buscarCons
   const [modalDeletar, setModalDeletar] = useState<boolean>(false)
   const [modalReceber,setModalReceber] = useState<boolean>(false)
   const [formPag,setFormPag] = useState<string>('')
+  const [loading,setLoading] = useState<boolean>(false)
 
 
 const currentPage = useRef<FichaConsulta>(null)
@@ -86,7 +86,26 @@ const imprimirRecibo = useCallback(useReactToPrint({
 
 
 
+const buscarConsultas = async ({startDate,endDate,id_med}:{startDate:Date,endDate:Date,id_med?:number})=>{
+  try {
+    setLoading(true)
+      const response = await api.post("/afapSaude/consultas",{
+        startDate,
+        endDate,
+        id_med
+      })
+      
+      setConsultas(response.data)
+      setLoading(false)
+  } catch (error) {
+      console.log(error)
+  }
+}
 
+
+useEffect(()=>{
+  buscarConsultas({startDate:new Date(),endDate:new Date()})  
+},[])
 
 
 
@@ -261,7 +280,7 @@ const handleDeletar = useCallback(async () => {
      {openModal && <ModalConsulta setConsulta={setData} consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={openModal} setOpenModal={setOpenModal} />}
 
       <ModalDeletarExame setOpenModal={setModalDeletar} show={modalDeletar} handleDeletarExame={handleDeletar} />
-      <ModalFiltroConsultas buscarConsultas={buscarConsultas} loading={loading} setFiltro={setModalFiltro} show={modalFiltro} />
+      <ModalFiltroConsultas medicos={medicos} buscarConsultas={buscarConsultas} loading={loading} setFiltro={setModalFiltro} show={modalFiltro} />
 
    {modalReceber &&   <ModalReceber formPag={formPag} setFormPag={setFormPag} handleReceberExame={handleReceberConsulta}  openModal={modalReceber} setOpenModal={setModalReceber} />}
 

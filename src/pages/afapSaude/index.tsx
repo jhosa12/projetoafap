@@ -124,6 +124,7 @@ export interface ClientProps {
   buscar:string
   obs: string,
   nome: string,
+  hora_prev:Date,
   celular: string,
   tipoAg: string
 }
@@ -173,20 +174,7 @@ export default function AfapSaude() {
 }
 
 
-const buscarConsultas = async ({startDate,endDate}:{startDate:Date,endDate:Date})=>{
-        try {
-          setLoading(true)
-            const response = await api.post("/afapSaude/consultas",{
-              startDate,
-              endDate
-            })
-            
-            setConsultas(response.data)
-            setLoading(false)
-        } catch (error) {
-            console.log(error)
-        }
-}
+
 
 
 
@@ -290,7 +278,7 @@ const buscarConsultas = async ({startDate,endDate}:{startDate:Date,endDate:Date}
       agenda()
      
       
-    buscarConsultas({startDate:new Date(),endDate:new Date})
+   
     buscarExames()
     
   
@@ -351,7 +339,7 @@ const buscarConsultas = async ({startDate,endDate}:{startDate:Date,endDate:Date}
       </Tabs.Item>
 
       <Tabs.Item title="Consultas" icon={HiClipboardList}>
-      <Consultas loading={loading} buscarConsultas={buscarConsultas} setConsultas={setConsultas}  consultas={consultas} medicos={medicos}/>
+      <Consultas  setConsultas={setConsultas}  consultas={consultas} medicos={medicos}/>
       </Tabs.Item>
       <Tabs.Item title="Exames" icon={BiSolidInjection}>
      <Exames exames={exames}/>

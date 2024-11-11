@@ -1,22 +1,25 @@
-import { MetasProps, SetorProps } from "@/pages/vendas"
+
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { HiFilter } from "react-icons/hi"
 import { Button, Label, Modal, Select } from "flowbite-react";
 import { useState } from "react";
+import { MedicoProps } from "@/pages/afapSaude";
 
 interface DataProps{
     show:boolean,
     setFiltro:(open:boolean)=>void,
-    buscarConsultas:({startDate,endDate}:{startDate:Date,endDate:Date})=>Promise<void>,
+    buscarConsultas:({startDate,endDate,id_med}:{startDate:Date,endDate:Date,id_med?:number})=>Promise<void>,
     loading:boolean,
+    medicos:Array<MedicoProps>  
 
 }
 
-export function ModalFiltroConsultas({loading,setFiltro,show,buscarConsultas}:DataProps){
+export function ModalFiltroConsultas({loading,setFiltro,show,buscarConsultas,medicos}:DataProps){
     const [startDate,setStartDate] = useState<Date>(new Date())
     const [endDate,setEndDate] = useState<Date>(new Date())
+    const [id_med,setId] = useState<number|undefined>(undefined)
     return(
         <Modal dismissible size={'sm'} show={show} onClose={() => setFiltro(false)}>
                 <Modal.Header >
@@ -28,6 +31,15 @@ export function ModalFiltroConsultas({loading,setFiltro,show,buscarConsultas}:Da
                     </Modal.Header>
                 <Modal.Body>
                  <div className='space-y-4'>
+                 <div >
+                        <div className="mb-1 block">
+          <Label  value="Especialista" />
+        </div>
+                       <Select value={id_med??''} onChange={(e) =>setId(e.target.value ? Number(e.target.value) : undefined)} sizing={'sm'}>
+                        <option value={''}>Selecione</option>
+                        {medicos.map((item,index)=>(<option key={index} value={item.id_med}>{item.nome}</option>))}
+                       </Select>
+                        </div>
                     
 
                        <div className='inline-flex gap-2'>
@@ -45,7 +57,7 @@ export function ModalFiltroConsultas({loading,setFiltro,show,buscarConsultas}:Da
                         </div>
                         </div>
 
-                        <Button  isProcessing={loading} className='cursor-pointer' as={'span'} onClick={()=>buscarConsultas({startDate,endDate})} size={'sm'}>Aplicar Filtro</Button>
+                        <Button  isProcessing={loading} className='cursor-pointer' as={'span'} onClick={()=>buscarConsultas({startDate,endDate,id_med})} size={'sm'}>Aplicar Filtro</Button>
                         
 
                         </div>

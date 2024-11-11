@@ -8,7 +8,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { HiFilter } from "react-icons/hi";
-import useApi from "@/hooks/useApi";
+import useApi from "@/hooks/useApiPost";
 import { EmpresaProps } from "@/types/empresa";
 
 interface ContratosProps {
