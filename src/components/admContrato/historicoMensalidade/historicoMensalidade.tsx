@@ -46,6 +46,7 @@ interface SetAssociadoProps {
 
 interface DadosAssociadoGeral {
     nome: string,
+    id_empresa: string,
     endereco: string,
     plano: string
     bairro: string,
@@ -292,7 +293,8 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                     parcela_n: ultimaMensalidade?.parcela_n && ultimaMensalidade?.parcela_n + 1,
                     vencimento: new Date(proxData),
                     cobranca: new Date(proxData),
-                    referencia: `${String(new Date(proxData).getMonth() + 1).padStart(2, '0')}/${new Date(proxData).getFullYear() % 100}`
+                    referencia: `${String(new Date(proxData).getMonth() + 1).padStart(2, '0')}/${new Date(proxData).getFullYear() % 100}`,
+                    id_empresa:dadosAssociado?.id_empresa
                 }),
                 {
                     pending: `Efetuando`,

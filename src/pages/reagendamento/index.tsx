@@ -20,6 +20,7 @@ export default function Reagendamento() {
     const {data,closeModa,dadosassociado,setarDadosAssociado,usuario}= useContext(AuthContext)
     const {setValue,watch} = useForm<AgendamentoProps>({defaultValues:{dataAge:new Date()}})
     const [selecionadas,setSelecionadas] = useState<Array<number>>([])
+    const [visible,setVisible] = useState(false)
 
 
 
@@ -65,7 +66,7 @@ export default function Reagendamento() {
     return (
     <div className=" p-2 space-y-2 bg-white rounded-lg m-2 h-[89vh]">
 
-        <Button onClick={()=>closeModa({closeModalPlano:true})} size={'sm'} className="ml-auto">Filtro</Button>
+        <Button onClick={()=>setVisible(true)} size={'sm'} className="ml-auto">Filtro</Button>
         <Card theme={{root:{children:"flex h-full flex-col  gap-2 px-4 py-2"}}}>
             <div className="inline-flex justify-between">
             <div>
@@ -122,7 +123,7 @@ export default function Reagendamento() {
         </div>
 
 
-{   data.closeModalPlano &&  <ModalBusca/>}
+{   data.closeModalPlano &&  <ModalBusca visible={visible} setVisible={()=>setVisible(false)}/>}
     </div>
 
 

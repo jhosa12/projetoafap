@@ -22,199 +22,7 @@ import ModalCadastro from "@/components/admContrato/cadastro/modalCadastro";
 import { HiClipboardList } from "react-icons/hi";
 import { FaHandshake } from "react-icons/fa";
 import { AcordosScreen } from "@/components/admContrato/acordos/screen";
-
-
-
-
-
-
-
-
-interface CidadesProps {
-    id_cidade: number,
-    estado: number,
-    uf: string,
-    cidade: string
-}
-interface PlanosProps {
-    id_plano: number,
-    descricao: string,
-    valor: number
-}
-
-
-interface MensalidadeProps {
-    id_acordo: number,
-    parcela_n: number,
-    vencimento: Date,
-    cobranca: Date,
-    valor_principal: number,
-    close: boolean,
-    status: string,
-    usuario: string,
-    id_mensalidade: number,
-    valor_total: number,
-    motivo_bonus: string,
-    data_pgto: Date,
-    referencia: string,
-    index: number
-}
-
-
-interface ConvProps {
-    editar: boolean
-    id_conv: number | null,
-    id_contrato: number | null,
-    id_associado: number | null,
-    id_dependente: number | null,
-    id_contrato_st: string,
-    tipo_entrada: string,
-    nome: string,
-    cpf_cnpj: string,
-    data: Date,
-    status: string,
-    forma_pag: string,
-    logradouro: string,
-    numero: number | null,
-    complemento: string,
-    bairro: string,
-    cep: string,
-    cidade: string,
-    uf: string,
-    subtotal: number | null,
-    descontos: number | null,
-    total: number | null,
-    logradouro_r: string,
-    numero_r: number | null,
-    complemento_r: string,
-    bairro_r: string,
-    cep_r: string,
-    cidade_r: string,
-    uf_r: string,
-    data_inc: Date,
-    hora_inc: Date,
-    usuario: string,
-    obs: string,
-    convalescenca_prod: Array<Partial<{
-        id_conv: number,
-        id_produto: number,
-        descricao: string,
-        unidade: string,
-        grupo: string,
-        data: Date,
-        data_dev: Date,
-        quantidade: number,
-        valor: number,
-        descontos: number,
-        total: number,
-        hora: Date,
-        cortesia: string,
-        retornavel: string,
-        status: string
-    }>>,
-    contrato: {
-        situacao: string,
-        carencia: string,
-        associado: {
-            nome: string
-        }
-
-    }
-
-}
-
-interface ContratoProps {
-    id_contrato: number,
-    plano: string,
-    id_plano: number,
-    valor_mensalidade: number,
-    dt_adesao: Date,
-    dt_carencia: Date,
-    situacao: string,
-    anotacoes: string,
-    consultor: string,
-    cobrador: string,
-    data_vencimento: Date,
-    n_parcelas: number,
-    origem: string,
-    supervisor: string,
-    convalescencia: Array<ConvProps>,
-    categoria_inativo: string,
-    motivo_inativo: string,
-    dt_cancelamento: true,
-}
-interface AcordoProps {
-    total_acordo: number,
-    data_inicio: Date,
-    data_fim: Date,
-    realizado_por: string,
-    dt_pgto: Date,
-    mensalidade: Array<Partial<MensalidadeProps>>,
-    status: string,
-    descricao: string,
-    metodo: string
-    closeAcordo: boolean,
-    id_acordo: number,
-    visibilidade: boolean
-}
-
-interface DependentesProps {
-    nome: string,
-    data_nasc: Date,
-    grau_parentesco: string,
-    data_adesao: Date,
-    carencia: Date,
-    id_dependente: number,
-    cad_dh: Date,
-    sexo: string,
-    saveAdd: boolean,
-    excluido: boolean,
-    dt_exclusao: Date,
-    user_exclusao: string,
-    exclusao_motivo: string,
-    convalescenca: {
-        convalescenca_prod: Partial<{
-            id_conv: number,
-            id_produto: number,
-            descricao: string,
-            unidade: string,
-            grupo: string,
-            data: Date,
-            data_dev: Date,
-            quantidade: number,
-            valor: number,
-            descontos: number,
-            total: number,
-            hora: Date,
-            cortesia: string,
-            retornavel: string,
-            status: string
-        }>,
-    }
-}
-
-interface AssociadoProps {
-    nome: string,
-    data_nasc: Date,
-    sexo: string,
-    celular1: string, celular2: string, telefone: string,
-    id_associado: number,
-    endereco: string,
-    bairro: string,
-    numero: number,
-    cidade: string,
-    cep: string,
-    cpf: string, rg: string
-    email: string,
-    profissao: string,
-    guia_rua: string,
-    uf: string,
-    mensalidade: Array<MensalidadeProps>,
-    contrato: ContratoProps,
-    dependentes: Array<DependentesProps>
-    acordo: Array<AcordoProps>
-
-}
+import { VerificarSituacao } from "@/utils/admContrato/verificarSituacao";
 
 
 
@@ -222,37 +30,18 @@ interface AssociadoProps {
 
 export default function AdmContrato() {
 
-    const { usuario, data, closeModa, dadosassociado, carregarDados, permissoes } = useContext(AuthContext)
+    const { usuario,data,closeModa,  dadosassociado, carregarDados, permissoes } = useContext(AuthContext)
     const [indexTab, setIndex] = useState<number>(0)
     const [openCadastro, setCadastro] = useState<boolean>(false)
+    const [modalBusca, setModalBusca] = useState<boolean>(false)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    useEffect(() => {
+  /*  useEffect(() => {
         async function listaCadastro() {
             const response = await api.get('/listarDadosCadastro')
             closeModa({ ...data, cidades: response.data.cidades, planos: response.data.planos })
         }
         listaCadastro()
-    }, [])
+    }, [])*/
 
 
     async function atualizarObs() {
@@ -283,26 +72,11 @@ export default function AdmContrato() {
 
     useEffect(() => {
 
-        if (dadosassociado?.contrato?.situacao === 'INATIVO') {
-            toast.error('CONTRATO INATIVO');
-        }
-        let x = 0;
-
-        Array.isArray(dadosassociado?.mensalidade) &&  dadosassociado?.mensalidade?.map((item, index) => {
-            new Date() >= new Date(item.vencimento) && item.status === 'A' || item.status === 'E' ? (x = x + 1) : '';
-        });
-        if (x > 1) {
-            toast.warn(`Possui ${x} mensalidades Vencidas`);
-        }
-
-        if (dadosassociado?.contrato?.convalescencia.find(item => item.status === 'ABERTO')) {
-
-            toast.info('Possui Material Convalescente!')
-        }
+        VerificarSituacao(dadosassociado?.contrato?.situacao, dadosassociado?.mensalidade, dadosassociado?.contrato?.convalescencia)
 
 
-        // Marcar o componente como desmontado quando ele for desmontado
-    }, [dadosassociado?.contrato?.situacao, dadosassociado?.mensalidade]);
+      
+    }, [ dadosassociado?.id_global]);
 
 
 
@@ -315,12 +89,12 @@ export default function AdmContrato() {
 
             </Head>
             <div className="flex flex-col w-full mr-2  justify-center">
-                {data.closeModalPlano && (<ModalBusca />)}
+                {modalBusca && (<ModalBusca visible={modalBusca} setVisible={()=>setModalBusca(false)} />)}
                 {openCadastro && (<ModalCadastro onClose={setCadastro} isOpen={openCadastro} />)}
 
                 <div className="flex  flex-col px-4  ">
                     <div className="flex  flex-row justify-start gap-2 items-center w-full mt-2 pb-1">
-                        <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100" } }} size={'sm'} onClick={() => closeModa({ closeModalPlano: true, mensalidade: {} })} type="button" color={'light'}>
+                        <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100" } }} size={'sm'} onClick={() => setModalBusca(true)} type="button" color={'light'}>
                             <IoMdSearch size={18} />
                             BUSCAR CLIENTE
                         </Button>
@@ -341,6 +115,7 @@ export default function AdmContrato() {
                                     carregarDados={carregarDados}
                                     dados={{ acordo: data.acordo ?? {}, closeModalPlano: data.closeModalPlano ?? false, id_associado: dadosassociado?.id_associado ?? 0, mensalidade: data.mensalidade ?? {}, mensalidadeAnt: data.mensalidadeAnt ?? {} }}
                                     dadosAssociado={{
+                                        id_empresa: dadosassociado?.id_empresa ?? '',
                                         nome: dadosassociado?.nome ?? '',
                                         id_contrato_global: dadosassociado?.contrato?.id_contrato_global ?? null,
                                         id_global: dadosassociado?.id_global ?? null,

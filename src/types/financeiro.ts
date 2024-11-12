@@ -1,6 +1,7 @@
 export type MensalidadeProps = {
     id_usuario: number,
     id_mensalidade_global:number,
+    id_empresa:string
     id_contrato_global:number,
     id_contrato: number,
     estorno_dt: Date,

@@ -84,6 +84,7 @@ export type ContratoProps = {
     id_contrato: number,
     plano: string,
     id_plano: number,
+    id_empresa:string
     valor_mensalidade: number,
     dt_adesao: Date,
     dt_carencia: Date,
@@ -109,6 +110,7 @@ export type AssociadoProps = {
     sexo: string,
     celular1: string, celular2: string, telefone: string,
     id_associado: number,
+    id_empresa:string
     naturalidade:string,
     endereco: string,
     bairro: string,

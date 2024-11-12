@@ -6,6 +6,8 @@ import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { valorInicial } from "../consultas";
+import { AiOutlineClockCircle } from "react-icons/ai";
+import { ModalBuscaConsulta } from "./modalbuscaConsulta";
 
 interface DataProps{
     openModal:boolean,
@@ -19,9 +21,9 @@ interface DataProps{
 }
 
 export function ModalConsulta({openModal,setOpenModal,medicos,consulta,setConsultas,consultas,setConsulta}:DataProps) {
+  const [visible,setvisible] = useState(false)
+  const {register,setValue,handleSubmit,watch,control,reset} =  useForm<ConsultaProps>({defaultValues:consulta})
 
-  const {register,setValue,handleSubmit,watch,control} =  useForm<ConsultaProps>({defaultValues:consulta})
-   console.log(consulta)
 
   const handleOnSubmit:SubmitHandler<ConsultaProps> = (data)=>{
     
@@ -40,8 +42,6 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
   setValue('vl_consulta',null)
   setValue('vl_desc',null)
 }
-
-
 
   const handleDesconto = (event:ChangeEvent<HTMLSelectElement>)=>{
     const {value} = event.target
@@ -96,10 +96,6 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
   }
 
 
-
-
-
-
   const handleCadastrar = async (data:ConsultaProps) => {
     if(!data.id_med){
       toast.info('Selecione um especialista')
@@ -135,29 +131,20 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
 
 
 
-
- /* const handleTableExames = (index:number)=>{
-      const novoArray =[...data.exames]
-      novoArray.splice(index,1)
-      setData({...data,exames:novoArray})
-
-  }*/
-
-
-
  
 
     return(
         <Modal show={openModal} size="2xl"  dismissible onClose={() => setOpenModal(false)} >
         <Modal.Header>Administrar Consulta</Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="flex flex-col gap-4">
+
+         {!consulta.id_consulta && <Button onClick={()=>setvisible(!visible)} theme={{color:{light:"border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100"}}}  className="mr-auto " color="light" size="sm"><AiOutlineClockCircle className="mr-1 h-5 w-5"/>Setar por consultas anteriores</Button>}
        
           <form onSubmit={handleSubmit(handleOnSubmit)} className="grid grid-cols-3 gap-2 ">
             <div className="col-span-2 "> 
                 <Label className="text-xs" htmlFor="email" value="Nome Paciente" />
               <TextInput sizing={'sm'} {...register('nome')} className="focus:outline-none" id="email" placeholder="Nome" required />
             </div>
-
 
 <div className="w-full">
                 
@@ -271,7 +258,7 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
                   control={control}
                   name="cpf"
                   render={({ field:{onChange,value} }) => (
-                    <ReactInputMask value={value} onChange={e=>onChange(e.target.value)} id="cpf" placeholder="CPF" className="px-2 py-2 text-xs focus:outline-none bg-gray-100 w-full rounded-lg border-[1px] border-gray-300" mask={'999.999.999-99'}/>
+                    <ReactInputMask value={value} onChange={e=>onChange(e.target.value)} id="cpf" placeholder="CPF" className="px-2 py-2 text-xs focus:outline-none bg-gray-100 w-full rounded-lg border-[1px] border-gray-300" mask={'999.999.999-99'} required/>
                   )}
                   />
               </div>
@@ -313,108 +300,10 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
           </div>
       
           </form>
-          {/*
-            data.id_med===1 &&    <div>
-          
-           
-<div className="inline-flex w-full gap-4 p-2">
-<div className="w-full">
-              <div className="mb-1 block">
-                <Label  value="Exame" />
-              </div>
-              <Select sizing={'sm'}  onChange={e=>handleExame(e)} className="focus:outline-none"   required >
-                    <option value={''}></option>
-                    {exames.map((item,index)=>(
-                        <option value={item.id_exame??''} key={item.nome}>{`${item.nome}-(${item.nome})`}</option>
-                    ))}
-              </Select>
-            </div>
-
-            <button  onClick={()=>{
-                if(!dataExame.id_exame|| !data.tipoDesc){
-                    return
-                }
-                let valorDesc:number =0
-          
-                if(data.tipoDesc==='Funeraria'){
-                    valorDesc= dataExame.valorBruto*(dataExame.porcFun/100)
-                }
-    
-               else if(data.tipoDesc==='Plano'){
-                    valorDesc= dataExame.valorBruto*(dataExame.porcPlan/100)
-               }                 
-                setData({...data,exames:[...data.exames,{...dataExame,desconto:valorDesc,valorFinal:dataExame.valorBruto-valorDesc}]})
-            }} className="mt-auto"><IoAddCircle color="blue" size={32}/></button>
-</div>
-           
-
-
-
-
-
-
-                    <div className="overflow-x-auto ">
-<Table  >
-  <Table.Head>
-    <Table.HeadCell>Exame</Table.HeadCell>
-    <Table.HeadCell>Valor Bruto</Table.HeadCell>
-    <Table.HeadCell>Valor Desc.</Table.HeadCell>
-    <Table.HeadCell>Valor Final</Table.HeadCell>
-    <Table.HeadCell>
-      <span className="sr-only">Edit</span>
-    </Table.HeadCell>
- 
-  </Table.Head>
-  <Table.Body className="divide-y">
-      {data?.exames?.map((item,index)=>(
-           <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
-               <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-        {item.nome}
-      </Table.Cell>
-      <Table.Cell>{Number(item.valorBruto).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
-      <Table.Cell>{Number(item.desconto).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
-      <Table.Cell>{Number(item.valorFinal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
-      <Table.Cell>
-     
-        <button onClick={()=>handleTableExames(index)} className="font-medium text-gray-500 hover:text-red-600 ">
-          <HiOutlineTrash size={20}/>
-        </button>
-      </Table.Cell>
-   
-</Table.Row>
-
-
-      ))}
-     
-  
-   
- 
-
-  <Table.Row  className="bg-white dark:border-gray-700 dark:bg-gray-800">
-               <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  Total
-      </Table.Cell>
-    
-      <Table.Cell>{}</Table.Cell>
-      <Table.Cell>{}</Table.Cell>
-      <Table.Cell>{Number(data?.exames?.reduce((acumulador,atual)=>{
-          acumulador+=Number(atual.valorFinal)
-          return acumulador},0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
-</Table.Row>
- 
- 
-  </Table.Body>
- 
-</Table>
-</div>
-   
-
-              </div>
-               
-           */ }
-
+         
 
         </Modal.Body>
+      {visible &&  <ModalBuscaConsulta reset={reset} setVisible={()=>setvisible(false)} visible={visible}/>}
       </Modal>
 
     )

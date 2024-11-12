@@ -32,7 +32,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
     name="data_nasc"
     control={control}
     render={({ field:{onChange,value} }) => (
-      <DatePicker selected={value}  onChange={e => { e && onChange(e) }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+      <DatePicker selected={value}  onChange={e => { e && onChange(e) }} dateFormat={"dd/MM/yyyy"} locale={pt}  className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
     )}
   />
 </div>
@@ -41,7 +41,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
   <div className=" block">
     <Label htmlFor="email1" value="Sexo" />
   </div>
-  <Select sizing={'sm'}  {...register('sexo')} id="sexo" required>
+  <Select sizing={'sm'}  {...register('sexo')} id="sexo" >
               <option selected></option>
               <option value="M">MASCULINO</option>
               <option value="F">FEMININO</option>
@@ -76,7 +76,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
   <div className=" block">
     <Label  value="Numero" />
   </div>
-  <TextInput sizing={'sm'} {...register('numero')} type="number" placeholder="Número" required />
+  <TextInput sizing={'sm'} {...register('numero')} type="number" placeholder="Número"  />
 </div>
 
 <div className="col-span-2" >
@@ -90,7 +90,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
   <div className=" block">
     <Label  value="Ponto ref" />
   </div>
-  <TextInput sizing={'sm'} {...register('guia_rua')} type="text" placeholder="referencia" required />
+  <TextInput sizing={'sm'} {...register('guia_rua')} type="text" placeholder="referencia"  />
 </div> 
 
 <div className="col-span-1" >
@@ -136,7 +136,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
 
 <div className="col-span-1" >
   <div className=" block">
-    <Label htmlFor="email1" value="Cidade" />
+    <Label  value="Cidade" />
   </div>
   <Select  sizing={'sm'} {...register('cidade')} id="cidade" required >
               <option selected></option>
@@ -165,7 +165,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
     name="cpfcnpj"
     control={control}
     render={({ field:{onChange,value} }) => (
-      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'999.999.999-99'}  required className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'999.999.999-99'}  className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
     )}
   />
  
@@ -187,7 +187,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
     name="celular1"
     control={control}
     render={({ field:{onChange,value} }) => (
-      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'}  required className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'} className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
     )}
   />
  
@@ -201,7 +201,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
     name="celular2"
     control={control}
     render={({ field:{onChange,value} }) => (
-      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'}  required className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'}   className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
     )}
     />
  
@@ -216,7 +216,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
     name="telefone"
     control={control}
     render={({ field:{onChange,value} }) => (
-      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'}  required className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'}   className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
     )}
   />
  

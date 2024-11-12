@@ -5,8 +5,7 @@ import { api } from "@/services/apiClient";
 import { Button, Modal,  Tabs } from "flowbite-react";
 import { TabTitular } from "./tabTitular";
 import { TabContrato } from "./tabContrato";
-import { ModalInativar } from "./modalInativar";
-import { Control, useForm, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
+import { Control, SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
 import { AssociadoProps } from "@/types/associado";
 
 interface ModalProps {
@@ -24,7 +23,7 @@ export interface UseFormAssociadoProps{
 }
 
 export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps) {
-  const { usuario,setarDadosAssociado,permissoes} = useContext(AuthContext)
+  const { usuario,setarDadosAssociado,permissoes,dadosassociado} = useContext(AuthContext)
   const [modalInativar,setmodalInat]= useState<boolean>(false)
   const {register,handleSubmit,watch,setValue,trigger,control} = useForm<AssociadoProps>({
     defaultValues:{...dataForm,contrato:{...dataForm?.contrato,dt_adesao:dataForm.contrato?.dt_adesao ? new Date(new Date(dataForm.contrato?.dt_adesao).getUTCFullYear(),new Date(dataForm.contrato?.dt_adesao).getUTCMonth(),new Date(dataForm.contrato?.dt_adesao).getUTCDate(),new Date(dataForm.contrato?.dt_adesao).getUTCHours()) : undefined,
@@ -34,10 +33,6 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
 
 
     },
-   
-  
-  
-  
   }
   })
 
@@ -48,43 +43,16 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
 
 
 
-  const handleAtualizarDados = async()=>{
+  const handleAtualizarDados:SubmitHandler<AssociadoProps> = async(data)=>{
     try {
         const response = await toast.promise(
             api.put('/atualizarAssociado',{
-              nome:watch('nome'),
-              cep:watch('cep'),
-              endereco:watch('endereco'),
-              bairro:watch('bairro'),
-              numero:watch('numero'),
-              cidade:watch('cidade'),
-              uf:watch('uf'),
-              guia_rua: watch('guia_rua'),
-              email:watch('email'),
-              data_nasc:watch('data_nasc'),
-              data_cadastro:new Date(),
-              celular1:watch('celular1'),
-              celular2:watch('celular2'),
-              telefone:watch('telefone'),
-              cad_dh: new Date(),
+              ...data,
+              data_cadastro:undefined,
+              cad_dh: undefined,
               edi_usu:usuario?.nome,
               edi_dh: new Date(),
-              profissao:watch('profissao'),
-              sexo:watch('sexo'),
-              contrato:{
-                id_contrato:Number(watch('contrato.id_contrato')),
-                id_plano: Number(watch('contrato.id_plano')),
-                plano: watch('contrato.plano'),
-                consultor: watch('contrato.consultor'),
-                situacao: watch('contrato.situacao'),
-                valor_mensalidade: Number(watch('contrato.valor_mensalidade')),
-                dt_adesao: watch('contrato.dt_adesao'),
-                cobrador: watch('contrato.cobrador'),
-                data_vencimento:watch('contrato.data_vencimento'),
-                origem: watch('contrato.origem'),
-                dt_carencia: watch('contrato.dt_carencia'),
-              },
-              id_global:Number(watch('id_global'))
+
             }),
             {
               error: 'Erro ao Atualizar Dados',
@@ -92,6 +60,7 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
               success: 'Alteração realizada com sucesso'
             }
         )
+        setarDadosAssociado({...dadosassociado,...response.data})
     } catch (error) {
       
     }
@@ -110,7 +79,7 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
         
         <Modal.Body>
           
-           
+           <form onSubmit={handleSubmit(handleAtualizarDados)}>
         <Tabs  theme={{tablist:{tabitem:{base:"flex z-0 items-center justify-center rounded-t-lg p-2 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 ",variant:{fullWidth:{active:{off:'bg-gray-50',on:'bg-gray-100 text-black'}}}}}}} aria-label="Full width tabs" variant="fullWidth">
         <Tabs.Item active title="Dados Titular" >
 
@@ -131,9 +100,10 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
           <div className="inline-flex w-full justify-end p-2 gap-4">
         
          
-            <Button onClick={()=>handleAtualizarDados()} disabled={!permissoes.includes('ADM1.1.1')} >Salvar</Button>
+            <Button type="submit" disabled={!permissoes.includes('ADM1.1.1')} >Salvar</Button>
 
           </div>
+          </form>
           </Modal.Body>
 
 

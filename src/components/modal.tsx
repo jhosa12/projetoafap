@@ -4,6 +4,7 @@ import { api } from "@/services/apiClient";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { Modal } from "flowbite-react";
 import { HiSearch } from "react-icons/hi";
+import { MdKeyboardArrowRight } from "react-icons/md";
 
 
 interface ContratoProps{
@@ -26,7 +27,13 @@ interface DadosProps{
 }
 
 
-export function ModalBusca(){
+interface Props{
+    visible:boolean,
+    setVisible:()=>void
+}
+
+
+export function ModalBusca({setVisible,visible}:Props){
     const {carregarDados,data,closeModa,empresas}= useContext(AuthContext)
     const [loading,setLoading] = useState(false)
     const [input,setInput] =useState('')
@@ -48,47 +55,49 @@ export function ModalBusca(){
  
 
   async function buscar(){
+    let response:any
 
     if(criterio ==="Contrato"){
-        const response =  await api.post('/buscar',{
+        response =  await api.post('/buscar',{
             id_contrato:Number(input),
             id_empresa:data.id_empresa
         })
-        setarray(response.data)
+       
 
       }
-      if(criterio ==="Titular"){
-        const response =  await api.post('/buscar',{
+     else if(criterio ==="Titular"){
+        response =  await api.post('/buscar',{
             nome:input.toUpperCase(),
             id_empresa:data.id_empresa
         })
-        setarray(response.data)
+        
       }
-      if(criterio ==="Dependente"){
-        const response =  await api.post('/buscar',{
+     else if(criterio ==="Dependente"){
+         response =  await api.post('/buscar',{
             dependente:input.toUpperCase(),
             id_empresa:data.id_empresa
         })
-        setarray(response.data)
+       
       }
-      if(criterio ==="Endereço"){
-        const response =  await api.post('/buscar',{
+      else if(criterio ==="Endereço"){
+         response =  await api.post('/buscar',{
             endereco:input.toUpperCase(),
             id_empresa:data.id_empresa
         })
-        setarray(response.data)
+    
       }
-      if(criterio ==="Bairro"){
-        const response =  await api.post('/buscar',{
+      else if(criterio ==="Bairro"){
+        response =  await api.post('/buscar',{
             bairro:input.toUpperCase(),
             id_empresa:data.id_empresa
         })
-        setarray(response.data)
+       
       }
+      setarray(response?.data??[])
     }
     
     return(
-       <Modal size={'3xl'} show onClose={()=>closeModa({closeModalPlano:false})}>
+       <Modal size={'3xl'} show={visible} onClose={setVisible}>
   
     <Modal.Header className="flex w-full"> 
    
@@ -96,30 +105,30 @@ export function ModalBusca(){
    
     <button onClick={()=>setDropEmp(!dropEmpresa)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-s-lg focus:outline-none border-e-2 border-gray-200  bg-gray-100 hover:bg-gray-200  " type="button">{data.empresa} 
     <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
+    <path stroke="currentColor" stroke-linecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
   </svg></button>
     <button onClick={()=>setDrop(!dropOpen)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center  focus:outline-none  border-gray-200  bg-gray-100  hover:bg-gray-300   " type="button">{criterio} 
     <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
+    <path stroke="currentColor" stroke-linecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
   </svg></button>
  
       {dropOpen && (
           <div className="absolute top-[65px] left-36 divide-gray-100 rounded-lg shadow w-44 bg-gray-200">
           <ul className="py-2 text-sm text-black">
           <li >
-              <a href="#" className="block px-4 py-2  hover:bg-gray-300 hover:" onClick={()=>{setCriterio('Contrato'),setDrop(false)}}>Contrato</a>
+              <span className="block px-4 py-2  hover:bg-gray-300 hover:" onClick={()=>{setCriterio('Contrato'),setDrop(false)}}>Contrato</span>
           </li>
           <li>
-              <a href="#" className="block px-4 py-2  hover:bg-gray-300 hover:" onClick={()=>{setCriterio('Titular'),setDrop(false)}}>Titular</a>
+              <span className="block px-4 py-2  hover:bg-gray-300 hover:" onClick={()=>{setCriterio('Titular'),setDrop(false)}}>Titular</span>
           </li>
           <li>
-              <a href="#" className="block px-4 py-2  hover:bg-gray-300 hover:" onClick={()=>{setCriterio('Dependente'),setDrop(false)}}>Dependente</a>
+              <span className="block px-4 py-2  hover:bg-gray-300 hover:" onClick={()=>{setCriterio('Dependente'),setDrop(false)}}>Dependente</span>
           </li>
           <li>
-              <a href="#" className="block px-4 py-2  hover:bg-gray-300 hover:"  onClick={()=>{setCriterio('Endereço'),setDrop(false)}}>Endereço</a>
+              <span className="block px-4 py-2  hover:bg-gray-300 hover:"  onClick={()=>{setCriterio('Endereço'),setDrop(false)}}>Endereço</span>
           </li>
           <li>
-              <a href="#" className="block px-4 py-2  hover:bg-gray-300 hover:"  onClick={()=>{setCriterio('Bairro'),setDrop(false)}}>Bairro</a>
+              <span className="block px-4 py-2  hover:bg-gray-300 hover:"  onClick={()=>{setCriterio('Bairro'),setDrop(false)}}>Bairro</span>
           </li>
           </ul>
       </div>
@@ -164,13 +173,13 @@ export function ModalBusca(){
       <Modal.Body>
       
            
-            {loading?((<div className="flex flex-col h-full justify-center items-center p-2"><AiOutlineLoading3Quarters color='white' size={40} className="animate-spin"/></div>)):(
+            {loading?((<div className="flex flex-col h-full justify-center items-center p-2"><AiOutlineLoading3Quarters color='blue' size={40} className="animate-spin"/></div>)):(
                 <div className="flex flex-col  mb-1 ">
                 <p className="text-gray-600 mb-2">Selecione o Contrato:</p>
                 <ul className="overflow-y-auto space-y-2 mb-2">
                                 {array.map((item,index)=>(
-                                     <li onClick={()=>{carregarDados(item.id_global),closeModa({closeModalPlano:false})}}>
-                                     <label  className="inline-flex items-center justify-between w-full p-2 rounded-lg cursor-pointer border-gray-500 peer-checked:text-blue-500 peer-checked:border-blue-600  bg-gray-200 hover:bg-gray-300">                           
+                                     <li key={index} onClick={()=>{carregarDados(item.id_global),closeModa({closeModalPlano:false})}} className="inline-flex items-center justify-between w-full p-2 rounded-lg cursor-pointer border-gray-500   bg-gray-200 hover:bg-gray-300">
+                                                               
                                     <div className="block">
                                      <div className="w-full text-sm font-semibold"><span className="pr-2">{item?.contrato?.id_contrato}</span>{item.nome}<span className="flex flex-col gap-1">{item?.dependentes?.map((i,id)=>(<span>DEPENDENTE: {i.nome}</span>))}</span></div>
                                      <div className="w-full text-sm text-gray-600">
@@ -180,8 +189,8 @@ export function ModalBusca(){
                                          CIDADE:<span className="pr-2 font-semibold">{item.cidade}/{item.uf}</span>
                                          </div>
                                          </div>
-                                         <svg className="w-4 h-4 ms-3 rtl:rotate-180  text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9"/></svg>
-                                     </label>
+                                       <MdKeyboardArrowRight size={20} className="text-gray-600"/>
+                                   
                                      </li>
                                 ))}     
                 </ul>

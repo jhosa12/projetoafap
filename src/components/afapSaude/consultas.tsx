@@ -23,6 +23,8 @@ import { ReciboMensalidade } from "@/Documents/mensalidade/Recibo";
 import { ModalConfirmar } from "./components/modalConfirmar";
 import { ModalReceber } from "./exames/modalReceber";
 import { formToJSON } from "axios";
+import { ajustarData } from "@/utils/ajusteData";
+import { start } from "repl";
 
 
 
@@ -87,11 +89,20 @@ const imprimirRecibo = useCallback(useReactToPrint({
 
 
 const buscarConsultas = async ({startDate,endDate,id_med}:{startDate:Date,endDate:Date,id_med?:number})=>{
+
+ const {dataIni,dataFim} =  ajustarData(startDate,endDate)
+
+  if (startDate > endDate) {
+    toast.warning('Data inicial não pode ser maior que a data final')
+    return
+  }
+
+
   try {
     setLoading(true)
       const response = await api.post("/afapSaude/consultas",{
-        startDate,
-        endDate,
+        startDate:dataIni,
+        endDate:dataFim,
         id_med
       })
       

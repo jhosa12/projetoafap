@@ -308,8 +308,8 @@ return(
     </Modal.Body>
 </Modal>
 
-<div className="flex flex-col px-2 w-full mt-1 ">
-    <div className="text-gray-600 bg-gray-50 rounded-t-lg inline-flex items-center w-full justify-between">
+<div className="flex flex-col  w-full ">
+    <div className="text-gray-600 bg-gray-50  inline-flex items-center w-full justify-between">
    
     <form onSubmit={handleSubmit(listarLancamentos)}  className="flex w-full flex-row justify-end p-1 gap-4 text-black font-semibold">
 
@@ -381,7 +381,7 @@ return(
     <div className="flex flex-col border-t-2 bg-white">
     
        
-        <div className="overflow-y-auto mt-1 px-2  h-[calc(100vh-145px)]  max-h-[calc(100vh-190px)] ">
+        <div className="overflow-y-auto mt-1 px-2 h-[calc(100vh-174px)] ">
        
         <Table hoverable theme={{ body: { cell: { base: " px-4 py-0 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }} 
     >
@@ -463,7 +463,7 @@ return(
     </div>
 
 
-    <div className="inline-flex gap-2  rounded-b-lg text-black w-full bg-white p-2">
+    <div className="inline-flex gap-2   text-black w-full bg-white p-2">
         <button disabled={!permissoes.includes('ADM2.1.5')} onClick={()=>setVisible(!visible)} className="justify-center items-center disabled:hover:cursor-not-allowed">
            {visible? <IoMdEye color="blue" size={20}/>:<IoMdEyeOff color="blue" size={20}/>}
             </button>

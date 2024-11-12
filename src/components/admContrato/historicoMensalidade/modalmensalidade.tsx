@@ -14,7 +14,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import useBaixaMensalidade from "@/hooks/useBaixaMensalidade";
 
-type ToastType = 'success' | 'error' | 'info' | 'warn'
+
 
 interface rops{
     openModal:boolean,
@@ -32,30 +32,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
     
            async function handleBaixar() {
             // Função para exibir toast e retornar
-            const exibirToastERetornar = (mensagem:string, tipo:ToastType = "warn") => {
-                toast[tipo](mensagem);
-                return;
-            };
-            // Validações iniciais
-            if (!mensalidade?.form_pagto) {
-                return exibirToastERetornar('Informe a forma de pagamento!');
-            }
-            
-            if (mensalidade.form_pagto !== 'DINHEIRO' && !mensalidade.banco_dest) {
-                return exibirToastERetornar('Informe o banco de destino');
-            }
-            
-            if (mensalidade?.status === 'P') {
-                return exibirToastERetornar('Mensalidade com baixa já realizada', 'error');
-            }
-        
-            if (dadosassociado?.contrato?.situacao === 'INATIVO') {
-                return exibirToastERetornar('Contrato inativo, impossível realizar baixa!', 'info');
-            }
-        
-            if (desconto === true && !mensalidade?.motivo_bonus) {
-                return exibirToastERetornar('Informe o motivo do desconto!', 'info');
-            }
+         
         
            
         
@@ -66,7 +43,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
         
             // Verifica se a mensalidade anterior está em aberto
             if (mensalidadeAnt?.id_mensalidade && mensalidadeAnt.status === 'A') {
-                return exibirToastERetornar('Mensalidade anterior em aberto!', 'info');
+                return toast.info('Mensalidade anterior em aberto!');
             }
         
         
@@ -76,6 +53,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
            
                postData(
                    {
+                        id_global:dadosassociado?.id_global,
                         id_usuario: usuario?.id ,
                         id_mensalidade_global: mensalidade?.id_mensalidade_global,
                         id_mensalidade: mensalidade?.id_mensalidade,
@@ -89,10 +67,12 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
                         motivo_bonus: mensalidade?.motivo_bonus?.toUpperCase(),
                         associado: dadosassociado?.nome,
                         form_pagto: mensalidade?.form_pagto,
-                        banco_dest: mensalidade.banco_dest,
+                        banco_dest: mensalidade?.banco_dest,
                         desconto: desconto,
-                        id_proximaMensalidade:mensalidadeProx?.id_mensalidade_global
-                       
+                        id_proximaMensalidade:mensalidadeProx?.id_mensalidade_global,
+                        situacao:dadosassociado?.contrato?.situacao,
+                        status:mensalidade?.status,
+                     
                     },
                  
                 );

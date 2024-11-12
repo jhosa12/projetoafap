@@ -82,6 +82,7 @@ export default function GerarOS() {
     const [componenteMounted, setMounted] = useState(false);
     const [particular, setParticular] = useState(false);
     const [indexTab, setIndex] = useState<number>(0)
+    const [visible,setVisible] = useState(false)
 
 
 
@@ -510,7 +511,7 @@ const handleCheckTitular=()=>{
 
                 </div>
 
-                {data.closeModalPlano && (<ModalBusca />)}
+                {visible && (<ModalBusca  visible={visible} setVisible={()=>setVisible(false)}/>)}
 
 
             </div>

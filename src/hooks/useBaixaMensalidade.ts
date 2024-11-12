@@ -1,3 +1,4 @@
+import { set } from 'date-fns';
 import { AuthContext } from "@/contexts/AuthContext";
 import { api } from "@/services/apiClient";
 
@@ -5,9 +6,10 @@ import { AxiosError, AxiosResponse } from "axios";
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 
-
+export type ToastType = 'success' | 'error' | 'info' | 'warn'
 
 interface PayloadProps {
+    id_global:number|null,
     id_usuario:string,
     id_mensalidade_global: number,
     id_mensalidade: number,
@@ -19,7 +21,10 @@ interface PayloadProps {
     form_pagto: string,
     banco_dest: string,
     desconto: boolean,
-    id_proximaMensalidade:number
+    id_proximaMensalidade:number,
+    situacao:string,
+    status:string,
+    id_empresa:string
 }
 
  const useBaixaMensalidade = (url:string):{
@@ -35,9 +40,32 @@ interface PayloadProps {
 
     const postData = async(payload:Partial<PayloadProps>)=>{
       
-        setError(null)
+       // setError(null)
 
+        const exibirToastERetornar = (mensagem:string, tipo:ToastType = "warn") => {
+            toast[tipo](mensagem);
+            return;
+        };
+        // Validações iniciais
+        if (!payload?.form_pagto) {
+            return exibirToastERetornar('Informe a forma de pagamento!');
+        }
+        
+        if (payload.form_pagto !== 'DINHEIRO' && !payload.banco_dest) {
+            return exibirToastERetornar('Informe o banco de destino');
+        }
+        
+        if (payload?.status === 'P') {
+            return exibirToastERetornar('Mensalidade com baixa já realizada', 'error');
+        }
     
+        if (payload.situacao === 'INATIVO') {
+            return exibirToastERetornar('Contrato inativo, impossível realizar baixa!', 'info');
+        }
+    
+        if (payload.desconto === true && !payload?.motivo_bonus) {
+            return exibirToastERetornar('Informe o motivo do desconto!', 'info');
+        }
 
        
         try{
@@ -52,8 +80,9 @@ interface PayloadProps {
             
             setarDadosAssociado({mensalidade:response.data})
     
-        }catch(error){
-            setError(error as AxiosError)
+        }catch(error:any){
+          //  setError(error as AxiosError)
+          toast.error(error.response.data.error)
     
         }
       }
