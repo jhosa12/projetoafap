@@ -14,6 +14,7 @@ import { GrRevert } from "react-icons/gr";
 import { Tooltip } from "react-tooltip";
 import { toast } from "react-toastify";
 import { ModalConfirm } from "./modalConfirm";
+import pageStyle from "@/utils/pageStyle";
 
 
 interface DataProps {
@@ -28,7 +29,7 @@ export interface HistoricoProps {
     descricao: string,
     empresa: string,
     id_mov: number,
-    produtos: Array<{ produto: string, id_produto: number, quantidade: number }>,
+    produtos: Array<{ produto: string, id_produto: number, quantidade: number,quant_atual:number,quant_anterior:number }>,
     tipo: string,
     usuario: string
 }
@@ -91,28 +92,8 @@ export default function  HistoricoMov({ id_usuario, usuario,permissoes }: DataPr
 
 
     const handleImpressao = useReactToPrint({
-        pageStyle: `
-    @page {
-        margin: 1rem;
-    }
-    @media print {
-        body {
-            -webkit-print-color-adjust: exact;
-        }
-        @page {
-            size: auto;
-            margin: 1rem;
-        }
-        @page {
-            @top-center {
-                content: none;
-            }
-            @bottom-center {
-                content: none;
-            }
-        }
-    }
-`,
+        pageStyle: pageStyle,
+
         documentTitle: 'MOVIMENTAÇÃO DE ESTOQUE',
 
         content: () => componentRef.current,
@@ -264,9 +245,9 @@ export default function  HistoricoMov({ id_usuario, usuario,permissoes }: DataPr
                                         abertos[index] && item.produtos.map(prod => (
                                             <Table.Row className="bg-slate-100" key={prod.id_produto}>
                                                 <Table.Cell className="text-black font-semibold pl-12 italic ">{prod.produto}</Table.Cell>
-                                                <Table.Cell className="text-black font-semibold ">QUANT.: {prod.quantidade}</Table.Cell>
-                                                <Table.Cell className="text-black "></Table.Cell>
-                                                <Table.Cell className="text-black "></Table.Cell>
+                                                <Table.Cell className="text-black font-semibold ">QUANT MOVIMENTADA.: {prod.quantidade}</Table.Cell>
+                                                <Table.Cell className="text-black ">QUANT ANTERIOR.: {prod.quant_anterior}</Table.Cell>
+                                                <Table.Cell className="text-black ">QUANT ATUAL.: {prod.quant_atual}</Table.Cell>
                                                 <Table.Cell className="text-black "></Table.Cell>
                                                 <Table.Cell className="text-black ">
                                                     <button disabled={!permissoes.includes('EST2.2')} type="button" data-id={prod.id_produto} onClick={()=>{setDadosEstorno({id_empresa:item.id_empresa,id_produto:prod.id_produto,quantidade:prod.quantidade,tipo:item.tipo,id_mov:item.id_mov,produtos:item.produtos}),setOpenModalConfirm(true)}}  data-tooltip-id="tooltip" data-tooltip-content="Estornar" className="hover:text-yellow-500 disabled:cursor-not-allowed">
@@ -281,9 +262,6 @@ export default function  HistoricoMov({ id_usuario, usuario,permissoes }: DataPr
                                 </>
 
                                 )
-
-
-
                             })}
 
 

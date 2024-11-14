@@ -1,6 +1,7 @@
 import { api } from "@/services/apiClient";
 import { AxiosError, AxiosResponse } from "axios";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 
 
@@ -8,25 +9,27 @@ import { useState } from "react";
 
 const useApiPost = <T=any,P=any>(url:string):{
     data:T|null;
-    error:AxiosError|null;
     loading:boolean;
     postData:(payload:P)=>Promise<void>
 }=>{
   const [data, setData] = useState<T | null>(null);
-  const [error, setError] = useState<AxiosError | null>(null);
+
   const [loading, setLoading] = useState(false);
 
 
 
   const postData = async(payload:P)=>{
     setLoading(true)
-    setError(null)
+
     try{
         const response:AxiosResponse = await api.post(url,payload)
         setData(response.data)
+  
 
-    }catch(error){
-        setError(error as AxiosError)
+    }catch(error:any){
+        //setError(error as AxiosError)
+        toast.error(error?.response?.data.message)
+       
 
     }finally{
         setLoading(false)
@@ -36,7 +39,7 @@ const useApiPost = <T=any,P=any>(url:string):{
 
 
  
-  return {data,error,loading,postData}
+  return {data,loading,postData}
 
 
 

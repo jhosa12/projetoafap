@@ -11,7 +11,7 @@ import { endOfDay } from "date-fns"
 interface DataProps {
     openModal:boolean
     setOpenModal:(open:boolean)=>void
-    caixa:Array<CaixaProps>
+    caixa:Array<CaixaProps>|null
     arrayCcustos:Array<CcustosProps>
     startDate:Date,
     endDate:Date
@@ -71,7 +71,7 @@ export function ModalRelatorio({openModal,setOpenModal,caixa,arrayCcustos,startD
       
         const formasDePagamento = ['BOLETO', 'PIX', 'CARTAO', 'DEPOSITO', 'DINHEIRO', 'TRANSFERENCIA'] as const;
     
-        const caixaMap = caixa.reduce((map, atual) => {
+        const caixaMap = caixa?.reduce((map, atual) => {
             const { ccustos_desc, valor, mensalidade } = atual;
             const formPagto = mensalidade?.form_pagto as typeof formasDePagamento[number];
     
@@ -106,7 +106,7 @@ export function ModalRelatorio({openModal,setOpenModal,caixa,arrayCcustos,startD
         }, new Map<string, ArrayGeral>());
     
         // Retorna os valores do mapa como um array
-        return Array.from(caixaMap.values());
+        return  caixaMap ? Array.from(caixaMap.values()):[];
     };
     
     

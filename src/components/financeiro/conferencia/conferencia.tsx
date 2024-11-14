@@ -186,10 +186,10 @@ const Teste = ({ caixaReal, caixaVerificado, caixaCadastrado }: TesteProps): str
   // Função auxiliar para verificar divergências
   const isDivergente = (caixa1:Partial<CaixaFechamento>, caixa2: Partial<CaixaFechamento>): boolean => {
     return (
-      caixa1.pix !== caixa2.pix ||
-      caixa1.cartao !== caixa2.cartao ||
-      caixa1.cedulas !== caixa2.cedulas ||
-      caixa1.transferencia !== caixa2.transferencia
+      caixa1?.pix !== caixa2?.pix ||
+      caixa1?.cartao !== caixa2?.cartao ||
+      caixa1?.cedulas !== caixa2?.cedulas ||
+      caixa1?.transferencia !== caixa2?.transferencia
     );
   };
 

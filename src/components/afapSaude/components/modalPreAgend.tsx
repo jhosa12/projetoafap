@@ -286,8 +286,8 @@ export function ModalPreAgend({openModal,setOpenModal,arrayMedicos,events,id_usu
                            name='hora_prev'
                            render={({ field:{onChange,value} }) => (
                             <DatePicker
-                            selected={value}
-                            onChange={(date) => onChange(date)}
+                            selected={value ?new Date(value):null}
+                            onChange={(date) =>date && onChange(date)}
                             showTimeSelect
                             showTimeSelectOnly
                             timeIntervals={15}

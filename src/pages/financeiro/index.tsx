@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState, useCallback } from "react";
-import { Button, Checkbox, Dropdown, Label } from "flowbite-react";
+import { Button, Checkbox, Dropdown, Label, Tabs } from "flowbite-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowDown, IoMdSettings } from "react-icons/io";
 import { AuthContext } from "@/contexts/AuthContext";
 import {Caixa} from "@/components/financeiro/caixa/caixa";
 import Conferencia from "../../components/financeiro/conferencia/conferencia";
@@ -13,6 +13,10 @@ import { PlanodeContas } from "@/components/financeiro/planodeContas/planodeCont
 import { ContasPagarReceber } from "@/components/financeiro/contasPagarReceber/contasPagarReceber";
 import GraficoMensalidade from "@/components/graficos/graficoMensalidades";
 import { GraficoScreen } from "@/components/financeiro/grafico/screen";
+import { FaCalendarAlt } from "react-icons/fa";
+import { MdAccessTimeFilled } from "react-icons/md";
+import { HiClipboardList } from "react-icons/hi";
+import { BiSolidInjection } from "react-icons/bi";
 
 
 interface DataProps {
@@ -26,7 +30,7 @@ interface DataProps {
 
 
 export interface CaixaProps{
-  
+  forma_pagamento:string
   lanc_id: number,
   num_seq: number,
   conta: string,
@@ -105,8 +109,7 @@ type MensalidadeProps = {
 
 export default function LoginFinaceiro() {
   const { empresas } = useContext(AuthContext);
-  const [loading, setLoading] = useState(false);
-  const [menuIndex, setMenuIndex] = useState(1);
+
   const [listaPlanoContas, setListaPlanoContas] = useState<PlanoContasProps[]>([]);
  
   const [ccustos,setCcustos] = useState<Array<CcustosProps>>([])
@@ -143,58 +146,44 @@ export default function LoginFinaceiro() {
 
 
 
-  const renderMenuContent = () => {
-    switch (menuIndex) {
-      case 1:
-       return <Caixa empresas={empresas}   setCcustos={setCcustos}  arrayCcustos={ccustos}/>
-      case 2:
-        return <PlanodeContas empresas={empresas} setListaContas={setListaPlanoContas} listaContas={listaPlanoContas} />;
-      case 3:
-        return <ContasPagarReceber planodeContas={listaPlanoContas}  />;
-      case 4:
-        return <GraficoScreen empresas={empresas}  />;
-        case 5:
-          return <Conferencia />;
-      default:
-        return null;
-    }
-  };
+ 
 
  
 
 
 
   return (
-    <div className="px-2">
-      <div className="flex flex-col  px-4 w-full ">
-          <ul className="flex flex-wrap mb-1 text-sm font-medium text-center  border-b  rounded-t-lg  .border-gray-700 text-gray-100 "  >
-          <li className="me-2">
-              <button type="button" onClick={() => setMenuIndex(1)} className={`inline-block p-2 border-blue-600 rounded-t-lg hover:border-b-[2px]  hover:text-gray-200  `}>Caixa</button>
-            </li>
-            <li className="me-2">
-              <button type="button" onClick={() => setMenuIndex(2)} className={`inline-block p-2 border-blue-600 rounded-t-lg hover:border-b-[1px]  hover:text-gray-300  `}>Plano de Contas</button>
-            </li>
-            <li className="me-2">
-              <button type="button" onClick={() => setMenuIndex(4)} className={`inline-block p-2 border-blue-600  hover:border-b-[1px]  rounded-t-lg   hover:text-gray-300  `}>Gráficos</button>
-            </li>
-            <li className="me-2">
-              <button type="button" onClick={() => setMenuIndex(3)} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Contas a Pagar/Receber</button>
-            </li>
-            <li className="me-2">
-              <button type="button" onClick={() => setMenuIndex(5)} className={`inline-block p-2  rounded-t-lg border-blue-600  hover:border-b-[1px]  hover:text-gray-300  `}>Conferência de Caixa</button>
-            </li>
 
-          </ul>
-</div>
+    <div className="flex flex-col  w-full text-white">
+
+    <Tabs theme={{base: 'bg-white rounded-b-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-104px)]',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
+      on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
+      off:"border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
+    }}}}}}}  variant="underline">
+
+<Tabs.Item  active title="Caixa" icon={FaCalendarAlt}>
+
+<Caixa empresas={empresas}   setCcustos={setCcustos}  arrayCcustos={ccustos}/>
    
+    </Tabs.Item>
 
-      <div className=" px-4">
-        {loading ? (
-          <div>Loading...</div>
-        ) : (
-          renderMenuContent()
-        )}
-      </div>
+   
+    <Tabs.Item title="Plano de Contas" icon={MdAccessTimeFilled}>
+    <PlanodeContas empresas={empresas} setListaContas={setListaPlanoContas} listaContas={listaPlanoContas} />;
+    </Tabs.Item>
+
+    <Tabs.Item title="Contas a Pagar e Receber" icon={HiClipboardList}>
+    <ContasPagarReceber planodeContas={listaPlanoContas}  />
+    </Tabs.Item>
+    <Tabs.Item title="Grafico" icon={BiSolidInjection}>
+    <GraficoScreen empresas={empresas}  />
+    </Tabs.Item>
+    <Tabs.Item  icon={IoMdSettings}  title="Configurar">
+    <Conferencia />
+    </Tabs.Item>
+  </Tabs>
+
     </div>
+
   );
 }

@@ -1,13 +1,11 @@
 import { CaixaProps } from "@/pages/financeiro";
-import { ar } from "date-fns/locale";
 import { Button, Modal, Table } from "flowbite-react";
-import { useCallback, useEffect, useMemo } from "react";
-import { Caixa } from "./caixa";
+import {  useMemo } from "react";
 
 interface DataProps {
     openModal: boolean;
     setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
-    array:Array<CaixaProps>
+    array:Array<CaixaProps>|null
     tag:string
 }
 
@@ -16,7 +14,7 @@ export function ModalResumoTags({openModal,setOpenModal,array,tag}:DataProps) {
 
 
  const handleSelecao= useMemo(() => { 
-    return array.filter((item: CaixaProps )=> item?.mensalidade?.form_pagto === tag)
+    return tag === 'DINHEIRO' ? array?.filter((item: CaixaProps )=> item?.mensalidade?.form_pagto === 'DINHEIRO'|| item?.mensalidade?.form_pagto === undefined  ) :array?.filter((item: CaixaProps )=> item?.mensalidade?.form_pagto === tag)
     },[tag])
 
     return (
@@ -44,11 +42,11 @@ export function ModalResumoTags({openModal,setOpenModal,array,tag}:DataProps) {
                 <Table.HeadCell>Valor</Table.HeadCell>
               </Table.Head>
               <Table.Body className="divide-y text-xs text-black font-semibold" theme={{ cell: { base: 'px-4 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg' } }}>
-                {handleSelecao.map((item) =>
-                (<Table.Row className="bg-white">
+                {handleSelecao?.map((item,index) =>
+                (<Table.Row key={index} className="bg-white">
 
                   <Table.Cell>{new Date(item.datalanc).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
-                  <Table.Cell>{item.mensalidade.banco_dest?item?.mensalidade?.banco_dest:item?.mensalidade?.form_pagto}</Table.Cell>
+                  <Table.Cell>{item?.mensalidade?.banco_dest?item?.mensalidade?.banco_dest:item?.mensalidade?.form_pagto}</Table.Cell>
                   <Table.Cell>{item.descricao}</Table.Cell>
                   <Table.Cell>{item.historico}</Table.Cell>
 
