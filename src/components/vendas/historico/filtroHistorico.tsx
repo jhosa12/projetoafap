@@ -11,13 +11,12 @@ import { EmpresaProps } from "@/types/empresa";
 
 interface DataProps {
   produtos: Array<Partial<ProdutosProps>>
-  empresas: Array<EmpresaProps>,
   loading: boolean,
   filtroEstoque: (dados:FormProps)=>Promise<void>
 }
 
 
-export function FiltroEstoque({ produtos, loading, filtroEstoque,empresas }: DataProps) {
+export function FiltroLeads({ produtos, loading, filtroEstoque }: DataProps) {
   const [openFilter, setOpenFilter] = useState<boolean>(false)
   const [formData,setFormData] = useState<FormProps>({grupo:'',descricao:'',id_produto:null,id_empresa:undefined})
 
@@ -29,37 +28,29 @@ export function FiltroEstoque({ produtos, loading, filtroEstoque,empresas }: Dat
       open={openFilter}
       onOpenChange={setOpenFilter}
       content={
-        <div className="flex w-96 flex-col gap-4 p-2 text-sm ">
+        <div className="flex w-72 flex-col gap-4 p-2 text-sm ">
 
           <h2 id="area-popover" className="text-base text-gray-500">Filtro</h2>
 
 
           <Select onChange={e => setFormData({ ...formData, id_empresa: e.target.value })} className="font-semibold" sizing={'sm'}>
-                        <option value={''}>EMPRESA</option>
-                       {empresas.map(item=>(
+                        <option value={''}>VENDEDOR</option>
+                       {/*empresas.map(item=>(
                         <option value={item.id} className="font-semibold" key={item.id}>{item.nome}</option>
-                       ))}
+                       ))*/}
 
                     </Select>
 
-S
 
           <Select onChange={e => setFormData({ ...formData, grupo: e.target.value })} className="font-semibold" sizing={'sm'}>
-                        <option value={''}>CATEGORIA</option>
-                        <option value={'cs'} className="font-semibold">CONSUMO</option>
-                        <option value={'cv'} className="font-semibold">CONVALESCENTE</option>
-                        <option value={'fn'}  className="font-semibold">FUNEBRE</option>
-                        <option  value={'ot'} className="font-semibold">ÓTICA</option>
-
+                        <option value={''}>STATUS</option>
+                        <option value={'LEAD'} className="font-semibold">LEAD</option>
+                        <option value={'PROSPECCAO'} className="font-semibold">PROSPECÇÃO</option>
+                        <option value={'PRE VENDA'}  className="font-semibold">PRÉ VENDA</option>
                     </Select>
-          <Select onChange={e => setFormData({ ...formData, id_produto: Number(e.target.value) })} className="font-semibold" sizing={'sm'}>
-                        <option>PRODUTO</option>
-                       {produtos.map(item=>(
-                        <option value={item.id_produto} className="font-semibold" key={item.id_produto}>{item.descricao}</option>
-                       ))}
-                    </Select>
+         
                  
-                    <TextInput value={formData.descricao} onChange={e => setFormData({ ...formData, descricao: e.target.value.toUpperCase() })} className=" font-semibold" placeholder="DESCRIÇÃO" sizing={'sm'}/>
+                    <TextInput value={formData.descricao} onChange={e => setFormData({ ...formData, descricao: e.target.value.toUpperCase() })} className=" font-semibold" placeholder="NOME" sizing={'sm'}/>
 
           <Button color="success" isProcessing={loading} onClick={() => filtroEstoque(formData)}>
             Aplicar Filtro

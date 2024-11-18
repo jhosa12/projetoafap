@@ -33,7 +33,7 @@ export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos,
     const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
     const [mov,setMov]= useState<boolean>(false)
     const [openModal,setOpenModal]= useState<boolean>(false)
-    const {data,error,loading,postData} = useApi<Array<EstoqueProps>,FormProps>('/estoque/listar')
+    const {data,loading,postData} = useApi<Array<EstoqueProps>,FormProps>('/estoque/listar')
     const componentRef =useRef<RelatorioEstoque>(null);
     const handleFiltroEstoque = async()=>{
 
