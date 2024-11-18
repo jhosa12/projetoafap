@@ -1,8 +1,9 @@
-import { MetasProps, SetorProps } from "@/pages/vendas"
+
 import { Button, Label, Modal, Select, Table, TextInput } from "flowbite-react"
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
+import { MetasProps, SetorProps } from "./acompanhamento";
 
 interface DataProps{
     show:boolean,

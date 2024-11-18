@@ -285,7 +285,7 @@ export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,e
         <div className=" block">
           <Label  value="Valor" />
         </div>
-        <TextInput  sizing={'sm'} required type="number"  {...register('valor')}   />
+        <TextInput  sizing={'sm'} required   {...register('valor')}   />
       </div> 
 
 

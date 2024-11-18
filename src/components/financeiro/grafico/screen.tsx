@@ -99,7 +99,7 @@ export function GraficoScreen({ empresas }:
   const [selectEmpresa, setSelectEmpresa] = useState<Partial<EmpresaSelectProps>[]>(empresas);
   const [escala, setEscala] = useState<EscalaProps>({ mes: true, dia: false, ano: false })
   const [arrayGraf, setArrayGrafico] = useState<Array<Organizacao2>>([])
-  const { data, error, loading, postData } = useApi<ResponseProps, ApiProps>('/financeiro/filtroMensalidade')
+  const { data,  loading, postData } = useApi<ResponseProps, ApiProps>('/financeiro/filtroMensalidade')
 
   const [open, setOpen] = useState<boolean>(false)
 
