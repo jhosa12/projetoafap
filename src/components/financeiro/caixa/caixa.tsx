@@ -19,6 +19,7 @@ import { ModalRelatorio } from "./modalRelatorio";
 import { BiCalendarMinus } from "react-icons/bi";
 import useApiPost from "@/hooks/useApiPost";
 import { a } from "react-spring";
+import { ajustarData } from "@/utils/ajusteData";
 
 
 interface DataProps {
@@ -54,8 +55,8 @@ interface FormProps{
 interface ReqProps{
   array : Array<number>|[],
   id_empresa:string,
-  dataInicio:Date,
-  dataFim:Date
+  dataInicio:String|undefined,
+  dataFim:String|undefined
 }
 
 export function Caixa({ arrayCcustos, setCcustos, empresas }: DataProps) {
@@ -79,13 +80,13 @@ const handleFiltro:SubmitHandler<FormProps> = useCallback(async (data)=>{
  const arrayCustos = arrayCcustos.map(item=>{if(item.check===true)return item.id_ccustos}).filter((item) =>item!==undefined)
 
 
-
+const{dataIni,dataFim}=ajustarData(data.startDate,data.endDate)
     
  await postData({
     array : arrayCustos,
     id_empresa:data.id_empresa,
-    dataInicio:data.startDate,
-    dataFim:data.endDate
+    dataInicio:dataIni,
+    dataFim:dataFim
   })
 
 
