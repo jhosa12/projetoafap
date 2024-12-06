@@ -47,7 +47,7 @@ export const ModalBuscaConsulta = ({ setVisible,visible,reset}:DataProps) => {
                     </div>
 
 
-                   <ul className="flex w-full pt-2">
+                   <ul className="flex flex-col gap-2 w-full pt-2">
                     {data?.map((item,index)=>(
                         <li key={index} onClick={()=>{reset({...item,espec:'',tipoDesc:'',vl_final:null,id_med:null,id_consulta:null});setVisible()}} className="inline-flex items-center justify-between w-full p-2 rounded-lg cursor-pointer border-gray-500   bg-gray-200 hover:bg-gray-300">                                 
                         <div className="flex flex-col">

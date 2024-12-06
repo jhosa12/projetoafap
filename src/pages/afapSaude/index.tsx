@@ -59,6 +59,7 @@ export interface ConsultaProps{
   id_consulta:number|null,
   id_med:number|null,
   dt_pgto:Date|null,
+  procedimentos:Array<ExamesData>,
   nome:string,
   celular:string,
   cpf:string,
@@ -85,6 +86,7 @@ export interface ConsultaProps{
   idade:number,
   identidade:string,
   observacao:string
+  id_selected:number
 }
 
 export interface MedicoProps {
@@ -99,6 +101,7 @@ export interface MedicoProps {
   particular: number,
   plano: number,
   time: number,
+  exames: Array<ExamesProps>
 
 }
 
@@ -301,6 +304,7 @@ export default function AfapSaude() {
     try {
       const response = await api.post("/medico/lista")
       setMedicos(response.data)
+      console.log(response.data)
     } catch (error) {
       toast.error('ERRO NA REQUISIÇÃO')
 

@@ -8,8 +8,9 @@ import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import { Button, Label, Modal, Select, TextInput } from "flowbite-react";
 import { LancamentosProps } from "@/pages/caixa";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { EmpresaProps } from "@/types/empresa";
+import { ajustarData } from "@/utils/ajusteData";
 
 
 
@@ -40,7 +41,7 @@ interface GruposProps{
 }
 export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,empresas,handleFiltro}:ModalProps){
     const {usuario}=useContext(AuthContext)
-    const {register,setValue,handleSubmit,watch} = useForm<LancamentosProps>()
+    const {register,setValue,handleSubmit,watch,control} = useForm<LancamentosProps>()
    
 
 
@@ -72,6 +73,8 @@ export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,e
 
 
    async function editarMovimentacao(data:LancamentosProps){
+    const{dataIni:dt_lanc} = ajustarData(data.datalanc)
+   
     try {
       await toast.promise(
         api.put('/atualizarLancamento',{
@@ -80,11 +83,9 @@ export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,e
         conta:data.conta,
         descricao:data.descricao,
         historico:data.historico,
-        ccustos_desc:mov.ccustos_desc,
-        ccustos_id:mov.ccustos_id,
         valor:data.valor,
         usuario:usuario?.nome,
-        data:data.data,
+        datalanc:dt_lanc,
         tipo:data.tipo,
         empresa:data.empresa
         }),
@@ -103,6 +104,10 @@ export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,e
    }
 
      async function lancarMovimentacao(data:LancamentosProps){ 
+
+
+      const{dataIni:dt_lanc} = ajustarData(data.datalanc)
+      const{dataIni:dt_real} = ajustarData(new Date())
 
       if(!data?.empresa){
         toast.info('Selecione a empresa')
@@ -125,7 +130,8 @@ export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,e
                     descricao:`Sangria - Descrição: ${data.historico} - Origem: ${usuario?.nome} - Valor: ${data.valor}`,
                     id_usuario:'2',
                     id_destino:'3',
-                    data:new Date(),
+                    data:dt_real,
+                    datalanc:dt_lanc,
                     status:'PENDENTE',
                     sangria:true,
                    
@@ -147,14 +153,14 @@ export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,e
             api.post('/novoLancamento',{
             id_usuario:usuario?.id,
             id_grupo:Number(data.id_grupo),
-            datalanc:new Date().toISOString(),
+            datalanc:dt_lanc,
             conta:data.conta,
             conta_n:data.conta_n,
             descricao:data.descricao,
             historico:data?.historico?.toUpperCase(),
             valor:data.valor,
             usuario:usuario?.nome.toUpperCase(),
-            data:data.data  && new Date(data.data).toISOString(), 
+            data:dt_real, 
             tipo:data.tipo,
             empresa:data.empresa
             }),
@@ -195,7 +201,15 @@ export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,e
         <div className=" block">
           <Label  value="Data" />
         </div>
-       <DatePicker  onChange={e=>e && setValue('data',e)}  selected={watch('data')}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+        <Controller
+        control={control}
+        name="datalanc"
+        render={({ field:{onChange,value} }) => (
+          <DatePicker  onChange={e=>e && onChange(e)}  selected={value}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+        )}
+
+        />
+      
       </div>
 
 

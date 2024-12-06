@@ -8,6 +8,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { valorInicial } from "../consultas";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { ModalBuscaConsulta } from "./modalbuscaConsulta";
+import { HiTrash } from "react-icons/hi2";
 
 interface DataProps{
     openModal:boolean,
@@ -23,7 +24,7 @@ interface DataProps{
 export function ModalConsulta({openModal,setOpenModal,medicos,consulta,setConsultas,consultas,setConsulta}:DataProps) {
   const [visible,setvisible] = useState(false)
   const {register,setValue,handleSubmit,watch,control,reset} =  useForm<ConsultaProps>({defaultValues:consulta})
-
+  
 
   const handleOnSubmit:SubmitHandler<ConsultaProps> = (data)=>{
     
@@ -35,6 +36,7 @@ export function ModalConsulta({openModal,setOpenModal,medicos,consulta,setConsul
 
 
 const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
+  setValue('id_med',Number(event.target.value))
   const medico =  medicos.find(item=>item.id_med===Number(event.target.value))
  medico ? setValue('espec',`${medico?.nome}-(${medico?.espec})`):setValue('espec','')
   setValue('tipoDesc','')
@@ -129,18 +131,90 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
 
 
 
+  const handleAdicionarProcedimento = () => {
+    const medico = medicos?.find(item => item.id_med === Number(watch('id_med')));
+    const exame = medico?.exames?.find(item => item.id_exame === Number(watch('id_selected')));
+
+
+    const tipo = watch('tipoDesc')
+    if(!medico){
+      toast('Selecione um especialista')
+    }
+
+    if (!tipo) {
+      toast.info('Selecione um tipo de desconto')
+      return
+    }
+
+    console.log(exame)
+    if (!exame) {
+      toast.info('Selecione um exame')
+      return;
+    }
+
+
+
+    // Obter a lista atual de exames, garantindo que seja um array
+    const procedimentosAtuais = watch('procedimentos') || [];
+
+    // Verificar se o exame já existe na lista para evitar duplicados
+    const exameJaExiste = procedimentosAtuais.some((item: ExamesData) => item.id_exame === exame.id_exame);  
+
+    if (exameJaExiste) {
+      toast.info('Exame ja existe na lista');
+      return;
+    }
+
+ 
+    const vl_particular =Number(exame.porcPart)
+
+    const desconto = tipo === 'PARTICULAR' ? 0 : tipo === 'FUNERARIA' ?
+      (vl_particular-Number(exame.porcFun)) : (vl_particular - Number(exame.porcPlan));
+
+
+    setValue('procedimentos', [...procedimentosAtuais, {
+      data: new Date(),
+      id_exame: exame.id_exame,
+      nome: exame.nome,
+      desconto: desconto,
+      valorExame: vl_particular,
+      valorFinal: vl_particular - desconto,
+      obs: exame.obs,
+
+    }]);
+    console.log("Exame adicionado:", exame);
+  };
+
+
+
+
+  const handleDelProcdimentoTable = (id_exame: number) => {
+    setValue('procedimentos', watch('procedimentos').filter(item => item.id_exame !== id_exame))
+  }
+
+
+
+
+
+
+
+
+
+
+
 
 
  
 
     return(
-        <Modal show={openModal} size="2xl"  dismissible onClose={() => setOpenModal(false)} >
+        <Modal show={openModal} size="4xl"  dismissible onClose={() => setOpenModal(false)} >
         <Modal.Header>Administrar Consulta</Modal.Header>
         <Modal.Body className="flex flex-col gap-4">
 
          {!consulta.id_consulta && <Button onClick={()=>setvisible(!visible)} theme={{color:{light:"border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100"}}}  className="mr-auto " color="light" size="sm"><AiOutlineClockCircle className="mr-1 h-5 w-5"/>Setar por consultas anteriores</Button>}
        
-          <form onSubmit={handleSubmit(handleOnSubmit)} className="grid grid-cols-3 gap-2 ">
+          <form onSubmit={handleSubmit(handleOnSubmit)} >
+            <div className="grid grid-cols-4 gap-2 ">
             <div className="col-span-2 "> 
                 <Label className="text-xs" htmlFor="email" value="Nome Paciente" />
               <TextInput sizing={'sm'} {...register('nome')} className="focus:outline-none" id="email" placeholder="Nome" required />
@@ -160,6 +234,17 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
                 />
              
               
+              </div>
+              <div className="w-full">
+                  <Label className="text-xs" htmlFor="cpf" value="CPF" />
+
+                  <Controller
+                  control={control}
+                  name="cpf"
+                  render={({ field:{onChange,value} }) => (
+                    <ReactInputMask value={value} onChange={e=>onChange(e.target.value)} id="cpf" placeholder="CPF" className="px-2 py-2 text-xs focus:outline-none bg-gray-100 w-full rounded-lg border-[1px] border-gray-300" mask={'999.999.999-99'} required/>
+                  )}
+                  />
               </div>
 
 
@@ -251,55 +336,114 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
           <TextInput sizing={'sm'} {...register('cidade')} className="focus:outline-none" id="email" placeholder="Cidade"  />
         </div>
 
-              <div className="w-full">
-                  <Label className="text-xs" htmlFor="cpf" value="CPF" />
-
-                  <Controller
-                  control={control}
-                  name="cpf"
-                  render={({ field:{onChange,value} }) => (
-                    <ReactInputMask value={value} onChange={e=>onChange(e.target.value)} id="cpf" placeholder="CPF" className="px-2 py-2 text-xs focus:outline-none bg-gray-100 w-full rounded-lg border-[1px] border-gray-300" mask={'999.999.999-99'} required/>
-                  )}
-                  />
-              </div>
+           
 
 
 <div>
              
                 <Label className="text-xs" htmlFor="espec" value="Especialidade" />
           
-              <Select sizing={'sm'} {...register('id_med')} id='espec' onChange={e=>handleMedico(e)} className="focus:outline-none"   required >
+              <Select disabled={watch('procedimentos')?.length>0} sizing={'sm'} {...register('id_med')} id='espec' onChange={e=>handleMedico(e)} className="focus:outline-none"   required >
                     <option value={''}></option>
                     {medicos.map((item,index)=>(
                         <option value={item.id_med} key={item.id_med}>{`${item.nome}-(${item.espec})`}</option>
                     ))}
               </Select>
             </div>
-            <div className="w-full">
-            
-                <Label className="text-xs" value="Desconto" />
-          
-              <Select sizing={'sm'} {...register('tipoDesc')} onChange={e=>handleDesconto(e)} className="focus:outline-none"   required >
-                    <option value={''}></option>
-                    <option value={'PARTICULAR'}>PARTICULAR</option>
-                    
-                    <option value={'FUNERARIA'}>FUNERÁRIA</option>
-                    <option value={'PLANO'}>PLANO</option>
-              </Select>
-            </div>
-
-            <div >
-            
-            <Label className="text-xs" value="Valor Final" />
-       
-          <TextInput theme={{field:{input:{base:"block w-full border disabled:cursor-not-allowed "}}}} disabled sizing={'sm'} {...register('vl_final')} className="focus:outline-none disabled:text-black"  placeholder="Valor" required />
-        </div>
-
-          <div className="col-span-3 op">
-          <Button className="ml-auto" type="submit">{consulta?.id_consulta ? 'Atualizar' : 'Cadastrar'}</Button>
           </div>
+
+
+          <div className="inline-flex w-full gap-4 mb-1 mt-2">
+
+          <div className="w-1/4">
+            
+            <Label className="text-xs" value="Desconto" />
       
+          <Select disabled={watch('procedimentos')?.length>0} sizing={'sm'} {...register('tipoDesc')} onChange={e=>handleDesconto(e)} className="focus:outline-none"   required >
+                <option value={''}></option>
+                <option value={'PARTICULAR'}>PARTICULAR</option>
+                
+                <option value={'FUNERARIA'}>FUNERÁRIA</option>
+                <option value={'PLANO'}>PLANO</option>
+          </Select>
+        </div>
+              <div className="w-1/2">
+
+                <Label htmlFor="procedimentos" className="text-xs" value="Procedimentos" />
+
+                <Select {...register('id_selected')} id="procedimentos" sizing={'sm'}  className="focus:outline-none"  >
+                  <option value={''}></option>
+                    {medicos.find(item=>item.id_med===Number(watch('id_med')))?.exames.map((item,index)=>(
+                        <option value={item.id_exame} key={item.id_exame}>{item.nome}</option>
+                    ))}
+                </Select>
+              </div>
+              <Button onClick={handleAdicionarProcedimento} type="button" size={'xs'}  className="mt-auto p-1">Adicionar</Button>
+
+            </div>
+            <div className="overflow-x-auto ">
+              <Table theme={{ body: { cell: { base: "px-6 text-black py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs" } }, head: { cell: { base: "bg-gray-50 px-6 py-1 group-first/head:first:rounded-tl-lg group-first/head:last:rounded-tr-lg " } } }} >
+                <Table.Head>
+                  <Table.HeadCell>Procedimento</Table.HeadCell>
+                  <Table.HeadCell>Valor Exame</Table.HeadCell>
+                  <Table.HeadCell>Desconto</Table.HeadCell>
+                  <Table.HeadCell>Valor Final</Table.HeadCell>
+                  <Table.HeadCell>
+                    <span className="sr-only">Edit</span>
+                  </Table.HeadCell>
+
+                </Table.Head>
+                <Table.Body className="divide-y">
+                  {watch('procedimentos')?.map((item, index) => (
+                    <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                      <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                        {item.nome}
+                      </Table.Cell>
+                      <Table.Cell>{Number(item.valorExame ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
+                      <Table.Cell>{Number(item.desconto ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
+                      <Table.Cell>{Number(item.valorFinal ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
+                      <Table.Cell>
+
+                        <button type="button" onClick={() =>handleDelProcdimentoTable(item.id_exame)} className="font-medium text-gray-500 hover:text-red-600 ">
+                          <HiTrash size={16} />
+                        </button>
+                      </Table.Cell>
+
+                    </Table.Row>
+
+
+                  ))}
+
+                  <Table.Row >
+                    <Table.Cell className="whitespace-nowrap  font-semibold ">
+                      Total
+                    </Table.Cell>
+
+                    <Table.Cell>{ }</Table.Cell>
+                    <Table.Cell>{ }</Table.Cell>
+                    <Table.Cell className="font-semibold">{Number(watch('procedimentos')?.reduce((acumulador, atual) => {
+                      acumulador += Number(atual.valorFinal)
+                      return acumulador
+                    }, 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
+                  </Table.Row>
+
+
+                </Table.Body>
+
+              </Table>
+            </div>         
+
+
+
+
+
+
+
+
+          <Button className="ml-auto" type="submit">{consulta?.id_consulta ? 'Atualizar' : 'Cadastrar'}</Button>
           </form>
+
+       
          
 
         </Modal.Body>

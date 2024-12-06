@@ -152,8 +152,8 @@ try {
     id_usuario:usuario?.id,
     datalancUTC:dataAtual.toISOString(),
     descricao:"CONSULTA",
-    historico:`CONSULT.${data?.id_consulta}-${data?.nome}-${data?.espec}`,
-    valor:data?.vl_final,
+    historico:`CONSULTA.${data?.id_consulta}-${data?.nome}-${data?.espec}`,
+    valor:data?.procedimentos?.reduce((total, item) => total + item.valorFinal, 0),
     usuario:usuario?.nome,
     }),
     {
@@ -274,8 +274,8 @@ const handleDeletar = useCallback(async () => {
                 <Table.Cell>{item.espec}</Table.Cell>
                 <Table.Cell>{new Date(item.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
                 <Table.Cell>{item.tipoDesc}</Table.Cell>
-                <Table.Cell>{Number(item.vl_desc).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
-                <Table.Cell>{Number(item.vl_final).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
+                <Table.Cell>{Number(item?.procedimentos?.reduce((acc, curr) => acc + curr.desconto, 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
+                <Table.Cell>{Number(item?.procedimentos?.reduce((acc, curr) => acc + curr.valorFinal, 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
                 <Table.Cell>
                 
               <Badge className="justify-center" color={item.status==='PENDENTE'?'yellow':item.status==='CANCELADO'?'red':'green'}>{item.status}</Badge>

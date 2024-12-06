@@ -5,7 +5,7 @@ import { MdAccessTimeFilled, MdDashboard, MdMedicalServices } from "react-icons/
 
 import { ExamesProps, MedicoProps } from "@/pages/afapSaude";
 import { AddEditExames } from "./addEditExames";
-import AdmMedico from "./admMedico";
+import AdmMedico from "./administrarMedicos/admMedico";
 
 
 interface DataProps{
