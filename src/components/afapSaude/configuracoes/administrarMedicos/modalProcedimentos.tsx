@@ -12,18 +12,17 @@ import { ModalConfirmar } from "../../components/modalConfirmar"
 interface DataProps {
     openModal:boolean
     setOpenModal:(open:boolean)=>void
-    medico:string|undefined
+    medico:Partial<MedicoProps>|MedicoProps
+    setMedico:(medico:Partial<MedicoProps>|MedicoProps)=>void
     medicos:Array<MedicoProps>
     setArrray:(array:Array<MedicoProps>)=>void
-    id_medico?:number
-    exames:Array<ExamesProps>|[],
     usuario?:string
 }
 
 
-export function ModalProcedimentos({openModal,setOpenModal,medico,exames,id_medico,usuario,medicos,setArrray}:DataProps) {
+export function ModalProcedimentos({openModal,setOpenModal,medico,usuario,medicos,setArrray,setMedico}:DataProps) {
 
-    const {register,handleSubmit,watch} = useForm<ExamesProps>()
+    const {register,handleSubmit,watch,reset} = useForm<ExamesProps>()
     const [openExcluir, setOpenExcluir] = useState(false)
     const [excluirId, setExcluirId] = useState<number|null>(null)
 
@@ -36,7 +35,7 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,exames,id_medi
             
             const response = await toast.promise(
                 api.post('/afapSaude/exames/novoExame',
-                    {...data,id_medico,usuario}
+                    {...data,nome:data.nome.toUpperCase(),id_medico:medico.id_med,usuario}
                 ),
                 {
                     error:'Erro ao Cadastrar Exame',
@@ -44,10 +43,14 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,exames,id_medi
                     success:'Cadastro Realizado com sucesso!'
                 }
             )
+            const novoArray = [...medicos]
+           const index = novoArray.findIndex(item=>item.id_med==medico.id_med)
+        novoArray[index].exames = [...novoArray[index].exames,response.data]
+            setArrray(novoArray)
 
-            const index = medicos.findIndex(item=>item.id_med==id_medico)
-            medicos[index].exames = [...medicos[index].exames,response.data]
-            setArrray(medicos)
+
+            setMedico({...medico,exames:[...medico.exames??[],response.data]})
+            reset()
 
             
     
@@ -69,10 +72,11 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,exames,id_medi
                 }
             )
             const novoArray = [...medicos]
-            const index = novoArray.findIndex(item=>item.id_med==id_medico)
+            const index = novoArray.findIndex(item=>item.id_med==medico.id_med)
             novoArray[index].exames = novoArray[index].exames.filter(item=>item.id_exame!==excluirId)
             setArrray(novoArray)
            // setExames(novoArray)
+           setMedico({...medico,exames:novoArray[index].exames.filter(item=>item.id_exame!==excluirId)})
            
         } catch (error) {
             toast.warn('Consulte o TI')
@@ -88,7 +92,7 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,exames,id_medi
     return (
         <>
         <Modal show={openModal} size="3xl" onClose={() => setOpenModal(false)} popup>
-        <Modal.Header>{medico}</Modal.Header>
+        <Modal.Header>{medico.nome}</Modal.Header>
         <Modal.Body >
             <form onSubmit={handleSubmit(handleAdicionarExame)} className="space-y-2">
             <div className="flex flex-row gap-2 w-full mt-1">
@@ -116,20 +120,20 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,exames,id_medi
                        Ações
                     </Table.HeadCell>
                 </Table.Head>
-                <Table.Body>
-                    {exames?.map((item,index)=>(
-                             <Table.Row className="text-xs">
+                <Table.Body className="divide-y">
+                    {medico?.exames?.map((item,index)=>(
+                             <Table.Row className="text-xs font-semibold text-black">
                              <Table.Cell>
                                  {item.nome}
                              </Table.Cell>
                              <Table.Cell>
-                                 {item.porcPart}
+                                 {Number(item.porcPart).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
                              </Table.Cell>
                              <Table.Cell>
-                                 {item.porcFun}
+                                 {Number(item.porcFun).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
                              </Table.Cell>
                              <Table.Cell>
-                                {item.porcPlan}
+                                {Number(item.porcPlan).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
                              </Table.Cell>
                              <Table.Cell>
                                 <button onClick={()=>{setExcluirId(item.id_exame);setOpenExcluir(true)}} type="button" className="hover:text-red-500">

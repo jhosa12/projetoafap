@@ -20,13 +20,14 @@ interface DataProps {
     openModal:boolean
     setOpenModal:(open:boolean)=>void
     dataMedico:Partial<MedicoProps>|MedicoProps,
+    setDataMedico:(medico:Partial<MedicoProps>|MedicoProps)=>void
     medicos:Array<MedicoProps>,
     setArray:(array:Array<MedicoProps>)=>void
 }
 
 
 
-export function ModalMedico({openModal,setOpenModal,dataMedico,medicos,setArray}:DataProps) {
+export function ModalMedico({openModal,setOpenModal,dataMedico,medicos,setArray,setDataMedico}:DataProps) {
     const [openProcedimentos,setModalProcedimentos] = useState(false);
     const {usuario} = useContext(AuthContext)
 
@@ -85,9 +86,7 @@ const novo =  await toast.promise(
     }
 )
 
-const novoArray = [...medicos]
-novoArray.push(novo.data)
-setArray(novoArray)
+setArray([...medicos,novo.data])
 setOpenModal(false)
 } catch (error) {
     toast.error('Erro na requisição')
@@ -216,7 +215,7 @@ setArray(novoArray)
           </Modal.Body>
         </Modal>
 
-      { openProcedimentos && <ModalProcedimentos medicos={medicos} setArrray={setArray} usuario={usuario?.nome} exames={dataMedico.exames??[]} medico={dataMedico.nome} openModal={openProcedimentos} setOpenModal={setModalProcedimentos} id_medico={dataMedico.id_med} />}
+      { openProcedimentos && <ModalProcedimentos setMedico={setDataMedico} medicos={medicos} setArrray={setArray} usuario={usuario?.nome}  medico={dataMedico} openModal={openProcedimentos} setOpenModal={setModalProcedimentos} />}
 
         </>
     )

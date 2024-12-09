@@ -60,15 +60,14 @@ setArray(novoArray)
 } catch (error) {
   toast.error('erro na requisição')
 }
-
 }
 
     return(
         <>
 
-        <div className=" max-h-[calc(100vh-110px)] justify-center items-center p-2 w-full grid grid-cols-4 gap-6 overflow-y-auto ">
+        <div className=" max-h-[calc(100vh-155px)] justify-center items-center p-2 w-full grid grid-cols-4 gap-6 overflow-y-auto ">
      
-   {medicos.map(item=>(
+   {medicos?.map(item=>(
     <Card 
     key={item.id_med} 
      className=" relative  max-w-sm col-span-1 h-full" 
@@ -78,8 +77,8 @@ setArray(novoArray)
      
       >
         <div className="absolute top-0 right-0 z-10 flex justify-end px-4 pt-4">
-        <Dropdown inline label="">
-          <Dropdown.Item  onClick={()=>{setarDadosMedico({...item,tmpUrl:undefined}),setOpenModal(true)}}>
+        <Dropdown inline label="" theme={{arrowIcon:"ml-2 h-4 w-4 text-gray-400"}}>
+          <Dropdown.Item  onClick={()=>{setarDadosMedico({...item,tmpUrl:undefined,exames:item.exames}),setOpenModal(true)}}>
             <span
               
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -113,6 +112,7 @@ setArray(novoArray)
       <Card onClick={()=>{
         setarDadosMedico({
           espec:undefined,
+          exames:[],
           file:undefined,
           id_med:undefined,
           imageUrl:undefined,
@@ -132,7 +132,7 @@ setArray(novoArray)
 
 
 
-      {openModal &&  <ModalMedico openModal={openModal} setOpenModal={setOpenModal} dataMedico={dataMedico} medicos={medicos} setArray={setArray}/>}
+      {openModal &&  <ModalMedico setDataMedico={setDataMedico} openModal={openModal} setOpenModal={setOpenModal} dataMedico={dataMedico} medicos={medicos} setArray={setArray}/>}
 
        
         </>

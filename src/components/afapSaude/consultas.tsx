@@ -1,14 +1,14 @@
 
 
-import { ConsultaProps,ExamesProps, MedicoProps } from "@/pages/afapSaude";
+import { ConsultaProps, MedicoProps } from "@/pages/afapSaude";
 import { api } from "@/services/apiClient";
 import { Badge, Button, Table } from "flowbite-react";
-import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ModalConsulta } from "./components/modalNovaConsulta";
 import { toast } from "react-toastify";
-import { HiDocument, HiMiniArrowDownOnSquare, HiPencil, HiPrinter, HiTrash } from "react-icons/hi2";
+import { HiDocument, HiMiniArrowDownOnSquare, HiPencil } from "react-icons/hi2";
 import { ModalDeletarExame } from "./components/modalDeletarExame";
-import {  HiAdjustments, HiDocumentAdd, HiFilter } from "react-icons/hi";
+import {   HiDocumentAdd, HiFilter } from "react-icons/hi";
 import { ModalFiltroConsultas } from "./components/modalFiltro";
 import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
 import { useReactToPrint } from "react-to-print";
@@ -20,11 +20,9 @@ import { FaWhatsapp } from "react-icons/fa";
 import handleWhatsAppClick from "@/utils/openWhats";
 import pageStyle from "@/utils/pageStyle";
 import { ReciboMensalidade } from "@/Documents/mensalidade/Recibo";
-import { ModalConfirmar } from "./components/modalConfirmar";
 import { ModalReceber } from "./exames/modalReceber";
-import { formToJSON } from "axios";
 import { ajustarData } from "@/utils/ajusteData";
-import { start } from "repl";
+
 
 
 
@@ -132,8 +130,8 @@ const handleReceberConsulta = useCallback(async ()=>{
     toast.warning('Consulta ja foi recebida!')
     return
   }
-  if(data?.vl_final === 0||data?.vl_final === null){
-    toast.warning('Consulta sem valor definido!')
+  if(data?.procedimentos?.length === 0){
+    toast.warning('Defina os procedimentos realizados!')
     return;
   }
 

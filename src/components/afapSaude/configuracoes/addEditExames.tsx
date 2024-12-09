@@ -73,6 +73,7 @@ const handleDeletarExame=async ()=>{
         const index = novoArray.findIndex(item=>item.id_exame===data.id_exame)
         novoArray.splice(index,1)
         setExames(novoArray)
+        setOpenDeletar(false)
        
     } catch (error) {
         toast.warn('Consulte o TI')
