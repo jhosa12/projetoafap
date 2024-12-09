@@ -189,11 +189,11 @@ setArray(novoArray)
               d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
             />
           </svg>
-       {!dataMedico.imageUrl && !dataMedico.tmpUrl && <div className="flex flex-col items-center justify-center pt-6">
+       {!watch('imageUrl') && !watch('tmpUrl') && <div className="flex flex-col items-center justify-center pt-6">
           <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG(MAX. 500x350px)</p>
         </div>}
         <FileInput  onChange={handleFile} id="dropzone-file" className="hidden" />
-       {(dataMedico.imageUrl || dataMedico.tmpUrl) &&  <img className="w-full h-36 object-center rounded-lg" src={dataMedico.imageUrl?`${process.env.NEXT_PUBLIC_API_URL}/file/${dataMedico.imageUrl}`:dataMedico.tmpUrl} alt="fotoUser"  ></img>}
+       {(watch('imageUrl') || watch('tmpUrl')) &&  <img className="w-full h-36 object-center rounded-lg" src={watch('imageUrl')?`${process.env.NEXT_PUBLIC_API_URL}/file/${watch('imageUrl')}`:watch('tmpUrl')} alt="fotoUser"  ></img>}
       </Label>
       <FloatingLabel sizing="sm" label="Nome do Médico" variant="outlined" {...register('nome')}  />
       <FloatingLabel sizing="sm" label="Especialidade" variant="outlined" {...register('espec')} />
