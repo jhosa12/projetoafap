@@ -1,11 +1,8 @@
 
-import { MdSaveAlt } from "react-icons/md";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
-import { GiReturnArrow } from "react-icons/gi";
 import { AuthContext} from "@/contexts/AuthContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { toast } from "react-toastify";
-import { api } from "@/services/apiClient";
 import "react-datepicker/dist/react-datepicker.css";
 import { Modal, ModalBody, ModalHeader, TextInput,Select,Checkbox, Button } from "flowbite-react";
 import { MensalidadeProps } from "@/types/financeiro";
@@ -13,6 +10,7 @@ import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import useBaixaMensalidade from "@/hooks/useBaixaMensalidade";
+import { Controller, useForm } from "react-hook-form";
 
 
 
@@ -27,6 +25,11 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
     const {usuario,dadosassociado,permissoes,setarDadosAssociado}=useContext(AuthContext)
     const [desconto,setDesconto] = useState(false)
     const {error,postData} = useBaixaMensalidade('/mensalidade/baixa')
+    const {watch,register,control,reset,setValue} = useForm<MensalidadeProps>(
+        {
+            defaultValues:mensalidade
+        }
+    )
 ;
     
     
@@ -118,12 +121,12 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
 
           <div className="mb-1 col-span-1 ">
 <label  className="block mb-1 text-xs font-medium  text-black">REFERÊNCIA</label>
-<TextInput disabled style={{padding:6}} value={mensalidade?.referencia} onChange={e=>setMensalidade({...(mensalidade || {}),referencia:e.target.value})} placeholder="REFERÊNCIA"/>
+<TextInput disabled style={{padding:6}} {...register('referencia')} placeholder="REFERÊNCIA"/>
 </div>
 
 <div className="mb-1 col-span-1">
 <label  className="block mb-1 text-xs font-medium  text-black">VALOR PAGO</label>
-<TextInput style={{padding:6}} value={mensalidade?.valor_total} onChange={e=>setMensalidade({...mensalidade,valor_total:Number(e.target.value)})} placeholder="VALOR PAGO"/>
+<TextInput style={{padding:6}}  {...register('valor_total')} placeholder="VALOR PAGO"/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-black">RECEBIDO POR</label>
@@ -131,7 +134,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-black">FORMA PAG.</label>
-    <Select  value={mensalidade?.form_pagto}  onChange={(e) =>setMensalidade( { ...mensalidade, form_pagto: e.target.value})}  style={{padding:6}}>
+    <Select  {...register('form_pagto')}  style={{padding:6}}>
             <option>{''}</option>
             <option value={'DINHEIRO'}>DINHEIRO</option>
             <option value={'PIX'}>PIX</option>
@@ -143,7 +146,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-black">BANCO DESTINO</label>
-    <Select  value={mensalidade?.banco_dest}  onChange={(e) =>setMensalidade({ ...mensalidade, banco_dest: e.target.value})}  style={{padding:6}}>
+    <Select  {...register('banco_dest')}  style={{padding:6}}>
             <option>{''}</option>
             <option value={'BANCO DO BRASIL'}>BANCO DO BRASIL</option>
             <option value={'CORA'}>CORA</option>
@@ -154,9 +157,35 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
 </div>
 <div className="mb-1 col-span-1">
 <label  className="block mb-1 text-xs font-medium  text-black">PAGAMENTO</label>
-<DatePicker className="flex w-full text-sm p-1.5 rounded-lg bg-gray-50 border-gray-300" disabled={!permissoes.includes('ADM1.2.7')} selected={mensalidade?.data_pgto}  onChange={e=>e && setMensalidade({...mensalidade,data_pgto:new Date(e)})}  dateFormat={'dd/MM/yyyy'} locale={pt} />
+<Controller
+control={control}
+name='data_pgto'
+render={({field:{value,onChange}})=>(
+    <DatePicker className="flex w-full text-sm p-1.5 rounded-lg bg-gray-50 border-gray-300" disabled={!permissoes.includes('ADM1.2.7')} selected={value}  onChange={e=>e && onChange(e)}  dateFormat={'dd/MM/yyyy'} locale={pt} />
+)}
+
+/>
+
 </div>
-{((mensalidade?.valor_total ?? 0)<(mensalidade?.valor_principal ?? 0) && mensalidade?.valor_total!==undefined)&& mensalidade.valor_total>0?(
+
+
+
+{watch('form_pagto')==='PIX'&& (
+
+<div className="mb-1 col-span-2">
+    <label  className="block mb-1 text-xs font-medium  text-black">PIX POR</label>
+    <TextInput style={{padding:6}} {...register('pix_por')} placeholder="PIX POR "/>
+
+</div>
+)
+
+}
+
+
+
+
+
+{((watch('valor_total') ?? 0)<(watch('valor_total') ?? 0) && watch('valor_total')!==undefined)&& watch('valor_total')>0?(
  <div className="col-span-4 gap-1 mt-1 inline-flex ">
     <div className="flex items-top w-2/12 ">
     <Checkbox  onClick={()=>setDesconto(!desconto)}  checked={desconto} />
@@ -164,7 +193,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
 </div>
     <div className="mb-1 w-full">
   <label  className="block mb-1 text-xs font-medium  text-black">INFORME O MOTIVO DO DESCONTO</label>
-  <TextInput value={mensalidade.motivo_bonus} onChange={e=>setMensalidade({...(mensalidade || {}),motivo_bonus:e.target.value})} disabled={!desconto || mensalidade.status==='P'} type="text" style={{padding:6}}/>
+  <TextInput {...register('motivo_bonus')} disabled={!desconto || mensalidade.status==='P'} type="text" style={{padding:6}}/>
   </div>
  </div> 
 ):''}

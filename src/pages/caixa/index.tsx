@@ -44,6 +44,8 @@ export interface LancamentosProps{
     datalanc:Date,
     usuario:string,
     id_grupo:number|null,
+    pix_por:string,
+    banco:string,
     empresa:string,
     mensalidade:{ form_pagto:string}
 }

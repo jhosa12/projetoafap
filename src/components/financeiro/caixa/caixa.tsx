@@ -1,24 +1,21 @@
 
-import { Table, Select, Dropdown, Checkbox, Avatar, Button, ModalFooter, Modal, ModalHeader, ModalBody,  TableHead, TableHeadCell, TableBody, TableCell, TableRow, Card, Pagination } from "flowbite-react";
+import { Table, Select, Dropdown, Checkbox,  Button,  TableHead, TableHeadCell, TableBody, TableCell, TableRow, Card, Pagination } from "flowbite-react";
 import { CaixaProps, CcustosProps } from "@/pages/financeiro";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaMoneyBillAlt } from "react-icons/fa";
 import { FaPix } from "react-icons/fa6";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { FaCreditCard } from "react-icons/fa";
-
 import DatePicker, { registerLocale } from "react-datepicker";
 import pt from 'date-fns/locale/pt-BR';
 import { FcMultipleInputs } from "react-icons/fc";
 import { MdOutput } from "react-icons/md";
 import { EmpresaProps } from "@/types/empresa";
-import { api } from "@/services/apiClient";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ModalResumoTags } from "./modalResumoTags";
 import { ModalRelatorio } from "./modalRelatorio";
 import { BiCalendarMinus } from "react-icons/bi";
 import useApiPost from "@/hooks/useApiPost";
-import { a } from "react-spring";
 import { ajustarData } from "@/utils/ajusteData";
 
 

@@ -26,7 +26,9 @@ export type MensalidadeProps = {
     index: number,
     id_acordo: number,
     form_pagto:string,
-    banco_dest:string
+    banco_dest:string,
+    pix_por:string,
+    
 
 }
 

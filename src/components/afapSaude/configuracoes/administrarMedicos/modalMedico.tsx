@@ -4,16 +4,11 @@ import { Button, FileInput, FloatingLabel, Label, Modal, Textarea } from "flowbi
 import { ChangeEvent, useContext, useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { FaNotesMedical } from "react-icons/fa"
-import { HiAdjustments, HiCloudDownload } from "react-icons/hi"
-import { HiUserCircle } from "react-icons/hi2"
 import { IoIosSave } from "react-icons/io"
 import { MdCancel } from "react-icons/md"
 import { toast } from "react-toastify"
 import { ModalProcedimentos } from "./modalProcedimentos"
 import { AuthContext } from "@/contexts/AuthContext"
-
-
-
 
 
 interface DataProps {
@@ -193,7 +188,7 @@ setArray(novoArray)
           <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG(MAX. 500x350px)</p>
         </div>}
         <FileInput  onChange={handleFile} id="dropzone-file" className="hidden" />
-       {(watch('imageUrl') || watch('tmpUrl')) &&  <img className="w-full h-36 object-center rounded-lg" src={watch('imageUrl')?`${process.env.NEXT_PUBLIC_API_URL}/file/${watch('imageUrl')}`:watch('tmpUrl')} alt="fotoUser"  ></img>}
+       {(watch('imageUrl') || watch('tmpUrl')) &&  <img className="w-full h-28 object-center rounded-lg" src={watch('imageUrl')?`${process.env.NEXT_PUBLIC_API_URL}/file/${watch('imageUrl')}`:watch('tmpUrl')} alt="fotoUser"  ></img>}
       </Label>
       <FloatingLabel sizing="sm" label="Nome do Médico" variant="outlined" {...register('nome')}  />
       <FloatingLabel sizing="sm" label="Especialidade" variant="outlined" {...register('espec')} />

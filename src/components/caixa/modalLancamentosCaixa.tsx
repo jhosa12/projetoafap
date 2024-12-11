@@ -123,28 +123,7 @@ export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,e
             return;
       }
 
-        if(data.descricao==='SANGRIA'){
-            await toast.promise(
-                api.post('/notification/adicionar',{
-                    titulo:'Sangria',
-                    descricao:`Sangria - Descrição: ${data.historico} - Origem: ${usuario?.nome} - Valor: ${data.valor}`,
-                    id_usuario:'2',
-                    id_destino:'3',
-                    data:dt_real,
-                    datalanc:dt_lanc,
-                    status:'PENDENTE',
-                    sangria:true,
-                   
-                }),
-                {
-                    error:'Erro na requisição',
-                    pending:'Gerando Notificação',
-                    success:'Pendência Enviada com Sucesso, Aguarde a confirmação do financeiro',
-                   
-                }
-             )
-             return;
-        }
+   
 
 
         try {
@@ -217,7 +196,7 @@ export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,e
         <div className=" block">
           <Label  value="Empresa" />
         </div>
-     <Select {...register('empresa')} disabled={!!mov.lanc_id} sizing={'sm'}>
+     <Select {...register('empresa')} disabled={!!mov.lanc_id} sizing={"sm"}>
         <option value={''}></option>
        {empresas?.map(item=>(
         <option key={item.id} value={item.id}>{item.nome}</option>
@@ -261,7 +240,7 @@ export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,e
         <div className=" block">
           <Label  value="Descrição" />
         </div>
-        <Select value={watch('conta')} className="text-black"   onChange={e=>{
+        <Select  value={watch('conta')} className="text-black"   onChange={e=>{
         const tipo = planos.find((item)=>item.conta===e.target.value)
        
      if(tipo){ setValue('descricao',tipo.descricao)

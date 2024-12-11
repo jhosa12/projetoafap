@@ -11,7 +11,6 @@ import moment from 'moment'
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
 import Calendario from "@/components/afapSaude/agendaMedico/calendario";
-import PreAgend from "@/components/afapSaude/preAgendamento";
 import Consultas from "@/components/afapSaude/consultas";
 import { Tabs } from "flowbite-react";
 import { FaCalendarAlt } from "react-icons/fa";
@@ -59,6 +58,7 @@ export interface ConsultaProps{
   id_consulta:number|null,
   id_med:number|null,
   dt_pgto:Date|null,
+  user:string,
   procedimentos:Array<ExamesData>,
   nome:string,
   celular:string,
@@ -86,7 +86,11 @@ export interface ConsultaProps{
   idade:number,
   identidade:string,
   observacao:string
-  id_selected:number
+  id_selected:number,
+  id_agmed:number|null,
+  hora_prev:Date,
+  buscar:string,
+  data_prev:Date|undefined
 }
 
 export interface MedicoProps {
@@ -159,7 +163,7 @@ export default function AfapSaude() {
   const [menuIndex, setMenuIndex] = useState(1)
   const [consultas,setConsultas] =useState<Array<ConsultaProps>>([])
   const [exames,setExames] = useState<Array<ExamesProps>>([])
-  const [loading,setLoading] =useState<boolean>(false)
+  
 
 
 
@@ -336,14 +340,8 @@ export default function AfapSaude() {
       <Calendario consultas={consultas} setConsultas={setConsultas}  deletarEvento={deletarEvento} setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />
      
       </Tabs.Item>
-
-     
-      <Tabs.Item title="Pré Agenda" icon={MdAccessTimeFilled}>
-      <PreAgend consultas={consultas} setConsultas={setConsultas} events={events.filter(item => new Date(item.end) >= new Date())}  arrayMedicos={medicos} />
-      </Tabs.Item>
-
       <Tabs.Item title="Consultas" icon={HiClipboardList}>
-      <Consultas  setConsultas={setConsultas}  consultas={consultas} medicos={medicos}/>
+      <Consultas events={events.filter(item => new Date(item.end) >= new Date())} setConsultas={setConsultas}  consultas={consultas} medicos={medicos}/>
       </Tabs.Item>
       <Tabs.Item title="Exames" icon={BiSolidInjection}>
      <Exames exames={exames}/>

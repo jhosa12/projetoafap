@@ -77,7 +77,7 @@ setArray(novoArray)
      
       >
         <div className="absolute top-0 right-0 z-10 flex justify-end px-4 pt-4">
-        <Dropdown inline label="" theme={{arrowIcon:"ml-2 h-4 w-4 text-gray-400"}}>
+        <Dropdown inline label="" theme={{arrowIcon:"ml-2 h-4 w-4 text-gray-600 bg-white rounded-lg "}}>
           <Dropdown.Item  onClick={()=>{setarDadosMedico({...item,tmpUrl:undefined,exames:item.exames}),setOpenModal(true)}}>
             <span
               

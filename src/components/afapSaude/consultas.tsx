@@ -1,9 +1,9 @@
 
 
-import { ConsultaProps, MedicoProps } from "@/pages/afapSaude";
+import { ClientProps, ConsultaProps, EventProps, MedicoProps } from "@/pages/afapSaude";
 import { api } from "@/services/apiClient";
 import { Badge, Button, Table } from "flowbite-react";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ModalConsulta } from "./components/modalNovaConsulta";
 import { toast } from "react-toastify";
 import { HiDocument, HiMiniArrowDownOnSquare, HiPencil } from "react-icons/hi2";
@@ -22,7 +22,7 @@ import pageStyle from "@/utils/pageStyle";
 import { ReciboMensalidade } from "@/Documents/mensalidade/Recibo";
 import { ModalReceber } from "./exames/modalReceber";
 import { ajustarData } from "@/utils/ajusteData";
-
+import { ModalConfirmar } from "./components/modalConfirmar";
 
 
 
@@ -31,13 +31,14 @@ interface DataProps {
   medicos: Array<MedicoProps>,
   consultas: Array<ConsultaProps>
   setConsultas: (array: Array<ConsultaProps>) => void
+  events: Array<EventProps>
  
 }
 
 export const valorInicial ={celular:'',cpf:'',data:new Date(),espec:'',exames:[],id_consulta:null,id_med:null,nome:'',tipoDesc:'',vl_consulta:0,vl_desc:0,vl_final:0}
 
 
-export default function Consultas({ medicos, consultas, setConsultas,  }: DataProps) {
+export default function Consultas({ medicos, consultas, setConsultas,events  }: DataProps) {
 
 
   const [openModal, setOpenModal] = useState(false);
@@ -48,10 +49,80 @@ export default function Consultas({ medicos, consultas, setConsultas,  }: DataPr
   const [modalReceber,setModalReceber] = useState<boolean>(false)
   const [formPag,setFormPag] = useState<string>('')
   const [loading,setLoading] = useState<boolean>(false)
-
+  const [openStatus,setOpenStatus] = useState<boolean>(false)
 
 const currentPage = useRef<FichaConsulta>(null)
 const currentRecibo = useRef<ReciboMensalidade>(null)
+
+const handleChangeStatus = async ({status,item}:{status: string,item:ConsultaProps}) => {
+
+
+
+  if(item.status==='RECEBIDO'){
+    toast.warning('Consulta já foi recebida!')
+    return
+  }
+  
+ if(status){
+  setData({...item,status:status})
+ }
+
+ setOpenStatus(true)
+
+ 
+}
+
+
+const handleAlterarStatus = async () => {
+
+  if(!data?.data_prev ) {
+      toast.warning('Cliente ainda não agendou data!')
+      return;
+  }
+
+   
+  try {
+   alert(data.status)
+      const evento = await toast.promise(
+ 
+          api.put("/afapSaude/consultas/Editarcadastro", {
+              id_consulta: data?.id_consulta,
+              id_agmed:data?.status === 'AGUARDANDO DATA' ? null : data?.id_agmed,
+              data_prev: data?.status === 'AGUARDANDO DATA' ? null : data?.data_prev,
+              id_med:Number(data.id_med),
+              status: data?.status
+          }),
+          {
+              error: 'Erro na requisição',
+              pending: 'Alterando status..',
+              success: 'Status alterado com sucesso'
+          }
+
+      )
+      const novo = [...consultas]
+      const index = consultas.findIndex(item => item.id_consulta === data?.id_consulta)
+              novo[index] = { ...evento.data }
+        
+          setConsultas(novo)
+
+        setOpenStatus(false)
+        setData({})
+
+  } catch (error) {
+      toast.error('Erro ao gerar evento')
+ 
+  }
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -130,6 +201,11 @@ const handleReceberConsulta = useCallback(async ()=>{
     toast.warning('Consulta ja foi recebida!')
     return
   }
+  if(data?.status ==='AGUARDANDO DATA'){
+    toast.warning('Consulta ainda não foi agendada!')
+    return
+  }
+
   if(data?.procedimentos?.length === 0){
     toast.warning('Defina os procedimentos realizados!')
     return;
@@ -258,15 +334,16 @@ const handleDeletar = useCallback(async () => {
             <Table.HeadCell>Nome</Table.HeadCell>
             <Table.HeadCell>Especialidade</Table.HeadCell>
             <Table.HeadCell>Data</Table.HeadCell>
-            <Table.HeadCell>Tipo Desc.</Table.HeadCell>
-            <Table.HeadCell>Valor Desc.</Table.HeadCell>
+            <Table.HeadCell>Data Prev.</Table.HeadCell>
+            <Table.HeadCell>Hora Prev</Table.HeadCell>
             <Table.HeadCell>Valor Final</Table.HeadCell>
+            <Table.HeadCell>Usuário</Table.HeadCell>
             <Table.HeadCell>Status</Table.HeadCell>    
           </Table.Head>
           <Table.Body className="divide-y">
             {consultas.map((item, index) => (
-              <Table.Row onClick={() => setData(item)} key={item.id_consulta} className={`bg-white hover:cursor-pointer ${data?.id_consulta === item.id_consulta ? 'bg-gray-400' : ''} `}>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+              <Table.Row onClick={() => setData(item)} key={item.id_consulta} className={`bg-white hover:cursor-pointer ${data?.id_consulta === item.id_consulta ? 'bg-gray-300 text-white' : ''} `}>
+                <Table.Cell className="whitespace-nowrap font-medium ">
                   {item.nome}
                 </Table.Cell>
                 <Table.Cell>{item.espec}</Table.Cell>
@@ -274,9 +351,23 @@ const handleDeletar = useCallback(async () => {
                 <Table.Cell>{item.tipoDesc}</Table.Cell>
                 <Table.Cell>{Number(item?.procedimentos?.reduce((acc, curr) => acc + curr.desconto, 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
                 <Table.Cell>{Number(item?.procedimentos?.reduce((acc, curr) => acc + curr.valorFinal, 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
-                <Table.Cell>
-                
-              <Badge className="justify-center" color={item.status==='PENDENTE'?'yellow':item.status==='CANCELADO'?'red':'green'}>{item.status}</Badge>
+                <Table.Cell>{item?.user}</Table.Cell>
+                <Table.Cell onClick={(e) => e.stopPropagation()}>
+                <select   className={`font-semibold border-none rounded-lg focus:ring-0 hover:cursor-pointer  appearance-none outline-none text-xs ${
+    item?.status === 'AGENDADO' ? 'text-blue-500' :
+    item?.status === 'AGUARDANDO DATA' ? 'text-yellow-500' :
+    item?.status === 'CONFIRMADO' ? 'text-cyan-500' :
+    item?.status === 'RECEBIDO' ? 'text-green-500' :
+    item?.status === 'CANCELADO' ? 'text-red-500' : ''
+  }`}  value={item?.status} onChange={(e)=> { handleChangeStatus({item, status:e.target.value})}}>
+                                        <option disabled className="font-semibold text-blue-500" value={'AGENDADO'}>
+                                        AGENDADO
+                                            </option>
+                                        <option className="text-yellow-500 font-semibold" value={'AGUARDANDO DATA'}>AGUARDANDO DATA</option>
+                                        <option className="text-green-500 font-semibold" value={'CONFIRMADO'}>CONFIRMADO</option>
+                                        <option className="text-red-500 font-semibold" value={'CANCELADO'}>CANCELADO</option>
+                                        <option disabled className="text-green-500 font-semibold" value={'RECEBIDO'}>RECEBIDO</option>
+                                    </select>
                 </Table.Cell>
             
 
@@ -286,7 +377,7 @@ const handleDeletar = useCallback(async () => {
         </Table>
       </div>
 
-     {openModal && <ModalConsulta setConsulta={setData} consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={openModal} setOpenModal={setOpenModal} />}
+     {openModal && <ModalConsulta events={events} setConsulta={setData} consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={openModal} setOpenModal={setOpenModal} />}
 
       <ModalDeletarExame setOpenModal={setModalDeletar} show={modalDeletar} handleDeletarExame={handleDeletar} />
       <ModalFiltroConsultas medicos={medicos} buscarConsultas={buscarConsultas} loading={loading} setFiltro={setModalFiltro} show={modalFiltro} />
@@ -326,6 +417,12 @@ const handleDeletar = useCallback(async () => {
                />
               
       </div>
+
+
+
+
+
+      <ModalConfirmar pergunta="Realmente deseja alterar o status?" handleConfirmar={handleAlterarStatus} openModal={openStatus} setOpenModal={setOpenStatus}/>
     </div>
   );
 }

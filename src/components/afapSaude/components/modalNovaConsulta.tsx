@@ -1,4 +1,4 @@
-import { ConsultaProps, ExamesData, ExamesProps, MedicoProps } from "@/pages/afapSaude";
+import { ConsultaProps, EventProps, ExamesData, ExamesProps, MedicoProps } from "@/pages/afapSaude";
 import { Button, Label, Modal, Select, Table, TextInput } from "flowbite-react";
 import ReactInputMask from "react-input-mask";
 import { ChangeEvent, useState } from "react";
@@ -9,6 +9,9 @@ import { valorInicial } from "../consultas";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { ModalBuscaConsulta } from "./modalbuscaConsulta";
 import { HiTrash } from "react-icons/hi2";
+import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import pt from 'date-fns/locale/pt-BR';
 
 interface DataProps{
     openModal:boolean,
@@ -18,10 +21,11 @@ interface DataProps{
     consulta:Partial<ConsultaProps> ,
     setConsultas:(array:Array<ConsultaProps>)=>void
     setConsulta:(consulta:Partial<ConsultaProps>)=>void
+    events: Array<EventProps>
 
 }
 
-export function ModalConsulta({openModal,setOpenModal,medicos,consulta,setConsultas,consultas,setConsulta}:DataProps) {
+export function ModalConsulta({openModal,setOpenModal,medicos,consulta,setConsultas,consultas,setConsulta,events}:DataProps) {
   const [visible,setvisible] = useState(false)
   const {register,setValue,handleSubmit,watch,control,reset} =  useForm<ConsultaProps>({defaultValues:consulta})
   
@@ -32,6 +36,29 @@ export function ModalConsulta({openModal,setOpenModal,medicos,consulta,setConsul
   
   
   }
+
+
+  console.log(consulta)
+
+
+  const selectMed = (e: ChangeEvent<HTMLSelectElement>) => {
+     
+    if (e.target.value) {
+        const evento = events.find(item => item.id_agmed === Number(e.target.value))
+        const medico = medicos.find(item => item.id_med === evento?.id_med)
+
+        setValue( 'id_agmed', Number(e.target.value)??null )
+ setValue('data_prev', evento?.start??undefined)
+
+       /* if (evento && medico)
+         gerarIntervalos({ clientes: evento.clientes, start: evento.start, end: evento.end, time: medico.time })*/
+
+    }
+    else {
+        setValue( 'id_agmed',null )
+        setValue('data_prev', undefined)
+    }
+}
 
 
 
@@ -77,6 +104,7 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
       const response = await toast.promise(
         api.put('/afapSaude/consultas/Editarcadastro', {
           ...data,
+          status: data?.id_agmed !== consulta.id_agmed && data.id_agmed ? 'AGENDADO' : data?.status,
           nome: data?.nome?.toUpperCase(),
 
          
@@ -207,12 +235,15 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
  
 
     return(
-        <Modal show={openModal} size="4xl"  dismissible onClose={() => setOpenModal(false)} >
-        <Modal.Header>Administrar Consulta</Modal.Header>
+        <Modal show={openModal} size="4xl"   onClose={() => setOpenModal(false)} >
+        <Modal.Header>
+          <div className="inline-flex gap-4 items-center">
+          Administrar Consulta  
+            {!consulta.id_consulta && <Button onClick={()=>setvisible(!visible)} theme={{color:{light:"border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100"}}}  className="mr-auto " color="light" size="sm"><AiOutlineClockCircle className="mr-1 h-5 w-5"/>Setar por consultas anteriores</Button>}
+            </div>
+            </Modal.Header>
         <Modal.Body className="flex flex-col gap-4">
 
-         {!consulta.id_consulta && <Button onClick={()=>setvisible(!visible)} theme={{color:{light:"border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100"}}}  className="mr-auto " color="light" size="sm"><AiOutlineClockCircle className="mr-1 h-5 w-5"/>Setar por consultas anteriores</Button>}
-       
           <form onSubmit={handleSubmit(handleOnSubmit)} >
             <div className="grid grid-cols-4 gap-2 ">
             <div className="col-span-2 "> 
@@ -237,7 +268,6 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
               </div>
               <div className="w-full">
                   <Label className="text-xs" htmlFor="cpf" value="CPF" />
-
                   <Controller
                   control={control}
                   name="cpf"
@@ -350,6 +380,62 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
                     ))}
               </Select>
             </div>
+
+
+            <div className="flex flex-col w-full">
+                           
+                           <Label className="text-xs" htmlFor="small" value="Consulta/Data" />
+                     
+                       <Select id="small" value={watch('id_agmed')??''}  onChange={selectMed} sizing="sm" >
+                           <option value={''}></option>
+                           {events?.map((item, index) => (
+                              item.id_med === Number(watch('id_med')) && <option key={item.id_agmed} value={item.id_agmed??''}>{new Date(item.start).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</option>
+                           ))}
+                       </Select>
+                   </div>
+                   <div className="flex flex-col w-full">
+                      
+                      <Label className="text-xs" htmlFor="small" value="Hora Prevista" />
+
+                      <Controller
+                      control={control}
+                      name='hora_prev'
+                      render={({ field:{onChange,value} }) => (
+                       <DatePicker
+                       selected={value ?new Date(value):null}
+                       onChange={(date) =>date && onChange(date)}
+                       showTimeSelect
+                       showTimeSelectOnly
+                       timeIntervals={15}
+                       timeCaption="Time"
+                       dateFormat="h:mm"
+                       timeFormat="HH:mm"
+                       className="flex py-2 text-black px-2 w-full rounded-lg border 0  bg-gray-50 text-xs border-gray-300 "
+                     />
+                          
+                      )}
+                      
+                      />
+                
+
+              </div>
+
+
+
+
+
+
+              <div className="flex flex-col w-full">
+                           <Label className="text-xs" htmlFor="small" value="Buscar na residência ?" />
+                       <Select  {...register('buscar')} sizing="sm" >
+                           <option selected value={''}></option>
+                           <option value={'SIM'}>SIM</option>
+                           <option value={'NAO'}>NÃO</option>
+                       </Select>
+                   </div>
+
+
+
           </div>
 
 
