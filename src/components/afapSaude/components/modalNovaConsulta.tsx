@@ -22,10 +22,12 @@ interface DataProps{
     setConsultas:(array:Array<ConsultaProps>)=>void
     setConsulta:(consulta:Partial<ConsultaProps>)=>void
     events: Array<EventProps>
+    usuario?:string
+    id_usuario?:string
 
 }
 
-export function ModalConsulta({openModal,setOpenModal,medicos,consulta,setConsultas,consultas,setConsulta,events}:DataProps) {
+export function ModalConsulta({openModal,setOpenModal,medicos,consulta,setConsultas,consultas,setConsulta,events,id_usuario,usuario}:DataProps) {
   const [visible,setvisible] = useState(false)
   const {register,setValue,handleSubmit,watch,control,reset} =  useForm<ConsultaProps>({defaultValues:consulta})
   
@@ -141,6 +143,8 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
         api.post("/afapSaude/consultas/cadastro", {
           ...data,
           data: new Date(),
+          user:usuario,
+          id_usuario:id_usuario
         }),
         {
           error: 'Erro ao Cadastrar Dados',
@@ -156,7 +160,6 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
       console.log(error)
     }
   }
-
 
 
   const handleAdicionarProcedimento = () => {

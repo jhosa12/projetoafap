@@ -23,6 +23,7 @@ import { ReciboMensalidade } from "@/Documents/mensalidade/Recibo";
 import { ModalReceber } from "./exames/modalReceber";
 import { ajustarData } from "@/utils/ajusteData";
 import { ModalConfirmar } from "./components/modalConfirmar";
+import { set } from "react-hook-form";
 
 
 
@@ -50,9 +51,45 @@ export default function Consultas({ medicos, consultas, setConsultas,events  }: 
   const [formPag,setFormPag] = useState<string>('')
   const [loading,setLoading] = useState<boolean>(false)
   const [openStatus,setOpenStatus] = useState<boolean>(false)
+  const [modalEstornar,setModalEstornar] = useState<boolean>(false)
 
 const currentPage = useRef<FichaConsulta>(null)
 const currentRecibo = useRef<ReciboMensalidade>(null)
+
+
+
+const handleEstornarConsulta = async ()=>{
+  if (!data?.id_consulta){
+    return
+  }
+  if(data.status !== 'RECEBIDO'){
+    toast.warning('Consulta ainda nao foi recebida')
+    return
+  }
+  try {
+    const response = await toast.promise(
+      api.put('/afapSaude/estornarConsulta', {id_consulta:data?.id_consulta}),
+      {
+        error: 'Erro ao estornar consulta',
+        pending: 'Estornando consulta.....',
+        success: 'Consulta estornada com sucesso'
+      }
+    )
+
+    setModalEstornar(false)
+    setData(undefined)
+    
+  }catch(error){
+    buscarConsultas({startDate:new Date(),endDate:new Date(),id_med:undefined,status:undefined})
+
+  }
+}
+
+
+
+
+
+
 
 const handleChangeStatus = async ({status,item}:{status: string,item:ConsultaProps}) => {
 
@@ -60,6 +97,11 @@ const handleChangeStatus = async ({status,item}:{status: string,item:ConsultaPro
 
   if(item.status==='RECEBIDO'){
     toast.warning('Consulta já foi recebida!')
+    return
+  }
+
+  if((status==='CONFIRMADO'|| status==='CANCELADO')&& !item.data_prev){
+    toast.warning('Cliente ainda não agendou data!')
     return
   }
   
@@ -118,14 +160,6 @@ const handleAlterarStatus = async () => {
 
 
 
-
-
-
-
-
-
-
-
 const imprimirFicha = useCallback(useReactToPrint({
   pageStyle: pageStyle,
   content: () => currentPage.current,
@@ -157,7 +191,7 @@ const imprimirRecibo = useCallback(useReactToPrint({
 
 
 
-const buscarConsultas = async ({startDate,endDate,id_med}:{startDate:Date,endDate:Date,id_med?:number})=>{
+const buscarConsultas = async ({startDate,endDate,id_med,status}:{startDate:Date,endDate:Date,id_med?:number,status:string|undefined})=>{
 
  const {dataIni,dataFim} =  ajustarData(startDate,endDate)
 
@@ -166,14 +200,13 @@ const buscarConsultas = async ({startDate,endDate,id_med}:{startDate:Date,endDat
     return
   }
 
-
   try {
     setLoading(true)
       const response = await api.post("/afapSaude/consultas",{
         startDate:dataIni,
         endDate:dataFim,
-        id_med
-      })
+        id_med,
+      status })
       
       setConsultas(response.data)
       setLoading(false)
@@ -184,7 +217,7 @@ const buscarConsultas = async ({startDate,endDate,id_med}:{startDate:Date,endDat
 
 
 useEffect(()=>{
-  buscarConsultas({startDate:new Date(),endDate:new Date()})  
+  buscarConsultas({startDate:new Date(),endDate:new Date(),status:undefined})  
 },[])
 
 
@@ -236,7 +269,7 @@ try {
       success: 'Consulta recebida com sucesso!'
     }
   )
-  buscarConsultas({startDate:new Date(),endDate:new Date()})
+  buscarConsultas({startDate:new Date(),endDate:new Date(),status:undefined})
   setData(valorInicial)
   setModalReceber(false)
 } catch (error) {
@@ -260,7 +293,11 @@ const handleDeletar = useCallback(async () => {
   }
   try {
     const response = await toast.promise(
-      api.delete(`/afapSaude/consultas/deletarCadastro/${data?.id_consulta}`),
+      api.delete(`/afapSaude/consultas/deletarCadastro`,{
+       data:{
+        id_consulta:data?.id_consulta
+       }
+      }),
       {
         error: 'Erro ao deletar dados',
         pending: 'Deletando dados....',
@@ -311,7 +348,7 @@ const handleDeletar = useCallback(async () => {
         <HiMiniArrowDownOnSquare className="mr-2 h-4 w-4" />
         Receber
       </Button>
-      <Button className="text-yellow-300" color="gray" type="button"  ><GiReturnArrow className="mr-2 h-4 w-4"/> Estornar</Button>
+      <Button onClick={()=>setModalEstornar(true)} size={'sm'} className="text-yellow-300" color="gray" type="button"  ><GiReturnArrow className="mr-2 h-4 w-4"/> Estornar</Button>
       <Button onClick={()=>handleWhatsAppClick(data?.celular)} size={'sm'} color="gray">
       <FaWhatsapp className="mr-2 h-4 w-4" />
         Abrir Conversa
@@ -336,7 +373,7 @@ const handleDeletar = useCallback(async () => {
             <Table.HeadCell>Data</Table.HeadCell>
             <Table.HeadCell>Data Prev.</Table.HeadCell>
             <Table.HeadCell>Hora Prev</Table.HeadCell>
-            <Table.HeadCell>Valor Final</Table.HeadCell>
+            <Table.HeadCell>Valor</Table.HeadCell>
             <Table.HeadCell>Usuário</Table.HeadCell>
             <Table.HeadCell>Status</Table.HeadCell>    
           </Table.Head>
@@ -348,9 +385,10 @@ const handleDeletar = useCallback(async () => {
                 </Table.Cell>
                 <Table.Cell>{item.espec}</Table.Cell>
                 <Table.Cell>{new Date(item.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
-                <Table.Cell>{item.tipoDesc}</Table.Cell>
-                <Table.Cell>{Number(item?.procedimentos?.reduce((acc, curr) => acc + curr.desconto, 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
-                <Table.Cell>{Number(item?.procedimentos?.reduce((acc, curr) => acc + curr.valorFinal, 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
+                <Table.Cell>{item.data_prev && new Date(item?.data_prev).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
+             
+                <Table.Cell>{item.hora_prev && new Date(item?.hora_prev).toLocaleTimeString('pt-BR')}</Table.Cell>
+                <Table.Cell>{Number(item?.procedimentos?.reduce((acc, curr) => acc + curr.valorFinal, 0)?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
                 <Table.Cell>{item?.user}</Table.Cell>
                 <Table.Cell onClick={(e) => e.stopPropagation()}>
                 <select   className={`font-semibold border-none rounded-lg focus:ring-0 hover:cursor-pointer  appearance-none outline-none text-xs ${
@@ -377,7 +415,7 @@ const handleDeletar = useCallback(async () => {
         </Table>
       </div>
 
-     {openModal && <ModalConsulta events={events} setConsulta={setData} consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={openModal} setOpenModal={setOpenModal} />}
+     {openModal && <ModalConsulta usuario={usuario?.nome} id_usuario={usuario?.id} events={events} setConsulta={setData} consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={openModal} setOpenModal={setOpenModal} />}
 
       <ModalDeletarExame setOpenModal={setModalDeletar} show={modalDeletar} handleDeletarExame={handleDeletar} />
       <ModalFiltroConsultas medicos={medicos} buscarConsultas={buscarConsultas} loading={loading} setFiltro={setModalFiltro} show={modalFiltro} />
@@ -423,6 +461,10 @@ const handleDeletar = useCallback(async () => {
 
 
       <ModalConfirmar pergunta="Realmente deseja alterar o status?" handleConfirmar={handleAlterarStatus} openModal={openStatus} setOpenModal={setOpenStatus}/>
+
+      <ModalConfirmar pergunta="Realmente deseja Estornar a consulta?" handleConfirmar={handleEstornarConsulta} openModal={modalEstornar} setOpenModal={setModalEstornar}/>
+
+
     </div>
   );
 }
