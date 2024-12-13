@@ -6,7 +6,7 @@ import { Badge, Button, Table } from "flowbite-react";
 import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ModalConsulta } from "./components/modalNovaConsulta";
 import { toast } from "react-toastify";
-import { HiDocument, HiMiniArrowDownOnSquare, HiPencil } from "react-icons/hi2";
+import { HiDocument, HiMiniArrowDownOnSquare, HiPencil, HiPrinter } from "react-icons/hi2";
 import { ModalDeletarExame } from "./components/modalDeletarExame";
 import {   HiDocumentAdd, HiFilter } from "react-icons/hi";
 import { ModalFiltroConsultas } from "./components/modalFiltro";
@@ -23,7 +23,7 @@ import { ReciboMensalidade } from "@/Documents/mensalidade/Recibo";
 import { ModalReceber } from "./exames/modalReceber";
 import { ajustarData } from "@/utils/ajusteData";
 import { ModalConfirmar } from "./components/modalConfirmar";
-import { set } from "react-hook-form";
+import ListaConsultas from "@/Documents/afapSaude/listaConsultas";
 
 
 
@@ -55,6 +55,7 @@ export default function Consultas({ medicos, consultas, setConsultas,events  }: 
 
 const currentPage = useRef<FichaConsulta>(null)
 const currentRecibo = useRef<ReciboMensalidade>(null)
+const currentConsultas = useRef<ListaConsultas>(null)
 
 
 
@@ -78,11 +79,14 @@ const handleEstornarConsulta = async ()=>{
 
     setModalEstornar(false)
     setData(undefined)
+
     
   }catch(error){
-    buscarConsultas({startDate:new Date(),endDate:new Date(),id_med:undefined,status:undefined})
+    console.log(error)
+   
 
   }
+  buscarConsultas({startDate:new Date(),endDate:new Date(),id_med:undefined,status:undefined})
 }
 
 
@@ -165,6 +169,10 @@ const imprimirFicha = useCallback(useReactToPrint({
   content: () => currentPage.current,
 }), [data?.id_consulta]);
 
+const imprimirConsultas = useCallback(useReactToPrint({
+  pageStyle: pageStyle,
+  content: () => currentConsultas.current,
+}), [consultas]);
 
 
 const imprimirRecibo = useCallback(useReactToPrint({
@@ -335,6 +343,10 @@ const handleDeletar = useCallback(async () => {
         <HiPencil className="mr-2 h-4 w-4" />
         Editar
       </Button>
+        <Button onClick={imprimirConsultas} size={'sm'} color="gray">
+              <HiPrinter className="mr-2 h-4 w-4" />
+              Imprimir
+            </Button>
       <Button onClick={() => imprimirFicha()} size={'sm'} color="gray">
         <HiDocument className="mr-2 h-4 w-4" />
          Prontuário
@@ -418,8 +430,8 @@ const handleDeletar = useCallback(async () => {
      {openModal && <ModalConsulta usuario={usuario?.nome} id_usuario={usuario?.id} events={events} setConsulta={setData} consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={openModal} setOpenModal={setOpenModal} />}
 
       <ModalDeletarExame setOpenModal={setModalDeletar} show={modalDeletar} handleDeletarExame={handleDeletar} />
-      <ModalFiltroConsultas medicos={medicos} buscarConsultas={buscarConsultas} loading={loading} setFiltro={setModalFiltro} show={modalFiltro} />
-
+     {modalFiltro && <ModalFiltroConsultas medicos={medicos} buscarConsultas={buscarConsultas} loading={loading} setFiltro={setModalFiltro} show={modalFiltro} />
+}
    {modalReceber &&   <ModalReceber formPag={formPag} setFormPag={setFormPag} handleReceberExame={handleReceberConsulta}  openModal={modalReceber} setOpenModal={setModalReceber} />}
 
 
@@ -438,8 +450,6 @@ const handleDeletar = useCallback(async () => {
              parentesco={data?.grau_parentesco??''}
               
                ref={currentPage}/>
-
-
                <ReciboMensalidade
                 associado={data?.nome??''}
                 contrato={data?.id_consulta??null}
@@ -453,6 +463,8 @@ const handleDeletar = useCallback(async () => {
 
                
                />
+
+               <ListaConsultas ref={currentConsultas} dados={consultas}/>
               
       </div>
 

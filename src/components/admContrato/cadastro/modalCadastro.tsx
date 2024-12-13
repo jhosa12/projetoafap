@@ -14,7 +14,7 @@ import { HiInboxIn } from "react-icons/hi";
 import { SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
 
 
-import { MultiStep } from "@/components/multiStep";
+import { MultiStep } from "@/utils/multiStep";
 import { DadosCadastro } from '@/types/associado';
 import { DadosTitular } from './dadosTitular';
 import { DadosPlano } from './dadosPlano';

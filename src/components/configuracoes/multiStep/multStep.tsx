@@ -1,5 +1,5 @@
 
-import { MultiStep } from "../../multiStep";
+import { MultiStep } from "../../../utils/multiStep";
 import { FaCircleArrowRight } from "react-icons/fa6";
 import { FaCircleArrowLeft } from "react-icons/fa6";
 import { FormEvent, useEffect, useState } from 'react'

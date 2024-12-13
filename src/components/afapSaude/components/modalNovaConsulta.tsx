@@ -12,6 +12,7 @@ import { HiTrash } from "react-icons/hi2";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
+import { ajustarData } from "@/utils/ajusteData";
 
 interface DataProps{
     openModal:boolean,
@@ -101,12 +102,21 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
     if(!data?.tipoDesc){
       toast.info('Selecione um tipo de desconto')
     }
+
+
+let dataInit=undefined
+if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
+  const {dataIni,dataFim} = ajustarData(data.data_prev,undefined)
+  dataInit = dataIni
+}
+   
     try {
    
       const response = await toast.promise(
         api.put('/afapSaude/consultas/Editarcadastro', {
           ...data,
-          status: data?.id_agmed !== consulta.id_agmed && data.id_agmed ? 'AGENDADO' : data?.status,
+          data_prev:data?.id_agmed ? dataInit:null,
+          status:!data.id_agmed?"AGUARDANDO DATA": data?.id_agmed !== consulta.id_agmed && data.id_agmed ? 'AGENDADO' : data?.status,
           nome: data?.nome?.toUpperCase(),
 
          
@@ -122,6 +132,7 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
       novoArray[index] = { ...response.data }
       setConsultas(novoArray)
       setConsulta(valorInicial)
+      setOpenModal(false)
     } catch (error) {
       toast.warning('Consulte o TI')
     }
@@ -137,12 +148,15 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
       toast.info('Selecione um tipo de desconto')
       return
     }
+
+    const {dataIni,dataFim} = ajustarData(data.data_prev,undefined)
     try {
 
       const response = await toast.promise(
         api.post("/afapSaude/consultas/cadastro", {
           ...data,
           data: new Date(),
+          data_prev:dataIni,
           user:usuario,
           id_usuario:id_usuario
         }),
@@ -223,19 +237,6 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
     setValue('procedimentos', watch('procedimentos').filter(item => item.id_exame !== id_exame))
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
- 
 
     return(
         <Modal show={openModal} size="4xl"   onClose={() => setOpenModal(false)} >
@@ -369,10 +370,15 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
           <TextInput sizing={'sm'} {...register('cidade')} className="focus:outline-none" id="email" placeholder="Cidade"  />
         </div>
 
-           
+        <div >
+            
+            <Label className="text-xs" value="Complemento" />
+       
+          <TextInput sizing={'sm'} {...register('complemento')} className="focus:outline-none"  placeholder="Complemento"  />
+        </div>   
 
 
-<div>
+<div className="flex flex-col w-full">
              
                 <Label className="text-xs" htmlFor="espec" value="Especialidade" />
           
@@ -474,7 +480,7 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
               <Table theme={{ body: { cell: { base: "px-6 text-black py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs" } }, head: { cell: { base: "bg-gray-50 px-6 py-1 group-first/head:first:rounded-tl-lg group-first/head:last:rounded-tr-lg " } } }} >
                 <Table.Head>
                   <Table.HeadCell>Procedimento</Table.HeadCell>
-                  <Table.HeadCell>Valor Exame</Table.HeadCell>
+                  <Table.HeadCell>Valor Procedimento</Table.HeadCell>
                   <Table.HeadCell>Desconto</Table.HeadCell>
                   <Table.HeadCell>Valor Final</Table.HeadCell>
                   <Table.HeadCell>

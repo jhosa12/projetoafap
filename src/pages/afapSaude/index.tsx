@@ -57,6 +57,7 @@ export interface ExamesProps{
 export interface ConsultaProps{
   id_consulta:number|null,
   id_med:number|null,
+  complemento:string,
   dt_pgto:Date|null,
   user:string,
   procedimentos:Array<ExamesData>,
