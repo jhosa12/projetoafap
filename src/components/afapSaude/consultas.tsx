@@ -1,9 +1,9 @@
 
 
-import { ClientProps, ConsultaProps, EventProps, MedicoProps } from "@/pages/afapSaude";
+import {  ConsultaProps, EventProps, MedicoProps } from "@/pages/afapSaude";
 import { api } from "@/services/apiClient";
-import { Badge, Button, Table } from "flowbite-react";
-import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from "react";
+import {  Button, Table } from "flowbite-react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ModalConsulta } from "./components/modalNovaConsulta";
 import { toast } from "react-toastify";
 import { HiDocument, HiMiniArrowDownOnSquare, HiPencil, HiPrinter } from "react-icons/hi2";

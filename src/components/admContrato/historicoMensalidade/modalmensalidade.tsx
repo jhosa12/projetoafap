@@ -10,7 +10,7 @@ import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import useBaixaMensalidade from "@/hooks/useBaixaMensalidade";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 
 
@@ -25,7 +25,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
     const {usuario,dadosassociado,permissoes,setarDadosAssociado}=useContext(AuthContext)
     const [desconto,setDesconto] = useState(false)
     const {error,postData} = useBaixaMensalidade('/mensalidade/baixa')
-    const {watch,register,control,reset,setValue} = useForm<MensalidadeProps>(
+    const {watch,register,control,reset,setValue,handleSubmit} = useForm<MensalidadeProps>(
         {
             defaultValues:mensalidade
         }
@@ -33,7 +33,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
 ;
     
     
-           async function handleBaixar() {
+         const handleBaixar:SubmitHandler<MensalidadeProps> = async(data)=> {
             // Função para exibir toast e retornar
          
         
@@ -48,7 +48,9 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
             if (mensalidadeAnt?.id_mensalidade && mensalidadeAnt.status === 'A') {
                 return toast.info('Mensalidade anterior em aberto!');
             }
-        
+
+            const dataPgto = new Date(data.data_pgto);
+            dataPgto.setTime(dataPgto.getTime() - dataPgto.getTimezoneOffset() * 60 * 1000);
         
            
         
@@ -60,22 +62,22 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
                         id_usuario: usuario?.id ,
                         id_mensalidade_global: mensalidade?.id_mensalidade_global,
                         id_mensalidade: mensalidade?.id_mensalidade,
-                        data_pgto: new Date(),
+                        data_pgto: dataPgto,
                         hora_pgto: new Date().toLocaleTimeString('pt-BR', {
                             hour: '2-digit',
                             minute: '2-digit',
                             second: '2-digit'
                         }),          
-                        valor_total: mensalidade?.valor_total,
-                        motivo_bonus: mensalidade?.motivo_bonus?.toUpperCase(),
+                        valor_total: data.valor_total,
+                        motivo_bonus: data.motivo_bonus?.toUpperCase(),
                         associado: dadosassociado?.nome,
-                        form_pagto: mensalidade?.form_pagto,
-                        banco_dest: mensalidade?.banco_dest,
+                        form_pagto: data?.form_pagto,
+                        banco_dest: data.banco_dest,
                         desconto: desconto,
                         id_proximaMensalidade:mensalidadeProx?.id_mensalidade_global,
                         situacao:dadosassociado?.contrato?.situacao,
-                        status:mensalidade?.status,
-                     
+                        status:data.status,
+                        pix_por:data.pix_por
                     },
                  
                 );
@@ -114,6 +116,8 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
             <ModalHeader className="flex text-white items-start justify-between bg-gray-700 rounded-t border-b p-2 border-gray-60">
              <h1 className="text-white">REALIZAR BAIXA</h1>
                 </ModalHeader>
+
+        <form onSubmit={handleSubmit(handleBaixar)}>
             <ModalBody>
               
  
@@ -185,7 +189,7 @@ render={({field:{value,onChange}})=>(
 
 
 
-{((watch('valor_total') ?? 0)<(watch('valor_total') ?? 0) && watch('valor_total')!==undefined)&& watch('valor_total')>0?(
+{((watch('valor_total') ?? 0)<(watch('valor_principal') ?? 0) && watch('valor_total')!==undefined)&& watch('valor_total')>0?(
  <div className="col-span-4 gap-1 mt-1 inline-flex ">
     <div className="flex items-top w-2/12 ">
     <Checkbox  onClick={()=>setDesconto(!desconto)}  checked={desconto} />
@@ -206,10 +210,8 @@ render={({field:{value,onChange}})=>(
             <div className="ml-auto">
             <Button disabled={!permissoes.includes('ADM1.2.5')||mensalidade.status==='P'}
              color={'success'} 
-             onClick={()=>{
-                handleBaixar()
-             
-                }} >
+             type="submit"
+             >
             <IoIosArrowDropdownCircle className="mr-2 h-5 w-5"/>
              BAIXAR
              </Button>
@@ -217,7 +219,7 @@ render={({field:{value,onChange}})=>(
             </div>
     
         </Modal.Footer>
-
+        </form>
 
 
 

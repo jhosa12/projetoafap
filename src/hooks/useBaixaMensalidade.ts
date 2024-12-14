@@ -11,6 +11,7 @@ export type ToastType = 'success' | 'error' | 'info' | 'warn'
 interface PayloadProps {
     id_global:number|null,
     id_usuario:string,
+    pix_por:string,
     id_mensalidade_global: number,
     id_mensalidade: number,
     data_pgto: Date,
@@ -70,7 +71,7 @@ interface PayloadProps {
        
         try{
             const response:AxiosResponse = await toast.promise(
-                api.put(url,payload),
+                api.put(url,{...payload,data_pgto:payload?.data_pgto?.toISOString()}),
                 {
                     error: 'Erro na Requisição',
                     pending: 'Realizando Baixa',

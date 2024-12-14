@@ -34,13 +34,13 @@ interface Props{
 
 
 export function ModalBusca({setVisible,visible}:Props){
-    const {carregarDados,data,closeModa,empresas}= useContext(AuthContext)
+    const {carregarDados,data,closeModa,empresas,selectEmp}= useContext(AuthContext)
     const [loading,setLoading] = useState(false)
     const [input,setInput] =useState('')
     const [array,setarray]=useState<DadosProps[]>([])
     const [dropOpen,setDrop] = useState<boolean>(false)
     const [criterio,setCriterio]=useState("Contrato")
-    const [dropEmpresa,setDropEmp] = useState<boolean>(false)
+  
  
    
   
@@ -50,6 +50,7 @@ export function ModalBusca({setVisible,visible}:Props){
     setLoading(true)
    await buscar()
    setLoading(false)
+  
   }
  
  
@@ -60,7 +61,7 @@ export function ModalBusca({setVisible,visible}:Props){
     if(criterio ==="Contrato"){
         response =  await api.post('/buscar',{
             id_contrato:Number(input),
-            id_empresa:data.id_empresa
+            id_empresa:selectEmp
         })
        
 
@@ -68,32 +69,33 @@ export function ModalBusca({setVisible,visible}:Props){
      else if(criterio ==="Titular"){
         response =  await api.post('/buscar',{
             nome:input.toUpperCase(),
-            id_empresa:data.id_empresa
+            id_empresa:selectEmp
         })
         
       }
      else if(criterio ==="Dependente"){
          response =  await api.post('/buscar',{
             dependente:input.toUpperCase(),
-            id_empresa:data.id_empresa
+            id_empresa:selectEmp
         })
        
       }
       else if(criterio ==="Endereço"){
          response =  await api.post('/buscar',{
             endereco:input.toUpperCase(),
-            id_empresa:data.id_empresa
+            id_empresa:selectEmp
         })
     
       }
       else if(criterio ==="Bairro"){
         response =  await api.post('/buscar',{
             bairro:input.toUpperCase(),
-            id_empresa:data.id_empresa
+            id_empresa:selectEmp
         })
        
       }
       setarray(response?.data??[])
+      
     }
     
     return(
@@ -103,17 +105,14 @@ export function ModalBusca({setVisible,visible}:Props){
    
             <form onSubmit={onSubmit} className="flex w-full">
    
-    <button onClick={()=>setDropEmp(!dropEmpresa)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-s-lg focus:outline-none border-e-2 border-gray-200  bg-gray-100 hover:bg-gray-200  " type="button">{data.empresa} 
-    <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-    <path stroke="currentColor" stroke-linecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
-  </svg></button>
-    <button onClick={()=>setDrop(!dropOpen)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center  focus:outline-none  border-gray-200  bg-gray-100  hover:bg-gray-300   " type="button">{criterio} 
+   
+    <button onClick={()=>setDrop(!dropOpen)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-s-lg focus:outline-none  border-gray-200  bg-gray-100  hover:bg-gray-300   " type="button">{criterio} 
     <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
     <path stroke="currentColor" stroke-linecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
   </svg></button>
  
       {dropOpen && (
-          <div className="absolute top-[65px] left-36 divide-gray-100 rounded-lg shadow w-44 bg-gray-200">
+          <div className="absolute top-[65px]  divide-gray-100 rounded-lg shadow w-44 bg-gray-200">
           <ul className="py-2 text-sm text-black">
           <li >
               <span className="block px-4 py-2  hover:bg-gray-300 hover:" onClick={()=>{setCriterio('Contrato'),setDrop(false)}}>Contrato</span>
@@ -133,22 +132,7 @@ export function ModalBusca({setVisible,visible}:Props){
           </ul>
       </div>
       )}
-   {dropEmpresa && (
-       
-          <ul className=" absolute top-[65px]  rounded-lg shadow w-44 bg-gray-200 py-2 text-sm text-black divide-y divide-gray-300">
-            <li  onClick={()=>{closeModa({...data,empresa:'TODAS',id_empresa:''}),setDropEmp(false)}}  className="block px-4 py-2  hover:bg-gray-300 hover:cursor-pointer" >
- TODAS
-</li>
-         {empresas.map(item=>(
 
-<li key={item.id} onClick={()=>{closeModa({...data,empresa:item.nome,id_empresa:item.id}),setDropEmp(false)}}  className="block px-4 py-2  hover:bg-gray-300 hover:cursor-pointer" >
- {item.nome}
-</li>
-
-         )) }
-          </ul>
-     
-      )}
 <div className="inline-flex  w-[25vw]">
     <input 
         value={input} 
@@ -178,7 +162,7 @@ export function ModalBusca({setVisible,visible}:Props){
                 <p className="text-gray-600 mb-2">Selecione o Contrato:</p>
                 <ul className="overflow-y-auto space-y-2 mb-2">
                                 {array.map((item,index)=>(
-                                     <li key={index} onClick={()=>{carregarDados(item.id_global),closeModa({closeModalPlano:false})}} className="inline-flex items-center justify-between w-full p-2 rounded-lg cursor-pointer border-gray-500   bg-gray-200 hover:bg-gray-300">
+                                     <li key={index} onClick={()=>{carregarDados(item.id_global),setVisible()}} className="inline-flex items-center justify-between w-full p-2 rounded-lg cursor-pointer border-gray-500   bg-gray-200 hover:bg-gray-300">
                                                                
                                     <div className="block">
                                      <div className="w-full text-sm font-semibold"><span className="pr-2">{item?.contrato?.id_contrato}</span>{item.nome}<span className="flex flex-col gap-1">{item?.dependentes?.map((i,id)=>(<span>DEPENDENTE: {i.nome}</span>))}</span></div>

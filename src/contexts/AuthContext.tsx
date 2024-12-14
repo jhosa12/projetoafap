@@ -1,8 +1,7 @@
-import { ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { ReactNode, createContext, useCallback, useContext, useState } from 'react';
 import { api } from "../services/apiClient"
 import { destroyCookie, setCookie} from "nookies"
 import Router from 'next/router';
-
 import { toast } from 'react-toastify';
 import {  AssociadoProps, ConvProps, DadosCadastro,  ObitoProps } from '@/types/associado';
 import { SignInProps, UserProps } from '@/types/auth';
@@ -10,7 +9,9 @@ import { EmpresaProps } from '@/types/empresa';
 import { PlanosProps } from '@/types/planos';
 import { CidadesProps } from '@/types/cidades';
 import { ConsultoresProps } from '@/types/consultores';
-import { NextRequest } from 'next/server';
+import { decode } from 'jsonwebtoken';
+
+
 
 
 type AuthContextData = {
@@ -35,6 +36,8 @@ type AuthContextData = {
     setPermissoes:(array:Array<string>)=>void,
     empresas:Array<EmpresaProps>
     getDadosFixos:()=>Promise<void>
+    selectEmp:string,
+    setSelectEmp:(empresa:string)=>void
 }
 
 
@@ -66,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [planos, setPlanos] = useState<Array<PlanosProps>>([]);
    const [cidades, setCidades] = useState<Array<CidadesProps>>([]);
    const [consultores, setConsultores] = useState<Array<ConsultoresProps>>([]);
+   const [selectEmp,setSelectEmp] = useState('')
   
     const [servico, setServico] = useState<Partial<ObitoProps>>({ hr_sepultamento: new Date(), end_hora_falecimento: new Date(), end_hora_informaram: new Date() });
     const [permissoes,setPermissoes] =useState<Array<string>>([])
@@ -110,11 +114,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const sign = useCallback(async ({ user, password }: SignInProps) => {
         try {
             const response = await api.post('/session', { usuario: user.trim(), password });
-            const { id, tokenAuth, cargo, dir, nome, image, permissoes } = response.data;
+            const { id, tokenAuth, cargo, dir, nome, image } = response.data;
+
+         
 
             if (typeof window !== 'undefined') {
                 localStorage.setItem('@user.image', image);
             }
+            const decodeToken = decode(tokenAuth);
+            const { permissoes } = decodeToken as { permissoes: string };
+            const parsedPermissoes = typeof permissoes === 'string' ? JSON.parse(permissoes) : permissoes ?? [];
+            const emp = parsedPermissoes.find((item: string) => item.includes('EMP'));
+            setSelectEmp(emp.split('EMP')[1]);
+     
             setCookie(undefined, '@nextauth.token', tokenAuth, {
                 maxAge: 60 * 60 * 24 * 1,
                 path: "/",
@@ -198,17 +210,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
 
-    const Planos = useCallback(async () => {
-        try {
-            const response = await api.get('/plano/listar');
-            setData(prev => ({ ...prev, planos: response.data }));
-        } catch (error) {
-            toast.error('Erro na requisição');
-        }
-    }, []);
+
 
     return (
-        <AuthContext.Provider value={{getDadosFixos,planos,consultores,cidades,empresas,permissoes,setPermissoes, setarDadosAssociado, limparDados, usuario, sign, signOut, data, closeModa, dadosassociado, carregarDados, setarServico, servico, listaConv, setarListaConv }}>
+        <AuthContext.Provider value={{selectEmp,setSelectEmp,getDadosFixos,planos,consultores,cidades,empresas,permissoes,setPermissoes, setarDadosAssociado, limparDados, usuario, sign, signOut, data, closeModa, dadosassociado, carregarDados, setarServico, servico, listaConv, setarListaConv }}>
             {children}
         </AuthContext.Provider>
     );

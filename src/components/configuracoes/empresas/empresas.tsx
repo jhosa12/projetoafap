@@ -15,9 +15,8 @@ export function Empresas() {
 const handleListarEmp = useCallback(async()=>{
     try {
         const response = await api.get("/empresas/listarDados")
-        console.log(response.data)
+     
         setEmpresas(response.data)
-        alert('empresas listadas')
     } catch (error) {
         toast.error('erro na requisição')
     }

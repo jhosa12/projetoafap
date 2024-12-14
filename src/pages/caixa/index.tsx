@@ -83,8 +83,8 @@ export interface MensalidadeProps{
 interface FormProps{
     startDate:Date,
     endDate:Date,
-    id_empresa:string,
-    descricao:string
+    descricao:string    
+    id_empresa:string
 }
 
 
@@ -96,7 +96,7 @@ export default function CaixaMovimentar(){
     const[despesas,setDespesas]=useState(0);
     const [openModalPrint,setPrint] = useState<boolean>(false);
     const [planos,setPlanos]=useState([]);
-    const {usuario,permissoes,empresas} =useContext(AuthContext);
+    const {usuario,permissoes,empresas,selectEmp} =useContext(AuthContext);
     const[visible,setVisible] = useState(false);
     const [openModal,setModal] = useState<boolean>(false);
     const [openModalExc,setModalExc] = useState<boolean>(false);
@@ -109,7 +109,7 @@ export default function CaixaMovimentar(){
         defaultValues:{
             startDate:new Date(),
             endDate:new Date(),
-            id_empresa:empresas[1]?.id,
+            
         }
     })
 
@@ -183,7 +183,7 @@ export default function CaixaMovimentar(){
         try {
          const response = await api.post('/mensalidade/baixaDireta',{
            n_doc,
-           id_empresa:watch('id_empresa')
+           id_empresa:selectEmp
          })
          setMensalidade({...response.data,valor_total:response.data.valor_principal})
          setModalDados(true)
@@ -203,7 +203,7 @@ export default function CaixaMovimentar(){
 
        useEffect(()=>{
 
-        listarLancamentos({endDate:new Date(),startDate:new Date(),id_empresa:empresas[1]?.id,descricao:''})
+        listarLancamentos({endDate:new Date(),startDate:new Date(),id_empresa:selectEmp,descricao:''})
            
        },[])
 
@@ -216,7 +216,7 @@ export default function CaixaMovimentar(){
 
     try {
       await toast.promise(
-            api.delete(`/caixa/deletar/${watch('id_empresa')}/${mov?.lanc_id}`),
+            api.delete(`/caixa/deletar/${selectEmp}/${mov?.lanc_id}`),
             {
                 error:'Erro ao deletar lancamento',
                 pending:'Solicitando exclusão..',
@@ -237,7 +237,7 @@ export default function CaixaMovimentar(){
     
 
   const handleChamarFiltro =()=>{
-    listarLancamentos({endDate:watch('endDate'),startDate:watch('startDate'),id_empresa:watch('id_empresa'),descricao:watch('descricao')})
+    listarLancamentos({endDate:watch('endDate'),startDate:watch('startDate'),id_empresa:selectEmp,descricao:watch('descricao')})
   }
    
 
@@ -245,7 +245,7 @@ export default function CaixaMovimentar(){
         try{
             setLoading(true)
             const response = await api.post('/listarLancamentos',{
-                id_empresa:data.id_empresa,
+                id_empresa:selectEmp,
                 dataInicial:data.startDate,
                 dataFinal:data.endDate,
                 descricao:  data.descricao,
@@ -317,17 +317,7 @@ return(
 
 
 
-    <div >
-        <div className=" block">
-          <Label className="text-xs"  value="Empresa" />
-        </div>
-     <Select {...register('id_empresa')}    sizing={'sm'}>
-        <option value={''}>Selecione a empresa</option>
-        {empresas?.map(item=>(
-            <option key={item.id} value={item.id}>{item.nome}</option>
-        ))}
-     </Select>
-      </div>
+ 
 
 
     <div >

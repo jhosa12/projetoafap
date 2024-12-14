@@ -216,9 +216,6 @@ export function Usuario() {
 }
 
 
-  const setarModalAdicionar = () => {
-    setModalAdicionar(!modalAdicionar)
-  }
 
  
 

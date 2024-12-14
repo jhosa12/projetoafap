@@ -27,7 +27,7 @@ import { Avatar } from "flowbite-react";
 export function MenuLateral(){
    
     const [isOpen,setIsOpen]=useState(false);
-    const {usuario,getDadosFixos}= useContext(AuthContext);
+    const {usuario,getDadosFixos,empresas,permissoes,selectEmp,setSelectEmp}= useContext(AuthContext);
   
     const[notifyCount,setCount] = useState<number>();
     
@@ -69,12 +69,22 @@ async function contagem() {
   return (
  
     <div className='flex flex-col w-full'>
-    <header className='border-b-[1px] border-gray-500'>
+    <header className='border-b-[1px] border-gray-400'>
 <nav className="border-gray-200 px-4 lg:px-6 py-2  " >
     <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
         <div className="flex items-center">
             <Image onClick={()=>setIsOpen(!isOpen)}  src={logo}  className="cursor-pointer w-full mr-2 h-6 sm:h-8" alt="Flowbite Logo" />
             <h1 className="whitespace-nowrap pt-4 w-full text-base font-semibold  text-white">SISTEMA DE GERENCIAMENTO AFAP</h1>
+
+
+            <div className="pt-4">
+            <select value={selectEmp} onChange={e => setSelectEmp(e.target.value)} className="appearance-none  focus:outline-none focus:ring-0 py-0 px-4 border-0  bg-transparent text-white text-[16px] font-semibold m-0 ">
+                {empresas.map((empresa) => (
+                 permissoes.includes(`EMP${empresa.id}`) && <option className="text-black" key={empresa.id} value={empresa.id}>{empresa.nome}</option>
+                ))}
+              </select>
+            </div>
+             
         </div>
         <div className="flex relative items-center gap-4">
   <div className="relative">      

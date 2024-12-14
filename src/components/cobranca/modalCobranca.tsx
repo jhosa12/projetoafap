@@ -8,14 +8,13 @@ import {  useEffect, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { FormProps } from "@/pages/cobranca";
 import { Controller, SubmitHandler, useForm} from "react-hook-form";
-import { EmpresaProps } from "@/types/empresa";
 import { ConsultoresProps } from "@/types/consultores";
 
 
 
 interface DataProps {
   show: boolean,
-  empresas: Array<EmpresaProps>,
+  empresa:string,
   setFiltro: (open: boolean) => void,
   loading: boolean,
   listarCobranca: SubmitHandler<FormProps>,
@@ -24,12 +23,12 @@ interface DataProps {
   setArrayBairros: (array: Array<Partial<{ bairro: string, check: boolean,id_empresa:string }>>) => void
 }
 
-export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, selectCobrador, arrayBairros, empresas }: DataProps) {
+export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, selectCobrador, arrayBairros, empresa }: DataProps) {
   const [dropCobrador, setDropCobrador] = useState<boolean>(false)
   const { register, watch, handleSubmit, control, setValue } = useForm<FormProps>({
     defaultValues: {
       cobrador:selectCobrador,
-      id_empresa: '',
+      id_empresa: empresa,
     }
   })
 
@@ -59,11 +58,11 @@ export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, 
 
 
  useEffect(()=>{
-   if(watch('id_empresa')){
-      setValue('bairros',(arrayBairros.filter(item=>item.id_empresa===watch('id_empresa'))))
+   if(empresa){
+      setValue('bairros',(arrayBairros.filter(item=>item.id_empresa===empresa)))
    }else setValue('bairros',[])
     
-  },[watch('id_empresa')]) 
+  },[empresa]) 
 
 
 
@@ -86,20 +85,7 @@ export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, 
 
 
           <div className="inline-flex gap-4 w-full">
-            <div className="w-full">
-              <div className=" block">
-                <Label htmlFor="email1" value="Empresa" />
-              </div>
-
-              <Select sizing={'sm'} onChange={e=>setValue('id_empresa',e.target.value)} >
-                <option value={''}>SELECIONE A EMPRESA</option>
-                {
-                  empresas.map(item => (
-                    <option value={item.id}>{item.nome}</option>
-                  ))
-                }
-              </Select>
-            </div>
+         
             <div className="w-full">
               <div className=" block">
                 <Label htmlFor="email1" value="Status" />

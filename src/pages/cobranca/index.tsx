@@ -78,7 +78,7 @@ export default function Cobranca() {
   const [ultimosPag, setUltimosPag] = useState<Array<UltimosPagProsps>>([])
   const [currentPage, setCurrentPage] = useState(0);
   const [filtro, setFiltro] = useState<boolean>(false)
-  const {empresas,consultores,usuario} = useContext(AuthContext)
+  const {consultores,usuario,selectEmp} = useContext(AuthContext)
   const [isPrint,setIsPrint] = useState<boolean>(false)
 
 
@@ -192,7 +192,7 @@ export default function Cobranca() {
 
   }
   return (
-    <div className="flex  w-full justify-center px-1">
+    <div className="flex  w-full justify-center ">
      {isPrint && <div style={{ display: 'none' }}>
         <Relatorio
           ref={componenteRef}
@@ -205,7 +205,7 @@ export default function Cobranca() {
           usuario={usuario?.nome ?? ''}
         />
       </div>}
-      <div className="flex flex-col bg-white w-full border  rounded-lg shadow  border-gray-700 h-[calc(100vh-60px)] ">
+      <div className="flex flex-col bg-white w-full border  rounded-b-lg shadow  border-gray-700 h-[calc(100vh-57px)] ">
         <div className="text-gray-600 bg-gray-50 rounded-t-lg inline-flex items-center p-2 justify-between   ">
           <h1 className=" text-lg  pl-3 font-medium">Relatórios de Cobrança</h1>
           <div id="divFiltro" className="inline-flex gap-4">
@@ -326,7 +326,7 @@ export default function Cobranca() {
           </div>
        
       </div>
-   {filtro && <ModalFiltroCobranca   setArrayBairros={setArrayBairros}  empresas={empresas}   selectCobrador={consultores} listarCobranca={handleListarCobranca} loading={loading} setFiltro={setFiltro}  show={filtro} arrayBairros={arrayBairros}/>}
+   {filtro && <ModalFiltroCobranca   setArrayBairros={setArrayBairros}  empresa={selectEmp}   selectCobrador={consultores} listarCobranca={handleListarCobranca} loading={loading} setFiltro={setFiltro}  show={filtro} arrayBairros={arrayBairros}/>}
     </div>
   )
 }
