@@ -17,6 +17,7 @@ import { ajustarData } from "@/utils/ajusteData";
 interface ModalProps{
     handleFiltro:()=>void,
     planos:Array<PlanosProps>
+    id_empresa:string
     grupo:Array<GruposProps>
     openModal:boolean,
     setOpenModal:(open:boolean)=>void
@@ -39,13 +40,14 @@ interface GruposProps{
     id_grupo:number|null,
     descricao:string
 }
-export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,empresas,handleFiltro}:ModalProps){
+export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpenModal,mov,empresas,handleFiltro}:ModalProps){
     const {usuario}=useContext(AuthContext)
-    const {register,setValue,handleSubmit,watch,control} = useForm<LancamentosProps>()
+    const {register,setValue,handleSubmit,watch,control} = useForm<LancamentosProps>(
+      {
+        defaultValues:{...mov,datalanc:mov.datalanc??new Date()}
+      }
+    )
    
-
-
-
     useEffect(()=>{
    setValue('conta',mov.conta??'')
     setValue('descricao',mov.descricao??'')
@@ -54,7 +56,7 @@ export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,e
       setValue('historico',mov?.historico??'')
    setValue('data',mov.data??new Date())
    setValue('tipo',mov.tipo??'')
-      setValue('empresa',mov.empresa??'')
+    
     
     },[mov.lanc_id])
 
@@ -87,7 +89,7 @@ export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,e
         usuario:usuario?.nome,
         datalanc:dt_lanc,
         tipo:data.tipo,
-        empresa:data.empresa
+        empresa:id_empresa
         }),
         {pending:'Atualizando.....',
         error:'Erro ao atualizar',
@@ -109,7 +111,7 @@ export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,e
       const{dataIni:dt_lanc} = ajustarData(data.datalanc)
       const{dataIni:dt_real} = ajustarData(new Date())
 
-      if(!data?.empresa){
+      if(!id_empresa){
         toast.info('Selecione a empresa')
         return;
       }
@@ -141,7 +143,7 @@ export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,e
             usuario:usuario?.nome.toUpperCase(),
             data:dt_real, 
             tipo:data.tipo,
-            empresa:data.empresa
+            empresa:id_empresa
             }),
             {
                 error:'Erro realizar Lançamento',
@@ -192,17 +194,6 @@ export function ModalLancamentosCaixa({planos,grupo,openModal,setOpenModal,mov,e
       </div>
 
 
-      <div >
-        <div className=" block">
-          <Label  value="Empresa" />
-        </div>
-     <Select {...register('empresa')} disabled={!!mov.lanc_id} sizing={"sm"}>
-        <option value={''}></option>
-       {empresas?.map(item=>(
-        <option key={item.id} value={item.id}>{item.nome}</option>
-       ))}
-     </Select>
-      </div>
 
       <div  >
         <div className=" block">

@@ -46,7 +46,7 @@ interface ModalProps {
 
 
 export default function ModalCadastro({isOpen,onClose}:ModalProps) {
-    const {usuario,carregarDados} = useContext(AuthContext)
+    const {usuario,carregarDados,selectEmp} = useContext(AuthContext)
     const {register,handleSubmit,setValue,watch,trigger,reset} = useForm<DadosCadastro>()
 
    
@@ -74,14 +74,14 @@ export default function ModalCadastro({isOpen,onClose}:ModalProps) {
 
  const handleSave = async(data:DadosCadastro)=>{
 
-    if(!watch('id_empresa')){
+    if(selectEmp === null){
         toast.warn('Selecione uma empresa')
         return
     }
     try{
       const response = await toast.promise(
         api.post('/novoAssociado',{
-            id_empresa:data.id_empresa,
+            id_empresa:selectEmp,
             nome:data.name.toUpperCase(),
             cep:data.cep,
             endereco:data.endereco,

@@ -22,29 +22,7 @@ export function DadosPlano({register,setValue,watch}:ChildrenProps){
             
         <div  className="grid gap-2 grid-flow-c-dense  w-full  md:grid-cols-4" >
 
-<div className="col-span-1">
-          <div className="mb-1 block">
-          <Label  value="Empresa" />
-        </div>
-            <Select value={watch('id_empresa')} onChange={(e)=>{
-              const emp = empresas?.find(item => item.id === e.target.value)
-              if(emp){setValue('id_empresa',emp?.id)
-              setValue('empresa',emp?.nome)}else{
-            setValue('id_empresa','')
-            setValue('empresa','')
-          }
-            }}
-           
-             >
-            <option selected></option>
-            {empresas?.map((item)=>{
-              return (
-                <option value={item.id} key={item.id} >{item.nome}</option>
-              )
-            })}
-             
-            </Select>
-          </div>
+
   
         <div className="col-span-1">
           <div className="mb-1 block">

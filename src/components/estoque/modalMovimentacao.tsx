@@ -163,9 +163,9 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
             await reqDadosEstoq({ descricao: '', id_produto: null, grupo: '',id_empresa:undefined })
             setArrayMov([])
             setOpenModal(false)
-        } catch (err:any) {
+        } catch (error:any) {
            // console.log(err)
-            toast.warning(err.response?.data?.message || 'Erro inesperado!');
+            toast.warning(error.response?.data?.error || 'Erro inesperado!');
         }
         setModalConfirm(false)
     }

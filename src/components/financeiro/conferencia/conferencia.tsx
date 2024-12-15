@@ -26,6 +26,7 @@ export interface FechamentoProps{
     id_conf: number|null,
     id_ccustos: number|null,
     data: Date,
+    dataFecha:Date,
     dataConf: Date,
     caixaCad:Partial<CaixaFechamento>,
     caixaReal: Partial<CaixaFechamento>
@@ -114,7 +115,7 @@ try {
 
 
   return (
-    <div className="flex flex-col py-2 gap-2">
+    <div className="flex flex-col py-2 px-1 gap-2">
       <div className="ml-auto inline-flex gap-4">
         <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 " } }} color={'light'} size={'sm'} onClick={() => {}}>  <HiFilter className="mr-2 h-5 w-5" /> Filtro</Button>
         <Button size={'sm'} onClick={() =>{}}>Nova Consulta</Button>
@@ -124,7 +125,9 @@ try {
 
           <Table.Head>
             <Table.HeadCell>Caixa</Table.HeadCell>
-            <Table.HeadCell>Data</Table.HeadCell>
+            <Table.HeadCell>Data Caixa</Table.HeadCell>
+            <Table.HeadCell>Data FECHAMENTO</Table.HeadCell>
+            <Table.HeadCell>Data Conferencia</Table.HeadCell>
             <Table.HeadCell>Status</Table.HeadCell>
             <Table.HeadCell>Observação</Table.HeadCell>
         
@@ -134,11 +137,17 @@ try {
           </Table.Head>
           <Table.Body className="divide-y">
             {caixa?.map((item, index) => (
-              <Table.Row key={item.id_conf} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+              <Table.Row key={item.id_conf} className="text-black ">
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                   {item?.ccustos?.descricao}
                 </Table.Cell>
-                <Table.Cell> {new Date(item.data).toLocaleDateString('pt-BR')}</Table.Cell>
+                <Table.Cell> {new Date(item.data).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</Table.Cell>
+                <Table.Cell> 
+                  {new Date(item.dataFecha).toLocaleDateString('pt-BR',{timeZone:'UTC'})}-
+                  {new Date(item.dataFecha).toLocaleTimeString('pt-BR',{timeZone:'UTC'})}
+                  
+                  </Table.Cell>
+                  <Table.Cell> {item.dataConf && new Date(item.dataConf).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</Table.Cell>
                 <Table.Cell>{Teste({caixaCadastrado:item.caixaCad,caixaReal:item.caixaReal,caixaVerificado:item.caixaVerif})==='PENDENTE'?<Badge className="justify-center" color="warning">PENDENTE</Badge>:Teste({caixaCadastrado:item.caixaCad,caixaReal:item.caixaReal,caixaVerificado:item.caixaVerif})==='DIVERGENTE'?<Badge className="justify-center" color="failure">DIVERGENTE</Badge>:<Badge color="success" className="justify-center">CONVERGENTE</Badge>}</Table.Cell>
                 <Table.Cell>{item.observacao}</Table.Cell>
                 <Table.Cell className="space-x-6">

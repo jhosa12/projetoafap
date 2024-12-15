@@ -4,12 +4,13 @@ import {  Timeline } from "flowbite-react";
 import {  HiOutlineCheck } from "react-icons/hi2";
 import {  HiX } from "react-icons/hi";
 import { ChildrenProps } from "./admContrato/cadastro/modalCadastro";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
 
 
 
 export function ResumoCadastro({watch}:ChildrenProps){
- 
-
+  const {selectEmp,empresas} = useContext(AuthContext)
  
     return(
        <div className="flex w-full">
@@ -17,13 +18,13 @@ export function ResumoCadastro({watch}:ChildrenProps){
           
         <Timeline.Item>
           <Timeline.Point  theme={{marker:{icon:{wrapper:`absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full ${watch('id_empresa')?"bg-cyan-200":"bg-red-300"}  ring-8 ring-white`,
-          base:`${watch('id_empresa')?"text-cyan-600":"text-red-600 h-3 w-3"}`
+          base:`${selectEmp?"text-cyan-600":"text-red-600 h-3 w-3"}`
         },
           
           }}}    icon={watch('id_empresa')?HiOutlineCheck:HiX}  />
           <Timeline.Content>
             <Timeline.Time>Empresa</Timeline.Time>
-            <Timeline.Title className="whitespace-nowrap">{watch('empresa')}</Timeline.Title>
+            <Timeline.Title className="whitespace-nowrap">{empresas?.find(emp=>emp.id===selectEmp)?.nome}</Timeline.Title>
             <Timeline.Body>
              
             </Timeline.Body>

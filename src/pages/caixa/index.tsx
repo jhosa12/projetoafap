@@ -22,6 +22,8 @@ import { Scanner } from "@/components/admContrato/historicoMensalidade/modalScan
 import { ModalDadosMensalidade } from "@/components/caixa/modalDadosMensalidade";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ModalImpressao } from "@/components/caixa/modalImpressao";
+import { ajustarData } from "@/utils/ajusteData";
+import { ScreenCloseCaixa } from "@/components/caixa/screenCloseCaixa";
 
 
 registerLocale('pt', pt)
@@ -102,7 +104,7 @@ export default function CaixaMovimentar(){
     const [openModalExc,setModalExc] = useState<boolean>(false);
     const [loading,setLoading] = useState<boolean>(false);
     const [openFecModal,setFecModal]= useState<boolean>(false)
-   
+   const [fechado,setFechado] = useState<boolean>(false)
     const [mensalidade,setMensalidade] = useState<Partial<MensalidadeProps>>()
     const [modalDados,setModalDados] = useState<boolean>(false)
     const {register,watch,handleSubmit,control}= useForm<FormProps>({
@@ -242,28 +244,39 @@ export default function CaixaMovimentar(){
    
 
    const listarLancamentos:SubmitHandler<FormProps> = async(data)=> {
+
+        if(data.startDate>data.endDate){
+            toast.info('Data final deve ser maior que a data inicial')
+            return
+        }
+
+    const {dataIni,dataFim} = ajustarData(data.startDate,data.endDate)
         try{
             setLoading(true)
             const response = await api.post('/listarLancamentos',{
                 id_empresa:selectEmp,
-                dataInicial:data.startDate,
-                dataFinal:data.endDate,
-                descricao:  data.descricao,
+                dataInicial:dataIni,
+                dataFinal:dataFim,
+                descricao:data.descricao,
                 id_user:usuario?.id
-          
             })
 
-            setLancamentos(response.data.lista)
-            setPlanos(response.data.plano_de_contas)
-            setGrupos(response.data.grupos)
+
+            const {lista,plano_de_contas,grupos,fechamento} = response.data
+
+            setLancamentos(lista)
+            setPlanos(plano_de_contas)
+            setGrupos(grupos)
+            fechamento?setFechado(true):setFechado(false)
           
-          
-            setLoading(false)
+          console.log(response.data)
 
             
          }catch(err){
             console.log(err)
          }
+
+         setLoading(false)
         
     }
 
@@ -294,7 +307,7 @@ return(
 <>
 
 
-<ModalLancamentosCaixa handleFiltro={handleChamarFiltro} empresas={empresas}   arrayLanc={lancamentos} setLancamentos={setLancamentos}  mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={planos}  grupo={grupos}/>
+{openModal&&<ModalLancamentosCaixa id_empresa={selectEmp} handleFiltro={handleChamarFiltro} empresas={empresas}   arrayLanc={lancamentos} setLancamentos={setLancamentos}  mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={planos}  grupo={grupos}/>}
 
 <ModalExcluir openModal={openModalExc} handleExcluir={handleExcluir} setOpenModal={setModalExc}/>
 
@@ -311,14 +324,9 @@ return(
 </Modal>
 
 <div className="flex flex-col  w-full ">
-    <div className="text-gray-600 bg-gray-50  inline-flex items-center w-full justify-between">
+    <div className="text-gray-600 bg-white inline-flex items-center w-full justify-between">
    
     <form onSubmit={handleSubmit(listarLancamentos)}  className="flex w-full flex-row justify-end p-1 gap-4 text-black font-semibold">
-
-
-
- 
-
 
     <div >
         <div className=" block">
@@ -358,19 +366,17 @@ return(
       </div> 
          
                    <div className="flex items-end gap-4">
-                   <Button isProcessing={loading}  size={'xs'} type="submit" ><IoSearchSharp size={15}/> Buscar</Button>
+                   <Button isProcessing={loading}  size={'sm'} type="submit" ><IoSearchSharp className="mr-2 h-5 w-5"/> Buscar</Button>
 
                   
                    </div>
                    <div className="flex   items-end justify-end pr-2 ">
-                   <Button disabled={!permissoes.includes('ADM2.1.1')} color={'success'} size={'xs'} onClick={()=>{setMov({conta:'',conta_n:'',ccustos_desc:'',data:undefined,datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal(true)}} ><MdOutlineAddCircle size={15}/> Novo</Button>
-
-                 
+                   <Button disabled={!permissoes.includes('ADM2.1.1')||fechado} color={'success'} size={'sm'} onClick={()=>{setMov({conta:'',conta_n:'',ccustos_desc:'',data:undefined,datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal(true)}} ><MdOutlineAddCircle className="mr-2 h-5 w-5"/> Novo</Button>
                    </div>
                    
         </form>
     </div>
-    <div className="flex flex-col border-t-2 bg-white">
+  { fechado ? <ScreenCloseCaixa/> : <div className="flex flex-col border-t-2 bg-white">
     
        
         <div className="overflow-y-auto mt-1 px-2 h-[calc(100vh-174px)] ">
@@ -452,10 +458,10 @@ return(
     
     </Table>
     </div>
-    </div>
+    </div>}
 
 
-    <div className="inline-flex gap-2   text-black w-full bg-white p-2">
+{!fechado &&    <div className="inline-flex gap-2   text-black w-full bg-white p-2">
         <button disabled={!permissoes.includes('ADM2.1.5')} onClick={()=>setVisible(!visible)} className="justify-center items-center disabled:hover:cursor-not-allowed">
            {visible? <IoMdEye color="blue" size={20}/>:<IoMdEyeOff color="blue" size={20}/>}
             </button>
@@ -478,13 +484,13 @@ return(
 
   <Button onClick={()=>setPrint(true)} className="ml-auto" size={'xs'}><IoPrint className="mr-2 h-4 w-4" /> Imprimir Caixa</Button>
   <Button onClick={()=>setFecModal(true)} className="ml-auto" size={'xs'}>Fechar Caixa</Button>
-    </div>
+    </div>}
 
     </div>
 
 
 
-<ModalFechamento lancamentos={lancamentos} id_usuario={usuario?.id??''} openModal={openFecModal} setOpenModal={setFecModal}/>
+<ModalFechamento dataCaixaEnd={watch('endDate')} dataCaixa={watch('startDate')} setFechamento={setFechado} id_empresa={selectEmp} lancamentos={lancamentos} id_usuario={usuario?.id??''} openModal={openFecModal} setOpenModal={setFecModal}/>
 
 
 {openModalPrint && <ModalImpressao array={lancamentos} openModal={openModalPrint} setOpenModal={setPrint} startDate={watch('startDate')} endDate={watch('endDate')} usuario={usuario?.nome??''}/>}
