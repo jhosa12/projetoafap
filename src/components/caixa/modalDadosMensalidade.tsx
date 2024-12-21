@@ -1,16 +1,17 @@
 import { AuthContext } from "@/contexts/AuthContext";
 import useBaixaMensalidade from "@/hooks/useBaixaMensalidade";
-import { MensalidadeProps } from "@/pages/caixa";
+import { MensalidadeBaixaProps } from "@/pages/caixa";
+
 import { api } from "@/services/apiClient";
 import { Button, Checkbox, Modal, ModalHeader, Select, TextInput } from "flowbite-react";
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 
 interface DataProps{
-    mensalidade:Partial<MensalidadeProps>,
+    mensalidade:Partial<MensalidadeBaixaProps>,
     open:boolean,
     setOpen:(opne:boolean)=>void,
-    setMensalidade:(fields:Partial<MensalidadeProps>)=>void
+    setMensalidade:(fields:Partial<MensalidadeBaixaProps>)=>void
     handleChamarFiltro:()=>void
 }
 
@@ -19,7 +20,7 @@ type ToastType = 'success' | 'error' | 'info' | 'warn'
 
 export function ModalDadosMensalidade({mensalidade,open,setOpen,setMensalidade,handleChamarFiltro}:DataProps){
    const [desconto,setDesconto] = useState<boolean>()
-   const {usuario} = useContext(AuthContext)
+   const {usuario,limparDados} = useContext(AuthContext)
    const {error,postData} = useBaixaMensalidade('/mensalidade/baixa')
 
 
@@ -50,35 +51,41 @@ export function ModalDadosMensalidade({mensalidade,open,setOpen,setMensalidade,h
     }
 
    
-   let mensalidadeProx = mensalidade.associado?.mensalidade[1];
+   let mensalidadeProx = {}
+  try {
+
+    await postData ({
+       
+        id_usuario: usuario?.id,
+        id_mensalidade: mensalidade?.id_mensalidade,
+        id_mensalidade_global: mensalidade?.id_mensalidade_global,
+        data_pgto: new Date(),
+        hora_pgto: new Date().toLocaleTimeString('pt-BR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        }),
+        valor_total: mensalidade?.valor_total,
+        motivo_bonus: mensalidade?.motivo_bonus?.toUpperCase(),
+        associado: mensalidade?.associado?.nome,
+        form_pagto: mensalidade?.form_pagto,
+        banco_dest: mensalidade.banco_dest,
+        desconto: desconto,
+        //id_proximaMensalidade: mensalidadeProx?.id_mensalidade_global,
+        pix_por: mensalidade?.pix_por
+        
+    })
+    handleChamarFiltro()
+    
+  } catch (error) {}
+    
   
+           
 
- 
-
-              await postData ({
-       
-                id_usuario: usuario?.id,
-                id_mensalidade: mensalidade?.id_mensalidade,
-                id_mensalidade_global: mensalidade?.id_mensalidade_global,
-                data_pgto: new Date(),
-                hora_pgto: new Date().toLocaleTimeString('pt-BR', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
-                }),
-                valor_total: mensalidade?.valor_total,
-                motivo_bonus: mensalidade?.motivo_bonus?.toUpperCase(),
-                associado: mensalidade?.associado?.nome,
-                form_pagto: mensalidade?.form_pagto,
-                banco_dest: mensalidade.banco_dest,
-                desconto: desconto,
-                id_proximaMensalidade: mensalidadeProx?.id_mensalidade_global
-                
-            }).finally(()=>handleChamarFiltro())
-
-       
+       limparDados()
    
 }
+
 
 
 
@@ -130,6 +137,17 @@ export function ModalDadosMensalidade({mensalidade,open,setOpen,setMensalidade,h
   <option value={'TON'}>TON</option>
 </Select>
 </div>
+
+{mensalidade.form_pagto==='PIX'&& (
+
+<div className="mb-1 col-span-4">
+    <label  className="block mb-1 text-xs font-medium  text-black">PIX POR</label>
+    <TextInput style={{padding:6}} value={mensalidade?.pix_por} onChange={e=>setMensalidade({pix_por:e.target.value})} placeholder="PIX POR "/>
+
+</div>
+)
+
+}
 
 {((mensalidade?.valor_total ?? 0)<(mensalidade?.valor_principal ?? 0) && mensalidade?.valor_total!==undefined)&& mensalidade.valor_total>0?(
 <div className="col-span-4 gap-1 mt-1 inline-flex ">

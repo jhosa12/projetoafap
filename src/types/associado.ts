@@ -99,7 +99,7 @@ export type ContratoProps = {
     convalescencia: Array<ConvProps>,
     categoria_inativo: string,
     motivo_inativo: string,
-    dt_cancelamento: true,
+    dt_cancelamento: Date,
     obitos:Array<ObitoProps>
 }
 

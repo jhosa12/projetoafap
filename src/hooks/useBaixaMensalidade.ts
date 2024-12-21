@@ -1,6 +1,7 @@
-import { set } from 'date-fns';
+
 import { AuthContext } from "@/contexts/AuthContext";
 import { api } from "@/services/apiClient";
+import { MensalidadeProps } from "@/types/financeiro";
 
 import { AxiosError, AxiosResponse } from "axios";
 import { useContext, useState } from "react";
@@ -32,10 +33,11 @@ interface PayloadProps {
    
     error:AxiosError|null;
     postData:(payload:Partial<PayloadProps>)=>Promise<void>;
+    data:Array<MensalidadeProps>|[]|null
  }=>{
    
     const [error, setError] = useState<AxiosError | null>(null);
-    const {setarDadosAssociado} = useContext(AuthContext)
+    const [data, setData] = useState<Array<MensalidadeProps>|[]|null>(null);
 
   
 
@@ -50,6 +52,10 @@ interface PayloadProps {
         // Validações iniciais
         if (!payload?.form_pagto) {
             return exibirToastERetornar('Informe a forma de pagamento!');
+        }
+
+        if(payload.form_pagto === 'PIX' && !payload.pix_por) {
+            return exibirToastERetornar('Informe o pix por!');
         }
         
         if (payload.form_pagto !== 'DINHEIRO' && !payload.banco_dest) {
@@ -79,11 +85,13 @@ interface PayloadProps {
                 }
             )
             
-            setarDadosAssociado({mensalidade:response.data})
+           // setarDadosAssociado({mensalidade:response.data})
+            setData(response.data)
     
         }catch(error:any){
           //  setError(error as AxiosError)
-          toast.error(error.response.data.error)
+          console.log(error)
+          toast.error(error.response?.data?.error??'Erro desconhecido')
     
         }
       }
@@ -91,7 +99,7 @@ interface PayloadProps {
 
     
      
-      return {error,postData}
+      return {error,postData,data}
      
  }
      

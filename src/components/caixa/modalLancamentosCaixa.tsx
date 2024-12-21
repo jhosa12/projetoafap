@@ -26,7 +26,7 @@ interface ModalProps{
     arrayLanc:Array<LancamentosProps>,
     setLancamentos:(array:Array<LancamentosProps>)=>void,
   //  listarLancamentos:()=>Promise<void>,
-    empresas:Array<EmpresaProps>
+  
 
 
 }
@@ -40,7 +40,7 @@ interface GruposProps{
     id_grupo:number|null,
     descricao:string
 }
-export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpenModal,mov,empresas,handleFiltro}:ModalProps){
+export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpenModal,mov,handleFiltro}:ModalProps){
     const {usuario}=useContext(AuthContext)
     const {register,setValue,handleSubmit,watch,control} = useForm<LancamentosProps>(
       {

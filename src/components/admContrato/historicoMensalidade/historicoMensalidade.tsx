@@ -3,10 +3,9 @@ import { ModalAcordos } from '@/components/admContrato/historicoMensalidade/moda
 import ImpressaoCarne from '@/Documents/mensalidade/ImpressaoCarne';
 import { api } from '@/services/apiClient';
 import { useReactToPrint } from 'react-to-print';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { FaHandshake } from 'react-icons/fa';
-import { IoPrint } from 'react-icons/io5';
-import { MdDeleteForever, MdReceipt } from 'react-icons/md';
+import React, {  useContext, useEffect, useRef, useState } from 'react';
+import { IoCalendar, IoPrint } from 'react-icons/io5';
+import { MdDeleteForever} from 'react-icons/md';
 import { RiAddCircleFill } from 'react-icons/ri';
 import { toast } from 'react-toastify'
 import { AuthContext } from '@/contexts/AuthContext';
@@ -17,8 +16,8 @@ import { ModalExcluirMens } from './modalExcluirMens';
 import { MensalidadeProps } from '@/types/financeiro';
 import { ReciboMensalidade } from '@/Documents/mensalidade/Recibo';
 import pageStyle from '@/utils/pageStyle';
-
-
+import { Button, ButtonGroup } from 'flowbite-react';
+import { PopoverVencimento } from './modalVencimento';
 
 
 
@@ -36,7 +35,7 @@ interface AcordoProps {
     id_acordo: number,
     visibilidade: boolean
 }
-interface SetAssociadoProps {
+export interface SetAssociadoProps {
     mensalidade: Partial<MensalidadeProps>,
     mensalidadeAnt: Partial<MensalidadeProps>,
     id_associado: number,
@@ -86,6 +85,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
     const [isPrinting, setIsPrinting] = useState(false);
     const componentRecibo = useRef<ReciboMensalidade>(null)
     const [mensalidadeRecibo, setMensalidadeRecibo] = useState<Partial<MensalidadeProps>>()
+   
 
 
 
@@ -378,34 +378,25 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
 
             {openExcluir && <ModalExcluirMens openModal={openExcluir} setOpenModal={setOpenExcluir} handleExcluirMensalidade={excluirMesal} />}
 
+
+
+      
+
             <div className="flex w-full  gap-2">
-
-
-
                 <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
                     <input disabled={!permissoes.includes('ADM1.2.10')} checked={checkMensal} onChange={() => setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer disabled:cursor-not-allowed" />
-                    <div className="  w-9 h-5 rounded-full peer bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[5px] after:start-[7px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
-                    <span className="ms-3 text-sm font-medium  text-gray-600">Exibir Pagas</span>
+                    <div className="  w-7 h-4 rounded-full peer bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[7px] after:start-[17px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
+                    <span className="ms-3 text-xs font-medium  text-gray-600">Exibir Pagas</span>
                 </label>
-                <div className="inline-flex rounded-md shadow-sm" role="group">
-                    <button disabled={!permissoes.includes('ADM1.2.1')} onClick={adicionarMensalidade} type="button" className="inline-flex items-center px-4 py-1 gap-1 disabled:bg-gray-100 disabled:cursor-not-allowed text-sm font-medium  border  rounded-s-lg  disabled:text-gray-400   bg-gray-100 border-gray-400  enable:hover:text-white hover:bg-gray-300 ">
-                        <RiAddCircleFill size={20} />
-                        Adicionar
-                    </button>
-
-
-
-                    <button type="button" onClick={imprimirCarne} className="inline-flex items-center px-4 py-1 gap-1 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed font-medium  border-t border-b disabled:text-gray-400  bg-gray-100 border-gray-400  hover:bg-gray-300">
-                        <IoPrint size={20} />
-                        Imprimir
-                    </button>
-
-                    <button disabled={!permissoes.includes('ADM1.2.3')} onClick={() => setOpenExcluir(!openExcluir)} type="button" className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium disabled:bg-gray-100 disabled:cursor-not-allowed border 0 rounded-e-lg  focus:z-10 focus:ring-2 disabled:text-gray-400   bg-gray-100 border-gray-400  enable:hover:text-white hover:bg-gray-300 ">
-                        <MdDeleteForever size={20} />
-                        Excluir
-                    </button>
-
-                </div>
+                <ButtonGroup>
+                <Button disabled={!permissoes.includes('ADM1.2.1')} onClick={adicionarMensalidade} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' /> Adicionar</Button>
+                <Button type='button' onClick={imprimirCarne} color='light' size='xs'>  <IoPrint className='mr-1 h-4 w-4' /> Imprimir</Button>
+              
+                <PopoverVencimento setarDados={setarDados} id_global={dadosAssociado.id_global}  mensalidades={dadosAssociado.arrayMensalidade.filter((item) => item.status !== 'P')} />
+             
+               
+                <Button disabled={!permissoes.includes('ADM1.2.3')} onClick={() => setOpenExcluir(!openExcluir)} type="button" color='light' size='xs'><MdDeleteForever className='mr-1 h-4 w-4' /> Excluir</Button>
+            </ButtonGroup>
 
             </div>
             <div className="flex w-full p-2 max-h-[calc(100vh-205px)]">
@@ -417,7 +408,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                                 NP
                             </th>
                             <th scope="col" className=" px-6 py-1">
-                                DATA VENC.
+                                VENC.
                             </th>
                             <th scope="col" className=" px-6 py-1">
                                 REF
@@ -432,7 +423,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                                 STATUS
                             </th>
                             <th scope="col" className=" px-6 py-1">
-                                DATA PAG.
+                                 PAG.
                             </th>
                             <th scope="col" className=" px-6 py-1">
                                 HR PAG.
@@ -466,21 +457,21 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
 
                                     (
 
-                                        <tr key={index}
+                                        <tr  key={index}
                                             onClick={() => toggleSelecionada(item)}
                                             className={`font-semibold divide-y text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"}  ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : "bg-gray-50"}  ${item.status === 'P' && "text-blue-600"}   hover:bg-gray-300 hover:text-black  }`}>
                                             <th scope="row" className={`px-5 py-1  `}>
                                                 {item.parcela_n}
                                             </th>
                                             <td className={`px-2 py-1 `}>
-                                                {new Date(item.vencimento).toLocaleDateString('pt', { timeZone: 'UTC' })}
+                                                {item.vencimento && new Date(item.vencimento).toLocaleDateString('pt', { timeZone: 'UTC' })}
 
                                             </td>
                                             <td className="px-2 py-1">
                                                 {item.referencia}
                                             </td>
                                             <td className="px-5 py-1">
-                                                {new Date(item.cobranca).toLocaleDateString('pt', { timeZone: 'UTC' })}
+                                                {item.cobranca && new Date(item.cobranca).toLocaleDateString('pt', { timeZone: 'UTC' })}
                                             </td>
                                             <td className="px-3 py-1">
                                                 {Number(item.valor_principal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
@@ -603,15 +594,36 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                 </table>
             </div>
 
-            {openModalMens && <ModalMensalidade mensalidade={mensalidadeSelect ?? {}} setMensalidade={setMensalidade} openModal={openModalMens} setOpenModal={setModalMens} />}
+            {openModalMens && <ModalMensalidade 
+           mensalidade={{
+            associado:{...dadosAssociado,mensalidade:dadosAssociado.arrayMensalidade},
+            aut:mensalidadeSelect?.aut,
+            banco_dest:mensalidadeSelect?.banco_dest,
+            data_pgto:mensalidadeSelect?.data_pgto,
+            id_mensalidade_global:mensalidadeSelect?.id_mensalidade_global,
+            form_pagto:mensalidadeSelect?.form_pagto,
+            id_contrato:mensalidadeSelect?.id_contrato,
+            id_mensalidade:mensalidadeSelect?.id_mensalidade,
+            valor_metodo:mensalidadeSelect?.valor_metodo,
+            valor_total:mensalidadeSelect?.valor_total,
+            referencia:mensalidadeSelect?.referencia,
+            vencimento:mensalidadeSelect?.vencimento,
+            status:mensalidadeSelect?.status,
+            valor_principal:mensalidadeSelect?.valor_principal
+           }} 
+           
+            openModal={openModalMens}
+             setOpenModal={setModalMens} />}
+
+        
         </div>
     )
 }
 
 
-
 function calcularDiferencaEmDias(data1: Date, data2: Date) {
     // Convertendo as datas para objetos Date
+   
     const timestamp1 = data1.getTime();
     const timestamp2 = data2.getTime();
 

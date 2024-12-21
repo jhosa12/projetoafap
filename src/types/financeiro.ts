@@ -4,6 +4,7 @@ export type MensalidadeProps = {
     id_empresa:string
     id_contrato_global:number,
     id_contrato: number,
+    aut:string,
     estorno_dt: Date,
     estorno_user: string,
     dt_exclusao: Date,
@@ -28,8 +29,7 @@ export type MensalidadeProps = {
     form_pagto:string,
     banco_dest:string,
     pix_por:string,
-    
-
+    valor_metodo: number
 }
 
 export type AcordoProps = {

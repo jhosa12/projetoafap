@@ -125,7 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const { permissoes } = decodeToken as { permissoes: string };
             const parsedPermissoes = typeof permissoes === 'string' ? JSON.parse(permissoes) : permissoes ?? [];
             const emp = parsedPermissoes.find((item: string) => item.includes('EMP'));
-           // setSelectEmp(emp.split('EMP')[1]);
+           setSelectEmp(emp.split('EMP')[1]);
      
             setCookie(undefined, '@nextauth.token', tokenAuth, {
                 maxAge: 60 * 60 * 24 * 1,

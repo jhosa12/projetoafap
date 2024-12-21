@@ -2,9 +2,7 @@
 import { IoMdAdd, IoMdSearch } from "react-icons/io";
 import 'react-tabs/style/react-tabs.css';
 import { ModalBusca } from '../../components/modal'
-
-import React, { useState, useContext, useEffect, useRef } from "react";
-import { RiFileAddLine } from "react-icons/ri";
+import React, { useState, useContext, useEffect} from "react";
 import { AuthContext } from "../../contexts/AuthContext"
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
@@ -14,23 +12,20 @@ import CarteirasDep from "../../components/admContrato/carteiras/carteirasDep";
 import { HistoricoMensalidade } from "@/components/admContrato/historicoMensalidade/historicoMensalidade";
 import ObitosAssociado from "@/components/admContrato/obitos/obitos";
 import { Button, Tabs } from "flowbite-react";
-import { HiIdentification, HiMiniInbox, HiMiniWallet, HiOutlineUserGroup, HiPrinter, HiUserCircle, HiUserGroup } from "react-icons/hi2";
+import { HiIdentification, HiMiniInbox, HiMiniWallet, HiPrinter, HiUserCircle, HiUserGroup } from "react-icons/hi2";
 import { DadosAssociado } from "@/components/admContrato/dadosAssociado/screen";
 import { Dependentes } from "@/components/admContrato/dependentes/dependentes";
 import { Impressoes } from "@/components/admContrato/impressoes/screen";
 import ModalCadastro from "@/components/admContrato/cadastro/modalCadastro";
-import { HiClipboardList } from "react-icons/hi";
 import { FaHandshake } from "react-icons/fa";
 import { AcordosScreen } from "@/components/admContrato/acordos/screen";
 import { VerificarSituacao } from "@/utils/admContrato/verificarSituacao";
 
 
 
-
-
 export default function AdmContrato() {
 
-    const { usuario,data,closeModa,  dadosassociado, carregarDados, permissoes } = useContext(AuthContext)
+    const { usuario,data,closeModa,  dadosassociado, carregarDados, permissoes,setarDadosAssociado } = useContext(AuthContext)
     const [indexTab, setIndex] = useState<number>(0)
     const [openCadastro, setCadastro] = useState<boolean>(false)
     const [modalBusca, setModalBusca] = useState<boolean>(false)
@@ -42,6 +37,8 @@ export default function AdmContrato() {
         }
         listaCadastro()
     }, [])*/
+
+ 
 
 
     async function atualizarObs() {

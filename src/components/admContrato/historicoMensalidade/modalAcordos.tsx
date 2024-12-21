@@ -63,7 +63,7 @@ interface DadosAcordoProps{
     openModal:{open:boolean,visible:boolean}
     acordo:Partial<AcordoProps>,
     usuario:{nome:string,id:number},
-    mensalidade:Array<MensalidadeProps>
+    mensalidade:Array<Partial<MensalidadeProps>>
     contrato:number,
     id_contrato_global:number,
     id_global:number,

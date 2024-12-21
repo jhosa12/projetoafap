@@ -1,33 +1,29 @@
-import { BiTransfer } from "react-icons/bi";
+
 import { api } from "@/services/apiClient";
-import { MdOutlineAddCircle } from "react-icons/md";
-import { use, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { MdDelete, MdOutlineAddCircle } from "react-icons/md";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { IoPrint, IoSearchSharp } from "react-icons/io5";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { ModalLancamentosCaixa } from "@/components/caixa/modalLancamentosCaixa";
-import { Tooltip } from "react-tooltip";
 import { AuthContext } from "@/contexts/AuthContext";
 import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
-import { Button, Label, Modal, Select, Spinner, Table, TextInput } from "flowbite-react";
-import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
+import { Button, Label, Modal, Spinner, Table, TextInput } from "flowbite-react";
+import {  HiPencil } from "react-icons/hi2";
 import { toast } from "react-toastify";
 import { ModalExcluir } from "@/components/modalExcluir";
 import { ModalFechamento } from "../../components/caixa/modalFechamento";
-import  Fechamento  from "@/Documents/caixa/RelatorioMovimentacao";
-import { useReactToPrint } from "react-to-print";
-import { Scanner } from "@/components/admContrato/historicoMensalidade/modalScanner";
 import { ModalDadosMensalidade } from "@/components/caixa/modalDadosMensalidade";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ModalImpressao } from "@/components/caixa/modalImpressao";
 import { ajustarData } from "@/utils/ajusteData";
 import { ScreenCloseCaixa } from "@/components/caixa/screenCloseCaixa";
+import { ModalMensalidade } from "@/components/admContrato/historicoMensalidade/modalmensalidade";
 
 
 registerLocale('pt', pt)
-
 
 
 export interface LancamentosProps{
@@ -56,31 +52,39 @@ interface GrupoPrps{
     descricao:string
 }
 
-export interface MensalidadeProps{
+export interface MensalidadeBaixaProps{
     id_mensalidade:number,
+    id_global:number,
     id_mensalidade_global:number,
-    associado:{
+    aut:string,
+    valor_metodo:number,
+    contrato:{situacao:string},
+    data_pgto:Date,
+    associado:Partial<{
         nome:string,
         endereco:string,
-        mensalidade:Array<{
+        mensalidade:Array<Partial<{
             id_mensalidade_global:number,
             id_mensalidade:number,
             referencia:string,
             vencimento:Date,
             valor_principal:number,
-            n_doc:string
-        }>
-    },
+            n_doc:string,
+            status:string
+        }>>
+    }>,
     id_contrato:number,
     referencia:string,
     status:string,
     valor_principal:number,
     vencimento:Date,
     valor_total:number,
+    pix_por:string,
     form_pagto:string,
     banco_dest:string,
     motivo_bonus:string
 }
+
 
 interface FormProps{
     startDate:Date,
@@ -98,14 +102,14 @@ export default function CaixaMovimentar(){
     const[despesas,setDespesas]=useState(0);
     const [openModalPrint,setPrint] = useState<boolean>(false);
     const [planos,setPlanos]=useState([]);
-    const {usuario,permissoes,empresas,selectEmp} =useContext(AuthContext);
+    const {usuario,permissoes,selectEmp} = useContext(AuthContext);
     const[visible,setVisible] = useState(false);
     const [openModal,setModal] = useState<boolean>(false);
     const [openModalExc,setModalExc] = useState<boolean>(false);
     const [loading,setLoading] = useState<boolean>(false);
     const [openFecModal,setFecModal]= useState<boolean>(false)
    const [fechado,setFechado] = useState<boolean>(false)
-    const [mensalidade,setMensalidade] = useState<Partial<MensalidadeProps>>()
+    const [mensalidade,setMensalidade] = useState<Partial<MensalidadeBaixaProps>>()
     const [modalDados,setModalDados] = useState<boolean>(false)
     const {register,watch,handleSubmit,control}= useForm<FormProps>({
         defaultValues:{
@@ -117,6 +121,9 @@ export default function CaixaMovimentar(){
 
 
     useEffect(() => {
+
+
+        if(modalDados)return
         let currentBarcode = '';
         let timeout: ReturnType<typeof setTimeout>;
         
@@ -149,7 +156,7 @@ export default function CaixaMovimentar(){
         return () => {
           document.removeEventListener('keydown', handleKeyPress);
         };
-      }, []);
+      }, [modalDados,selectEmp]);
 
 
 
@@ -180,26 +187,33 @@ export default function CaixaMovimentar(){
     },[])*/
 
 
-    const buscarMensalidade = async(n_doc:string)=>{
-        setLoading(true)
-        try {
-         const response = await api.post('/mensalidade/baixaDireta',{
-           n_doc,
-           id_empresa:selectEmp
-         })
-         setMensalidade({...response.data,valor_total:response.data.valor_principal})
-         setModalDados(true)
-        } catch (error:any) {
-            console.log('Erro:', error); // Verifique o erro mais claramente
-        if (error.response && error.response.data && error.response.data.error) {
-            toast.error(error.response.data.error);
-        } else {
-            toast.error('Ocorreu um erro desconhecido.');
-        }
-        } 
-
-        setLoading(false)
-       }
+    const buscarMensalidade = useCallback(
+        async(n_doc:string)=>{
+            setLoading(true)
+            try {
+             const response = await api.post('/mensalidade/baixaDireta',{
+               n_doc,
+               id_empresa:selectEmp
+             })
+             setMensalidade({...response.data,valor_total:Number(response.data.valor_principal)})
+             setModalDados(true)
+            } catch (error:any) {
+                console.log('Erro:', error); // Verifique o erro mais claramente
+            if (error.response && error.response.data && error.response.data.error) {
+                toast.error(error.response.data.error);
+            } else {
+                toast.error('Ocorreu um erro desconhecido.');
+            }
+            } 
+    
+            setLoading(false)
+           },[selectEmp]
+    )
+    
+    
+    
+    
+    
        
   
 
@@ -307,11 +321,20 @@ return(
 <>
 
 
-{openModal&&<ModalLancamentosCaixa id_empresa={selectEmp} handleFiltro={handleChamarFiltro} empresas={empresas}   arrayLanc={lancamentos} setLancamentos={setLancamentos}  mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={planos}  grupo={grupos}/>}
+{openModal&&<ModalLancamentosCaixa id_empresa={selectEmp} handleFiltro={handleChamarFiltro}    arrayLanc={lancamentos} setLancamentos={setLancamentos}  mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={planos}  grupo={grupos}/>}
 
 <ModalExcluir openModal={openModalExc} handleExcluir={handleExcluir} setOpenModal={setModalExc}/>
 
-<ModalDadosMensalidade  handleChamarFiltro={handleChamarFiltro} setMensalidade={setMensalidade} mensalidade={mensalidade??{}} open={modalDados} setOpen={setModalDados}/>
+{/*<ModalDadosMensalidade  handleChamarFiltro={handleChamarFiltro} setMensalidade={setMensalidade} mensalidade={mensalidade??{}} open={modalDados} setOpen={setModalDados}/>*/}
+
+<ModalMensalidade
+
+mensalidade={mensalidade??{}}
+openModal={modalDados}
+setOpenModal={setModalDados}
+
+
+/>
 
 <Modal size={'sm'} popup show={loading}>
     <Modal.Body>
@@ -442,10 +465,10 @@ return(
                                setMov({...item})
                               setModal(true)
                             }} className="font-medium text-gray-500 hover:text-cyan-600 disabled:cursor-not-allowed">
-                    <HiPencil size={18} />
+                    <HiPencil size={14} />
                   </button>
                   <button disabled={item.conta==='1.01.002'|| !permissoes.includes('ADM2.1.4')} onClick={() =>{setMov({lanc_id:item.lanc_id}), setModalExc(true)}} className="font-medium text-gray-500 hover:text-red-600 disabled:cursor-not-allowed">
-                    <HiOutlineTrash size={20} />
+                    <MdDelete size={16} />
                   </button>
             
                   </Table.Cell>

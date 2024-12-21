@@ -5,41 +5,44 @@ import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import "react-datepicker/dist/react-datepicker.css";
 import { Modal, ModalBody, ModalHeader, TextInput,Select,Checkbox, Button } from "flowbite-react";
-import { MensalidadeProps } from "@/types/financeiro";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import useBaixaMensalidade from "@/hooks/useBaixaMensalidade";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { MensalidadeBaixaProps } from "@/pages/caixa";
 
 
 
-interface rops{
+
+
+
+
+
+interface Props{
+    handleAtualizar?:Function,
     openModal:boolean,
     setOpenModal:(open:boolean)=>void
-    mensalidade:Partial<MensalidadeProps>,
-    setMensalidade:(mensalidade:Partial<MensalidadeProps>)=>void
+    mensalidade:Partial<MensalidadeBaixaProps>
+   
 }
 
-export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalidade}:rops){
-    const {usuario,dadosassociado,permissoes,setarDadosAssociado}=useContext(AuthContext)
+export function ModalMensalidade({openModal,setOpenModal,mensalidade}:Props){
+    const {usuario,permissoes,setarDadosAssociado}=useContext(AuthContext)
     const [desconto,setDesconto] = useState(false)
     const {error,postData} = useBaixaMensalidade('/mensalidade/baixa')
-    const {watch,register,control,reset,setValue,handleSubmit} = useForm<MensalidadeProps>(
+    const {watch,register,control,handleSubmit} = useForm<MensalidadeBaixaProps>(
         {
-            defaultValues:mensalidade
+            defaultValues:{...mensalidade}
         }
     )
-;
-    
-    
-         const handleBaixar:SubmitHandler<MensalidadeProps> = async(data)=> {
+
+
+
+         const handleBaixar:SubmitHandler<MensalidadeBaixaProps> = async(data)=> {
             // Função para exibir toast e retornar
-         
         
-           
-        
-            const novoArray = [...(dadosassociado?.mensalidade ?? [])];
+            const novoArray = [...(mensalidade.associado?.mensalidade ?? [])];
             const indexAtual = novoArray.findIndex(item => item.id_mensalidade === mensalidade.id_mensalidade);
            let mensalidadeProx = novoArray[indexAtual + 1];
             const mensalidadeAnt = novoArray[indexAtual - 1];
@@ -58,10 +61,10 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
            
                postData(
                    {
-                        id_global:dadosassociado?.id_global,
+                        id_global:data?.id_global,
                         id_usuario: usuario?.id ,
-                        id_mensalidade_global: mensalidade?.id_mensalidade_global,
-                        id_mensalidade: mensalidade?.id_mensalidade,
+                        id_mensalidade_global: data?.id_mensalidade_global,
+                        id_mensalidade: data?.id_mensalidade,
                         data_pgto: dataPgto,
                         hora_pgto: new Date().toLocaleTimeString('pt-BR', {
                             hour: '2-digit',
@@ -70,12 +73,12 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
                         }),          
                         valor_total: data.valor_total,
                         motivo_bonus: data.motivo_bonus?.toUpperCase(),
-                        associado: dadosassociado?.nome,
+                        associado: mensalidade?.associado?.nome,
                         form_pagto: data?.form_pagto,
                         banco_dest: data.banco_dest,
                         desconto: desconto,
                         id_proximaMensalidade:mensalidadeProx?.id_mensalidade_global,
-                        situacao:dadosassociado?.contrato?.situacao,
+                        situacao:mensalidade?.contrato?.situacao,
                         status:data.status,
                         pix_por:data.pix_por
                     },
@@ -104,7 +107,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
     return(
 
 <Modal
-        className="absolute bg-transparent overflow-y-auto"
+        className="absolute  overflow-y-auto"
         content={"base"}
          show={openModal}
          onClose={()=>setOpenModal(false)}
@@ -120,7 +123,10 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,setMensalid
         <form onSubmit={handleSubmit(handleBaixar)}>
             <ModalBody>
               
- 
+            <span className="flex w-full text-gray-500 border-b">Associado</span>
+                    <h1 className="font-semibold text-lg">{mensalidade.id_contrato}-{mensalidade.associado?.nome}</h1>
+                    <p className="text-sm">{mensalidade.associado?.endereco}</p>
+                    <span className="flex w-full text-gray-500 border-b mt-2">Mensalidade</span>
           <div className="p-2 mt-2 grid gap-2 grid-flow-row-dense grid-cols-3">
 
           <div className="mb-1 col-span-1 ">
@@ -172,13 +178,30 @@ render={({field:{value,onChange}})=>(
 
 </div>
 
+{watch('form_pagto')!=='DINHEIRO' && watch('form_pagto')!=='' && (
+    <div className="mb-1 col-span-1">
+    <label  className="block mb-1 text-xs font-medium  text-black">VALOR PIX/CARTÃO</label>
+    <TextInput style={{padding:6}} {...register('valor_metodo')} placeholder="VALOR"/>
 
+</div>
+)}
 
 {watch('form_pagto')==='PIX'&& (
 
 <div className="mb-1 col-span-2">
     <label  className="block mb-1 text-xs font-medium  text-black">PIX POR</label>
     <TextInput style={{padding:6}} {...register('pix_por')} placeholder="PIX POR "/>
+
+</div>
+)
+
+}
+
+{watch('form_pagto')==='CARTAO'&& (
+
+<div className="mb-1 col-span-2">
+    <label  className="block mb-1 text-xs font-medium  text-black">AUT</label>
+    <TextInput style={{padding:6}} {...register('aut')} placeholder="CODIGO DE AUTORIZACÃO (AUT)"/>
 
 </div>
 )
@@ -206,7 +229,7 @@ render={({field:{value,onChange}})=>(
 </div>
           </ModalBody>
 
-          <Modal.Footer>
+          <Modal.Footer >
             <div className="ml-auto">
             <Button disabled={!permissoes.includes('ADM1.2.5')||mensalidade.status==='P'}
              color={'success'} 

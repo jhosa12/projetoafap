@@ -6,6 +6,8 @@ import { Button } from "flowbite-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import ImpressaoCarne from "@/Documents/mensalidade/ImpressaoCarne";
+import ContratoResumo from "@/Documents/contratoResumido/ContratoResumo";
+import pageStyle from "@/utils/pageStyle";
 
 
 
@@ -14,9 +16,11 @@ export function Impressoes() {
     const componentContrato = useRef<DocumentTemplate>(null)
     const componentCarteira = useRef<Carteiras>(null)
     const componentCarne = useRef<ImpressaoCarne>(null)
+    const componentResumo = useRef<ContratoResumo>(null)
     const [printCarne, setPrintCarne] = useState(false)
     const [printContrato, setPrintContrato] = useState(false)
     const [printCarteira, setPrintCarteira] = useState(false)
+    const [printResumo, setPrintResumo] = useState(false)
 
 
 
@@ -24,32 +28,29 @@ export function Impressoes() {
         printCarne && imprimirCarne()
         printContrato && imprimirContrato()
         printCarteira && imprimirCarteira()
-    },[printCarne,printContrato,printCarteira])
+        printResumo && imprimirResumo()
+    },[printCarne,printContrato,printCarteira,printResumo])
+
+
+
+
+    const imprimirResumo =useReactToPrint({
+        pageStyle: pageStyle,
+        documentTitle:'RESUMO CONTRATO',
+        content:()=>componentResumo.current,
+     
+        onAfterPrint:()=>{
+            setPrintResumo(false)
+        }
+        
+
+   })
+
+
 
 
     const imprimirCarne =useReactToPrint({
-        pageStyle: `
-            @page {
-                margin: 1rem;
-            }
-            @media print {
-                body {
-                    -webkit-print-color-adjust: exact;
-                }
-                @page {
-                    size: auto;
-                    margin: 1rem;
-                }
-                @page {
-                    @top-center {
-                        content: none;
-                    }
-                    @bottom-center {
-                        content: none;
-                    }
-                }
-            }
-        `,
+        pageStyle: pageStyle,
         documentTitle:'CARNÊ ASSOCIADO',
         content:()=>componentCarne.current,
      
@@ -62,28 +63,7 @@ export function Impressoes() {
 
     
     const imprimirContrato =useReactToPrint({
-        pageStyle: `
-            @page {
-                margin: 1rem;
-            }
-            @media print {
-                body {
-                    -webkit-print-color-adjust: exact;
-                }
-                @page {
-                    size: auto;
-                    margin: 1rem;
-                }
-                @page {
-                    @top-center {
-                        content: none;
-                    }
-                    @bottom-center {
-                        content: none;
-                    }
-                }
-            }
-        `,
+        pageStyle: pageStyle,
         documentTitle:'CONTRATO ASSOCIADO',
         content:()=>componentContrato.current,
         onAfterPrint:()=>{
@@ -94,28 +74,7 @@ export function Impressoes() {
 
 
    const imprimirCarteira =useReactToPrint({
-    pageStyle: `
-        @page {
-            margin: 1rem;
-        }
-        @media print {
-            body {
-                -webkit-print-color-adjust: exact;
-            }
-            @page {
-                size: auto;
-                margin: 1rem;
-            }
-            @page {
-                @top-center {
-                    content: none;
-                }
-                @bottom-center {
-                    content: none;
-                }
-            }
-        }
-    `,
+    pageStyle:pageStyle,
     documentTitle:'CONTRATO ASSOCIADO',
     content:()=>componentCarteira.current,
     onAfterPrint:()=>{
@@ -176,12 +135,21 @@ export function Impressoes() {
             }
         
         />}
+
+{printResumo && <ContratoResumo
+ref={componentResumo}
+dados={dadosassociado??{}}
+/>}
+
+
+
         </div>
         <div className="flex flex-col w-full rounded-lg p-6   gap-5">
                                     <div className="flex flex-row text-white gap-6 w-full">
                                        <Button size={'sm'} onClick={()=>setPrintContrato(true)}>Contrato</Button>
                                         <Button size={'sm'} onClick={()=>setPrintCarteira(true)}>Carteiras</Button>
                                         <Button size={'sm'} onClick={()=>setPrintCarne(true)}>Carnê</Button>
+                                        <Button size={'sm'} onClick={()=>setPrintResumo(true)}>Resumo de Contrato</Button>
 
                                     </div>
 
