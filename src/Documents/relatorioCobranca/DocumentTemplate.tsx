@@ -4,7 +4,8 @@ import logo from "../../../public/logoafap.png"
 // DocumentTemplate.js
 
 import React from 'react';
-import { UltimosPagProsps } from "@/pages/cobranca";
+import { UltimosPagProps } from "@/components/cobranca/cobranca/cobranca";
+
 
 interface CobrancaProps{
   id_mensalidade:number,
@@ -39,7 +40,7 @@ interface DadosProps{
   cobrador:Array<string>,
   
   usuario:string,
-  ultimosPag:Array<UltimosPagProsps>
+  ultimosPag:Array<UltimosPagProps>
 }
 
 
@@ -54,7 +55,7 @@ interface RefProps{
   parcela_n:number,
   vencimento:Date,
   cobranca:Date,
-  ultimoPag:UltimosPagProsps,
+  ultimoPag:UltimosPagProps,
   
   valor_principal:number,
   associado:Partial<{

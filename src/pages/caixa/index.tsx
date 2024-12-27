@@ -15,7 +15,6 @@ import {  HiPencil } from "react-icons/hi2";
 import { toast } from "react-toastify";
 import { ModalExcluir } from "@/components/modalExcluir";
 import { ModalFechamento } from "../../components/caixa/modalFechamento";
-import { ModalDadosMensalidade } from "@/components/caixa/modalDadosMensalidade";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ModalImpressao } from "@/components/caixa/modalImpressao";
 import { ajustarData } from "@/utils/ajusteData";

@@ -50,20 +50,7 @@ const config: Config = {
           'Noto Color Emoji'
         ],
         'sans': [
-          'Segoe UI Emoji', 
-          'Apple Color Emoji',
-          'Roboto', 
-          'ui-sans-serif', 
-          'system-ui', 
-          '-apple-system', 
-          'system-ui', 
-          'Segoe UI', 
-          'Helvetica Neue', 
-          'Arial', 
-          'Noto Sans', 
-          'sans-serif',  
-          'Segoe UI Symbol', 
-          'Noto Color Emoji'
+         'ui-sans-serif', 'Inter',  'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif'
         ]
       }
     }
