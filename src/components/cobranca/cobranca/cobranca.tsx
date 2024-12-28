@@ -12,6 +12,7 @@ import { ModalFiltroCobranca } from "@/components/cobranca/modalCobranca";
 import { SubmitHandler } from "react-hook-form";
 import { ConsultoresProps } from "@/types/consultores";
 import { ajustarData } from "@/utils/ajusteData";
+import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
 
 
 interface CobrancaProps {
@@ -102,6 +103,7 @@ export  function Cobranca() {
   const imprimirRelatorio = useReactToPrint({
     pageStyle: `
       @page {
+          size: A4 portrait;
           margin: 1rem;
       }
       @media print {
@@ -109,7 +111,7 @@ export  function Cobranca() {
               -webkit-print-color-adjust: exact;
           }
           @page {
-              size: auto;
+              size: A4 portrait;
               margin: 1rem;
           }
           @page {
@@ -212,27 +214,27 @@ export  function Cobranca() {
       <div className="flex flex-col bg-white w-full border  rounded-b-lg shadow  border-gray-700 h-[calc(100vh-57px)] ">
       
         
-            <div className="flex  ml-auto items-end gap-2 p-2">
+            <div className="flex  ml-auto items-end gap-2 p-2 ">
               <Button 
               theme={{color:{light:"border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 "}}}
                 disabled={!permissoes.includes('ADM3.1')}
-              size='sm' onClick={() => setFiltro(true)} color='light'>
-                <HiFilter className="mr-2 h-5 w-5" /> Filtro
+              size='xs' onClick={() => setFiltro(true)} color='light'>
+                <HiFilter className="mr-2 h-4 w-4" /> FILTRO
               </Button>
 
               <Button
               disabled={!permissoes.includes('ADM3.2')}
-                size={'sm'}
+                size={'xs'}
                 onClick={() => imprimirRelatorio()}
                
-              ><IoPrint className="mr-2" size={18} />IMPRIMIR</Button>
+              ><IoPrint className="mr-2 h-4 w-4"  />IMPRIMIR</Button>
             </div>
          
 
-          <div className="overflow-y-auto p-2 max-h-[77vh] ">
-          <Table  hoverable theme={{ body: { cell: { base: "px-6 py-1 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg" } } }} 
+          <div className="overflow-y-auto p-2 max-h-[70vh] ">
+          <Table  hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 py-1 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg" } } }} 
     >
-            <Table.Head theme={{cell:{base:"bg-gray-50 px-6 py-1 group-first/head:first:rounded-tl-lg group-first/head:last:rounded-tr-lg "}}}>
+            <Table.Head theme={{cell:{base:"bg-gray-50 px-4 py-1 group-first/head:first:rounded-tl-lg group-first/head:last:rounded-tr-lg "}}}>
              
                 <Table.HeadCell>
                   REF.
@@ -296,35 +298,42 @@ export  function Cobranca() {
               ))}
 
 </Table.Body>
-            <tfoot>
-              <tr>
-                <td colSpan={5} align="right" className="  font-semibold">TOTAL MENSALIDADES: {arrayCobranca.length}</td>
-
-                <td align="right" className="  font-semibold">VALOR: {formatter.format(valorTotal)}</td>
-
-
-              </tr>
-            </tfoot>
-
             </Table>
 
           </div>
-    
-          <div className="flex w-full  justify-end mt-auto pr-8 ">
-            <ReactPaginate
-              previousLabel={'Anterior'}
-              nextLabel={'Próximo'}
+
+
+          <div className="flex flex-row justify-between text-black">
+
+       
+              <div className="inline-flex gap-4 ml-2">
+                <span   className="whitespace-nowrap font-sans text-[12px]  ">TOTAL MENSALIDADES: {arrayCobranca.length}</span>
+
+                <span  className="whitespace-nowrap  font-sans text-[12px]">VALOR: {formatter.format(valorTotal)}</span>
+
+
+              </div>
+          
+
+
+       { arrayCobranca.length > 0 &&  <div className="flex w-full  justify-end mt-auto pr-8 ">
+          <ReactPaginate
+              previousLabel={(<IoIosArrowDropleftCircle className="mr-2 h-5 w-5" />)}
+              nextLabel={(<IoIosArrowDroprightCircle className="mr-2 h-5 w-5" />)}
               breakLabel={'...'}
               breakClassName="breack-me"
               pageCount={pageCount}
               marginPagesDisplayed={2}
               pageRangeDisplayed={5}
               onPageChange={handlePageClick}
-              containerClassName={'pagination inline-flex text-gray-600 gap-4 ml-auto justify-end font-semibold  rounded-lg  '}
+              containerClassName={'pagination inline-flex text-gray-600 gap-4 ml-auto justify-end   rounded-lg  font-sans text-[13px] '}
               activeClassName={'active text-blue-600'}
 
             />
+          </div>}
           </div>
+    
+      
        
       </div>
    {filtro && <ModalFiltroCobranca  inad={false} setArrayBairros={setArrayBairros}  empresa={selectEmp}   selectCobrador={consultores} listarCobranca={handleListarCobranca} loading={loading} setFiltro={setFiltro}  show={filtro} arrayBairros={arrayBairros}/>}

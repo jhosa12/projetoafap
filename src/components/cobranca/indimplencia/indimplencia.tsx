@@ -13,11 +13,12 @@ import { ConsultoresProps } from "@/types/consultores";
 import useApiPost from "@/hooks/useApiPost";
 import { HiChevronLeft } from "react-icons/hi2";
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
+import RelatorioInadimplencia from "@/Documents/relatorioCobranca/RelatorioIndimplencia";
 
 
 
 
-interface InadimplenciaProps{
+export interface InadimplenciaProps{
   associado:{
     nome:string,
     endereco:string,
@@ -83,10 +84,10 @@ let formatter = new Intl.NumberFormat('pt-BR', {
 export  function Inadimplencia() {
 
   const [arrayBairros, setArrayBairros] = useState<Array<Partial<{ bairro: string, check: boolean,id_empresa:string }>>>([])
-  const componenteRef = useRef<Relatorio>(null)
+  const componenteRef = useRef<RelatorioInadimplencia>(null)
   const [currentPage, setCurrentPage] = useState(0);
   const [filtro, setFiltro] = useState<boolean>(false)
-  const {consultores,selectEmp,permissoes} = useContext(AuthContext)
+  const {consultores,selectEmp,permissoes,usuario} = useContext(AuthContext)
   const [isPrint,setIsPrint] = useState<boolean>(false)
   const [cont,setContagem] = useState<ContagemProps>()
 
@@ -133,6 +134,7 @@ useEffect(()=>{
   const imprimirRelatorio = useReactToPrint({
     pageStyle: `
       @page {
+          size: landscape;
           margin: 1rem;
       }
       @media print {
@@ -140,7 +142,7 @@ useEffect(()=>{
               -webkit-print-color-adjust: exact;
           }
           @page {
-              size: auto;
+              size: landscape;
               margin: 1rem;
           }
           @page {
@@ -217,6 +219,9 @@ useEffect(()=>{
 
   return (
     <div className="flex  w-full justify-center ">
+      <div style={{ display: 'none' }}>
+        <RelatorioInadimplencia usuario={usuario?.nome} dados={data??[]} ref={componenteRef} />
+      </div>
  
       <div className="flex flex-col bg-white w-full border  rounded-b-lg shadow  border-gray-700 h-[calc(100vh-100px)] ">
       
@@ -232,24 +237,24 @@ useEffect(()=>{
               <Button 
               theme={{color:{light:"border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 "}}}
                 disabled={!permissoes.includes('ADM3.1')}
-              size='sm' onClick={() => setFiltro(true)} color='light'>
-                <HiFilter className="mr-2 h-5 w-5" /> Filtro
+              size='xs' onClick={() => setFiltro(true)} color='light'>
+                <HiFilter className="mr-2 h-4 w-4" /> FILTRO
               </Button>
               <Button
               disabled={!permissoes.includes('ADM3.2')}
-                size={'sm'}
+                size={'xs'}
                 onClick={() => imprimirRelatorio()}
                
-              ><IoPrint className="mr-2" size={18} />IMPRIMIR</Button>
+              ><IoPrint className="mr-2 h-4 w-4"  />IMPRIMIR</Button>
             </div>
         </div>
          
          
 
-          <div className="overflow-y-auto p-2 max-h-[65vh] ">
-          <Table  hoverable theme={{ body: { cell: { base: "px-4 py-1 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg" } } }} 
+          <div className="overflow-y-auto p-2 max-h-[70vh] ">
+          <Table  hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 py-1 " } } }} 
     >
-            <Table.Head theme={{cell:{base:"bg-gray-50 px-4 py-1 group-first/head:first:rounded-tl-lg group-first/head:last:rounded-tr-lg "}}}>
+            <Table.Head theme={{cell:{base:"bg-gray-50 px-4 py-1 "}}}>
              
                 <Table.HeadCell>
                   TITULAR
@@ -316,35 +321,45 @@ useEffect(()=>{
               ))}
 
 </Table.Body>
-            <tfoot>
-              <tr>
-                <td colSpan={5} align="right" className="  font-semibold">TOTAL MENSALIDADES: {data?.length}</td>
-
-                <td align="right" className="  font-semibold">VALOR: {formatter.format(0)}</td>
-
-
-              </tr>
-            </tfoot>
+          
 
             </Table>
 
           </div>
     
-          <div className="flex w-full mb-1 justify-end mt-auto pr-8 ">
-            <ReactPaginate
-              previousLabel={(<IoIosArrowDropleftCircle className="mr-2 h-5 w-5" />)}
-              nextLabel={(<IoIosArrowDroprightCircle className="mr-2 h-5 w-5" />)}
-              breakLabel={'...'}
-              breakClassName="breack-me"
-              pageCount={pageCount}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={5}
-              onPageChange={handlePageClick}
-              containerClassName={'pagination inline-flex text-gray-600 gap-4 ml-auto justify-end   rounded-lg  font-sans text-[13px] '}
-              activeClassName={'active text-blue-600'}
+          <div className="flex flex-row justify-between text-black">
 
-            />
-          </div>
+       
+<div className="inline-flex gap-4 ml-2">
+  <span   className="whitespace-nowrap font-sans text-[12px]  ">CONTRATOS: {data?.length}</span>
+
+  <span  className="whitespace-nowrap  font-sans text-[12px]">MENSALIDADES: {data?.reduce((total, item) => total + item.overdueCount, 0)}</span>
+
+  <span  className="whitespace-nowrap  font-sans text-[12px]">VALOR: {data?.reduce((total, item) => total + item.totalOverdueAmount, 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+
+
+
+
+</div>
+
+
+
+{data &&<div className="flex w-full  justify-end mt-auto pr-8 ">
+<ReactPaginate
+previousLabel={(<IoIosArrowDropleftCircle className="mr-2 h-5 w-5" />)}
+nextLabel={(<IoIosArrowDroprightCircle className="mr-2 h-5 w-5" />)}
+breakLabel={'...'}
+breakClassName="breack-me"
+pageCount={pageCount}
+marginPagesDisplayed={2}
+pageRangeDisplayed={5}
+onPageChange={handlePageClick}
+containerClassName={'pagination inline-flex text-gray-600 gap-4 ml-auto justify-end   rounded-lg  font-sans text-[13px] '}
+activeClassName={'active text-blue-600'}
+
+/>
+</div>}
+</div>
        
       </div>
    {filtro && <ModalFiltroCobranca inad={true}  setArrayBairros={setArrayBairros}  empresa={selectEmp}   selectCobrador={consultores} listarCobranca={handleInadimplencia} loading={loading} setFiltro={setFiltro}  show={filtro} arrayBairros={arrayBairros}/>}

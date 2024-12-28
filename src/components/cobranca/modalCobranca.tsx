@@ -32,6 +32,7 @@ export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, 
   const [dropCobrador, setDropCobrador] = useState<boolean>(false)
   const { register, watch, handleSubmit, control, setValue } = useForm<FormProps>({
     defaultValues: {
+      status:'A,R',
       cobrador:selectCobrador,
       id_empresa: empresa,
       startDate:new Date(),
