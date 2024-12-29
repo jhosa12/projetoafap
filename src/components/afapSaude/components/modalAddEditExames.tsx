@@ -89,9 +89,12 @@ const handleEditarExame =async(data:ExamesProps)=>{
 
 
     return(
+
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
         <Modal  dismissible show={openModal} size={'lg'} onClose={() => setOpenModal(false)}>
+         
         <Modal.Header>Administrar Exame</Modal.Header>
-        <form onSubmit={handleSubmit(handleFormSubmit)}>
+       
         <Modal.Body>
           <div className=" grid grid-cols-2 gap-2">
           <div className="col-span-2">
@@ -142,14 +145,15 @@ const handleEditarExame =async(data:ExamesProps)=>{
            
           </div>
         </Modal.Body>
+ 
         <Modal.Footer>
           <Button type="submit" color={'warning'}>{exame.id_exame?'Editar Exame':'Cadastrar Exame'}</Button>
           <Button color="gray" onClick={() => setOpenModal(false)}>
             Cancelar
           </Button>
         </Modal.Footer>
-        </form>
+        
       </Modal>
-  
+      </form>
     )
 }
