@@ -1,7 +1,7 @@
 
 
 
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
 import moment from 'moment'
@@ -90,33 +90,9 @@ export default function Calendario({ medicos, events, setArrayEvent, dataEvent, 
   const components: any = {
     event: ({ event, index }: { event: EventProps, index: number }) => {
       return (
-        <Alert className="text-xs" color={event.status === 'ABERTO'?'success':event.status === 'CANCELADO'?'failure':'warning'}  icon={event.status === 'ABERTO'?FaCheck:event.status === 'CANCELADO'?ImCancelCircle:MdAccessTime}>
+        <Alert theme={{base:"flex flex-col gap-2 p-2 text-xs break-words",icon:"mr-2 inline h-4 w-4 flex-shrink-0",}} className="text-xs break-words" color={event.status === 'ABERTO'?'success':event.status === 'CANCELADO'?'failure':'warning'}  icon={event.status === 'ABERTO'?FaCheck :event.status === 'CANCELADO'?ImCancelCircle :MdAccessTime }>
       
-                {event.status} - {event.title}
-
-            
-              {/*  <button data-tooltip-id="event" data-tooltip-content={'Adicionar Agendamento'} className="hover:text-blue-600" onClick={(e) => {
-                  e.stopPropagation()
-                  setarDataEvento({ ...event, tipoAg: 'ct', nome: '', celular: '', clientes: event.clientes, endereco: '', editar: false, id_agcli: undefined })
-                  setAgeCliente(true)
-                }} >
-                  <MdAddBox size={22} />
-
-                </button>
-                <button data-tooltip-id="event" data-tooltip-content={'Deletar'} onClick={() => {
-                  setarDataEvento({ ...event, tipoAg: 'md', id_agcli: undefined }),
-                    setModalDel(true)
-                }} className="hover:text-red-600">
-                  <MdDelete size={22} />
-                </button>*/
-           }
-                
-           
-             
-
-           
-  
-          
+           {event.status} - {event.title}
         </Alert>
 
 

@@ -63,11 +63,10 @@ body{
 
 .rbc-header{
     color: white;
-    font-size: 14px;
     height: 26px;
     justify-content: center;
     align-items: center;
-    background: #0f172a;
+    background: #203460;
 }
 .rbc-header.rbc-today {
    background-color:rgb(12, 47, 121) !important;
@@ -78,12 +77,23 @@ body{
 .rbc-calendar {
     background-color: #fff;
     color: #000;
+    font-size: 12px;
     border-radius: 8px;
     padding: 4px;
   }
+
+  .rbc-btn-group button {
+    font-size: 12px; /* Ajuste o tamanho do texto aqui */
+  }
+
+  .rbc-toolbar .rbc-toolbar-label {
+    font-size: 12px; /* Reduza o tamanho da fonte */
+    
+  }
   
   .rbc-toolbar {
-    background-color: #f8f9fa;
+    
+    font-size: 10px;
     color: #333;
   }
   
@@ -98,6 +108,7 @@ body{
   
   .rbc-off-range-bg {
     background-color: #f8f9fa;
+    
   }
   
   .rbc-off-range {
@@ -107,7 +118,7 @@ body{
   .rbc-event,
 .rbc-background-event {
   z-index: 2;
-  
+  font-size: 10px;
   padding: 2px !important;
 }
 /*
@@ -123,6 +134,7 @@ body{
  display: flex;
  padding-left: 10px;
  padding-top: 1px;
+ font-size: 10px;
 
 }
 
@@ -130,5 +142,6 @@ body{
  
   width: 100% !important;
   display: flex;
+  font-size: 10px;
   
 }

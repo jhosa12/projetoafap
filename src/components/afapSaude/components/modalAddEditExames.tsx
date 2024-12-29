@@ -1,44 +1,116 @@
 import { ExamesProps } from "@/pages/afapSaude"
+import { api } from "@/services/apiClient"
 import { Button, Label, Modal, Textarea, TextInput } from "flowbite-react"
+import { SubmitHandler, useForm } from "react-hook-form"
+import { toast } from "react-toastify"
 
 
 
 interface DataProps{
     openModal:boolean,
     setOpenModal:(open:boolean)=>void
-    data:ExamesProps,
-    setData:(list:ExamesProps)=>void
-    handleAdicionarExame:()=>Promise<void>
-    handleEditarExame:()=>Promise<void>
+    exame:ExamesProps,
+    exames:Array<ExamesProps>,
+    setExames:(array:Array<ExamesProps>)=>void
+   
 }
 
 
-export function ModalEditExames({openModal,setOpenModal,data,setData,handleAdicionarExame,handleEditarExame}:DataProps){
+export function ModalEditExames({openModal,setOpenModal,exame,setExames,exames}:DataProps){
+const {register,setValue,handleSubmit} = useForm<ExamesProps>({
+  defaultValues: exame
+})
+
+const handleFormSubmit:SubmitHandler<ExamesProps> = async (data) => {
+   exame.id_exame ? handleEditarExame(data) :  handleAdicionarExame(data)
+}
+
+
+
+const handleAdicionarExame =async(data:ExamesProps)=>{
+    if(!data.nome||!data.porcFun||!data.porcPlan||!data.valorBruto){
+        toast.info('Preencha os campos obrigatórios!');
+        return;
+    }
+    try {
+        
+        const response = await toast.promise(
+            api.post('/afapSaude/exames/novoExame',
+                data
+            ),
+            {
+                error:'Erro ao Cadastrar Exame',
+                pending:'Realizando Cadastro.....',
+                success:'Cadastro Realizado com sucesso!'
+            }
+        )
+
+        setExames([...exames,response.data])
+        setOpenModal(false)
+    } catch (error) {
+            toast.warn('Consulte o TI')
+    }
+}
+
+
+const handleEditarExame =async(data:ExamesProps)=>{
+    if(!data.nome||!data.porcFun||!data.porcPlan||!data.valorBruto){
+        toast.info('Preencha os campos obrigatórios!');
+        return;
+    }
+    try {
+        
+        const response = await toast.promise(
+            api.put('/afapSaude/exames/editarExame',
+                data
+            ),
+            {
+                error:'Erro ao atualizar Exame',
+                pending:'Atualizando.....',
+                success:'Atualização realizada com sucesso!'
+            }
+        )
+
+        const novoArray =[...exames]
+        const index = novoArray.findIndex(item=>item.id_exame===data.id_exame)
+        novoArray[index] = {...response.data}
+        setExames(novoArray)
+
+        setOpenModal(false)
+
+    } catch (error) {
+            toast.warn('Consulte o TI')
+    }
+}
+
+
+
 
 
 
     return(
         <Modal  dismissible show={openModal} size={'lg'} onClose={() => setOpenModal(false)}>
         <Modal.Header>Administrar Exame</Modal.Header>
+        <form onSubmit={handleSubmit(handleFormSubmit)}>
         <Modal.Body>
           <div className=" grid grid-cols-2 gap-2">
           <div className="col-span-2">
            
                 <Label className="text-xs"  htmlFor="exame" value="Exame" />
             
-              <TextInput sizing={'sm'} value={data.nome} onChange={e=>setData({...data,nome:e.target.value})} id="exame"  placeholder="Nome Exame" required />
+              <TextInput sizing={'sm'} {...register('nome')} id="exame"  placeholder="Nome Exame" required />
             </div>
 
             <div className="col-span-2"> 
            <Label className="text-xs"  htmlFor="exame" value="Orientações sobre a realização do exame" />
-         <Textarea rows={3} className="text-xs" value={data.obs} onChange={e=>setData({...data,obs:e.target.value})} id="exame"  placeholder="Descreva todas as orientações que devem ser dadas ao cliente antes da realização do exame" required />
+         <Textarea rows={3} className="text-xs" {...register('obs')} id="exame"  placeholder="Descreva todas as orientações que devem ser dadas ao cliente antes da realização do exame" />
        </div>
 
             <div>
               
                 <Label className="text-xs" htmlFor="valor" value="Valor Bruto(R$)" />
              
-              <TextInput sizing={'sm'}  value={data.valorBruto} onChange={e=>setData({...data,valorBruto:Number(e.target.value)})}  inputMode="numeric" id="valor"  placeholder="Valor" required />
+              <TextInput sizing={'sm'} {...register('valorBruto')}  inputMode="numeric" id="valor"  placeholder="Valor" required />
             </div>
 
           
@@ -46,19 +118,19 @@ export function ModalEditExames({openModal,setOpenModal,data,setData,handleAdici
              
                 <Label className="text-xs" htmlFor="particular" value="Valor Particular(R$)" />
              
-              <TextInput sizing={'sm'} value={data.porcPart} onChange={e=>setData({...data,porcPart:Number(e.target.value)})}  inputMode="numeric" id="particular"  placeholder="Desconto" required />
+              <TextInput sizing={'sm'} {...register('porcPart')}  inputMode="numeric" id="particular"  placeholder="Desconto" required />
             </div>
             <div>
              
                 <Label className="text-xs" htmlFor="funeraria" value="Desconto Funerária(%)" />
              
-              <TextInput sizing={'sm'} value={data.porcFun} onChange={e=>setData({...data,porcFun:Number(e.target.value)})} inputMode="numeric" id="funeraria"  placeholder="Desconto" required />
+              <TextInput sizing={'sm'} {...register('porcFun')}  inputMode="numeric" id="funeraria"  placeholder="Desconto" required />
             </div>
             <div>
               
                 <Label className="text-xs" htmlFor="plano" value="Desconto Plano(%)" />
              
-              <TextInput sizing={'sm'} value={data.porcPlan} onChange={e=>setData({...data,porcPlan:Number(e.target.value)})} inputMode="numeric" id="plano"  placeholder="Desconto" required />
+              <TextInput sizing={'sm'} {...register('porcPlan')} inputMode="numeric" id="plano"  placeholder="Desconto" required />
             </div>
 
             <div className="col-span-2">
@@ -71,11 +143,12 @@ export function ModalEditExames({openModal,setOpenModal,data,setData,handleAdici
           </div>
         </Modal.Body>
         <Modal.Footer>
-          {data.id_exame?<Button color={'warning'} onClick={handleEditarExame}>Editar</Button>:<Button onClick={handleAdicionarExame}>Salvar</Button>}
+          <Button type="submit" color={'warning'}>{exame.id_exame?'Editar Exame':'Cadastrar Exame'}</Button>
           <Button color="gray" onClick={() => setOpenModal(false)}>
             Cancelar
           </Button>
         </Modal.Footer>
+        </form>
       </Modal>
   
     )

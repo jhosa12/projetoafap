@@ -34,29 +34,7 @@ const imprimirRelatorio = useCallback(useReactToPrint({
   }), []);
 
 
-const handleAdicionarExame =async()=>{
-    if(!data.nome||!data.porcFun||!data.porcPlan||!data.valorBruto){
-        toast.info('Preencha os campos obrigatórios!');
-        return;
-    }
-    try {
-        
-        const response = await toast.promise(
-            api.post('/afapSaude/exames/novoExame',
-                data
-            ),
-            {
-                error:'Erro ao Cadastrar Exame',
-                pending:'Realizando Cadastro.....',
-                success:'Cadastro Realizado com sucesso!'
-            }
-        )
 
-        setExames([...exames,response.data])
-    } catch (error) {
-            toast.warn('Consulte o TI')
-    }
-}
 
 
 const handleDeletarExame=async ()=>{
@@ -82,35 +60,7 @@ const handleDeletarExame=async ()=>{
 }
 
 
-const handleEditarExame =async()=>{
-    if(!data.nome||!data.porcFun||!data.porcPlan||!data.valorBruto){
-        toast.info('Preencha os campos obrigatórios!');
-        return;
-    }
-    try {
-        
-        const response = await toast.promise(
-            api.put('/afapSaude/exames/editarExame',
-                data
-            ),
-            {
-                error:'Erro ao atualizar Exame',
-                pending:'Atualizando.....',
-                success:'Atualização realizada com sucesso!'
-            }
-        )
 
-        const novoArray =[...exames]
-        const index = novoArray.findIndex(item=>item.id_exame===data.id_exame)
-        novoArray[index] = {...response.data}
-        setExames(novoArray)
-
-
-
-    } catch (error) {
-            toast.warn('Consulte o TI')
-    }
-}
 
 
 
@@ -120,11 +70,11 @@ const handleEditarExame =async()=>{
     return(
         <div className="space-y-2">
          <div className="flex flex-row justify-end gap-2 px-2">
-         <Button  onClick={()=>{setData({...resetValues,data:new Date()}),setOpenModal(true)}} size={'sm'} theme={{color:{light:"border border-gray-300 bg-white text-gray-900   enabled:hover:bg-gray-100  "}}} color={'light'} >Adicionar</Button>
-         <Button  onClick={imprimirRelatorio} size={'sm'} theme={{color:{light:"border border-gray-300 bg-white text-gray-900   enabled:hover:bg-gray-100  "}}} color={'light'}><IoIosPrint className="h-5 w-5 mr-2"/>Relatório</Button>
+         <Button  onClick={()=>{setData({...resetValues,data:new Date()}),setOpenModal(true)}} size={'xs'} theme={{color:{light:"border border-gray-300 bg-white text-gray-900   enabled:hover:bg-gray-100  "}}} color={'light'} >Adicionar</Button>
+         <Button  onClick={imprimirRelatorio} size={'xs'} theme={{color:{light:"border border-gray-300 bg-white text-gray-900   enabled:hover:bg-gray-100  "}}} color={'light'}><IoIosPrint className="h-4 w-4 mr-2"/>Relatório</Button>
             </div>  
-            <div className="overflow-x-auto ">
-      <Table theme={{body:{cell:{base:"px-6 py-1 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg"}}}} hoverable>
+            <div className="overflow-y-auto h-[calc(100vh-210px)] ">
+      <Table theme={{root:{shadow:'none'},body:{cell:{base:"px-6 py-1"}},head:{cell:{base:"px-6 py-1"}}}} hoverable>
         <Table.Head>
           <Table.HeadCell>Exame</Table.HeadCell>
           <Table.HeadCell>Valor Bruto</Table.HeadCell>
@@ -159,7 +109,7 @@ const handleEditarExame =async()=>{
       </Table>
     </div>
 
-   {openModal && <ModalEditExames handleEditarExame={handleEditarExame} handleAdicionarExame={handleAdicionarExame} data={data} setData={setData} openModal={openModal} setOpenModal={setOpenModal}/>}
+   {openModal && <ModalEditExames exames={exames}  exame={data} setExames={setExames} openModal={openModal} setOpenModal={setOpenModal}/>}
 {
   openDeletar &&  <ModalDeletarExame handleDeletarExame={handleDeletarExame} setOpenModal={setOpenDeletar} show={openDeletar}/>}
 

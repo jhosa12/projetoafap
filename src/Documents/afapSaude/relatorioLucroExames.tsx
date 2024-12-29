@@ -39,7 +39,7 @@ class RelatorioLucroExames extends React.Component<DadosProps> {
               
 
                 <div>
-                    <Table theme={{body:{cell:{base:"px-6 py-1 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-black"}}}}>
+                    <Table theme={{root:{shadow:'none'},body:{cell:{base:"px-6 py-1"}},head:{cell:{base:"px-6 py-1"}}}}>
                         <Table.Head>
                             <Table.HeadCell>EXAME</Table.HeadCell>
                             <Table.HeadCell>VALOR BRUTO</Table.HeadCell>
@@ -50,10 +50,10 @@ class RelatorioLucroExames extends React.Component<DadosProps> {
                         <Table.Body className="divide-y">
                             {dados?.map((item, index) => {
                                 
-                                const lucro_particular = Number(item.porcPart) * Number(item.valorBruto) / 100
-                                 const vl_particular =Number(item.valorBruto )+ lucro_particular
-                                const lucro_funeraria =lucro_particular - (Number(item.porcFun) * Number(vl_particular) / 100)
-                                const lucro_plano =lucro_particular - (Number(item.porcPlan) * Number(vl_particular) / 100)
+                                const lucro_particular = item.porcPart-item.valorBruto
+                                
+                                const lucro_funeraria =Number(item.porcPart) - (Number(item.porcFun) * Number(item.porcPart) / 100) - item.valorBruto
+                                const lucro_plano =Number(item.porcPart)-(Number(item.porcPlan) * Number(item.porcPart) / 100) -item.valorBruto
 
                                 totalBruto+=Number(item.valorBruto)
                                 totalParticular+=lucro_particular
@@ -61,8 +61,8 @@ class RelatorioLucroExames extends React.Component<DadosProps> {
                                 totalPlano+=lucro_plano
                                 
 
-                            return   ( <Table.Row key={index}>
-                                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 ">{item.nome}</Table.Cell>
+                            return   ( <Table.Row className="text-black" key={index}>
+                                    <Table.Cell className="whitespace-nowrap font-medium ">{item.nome}</Table.Cell>
                                     <Table.Cell>{Number(item.valorBruto).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
                                     <Table.Cell>{Number(lucro_particular).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
                                     <Table.Cell>{Number(lucro_funeraria).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>

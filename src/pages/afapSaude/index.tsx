@@ -331,23 +331,23 @@ export default function AfapSaude() {
  
       <div className="flex flex-col  w-full text-white">
 
-      <Tabs theme={{base: 'bg-white rounded-b-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-70px)]',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
+      <Tabs theme={{base: 'bg-white rounded-b-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-70px)]',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
         on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
         off:"border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
       }}}}}}}  variant="underline">
 
-<Tabs.Item  active title="Agenda Médica" icon={FaCalendarAlt}>
+<Tabs.Item  active title="AGENDA MÉDICA" icon={()=><FaCalendarAlt className="mr-2 h-4 w-4"/>}>
 
       <Calendario consultas={consultas} setConsultas={setConsultas}  deletarEvento={deletarEvento} setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />
      
       </Tabs.Item>
-      <Tabs.Item title="Consultas" icon={HiClipboardList}>
+      <Tabs.Item title="CONSULTAS" icon={()=><HiClipboardList className="mr-2 h-4 w-4"/>}>
       <Consultas events={events.filter(item => new Date(item.end) >= new Date())} setConsultas={setConsultas}  consultas={consultas} medicos={medicos}/>
       </Tabs.Item>
-      <Tabs.Item title="Exames" icon={BiSolidInjection}>
+      <Tabs.Item title="EXAMES" icon={()=><BiSolidInjection className="mr-2 h-4 w-4"/>}>
      <Exames exames={exames}/>
       </Tabs.Item>
-      <Tabs.Item  icon={IoMdSettings}  title="Configurar">
+      <Tabs.Item  icon={()=><IoMdSettings className="mr-2 h-4 w-4"/>}  title="CONFIGURAR">
        <Configuracoes medicos={medicos} setMedicos={setArrayMedicos} setExames={setExames} exames={exames}/>
       </Tabs.Item>
     </Tabs>
