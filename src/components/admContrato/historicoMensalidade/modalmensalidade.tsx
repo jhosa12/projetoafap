@@ -33,7 +33,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade}:Props){
     const {error,postData} = useBaixaMensalidade('/mensalidade/baixa')
     const {watch,register,control,handleSubmit} = useForm<MensalidadeBaixaProps>(
         {
-            defaultValues:{...mensalidade}
+            defaultValues:{...mensalidade,form_pagto:''}
         }
     )
 
@@ -145,7 +145,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade}:Props){
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-black">FORMA PAG.</label>
     <Select  {...register('form_pagto')}  style={{padding:6}}>
-            <option>{''}</option>
+            <option value={''}>{''}</option>
             <option value={'DINHEIRO'}>DINHEIRO</option>
             <option value={'PIX'}>PIX</option>
             <option value={'CARTAO'}>CARTÃO</option>
@@ -178,7 +178,7 @@ render={({field:{value,onChange}})=>(
 
 </div>
 
-{watch('form_pagto')!=='DINHEIRO' && watch('form_pagto')!=='' && (
+{watch('form_pagto')!=='DINHEIRO' && (watch('form_pagto')!=='') && (
     <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-black">VALOR PIX/CARTÃO</label>
     <TextInput style={{padding:6}} {...register('valor_metodo')} placeholder="VALOR"/>
@@ -202,15 +202,10 @@ render={({field:{value,onChange}})=>(
 <div className="mb-1 col-span-2">
     <label  className="block mb-1 text-xs font-medium  text-black">AUT</label>
     <TextInput style={{padding:6}} {...register('aut')} placeholder="CODIGO DE AUTORIZACÃO (AUT)"/>
-
 </div>
 )
 
 }
-
-
-
-
 
 {((watch('valor_total') ?? 0)<(watch('valor_principal') ?? 0) && watch('valor_total')!==undefined)&& watch('valor_total')>0?(
  <div className="col-span-4 gap-1 mt-1 inline-flex ">
