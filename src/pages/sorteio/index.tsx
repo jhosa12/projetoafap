@@ -4,8 +4,6 @@ import { toast } from 'react-toastify';
 import { api } from '@/services/apiClient';
 import Confetti from 'react-confetti';
 import {useWindowSize} from 'react-use';
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import fotoFundo from "../../../public/fundoSorteio2.png";
 import Image from 'next/image';
 import { Button } from 'flowbite-react';
 import { PremioProps } from './configuracoes';
@@ -42,20 +40,11 @@ export default function Sorteios(){
   const [ativarConfete,setConfetes]=useState(false)
   const [ganhador,setGanhador] =useState<Partial<DadosProps>>({})
   const [loading,setLoading]=useState(false)
-
   const [premios,setPremios]=useState<Array<PremioProps>>([])
   const [premioAtual,setPremioAtual]=useState<PremioProps>()
 
 
-  const lavras = [
-    {id_contrato:772,associado:{nome:'ANTONIA MARTINS DA SILVA (TÂNIA)',endereco:'RUA FERROVIÁRIA',bairro:'BOA VISTA',numero:107},mensalidade:[{vencimento:null}]},
-    {id_contrato:1462,associado:{nome:'MARIA DO ROSÁRIO LUCENA DA SILVA',endereco:'RUA MARIA ZILDA',bairro:'VILA BANCÁRIA',numero:233},mensalidade:[{vencimento:null}]},
-    {id_contrato:1463,associado:{nome:'ANTONIA MARQUES MARCELINO)',endereco:'SITIO COCOS',bairro:'GRANJEIRO',numero:182},mensalidade:[{vencimento:null}]},
-    {id_contrato:1464,associado:{nome:'MARIA DASDORES LANDIM PINHEIRO',endereco:'SITIO PITOMBEIRA',bairro:'ARROJADO',numero:null},mensalidade:[{vencimento:null}]},
-    {id_contrato:1465,associado:{nome:'SILVANA BISPO DA CONCEIÇÃO',endereco:'SITIO PITOMBEIRA',bairro:'ARROJADO',numero:null},mensalidade:[{vencimento:null}]},
-    {id_contrato:1466,associado:{nome:'JOSE NILTON SOARES DOS SANTOS',endereco:'SITIO BRADÃO',bairro:'AMANIUTUBA',numero:null},mensalidade:[{vencimento:null}]},
-    {id_contrato:1468,associado:{nome:'MARILIA ALVES DE OLIVEIRA',endereco:'SITIO VOLTA',bairro:'QUITAIUS',numero:null},mensalidade:[{vencimento:null}]}
-]
+
 
 
 const ZerarSorteio = ()=>{
@@ -98,7 +87,7 @@ async function listarPremios() {
           data_sorteio:new Date()
         })
        
-
+console.log(response.data)
        setPremios(response.data.premios)
        setGanhadores(response.data.ganhadores)
       
@@ -150,7 +139,7 @@ setLoading(false)
   const sortearNumero = () => {
 
 
-    if(premios[premios.length-1].status==='S'){
+    if(premios[premios?.length-1].status==='S'){
       toast.info('Sorteio Encerrado!')
       return
     }
@@ -261,7 +250,7 @@ setLoading(false)
       </Button>
     
     </div>
-    <Image className='rounded-lg  '   src={logo} width={200} height={200} alt="logo" />
+  { /* <Image className='rounded-lg  '   src={logo} width={200} height={200} alt="logo" />*/}
     </div>
     
      
