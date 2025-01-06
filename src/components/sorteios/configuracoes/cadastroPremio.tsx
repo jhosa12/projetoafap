@@ -55,7 +55,7 @@ useEffect(()=>{
         <div className="flex flex-col w-full p-2 text-black">
          {openModal &&   <ModalPremio  arrayPremios={arrayPremios} setPremios={setArrayPremios} listarPremios={listarPremios} conveniados={conveniados} empresas={empresas} setModal={setOpenModal} setarDadosPremios={setDadosPremio} dadosPremio={dadosPremio}/>}
          <Button size={'sm'} className="ml-auto" onClick={()=>setOpenModal(true)} >ADICIONAR PRÊMIO</Button>
-             <ul className="flex flex-col w-full p-2 mt-1 gap-1 text-sm font-bold">
+             <ul className="flex flex-col w-full p-2 mt-1 gap-1 text-sm font-bold max-h-[calc(100vh-180px)] overflow-y-auto">
                 <li className="flex flex-col w-full  text-xs pl-4 border-b-[1px] ">
                   <div className="inline-flex w-full items-center">
                     <div className="flex w-full gap-8  items-center">

@@ -1,4 +1,4 @@
-import React, {  useEffect, useState } from 'react';
+import React, {  useContext, useEffect, useState } from 'react';
 import {useSpring,animated, a}from 'react-spring'
 import { toast } from 'react-toastify';
 import { api } from '@/services/apiClient';
@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { Button } from 'flowbite-react';
 import { PremioProps } from './configuracoes';
 import logo from "../../../public/grupoAfap.jpg"
+import { AuthContext } from '@/contexts/AuthContext';
 
 interface DadosProps{
   id_empresa:string,
@@ -42,6 +43,7 @@ export default function Sorteios(){
   const [loading,setLoading]=useState(false)
   const [premios,setPremios]=useState<Array<PremioProps>>([])
   const [premioAtual,setPremioAtual]=useState<PremioProps>()
+  const {empresas} = useContext(AuthContext);
 
 
 
@@ -217,8 +219,9 @@ setLoading(false)
   { premioAtual?.descricao && <div className='flex flex-row gap-2 bg-gray-50 text-black rounded-s-lg border-[1px] border-gray-400 p-3'>
     {premioAtual?.conveniados.filename &&  <img src={`${process.env.NEXT_PUBLIC_API_URL}/file/${premioAtual?.conveniados.filename}`} className='w-40 h-40 rounded-lg' />}
       <div className='flex flex-col gap-2 justify-center'>
-      <span className='font-semibold text-3xl'>{premioAtual?.conveniado}</span>
-      <span className='font-semibold text-2xl'>{premioAtual?.descricao}</span>
+      <span className='font-semibold text-3xl'>CONVENIADO: {premioAtual?.conveniado}</span>
+      <span className='font-semibold text-2xl'>PRÊMIO: {premioAtual?.descricao}</span>
+      <span className='font-semibold text-2xl'>EMPRESA DESTINO: {empresas.find(item=>item.id===premioAtual?.id_empresa)?.nome}</span>
       </div>
     </div>}
 
