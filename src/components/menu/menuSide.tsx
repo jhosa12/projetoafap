@@ -36,7 +36,6 @@ export default function SideBar({ isOpen, setClose }: DataProps) {
               <Sidebar.ItemGroup>
                 <Sidebar.Collapse label="Administrativo" icon={HiWallet}>
                   <Sidebar.Item as={Link} href='/admcontrato' > Administrar Contrato</Sidebar.Item>
-                  <Sidebar.Item as={Link} href='/reagendamento' >Reagendamento</Sidebar.Item>
                   <Sidebar.Item as={Link} href='/caixa' >Caixa</Sidebar.Item>
                   <Sidebar.Item as={Link} href='/renovacao' >Renovaçao</Sidebar.Item>
                   <Sidebar.Item as={Link} href='/cobranca' >Cobrança</Sidebar.Item>

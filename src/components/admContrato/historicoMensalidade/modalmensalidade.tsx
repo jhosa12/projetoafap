@@ -1,47 +1,43 @@
-
+"use client"
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { AuthContext} from "@/contexts/AuthContext";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-datepicker/dist/react-datepicker.css";
-import { Modal, ModalBody, ModalHeader, TextInput,Select,Checkbox, Button } from "flowbite-react";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import useBaixaMensalidade from "@/hooks/useBaixaMensalidade";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { MensalidadeBaixaProps } from "@/pages/caixa";
-
-
-
-
-
-
-
+import { Button, Checkbox, Modal, Select, TextInput } from "flowbite-react";
 
 interface Props{
-    handleAtualizar?:Function,
+    handleAtualizar?:Function
     openModal:boolean,
     setOpenModal:(open:boolean)=>void
     mensalidade:Partial<MensalidadeBaixaProps>
    
 }
 
-export function ModalMensalidade({openModal,setOpenModal,mensalidade}:Props){
-    const {usuario,permissoes,setarDadosAssociado}=useContext(AuthContext)
+export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtualizar}:Props){
+
+    const {usuario,permissoes,selectEmp}=useContext(AuthContext)
     const [desconto,setDesconto] = useState(false)
     const {error,postData} = useBaixaMensalidade('/mensalidade/baixa')
-    const {watch,register,control,handleSubmit} = useForm<MensalidadeBaixaProps>(
-        {
-            defaultValues:{...mensalidade,form_pagto:''}
-        }
+    const {register,handleSubmit,watch,control,reset} = useForm<MensalidadeBaixaProps>(
+      
     )
+
+
+    useEffect(()=>{
+        reset({...mensalidade,form_pagto:'',valor_total:mensalidade?.valor_principal,data_pgto:new Date()})
+    },[mensalidade])
 
 
 
          const handleBaixar:SubmitHandler<MensalidadeBaixaProps> = async(data)=> {
             // Função para exibir toast e retornar
-        
             const novoArray = [...(mensalidade.associado?.mensalidade ?? [])];
             const indexAtual = novoArray.findIndex(item => item.id_mensalidade === mensalidade.id_mensalidade);
            let mensalidadeProx = novoArray[indexAtual + 1];
@@ -71,7 +67,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade}:Props){
                             minute: '2-digit',
                             second: '2-digit'
                         }),          
-                        valor_total: data.valor_total,
+                        valor_total: Number(data.valor_total),
                         motivo_bonus: data.motivo_bonus?.toUpperCase(),
                         associado: mensalidade?.associado?.nome,
                         form_pagto: data?.form_pagto,
@@ -80,29 +76,18 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade}:Props){
                         id_proximaMensalidade:mensalidadeProx?.id_mensalidade_global,
                         situacao:mensalidade?.contrato?.situacao,
                         status:data.status,
-                        pix_por:data.pix_por
+                        pix_por:data.pix_por,
+                        id_empresa:selectEmp,
+                        valor_metodo:data?.valor_metodo
+                    
                     },
                  
-                );
-        
-              
-        
-             
-           
-        
-            
-               
-       
-          
+                );  
+
+             handleAtualizar && handleAtualizar({endDate:new Date(),startDate:new Date(),id_empresa:selectEmp,descricao:''}) 
+              setOpenModal(false)
         }
         
-
-
-
-
-
-
-
 
     return(
 
@@ -116,12 +101,12 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade}:Props){
         
          dismissible
           >
-            <ModalHeader className="flex text-white items-start justify-between bg-gray-700 rounded-t border-b p-2 border-gray-60">
+            <Modal.Header className="flex text-white items-start justify-between bg-gray-700 rounded-t border-b p-2 border-gray-60">
              <h1 className="text-white">REALIZAR BAIXA</h1>
-                </ModalHeader>
+                </Modal.Header>
 
         <form onSubmit={handleSubmit(handleBaixar)}>
-            <ModalBody>
+            <Modal.Body>
               
             <span className="flex w-full text-gray-500 border-b">Associado</span>
                     <h1 className="font-semibold text-lg">{mensalidade.id_contrato}-{mensalidade.associado?.nome}</h1>
@@ -140,7 +125,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade}:Props){
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-black">RECEBIDO POR</label>
-    <TextInput style={{padding:6}} value={''} onChange={e=>{}} placeholder="RECEBIDO POR "/>
+    <TextInput style={{padding:6}} value={''} onChange={()=>{}} placeholder="RECEBIDO POR "/>
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-black">FORMA PAG.</label>
@@ -222,7 +207,7 @@ render={({field:{value,onChange}})=>(
   
 
 </div>
-          </ModalBody>
+          </Modal.Body>
 
           <Modal.Footer >
             <div className="ml-auto">

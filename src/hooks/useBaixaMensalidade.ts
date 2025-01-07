@@ -23,6 +23,7 @@ interface PayloadProps {
     form_pagto: string,
     banco_dest: string,
     desconto: boolean,
+    valor_metodo: number,
     id_proximaMensalidade:number,
     situacao:string,
     status:string,

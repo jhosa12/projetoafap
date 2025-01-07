@@ -4,7 +4,7 @@ import ImpressaoCarne from '@/Documents/mensalidade/ImpressaoCarne';
 import { api } from '@/services/apiClient';
 import { useReactToPrint } from 'react-to-print';
 import React, {  useContext, useEffect, useRef, useState } from 'react';
-import { IoCalendar, IoPrint } from 'react-icons/io5';
+import {  IoPrint } from 'react-icons/io5';
 import { MdDeleteForever} from 'react-icons/md';
 import { RiAddCircleFill } from 'react-icons/ri';
 import { toast } from 'react-toastify'
@@ -17,7 +17,8 @@ import { MensalidadeProps } from '@/types/financeiro';
 import { ReciboMensalidade } from '@/Documents/mensalidade/Recibo';
 import pageStyle from '@/utils/pageStyle';
 import { Button, ButtonGroup } from 'flowbite-react';
-import { PopoverVencimento } from './modalVencimento';
+import { PopoverVencimento } from './popoverVencimento';
+import { PopoverReagendamento } from './popoverReagendamento';
 
 
 
@@ -63,7 +64,7 @@ interface DadosAssociadoGeral {
 }
 
 interface DadosProps {
-    usuario: { id: number, nome: string }
+    usuario: { id?: string, nome: string }
     carregarDados: (id: number) => Promise<void>
     setarDados: (fields: Partial<SetAssociadoProps>) => void
     dados: SetAssociadoProps
@@ -386,13 +387,16 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                 <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
                     <input disabled={!permissoes.includes('ADM1.2.10')} checked={checkMensal} onChange={() => setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer disabled:cursor-not-allowed" />
                     <div className="  w-7 h-4 rounded-full peer bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[7px] after:start-[17px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
-                    <span className="ms-3 text-xs font-medium  text-gray-600">Exibir Pagas</span>
+                    <span className="ms-3 text-xs font-medium">Exibir Pagas</span>
                 </label>
                 <ButtonGroup>
                 <Button disabled={!permissoes.includes('ADM1.2.1')} onClick={adicionarMensalidade} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' /> Adicionar</Button>
+
+               <PopoverReagendamento setSelecionadas={setLinhasSelecionadas} id_usuario={usuario?.id} mensalidades={linhasSelecionadas} id_global={dadosAssociado.id_global}/>
+
                 <Button type='button' onClick={imprimirCarne} color='light' size='xs'>  <IoPrint className='mr-1 h-4 w-4' /> Imprimir</Button>
               
-                <PopoverVencimento setarDados={setarDados} id_global={dadosAssociado.id_global}  mensalidades={dadosAssociado.arrayMensalidade.filter((item) => item.status !== 'P')} />
+                <PopoverVencimento  id_global={dadosAssociado.id_global}  />
              
                
                 <Button disabled={!permissoes.includes('ADM1.2.3')} onClick={() => setOpenExcluir(!openExcluir)} type="button" color='light' size='xs'><MdDeleteForever className='mr-1 h-4 w-4' /> Excluir</Button>
@@ -401,7 +405,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
             </div>
             <div className="flex w-full p-2 max-h-[calc(100vh-205px)]">
                 <table
-                    className="block w-full overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse rounded-lg text-gray-600">
+                    className="block w-full overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse  text-gray-600">
                     <thead className="sticky w-full top-0  text-xs   bg-gray-100 text-gray-600">
                         <tr >
                             <th scope="col" className="px-6 py-1">

@@ -94,15 +94,15 @@ interface FormProps{
 
 
 export default function CaixaMovimentar(){
-    const[lancamentos,setLancamentos]=useState<Array<LancamentosProps>>([]);
-    const[mov,setMov]=useState<Partial<LancamentosProps>>();
-    const[saldo,setSaldo]=useState(0);
-    const[grupos,setGrupos] = useState<Array<GrupoPrps>>([])
-    const[despesas,setDespesas]=useState(0);
+    const [lancamentos,setLancamentos]=useState<Array<LancamentosProps>>([]);
+    const [mov,setMov]=useState<Partial<LancamentosProps>>();
+    const [saldo,setSaldo]=useState(0);
+    const [grupos,setGrupos] = useState<Array<GrupoPrps>>([])
+    const [despesas,setDespesas]=useState(0);
     const [openModalPrint,setPrint] = useState<boolean>(false);
     const [planos,setPlanos]=useState([]);
     const {usuario,permissoes,selectEmp} = useContext(AuthContext);
-    const[visible,setVisible] = useState(false);
+    const [visible,setVisible] = useState(false);
     const [openModal,setModal] = useState<boolean>(false);
     const [openModalExc,setModalExc] = useState<boolean>(false);
     const [loading,setLoading] = useState<boolean>(false);
@@ -114,7 +114,6 @@ export default function CaixaMovimentar(){
         defaultValues:{
             startDate:new Date(),
             endDate:new Date(),
-            
         }
     })
 
@@ -128,30 +127,30 @@ export default function CaixaMovimentar(){
         
     
         const handleKeyPress = (event: KeyboardEvent) => {
-          // Verifica se a tecla "Enter" foi pressionada
+          //Verifica se a tecla "Enter" foi pressionada
           if (event.key === 'Enter') {
-          //  setScannedCode(currentBarcode);
-          event.preventDefault();
-          event.stopPropagation();
+          //setScannedCode(currentBarcode);
+         event.preventDefault();
+        event.stopPropagation();
           buscarMensalidade(currentBarcode)
             currentBarcode = ''; // Reinicia o código de barras após a leitura
             setModal(false)
           } else {
-            // Acumula os caracteres do código de barras
+            //Acumula os caracteres do código de barras
             currentBarcode += event.key;
           }
     
-          // Limpa o buffer se não houver atividade por 300ms
+          //Limpa o buffer se não houver atividade por 300ms
           clearTimeout(timeout);
           timeout = setTimeout(() => {
             currentBarcode = '';
           }, 300);
         };
     
-        // Adiciona o ouvinte de eventos para capturar as teclas pressionadas
+        //Adiciona o ouvinte de eventos para capturar as teclas pressionadas
         document.addEventListener('keydown', handleKeyPress);
     
-        // Remove o ouvinte de eventos quando o componente é desmontado
+        //Remove o ouvinte de eventos quando o componente é desmontado
         return () => {
           document.removeEventListener('keydown', handleKeyPress);
         };
@@ -194,7 +193,8 @@ export default function CaixaMovimentar(){
                n_doc,
                id_empresa:selectEmp
              })
-             setMensalidade({...response.data,valor_total:Number(response.data.valor_principal)})
+            
+             setMensalidade(response.data)
              setModalDados(true)
             } catch (error:any) {
                 console.log('Erro:', error); // Verifique o erro mais claramente
@@ -206,7 +206,7 @@ export default function CaixaMovimentar(){
             } 
     
             setLoading(false)
-           },[selectEmp]
+           },[selectEmp,mensalidade,modalDados]
     )
     
     
@@ -282,7 +282,7 @@ export default function CaixaMovimentar(){
             setGrupos(grupos)
             fechamento?setFechado(true):setFechado(false)
           
-          console.log(response.data)
+        
 
             
          }catch(err){
@@ -326,14 +326,16 @@ return(
 
 {/*<ModalDadosMensalidade  handleChamarFiltro={handleChamarFiltro} setMensalidade={setMensalidade} mensalidade={mensalidade??{}} open={modalDados} setOpen={setModalDados}/>*/}
 
-<ModalMensalidade
-
-mensalidade={mensalidade??{}}
+{<ModalMensalidade
+handleAtualizar={()=>listarLancamentos({startDate:new Date(),endDate:new Date(),id_empresa:selectEmp,descricao:''})}
+mensalidade={{
+    ...mensalidade,
+  
+}}
 openModal={modalDados}
 setOpenModal={setModalDados}
 
-
-/>
+/>}
 
 <Modal size={'sm'} popup show={loading}>
     <Modal.Body>
@@ -346,7 +348,7 @@ setOpenModal={setModalDados}
 </Modal>
 
 <div className="flex flex-col  w-full ">
-    <div className="text-gray-600 bg-white inline-flex items-center w-full justify-between">
+    <div className=" bg-white inline-flex items-center w-full justify-between">
    
     <form onSubmit={handleSubmit(listarLancamentos)}  className="flex w-full flex-row justify-end p-1 gap-4 text-black font-semibold">
 

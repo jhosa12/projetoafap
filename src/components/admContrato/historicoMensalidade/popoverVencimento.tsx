@@ -11,19 +11,24 @@ import { SetAssociadoProps } from "./historicoMensalidade";
 import { AuthContext } from "@/contexts/AuthContext";
 
 interface DataProps{
-    mensalidades:Array<Partial<MensalidadeProps>>
+    
     id_global:number|null,
-    setarDados: (fields: Partial<SetAssociadoProps>) => void
+   
 }
 
 
-export function PopoverVencimento({mensalidades,id_global,setarDados}:DataProps) {
+export function PopoverVencimento({id_global}:DataProps) {
     const [date, setDate] = useState(new Date());
     const {setarDadosAssociado} = useContext(AuthContext)
 
   
 
 const handleAlterarVencimento = async() => {
+
+    if(!id_global){
+       
+        return
+    }
 
 
     try {
@@ -43,14 +48,7 @@ const handleAlterarVencimento = async() => {
         
     } catch (error) {
         console.log(error)
-    }
-      
-        
-        
-        
-        
-        
-       
+    }   
 }
 
 

@@ -38,7 +38,7 @@ export default function AdmContrato() {
         listaCadastro()
     }, [])*/
 
- 
+
 
 
     async function atualizarObs() {
@@ -129,7 +129,7 @@ export default function AdmContrato() {
                                         valor_mensalidade: dadosassociado?.contrato?.valor_mensalidade ?? 0
                                     }}
                                     setarDados={closeModa}
-                                    usuario={{ id: Number(usuario?.id), nome: usuario?.nome ?? '' }}
+                                    usuario={{ id: usuario?.id, nome: usuario?.nome ?? '' }}
 
 
                                 />}
