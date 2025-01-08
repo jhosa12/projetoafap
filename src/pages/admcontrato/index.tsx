@@ -11,7 +11,7 @@ import Head from "next/head";
 import CarteirasDep from "../../components/admContrato/carteiras/carteirasDep";
 import { HistoricoMensalidade } from "@/components/admContrato/historicoMensalidade/historicoMensalidade";
 import ObitosAssociado from "@/components/admContrato/obitos/obitos";
-import { Button, Tabs } from "flowbite-react";
+import { Button, Modal, Spinner, Tabs } from "flowbite-react";
 import { HiIdentification, HiMiniInbox, HiMiniWallet, HiPrinter, HiUserCircle, HiUserGroup } from "react-icons/hi2";
 import { DadosAssociado } from "@/components/admContrato/dadosAssociado/screen";
 import { Dependentes } from "@/components/admContrato/dependentes/dependentes";
@@ -25,7 +25,7 @@ import { VerificarSituacao } from "@/utils/admContrato/verificarSituacao";
 
 export default function AdmContrato() {
 
-    const { usuario,data,closeModa,  dadosassociado, carregarDados, permissoes,setarDadosAssociado } = useContext(AuthContext)
+    const { usuario,data,closeModa,  dadosassociado, carregarDados, permissoes,limparDados,loading } = useContext(AuthContext)
     const [indexTab, setIndex] = useState<number>(0)
     const [openCadastro, setCadastro] = useState<boolean>(false)
     const [modalBusca, setModalBusca] = useState<boolean>(false)
@@ -37,7 +37,9 @@ export default function AdmContrato() {
         }
         listaCadastro()
     }, [])*/
-
+useEffect(() => {
+    limparDados()
+},[])
 
 
 
@@ -80,7 +82,16 @@ export default function AdmContrato() {
 
     return (
         <>
-
+        {loading &&    <Modal size={'sm'} popup show={loading}>
+                <Modal.Body>
+                    <div className=" flex flex-col mt-6 w-full justify-center items-center">
+                    <Spinner size={'lg'} color={'warning'}/>
+                    <span>Localizando dados....</span>
+                    </div>
+                   
+                </Modal.Body>
+            </Modal>
+            }
             <Head>
                 <title>Administrar Contrato</title>
 

@@ -55,7 +55,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
         
          
            
-               postData(
+             await postData(
                    {
                         id_global:data?.id_global,
                         id_usuario: usuario?.id ,
@@ -84,11 +84,9 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
                  
                 );  
 
-             handleAtualizar && handleAtualizar({endDate:new Date(),startDate:new Date(),id_empresa:selectEmp,descricao:''}) 
+             handleAtualizar && await handleAtualizar({endDate:new Date(),startDate:new Date(),id_empresa:selectEmp,descricao:''}) 
               setOpenModal(false)
         }
-        
-
     return(
 
 <Modal

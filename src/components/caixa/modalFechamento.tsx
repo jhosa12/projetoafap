@@ -12,6 +12,7 @@ import { ajustarData } from "@/utils/ajusteData";
 
 interface DataProps{
     openModal:boolean,
+    listar:Function
     setOpenModal:(open:boolean)=>void,
     id_usuario:string,
     id_empresa:string,
@@ -29,7 +30,7 @@ interface ValoresProps{
 }
 
 
-export function ModalFechamento({openModal,setOpenModal,id_usuario,lancamentos,id_empresa,dataCaixa,dataCaixaEnd}:DataProps){
+export function ModalFechamento({openModal,setOpenModal,id_usuario,lancamentos,id_empresa,dataCaixa,dataCaixaEnd,listar}:DataProps){
     const [valores,setValores] = useState<ValoresProps>({cartao:0,cedulas:0,pix:0,transferencia:0})
     const [valoresCaixa,setValorCaixa] = useState<ValoresProps>({cartao:0,cedulas:0,pix:0,transferencia:0})
     const [observacao,setObs] = useState<string>('')
@@ -40,15 +41,15 @@ useEffect(
     ()=>{
     
       const real:ValoresProps = lancamentos?.reduce((acc,at)=>{
-        if(at.mensalidade?.form_pagto==='PIX'){
+        if(at.forma_pagamento==='PIX'){
             acc.pix+=Number(at.valor)
-        }else   if(at.mensalidade?.form_pagto==='DINHEIRO'){
+        }else   if(at.forma_pagamento==='DINHEIRO'||at.forma_pagamento===null||at.forma_pagamento===''){
             acc.cedulas+=Number(at.valor)
         }
-        else   if(at.mensalidade?.form_pagto==='CARTAO'){
+        else   if(at.forma_pagamento==='CARTAO'){
             acc.cartao+=Number(at.valor)
         }
-        else   if(at.mensalidade?.form_pagto==='TRANSFERENCIA'){
+        else   if(at.forma_pagamento==='TRANSFERENCIA'){
             acc.transferencia+=Number(at.valor)
         }
         return acc
@@ -93,6 +94,7 @@ useEffect(
             })
             toast.success('Caixa Fechado!')
            // setFechamento(true)
+            listar()
             setOpenModal(false)
         } catch (error:any) {
             console.log(error)

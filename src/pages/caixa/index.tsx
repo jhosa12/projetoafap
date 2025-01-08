@@ -27,6 +27,7 @@ registerLocale('pt', pt)
 
 export interface LancamentosProps{
     lanc_id:number,
+    forma_pagamento:string,
     num_seq:number|null,
     conta:string,
     ccustos_id:number|null,
@@ -95,13 +96,14 @@ interface FormProps{
 
 export interface FechamentoProps{
     id_conf:number,
-                caixaCad:Array<{ pix:number,
+                caixaCad:{ pix:number,
                     cedulas:number,
                     cartao:number,
-                    transferencia:number}>,
+                    transferencia:number},
                 data:Date,
                 empresa:string,
-                usuario:string
+                usuario:string,
+                observacao:string
 }
 
 
@@ -286,7 +288,7 @@ export default function CaixaMovimentar(){
                 id_user:usuario?.id
             })
 
-
+       console.log(response.data)
             const {lista,plano_de_contas,grupos,fechamento} = response.data
 
             setLancamentos(lista)
@@ -412,14 +414,14 @@ setOpenModal={setModalDados}
                    
         </form>
     </div>
-  { fechado ? <ScreenCloseCaixa fechamento={fechado}/> : <div className="flex flex-col border-t-2 bg-white">
+  { !!fechado ? <ScreenCloseCaixa fechamento={fechado}/> : <div className="flex flex-col border-t-2 bg-white">
     
        
         <div className="overflow-y-auto mt-1 px-2 h-[calc(100vh-174px)] ">
        
-        <Table hoverable theme={{ body: { cell: { base: " px-4 py-0 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }} 
+        <Table hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 py-1 text-xs" } } }} 
     >
-        <Table.Head >
+        <Table.Head theme={{cell:{base:"bg-gray-50 px-4 py-1 "}}} >
         
                 <Table.HeadCell className="whitespace-nowrap" >
                     Nº LANC.
@@ -526,7 +528,7 @@ setOpenModal={setModalDados}
 
 
 
-<ModalFechamento dataCaixaEnd={watch('endDate')} dataCaixa={watch('startDate')}  id_empresa={selectEmp} lancamentos={lancamentos} id_usuario={usuario?.id??''} openModal={openFecModal} setOpenModal={setFecModal}/>
+<ModalFechamento listar={()=>listarLancamentos({endDate:watch('endDate'),startDate:watch('startDate'),id_empresa:selectEmp,descricao:watch('descricao')})} dataCaixaEnd={watch('endDate')} dataCaixa={watch('startDate')}  id_empresa={selectEmp} lancamentos={lancamentos} id_usuario={usuario?.id??''} openModal={openFecModal} setOpenModal={setFecModal}/>
 
 
 {openModalPrint && <ModalImpressao array={lancamentos} openModal={openModalPrint} setOpenModal={setPrint} startDate={watch('startDate')} endDate={watch('endDate')} usuario={usuario?.nome??''}/>}

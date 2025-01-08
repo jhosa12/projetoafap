@@ -6,17 +6,18 @@ import logo from "../../../public/novaLogo.png"
 import React from 'react';
 
 import { Table } from "flowbite-react";
-import { LancamentosProps } from "@/pages/caixa";
+import { FechamentoProps, LancamentosProps } from "@/pages/caixa";
 import { SomaProps } from "@/components/financeiro/caixa/caixa";
 import Sintetico from "./sintetico";
 import { Analitico } from "./analitico";
 
 
 interface DadosProps {
-  tipoRelatorio: string,
+
   usuario: string,
-  soma: SomaProps,
-  array: Array<LancamentosProps>,
+//  soma: SomaProps,
+ // array: Array<LancamentosProps>,
+ fechamento:FechamentoProps,
   startDate: Date,
   endDate: Date
 }
@@ -24,42 +25,12 @@ interface DadosProps {
 class FechamentoResumo extends React.Component<DadosProps> {
 
 
-  /* gerarRelatorioSintetico = ():{cedula:number,pix:number,cartao:number,transferencia:number} => {
-         const {array} = this.props;
-         let totais ={
-           cedula:0,
-           pix:0,
-           cartao:0,
-           transferencia:0
-         }
- 
-         array.forEach(lancamento => {
-           const valor = Number(lancamento?.valor)
-           switch (lancamento.mensalidade?.form_pagto) {
-             case 'DINHEIRO':
-               totais.cedula += valor;
-               break;
-             case 'PIX':
-               totais.pix += valor;
-               break;
-             case 'CARTAO':
-               totais.cartao += valor;
-               break;
-             case 'TRANSFERENCIA':
-               totais.transferencia += valor;
-               break;
-             default:
-               break;
-           }
-         });
-     
-         return totais;
-   }*/
+
 
 
 
   render() {
-    const { startDate, endDate, usuario, soma, tipoRelatorio } = this.props;
+    const { startDate, endDate, usuario,fechamento } = this.props;
 
 
     return (
@@ -69,19 +40,13 @@ class FechamentoResumo extends React.Component<DadosProps> {
         </div>
         <h1 style={{ fontWeight: 'bold', fontSize: '25px', textAlign: 'center' }}>Resumo de Caixa</h1>
         <div className="flex flex-col gap-2 pl-5 ">
-          <span>Usuário: {usuario}</span>
-          <span>Data Expedição: {new Date().toLocaleDateString('pt-BR')}</span>
-          <span>Periodo do Caixa:  {new Date(startDate).toLocaleDateString('pt-BR')} -  {new Date(endDate).toLocaleDateString('pt-BR')}</span>
+          <span>Caixa: {fechamento.usuario}</span>
+          <span>Data Expedição: {new Date().toLocaleDateString('pt-BR')}-{new Date().toLocaleTimeString('pt-BR')}</span>
+          <span>Data Fechamento:  {new Date(fechamento.data).toLocaleDateString('pt-BR')}</span>
         </div>
-
-
-        {tipoRelatorio === 'SINTETICO' && <Sintetico soma={soma} />}
-
-        {tipoRelatorio === 'ANALITICO' && <Analitico array={this.props.array} soma={soma} />}
-
-        {/*<div className="p-2">
-       <Table>
-        <Table.Head>
+        <div className="p-2">
+       <Table theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 py-1 " } } }}>
+        <Table.Head theme={{cell:{base:"bg-gray-50 px-4 py-1 "}}}>
             <Table.HeadCell>CÉDULA</Table.HeadCell>
             <Table.HeadCell>PIX</Table.HeadCell>
             <Table.HeadCell>CARTÃO</Table.HeadCell>
@@ -89,21 +54,21 @@ class FechamentoResumo extends React.Component<DadosProps> {
         </Table.Head>
         <Table.Body>
             <Table.Row>
-                <Table.Cell>{Number(soma.dinheiro).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
-                <Table.Cell>{Number().toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
-                <Table.Cell>{Number().toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
-                <Table.Cell>{Number().toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
+                <Table.Cell>{Number(fechamento.caixaCad.cedulas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
+                <Table.Cell>{Number(fechamento.caixaCad.pix).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
+                <Table.Cell>{Number(fechamento.caixaCad.cartao).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
+                <Table.Cell>{Number(fechamento.caixaCad.transferencia).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
 
             </Table.Row>
         </Table.Body>
        </Table>
-       </div>*/}
+       </div>
 
 
        
 
         <br />
-    
+        <span style={{color:'red'}}>Observação: {fechamento.observacao}</span>
 
         <div className="flex flex-col items-center gap-5">
           {/*   <div className="flex flex-col items-center">

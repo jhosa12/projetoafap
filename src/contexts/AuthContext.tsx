@@ -37,7 +37,8 @@ type AuthContextData = {
     empresas:Array<EmpresaProps>
     getDadosFixos:()=>Promise<void>
     selectEmp:string,
-    setSelectEmp:(empresa:string)=>void
+    setSelectEmp:(empresa:string)=>void,
+    loading:boolean
 }
 
 
@@ -70,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
    const [cidades, setCidades] = useState<Array<CidadesProps>>([]);
    const [consultores, setConsultores] = useState<Array<ConsultoresProps>>([]);
    const [selectEmp,setSelectEmp] = useState('')
-  
+  const [loading, setLoading] = useState(false);    
     const [servico, setServico] = useState<Partial<ObitoProps>>({ hr_sepultamento: new Date(), end_hora_falecimento: new Date(), end_hora_informaram: new Date() });
     const [permissoes,setPermissoes] =useState<Array<string>>([])
    /* const [token,setToken] = useState(()=>{
@@ -164,7 +165,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
     const carregarDados = async (id:number) => {
-     
+     setLoading(true)
         limparDados();
         try {
             const response = await api.post('/associado', {
@@ -176,6 +177,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } catch (error) {
             toast.error('Erro na requisição');
         }
+        setLoading(false)
     };
 
     const setarDadosAssociado = useCallback((fields: Partial<AssociadoProps>) => {
@@ -213,7 +215,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
     return (
-        <AuthContext.Provider value={{selectEmp,setSelectEmp,getDadosFixos,planos,consultores,cidades,empresas,permissoes,setPermissoes, setarDadosAssociado, limparDados, usuario, sign, signOut, data, closeModa, dadosassociado, carregarDados, setarServico, servico, listaConv, setarListaConv }}>
+        <AuthContext.Provider value={{loading,selectEmp,setSelectEmp,getDadosFixos,planos,consultores,cidades,empresas,permissoes,setPermissoes, setarDadosAssociado, limparDados, usuario, sign, signOut, data, closeModa, dadosassociado, carregarDados, setarServico, servico, listaConv, setarListaConv }}>
             {children}
         </AuthContext.Provider>
     );

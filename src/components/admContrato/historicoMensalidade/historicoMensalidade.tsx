@@ -615,7 +615,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
             status:mensalidadeSelect?.status,
             valor_principal:mensalidadeSelect?.valor_principal
            }} 
-            handleAtualizar={()=>carregarDados(Number(dadosAssociado.id_global))}
+            handleAtualizar={async()=> await carregarDados(Number(dadosAssociado.id_global))}
             openModal={openModalMens}
              setOpenModal={setModalMens}
               />
