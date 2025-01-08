@@ -61,7 +61,7 @@ export function PopoverReagendamento({id_global,mensalidades,id_usuario,setSelec
     return ( 
 <Popover content={(   <div className="flex flex-col p-2 gap-2" >
     <div className="flex flex-col">
-        <Label className="text-xs">Alterar Apartir de</Label>
+        <Label className="text-xs">Reagendar para</Label>
         <DatePicker className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  "  dateFormat={"dd/MM/yyyy"} onChange={e => { e && setDate(e) }} selected={date} locale={pt} />
         
     </div>

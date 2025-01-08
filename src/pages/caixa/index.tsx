@@ -93,6 +93,18 @@ interface FormProps{
 }
 
 
+export interface FechamentoProps{
+    id_conf:number,
+                caixaCad:Array<{ pix:number,
+                    cedulas:number,
+                    cartao:number,
+                    transferencia:number}>,
+                data:Date,
+                empresa:string,
+                usuario:string
+}
+
+
 export default function CaixaMovimentar(){
     const [lancamentos,setLancamentos]=useState<Array<LancamentosProps>>([]);
     const [mov,setMov]=useState<Partial<LancamentosProps>>();
@@ -107,7 +119,7 @@ export default function CaixaMovimentar(){
     const [openModalExc,setModalExc] = useState<boolean>(false);
     const [loading,setLoading] = useState<boolean>(false);
     const [openFecModal,setFecModal]= useState<boolean>(false)
-   const [fechado,setFechado] = useState<boolean>(false)
+   const [fechado,setFechado] = useState<FechamentoProps|null>(null)
     const [mensalidade,setMensalidade] = useState<Partial<MensalidadeBaixaProps>>()
     const [modalDados,setModalDados] = useState<boolean>(false)
     const {register,watch,handleSubmit,control}= useForm<FormProps>({
@@ -280,7 +292,7 @@ export default function CaixaMovimentar(){
             setLancamentos(lista)
             setPlanos(plano_de_contas)
             setGrupos(grupos)
-            fechamento?setFechado(true):setFechado(false)
+            setFechado(fechamento)
           
         
 
@@ -395,12 +407,12 @@ setOpenModal={setModalDados}
                   
                    </div>
                    <div className="flex   items-end justify-end pr-2 ">
-                   <Button disabled={!permissoes.includes('ADM2.1.1')||fechado} color={'success'} size={'sm'} onClick={()=>{setMov({conta:'',conta_n:'',ccustos_desc:'',data:undefined,datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal(true)}} ><MdOutlineAddCircle className="mr-2 h-5 w-5"/> Novo</Button>
+                   <Button disabled={!permissoes.includes('ADM2.1.1')||!!fechado} color={'success'} size={'sm'} onClick={()=>{setMov({conta:'',conta_n:'',ccustos_desc:'',data:undefined,datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal(true)}} ><MdOutlineAddCircle className="mr-2 h-5 w-5"/> Novo</Button>
                    </div>
                    
         </form>
     </div>
-  { fechado ? <ScreenCloseCaixa/> : <div className="flex flex-col border-t-2 bg-white">
+  { fechado ? <ScreenCloseCaixa fechamento={fechado}/> : <div className="flex flex-col border-t-2 bg-white">
     
        
         <div className="overflow-y-auto mt-1 px-2 h-[calc(100vh-174px)] ">
@@ -514,7 +526,7 @@ setOpenModal={setModalDados}
 
 
 
-<ModalFechamento dataCaixaEnd={watch('endDate')} dataCaixa={watch('startDate')} setFechamento={setFechado} id_empresa={selectEmp} lancamentos={lancamentos} id_usuario={usuario?.id??''} openModal={openFecModal} setOpenModal={setFecModal}/>
+<ModalFechamento dataCaixaEnd={watch('endDate')} dataCaixa={watch('startDate')}  id_empresa={selectEmp} lancamentos={lancamentos} id_usuario={usuario?.id??''} openModal={openFecModal} setOpenModal={setFecModal}/>
 
 
 {openModalPrint && <ModalImpressao array={lancamentos} openModal={openModalPrint} setOpenModal={setPrint} startDate={watch('startDate')} endDate={watch('endDate')} usuario={usuario?.nome??''}/>}

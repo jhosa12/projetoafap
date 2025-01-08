@@ -15,7 +15,7 @@ import { Button, Tabs } from "flowbite-react";
 import { HiIdentification, HiMiniInbox, HiMiniWallet, HiPrinter, HiUserCircle, HiUserGroup } from "react-icons/hi2";
 import { DadosAssociado } from "@/components/admContrato/dadosAssociado/screen";
 import { Dependentes } from "@/components/admContrato/dependentes/dependentes";
-import { Impressoes } from "@/components/admContrato/impressoes/screen";
+
 import ModalCadastro from "@/components/admContrato/cadastro/modalCadastro";
 import { FaHandshake } from "react-icons/fa";
 import { AcordosScreen } from "@/components/admContrato/acordos/screen";
@@ -164,10 +164,7 @@ export default function AdmContrato() {
                                 />}
                             </Tabs.Item>
 
-                            <Tabs.Item active={indexTab === 6} title="IMPRESSÕES" icon={HiPrinter
-                            }>
-                                {indexTab === 6 && <Impressoes />}
-                            </Tabs.Item>
+                          
 
 
                         </Tabs>

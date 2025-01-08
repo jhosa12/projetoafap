@@ -16,7 +16,6 @@ interface DataProps{
     id_usuario:string,
     id_empresa:string,
     lancamentos:Array<LancamentosProps>
-    setFechamento:(open:boolean)=>void
     dataCaixa:Date
     dataCaixaEnd:Date
 }
@@ -30,7 +29,7 @@ interface ValoresProps{
 }
 
 
-export function ModalFechamento({openModal,setOpenModal,id_usuario,lancamentos,id_empresa,setFechamento,dataCaixa,dataCaixaEnd}:DataProps){
+export function ModalFechamento({openModal,setOpenModal,id_usuario,lancamentos,id_empresa,dataCaixa,dataCaixaEnd}:DataProps){
     const [valores,setValores] = useState<ValoresProps>({cartao:0,cedulas:0,pix:0,transferencia:0})
     const [valoresCaixa,setValorCaixa] = useState<ValoresProps>({cartao:0,cedulas:0,pix:0,transferencia:0})
     const [observacao,setObs] = useState<string>('')
@@ -93,7 +92,8 @@ useEffect(
               
             })
             toast.success('Caixa Fechado!')
-            setFechamento(true)
+           // setFechamento(true)
+            setOpenModal(false)
         } catch (error:any) {
             console.log(error)
             toast.error(error.response?.data?.error || 'Erro inesperado!')

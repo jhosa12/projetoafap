@@ -1,15 +1,19 @@
 import { ModalEditarDados } from "@/components/admContrato/dadosAssociado/modalEditar/modalEditarDados";
 import {  AuthContext } from "@/contexts/AuthContext";
 import { AssociadoProps } from "@/types/associado";
-import { Badge, Button, ButtonGroup, Card } from "flowbite-react";
-import { useContext, useState } from "react";
+import { Badge, Button, ButtonGroup, Card, Dropdown } from "flowbite-react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { BiSave } from "react-icons/bi";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { TbWheelchair } from "react-icons/tb";
 import { ModalAlterarPlano } from "./modalAlterarPlano";
 import { ModalInativar } from "./modalEditar/modalInativar";
-import { toast } from "react-toastify";
-import { api } from "@/services/apiClient";
+import { useReactToPrint } from "react-to-print";
+import ImpressaoCarne from "@/Documents/mensalidade/ImpressaoCarne";
+import ContratoResumo from "@/Documents/contratoResumido/ContratoResumo";
+import pageStyle from "@/utils/pageStyle";
+import DocumentTemplate from "@/Documents/contratoAdesão/DocumentTemplate";
+import Carteiras from "@/Documents/carteiraAssociado/DocumentTemplate";
 
 
 
@@ -27,7 +31,72 @@ export function DadosAssociado({dadosassociado}:DataProps){
          const [observacao, setObservacao] = useState('');
          const [openAltPlano,setOpenAltPlano] = useState<boolean>(false)
          const [openInativar,setOpenInativar] = useState<boolean>(false)
+         const componentContrato = useRef<DocumentTemplate>(null)
+         const componentCarteira = useRef<Carteiras>(null)
+         const componentCarne = useRef<ImpressaoCarne>(null)
+         const componentResumo = useRef<ContratoResumo>(null)
+         const [printCarne, setPrintCarne] = useState(false)
+         const [printContrato, setPrintContrato] = useState(false)
+         const [printCarteira, setPrintCarteira] = useState(false)
+         const [printResumo, setPrintResumo] = useState(false)
 
+
+         const imprimirResumo =useReactToPrint({
+            pageStyle: pageStyle,
+            documentTitle:'RESUMO CONTRATO',
+            content:()=>componentResumo.current,
+         
+            onAfterPrint:()=>{
+                setPrintResumo(false)
+            }
+            
+    
+       })
+    
+    
+    
+    
+        const imprimirCarne =useReactToPrint({
+            pageStyle: pageStyle,
+            documentTitle:'CARNÊ ASSOCIADO',
+            content:()=>componentCarne.current,
+         
+            onAfterPrint:()=>{
+                setPrintCarne(false)
+            }
+            
+    
+       })
+    
+        
+        const imprimirContrato =useReactToPrint({
+            pageStyle: pageStyle,
+            documentTitle:'CONTRATO ASSOCIADO',
+            content:()=>componentContrato.current,
+            onAfterPrint:()=>{
+                setPrintContrato(false)
+            }
+    
+       })
+    
+    
+       const imprimirCarteira =useReactToPrint({
+        pageStyle:pageStyle,
+        documentTitle:'CONTRATO ASSOCIADO',
+        content:()=>componentCarteira.current,
+        onAfterPrint:()=>{
+            setPrintCarteira(false)
+        }
+    
+    })
+
+         
+             useEffect(()=>{
+                 printCarne && imprimirCarne()
+                 printContrato && imprimirContrato()
+                 printCarteira && imprimirCarteira()
+                 printResumo && imprimirResumo()
+             },[printCarne,printContrato,printCarteira,printResumo])
 
          function handleObservacao() {
 
@@ -72,6 +141,15 @@ export function DadosAssociado({dadosassociado}:DataProps){
 <ButtonGroup outline >
     <Button className="text-black font-semibold" color={'gray'} size={'xs'} onClick={()=>setOpenAltPlano(true)}>ALTERAR CATEGORIA</Button>
    <Button  className="text-black font-semibold" disabled={!permissoes.includes('ADM1.1.3')}  onClick={()=>setOpenInativar(true)} color={'gray'} size={'xs'} >{dadosassociado?.contrato?.situacao === 'ATIVO' ? "INATIVAR CONTRATO" : "ATIVAR CONTRATO"}</Button>
+
+ 
+    <Dropdown label="" renderTrigger={()=><Button theme={{color:{gray:"border border-gray-200 bg-white text-gray-900  enabled:hover:bg-gray-100 enabled:hover:text-cyan-700"},pill:{off:'rounded-r-lg'}}} className="text-black font-semibold" color={'gray'} size={'xs'} >IMPRIMIR DOCUMENTOS</Button>} >
+    <Dropdown.Item className="text-xs" onClick={()=>setPrintContrato(true)}>CONTRATO</Dropdown.Item>
+      <Dropdown.Item className="text-xs" onClick={()=>setPrintCarne(true)}>CARNÊ</Dropdown.Item>
+      <Dropdown.Item className="text-xs"  onClick={()=>setPrintCarteira(true)}>CARTEIRAS</Dropdown.Item>  
+      <Dropdown.Item className="text-xs" onClick={()=>setPrintResumo(true)}>RESUMO DE CONTRATO</Dropdown.Item>                               
+    </Dropdown>
+  
     
 </ButtonGroup>
 
@@ -152,8 +230,73 @@ setModalEdit(true)
 
                                 {openEdit && <ModalEditarDados dataForm={dadosassociado} setModalEdit={setModalEdit} openEdit={openEdit} />}
 
-                                <ModalAlterarPlano   openModal={openAltPlano} setOpenModal={setOpenAltPlano}/>
+                               {openAltPlano && <ModalAlterarPlano   openModal={openAltPlano} setOpenModal={setOpenAltPlano}/>}
                                {openInativar && <ModalInativar openModal={openInativar} setModal={setOpenInativar} />}
+
+
+
+
+
+
+                               <div style={{ display: 'none' }}>
+    {  printContrato &&      <DocumentTemplate
+            adesao={new Date(dadosassociado?.contrato?.dt_adesao ?? '')}
+            bairro={dadosassociado?.bairro ?? ''}
+            cidade={dadosassociado?.cidade ?? ''}
+            complemento={dadosassociado?.guia_rua ?? ''}
+            contrato={dadosassociado?.contrato?.id_contrato ?? 0}
+            cpf={dadosassociado?.cpfcnpj ?? ''}
+            dependentes={dadosassociado?.dependentes ?? []}
+            endereco={dadosassociado?.endereco ?? ''}
+            estado={dadosassociado?.uf ?? ''}
+            nome={dadosassociado?.nome ?? ''}
+            numero={String(dadosassociado?.numero) ?? ''}
+            rg={dadosassociado?.rg ?? ''}
+            telefone={dadosassociado?.celular1 ?? ''}
+            
+        ref={componentContrato} />}
+
+       { printCarteira && <Carteiras
+            dependentes={dadosassociado?.dependentes ?? []}
+            plano={dadosassociado?.contrato?.plano ?? ''}
+            ref={componentCarteira}
+            bairro={dadosassociado?.bairro ?? ''}
+            cartTitular={true}
+            celular={dadosassociado?.celular1 ?? ''}
+             cidade={dadosassociado?.cidade ?? ''}
+             contrato={dadosassociado?.contrato?.id_contrato ?? 0}
+             dependentesTitular={dadosassociado?.dependentes ?? []}
+             endereco={dadosassociado?.endereco ?? ''}
+             numero={Number(dadosassociado?.numero)}
+             titular={dadosassociado?.nome ?? ''}
+                uf={dadosassociado?.uf ?? ''}
+        />}
+
+        {printCarne && <ImpressaoCarne
+            ref={componentCarne}
+          arrayMensalidade={dadosassociado?.mensalidade?.filter(mensalidade => mensalidade.status !== 'P') ?? []}
+            dadosAssociado={
+                {bairro: dadosassociado?.bairro ?? '',
+                    cidade: dadosassociado?.cidade ?? '',
+                    endereco: dadosassociado?.endereco ?? '',
+                    id_contrato: dadosassociado?.contrato?.id_contrato ?? 0,
+                    nome: dadosassociado?.nome ?? '',
+                    uf: dadosassociado?.uf ?? '',
+                    numero: Number(dadosassociado?.numero),
+                    plano: dadosassociado?.contrato?.plano ?? '',
+                }
+            }
+        
+        />}
+
+{printResumo && <ContratoResumo
+ref={componentResumo}
+dados={dadosassociado??{}}
+/>}
+
+
+
+        </div>
                             </div>
     )
 }
