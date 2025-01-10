@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
 
-
-
 export default function middleware(req:NextRequest) {
     const token = req.cookies.get('@nextauth.token')?.value;
    // const protectRoutes = ['/admcontrato']
@@ -13,5 +11,5 @@ export default function middleware(req:NextRequest) {
 
 
 export const config = {
-matcher: ['/admcontrato','/reagendamento','/caixa','/cobranca','/estoque','/gerenciarAdministrativo','/vendas','/conveniados','/renovacao','/afapSaude','/servicos/:path*','/configuracoes/:path*','/financeiro','/sorteio/:path*'],
+matcher: ['/admcontrato','/caixa','/cobranca','/estoque','/gerenciarAdministrativo','/vendas','/conveniados','/renovacao','/afapSaude','/servicos/:path*','/configuracoes/:path*','/financeiro','/sorteio/:path*'],
 }

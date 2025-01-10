@@ -48,6 +48,7 @@ interface DadosAssociadoGeral {
     nome: string,
     id_empresa: string,
     endereco: string,
+    situacao: string,
     plano: string
     bairro: string,
     numero: number,
@@ -511,6 +512,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                                                 }} className={`  hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-600'}`}>Editar</button>
                                                 <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
+                                                    if(dadosAssociado.situacao === 'INATIVO') return toast.warning('Contrato inativo, impossível baixar mensalidade')
                                                     setModalMens(true)
                                                     setMensalidade({ ...item, valor_total: item.status === 'A' || item.status === 'R' || item.status === 'R' ? item.valor_principal : item.valor_total, data_pgto: item.data_pgto ? item.data_pgto : new Date() })
                                                 }} className={`   hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-600'}`}>Baixar</button>
@@ -572,6 +574,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
 
                                                 <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
+                                                    if(dadosAssociado.situacao === 'INATIVO') return toast.warning('Contrato inativo, impossível baixar mensalidade')
                                                     setModalMens(true)
                                                     setMensalidade({ ...item, valor_total: item.status === 'A' || item.status === 'E' || item.status === 'R' ? item.valor_principal : item.valor_total, data_pgto: item.data_pgto ? item.data_pgto : new Date() })
                                                 }} className={`  hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-600" : 'text-blue-600'}`}>Baixar</button>
@@ -603,6 +606,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
             associado:{...dadosAssociado,mensalidade:dadosAssociado.arrayMensalidade},
             aut:mensalidadeSelect?.aut,
             banco_dest:mensalidadeSelect?.banco_dest,
+            contrato:{situacao:dadosAssociado.situacao},
             data_pgto:mensalidadeSelect?.data_pgto,
             id_mensalidade_global:mensalidadeSelect?.id_mensalidade_global,
             form_pagto:mensalidadeSelect?.form_pagto,

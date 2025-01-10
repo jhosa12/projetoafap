@@ -1,6 +1,6 @@
 import { CaixaProps } from "@/pages/financeiro";
 import { Button, Modal, Table } from "flowbite-react";
-import {  useMemo } from "react";
+import {  useMemo, useState } from "react";
 
 interface DataProps {
     openModal: boolean;
@@ -12,11 +12,19 @@ interface DataProps {
 
 export function ModalResumoTags({openModal,setOpenModal,array,tag}:DataProps) {
 
+const [selectBanco,setSelectBanco] = useState<string>('TODOS')
+
 
  const handleSelecao= useMemo(() => { 
-    return tag === 'DINHEIRO' ? array?.filter((item: CaixaProps )=> item?.mensalidade?.form_pagto === 'DINHEIRO'|| item?.mensalidade?.form_pagto === undefined  ) :array?.filter((item: CaixaProps )=> item?.mensalidade?.form_pagto === tag)
-    },[tag])
 
+
+
+  if(selectBanco==='TODOS'){
+    return tag === 'DINHEIRO' ? array?.filter((item: CaixaProps )=> item.tipo === 'RECEITA' && (item.forma_pagamento === 'DINHEIRO'||item.forma_pagamento === null) ) :array?.filter((item: CaixaProps )=> item?.forma_pagamento === tag)
+}else{
+  return tag === 'DINHEIRO' ? array?.filter((item: CaixaProps )=> item.tipo === 'RECEITA' && (item.forma_pagamento === 'DINHEIRO'||item.forma_pagamento === null) ) :array?.filter((item: CaixaProps )=> item?.forma_pagamento === tag && item.banco===selectBanco)
+}
+    },[tag,selectBanco,array])
     return (
         <Modal
         className="absolute bg-gray-600 overflow-y-auto"
@@ -27,12 +35,19 @@ export function ModalResumoTags({openModal,setOpenModal,array,tag}:DataProps) {
         popup
         dismissible
       >
-        <Modal.Header className="flex text-white items-start justify-between bg-gray-800 rounded-t border-b p-2 border-gray-60">
+        <Modal.Header className="bg-gray-700 p-2" theme={{title:"inline-flex w-full justify-between text-xl font-medium items-center"}} >
           <h1 className="text-white">RESUMO DE LANÇAMENTOS</h1>
+          <select value={selectBanco}  onChange={(e)=>setSelectBanco(e.target.value)} className="bg-gray-700 text-white border-none text-sm focus:outline-none focus:ring-0">
+            <option>TODOS</option>
+            <option>CORA</option>
+            <option>BB</option>
+            <option>PAGBANK</option>
+            <option>CAIXA</option>
+          </select>
         </Modal.Header>
         <Modal.Body>
           <div className="">
-            <Table hoverable theme={{head:{cell:{base:"bg-gray-50 px-6 py-1 group-first/head:first:rounded-tl-lg group-first/head:last:rounded-tr-lg dark:bg-gray-700"}}, body: { cell: { base: " px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }} >
+            <Table hoverable theme={{root:{shadow:'none'},body:{cell:{base:"px-6 py-1"}},head:{cell:{base:"px-6 py-1"}}}} >
               <Table.Head>
 
                 <Table.HeadCell>Data</Table.HeadCell>
@@ -41,12 +56,12 @@ export function ModalResumoTags({openModal,setOpenModal,array,tag}:DataProps) {
                 <Table.HeadCell>Histórico</Table.HeadCell>
                 <Table.HeadCell>Valor</Table.HeadCell>
               </Table.Head>
-              <Table.Body className="divide-y text-xs text-black font-semibold" theme={{ cell: { base: 'px-4 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg' } }}>
+              <Table.Body className="divide-y text-xs text-black font-semibold" theme={{ cell: { base: 'px-6 py-1 ' } }}>
                 {handleSelecao?.map((item,index) =>
                 (<Table.Row key={index} className="bg-white">
 
                   <Table.Cell>{new Date(item.datalanc).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
-                  <Table.Cell>{item?.mensalidade?.banco_dest?item?.mensalidade?.banco_dest:item?.mensalidade?.form_pagto}</Table.Cell>
+                  <Table.Cell>{item.banco}</Table.Cell>
                   <Table.Cell>{item.descricao}</Table.Cell>
                   <Table.Cell>{item.historico}</Table.Cell>
 

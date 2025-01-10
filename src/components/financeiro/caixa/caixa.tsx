@@ -90,17 +90,17 @@ const{dataIni,dataFim}=ajustarData(data.startDate,data.endDate)
 },[arrayCcustos,postData,watch('endDate'),watch('id_empresa'),watch('startDate')]) 
 
 
-const calcularSoma = () => {
+const calcularSoma = useCallback (() => {
   setSoma({}as SomaProps)
 
 const soma = caixa?.reduce((acumulador, atual) => {
     const valor = Number(atual.valor);
 
     switch (atual.forma_pagamento) {
-      case 'PIX':atual.tipo==='RECEITA' ? acumulador.pix += valor:acumulador.pix -= valor; break;
-      case 'BOLETO':atual.tipo==='RECEITA' ? acumulador.boleto += valor: acumulador.boleto -= valor; break;
-      case 'CARTAO': case 'CARTÃO CREDITO': case 'CARTÃO DEBITO': atual.tipo==='RECEITA' ? acumulador.cartao += valor: acumulador.cartao -= valor; break;
-      case 'DINHEIRO':case undefined:case null:atual.tipo==='RECEITA' ? acumulador.dinheiro += valor: acumulador.dinheiro -= valor; break;
+      case 'PIX':atual.tipo==='RECEITA' ? acumulador.pix -= valor:acumulador.pix += valor; break;
+      case 'BOLETO':atual.tipo==='RECEITA' ? acumulador.boleto -= valor: acumulador.boleto += valor; break;
+      case 'CARTAO': case 'CARTAO CREDITO': case 'CARTAO DEBITO': atual.tipo==='RECEITA' ? acumulador.cartao -= valor: acumulador.cartao += valor; break;
+      case 'DINHEIRO':case undefined:case '':case null:atual.tipo==='RECEITA' ? acumulador.dinheiro += valor: acumulador.dinheiro -= valor; break;
       default: break;
     }
 
@@ -110,7 +110,7 @@ const soma = caixa?.reduce((acumulador, atual) => {
     return acumulador;
   }, { pix: 0, boleto: 0, cartao: 0, dinheiro: 0, deposito: 0, total: 0, transferencia: 0, despesas: 0 } as SomaProps);
   setSoma(soma??{ pix: 0, boleto: 0, cartao: 0, dinheiro: 0, deposito: 0, total: 0, transferencia: 0, despesas: 0 });
-}
+},[caixa])
 
 
 useEffect(() => {
@@ -134,9 +134,10 @@ useEffect(() => {
   return (
     <>
     
-<ModalResumoTags openModal={openModal} setOpenModal={setOpenModal} array={caixa} tag={tag}/>
+{openModal && <ModalResumoTags openModal={openModal} setOpenModal={setOpenModal} array={caixa} tag={tag}/>}
 
 {openModalImp && <ModalRelatorio openModal={openModalImp} setOpenModal={setOpenModalImp} caixa={caixa} arrayCcustos={arrayCcustos} startDate={watch('startDate')} endDate={watch('endDate')} />}
+
 
     
       <div className="flex flex-col  h-[calc(100vh-112px)] gap-2">
@@ -145,7 +146,7 @@ useEffect(() => {
 
           <Card theme={{root:{children:"inline-flex h-full p-2 gap-2"}}} >
             <div className="flex items-center h-full rounded-lg  text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><FcMultipleInputs size={25} /></div>
-            <div className="flex flex-col " >SALDO<span className="text-sm">{Number(somaValor?.total-somaValor?.despesas).toLocaleString('pt-BR', {
+            <div className="flex flex-col " >RECEITA TOTAL<span className="text-sm">{Number((somaValor?.total-somaValor?.despesas)+somaValor.pix+somaValor.cartao+somaValor.boleto+somaValor.transferencia).toLocaleString('pt-BR', {
               style: 'currency',
               currency: 'BRL'
             })}</span></div>
@@ -153,12 +154,12 @@ useEffect(() => {
 
           <Card theme={{root:{children:"inline-flex h-full p-2 gap-2"}}} >
             <div className="flex items-center h-full rounded-lg  text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><MdOutput size={25} /></div>
-            <div className="flex flex-col " >DESPESA TOTAL <span className="text-sm">{Number(somaValor?.despesas??0 ).toLocaleString('pt-BR',{style: 'currency',currency: 'BRL'})}</span></div>
+            <div className="flex flex-col " >DESPESA TOTAL <span className="text-sm">{Number(somaValor?.despesas-somaValor.transferencia-somaValor.boleto-somaValor.cartao-somaValor.pix ).toLocaleString('pt-BR',{style: 'currency',currency: 'BRL'})}</span></div>
           </Card>
 
           <Card onClick={() => {setTag('DINHEIRO'),setOpenModal(true)}} theme={{root:{children:"inline-flex h-full p-2 gap-2"}}} >
             <div className="flex items-center h-full rounded-lg  text-[#2a4fd7] p-1 border-[1px] border-[#2a4fd7]"><FaMoneyBillAlt size={25} /></div>
-            <div className="flex flex-col " >RECEITA CÉDULA<span className="text-sm">{Number(somaValor?.dinheiro??0).toLocaleString('pt-BR', {
+            <div className="flex flex-col " >CÉDULA<span className="text-sm">{Number(somaValor.total-somaValor.despesas).toLocaleString('pt-BR', {
               style: 'currency',
               currency: 'BRL'
             })}</span></div>
@@ -249,7 +250,7 @@ useEffect(() => {
 
 
         <div className="overflow-y-auto max-h-[calc(100vh-100px)] px-2">
-          <Table hoverable theme={{head:{cell:{base:"bg-gray-50 px-6 py-1 group-first/head:first:rounded-tl-lg group-first/head:last:rounded-tr-lg dark:bg-gray-700"}}, body: { cell: { base: " px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }}  >
+          <Table hoverable theme={{root:{shadow:'none'},body:{cell:{base:"px-4 py-1"}},head:{cell:{base:"px-4 py-1"}}}}  >
             <TableHead>
               <TableHeadCell className="whitespace-nowrap">Nº Lanc.</TableHeadCell>
               <TableHeadCell>Data</TableHeadCell>
@@ -259,9 +260,6 @@ useEffect(() => {
               <TableHeadCell>Histórico</TableHeadCell>
               <TableHeadCell>Tipo</TableHeadCell>
               <TableHeadCell>Valor</TableHeadCell>
-              <TableHeadCell>
-                <span className="sr-only">Edit</span>
-              </TableHeadCell>
             </TableHead>
             <Table.Body className="divide-y" theme={{ cell: { base: 'px-4 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg' } }}>
               {caixa?.map((item) =>
@@ -274,16 +272,11 @@ useEffect(() => {
                 <TableCell>{item.ccustos_desc}</TableCell>
                 <TableCell>{item.descricao}</TableCell>
                 <TableCell>{item.historico}</TableCell>
-                <TableCell>{item.tipo}</TableCell>
+                <TableCell className={`${item.tipo === 'RECEITA' ? 'text-green-500' : 'text-red-600'}`}>{item.tipo}</TableCell>
                 <TableCell>{Number(item.valor).toLocaleString('pt-BR', {
                   style: 'currency',
                   currency: 'BRL'
                 })}</TableCell>
-                <TableCell>
-                  <a href="#" className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
-                    Edit
-                  </a>
-                </TableCell>
               </TableRow>)
               )}
             </Table.Body>

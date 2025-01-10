@@ -7,9 +7,6 @@ import { LancamentosProps } from "../../pages/caixa";
 import { ajustarData } from "@/utils/ajusteData";
 
 
-
-
-
 interface DataProps{
     openModal:boolean,
     listar:Function
@@ -33,7 +30,7 @@ interface ValoresProps{
 export function ModalFechamento({openModal,setOpenModal,id_usuario,lancamentos,id_empresa,dataCaixa,dataCaixaEnd,listar}:DataProps){
     const [valores,setValores] = useState<ValoresProps>({cartao:0,cedulas:0,pix:0,transferencia:0})
     const [valoresCaixa,setValorCaixa] = useState<ValoresProps>({cartao:0,cedulas:0,pix:0,transferencia:0})
-    const [observacao,setObs] = useState<string>('')
+ // const [observacao,setObs] = useState<string>('')
     
 
 
@@ -41,17 +38,21 @@ useEffect(
     ()=>{
     
       const real:ValoresProps = lancamentos?.reduce((acc,at)=>{
-        if(at.forma_pagamento==='PIX'){
-            acc.pix+=Number(at.valor)
-        }else   if(at.forma_pagamento==='DINHEIRO'||at.forma_pagamento===null||at.forma_pagamento===''){
-            acc.cedulas+=Number(at.valor)
-        }
-        else   if(at.forma_pagamento==='CARTAO'){
-            acc.cartao+=Number(at.valor)
-        }
-        else   if(at.forma_pagamento==='TRANSFERENCIA'){
-            acc.transferencia+=Number(at.valor)
-        }
+     if(at.tipo==='RECEITA'){
+        acc.cedulas+=Number(at.valor)
+     }
+     if(at.tipo==='DESPESA'){
+        acc.cedulas-=Number(at.valor)
+     }
+     if(at.notafiscal==='PIX' ){
+       at.tipo==='RECEITA' ? acc.pix-=Number(at.valor):acc.pix+=Number(at.valor)
+     }
+     if(at.descricao==='CARTAO' ){
+        at.tipo==='RECEITA' ? acc.cartao-=Number(at.valor):acc.cartao+=Number(at.valor)
+      }
+      if(at.descricao==='TRANSFERENCIA' ){
+        at.tipo==='RECEITA' ? acc.transferencia-=Number(at.valor):acc.transferencia+=Number(at.valor)
+      }
         return acc
       },{cartao:0,cedulas:0,pix:0,transferencia:0} as ValoresProps)
 

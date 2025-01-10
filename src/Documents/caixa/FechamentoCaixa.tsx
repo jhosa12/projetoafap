@@ -6,32 +6,21 @@ import logo from "../../../public/novaLogo.png"
 import React from 'react';
 
 import { Table } from "flowbite-react";
-import { FechamentoProps, LancamentosProps } from "@/pages/caixa";
-import { SomaProps } from "@/components/financeiro/caixa/caixa";
-import Sintetico from "./sintetico";
-import { Analitico } from "./analitico";
+import { FechamentoProps } from "@/pages/caixa";
+
 
 
 interface DadosProps {
 
-  usuario: string,
-//  soma: SomaProps,
- // array: Array<LancamentosProps>,
+
  fechamento:FechamentoProps,
-  startDate: Date,
-  endDate: Date
+ 
 }
 
 class FechamentoResumo extends React.Component<DadosProps> {
 
-
-
-
-
-
   render() {
-    const { startDate, endDate, usuario,fechamento } = this.props;
-
+    const { fechamento } = this.props;
 
     return (
       <div className='flex flex-col w-full p-2   gap-5 '>
@@ -42,7 +31,7 @@ class FechamentoResumo extends React.Component<DadosProps> {
         <div className="flex flex-col gap-2 pl-5 ">
           <span>Caixa: {fechamento.usuario}</span>
           <span>Data Expedição: {new Date().toLocaleDateString('pt-BR')}-{new Date().toLocaleTimeString('pt-BR')}</span>
-          <span>Data Fechamento:  {new Date(fechamento.data).toLocaleDateString('pt-BR')}</span>
+          <span>Data Fechamento:  {new Date(fechamento.data).toLocaleDateString('pt-BR')}-{new Date(fechamento.data).toLocaleTimeString('pt-BR')}</span>
         </div>
         <div className="p-2">
        <Table theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 py-1 " } } }}>

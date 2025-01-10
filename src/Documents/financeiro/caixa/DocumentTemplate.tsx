@@ -40,7 +40,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
             <span>{new Date(dataInical).toLocaleDateString('pt-BR')}-{new Date(dataFinal).toLocaleDateString('pt-BR')}</span>
         </div>
         <div className="">
-              <Table theme={{head:{cell:{base:'px-2 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg'}}}}>
+              <Table theme={{root:{shadow:'none'},body:{cell:{base:"px-2 py-1"}},head:{cell:{base:"px-2 py-1"}}}}>
               <TableHead >
                 <TableHeadCell>Data</TableHeadCell>
                 <TableHeadCell>Método</TableHeadCell>
@@ -49,17 +49,17 @@ class DocumentTemplate extends React.Component<DadosProps> {
                 <TableHeadCell>Histórico</TableHeadCell>
                 <TableHeadCell>Valor</TableHeadCell>
               </TableHead>
-              <TableBody className="divide-y" theme={{ cell: { base: 'px-2 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg' } }}>
+              <TableBody className="divide-y" theme={{ cell: { base: 'px-2 py-2 ' } }}>
                 {item.lancamentos.map((it) =>
-                (<TableRow key={it.num_seq} className="bg-white">
+                (<TableRow key={it.num_seq} className="bg-white text-xs text-black">
 
-                  <TableCell className="text-black">{new Date(it.datalanc).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</TableCell>
-                  <TableCell className="text-black">{it?.mensalidade?.form_pagto}</TableCell>
-                  <TableCell className="text-black">{it?.mensalidade?.banco_dest}</TableCell>
-                  <TableCell className="text-black">{it?.descricao}</TableCell>
-                  <TableCell className="text-black">{it?.historico}</TableCell>
+                  <TableCell >{new Date(it.datalanc).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</TableCell>
+                  <TableCell >{it?.mensalidade?.form_pagto}</TableCell>
+                  <TableCell >{it?.mensalidade?.banco_dest}</TableCell>
+                  <TableCell >{it?.descricao}</TableCell>
+                  <TableCell >{it?.historico}</TableCell>
 
-                  <TableCell className="text-black">{Number(it.valor).toLocaleString('pt-BR', {
+                  <TableCell >{Number(it.valor).toLocaleString('pt-BR', {
                     style: 'currency',
                     currency: 'BRL'
                   })}</TableCell>
@@ -72,7 +72,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
           </div> 
     
           <div className="flex w-full mt-4 justify-center mb-4 border-b-[1px] pb-1 border-black">
-            <Table>
+            <Table theme={{root:{shadow:'none'},body:{cell:{base:"px-2 py-1"}},head:{cell:{base:"px-2 py-1"}}}}>
               <TableHead>
 
                 <TableHeadCell>CÉDULA</TableHeadCell>
@@ -82,31 +82,31 @@ class DocumentTemplate extends React.Component<DadosProps> {
                 <TableHeadCell>BOLETO</TableHeadCell>
                 <TableHeadCell>DEPOSITO</TableHeadCell>
               </TableHead>
-              <TableBody className="divide-y" theme={{ cell: { base: 'px-4 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg' } }}>
+              <TableBody className="divide-y" theme={{ cell: { base: 'px-2 py-2' } }}>
              
-                <TableRow className="bg-white">
+                <TableRow className="bg-white text-black">
 
-                  <TableCell className="text-black">{Number(item.dinheiro).toLocaleString('pt-BR',{
+                  <TableCell >{Number(item.dinheiro).toLocaleString('pt-BR',{
                     style:'currency',
                     currency:'BRL'
                   })}</TableCell>
-                  <TableCell className="text-black">{Number(item.pix).toLocaleString('pt-BR',{
+                  <TableCell >{Number(item.pix).toLocaleString('pt-BR',{
                     style:'currency',
                     currency:'BRL'
                   })}</TableCell>
-                  <TableCell className="text-black">{Number(item.cartao).toLocaleString('pt-BR',{
+                  <TableCell >{Number(item.cartao).toLocaleString('pt-BR',{
                     style:'currency',
                     currency:'BRL'
                   })}</TableCell>
-                  <TableCell className="text-black">{Number(item.transferencia).toLocaleString('pt-BR',{
+                  <TableCell >{Number(item.transferencia).toLocaleString('pt-BR',{
                     style:'currency',
                     currency:'BRL'
                   })}</TableCell>
-                  <TableCell className="text-black">{Number(item.boleto).toLocaleString('pt-BR',{
+                  <TableCell >{Number(item.boleto).toLocaleString('pt-BR',{
                     style:'currency',
                     currency:'BRL'
                   })}</TableCell>
-                    <TableCell className="text-black">{Number(item.deposito).toLocaleString('pt-BR',{
+                    <TableCell >{Number(item.deposito).toLocaleString('pt-BR',{
                     style:'currency',
                     currency:'BRL'
                   })}</TableCell>

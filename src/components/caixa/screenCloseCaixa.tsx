@@ -44,7 +44,7 @@ export function ScreenCloseCaixa({fechamento}:Props) {
     return(
         <div className="flex flex-col gap-4 justify-center bg-white items-center h-[calc(100vh-120px)]">
         <div style={{display:"none"}} >
-          <FechamentoResumo fechamento={fechamento} endDate={new Date()} startDate={new Date()} usuario="Joaquim"  ref={currentPage}  />
+          <FechamentoResumo fechamento={fechamento}  ref={currentPage}  />
         </div>
           <HiCheckCircle color="green" size={110} />
           <h1 className="text-2xl font-bold">CAIXA FECHADO</h1>

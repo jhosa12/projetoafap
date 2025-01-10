@@ -137,12 +137,11 @@ useEffect(() => {
                                         arrayMensalidade: dadosassociado?.mensalidade ?? [],
                                         id_associado: dadosassociado?.id_associado ?? 0,
                                         id_contrato: dadosassociado?.contrato?.id_contrato ?? 0,
-                                        valor_mensalidade: dadosassociado?.contrato?.valor_mensalidade ?? 0
+                                        valor_mensalidade: dadosassociado?.contrato?.valor_mensalidade ?? 0,
+                                        situacao: dadosassociado?.contrato?.situacao ?? '',
                                     }}
                                     setarDados={closeModa}
                                     usuario={{ id: usuario?.id, nome: usuario?.nome ?? '' }}
-
-
                                 />}
                             </Tabs.Item>
                             <Tabs.Item active={indexTab === 2}  title="ACORDOS" icon={FaHandshake}>

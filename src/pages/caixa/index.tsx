@@ -82,7 +82,8 @@ export interface MensalidadeBaixaProps{
     pix_por:string,
     form_pagto:string,
     banco_dest:string,
-    motivo_bonus:string
+    motivo_bonus:string,
+    situacao:string
 }
 
 

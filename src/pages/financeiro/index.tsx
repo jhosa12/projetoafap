@@ -33,6 +33,7 @@ export interface CaixaProps{
   forma_pagamento:string
   lanc_id: number,
   num_seq: number,
+  banco:string,
   conta: string,
   ccustos_id: number,
   id_grupo: number,
@@ -155,30 +156,27 @@ export default function LoginFinaceiro() {
   return (
 
     <div className="flex flex-col  w-full text-white">
+    <Tabs theme={{base: 'bg-white rounded-b-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-104px)]',tablist:{tabitem:{base: "flex items-center text-xs justify-center  px-4 py-3  font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
+        on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
+        off:"border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
+      }}}}}}}  variant="underline">
 
-    <Tabs theme={{base: 'bg-white rounded-b-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-104px)]',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
-      on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
-      off:"border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
-    }}}}}}}  variant="underline">
-
-<Tabs.Item  active title="Caixa" icon={FaCalendarAlt}>
+<Tabs.Item  active title="CAIXA" icon={()=><FaCalendarAlt className="mr-2 h-3 w-3"/>}>
 
 <Caixa empresas={empresas}   setCcustos={setCcustos}  arrayCcustos={ccustos}/>
    
     </Tabs.Item>
-
-   
-    <Tabs.Item title="Plano de Contas" icon={MdAccessTimeFilled}>
+    <Tabs.Item title="PLANO DE CONTAS" icon={()=><MdAccessTimeFilled className="mr-2 h-4 w-4"/>}>
     <PlanodeContas empresas={empresas} setListaContas={setListaPlanoContas} listaContas={listaPlanoContas} />;
     </Tabs.Item>
 
-    <Tabs.Item title="Contas a Pagar e Receber" icon={HiClipboardList}>
+    <Tabs.Item title="CONTAS A PAGAR E RECEBER" icon={()=><HiClipboardList className="mr-2 h-4 w-4"/>}>
     <ContasPagarReceber planodeContas={listaPlanoContas}  />
     </Tabs.Item>
-    <Tabs.Item title="Grafico" icon={BiSolidInjection}>
+    <Tabs.Item title="GRÁFICO" icon={()=><BiSolidInjection className="mr-2 h-4 w-4"/>}>
     <GraficoScreen empresas={empresas}  />
     </Tabs.Item>
-    <Tabs.Item  icon={IoMdSettings}  title="Configurar">
+    <Tabs.Item  icon={()=><IoMdSettings className="mr-2 h-4 w-4"/>}  title="FECHAMENTO CAIXA">
     <Conferencia />
     </Tabs.Item>
   </Tabs>
