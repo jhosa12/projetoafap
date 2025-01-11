@@ -36,8 +36,8 @@ const [selectBanco,setSelectBanco] = useState<string>('TODOS')
         dismissible
       >
         <Modal.Header className="bg-gray-700 p-2" theme={{title:"inline-flex w-full justify-between text-xl font-medium items-center"}} >
-          <h1 className="text-white">RESUMO DE LANÇAMENTOS</h1>
-          <select value={selectBanco}  onChange={(e)=>setSelectBanco(e.target.value)} className="bg-gray-700 text-white border-none text-sm focus:outline-none focus:ring-0">
+          <h1 className="text-white text-sm">RESUMO DE LANÇAMENTOS</h1>
+          <select value={selectBanco}  onChange={(e)=>setSelectBanco(e.target.value)} className="bg-gray-700 cursor-pointer text-white border-none text-xs focus:outline-none focus:ring-0">
             <option>TODOS</option>
             <option>CORA</option>
             <option>BB</option>
@@ -76,11 +76,7 @@ const [selectBanco,setSelectBanco] = useState<string>('TODOS')
             </Table>
           </div>
         </Modal.Body>
-        <Modal.Footer>
-          <Button color="gray" className="bg-gray-400"  onClick={() => { }}>
-           Cancelar
-          </Button>
-        </Modal.Footer>
+       
       </Modal>
     )
 }

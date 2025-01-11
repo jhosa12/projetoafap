@@ -17,6 +17,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { MdAccessTimeFilled } from "react-icons/md";
 import { HiClipboardList } from "react-icons/hi";
 import { BiSolidInjection } from "react-icons/bi";
+import { IoBarChart } from "react-icons/io5";
 
 
 interface DataProps {
@@ -173,7 +174,7 @@ export default function LoginFinaceiro() {
     <Tabs.Item title="CONTAS A PAGAR E RECEBER" icon={()=><HiClipboardList className="mr-2 h-4 w-4"/>}>
     <ContasPagarReceber planodeContas={listaPlanoContas}  />
     </Tabs.Item>
-    <Tabs.Item title="GRÁFICO" icon={()=><BiSolidInjection className="mr-2 h-4 w-4"/>}>
+    <Tabs.Item title="GRÁFICO" icon={()=><IoBarChart className="mr-2 h-4 w-4"/>}>
     <GraficoScreen empresas={empresas}  />
     </Tabs.Item>
     <Tabs.Item  icon={()=><IoMdSettings className="mr-2 h-4 w-4"/>}  title="FECHAMENTO CAIXA">

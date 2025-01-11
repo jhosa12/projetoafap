@@ -11,6 +11,8 @@ import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
 import { useReactToPrint } from "react-to-print";
 import { ModalConferencia } from "./modalConferencia";
 import { CaixaProps } from "@/pages/financeiro";
+import { IoMdTrash } from "react-icons/io";
+import { ModalConfirmar } from "@/components/afapSaude/components/modalConfirmar";
 
 
 
@@ -48,6 +50,8 @@ export default function Conferencia({  }: DataProps) {
   const [caixa,setCaixa] = useState<Array<FechamentoProps>>([])
   const [dadosCaixa,setDadosCaixa] = useState<Partial<FechamentoProps>>({caixaCad:{cartao:0,cedulas:0,pix:0,transferencia:0},caixaReal:{cartao:0,cedulas:0,pix:0,transferencia:0},caixaVerif:{cartao:0,cedulas:0,pix:0,transferencia:0},ccustos:{descricao:''},data:new Date(),dataConf:new Date(),id_ccustos:null,id_conf:null,observacao:'',status:'' })
 
+  const [openExcluir,setExcluir] = useState(false)
+
 useEffect(
   ()=>{
     listar()
@@ -77,14 +81,17 @@ const listar =useCallback( async()=>{
 )
 
 
-const handleAtualizar=async()=>{
+const handleAtualizar=useCallback(async()=>{
+  const dataConferencia = new Date()
+  dataConferencia.setTime(dataConferencia.getTime() - dataConferencia.getTimezoneOffset() * 60 * 1000);
 try {
       const response =await toast.promise(
         api.post('/caixa/atualizarFechamento',{
           id_conf:dadosCaixa.id_conf,
           caixaCad:dadosCaixa.caixaCad,
           caixaVerif:dadosCaixa.caixaVerif,
-          caixaReal:dadosCaixa.caixaReal
+          caixaReal:dadosCaixa.caixaReal,
+          dataConferencia:dataConferencia.toISOString()  
                 }),
                 {
                   error:'Erro ao atualizar dados',
@@ -95,22 +102,32 @@ try {
       const novo = [...caixa]
       const index = caixa.findIndex(it=>it.id_conf===dadosCaixa.id_conf)
       novo[index] = response.data
-
+      console.log(response.data)
       setCaixa(novo)
 } catch (error) {
-  console.log(error)
+  //console.log(error)
 }
-}
+},[dadosCaixa]
 
-
+)
+const handleExcluir = useCallback(async()=>{
+  try {
+    const response = await toast.promise(
+      api.delete(`/financeiro/deletarFechamento`,{
+        data:{id_conf:dadosCaixa.id_conf}}),
+      {
+        error:'Erro ao excluir dados',
+        pending:'Excluindo....',
+        success:'Dados excluidos com sucesso!'
+      }
+    )
   
-
-
-
-
-
-
-
+    listar()
+    setExcluir(true)
+  } catch (error) {
+    
+  }
+},[dadosCaixa.id_conf])
 
 
 
@@ -121,7 +138,7 @@ try {
         <Button size={'sm'} onClick={() =>{}}>Nova Consulta</Button>
       </div>
       <div className="overflow-x-auto">
-        <Table hoverable theme={{ body: { cell: { base: "px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg" } } }}  >
+        <Table theme={{root:{shadow:'none'},body:{cell:{base:"px-4 py-1"}},head:{cell:{base:"px-4 py-1"}}}}  >
 
           <Table.Head>
             <Table.HeadCell>Caixa</Table.HeadCell>
@@ -135,7 +152,7 @@ try {
               <span className="sr-only">Edit</span>
             </Table.HeadCell>
           </Table.Head>
-          <Table.Body className="divide-y">
+          <Table.Body className="divide-y" theme={{ cell: { base: 'px-4 py-2' } }}>
             {caixa?.map((item, index) => (
               <Table.Row key={item.id_conf} className="text-black ">
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
@@ -144,18 +161,16 @@ try {
                 <Table.Cell> {new Date(item.data).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</Table.Cell>
                 <Table.Cell> 
                   {new Date(item.dataFecha).toLocaleDateString('pt-BR',{timeZone:'UTC'})}-
-                  {new Date(item.dataFecha).toLocaleTimeString('pt-BR',{timeZone:'UTC'})}
+                  {new Date(item.dataFecha).toLocaleTimeString('pt-BR')}
                   
                   </Table.Cell>
                   <Table.Cell> {item.dataConf && new Date(item.dataConf).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</Table.Cell>
                 <Table.Cell>{Teste({caixaCadastrado:item.caixaCad,caixaReal:item.caixaReal,caixaVerificado:item.caixaVerif})==='PENDENTE'?<Badge className="justify-center" color="warning">PENDENTE</Badge>:Teste({caixaCadastrado:item.caixaCad,caixaReal:item.caixaReal,caixaVerificado:item.caixaVerif})==='DIVERGENTE'?<Badge className="justify-center" color="failure">DIVERGENTE</Badge>:<Badge color="success" className="justify-center">CONVERGENTE</Badge>}</Table.Cell>
                 <Table.Cell>{item.observacao}</Table.Cell>
                 <Table.Cell className="space-x-6">
-                  <button onClick={() => {  }} className="font-medium text-gray-500 hover:text-cyan-600">
-                    <HiPencil size={18} />
-                  </button>
-                  <button onClick={() => { }} className="font-medium text-gray-500 hover:text-red-600 ">
-                    <HiOutlineTrash size={20} />
+                
+                  <button onClick={() => {setDadosCaixa({...item}), setExcluir(true)}} className="font-medium text-gray-500 hover:text-red-600 ">
+                    <IoMdTrash size={20} />
                   </button>
                   <button onClick={() => {setDadosCaixa({...item}), setOpenModal(true)}} className="font-medium text-gray-500 hover:text-blue-600 ">
                     <HiDocument size={20} />
@@ -179,7 +194,16 @@ try {
 
 
 
-      <ModalConferencia handleAtualizar={handleAtualizar} setDadosCaixa={setDadosCaixa} dadosCaixa={dadosCaixa??{}} openModal={openModal} setOpenModal={setOpenModal}/>
+     {openModal && <ModalConferencia handleAtualizar={handleAtualizar} setDadosCaixa={setDadosCaixa} dadosCaixa={dadosCaixa??{}} openModal={openModal} setOpenModal={setOpenModal}/>}
+
+
+
+     <ModalConfirmar
+        handleConfirmar={handleExcluir}
+        pergunta={"Tem certeza que deseja excluir esse caixa?"}
+        openModal={openExcluir}
+         setOpenModal={setExcluir}
+     />
     </div>
   );
 }

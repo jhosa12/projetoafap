@@ -119,7 +119,6 @@ useEffect(() => {
 
 
 
-
   const handleSelectCheck = (id: number) => {
     const novoArray = [...arrayCcustos]
     const index = novoArray.findIndex(item => item.id_ccustos === id)
@@ -127,7 +126,6 @@ useEffect(() => {
     setCcustos(novoArray)
     console.log(novoArray)
   }
-
 
 
 
@@ -216,7 +214,7 @@ useEffect(() => {
           render={({ field: { onChange, value } }) => (
             <DatePicker 
             dateFormat={'dd/MM/yyyy'} 
-            className="rounded-lg py-1.5 text-xs bg-gray-50 text-black" 
+            className="rounded-lg py-1.5 text-xs bg-gray-50 border-gray-300 text-black" 
              onChange={(date) =>date && onChange(date)} 
              selected={value} locale={pt} />
           )}
@@ -226,10 +224,10 @@ useEffect(() => {
 <Controller
           control={control}
           name="endDate"
-          render={({ field: { onChange, value } }) => (
+          render={({ field: { onChange, value} }) => (
             <DatePicker 
             dateFormat={'dd/MM/yyyy'} 
-            className="rounded-lg py-1.5 text-xs bg-gray-50 text-black" 
+            className="rounded-lg py-1.5 text-xs bg-gray-50 border-gray-300 text-black" 
              onChange={(date) =>date && onChange(date)} 
              selected={value} locale={pt} />
           )}
@@ -261,7 +259,7 @@ useEffect(() => {
               <TableHeadCell>Tipo</TableHeadCell>
               <TableHeadCell>Valor</TableHeadCell>
             </TableHead>
-            <Table.Body className="divide-y" theme={{ cell: { base: 'px-4 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg' } }}>
+            <Table.Body className="divide-y" theme={{ cell: { base: 'px-4 py-2 ' } }}>
               {caixa?.map((item) =>
               (<TableRow key={item.lanc_id} className="bg-white text-xs font-semibold text-black">
                 <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">

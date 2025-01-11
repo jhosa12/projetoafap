@@ -10,13 +10,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { api } from "@/services/apiClient"
 import { LancamentosProps } from "@/pages/caixa"
-import { Button, Card, Select } from "flowbite-react"
+import { Button, Card, Checkbox, Dropdown, Label, Select } from "flowbite-react"
 import { FiAlertTriangle } from "react-icons/fi";
 import { SubmitHandler, useForm } from "react-hook-form"
-import { watch } from "fs"
-import { id } from "date-fns/locale"
-import { AuthContext } from "@/contexts/AuthContext"
 import { EmpresaProps } from "@/types/empresa"
+import { list } from "postcss"
+import ListarObitos from "@/pages/servicos/listarObitos"
+import { ajustarData } from "@/utils/ajusteData"
 
 
 
@@ -31,7 +31,6 @@ interface MetaProps{
   conta:string,
   metas:Array<{valor:number}>
 }
-
 
 interface DataProps{
   listaContas:Array<PlanoContasProps>
@@ -58,8 +57,6 @@ export function PlanodeContas({listaContas,setListaContas,empresas}:DataProps){
     const [setorSelect, setSetor] = useState<number>(0)
     const [gruposSelect, setGruposSelect] = useState<Array<GruposProps>>()
     const [resumoConta, setResumoConta] = useState<Array<SomaValorConta>>([])
-    const [dropPlanos, setDropPlanos] = useState(false)
-    const [todos, setTodos] = useState(true)
     const [loading,setLoading] = useState(false)
     const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
     const [metas,setMetas] = useState<Array<MetaProps>>([])
@@ -69,6 +66,7 @@ const {watch,setValue,handleSubmit,register} = useForm<FiltroFormProps>({
   defaultValues:{
     startDate:new Date(),
     endDate:new Date(),
+    
   }
 })
     
@@ -76,12 +74,14 @@ const {watch,setValue,handleSubmit,register} = useForm<FiltroFormProps>({
 
 
 
-  const handleFiltrar:SubmitHandler<FiltroFormProps> = async(data)=>{
+  const handleFiltrar:SubmitHandler<FiltroFormProps> =useCallback(async(data)=>{
+
+    const {dataIni,dataFim} = ajustarData(data.startDate,data.endDate)
 
       try {
         const response = await api.post("/financeiro/resumoLancamentos",{
-          startDate:data.startDate,
-          endDate:data.endDate,
+          startDate:dataIni,
+          endDate:dataFim,
           id_empresa:data.id_empresa,
           setor:data.setor,
           contas:listaContas.filter(item=>item.check).map(item=>item.conta),
@@ -107,7 +107,7 @@ const {watch,setValue,handleSubmit,register} = useForm<FiltroFormProps>({
       } catch (error) {
         
       }
-  }
+  },[listaContas,watch('startDate'),watch('endDate'),watch('id_empresa'),watch('setor')])
 
 
     const toogleAberto = (index: number) => {
@@ -121,44 +121,12 @@ const {watch,setValue,handleSubmit,register} = useForm<FiltroFormProps>({
     };
 
 
-
-
-
-
-
-    useEffect(() => {
-      if (!todos) {
-        const novoArray = listaContas.map(item => { return { ...item, check: false } })
-        setListaContas(novoArray)
-  
-      }
-      else {
-        const novoArray = listaContas.map(item => { return { ...item, check: true } })
-        setListaContas(novoArray)
-  
-  
-      }
-  
-    }, [todos])
-
-
-
-
-      function handleOptionChange(conta: string) {
-        const novoLancamentos = listaContas.map((item) => {
-          if (item.conta === conta) {
-            return { ...item, check: !item.check }; // Alternando o valor de check
-          }
-          return item;
-        });
-        setListaContas(novoLancamentos)
-        // Filtrando apenas os itens com check verdadeiro
-    
-    
-      }
-
-
-     
+    const togglePlanoContas = (index: number)=> {
+      setListaContas(
+        listaContas.map((item,i)=> i===index ? {...item,check:!item.check}:item)
+      )
+    }
+   
     
    const  handleListaLanc= useCallback(
    async (conta: string, index: number)=> {
@@ -184,8 +152,6 @@ const {watch,setValue,handleSubmit,register} = useForm<FiltroFormProps>({
    )
     
     
-
-
 
     return(
         <div className="bg-white rounded-lg h-[calc(100vh-112px)] ">
@@ -249,40 +215,37 @@ const {watch,setValue,handleSubmit,register} = useForm<FiltroFormProps>({
 
 
 
+                   <Dropdown dismissOnClick={false} placement="bottom" label="Bairros" renderTrigger={() => (
+                
+                                <button type="button"
+                                  className="flex  h-full justify-between items-center py-2 pl-2 pr-2 uppercase border rounded-lg  text-xs bg-gray-50 border-gray-300 placeholder-gray-400  ">
+                
+                                 PLANO DE CONTAS
+                                  <IoIosArrowDown className="text-gray-500" size={14} />
+                                </button>
+                
+                              )}>
+                                <ul className="max-h-64 overflow-y-auto  px-2"> {/* Limite de altura com rolagem */}
+                
+                           
+                                  {listaContas?.map((item, index) => (
+                
+                                    <li key={index}  className="flex  items-center gap-4 p-2">
+                                      <Checkbox onChange={() => togglePlanoContas(index)} checked={item.check} id={`bairro-${index}`} />
+                                      <Label className="hover:cursor-pointer" htmlFor={`bairro-${index}`}>{item.descricao}</Label>
+                                    </li>
+                
+                                  ))}
+                                </ul>
+                
+                
+                
+                              </Dropdown>
 
 
 
 
-
-              <div className="flex h-full relative text-black w-1/4">
-                <div onClick={() => setDropPlanos(!dropPlanos)}
-                  className="flex w-full h-full justify-between items-center py-2 pl-2 pr-2 uppercase border rounded-lg  text-xs bg-gray-50 border-gray-300 placeholder-gray-400  focus:ring-blue-500 focus:border-blue-500">
-
-                  {todos ? 'TODOS' : 'PERSONALIZADO'}
-                  <IoIosArrowDown />
-
-
-                </div>
-
-                {dropPlanos && <ul className="absolute w-full top-10 left-1 max-h-64 overflow-y-auto  bg-gray-100 p-1 rounded-lg">
-                  <li className="flex items-center px-2 py-1">
-                    <input onChange={() => setTodos(!todos)} type="checkbox" checked={todos} />
-                    <label className="ms-2  text-xs whitespace-nowrap  text-gray-600">TODOS</label>
-                  </li>
-                  {listaContas.map((item, index) => {
-                    return (
-                      <li className="flex items-center px-2 py-1">
-                        <input onChange={() => handleOptionChange(item?.conta)} type="checkbox" checked={item?.check} value={item?.conta} />
-                        <label className="ms-2  text-xs whitespace-nowrap text-gray-700">{item?.descricao.toUpperCase()}</label>
-                      </li>
-                    )
-                  })}
-                </ul>}
-
-
-
-              </div>
-
+             
 
 
               <div className="inline-flex  items-center text-black gap-3">

@@ -97,10 +97,10 @@ async function contagem() {
           <MdLogout color='white' size={23}/>
           </button>
           <Tooltip id='logout'/>
-          {usuario?.image && <Avatar img={ `data:image/jpeg;base64,${usuario.image}` }  alt="avatar of Jese" rounded />}
-<div className  ="font-medium text-sm text-white">
+          {usuario?.image && <Avatar img={`${usuario.image}`}  alt="avatar of Jese" rounded />}
+<div className  ="flex flex-col font-medium text-sm text-white">
     <span>{usuario?.nome}</span>
-    <div className="text-sm  text-gray-400">{usuario?.cargo}</div>
+    <span className="text-xs  text-gray-400">{usuario?.cargo}</span>
 </div>
 </div>
     </div>

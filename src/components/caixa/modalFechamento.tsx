@@ -88,7 +88,7 @@ useEffect(
                 data:data.toISOString(),
                 observacao:'teste',
                 caixaReal:valoresCaixa,
-                dataFecha:dtFecha.toISOString(),
+                dataFechamento:dtFecha.toISOString(),
                 startDate:dataIni,
                 endDate:dataFim
               

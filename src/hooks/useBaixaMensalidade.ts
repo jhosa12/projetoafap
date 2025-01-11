@@ -30,7 +30,7 @@ interface PayloadProps {
     id_empresa:string
 }
 
- const useBaixaMensalidade = (url:string):{
+ const useBaixaMensalidade = (url:string,setModal:(state:boolean)=>void,atualizar:Function):{
    
     error:AxiosError|null;
     postData:(payload:Partial<PayloadProps>)=>Promise<void>;
@@ -48,7 +48,7 @@ interface PayloadProps {
 
         const exibirToastERetornar = (mensagem:string, tipo:ToastType = "warn") => {
             toast[tipo](mensagem);
-            return;
+            return ;
         };
         // Validações iniciais
         if (!payload?.form_pagto) {
@@ -57,6 +57,7 @@ interface PayloadProps {
 
         if(payload.form_pagto === 'PIX' && !payload.pix_por) {
             return exibirToastERetornar('Informe o pix por!');
+            
         }
         
         if (payload.form_pagto !== 'DINHEIRO' && !payload.banco_dest) {
@@ -87,11 +88,15 @@ interface PayloadProps {
             )
             
            // setarDadosAssociado({mensalidade:response.data})
+            atualizar()
             setData(response.data)
+
+            setModal(false)
+           
     
         }catch(error:any){
           //  setError(error as AxiosError)
-          console.log(error)
+         // console.log(error)
           toast.error(error.response?.data?.error??'Erro desconhecido')
     
         }

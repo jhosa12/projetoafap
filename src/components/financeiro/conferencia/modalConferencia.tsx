@@ -25,12 +25,12 @@ export function ModalConferencia({openModal,setOpenModal,dadosCaixa,setDadosCaix
             <Modal.Header/>
             <Modal.Body>
                 <div className="inline-flex w-full justify-between">
-                    <Card>
+                    <Card >
                         <h5>Caixa Cadastrado </h5>
-                        <FloatingLabel onChange={e=>setDadosCaixa({...dadosCaixa,caixaCad:{...dadosCaixa?.caixaCad,cedulas:Number(e.target.value)}})} value={dadosCaixa?.caixaCad?.cedulas}  variant="standard" label="CEDULA"/>
-                        <FloatingLabel value={dadosCaixa?.caixaCad?.pix}  onChange={e=>setDadosCaixa({...dadosCaixa,caixaCad:{...dadosCaixa?.caixaCad,pix:Number(e.target.value)}})}  variant="standard" label="PIX"/>
-                        <FloatingLabel value={dadosCaixa?.caixaCad?.cartao} onChange={e=>setDadosCaixa({...dadosCaixa,caixaCad:{...dadosCaixa?.caixaCad,cartao:Number(e.target.value)}})} variant="standard" label="CARTÃO"/>
-                        <FloatingLabel value={dadosCaixa?.caixaCad?.transferencia} onChange={e=>setDadosCaixa({...dadosCaixa,caixaCad:{...dadosCaixa?.caixaCad,transferencia:Number(e.target.value)}})} variant="standard" label="TRANSFERÊNCIA"/>
+                        <FloatingLabel disabled onChange={e=>setDadosCaixa({...dadosCaixa,caixaCad:{...dadosCaixa?.caixaCad,cedulas:Number(e.target.value)}})} value={dadosCaixa?.caixaCad?.cedulas}  variant="standard" label="CEDULA"/>
+                        <FloatingLabel disabled value={dadosCaixa?.caixaCad?.pix}  onChange={e=>setDadosCaixa({...dadosCaixa,caixaCad:{...dadosCaixa?.caixaCad,pix:Number(e.target.value)}})}  variant="standard" label="PIX"/>
+                        <FloatingLabel disabled value={dadosCaixa?.caixaCad?.cartao} onChange={e=>setDadosCaixa({...dadosCaixa,caixaCad:{...dadosCaixa?.caixaCad,cartao:Number(e.target.value)}})} variant="standard" label="CARTÃO"/>
+                        <FloatingLabel disabled value={dadosCaixa?.caixaCad?.transferencia} onChange={e=>setDadosCaixa({...dadosCaixa,caixaCad:{...dadosCaixa?.caixaCad,transferencia:Number(e.target.value)}})} variant="standard" label="TRANSFERÊNCIA"/>
 
                       
 
@@ -38,10 +38,10 @@ export function ModalConferencia({openModal,setOpenModal,dadosCaixa,setDadosCaix
 
                     <Card>
                         <h5>Caixa Real</h5>
-                        <FloatingLabel value={dadosCaixa?.caixaReal?.cedulas}  onChange={e=>setDadosCaixa({...dadosCaixa,caixaReal:{...dadosCaixa?.caixaReal,cedulas:Number(e.target.value)}})} variant="standard" label="CEDULA"/>
-                        <FloatingLabel value={dadosCaixa?.caixaReal?.pix}  onChange={e=>setDadosCaixa({...dadosCaixa,caixaReal:{...dadosCaixa?.caixaReal,pix:Number(e.target.value)}})}  variant="standard" label="PIX"/>
-                        <FloatingLabel value={dadosCaixa?.caixaReal?.cartao}  onChange={e=>setDadosCaixa({...dadosCaixa,caixaReal:{...dadosCaixa?.caixaReal,cartao:Number(e.target.value)}})}  variant="standard" label="CARTÃO"/>
-                        <FloatingLabel value={dadosCaixa?.caixaReal?.transferencia}  onChange={e=>setDadosCaixa({...dadosCaixa,caixaReal:{...dadosCaixa?.caixaReal,transferencia:Number(e.target.value)}})}  variant="standard" label="TRANSFERÊNCIA"/>
+                        <FloatingLabel disabled value={dadosCaixa?.caixaReal?.cedulas}  onChange={e=>setDadosCaixa({...dadosCaixa,caixaReal:{...dadosCaixa?.caixaReal,cedulas:Number(e.target.value)}})} variant="standard" label="CEDULA"/>
+                        <FloatingLabel disabled value={dadosCaixa?.caixaReal?.pix}  onChange={e=>setDadosCaixa({...dadosCaixa,caixaReal:{...dadosCaixa?.caixaReal,pix:Number(e.target.value)}})}  variant="standard" label="PIX"/>
+                        <FloatingLabel disabled value={dadosCaixa?.caixaReal?.cartao}  onChange={e=>setDadosCaixa({...dadosCaixa,caixaReal:{...dadosCaixa?.caixaReal,cartao:Number(e.target.value)}})}  variant="standard" label="CARTÃO"/>
+                        <FloatingLabel disabled value={dadosCaixa?.caixaReal?.transferencia}  onChange={e=>setDadosCaixa({...dadosCaixa,caixaReal:{...dadosCaixa?.caixaReal,transferencia:Number(e.target.value)}})}  variant="standard" label="TRANSFERÊNCIA"/>
                        
 
                     </Card>

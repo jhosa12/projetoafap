@@ -11,9 +11,10 @@ import useBaixaMensalidade from "@/hooks/useBaixaMensalidade";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { MensalidadeBaixaProps } from "@/pages/caixa";
 import { Button, Checkbox, Modal, Select, TextInput } from "flowbite-react";
+import { set } from "date-fns";
 
 interface Props{
-    handleAtualizar?:Function
+    handleAtualizar:Function
     openModal:boolean,
     setOpenModal:(open:boolean)=>void
     mensalidade:Partial<MensalidadeBaixaProps>
@@ -24,7 +25,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
 
     const {usuario,permissoes,selectEmp}=useContext(AuthContext)
     const [desconto,setDesconto] = useState(false)
-    const {error,postData} = useBaixaMensalidade('/mensalidade/baixa')
+    const {error,postData} = useBaixaMensalidade('/mensalidade/baixa',setOpenModal,handleAtualizar)
     const {register,handleSubmit,watch,control,reset} = useForm<MensalidadeBaixaProps>(
       
     )
@@ -53,8 +54,8 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
         
            
         
-         
-           
+         try {
+
              await postData(
                    {
                         id_global:data?.id_global,
@@ -84,8 +85,14 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
                  
                 );  
 
-             handleAtualizar && await handleAtualizar({endDate:new Date(),startDate:new Date(),id_empresa:selectEmp,descricao:''}) 
-              setOpenModal(false)
+           //  handleAtualizar && await handleAtualizar({endDate:new Date(),startDate:new Date(),id_empresa:selectEmp,descricao:''}) 
+          
+            
+         } catch (error) {
+            
+         }
+           
+            
         }
     return(
 

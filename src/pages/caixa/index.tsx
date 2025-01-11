@@ -342,7 +342,7 @@ return(
 {/*<ModalDadosMensalidade  handleChamarFiltro={handleChamarFiltro} setMensalidade={setMensalidade} mensalidade={mensalidade??{}} open={modalDados} setOpen={setModalDados}/>*/}
 
 {<ModalMensalidade
-handleAtualizar={()=>listarLancamentos({startDate:new Date(),endDate:new Date(),id_empresa:selectEmp,descricao:''})}
+handleAtualizar={()=>listarLancamentos({startDate:watch('startDate'),endDate:watch('endDate'),id_empresa:selectEmp,descricao:watch('descricao')})}
 mensalidade={{
     ...mensalidade,
   
