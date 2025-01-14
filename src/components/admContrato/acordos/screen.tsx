@@ -1,12 +1,13 @@
 
 import React, {  useContext, useState } from 'react';
-import { MdDeleteForever} from 'react-icons/md';
+import { MdDeleteForever, MdEdit} from 'react-icons/md';
 import { RiAddCircleFill } from 'react-icons/ri';
 import { toast } from 'react-toastify'
 import { AuthContext } from '@/contexts/AuthContext';
 import { Button, ButtonGroup } from 'flowbite-react';
 import { AcordoProps, MensalidadeProps } from '@/types/financeiro';
 import { ModalAcordos } from './modalAcordos';
+import { FaFileArrowDown } from 'react-icons/fa6';
 
 const themeLight = {
     color:{
@@ -30,7 +31,7 @@ interface DataProps{
 
 
 export function Acordos({acordos,mensalidades,id_contrato_global,id_global,usuario,id_empresa,id_associado,id_contrato}:DataProps) {
-const {permissoes} = useContext(AuthContext)
+const {permissoes,consultores} = useContext(AuthContext)
 const [openAcordo,setOpenAcordo] = useState(false)
 const [acordo,setAcordo] = useState<Partial<AcordoProps>>()
 
@@ -50,16 +51,16 @@ const [acordo,setAcordo] = useState<Partial<AcordoProps>>()
                open={openAcordo}
                usuario={usuario.nome}
                id_usuario={usuario.id}
+               consultores={consultores}
 
                 />}
 
             <div className="flex w-full  gap-2 ml-2">
            
                 <ButtonGroup>
-                <Button theme={themeLight}  onClick={()=>setOpenAcordo(true)} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' /> Novo Acordo</Button>
-
-                <Button theme={themeLight}  onClick={()=>setOpenAcordo(true)} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' />Baixar</Button>
-                <Button theme={themeLight}  onClick={()=>setOpenAcordo(true)} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' />Alterar</Button>
+                <Button theme={themeLight}  onClick={()=>{setOpenAcordo(true);setAcordo({})}} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' /> Novo Acordo</Button>
+                <Button theme={themeLight}  onClick={()=>setOpenAcordo(true)} type="button" color='light' size='xs'><FaFileArrowDown className='mr-1 h-4 w-4' />Baixar</Button>
+                <Button theme={themeLight}  onClick={()=>setOpenAcordo(true)} type="button" color='light' size='xs'><MdEdit className='mr-1 h-4 w-4' />Alterar</Button>
                 <Button theme={themeLight} onClick={() =>{}} type="button" color='light' size='xs'><MdDeleteForever className='mr-1 h-4 w-4' /> Excluir</Button>
             </ButtonGroup>
 
@@ -110,7 +111,7 @@ const [acordo,setAcordo] = useState<Partial<AcordoProps>>()
 
                                         <tr  key={index}
                                             onClick={() => setAcordo(item)}
-                                            className={`font-semibold divide-y text-black  }   hover:bg-gray-300 hover:text-black ${item.id_acordo === acordo?.id_acordo && "bg-gray-300 text-black"} `}>
+                                            className={` hover:cursor-pointer divide-y text-black  }   hover:bg-gray-300 hover:text-black ${item.id_acordo === acordo?.id_acordo && "bg-gray-300 text-black"} `}>
                                             <td className={`px-5 py-1  `}>
                                                 {item.descricao}
                                             </td>

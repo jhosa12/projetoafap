@@ -33,6 +33,7 @@ export type MensalidadeProps = {
 }
 
 export type AcordoProps = {
+    id_consultor: number,
     usuario: string,
     dt_criacao:Date,
     total_acordo: number,

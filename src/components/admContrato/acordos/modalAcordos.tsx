@@ -9,11 +9,9 @@ import pt from 'date-fns/locale/pt-BR';
 import { useForm,SubmitHandler, Controller } from 'react-hook-form';
 import { Button, Label, Modal, Select, Table, TextInput } from "flowbite-react";
 import { AcordoProps, MensalidadeProps } from "@/types/financeiro";
-
-
-
-
-
+import { ConsultoresProps } from "@/types/consultores";
+import { MdClose } from "react-icons/md";
+import { set } from "date-fns";
 
 
 interface DadosAcordoProps{
@@ -28,9 +26,10 @@ interface DadosAcordoProps{
     id_empresa:string,
     id_contrato:number|undefined,
     id_associado:number|undefined,
+    consultores:Array<Partial<ConsultoresProps>>
     carregarDados:(id:number)=>Promise<void>
 }
-export function ModalAcordos({acordo,id_empresa,usuario,id_usuario,open,close,mensalidades,carregarDados,id_contrato_global,id_global,id_associado,id_contrato}:DadosAcordoProps){
+export function ModalAcordos({acordo,id_empresa,usuario,id_usuario,open,close,mensalidades,carregarDados,id_contrato_global,id_global,id_associado,id_contrato,consultores}:DadosAcordoProps){
  
  const [mensalidadeSelect,setMensalidade] = useState<number|null>(null)
 
@@ -54,7 +53,42 @@ export function ModalAcordos({acordo,id_empresa,usuario,id_usuario,open,close,me
      
     },[gatilho])
 
-const handleNovaRef = ()=>{
+
+
+
+
+
+    const handleRemove = async(id_mensalidade_global:number)=>{
+        if(acordo.id_acordo){
+            try{
+                const response = await toast.promise(
+                    api.put(`/acordo/removerMensalidade`,{id_mensalidade:id_mensalidade_global,id_acordo:null}),
+                    {
+                        pending: 'Removendo...',
+                        success: 'Mensalidade removida com sucesso!',
+                        error: 'Erro ao remover mensalidade'}
+                )
+
+                id_global && await carregarDados(id_global);
+            }catch(err){
+                console.log(err)
+            }
+    
+          return;      
+    }
+
+
+    const array = watch('mensalidade')||[];
+    const newArray = array.filter(item => item.id_mensalidade_global !== id_mensalidade_global);
+    setValue('mensalidade',newArray)
+    }
+
+
+
+
+
+
+const handleNovaRef = async()=>{
  
     const mensalidade = mensalidades.find(mensalidade=>mensalidade.id_mensalidade_global===mensalidadeSelect)
    
@@ -65,7 +99,29 @@ const handleNovaRef = ()=>{
     return;
     }
 
- 
+    if(mensalidade?.id_acordo){
+        toast.info("Mensalidade ja vinculada a outro acordo!")
+        return
+    }
+
+
+    if(acordo.id_acordo){
+        try{
+            const response = await toast.promise(
+                api.put(`/acordo/removerMensalidade`,{id_mensalidade:mensalidade?.id_mensalidade_global,id_acordo:acordo.id_acordo}),
+                {
+                    pending: 'Adicionando...',
+                    success: 'Mensalidade adicionada com sucesso!',
+                    error: 'Erro ao adicionar mensalidade'}
+            )
+
+            id_global && await carregarDados(id_global);
+        }catch(err){
+            console.log(err)
+        }
+
+      return;      
+}
 
     if(mensalidade){
         const array = [...mensalidadeArray];
@@ -82,21 +138,29 @@ const handleNovaRef = ()=>{
 
 
 const onSubmit:SubmitHandler<AcordoProps> = (data) => {
-    console.log(data)
+    acordo.id_acordo?editarAcordo(data):criarAcordo(data)
 }
 
-        
-            
-            
-        
-     
 
-       const criarAcordo:SubmitHandler<AcordoProps> = async (data) => {
+
+
+
+
+
+
+
+        
+       const criarAcordo = async (data:AcordoProps) => {
      
         if(!data.data_inicio||!data.data_fim||!data.descricao||!data.realizado_por){
             toast.info("Preencha todos os campos!")
             return;
         }
+
+        const dt_criacao= new Date();
+        const dt_prev = new Date(data.data_fim);
+        dt_criacao.setTime(dt_criacao.getTime() - dt_criacao.getTimezoneOffset() * 60 * 1000);
+        dt_prev.setTime(dt_prev.getTime() - dt_prev.getTimezoneOffset() * 60 * 1000);
         try{
             const response = await toast.promise(
                 api.post('/novoAcordo',{
@@ -105,11 +169,12 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
                     id_empresa,
                     id_contrato_global,
                     id_global,
+                    id_consultor:Number(data.id_consultor),
                     status:'A',
-                    data_inicio:data.data_inicio,
-                    data_fim:data.data_fim,
+                    data_inicio:dt_criacao.toISOString(),
+                    data_fim:dt_prev.toISOString(),
                     total_acordo:Number(data.total_acordo),
-                    realizado_por:data.realizado_por ,
+                    realizado_por:consultores.find(consultor=>consultor.id_consultor===Number(data.realizado_por))?.nome,
                     descricao:data.descricao,
                     metodo:data.metodo,
                     dt_criacao:new Date() ,
@@ -124,7 +189,8 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
                 }
             )
           //  toast.success("Acordo criado com sucesso")
-           
+          id_global && await carregarDados(id_global);
+          close()
 
         }catch(err){
           //  console.log(err)
@@ -159,22 +225,28 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
             
         }
        id_global && await carregarDados(id_global);
+       
       }
 
-      async function editarAcordo(){
+      async function editarAcordo(data:AcordoProps){
      
 
         try{
             const response = await toast.promise(
                 api.put('/editarAcordo',{
-               id_acordo:watch('id_acordo'),
-                status:'A',
-                dt_pgto:new Date(),
-                data_inicio:watch('data_inicio')?watch('data_inicio'):acordo.data_inicio,
-                data_fim:watch('data_fim')?watch('data_fim'):acordo.data_fim,
-                descricao:watch('descricao').toUpperCase(),
-                total_acordo:watch('total_acordo')?watch('total_acordo'):acordo.total_acordo,
+               id_acordo:data.id_acordo,
+               id_usuario:id_usuario,
+                //status:'A',
+                //dt_pgto:new Date(),
+                data_inicio:data.data_inicio,
+                data_fim:data.data_fim,
+                descricao:data.descricao,
+                metodo:data.metodo,
+                total_acordo:data.total_acordo,
+                realizado_por:consultores.find(consultor=>consultor.id_consultor===Number(data.id_consultor))?.nome,
+                id_consultor:Number(data.id_consultor),
                 //mensalidade:novasMensalidades
+                //mensalidades:data.mensalidade
                 }),
                 {
                 error:'Erro ao efetuar atualização',
@@ -196,9 +268,9 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
   <Modal show={open} size={'5xl'} onClose={()=>close()}>
     <Modal.Header>Administrar Acordo</Modal.Header>
     <Modal.Body>
-        <form className="font-semibold" onSubmit={handleSubmit(criarAcordo)}>
+        <form className="font-semibold" onSubmit={handleSubmit(onSubmit)}>
        
-        <div className="  border-gray-600 grid  gap-2 grid-flow-row-dense grid-cols-4">
+        <div className="  border-gray-600 grid mb-1 gap-2 grid-flow-row-dense grid-cols-4">
        
         <div className="flex flex-col w-full">
        
@@ -235,25 +307,25 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
        
        <Label  htmlFor="total" value="Total Acordo" />
  
-    <TextInput disabled {...register("total_acordo")} sizing={'sm'}/>
+    <TextInput required disabled {...register("total_acordo")} sizing={'sm'}/>
    </div>
 
-   <div  className="flex flex-col w-full">
+   <div  className=" flex flex-col w-full">
        
-       <Label  htmlFor="realizado" value="Realizado Por" />
- 
-    <TextInput {...register("realizado_por")} sizing={'sm'}/>
+       <Label  htmlFor="metodo" value="Realizado Por" />
+
+       <Select  required sizing={'sm'} {...register("id_consultor")} >
+        <option value="">SELECIONE</option>
+        {consultores.map((item,index)=>(<option key={index} value={item.id_consultor}>{item.nome}</option>))}
+       </Select>
    </div>
 
 
-
-
-   
    <div className="col-span-3 flex flex-col w-full">
        
        <Label  htmlFor="descricao" value="Descrição" />
  
-    <TextInput value={watch('descricao')?.toUpperCase()} className="uppercase" placeholder="Descreve os detalhers do acordo" {...register("descricao")} sizing={'sm'}/>
+    <TextInput required value={watch('descricao')?.toUpperCase()} className="uppercase" placeholder="Descreve os detalhers do acordo" {...register("descricao")} sizing={'sm'}/>
    </div>
  
 
@@ -263,8 +335,8 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
        
        <Label  htmlFor="metodo" value="Método" />
 
-       <Select sizing={'sm'} {...register("metodo")} >
-        <option value="">Selecione</option>
+       <Select required sizing={'sm'} {...register("metodo")} >
+        <option value="">SELECIONE</option>
 
         <option value="DINHEIRO">DINHEIRO</option>
         <option value="CARTAO">CARTÃO</option>
@@ -281,7 +353,7 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
 </div>
 
 <Modal.Footer className="flex flex-col w-full">
-<label className="flex w-full justify-center  font-semibold pt-1">REFERÊNCIAS</label>
+<label className="flex w-full justify-center  font-semibold ">REFERÊNCIAS</label>
 
 <div className="flex w-full gap-2">
         <Select value={mensalidadeSelect??undefined} onChange={e=>setMensalidade(Number(e.target.value))} sizing={'sm'} className="ml-auto">
@@ -314,12 +386,15 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
                 <Table.HeadCell>
                     status
                 </Table.HeadCell>
+                <Table.HeadCell>
+                    
+                </Table.HeadCell>
            
         </Table.Head>
         <Table.Body className="divide-y" >
             {watch('mensalidade')?.map((item,index)=>(  
                 <Table.Row key={index} 
-                className="text-gray-900 font-semibold"
+                className="text-gray-900 font-semibold "
                >
                 <Table.Cell >
                     {item.parcela_n}
@@ -340,10 +415,40 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
                 <Table.Cell >
                   {item.status}
                 </Table.Cell>
-
+                <Table.Cell>
+                   <button type="button" onClick={()=>handleRemove(Number(item.id_mensalidade_global))}> 
+                   <MdClose className="text-red-600" size={15}/>
+                    </button> 
+                </Table.Cell>
             </Table.Row>
                 
             ))}
+
+
+<Table.Row 
+                className="text-gray-900 font-semibold"
+               >
+                <Table.Cell >
+                    TOTAL
+                </Table.Cell>
+                <Table.Cell>
+                   {}
+                   
+                </Table.Cell>
+                <Table.Cell >
+                   {}
+                </Table.Cell>
+                <Table.Cell >
+                {}
+                </Table.Cell>
+                <Table.Cell className="font-semibold text-blue-600" >
+               {Number(watch('total_acordo')).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+                </Table.Cell>
+                <Table.Cell >
+                  {}
+                </Table.Cell>
+
+            </Table.Row>
             
         </Table.Body>
     
@@ -351,7 +456,7 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
     </div>
 
     <div className="flex w-full">
- <Button className="ml-auto" type="submit" size="sm">FECHAR</Button>
+ <Button className="ml-auto" type="submit" size="sm">{acordo.id_acordo?'EDITAR':'CRIAR'}</Button>
     </div>
    
     </Modal.Footer>

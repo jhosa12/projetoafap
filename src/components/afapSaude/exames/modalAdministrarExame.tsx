@@ -112,7 +112,7 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
 
 
   return (
-    <Modal show={openModal} size="2xl" dismissible onClose={() => setOpenModal()} >
+    <Modal show={openModal} size="4xl" dismissible onClose={() => setOpenModal()} >
       <Modal.Header>Administrar Exame</Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit(handleOnSubmit)}>
@@ -227,14 +227,14 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
 
 
             <div className="inline-flex w-full gap-4 mb-1">
-              <div className="w-1/2">
+              <div className="w-full">
 
                 <Label htmlFor="exame" className="text-xs" value="Exame" />
 
                 <Select id="exame" sizing={'sm'} {...register('id_selected')} className="focus:outline-none" required ={!registro.id_exame} >
                   <option value={''}></option>
                   {arraySelectExames?.map((item, index) => (
-                    <option value={item.id_exame} key={index}>{`${item.nome}-(${item.nome})`}</option>
+                    <option value={item.id_exame} key={index}>{`${item.nome}`}</option>
                   ))}
                 </Select>
               </div>
@@ -274,14 +274,20 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
 
                   ))}
 
-                  <Table.Row >
-                    <Table.Cell className="whitespace-nowrap  font-semibold ">
-                      Total
+                  <Table.Row className="font-semibold" >
+                    <Table.Cell >
+                      TOTAL
                     </Table.Cell>
 
-                    <Table.Cell>{ }</Table.Cell>
-                    <Table.Cell>{ }</Table.Cell>
-                    <Table.Cell className="font-semibold">{Number(watch('exames')?.reduce((acumulador, atual) => {
+                    <Table.Cell>{Number(watch('exames')?.reduce((acumulador, atual) => {
+                      acumulador += Number(atual.valorExame)
+                      return acumulador
+                    }, 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
+                    <Table.Cell>{Number(watch('exames')?.reduce((acumulador, atual) => {
+                      acumulador += Number(atual.desconto)
+                      return acumulador
+                    }, 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} </Table.Cell>
+                    <Table.Cell >{Number(watch('exames')?.reduce((acumulador, atual) => {
                       acumulador += Number(atual.valorFinal)
                       return acumulador
                     }, 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
