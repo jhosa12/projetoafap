@@ -12,8 +12,9 @@ import { ModalExcluirDep } from "./modalExcluir"
 import DeclaracaoExclusao from "@/Documents/dependentes/DeclaracaoExclusao"
 import { IoPrint } from "react-icons/io5"
 import { useReactToPrint } from "react-to-print"
-import { set } from "date-fns"
 import { DependentesProps } from "@/types/associado"
+import pageStyle from "@/utils/pageStyle"
+import { Button, ButtonGroup } from "flowbite-react"
 
 
 
@@ -29,28 +30,7 @@ export function Dependentes(){
 
 
     const imprimirDeclaracao =useReactToPrint({
-        pageStyle: `
-            @page {
-                margin: 1rem;
-            }
-            @media print {
-                body {
-                    -webkit-print-color-adjust: exact;
-                }
-                @page {
-                    size: auto;
-                    margin: 1rem;
-                }
-                @page {
-                    @top-center {
-                        content: none;
-                    }
-                    @bottom-center {
-                        content: none;
-                    }
-                }
-            }
-        `,
+        pageStyle:pageStyle,
         documentTitle:'DECLARAÇÃO DE EXCLUSÃO DEPENDENTE',
         content:()=>componentRef.current
 
@@ -118,28 +98,20 @@ export function Dependentes(){
     return(
         <div className="flex flex-col   max-h-[calc(100vh-200px)]  w-full  p-2 ">
                                 <div className="flex w-full mb-2 gap-2">
-                                    <label className="relative inline-flex w-[150px] justify-center  items-center mb-1 cursor-pointer">
-                                        <input disabled={!permissoes.includes('ADM1.3.1')} checked={checkDependente} onChange={() => setCheckDependente(!checkDependente)} type="checkbox" value="2" className="sr-only peer" />
-                                        <div className="w-9 h-5 rounded-full peer bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[7px] after:start-[9px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
 
-                                        <Tooltip className="z-30" id="id_dependente" />
-
-                                        <span className="ms-2 text-sm font-medium whitespace-nowrap ">Exibir Excluidos</span>
-                                    </label>
-                                    <div className="inline-flex rounded-md shadow-sm mb-1" role="group" >
-                                        <button disabled={!permissoes.includes('ADM1.3.2')} onClick={() => setModalDep(true)} type="button" className=" disabled:bg-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed inline-flex items-center px-4 py-1  bg-gray-200 border-gray-400  gap-1 text-sm font-medium  border  rounded-s-lg   enable:hover:text-white hover:bg-gray-400  ">
-                                            <RiAddCircleFill size={20} />
-                                            Adicionar
-                                        </button>
-                                        <button type="button"  className=" disabled:bg-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed inline-flex items-center px-4 py-1  bg-gray-200 border-gray-400  gap-1 text-sm font-medium  border enable:hover:text-white hover:bg-gray-400  ">
-                                            Settings
-                                        </button>
-                                        <button disabled={!permissoes.includes('ADM1.3.3')} onClick={() => setModalExcDep(true)} type="button"  className=" disabled:bg-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed inline-flex items-center px-4 py-1  bg-gray-200 border-gray-400  gap-1 text-sm font-medium  border  rounded-e-lg   enable:hover:text-white hover:bg-gray-400  ">
-                                            <MdDeleteForever size={20} />
-                                            Excluir
-                                        </button>
-                                   
-                                    </div>
+                                <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
+                    <input disabled={!permissoes.includes('ADM1.3.1')} checked={checkDependente} onChange={() => setCheckDependente(!checkDependente)} type="checkbox" value="2" className="sr-only peer disabled:cursor-not-allowed" />
+                    <div className="  w-7 h-4 rounded-full peer bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[6px] after:start-[8px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
+                    <Tooltip className="z-30" id="id_dependente" />
+                    <span className="ms-3 text-xs font-medium">Exibir Excluidos</span>
+                </label>
+        
+                                     <ButtonGroup>
+                                                    <Button disabled={!permissoes.includes('ADM1.3.2')} onClick={() => setModalDep(true)} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' /> Adicionar</Button>
+                                
+                                                    <Button disabled={!permissoes.includes('ADM1.3.3')} onClick={() => setModalExcDep(true)} type="button" color='light' size='xs'><MdDeleteForever className='mr-1 h-4 w-4' /> Excluir</Button>
+                                                </ButtonGroup>
+                            
                                 </div>
                                 <table
                                     className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-600 ">

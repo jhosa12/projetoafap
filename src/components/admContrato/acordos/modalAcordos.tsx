@@ -1,121 +1,98 @@
-import { IoIosClose } from "react-icons/io";
-import { MdSaveAlt } from "react-icons/md";
-import { IoIosArrowDropdownCircle } from "react-icons/io";
-import { AuthContext } from "@/contexts/AuthContext";
-import { useContext, useEffect, useState } from "react";
+
+
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { useForm,SubmitHandler } from 'react-hook-form';
+import { useForm,SubmitHandler, Controller } from 'react-hook-form';
 import { Button, Label, Modal, Select, Table, TextInput } from "flowbite-react";
+import { AcordoProps, MensalidadeProps } from "@/types/financeiro";
 
 
-interface MensalidadeProps {
-    id_mensalidade_global: number,
-    id_acordo: number,
-    parcela_n: number,
-    vencimento: Date,
-    cobranca: Date,
-    valor_principal: number,
-    status: string,
-    usuario: string,
-    id_mensalidade: number,
-    valor_total: number,
-    motivo_bonus: string,
-    data_pgto: Date,
-    referencia: string,
-    index: number
-}
 
-interface FormProps{
-    total_acordo: number,
-    data_inicio: Date,
-    data_fim: Date,
-    realizado_por: string,
-    dt_pgto: Date,
-  // mensalidade: Array<MensalidadeProps>,
-    status: string,
-    descricao: string,
-    metodo: string
-    closeAcordo: boolean,
-    id_acordo: number,
-    visibilidade: boolean
-}
 
-interface AcordoProps {
-    total_acordo: number,
-    data_inicio: Date,
-    data_fim: Date,
-    realizado_por: string,
-    dt_pgto: Date,
-    mensalidade: Array<Partial<MensalidadeProps>>,
-    status: string,
-    descricao: string,
-    metodo: string
-    closeAcordo: boolean,
-    id_acordo: number,
-    visibilidade: boolean
-}
+
+
+
 interface DadosAcordoProps{
-    closeModal:(fields:{open:boolean,visible:boolean})=>void,
-    openModal:{open:boolean,visible:boolean}
     acordo:Partial<AcordoProps>,
-    usuario:{nome:string,id:number},
-    mensalidade:Array<Partial<MensalidadeProps>>
-    contrato:number,
-    id_contrato_global:number,
-    id_global:number,
-    associado:number
+    open:boolean,
+    close:Function,
+   usuario:string,
+   id_usuario:string
+    mensalidades:Array<Partial<MensalidadeProps>>
+    id_contrato_global:number|null,
+    id_global:number|null,
+    id_empresa:string,
+    id_contrato:number|undefined,
+    id_associado:number|undefined,
     carregarDados:(id:number)=>Promise<void>
 }
-export function ModalAcordos({closeModal,acordo,usuario,mensalidade,contrato,associado,carregarDados,openModal,id_contrato_global,id_global}:DadosAcordoProps){
- const [mensalidadesAcordo, setMensalidadesAcordo] = useState<Array<Partial<MensalidadeProps>>>(acordo.mensalidade??[]);
+export function ModalAcordos({acordo,id_empresa,usuario,id_usuario,open,close,mensalidades,carregarDados,id_contrato_global,id_global,id_associado,id_contrato}:DadosAcordoProps){
+ 
+ const [mensalidadeSelect,setMensalidade] = useState<number|null>(null)
 
-    const {register,handleSubmit,formState:{errors},watch,setValue} = useForm<FormProps>({
+    const {register,handleSubmit,watch,setValue,control} = useForm<AcordoProps>({
         defaultValues:{...acordo,total_acordo:acordo.mensalidade?.reduce((acc,at)=>{
             return acc+Number(at?.valor_principal)
         },0)}
     });
 
+    const gatilho = watch('mensalidade')
 
 
 
 
 
+    useEffect(()=>{
+        const soma = gatilho?.reduce((acc,at)=>{
+            return acc+Number(at?.valor_principal)
+        },0)
+        setValue('total_acordo',soma)
+     
+    },[gatilho])
 
-const onSubmit:SubmitHandler<FormProps> = (data) => {
-    console.log(data)
+const handleNovaRef = ()=>{
+ 
+    const mensalidade = mensalidades.find(mensalidade=>mensalidade.id_mensalidade_global===mensalidadeSelect)
    
+    const mensalidadeArray = watch('mensalidade')||[];
+    const isExists =mensalidadeArray?.some(item => item.referencia === mensalidade?.referencia);
+    if(isExists){
+    toast.info("Referência já inclusa no acordo!")
+    return;
+    }
+
+ 
+
+    if(mensalidade){
+        const array = [...mensalidadeArray];
+        array.push(mensalidade);
+        array.sort((a,b)=>Number(a.id_mensalidade_global)-Number(b.id_mensalidade_global))
+          setValue('mensalidade',array)
+    }
     
 }
 
-    function adicionarProxima() {
-        const ultimoIndex = mensalidade.findLastIndex((item) => item.status === 'E');
-        if (ultimoIndex >= 0) {
-            setMensalidadesAcordo((prevState) =>
-                prevState ? [...prevState, mensalidade[ultimoIndex + 1]] : [mensalidade[ultimoIndex + 1]]
-            );
-        }
-    }
+
+
+
+
+
+const onSubmit:SubmitHandler<AcordoProps> = (data) => {
+    console.log(data)
+}
 
         
             
             
         
-       const valor_total =mensalidadesAcordo.reduce((total,mensalidade)=>total+Number(mensalidade.valor_principal),0)
-       // if(!arrayAcordo.total_acordo && !arrayAcordo?.data_inicio) 
-          //   closeModa({acordo:{...data.acordo, mensalidade:data.acordo?.mensalidade,total_acordo:valor_total,//data_inicio:new Date()}});
+     
 
-       const criarAcordo:SubmitHandler<FormProps> = async (data) => {
-        const novasMensalidades = mensalidadesAcordo?.map(mensal=>{
-            return {...mensal,status:'E',cobranca:watch('data_fim')}
-        })
-        if(!mensalidadesAcordo){
-        toast.info("Selecione as referências do acordo!")
-        return;
-        }
+       const criarAcordo:SubmitHandler<AcordoProps> = async (data) => {
+     
         if(!data.data_inicio||!data.data_fim||!data.descricao||!data.realizado_por){
             toast.info("Preencha todos os campos!")
             return;
@@ -123,19 +100,22 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
         try{
             const response = await toast.promise(
                 api.post('/novoAcordo',{
-                    id_contrato:contrato,
+                    usuario,
+                    id_usuario,
+                    id_empresa,
                     id_contrato_global,
                     id_global,
                     status:'A',
-                    id_associado:associado,
                     data_inicio:data.data_inicio,
                     data_fim:data.data_fim,
-                    total_acordo:data.total_acordo,
+                    total_acordo:Number(data.total_acordo),
                     realizado_por:data.realizado_por ,
                     descricao:data.descricao,
                     metodo:data.metodo,
                     dt_criacao:new Date() ,
-                    mensalidades:novasMensalidades
+                    mensalidades:data.mensalidade,
+                    id_contrato:id_contrato,
+                    id_associado:id_associado
                 }),
                 {
                     error:'Erro na requisição',
@@ -143,30 +123,28 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
                     pending:'Criando acordo'
                 }
             )
-            toast.success("Acordo criado com sucesso")
-            closeModal({open:false,visible:false})
+          //  toast.success("Acordo criado com sucesso")
+           
 
         }catch(err){
-            console.log(err)
+          //  console.log(err)
         }
     }
     
      
 
       async function baixarAcordo(){
-        const novasMensalidades = mensalidadesAcordo?.map(mensal=>{
-            return {...mensal,status:'P',data_pgto:new Date(),usuario:usuario.nome,valor_total:mensal.valor_principal}
-        }
-        )
+      
+        
         try{
             const response = await toast.promise(
                 api.put('/editarAcordo',{
                id_acordo:watch('id_acordo'),
-               id_usuario:usuario?.id,
-               id_contrato:contrato,
+               id_usuario:id_usuario,
+             
                 status:'P',
                 dt_pgto:new Date(),
-                mensalidade:novasMensalidades
+               // mensalidade:novasMensalidades
                 }),
                 {
                 error:'Erro ao efetuar baixa',
@@ -177,17 +155,14 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
 
         }catch(err){
 
-            console.log(err)
+           // console.log(err)
             
         }
-        await carregarDados(associado);
+       id_global && await carregarDados(id_global);
       }
 
       async function editarAcordo(){
-        const novasMensalidades = mensalidadesAcordo?.map(mensal=>{
-            return {...mensal,status:'E'}
-        }
-        )
+     
 
         try{
             const response = await toast.promise(
@@ -199,7 +174,7 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
                 data_fim:watch('data_fim')?watch('data_fim'):acordo.data_fim,
                 descricao:watch('descricao').toUpperCase(),
                 total_acordo:watch('total_acordo')?watch('total_acordo'):acordo.total_acordo,
-                mensalidade:novasMensalidades
+                //mensalidade:novasMensalidades
                 }),
                 {
                 error:'Erro ao efetuar atualização',
@@ -210,7 +185,7 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
 
 
         }catch(err){
-            console.log(err)
+          //  console.log(err)
             
         }
         
@@ -218,7 +193,7 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
      
     return(
    
-  <Modal show size={'4xl'} onClose={()=>closeModal({open:false,visible:false})}>
+  <Modal show={open} size={'5xl'} onClose={()=>close()}>
     <Modal.Header>Administrar Acordo</Modal.Header>
     <Modal.Body>
         <form className="font-semibold" onSubmit={handleSubmit(criarAcordo)}>
@@ -227,25 +202,40 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
        
         <div className="flex flex-col w-full">
        
-          <Label htmlFor="startDate" value="Data Início" />
-    
-        <DatePicker selected={watch('data_inicio')} showMonthDropdown  onChange={e=>e && setValue('data_inicio',e)}  dateFormat={"dd/MM/yyyy"} locale={pt}   required className="flex w-full  sm:text-xs  border  rounded-lg bg-gray-50 
+          <Label htmlFor="startDate" value="Data Criação" />
+
+
+          <Controller
+            control={control}
+            name="data_inicio"
+            render={({ field: { onChange, value } }) => (
+                 <DatePicker selected={watch('data_inicio')} showMonthDropdown  onChange={e=>e && setValue('data_inicio',e)}  dateFormat={"dd/MM/yyyy"} locale={pt}   required className="flex w-full  sm:text-xs  border  rounded-lg bg-gray-50 
       border-gray-300 placeholder-gray-400  "/>
+            )}
+          />
+    
+       
       </div>
 
       <div  className="flex flex-col w-full">
        
-       <Label  htmlFor="endDate" value="Data Fim" />
- 
-     <DatePicker selected={watch('data_fim')} showMonthDropdown  onChange={e=>e && setValue('data_fim',e)} dateFormat={"dd/MM/yyyy"} locale={pt}   required className="flex w-full  sm:text-xs  border  rounded-lg bg-gray-50 
+       <Label  htmlFor="endDate" value="Data Prevista" />
+ <Controller
+ control={control}
+ name="data_fim"
+ render={({ field: { onChange, value } }) => (
+       <DatePicker selected={watch('data_fim')} showMonthDropdown  onChange={e=>e && setValue('data_fim',e)} dateFormat={"dd/MM/yyyy"} locale={pt}   required className="flex w-full  sm:text-xs  border  rounded-lg bg-gray-50 
       border-gray-300 placeholder-gray-400  "/>
+ )}
+ />
+   
    </div>
 
    <div  className="flex flex-col w-full">
        
        <Label  htmlFor="total" value="Total Acordo" />
  
-    <TextInput {...register("total_acordo")} sizing={'sm'}/>
+    <TextInput disabled {...register("total_acordo")} sizing={'sm'}/>
    </div>
 
    <div  className="flex flex-col w-full">
@@ -289,33 +279,21 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
 
 
 </div>
-<div className=" gap-2 col-span-4 mt-2 flex flex-row justify-end">
-{openModal.visible?(
-<Button size={'sm'} color={'success'}  type="submit" ><MdSaveAlt size={22}/>Criar Acordo</Button>):(
-<div className=" inline-flex w-full justify-between">
-<Button size={'sm'} color={'blue'} onClick={()=>editarAcordo()} type="button" ><MdSaveAlt className="mr-2 h-5 w-5"/>SALVAR</Button>
-<Button size={'sm'} onClick={()=>baixarAcordo()} type="button" ><IoIosArrowDropdownCircle className="mr-2 h-5 w-5"/>BAIXAR ACORDO</Button>
-</div>
-)}
-</div>
-   
 
-</form>
-</Modal.Body>
 <Modal.Footer className="flex flex-col w-full">
 <label className="flex w-full justify-center  font-semibold pt-1">REFERÊNCIAS</label>
 
-<div className="flex w-full justify-end">
-<Button disabled={!!!acordo.id_acordo} color={'blue'}  size={'xs'}  onClick={adicionarProxima}  >
-   Incluir Parcela
-  </Button>
+<div className="flex w-full gap-2">
+        <Select value={mensalidadeSelect??undefined} onChange={e=>setMensalidade(Number(e.target.value))} sizing={'sm'} className="ml-auto">
+            <option value="">REFERÊNCIA</option>
+            {mensalidades.map((item,index)=>(<option key={index} value={item.id_mensalidade_global}>{item.referencia}</option>))}
+        </Select>
+        <Button onClick={handleNovaRef} size="xs">ADICIONAR</Button>
 </div>
 
 
-
-
 <div className=" max-h-[350px] overflow-y-auto w-full">
-    <Table theme={{ body: { cell: { base: " px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }}   >
+    <Table theme={{root:{shadow:'none'},body:{cell:{base:"px-6 py-1 text-xs"}},head:{cell:{base:"px-6 py-1"}}}}   >
     <Table.Head >
           
                 <Table.HeadCell>
@@ -339,7 +317,7 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
            
         </Table.Head>
         <Table.Body className="divide-y" >
-            {mensalidadesAcordo?.map((item,index)=>(  
+            {watch('mensalidade')?.map((item,index)=>(  
                 <Table.Row key={index} 
                 className="text-gray-900 font-semibold"
                >
@@ -371,7 +349,16 @@ const onSubmit:SubmitHandler<FormProps> = (data) => {
     
     </Table>
     </div>
+
+    <div className="flex w-full">
+ <Button className="ml-auto" type="submit" size="sm">FECHAR</Button>
+    </div>
+   
     </Modal.Footer>
+
+</form>
+</Modal.Body>
+
     </Modal>
 )
 }

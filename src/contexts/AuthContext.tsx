@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
    const [cidades, setCidades] = useState<Array<CidadesProps>>([]);
    const [consultores, setConsultores] = useState<Array<ConsultoresProps>>([]);
    const [selectEmp,setSelectEmp] = useState('')
-  const [loading, setLoading] = useState(false);    
+  const [loading, setLoading] = useState(false) 
     const [servico, setServico] = useState<Partial<ObitoProps>>({ hr_sepultamento: new Date(), end_hora_falecimento: new Date(), end_hora_informaram: new Date() });
     const [permissoes,setPermissoes] =useState<Array<string>>([])
    /* const [token,setToken] = useState(()=>{
@@ -81,8 +81,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
         return ""
     })*/
-    
-
 
   /*  const userLogged = useCallback(() => {
         const { "@nextauth.token": tokenAuth } = parseCookies();

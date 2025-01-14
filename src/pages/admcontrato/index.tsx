@@ -18,8 +18,9 @@ import { Dependentes } from "@/components/admContrato/dependentes/dependentes";
 
 import ModalCadastro from "@/components/admContrato/cadastro/modalCadastro";
 import { FaHandshake } from "react-icons/fa";
-import { AcordosScreen } from "@/components/admContrato/acordos/screen";
+
 import { VerificarSituacao } from "@/utils/admContrato/verificarSituacao";
+import { Acordos } from "@/components/admContrato/acordos/screen";
 
 
 
@@ -119,9 +120,9 @@ useEffect(() => {
                             </Tabs.Item>
 
                             <Tabs.Item active={indexTab === 1} disabled={!permissoes.includes('ADM1.2')} title="HISTÓRICO/MENSALIDADE" icon={HiMiniWallet}>
-                                {<HistoricoMensalidade
+                                {indexTab === 1 && <HistoricoMensalidade
                                     carregarDados={carregarDados}
-                                    dados={{ acordo: data.acordo ?? {}, closeModalPlano: data.closeModalPlano ?? false, id_associado: dadosassociado?.id_associado ?? 0, mensalidade: data.mensalidade ?? {}, mensalidadeAnt: data.mensalidadeAnt ?? {} }}
+                                    dados={{  closeModalPlano: data.closeModalPlano ?? false, id_associado: dadosassociado?.id_associado ?? 0, mensalidade: data.mensalidade ?? {}, mensalidadeAnt: data.mensalidadeAnt ?? {} }}
                                     dadosAssociado={{
                                         id_empresa: dadosassociado?.id_empresa ?? '',
                                         nome: dadosassociado?.nome ?? '',
@@ -146,7 +147,16 @@ useEffect(() => {
                             </Tabs.Item>
                             <Tabs.Item active={indexTab === 2}  title="ACORDOS" icon={FaHandshake}>
 
-                                <AcordosScreen/>
+                               {indexTab===2 && <Acordos 
+                               id_empresa={dadosassociado?.id_empresa??''}
+                               mensalidades={dadosassociado?.mensalidade?.filter(mensalidade=>mensalidade.status!=='P')??[]} 
+                               acordos={dadosassociado?.acordo??[]}
+                               id_associado={dadosassociado?.id_associado}
+                               id_contrato={dadosassociado?.contrato?.id_contrato}
+                               id_contrato_global={dadosassociado?.contrato?.id_contrato_global}
+                               id_global={dadosassociado?.id_global}
+                              usuario={{id:usuario?.id??'',nome:usuario?.nome??''}}
+                               />}
 
                             </Tabs.Item>
                             <Tabs.Item active={indexTab === 3} disabled={!permissoes.includes('ADM1.3')} title="DEPENDENTES" icon={HiUserGroup

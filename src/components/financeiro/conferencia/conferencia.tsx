@@ -1,16 +1,13 @@
 
-
-import { ConsultaProps, ExamesData, ExamesProps, MedicoProps } from "@/pages/afapSaude";
 import { api } from "@/services/apiClient";
-import { Badge, Button, Table } from "flowbite-react";
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import { Badge, Button, Popover, Table, TextInput } from "flowbite-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { HiDocument, HiOutlineTrash, HiPencil } from "react-icons/hi2";
+import { HiDocument } from "react-icons/hi2";
 import { HiFilter } from "react-icons/hi";
 import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
 import { useReactToPrint } from "react-to-print";
 import { ModalConferencia } from "./modalConferencia";
-import { CaixaProps } from "@/pages/financeiro";
 import { IoMdTrash } from "react-icons/io";
 import { ModalConfirmar } from "@/components/afapSaude/components/modalConfirmar";
 
@@ -70,13 +67,12 @@ const imprimirFicha = useReactToPrint({
 const listar =useCallback( async()=>{
       try {
 
-        const response = await api.get('/caixa/listaFechamento')
+        const response = await api.post('/caixa/listaFechamento')
        setCaixa(response.data)
         
       } catch (error) {
         console.log(error)
       }
-
 },[]
 )
 
@@ -133,10 +129,20 @@ const handleExcluir = useCallback(async()=>{
 
   return (
     <div className="flex flex-col py-2 px-1 gap-2">
-      <div className="ml-auto inline-flex gap-4">
-        <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 " } }} color={'light'} size={'sm'} onClick={() => {}}>  <HiFilter className="mr-2 h-5 w-5" /> Filtro</Button>
-        <Button size={'sm'} onClick={() =>{}}>Nova Consulta</Button>
-      </div>
+
+
+      <Popover content={
+        <div>
+ <TextInput>TESTE</TextInput>
+        </div>
+       
+
+      } >
+      <Button className="ml-auto mr-2" theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 " } }} color={'light'} size={'sm'} onClick={() => {}}>  <HiFilter className="mr-2 h-5 w-5" /> Filtro</Button>
+      </Popover>
+     
+       
+
       <div className="overflow-x-auto">
         <Table theme={{root:{shadow:'none'},body:{cell:{base:"px-4 py-1"}},head:{cell:{base:"px-4 py-1"}}}}  >
 
@@ -147,7 +153,6 @@ const handleExcluir = useCallback(async()=>{
             <Table.HeadCell>Data Conferencia</Table.HeadCell>
             <Table.HeadCell>Status</Table.HeadCell>
             <Table.HeadCell>Observação</Table.HeadCell>
-        
             <Table.HeadCell>
               <span className="sr-only">Edit</span>
             </Table.HeadCell>
@@ -204,6 +209,7 @@ const handleExcluir = useCallback(async()=>{
         openModal={openExcluir}
          setOpenModal={setExcluir}
      />
+
     </div>
   );
 }

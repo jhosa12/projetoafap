@@ -24,7 +24,6 @@ export interface UseFormAssociadoProps{
 
 export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps) {
   const { usuario,setarDadosAssociado,permissoes,dadosassociado} = useContext(AuthContext)
-  const [modalInativar,setmodalInat]= useState<boolean>(false)
   const {register,handleSubmit,watch,setValue,trigger,control} = useForm<AssociadoProps>({
     defaultValues:{...dataForm,contrato:{...dataForm?.contrato,dt_adesao:dataForm.contrato?.dt_adesao ? new Date(new Date(dataForm.contrato?.dt_adesao).getUTCFullYear(),new Date(dataForm.contrato?.dt_adesao).getUTCMonth(),new Date(dataForm.contrato?.dt_adesao).getUTCDate(),new Date(dataForm.contrato?.dt_adesao).getUTCHours()) : undefined,
       data_vencimento:dataForm.contrato?.data_vencimento ? new Date(new Date(dataForm.contrato?.data_vencimento).getUTCFullYear(),new Date(dataForm.contrato?.data_vencimento).getUTCMonth(),new Date(dataForm.contrato?.data_vencimento).getUTCDate(),new Date(dataForm.contrato?.data_vencimento).getUTCHours()) : undefined,
@@ -46,23 +45,36 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
   const handleAtualizarDados:SubmitHandler<AssociadoProps> = async(data)=>{
     try {
         const response = await toast.promise(
-            api.put('/atualizarAssociado',{
-              ...data,
-              data_cadastro:undefined,
-              cad_dh: undefined,
+            api.post('/atualizarAssociado',{
+              id_global: data.id_global,
+              nome: data.nome,
+              cep: data.cep,
+              endereco: data.endereco,
+              bairro: data.bairro,
+              numero:data.numero,
+              cidade: data.cidade,
+              uf: data.uf,
+              guia_rua: data.guia_rua,
+              email: data.email,
+              data_nasc: data.data_nasc,
+              celular1: data.celular1,
+              celular2:data.celular2,
+              telefone: data.telefone,
               edi_usu:usuario?.nome,
               edi_dh: new Date(),
-
+              profissao: data.profissao,
+              sexo: data.sexo,
+              contrato: data.contrato
             }),
             {
-              error: 'Erro ao Atualizar Dados',
+              error: 'Erro ao atualizar dados',
               pending: 'Realizando Alteração....',
               success: 'Alteração realizada com sucesso'
             }
         )
         setarDadosAssociado({...dadosassociado,...response.data})
     } catch (error) {
-      
+      console.log(error)
     }
   }
 
@@ -74,7 +86,7 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
 
     
 
-       <Modal dismissible size={'4xl'} show onClose={()=>setModalEdit(false)}  popup>
+       <Modal dismissible size={'5xl'} show={openEdit} onClose={()=>setModalEdit(false)}  popup>
         <Modal.Header/>
         
         <Modal.Body>

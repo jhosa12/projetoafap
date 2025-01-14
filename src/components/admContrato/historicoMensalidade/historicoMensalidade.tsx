@@ -1,5 +1,5 @@
 
-import { ModalAcordos } from '@/components/admContrato/historicoMensalidade/modalAcordos';
+import { ModalAcordos } from '@/components/admContrato/acordos/modalAcordos';
 import ImpressaoCarne from '@/Documents/mensalidade/ImpressaoCarne';
 import { api } from '@/services/apiClient';
 import { useReactToPrint } from 'react-to-print';
@@ -13,7 +13,7 @@ import { ModalMensalidade } from './modalmensalidade';
 //import { Scanner } from './modalScanner';
 import { ModalEditarMensalidade } from './modalEditarMensalidade';
 import { ModalExcluirMens } from './modalExcluirMens';
-import { MensalidadeProps } from '@/types/financeiro';
+import { AcordoProps, MensalidadeProps } from '@/types/financeiro';
 import { ReciboMensalidade } from '@/Documents/mensalidade/Recibo';
 import pageStyle from '@/utils/pageStyle';
 import { Button, ButtonGroup } from 'flowbite-react';
@@ -22,25 +22,11 @@ import { PopoverReagendamento } from './popoverReagendamento';
 
 
 
-interface AcordoProps {
-    total_acordo: number,
-    data_inicio: Date,
-    data_fim: Date,
-    realizado_por: string,
-    dt_pgto: Date,
-    mensalidade: Array<Partial<MensalidadeProps>>,
-    status: string,
-    descricao: string,
-    metodo: string
-    closeAcordo: boolean,
-    id_acordo: number,
-    visibilidade: boolean
-}
+
 export interface SetAssociadoProps {
     mensalidade: Partial<MensalidadeProps>,
     mensalidadeAnt: Partial<MensalidadeProps>,
     id_associado: number,
-    acordo: Partial<AcordoProps>,
     closeModalPlano: boolean
 }
 
@@ -75,7 +61,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
     const [checkMensal, setCheck] = useState(false)
     const [openExcluir, setOpenExcluir] = useState(false)
     const [linhasSelecionadas, setLinhasSelecionadas] = useState<Array<Partial<MensalidadeProps>>>([]);
-    const [openModalAcordo, setModalAcordo] = useState({ open: false, visible: false })
+   // const [openModalAcordo, setModalAcordo] = useState({ open: false, visible: false })
     const componentRef = useRef<ImpressaoCarne>(null);
     const { setarDadosAssociado, permissoes } = useContext(AuthContext)
     const [openModalMens, setModalMens] = useState<boolean>(false)
@@ -91,97 +77,8 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
 
 
 
-    /*  const TratarArrayMensal = useCallback(
-          () => {
-            const tratado = dadosAssociado.arrayMensalidade.reduce((acumulador, atual) => {
-              const exists = acumulador.some(
-                (item) => item.status === 'E' && item.id_acordo === atual.id_acordo && atual.id_acordo!==null
-              );
-              if (!exists) {
-                acumulador.push(atual);
-              }
-              return acumulador;
-            }, [] as Array<MensalidadeProps>);
-        
-         
-           setArrayMensal(tratado);
-          },
-          [dadosAssociado.arrayMensalidade]
-        );
-  
-        useEffect(()=>{
-          TratarArrayMensal()
-        },[dadosAssociado.arrayMensalidade])
-        */
-
-    {/*  const toogleAberto = (index: number) => {
-        setAbertos((prev: { [key: number]: boolean }) => ({
-          ...Object.keys(prev).reduce((acc, key) => {
-            acc[Number(key)] = false;
-            return acc;
-          }, {} as { [key: number]: boolean }),
-          [index]: !prev[index]
-        }));
-      };*/
-    }
-
-
-
-
-    /*  const verificarBaixa = (scannedCode:string)=>{
-          if (!scannedCode) {
-              toast.error('Erro ao escanear');
-              return;
-          }
-     
-              const mensalidadeScan = dadosAssociado?.arrayMensalidade?.find(item =>
-                  item.n_doc === scannedCode && (item.status === 'A' || item.status === 'E'||item.status==='R')
-              );
-              const primeiraAberta = dadosAssociado.arrayMensalidade.find(item=>item.status==='A'||item.status==='E'||item.status==='R')
-              
-              if (!mensalidadeScan) {
-                  toast.error('Mensalidade inexistente ou já baixada!');
-                  return 
-              }
-              if(primeiraAberta?.id_mensalidade!==mensalidadeScan.id_mensalidade){
-                  toast.error('Referencia incorreta')
-                  return
-              }
-  
-  
-  
-  
-                  setMensalidade({...mensalidadeScan,valor_total:mensalidadeScan.valor_principal})
-                  setModalMens(true)
-              
-          
-  
-      }*/
-
-
     const imprimirRecibo = useReactToPrint({
-        pageStyle: `
-            @page {
-                margin: 1rem;
-            }
-            @media print {
-                body {
-                    -webkit-print-color-adjust: exact;
-                }
-                @page {
-                    size: auto;
-                    margin: 1rem;
-                }
-                @page {
-                    @top-center {
-                        content: none;
-                    }
-                    @bottom-center {
-                        content: none;
-                    }
-                }
-            }
-        `,
+        pageStyle: pageStyle,
         documentTitle: 'RECIBO MENSALIDADE',
         content: () => componentRecibo.current,
         onBeforeGetContent: () => setIsPrinting(true),  // Ativa antes da impressão
@@ -220,13 +117,13 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
         if (index === -1) {
             // Adiciona a linha ao array se não estiver selecionada
             setLinhasSelecionadas([...linhasSelecionadas, item]);
-            setarDados({ acordo: { mensalidade: [...linhasSelecionadas, item] } })
+          //  setarDados({ acordo: { mensalidade: [...linhasSelecionadas, item] } })
         } else {
             // Remove a linha do array se já estiver selecionada
             const novasLinhasSelecionadas = [...linhasSelecionadas];
             novasLinhasSelecionadas.splice(index, 1);
             setLinhasSelecionadas(novasLinhasSelecionadas);
-            setarDados({ acordo: { mensalidade: novasLinhasSelecionadas } })
+           // setarDados({ acordo: { mensalidade: novasLinhasSelecionadas } })
         }
 
     };
@@ -269,7 +166,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
             // setarDadosAssociado({mensalidade:mensalidades})
             setOpenExcluir(false)
             setLinhasSelecionadas([])
-            setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
+           // setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
         } catch (err) {
             console.log(err)
         }
@@ -307,7 +204,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
             )
             // carregarDados()
             setLinhasSelecionadas([])
-            setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
+          //  setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
 
             setarDadosAssociado({ ...dadosAssociado, mensalidade: [...dadosAssociado.arrayMensalidade, response.data] })
 
@@ -325,18 +222,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
     return (
         <div className="flex flex-col rounded-lg  max-h-[calc(100vh-190px)]    sm:rounded-lg">
 
-            {openModalAcordo.open && (<ModalAcordos
-                acordo={dados?.acordo ?? {}}
-                contrato={dadosAssociado?.id_contrato ?? 0}
-                mensalidade={dadosAssociado?.arrayMensalidade ?? []}
-                usuario={{ nome: usuario?.nome ?? '', id: Number(usuario?.id) }}
-                closeModal={setModalAcordo}
-                associado={dadosAssociado?.id_associado ?? 0}
-                carregarDados={carregarDados}
-                openModal={openModalAcordo}
-                id_contrato_global={dadosAssociado?.id_contrato_global ?? 0}
-                id_global={dadosAssociado?.id_global ?? 0}
-            />)}
+          
 
 
             {mensalidadeRecibo?.id_mensalidade && <div style={{ display: 'none' }} >
@@ -464,7 +350,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
 
                                         <tr  key={index}
                                             onClick={() => toggleSelecionada(item)}
-                                            className={`font-semibold divide-y text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"}  ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : "bg-gray-50"}  ${item.status === 'P' && "text-blue-600"}   hover:bg-gray-300 hover:text-black  }`}>
+                                            className={`font-semibold divide-y text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"}  ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : "bg-gray-50"}  ${item.status === 'P' && "text-blue-600"}   hover:bg-gray-300 hover:text-black hover:cursor-pointer }`}>
                                             <th scope="row" className={`px-5 py-1  `}>
                                                 {item.parcela_n}
                                             </th>
@@ -526,7 +412,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                                     ) : item.status !== 'P' && (
                                         <tr key={index}
                                             onClick={() => toggleSelecionada(item)}
-                                            className={`font-semibold  divide-y text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && "text-red-600"}   ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : ""}   hover:bg-gray-300 hover:text-black  }`}>
+                                            className={`font-semibold  divide-y text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && "text-red-600"}   ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : ""}   hover:bg-gray-300 hover:text-black hover:cursor-pointer  }`}>
                                             <td className="px-5 py-1   ">
                                                 {item.parcela_n}
                                             </td>

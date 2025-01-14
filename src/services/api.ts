@@ -1,8 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { parseCookies } from "nookies";
 import { AuthTokenError } from "@/services/errors/AuthTokenError"
-import { useContext } from "react";
-import { AuthContext } from "@/contexts/AuthContext";
 import { signOut } from "@/contexts/AuthContext";
 
 export function setupAPIClient(ctx = undefined) {
@@ -12,7 +10,8 @@ export function setupAPIClient(ctx = undefined) {
     const api = axios.create({
         baseURL: process.env.NEXT_PUBLIC_API_URL,
         headers: {
-            Authorization: `Bearer ${cookies['@nextauth.token']}`
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${cookies['@nextauth.token']}`
         }
     })
     api.interceptors.response.use(response => {

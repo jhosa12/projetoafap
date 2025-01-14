@@ -33,6 +33,8 @@ export type MensalidadeProps = {
 }
 
 export type AcordoProps = {
+    usuario: string,
+    dt_criacao:Date,
     total_acordo: number,
     data_inicio: Date,
     data_fim: Date,
@@ -42,7 +44,5 @@ export type AcordoProps = {
     status: string,
     descricao: string,
     metodo: string
-    closeAcordo: boolean,
     id_acordo: number,
-    visibilidade: boolean
 }
