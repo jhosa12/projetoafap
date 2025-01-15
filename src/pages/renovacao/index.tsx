@@ -1,15 +1,25 @@
 import { ModalFiltro } from "@/components/renovacao/modalFiltro";
-import { Button, Label, Table, TextInput } from "flowbite-react";
-import { useEffect, useRef, useState } from "react";
+import { Button, ButtonGroup, Label, Table, TextInput } from "flowbite-react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
-import { ModalRenovar } from "@/components/renovacao/modalRenovar";
 import { useReactToPrint } from "react-to-print";
 import DocumentTemplate from "@/Documents/renovacao/impressao";
+import pageStyle from "@/utils/pageStyle";
+import { AuthContext } from "@/contexts/AuthContext";
+import { RiAddCircleFill } from "react-icons/ri";
+import { IoPrint } from "react-icons/io5";
+import { MdAutorenew, MdDeleteForever } from "react-icons/md";
+import { FaFilter } from "react-icons/fa6";
+import { ModalConfirmar } from "@/components/afapSaude/components/modalConfirmar";
+import { PopoverRenovar } from "@/components/renovacao/popOverRenovar";
+import { themeLight } from "@/components/admContrato/acordos/screen";
+
+
 
 
  interface MensalidadeProps {
@@ -35,16 +45,10 @@ export interface DadosImpressao{
 }
 
 
-
-
-
-
-
 export interface FiltroProps{
  
     contratoInicial:number|null,
     contratoFinal:number|null,
-    empresa:string,
     mensAberto:number|null
 }
 
@@ -63,41 +67,19 @@ export interface ListaProps{
 
 
 export default function Renovacao(){
+const {selectEmp} = useContext(AuthContext)
 const [openModalFiltro,setModalFiltro]=useState<boolean>(false)
-const [openModalRen,setModalRen]=useState<boolean>(false)
 const [loading,setLoading] =useState<boolean>(false)
-const [dataFiltro,setFiltro] = useState<FiltroProps>({contratoInicial:0,empresa:'',mensAberto:0,contratoFinal:0})
+const [dataFiltro,setFiltro] = useState<FiltroProps>({contratoInicial:null,mensAberto:null,contratoFinal:null})
 const [array,setArray]= useState<Array<ListaProps>>([])
 const [MensImp,setMensImp]= useState<Array<DadosImpressao>>([])
-const [parcelas,setParcelas] = useState<number>(0)
+const [parcelas,setParcelas] = useState<number|null>(0)
 const componentRef =useRef<DocumentTemplate>(null);
 
 
 
-
 const imprimirCarne =useReactToPrint({
-    pageStyle: `
-        @page {
-            margin: 1rem;
-        }
-        @media print {
-            body {
-                -webkit-print-color-adjust: exact;
-            }
-            @page {
-                size: auto;
-                margin: 1rem;
-            }
-            @page {
-                @top-center {
-                    content: none;
-                }
-                @bottom-center {
-                    content: none;
-                }
-            }
-        }
-    `,
+    pageStyle:pageStyle,
     documentTitle:'CARNÊ ASSOCIADO',
     content:()=>componentRef.current,
     onAfterPrint() {
@@ -121,6 +103,11 @@ const imprimirCarne =useReactToPrint({
 
 
 const handleImpressao =async ()=>{
+    if(array.length===0){
+        toast.info('Nenhum contrato no grid!')
+        return
+
+    }
     setLoading(true)
     try {
         const response = await api.post('/renovacao/impressao',{
@@ -179,7 +166,8 @@ const filtrar = async()=>{
         const response = await api.post('/renovacao/filtro',{
             contratoInicial:dataFiltro.contratoInicial,
             contratoFinal:dataFiltro.contratoFinal,
-            quant:dataFiltro.mensAberto
+            quant:dataFiltro.mensAberto,
+            id_empresa:selectEmp
         })
 
         setArray(response.data)
@@ -188,6 +176,7 @@ const filtrar = async()=>{
         console.log(error)
     }
     setLoading(false)
+    setModalFiltro(false)
 }
 
     return(
@@ -203,45 +192,50 @@ const filtrar = async()=>{
     </div>
 
 
-        <ModalFiltro setFiltro={setFiltro} dataFiltro={dataFiltro} filtrar={filtrar} openModal={openModalFiltro} setModal={setModalFiltro} loading={loading}/>
+       {openModalFiltro && <ModalFiltro 
+      
+        setFiltro={setFiltro}
+        dataFiltro={dataFiltro}
+        filtrar={filtrar} 
+        openModal={openModalFiltro} 
+        setModal={setModalFiltro} 
+        loading={loading}/>}
 
-        <ModalRenovar  openModal={openModalRen} setOpenModal={setModalRen}  handleRenovar={handleRenovacao}/>
-        <div className="flex flex-col w-full">
+     
+        <div className="flex flex-col w-full h-[100vh] p-1 bg-white text-black">
             <div className="inline-flex w-full justify-end items-end mt-1 gap-8 pr-1">
 
+      <ButtonGroup>
+                <Button theme={themeLight} onClick={()=>setModalFiltro(true)} type="button" color='light' size='xs'><FaFilter className='mr-1 h-4 w-4' />Filtrar</Button>
 
-            <Button  size={'sm'} onClick={()=>setModalFiltro(true)}>Filtrar</Button>
+               {/*<PopoverReagendamento setSelecionadas={setLinhasSelecionadas} id_usuario={usuario?.id} mensalidades={linhasSelecionadas} id_global={dadosAssociado.id_global}/>*/}
+
+                <Button theme={themeLight} isProcessing={loading} onClick={handleImpressao} color='light' size='xs'>  <IoPrint className='mr-1 h-4 w-4' /> Imprimir</Button>
               
-                <Button isProcessing={loading} onClick={handleImpressao} size={'sm'}>Imprimir</Button>
-
-                <div className="inline-flex items-end gap-4" >
-                    
-       <Label  className="text-white" value="Número de parcelas:" />
+              {/*  <PopoverVencimento    />*/}
+             
+               <PopoverRenovar setParcelas={setParcelas} n_Parcelas={parcelas} handleFunction={handleRenovacao}/>
+            
+            </ButtonGroup>
      
-                         <TextInput value={parcelas}  onChange={e=>setParcelas(Number(e.target.value))} type="number" sizing={'sm'}/>
-                     
-                <Button onClick={()=>{
-                if(array.length===0 || !parcelas){
-                    toast.info('Sem dados disponiveis para renovação')
-                    return;
-                }
-                    setModalRen(true)}} size={'sm'}>Renovar</Button>
-            </div>
+              
+             
+
             </div>
 
 
 
             <div className="overflow-y-auto overflow-x-auto max-h-[82vh] mt-1 px-2">
-                <Table  theme={{ body: { cell: { base: "px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-gray-700" } } }}>
+                <Table  theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 py-1 text-xs " } },head:{cell:{base:"px-4 py-1 text-xs"}} }}>
                     <Table.Head className="sticky">
                         <Table.HeadCell>Contrato</Table.HeadCell>
                         <Table.HeadCell>Associado</Table.HeadCell>
                         <Table.HeadCell>Endereço</Table.HeadCell>
                         <Table.HeadCell>Bairro</Table.HeadCell>
                     </Table.Head>
-                    <Table.Body>
+                    <Table.Body className="text-black divide-y">
                       { array?.map((item,index)=>(
-                         <Table.Row key={item.id_contrato}>
+                         <Table.Row  key={item.id_contrato}>
                               <Table.Cell className="font-semibold">{item.id_contrato}</Table.Cell>
                             <Table.Cell>{item.associado.nome}</Table.Cell>
                             <Table.Cell>{item.associado.endereco}</Table.Cell>

@@ -11,6 +11,7 @@ import { FiltroProps } from "@/pages/renovacao";
 
 
 interface DataProps{
+  
     loading:boolean
     openModal:boolean,
     setModal:(open:boolean)=>void
@@ -33,28 +34,20 @@ export function ModalFiltro({loading,openModal,setModal,filtrar,dataFiltro,setFi
 
                 <Modal.Body>
                 <div className='space-y-4'>
-                <div>
-                    <span>Empresa</span>
-                    <Select sizing={'sm'}>
-                        <option value={''}>{''}</option>
-                        <option value={'AFAP CEDRO'}>AFAP CEDRO</option>
-                        <option value={'AFAP LAVRAS'}>AFAP LAVRAS</option>
-                        <option value={'AFAP VIVAMAIS'}>AFAP VIVAMAIS</option>
-                    </Select>
-            </div>   
+              
 
             <div className="inline-flex gap-2 items-end">
                 <span>Consultar</span>
       <span>contratos:</span>
 
-      <TextInput type="number" value={Number(dataFiltro.contratoInicial)} onChange={e=>setFiltro({...dataFiltro,contratoInicial:Number(e.target.value)})}  sizing={'sm'}/>
+      <TextInput type="number" value={dataFiltro.contratoInicial?Number(dataFiltro.contratoInicial):''} onChange={e=>setFiltro({...dataFiltro,contratoInicial:Number(e.target.value)})}  sizing={'sm'}/>
       <span>a</span>
-      <TextInput type="number" value={Number(dataFiltro.contratoFinal)} onChange={e=>setFiltro({...dataFiltro,contratoFinal:Number(e.target.value)})}  sizing={'sm'}/>
+      <TextInput type="number" value={dataFiltro.contratoFinal?Number(dataFiltro.contratoFinal):''} onChange={e=>setFiltro({...dataFiltro,contratoFinal:Number(e.target.value)})}  sizing={'sm'}/>
 
             </div>
             <div>
                     <span>Número máximo de mensalidades em aberto</span>
-                    <TextInput value={Number(dataFiltro.mensAberto)} onChange={e=>setFiltro({...dataFiltro,mensAberto:Number(e.target.value)})} sizing={'sm'}/>
+                    <TextInput value={dataFiltro.mensAberto?Number(dataFiltro.mensAberto):''} onChange={e=>setFiltro({...dataFiltro,mensAberto:Number(e.target.value)})} sizing={'sm'}/>
             </div> 
 
                      <Button  isProcessing={loading} className='cursor-pointer' onClick={()=>filtrar()} size={'sm'}>Aplicar Filtro</Button>

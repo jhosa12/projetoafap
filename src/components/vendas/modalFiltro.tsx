@@ -20,7 +20,7 @@ interface DataProps{
     dadosMetas:Partial<MetasProps>
 }
 
-export function ModalFiltro({arraySetores,dadosVendas,endDate,loading,setEndDate,setFiltro,setStartDate,setarDadosMetas,show,startDate,dadosMetas}:DataProps){
+export function ModalFiltroMetas({arraySetores,dadosVendas,endDate,loading,setEndDate,setFiltro,setStartDate,setarDadosMetas,show,startDate,dadosMetas}:DataProps){
 
     return(
         <Modal dismissible size={'sm'} show={show} onClose={() => setFiltro(false)}>

@@ -11,7 +11,7 @@ import { Button, Label, Modal, Select, Table, TextInput } from "flowbite-react";
 import { AcordoProps, MensalidadeProps } from "@/types/financeiro";
 import { ConsultoresProps } from "@/types/consultores";
 import { MdClose } from "react-icons/md";
-import { set } from "date-fns";
+
 
 
 interface DadosAcordoProps{
@@ -66,10 +66,14 @@ export function ModalAcordos({acordo,id_empresa,usuario,id_usuario,open,close,me
                     {
                         pending: 'Removendo...',
                         success: 'Mensalidade removida com sucesso!',
-                        error: 'Erro ao remover mensalidade'}
+                        error: 'Erro ao remover mensalidade'
+                    }
                 )
 
                 id_global && await carregarDados(id_global);
+                const array = watch('mensalidade')||[];
+                const newArray = array.filter(item => item.id_mensalidade_global !== id_mensalidade_global);
+                setValue('mensalidade',newArray)
             }catch(err){
                 console.log(err)
             }
@@ -116,6 +120,9 @@ const handleNovaRef = async()=>{
             )
 
             id_global && await carregarDados(id_global);
+            const array = watch('mensalidade')||[];
+            array.push(response.data);
+            setValue('mensalidade',array)
         }catch(err){
             console.log(err)
         }
@@ -348,6 +355,10 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
  
    </div>
 
+   <div className="col-span-4">
+   {acordo.id_acordo && <Button className="ml-auto" type="submit" size="sm">{'EDITAR'}</Button>}
+   </div>
+ 
 
 
 </div>
@@ -456,7 +467,7 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
     </div>
 
     <div className="flex w-full">
- <Button className="ml-auto" type="submit" size="sm">{acordo.id_acordo?'EDITAR':'CRIAR'}</Button>
+{!acordo.id_acordo && <Button className="ml-auto" type="submit" size="sm">{'CRIAR'}</Button>}
     </div>
    
     </Modal.Footer>

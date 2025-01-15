@@ -1,7 +1,7 @@
 
 import { Avatar, List, Modal } from "flowbite-react";
 import { HiCheckCircle } from "react-icons/hi2";
-import { VendasProps } from "./acompanhamento";
+import { ConsultorLeads, VendasProps } from "./acompanhamento";
 
 interface DataProps{
     show:boolean,
@@ -9,9 +9,10 @@ interface DataProps{
     vendedor:VendasProps,
     startDate:Date,
     endDate:Date,
+    leads:Array<ConsultorLeads>
 }
 
-export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor}:DataProps){
+export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor,leads}:DataProps){
 
 
 
@@ -30,7 +31,7 @@ export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor}:Dat
             </Modal.Header>
         <Modal.Body>
         <List>
-<List.Item icon={HiCheckCircle}>LEADS</List.Item>
+<List.Item icon={HiCheckCircle}>LEADS: {}</List.Item>
 <List.Item icon={HiCheckCircle}>PROSPECÇÕES</List.Item>
 <List.Item icon={HiCheckCircle}>PRE VENDAS</List.Item>
 </List>

@@ -101,7 +101,7 @@ export function Dependentes(){
 
                                 <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
                     <input disabled={!permissoes.includes('ADM1.3.1')} checked={checkDependente} onChange={() => setCheckDependente(!checkDependente)} type="checkbox" value="2" className="sr-only peer disabled:cursor-not-allowed" />
-                    <div className="  w-7 h-4 rounded-full peer bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[6px] after:start-[8px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
+                    <div className="  w-7 h-4 rounded-full peer bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[7px] after:start-[8px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
                     <Tooltip className="z-30" id="id_dependente" />
                     <span className="ms-3 text-xs font-medium">Exibir Excluidos</span>
                 </label>
@@ -114,7 +114,7 @@ export function Dependentes(){
                             
                                 </div>
                                 <table
-                                    className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-600 ">
+                                    className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse  text-gray-600 ">
                                     <thead className="sticky top-0  text-xs uppercase bg-gray-100 text-gray-600">
                                         {!checkDependente ? (<tr>
                                             <th scope="col" className=" px-2 py-1">

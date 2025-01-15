@@ -1,6 +1,6 @@
 
-import React, {  useContext, useState } from 'react';
-import { MdDeleteForever, MdEdit} from 'react-icons/md';
+import React, {  useContext, useEffect, useState } from 'react';
+import { MdDeleteForever, MdEdit, MdPrint} from 'react-icons/md';
 import { RiAddCircleFill } from 'react-icons/ri';
 import { toast } from 'react-toastify'
 import { AuthContext } from '@/contexts/AuthContext';
@@ -8,10 +8,11 @@ import { Button, ButtonGroup } from 'flowbite-react';
 import { AcordoProps, MensalidadeProps } from '@/types/financeiro';
 import { ModalAcordos } from './modalAcordos';
 import { FaFileArrowDown } from 'react-icons/fa6';
+import { FaPrint } from 'react-icons/fa';
 
-const themeLight = {
+export const themeLight = {
     color:{
-        light:"border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100"
+        light:"border border-gray-300 bg-white text-gray-900 focus:rind-none focus:ring-0 enabled:hover:bg-gray-100"
     }
 };
 
@@ -31,9 +32,14 @@ interface DataProps{
 
 
 export function Acordos({acordos,mensalidades,id_contrato_global,id_global,usuario,id_empresa,id_associado,id_contrato}:DataProps) {
-const {permissoes,consultores} = useContext(AuthContext)
+const {permissoes,consultores,carregarDados} = useContext(AuthContext)
 const [openAcordo,setOpenAcordo] = useState(false)
 const [acordo,setAcordo] = useState<Partial<AcordoProps>>()
+
+
+useEffect(()=>{
+    setAcordo({})
+},[id_global])
 
     return (
         <div className="flex flex-col rounded-lg  max-h-[calc(100vh-190px)]    sm:rounded-lg">
@@ -42,7 +48,7 @@ const [acordo,setAcordo] = useState<Partial<AcordoProps>>()
                 id_associado={id_associado}
                 id_contrato={id_contrato}
                 id_empresa={id_empresa}
-               carregarDados={async()=>{}} 
+               carregarDados={carregarDados} 
                close={()=>setOpenAcordo(false)} 
                acordo={acordo??{}}
                id_contrato_global={id_contrato_global??null}
@@ -59,8 +65,11 @@ const [acordo,setAcordo] = useState<Partial<AcordoProps>>()
            
                 <ButtonGroup>
                 <Button theme={themeLight}  onClick={()=>{setOpenAcordo(true);setAcordo({})}} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' /> Novo Acordo</Button>
-                <Button theme={themeLight}  onClick={()=>setOpenAcordo(true)} type="button" color='light' size='xs'><FaFileArrowDown className='mr-1 h-4 w-4' />Baixar</Button>
-                <Button theme={themeLight}  onClick={()=>setOpenAcordo(true)} type="button" color='light' size='xs'><MdEdit className='mr-1 h-4 w-4' />Alterar</Button>
+                <Button theme={themeLight}  onClick={()=>setOpenAcordo(true)} type="button" color='light' size='xs'><MdPrint className='mr-1 h-4 w-4' />Imprimir</Button>
+                <Button theme={themeLight}  onClick={()=>{
+                    if(!acordo?.id_acordo){return toast.warning('Selecione um acordo')}
+                    setOpenAcordo(true)
+                    }} type="button" color='light' size='xs'><MdEdit className='mr-1 h-4 w-4' />Alterar</Button>
                 <Button theme={themeLight} onClick={() =>{}} type="button" color='light' size='xs'><MdDeleteForever className='mr-1 h-4 w-4' /> Excluir</Button>
             </ButtonGroup>
 
@@ -82,12 +91,14 @@ const [acordo,setAcordo] = useState<Partial<AcordoProps>>()
                             <th scope="col" className="px-6 py-1">
                                 METODO DE PAG
                             </th>
-                         
-                            <th scope="col" className="px-6 py-1">
-                                STATUS
+                            <th scope="col" className=" px-6 py-1">
+                                DATA CRIAÇÃO
                             </th>
                             <th scope="col" className=" px-6 py-1">
-                                 PAG.
+                                DATA PREVISTA
+                            </th>
+                            <th scope="col" className=" px-6 py-1">
+                                DATA PAG.
                             </th>
                             <th scope="col" className=" px-6 py-1">
                                 HR PAG.
@@ -120,19 +131,20 @@ const [acordo,setAcordo] = useState<Partial<AcordoProps>>()
 
                                             </td>
                                             <td className="px-2 py-1">
-                                                {Number(item.total_acordo).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                                {Number(item.mensalidade?.reduce((a, b) => a + Number(b.valor_principal), 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                             </td>
                                             <td className="px-5 py-1">
                                                 {item.metodo}
                                             </td>
-                                           
-                                            <td className={`px-4 py-1  font-bold ${item.status !== 'P' && "text-red-600"}`}>
-                                                {item.status}
+                                            <td className="px-3 py-1">
+                                                {item.data_inicio && new Date(item.data_inicio).toLocaleDateString('pt-BR',{timeZone:"UTC"})}
                                             </td>
                                             <td className="px-3 py-1">
+                                                {item.data_fim && new Date(item.data_fim).toLocaleDateString('pt-BR',{timeZone:"UTC"})}
+                                            </td>
+                                            <td className="px-4 py-1">
                                                 {item.dt_pgto && new Date(item.dt_pgto).toLocaleDateString('pt-BR',{timeZone:"UTC"})}
                                             </td>
-                                      
                                             <td className="px-4 py-1">
                                                 {item.dt_pgto && new Date(item.dt_pgto).toLocaleTimeString('pt-BR')}
                                             </td>
