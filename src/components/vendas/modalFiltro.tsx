@@ -13,14 +13,14 @@ interface DataProps{
     setStartDate:(start:Date)=>void
     endDate:Date,
     setEndDate:(end:Date)=>void
-    dadosVendas:()=>Promise<void>
+    filtrar:()=>Promise<void>
     loading:boolean,
     arraySetores:Array<SetorProps>,
-    setarDadosMetas:(fields:Partial<MetasProps>)=>void
-    dadosMetas:Partial<MetasProps>
+   
+   
 }
 
-export function ModalFiltroMetas({arraySetores,dadosVendas,endDate,loading,setEndDate,setFiltro,setStartDate,setarDadosMetas,show,startDate,dadosMetas}:DataProps){
+export function ModalFiltroMetas({arraySetores,filtrar,endDate,loading,setEndDate,setFiltro,setStartDate,show,startDate}:DataProps){
 
     return(
         <Modal dismissible size={'sm'} show={show} onClose={() => setFiltro(false)}>
@@ -38,9 +38,9 @@ export function ModalFiltroMetas({arraySetores,dadosVendas,endDate,loading,setEn
                                 <Label htmlFor="email1" value="Setor" />
                             </div>
 
-                            <Select sizing={'sm'} value={dadosMetas.id_grupo} onChange={e => {
+                            <Select sizing={'sm'} value={''} onChange={e => {
                                 const item = arraySetores.find(item => item.id_grupo === Number(e.target.value))
-                                setarDadosMetas({ ...dadosMetas, id_grupo: item?.id_grupo, descricao_grupo: item?.descricao })
+                               
 
                             }}>
                                 <option value={0}>SETOR (TODOS)</option>
@@ -69,7 +69,7 @@ export function ModalFiltroMetas({arraySetores,dadosVendas,endDate,loading,setEn
                         </div>
                         </div>
 
-                        <Button  isProcessing={loading} className='cursor-pointer' as={'span'} onClick={()=>dadosVendas()} size={'xs'}>Aplicar Filtro</Button>
+                        <Button  isProcessing={loading} className='cursor-pointer' as={'span'} onClick={()=>filtrar()} size={'sm'}>Aplicar Filtro</Button>
                         
 
                         </div>

@@ -113,7 +113,7 @@ useEffect(() => {
                         </Button>
                     </div>
                     <div className="flex-col w-full border  rounded-lg shadow  border-gray-700">
-                        <Tabs theme={{ base: 'bg-white rounded-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-163px)]', tablist: { tabitem: { base: "flex items-center justify-center enabled:text-black rounded-t-lg p-4 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 " } } }} aria-label="Tabs with icons" variant="underline" onActiveTabChange={e => setIndex(e)} >
+                        <Tabs theme={{ base: 'bg-white rounded-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-165px)]', tablist: { tabitem: { base: "flex items-center justify-center enabled:text-black rounded-t-lg p-4 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 " } } }} aria-label="Tabs with icons" variant="underline" onActiveTabChange={e => setIndex(e)} >
 
                             <Tabs.Item  active={indexTab === 0} title="DADOS ASSOCIADO" icon={HiUserCircle}>
                                 {indexTab === 0 && <DadosAssociado dadosassociado={dadosassociado ?? {}} />}

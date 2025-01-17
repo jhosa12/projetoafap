@@ -1,5 +1,5 @@
 import { EstoqueProps, FormProps, ProdutosProps } from "@/pages/estoque"
-import { Button, Select, Table, TextInput } from "flowbite-react"
+import { Button, Select, Spinner, Table, TextInput } from "flowbite-react"
 import { useContext, useEffect, useRef, useState } from "react";
 import { ModalMov } from "./modalMovimentacao";
 import { ModalNovoProduto } from "./modalNovoProduto";
@@ -15,6 +15,7 @@ import { HiPrinter } from "react-icons/hi2";
 import { useReactToPrint } from "react-to-print";
 import RelatorioEstoque from "@/Documents/estoque/RelatorioEstoque";
 import ImpressaoCarne from "@/Documents/mensalidade/ImpressaoCarne";
+import pageStyle from "@/utils/pageStyle";
 
 
 
@@ -38,7 +39,7 @@ export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos,
     const handleFiltroEstoque = async()=>{
 
      await postData({grupo:'',descricao:'',id_produto:null,id_empresa:undefined}) 
-     console.log(data)
+     //console.log(data)
     
     }
 
@@ -49,28 +50,7 @@ export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos,
 
 
     const handleImpressao = useReactToPrint({
-      pageStyle: `
-  @page {
-      margin: 1rem;
-  }
-  @media print {
-      body {
-          -webkit-print-color-adjust: exact;
-      }
-      @page {
-          size: auto;
-          margin: 1rem;
-      }
-      @page {
-          @top-center {
-              content: none;
-          }
-          @bottom-center {
-              content: none;
-          }
-      }
-  }
-`,
+      pageStyle:pageStyle,
       documentTitle: 'MOVIMENTAÇÃO DE ESTOQUE',
 
       content: () => componentRef.current,
@@ -109,6 +89,15 @@ export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos,
                     <Button color={'gray'} onClick={handleImpressao}  size={'sm'}><HiPrinter className="mr-2 h-5 w-5"/>Imprimir</Button>
                 </div>
 
+        {loading?
+        
+        <div className="flex items-center justify-center h-[calc(100vh-170px)]">
+          <Spinner size="xl" />
+        </div>
+        :
+      
+        
+        
         <div className="overflow-y-auto mt-1 px-2 max-h-[calc(100vh-170px)] bg-white  rounded-lg ">
         <Table hoverable theme={{ body: { cell: { base: " px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }}  >
                     <Table.Head >
@@ -163,7 +152,7 @@ export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos,
                
         
         
-        </div>
+        </div>}
               
                 </div>
     )

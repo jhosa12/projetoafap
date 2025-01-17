@@ -1,28 +1,27 @@
 
-
-
-
-
-import { AuthContext } from '@/contexts/AuthContext';
-import { useContext, useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { api } from '@/services/apiClient';
 import { GoGoal } from "react-icons/go";
 import { GiStairsGoal, GiRotaryPhone } from "react-icons/gi";
-import { FaHandshake, FaPercentage } from "react-icons/fa";
-import DatePicker from "react-datepicker";
+import { FaFilter } from "react-icons/fa6";
 import "react-datepicker/dist/react-datepicker.css";
-import pt from 'date-fns/locale/pt-BR';
-import { toast } from 'react-toastify';
-import { Button, Modal } from 'flowbite-react';
-import { HiFilter } from "react-icons/hi";
+import { Button, ButtonGroup, Dropdown, Modal } from 'flowbite-react';
+
 import { ModalVendedor } from '@/components/vendas/modalVendedor';
-import { ModalFiltroMetas } from '@/components/vendas/modalFiltro';
-import { ModalMetas } from '@/components/vendas/modalMetas';
+
 import { ConsultorList } from '@/components/vendas/ConsultorList';
-import { setRequestMeta } from 'next/dist/server/request-meta';
+
+import { themeLight } from '../admContrato/acordos/screen';
+
+import { IoPrint } from 'react-icons/io5';
+import { FaPercentage } from 'react-icons/fa';
+import { ModalFiltroMetas } from './modalFiltro';
+import { ajustarData } from '@/utils/ajusteData';
+
 
 // Definindo tipos para os dados que serão utilizados
 export interface VendasProps {
+    id_consultor: number|null;
     consultor: string;
     _sum: { valor_mensalidade: number };
     _count: { dt_adesao: number };
@@ -31,6 +30,7 @@ export interface VendasProps {
 
 export interface MetasProps {
     id_meta: number;
+    id_empresa: string
     id_grupo: number;
     id_conta: string;
     valor: number;
@@ -51,11 +51,11 @@ export interface ConsultoresProps {
     id_consultor: number;
 }
 
-export interface ConsultorLeads{
+export interface ConsultorLeads {
     id_consultor: number;
-    status:string,
-    _count:{
-        id_lead:number
+    status: string,
+    _count: {
+        id_lead: number
     }
 }
 
@@ -64,60 +64,45 @@ interface ResponseProps {
     metas: MetasProps[];
     setores: SetorProps[];
     consultores: ConsultoresProps[];
-    leads:Array<ConsultorLeads>
+    leads: Array<ConsultorLeads>;
+    metaAtual:number,
+    startFilter:Date,
+    endFilter:Date
 }
 
-export  function Acompanhamento({empresa}:{empresa:string}) {
-   // const { usuario } = useContext(AuthContext);
-    //const [dados, setDados] = useState<VendasProps[]>([]);
+export function Acompanhamento({ empresa,setores }: { empresa: string,setores: SetorProps[] }) {
+
     const [startDate, setStartDate] = useState<Date>(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
     const [endDate, setEndDate] = useState<Date>(new Date());
-   // const [somaVendas, setSomaVendas] = useState<number>(0);
-   // const [aba, setAba] = useState<number>(1);
-    //const [arrayMetas, setMetas] = useState<MetasProps[]>([]);
-   // const [arraySetores, setSetores] = useState<SetorProps[]>([]);
-    const [modalMetas, setModalMetas] = useState<boolean>(false);
-    const [dadosMetas, setDadosMetas] = useState<Partial<MetasProps>>({});
-    //const [consultores, setConsultores] = useState<ConsultoresProps[]>([]);
     const [filtro, setFiltro] = useState<boolean>(false);
-    const [meta, setMeta] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
     const [modalVend, setModalVend] = useState<boolean>(false);
-    const [vendedor, setVendedor] = useState<VendasProps>({ _count: { dt_adesao: 0 }, _sum: { valor_mensalidade: 0 }, consultor: '', situacao: '' });
-    const [reqData,setData]=useState<ResponseProps>({} as ResponseProps)
+    const [vendedor, setVendedor] = useState<VendasProps>({ _count: { dt_adesao: 0 }, _sum: { valor_mensalidade: 0 }, consultor: '', situacao: '',id_consultor:null });
+    const [reqData, setData] = useState<ResponseProps>({} as ResponseProps)
 
-    // Função para atualizar os dados de metas
-    const setarDadosMetas = (fields: Partial<MetasProps>) => {
-        setDadosMetas(prev => ({ ...prev, ...fields }));
-    };
+    //Função para atualizar os dados de metas
 
-    // Função para buscar dados de vendas
-    const dadosVendas =async() => {
+
+    //Função para buscar dados de vendas
+    const dadosVendas = async () => {
+
+        const {dataIni,dataFim} = ajustarData(startDate,endDate)
         try {
             setLoading(true);
-         
+
             const response = await api.post<ResponseProps>('/vendas/filtro', {
-                dataInicio: startDate,
-                dataFim: endDate,
+                dataInicio: dataIni,
+                dataFim: dataFim,
                 id_empresa: empresa
             });
-        // console.log(response.data)
-          
-          
-          
-         
-            const metaAtual = response.data.metas.reduce((acumulador, item) => {
-              const dateInicio = new Date(item.date);
-                const dateFim = new Date(item.dateFimMeta);
-                if (dateInicio >= startDate && dateFim <= endDate) {
-                     acumulador += Number(item.valor);
-               }
-                return acumulador;
-            }, 0);
+
+
+            
             setData(response.data)
-            setMeta(metaAtual);
+         
             setFiltro(false);
-          
+            console.log(response.data)
+
         } catch (error) {
             //console.log(error)
         } finally {
@@ -130,65 +115,48 @@ export  function Acompanhamento({empresa}:{empresa:string}) {
     }, []);
 
     // Função para adicionar uma nova meta
-    const novaMeta = async () => {
-        try {
-         const response =   await toast.promise(
-                api.post('/vendas/novaMeta', {
-                    id_grupo: dadosMetas.id_grupo,
-                    date: dadosMetas.date,
-                    dateFimMeta: dadosMetas.dateFimMeta,
-                    valor: dadosMetas.valor,
-                    descricao: `META SETOR ${dadosMetas.descricao_grupo}`,
-                }),
-                {
-                    error: 'Erro ao salvar dados',
-                    pending: 'Salvando Dados....',
-                    success: 'Dados Salvos com Sucesso',
-                }
-            );
-          //  setMetas([...arrayMetas,response.data])
-        } catch (error) {
-            toast.error('Erro ao salvar nova meta');
-        }
-    };
+
 
     return (
         <>
-            <div className="flex flex-col w-full px-2 text-white  h-[calc(100vh-56px)] bg-white">
-                <div className='inline-flex w-full mb-1 pl-2 justify-between'>
-        
-                    <div className='inline-flex gap-2 ml-auto'>
-                        <Button className='cursor-pointer' as={'span'} size='sm' onClick={() => setFiltro(true)} color='cyan'>
-                            <HiFilter className="mr-2 h-5 w-5" /> Filtro
-                        </Button>
-                        <Button className='cursor-pointer' as={'span'} size='sm' onClick={() => setModalMetas(true)} color='gray'>
-                            Nova Meta
-                        </Button>
-                    </div>
+            <div className="flex flex-col w-full p-2   h-[calc(100vh-56px)] bg-white">
+
+
+                <div className="inline-flex w-full justify-between  py-2 px-6 rounded-lg text-black">
+                    <InfoBlock icon={<GoGoal color='gray' size={30} />} title="META" value={reqData.metaAtual ? (reqData?.metaAtual * reqData?.consultores?.length).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '0,00'} />
+                    <InfoBlock icon={<FaPercentage size={30} color='gray' />} title="PERCENTUAL" value={getPercentual(reqData?.grupos, reqData?.metaAtual, reqData?.consultores)} />
+                    <InfoBlock icon={<GiStairsGoal color='gray' size={30} />} title="PRODUZIDO" value={getProduzido(reqData?.grupos)} />
                 </div>
 
-                <div className="inline-flex w-full justify-between bg-gray-100 py-2 px-6 rounded-lg text-black">
-                    <InfoBlock icon={<GoGoal color='gray' size={30} />} title="META" value={meta ? (meta * reqData?.consultores?.length).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '0,00'} />
-                    <InfoBlock icon={<FaPercentage size={30} color='gray' />} title="PERCENTUAL" value={getPercentual(reqData?.grupos, meta, reqData?.consultores)} />
-                    <InfoBlock icon={<GiStairsGoal color='gray' size={30} />} title="PRODUZIDO" value={getProduzido(reqData?.grupos)} />
-                    <InfoBlock icon={<FaHandshake color='gray' size={30} />} title="PROSPECÇÕES" value="0" />
-                    <InfoBlock icon={<GiRotaryPhone color='gray' size={30} />} title="LEADS" value="0" />
-                </div>
+
+                <ButtonGroup className="ml-auto">
+                    <Button theme={themeLight} onClick={() =>setFiltro(true)} type="button" color='light' size='xs'><FaFilter className='mr-1 h-4 w-4' />FILTRAR</Button>
+
+
+                    <Dropdown label="" dismissOnClick={false} renderTrigger={() => <Button theme={{...themeLight, pill: { on: "rounded-r-lg" } }} pill color='light' size='xs'>  <IoPrint className='mr-1 h-4 w-4' /> IMPRIMIR</Button>}>
+                        <Dropdown.Item>Relatorio por vendedor</Dropdown.Item>
+                        <Dropdown.Item>Relatorio geral</Dropdown.Item>
+                        <Dropdown.Item>Earnings</Dropdown.Item>
+                        <Dropdown.Item>Sign out</Dropdown.Item>
+                    </Dropdown>
+                </ButtonGroup>
 
                 <div className="flex w-full mt-1 gap-2">
-                    <ConsultorList dados={reqData?.grupos} setModalVend={setModalVend} setVendedor={setVendedor} meta={meta ?? 0} />
+                    <ConsultorList dados={reqData?.grupos} setModalVend={setModalVend} setVendedor={setVendedor} meta={reqData?.metaAtual ?? 0} />
                 </div>
             </div>
 
-           {modalMetas && <ModalMetas show={modalMetas} setModalMetas={setModalMetas} arraySetores={reqData?.setores} setarDadosMetas={setarDadosMetas} novaMeta={novaMeta} dadosMetas={dadosMetas} arrayMetas={reqData?.metas} />}
-           {filtro && <ModalFiltroMetas dadosMetas={dadosMetas} show={filtro} setFiltro={setFiltro} startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} dadosVendas={dadosVendas} loading={loading} arraySetores={reqData?.setores} setarDadosMetas={setarDadosMetas} />}
-          {modalVend &&  <ModalVendedor leads={reqData?.leads} show={modalVend} setModalVend={setModalVend} vendedor={vendedor} startDate={startDate} endDate={endDate} />}
+
+            {modalVend && <ModalVendedor leads={reqData?.leads} show={modalVend} setModalVend={setModalVend} vendedor={vendedor} startDate={reqData.startFilter} endDate={reqData.endFilter} />}
+
+
+            {filtro && <ModalFiltroMetas filtrar={dadosVendas} loading={loading} arraySetores={setores} show={filtro} setFiltro={setFiltro} startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />}
         </>
     );
 }
 
 
-const InfoBlock = ({ icon, title, value }:{ icon: JSX.Element, title: string, value: string }) => (
+const InfoBlock = ({ icon, title, value }: { icon: JSX.Element, title: string, value: string }) => (
     <div className='inline-flex items-center gap-1 text-black'>
         {icon}
         <div className='flex flex-col'>

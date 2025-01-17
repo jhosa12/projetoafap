@@ -24,7 +24,7 @@ const useApiPost = <T=any,P=any>(url:string):{
     try{
         const response:AxiosResponse = await api.post(url,payload)
         setData(response.data)
-      console.log(response.data)
+     // console.log(response.data)
 
     }catch(error:any){
         //setError(error as AxiosError)

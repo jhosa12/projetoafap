@@ -34,7 +34,7 @@ const useApiGet = <T=any,P=any>(url:string):{
     try{
         const response:AxiosResponse = await api.post(url,payload)
         setData(response.data)
-        console.log(response.data)
+       // console.log(response.data)
 
     }catch(error){
         setError(error as AxiosError)
