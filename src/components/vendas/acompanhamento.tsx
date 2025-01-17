@@ -80,10 +80,7 @@ export function Acompanhamento({ empresa,setores }: { empresa: string,setores: S
     const [vendedor, setVendedor] = useState<VendasProps>({ _count: { dt_adesao: 0 }, _sum: { valor_mensalidade: 0 }, consultor: '', situacao: '',id_consultor:null });
     const [reqData, setData] = useState<ResponseProps>({} as ResponseProps)
 
-    //Função para atualizar os dados de metas
-
-
-    //Função para buscar dados de vendas
+   
     const dadosVendas = async () => {
 
         const {dataIni,dataFim} = ajustarData(startDate,endDate)
@@ -118,9 +115,9 @@ export function Acompanhamento({ empresa,setores }: { empresa: string,setores: S
 
 
     return (
-        <>
-            <div className="flex flex-col w-full p-2   h-[calc(100vh-56px)] bg-white">
-
+    
+            <div className="flex flex-col w-full  bg-white">
+ {modalVend && <ModalVendedor leads={reqData?.leads} show={modalVend} setModalVend={setModalVend} vendedor={vendedor} startDate={reqData.startFilter} endDate={reqData.endFilter} />}
 
                 <div className="inline-flex w-full justify-between  py-2 px-6 rounded-lg text-black">
                     <InfoBlock icon={<GoGoal color='gray' size={30} />} title="META" value={reqData.metaAtual ? (reqData?.metaAtual * reqData?.consultores?.length).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '0,00'} />
@@ -129,7 +126,7 @@ export function Acompanhamento({ empresa,setores }: { empresa: string,setores: S
                 </div>
 
 
-                <ButtonGroup className="ml-auto">
+                <ButtonGroup className="ml-auto mr-2 mb-1">
                     <Button theme={themeLight} onClick={() =>setFiltro(true)} type="button" color='light' size='xs'><FaFilter className='mr-1 h-4 w-4' />FILTRAR</Button>
 
 
@@ -141,17 +138,23 @@ export function Acompanhamento({ empresa,setores }: { empresa: string,setores: S
                     </Dropdown>
                 </ButtonGroup>
 
-                <div className="flex w-full mt-1 gap-2">
+              
                     <ConsultorList dados={reqData?.grupos} setModalVend={setModalVend} setVendedor={setVendedor} meta={reqData?.metaAtual ?? 0} />
-                </div>
+              
+
+
+
+
+
+                
+
+           
+
+
+{filtro && <ModalFiltroMetas filtrar={dadosVendas} loading={loading} arraySetores={setores} show={filtro} setFiltro={setFiltro} startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />}
             </div>
 
-
-            {modalVend && <ModalVendedor leads={reqData?.leads} show={modalVend} setModalVend={setModalVend} vendedor={vendedor} startDate={reqData.startFilter} endDate={reqData.endFilter} />}
-
-
-            {filtro && <ModalFiltroMetas filtrar={dadosVendas} loading={loading} arraySetores={setores} show={filtro} setFiltro={setFiltro} startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />}
-        </>
+        
     );
 }
 

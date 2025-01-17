@@ -45,9 +45,9 @@ export function ConsultorList({ dados, meta, setModalVend, setVendedor }: DataPr
                                 <Table.Cell >{item._count.dt_adesao}</Table.Cell>
                                 <Table.Cell >{Number(meta).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
                                 <Table.Cell >
-                                    <div className="flex justify-between mb-1 leading-none">
+                                    <div className="flex justify-between pb-1 leading-none">
 
-                                        <span className="text-sm font-medium  leading-none">{meta && ((item._sum.valor_mensalidade * 100) / meta).toFixed(2)}%</span>
+                                        <span className="text-xs font-medium  leading-none">{meta && ((item._sum.valor_mensalidade * 100) / meta).toFixed(2)}%</span>
                                     </div>
                                     <div className="w-full rounded-full h-2.5 bg-gray-400">
                                         <div style={{ width: `${(meta && ((item._sum.valor_mensalidade * 100) / meta) > 100 ? '100' : meta && ((item._sum.valor_mensalidade * 100) / meta))}%` }} className="bg-blue-600 h-2.5 rounded-full" ></div>

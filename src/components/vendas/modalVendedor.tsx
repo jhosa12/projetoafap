@@ -1,9 +1,12 @@
 
-import { Avatar, List, Modal, Spinner, Table } from "flowbite-react";
+import { Avatar, Button, List, Modal, Spinner, Table } from "flowbite-react";
 import { HiCheckCircle } from "react-icons/hi2";
 import { ConsultorLeads, VendasProps } from "./acompanhamento";
 import useApiPost from "@/hooks/useApiPost";
 import { useEffect } from "react";
+import { MdCall, MdPrint } from "react-icons/md";
+import { BiSolidUser, BiSolidUserPlus } from "react-icons/bi";
+import { IoArchive } from "react-icons/io5";
 
 interface DataProps{
     show:boolean,
@@ -30,6 +33,7 @@ interface ResumoVendedorProps{
         status:string,
         nome:string
     }>
+
 }
 
 
@@ -39,7 +43,7 @@ interface ResumoVendedorProps{
 
 
 
-export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor,leads}:DataProps){
+export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor}:DataProps){
 
 
     const {data,postData,loading} = useApiPost<ResumoVendedorProps,{startDate:Date,endDate:Date,id_consultor:number|null,consultor:string}>("/vendas/resumoVendedor")
@@ -53,6 +57,8 @@ export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor,lead
     },[])
 
 
+
+
   
 
     return(
@@ -60,16 +66,76 @@ export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor,lead
         <Modal.Header >
            
            
-            <div className='flex flex-col'>
+          {  <div className='flex flex-col'>
            <span>{vendedor?.consultor}</span> 
            <span className='text-xs'>Periodo: {new Date(startDate).toLocaleDateString('pt-BR',{timeZone:'UTC'})} - {new Date(endDate).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
-            </div>
+            </div>}
         
            
            
             </Modal.Header>
         <Modal.Body>
-       {loading?<Spinner/>:<div>
+       {loading?<Spinner/>
+       :
+       <div className="space-y-2">
+        <div>
+            <ul className="inline-flex w-full justify-between text-xs">
+                
+                   
+                        <li className=" inline-flex gap-2 justify-center items-center bg-blue-600 p-2 text-white rounded-lg">
+
+                            <div className="border-[1px] p-1 rounded-lg">
+                            <MdCall  size={20}/>
+                            </div>
+                            
+
+                            <div className="flex flex-col ">
+                            <span>LEADS</span>
+                            {data?.leads.reduce((total, lead) => {
+                                if (lead.status === 'LEAD') {
+                                    return total + 1;
+                                }
+                                return total;
+                            },0)}
+                            </div>
+                        </li>
+
+                        <li className=" inline-flex gap-2 justify-center items-center bg-blue-600 p-2 text-white rounded-lg">
+
+                        <div className="border-[1px] p-1 rounded-lg">
+                            <BiSolidUserPlus  size={21}/>
+                            </div>
+                            <div className="flex flex-col">
+                                <span>PROSPECÇÕES</span>
+                                {data?.leads.reduce((total, lead) => {
+                                if (lead.status === 'PROSPECCAO') {
+                                    return total + 1;
+                                }
+                                return total;
+                            },0)}
+                            </div>
+                           
+                            </li>
+
+                        <li className=" inline-flex gap-2 justify-center items-center bg-blue-600 p-2 text-white rounded-lg">
+                        <div className="border-[1px] p-1 rounded-lg">
+                            <IoArchive  size={21}/>
+                            </div>
+                            <div className="flex flex-col">
+                            <span>PRÉ VENDAS</span> 
+                            {data?.leads.reduce((total, lead) => {
+                                if (lead.status === 'PREV VENDA') {
+                                    return total + 1;
+                                }
+                                return total;
+                            },0)}
+                            </div>
+                           
+                        </li>
+                   
+                
+            </ul>
+        </div>
         <Table theme={{ body: { cell: { base: " px-6 py-2  text-xs text-black" } } }} >
         <Table.Head style={{fontSize:'9px'}} >
         <Table.HeadCell>CONTRATO</Table.HeadCell>
@@ -92,6 +158,12 @@ export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor,lead
       </Table>
        </div> }
         </Modal.Body>
+        <Modal.Footer>
+          <Button color="light" className="ml-auto" onClick={() => setModalVend(false)}>
+            <MdPrint  className='mr-2 h-5 w-5'/>
+            Imprimir Resumo
+            </Button>
+        </Modal.Footer>
     </Modal>
 
     )

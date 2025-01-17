@@ -68,7 +68,7 @@ export default function Vendas() {
         <title>Vendas</title>
       </Head>
 
-      <div className="flex flex-col w-full text-white">
+     
         <Tabs theme={{base: 'bg-white rounded-b-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-70px)]',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
         on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
         off:"border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
@@ -84,15 +84,16 @@ export default function Vendas() {
                 <Historico />
               </Suspense>}
           </Tabs.Item>
-          <Tabs.Item active={tab === 0} title="METAS" icon={()=><GoGoal className="mr-2 h-4 w-4"/>}>
-            <MetasVendas setores={data??[]} empresas={empresas} id_empresa={selectEmp}/>
+          <Tabs.Item active={tab === 2} title="METAS" icon={()=><GoGoal className="mr-2 h-4 w-4"/>}>
+
+            {tab === 2 && <MetasVendas setores={data??[]} empresas={empresas} id_empresa={selectEmp}/>}
           </Tabs.Item>
 
        
         </Tabs>
 
      
-      </div>
+  
 
     </>
 

@@ -16,8 +16,6 @@ interface DataProps{
     filtrar:()=>Promise<void>
     loading:boolean,
     arraySetores:Array<SetorProps>,
-   
-   
 }
 
 export function ModalFiltroMetas({arraySetores,filtrar,endDate,loading,setEndDate,setFiltro,setStartDate,show,startDate}:DataProps){
