@@ -47,8 +47,6 @@ export function MetasVendas({id_empresa,empresas,setores}:DataProps) {
         }
         await postData(payload)
     }
-
-
     return(
 
         <div className="flex flex-col w-full h-full px-4">

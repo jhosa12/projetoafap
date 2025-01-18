@@ -62,35 +62,37 @@ class DocumentTemplate extends Component<DadosProps> {
 
     return (
       <div className='flex flex-col w-full p-2 px-6  text-black'>
-
+<div style={{ display: 'flex' }}>
         <div className="flex justify-center items-center
          mt-4">
-          <Image className="flex w-44 h-20 mr-7 " src={logo} alt="" />
+          <img className="flex w-32 h-20 mr-7 " src={"/logoafap.png"} alt="" />
         </div>
         <div className="flex flex-col w-full">
-          <h2 style={{ fontSize: '36px' }} className=' mt-4  uppercase text-center font-bold'>Assistência Familiar Paraíso</h2>
+          <h2 style={{ fontSize: '30px' }} className=' mt-4  uppercase text-center font-bold'>Assistência Familiar Paraíso</h2>
           <p className='text-center'>CNPJ: 16.784.573/0001-93 INSC. EST.:</p>
           <p className='text-center'>RUA ADALTO CASTELO, 393, CENTRO</p>
           <p className='text-center'>TELEFONES: (88) 997113362 (88)992791293</p>
-        </div><br />
-        <span style={{ fontSize: '18px' }} className="font-semibold ">Contrato: {contrato}</span>
-        <div className="inline-flex justify-between gap-5">
+        </div>
+        </div>
+        <br />
+        <span style={{ fontSize: '15px' }} className="font-semibold ">Contrato: {contrato}</span>
+        <div style={{ fontSize: '15px' }} className="inline-flex justify-between gap-5">
           <span>Contratante: {nome}</span>
           <span>Data Adesão: {new Date(adesao).toLocaleDateString()}</span>
         </div>
 
 
-        <div className="inline-flex justify-between gap-5">
+        <div style={{ fontSize: '15px' }} className="inline-flex justify-between gap-5">
           <span>Endereço: {endereco}</span>
           <span>Bairro: {bairro}</span>
         </div>
 
-        <div className="inline-flex justify-between gap-5">
+        <div style={{ fontSize: '15px' }} className="inline-flex justify-between gap-5">
           <span>Cidade: {cidade}</span>
           <span>Est.: {estado}</span>
           <span>Compl.: {complemento}</span>
         </div>
-        <div className="inline-flex justify-between gap-5">
+        <div style={{ fontSize: '15px' }} className="inline-flex justify-between gap-5">
           <span>RG: {rg}</span>
           <span>CPF: {cpf}</span>
           <span>Telefone: {telefone}</span>
@@ -102,9 +104,9 @@ class DocumentTemplate extends Component<DadosProps> {
 
 
 
-        <div className="flex  justify-center items-center w-full">
-          <table className="block  text-left rtl:text-center border-[1px] border-black border-solid">
-            <thead className="top-0 uppercase border-b-[1px] border-black border-solid">
+        <div style={{ fontSize: '14px' }} className="flex  justify-center items-center w-full">
+          <table className="block  text-left rtl:text-center ">
+            <thead className="top-0 uppercase  ">
               <tr>
                 <th scope="col" className="px-10 py-1 ">
                   NOME
@@ -117,7 +119,7 @@ class DocumentTemplate extends Component<DadosProps> {
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divider-y">
               {dependentes?.filter(item=>!item.excluido)?.map((item, index) => (
                 <tr key={index} className={` border-t border-black`}>
                   <td className="px-10 py-1 border-r border-black">
@@ -152,7 +154,8 @@ class DocumentTemplate extends Component<DadosProps> {
 
 
 
-        <div className='uppercase mx-5 p-2 text-justify'>
+        <div className='uppercase mx-5 p-2 text-justify '>
+        <p style={{ fontSize: '14px' }} className="text-justify font-semibold ">  
           ATENDIMENTO FUNERÁRIO <br />
           I. Remoção do corpo no local do Óbito ao do velório<br />
           II. Assepsia, preparação e vestimenta do corpo<br />
@@ -169,10 +172,10 @@ class DocumentTemplate extends Component<DadosProps> {
           XIII. Abertura de cova   <br />
           XIV. 50 lembracinhas<br />
           XV. Urna básica com visor<br /><br />
-
+          </p>
           <h1 className='text-center font-semibold '>CONTRATO PARTICULAR DE PRESTAÇÃO DE SERVIÇOS ASSISTENCIAL FAMILIAR & FUNERÁRIO</h1>
         </div>
-        <div className='uppercase mx-5 p-2 text-justify' style={{ textAlign: 'justify' }}>
+        <div className='uppercase mx-5 p-2 text-justify' style={{ textAlign: 'justify',fontSize: '14px' }}>
           Pelo presente instrumento particular as partes doravante denominas isoladamente.
           Parte e conjunto. Partes, de um lado na qualidade de CONTRATADA e doravante assim
           denominada pelo nome fantasia ASSISTÊNCIA FAMILIAR PARAÍSO (AFAP), razão social FREITAS

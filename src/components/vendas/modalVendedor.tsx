@@ -1,12 +1,14 @@
 
-import { Avatar, Button, List, Modal, Spinner, Table } from "flowbite-react";
-import { HiCheckCircle } from "react-icons/hi2";
+import { Button,Modal, Spinner, Table } from "flowbite-react";
 import { ConsultorLeads, VendasProps } from "./acompanhamento";
 import useApiPost from "@/hooks/useApiPost";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdCall, MdPrint } from "react-icons/md";
-import { BiSolidUser, BiSolidUserPlus } from "react-icons/bi";
+import { BiSolidUserPlus } from "react-icons/bi";
 import { IoArchive } from "react-icons/io5";
+import ResumoVendedor from "@/Documents/vendas/ResumoVendedor";
+import { useReactToPrint } from "react-to-print";
+import pageStyle from "@/utils/pageStyle";
 
 interface DataProps{
     show:boolean,
@@ -15,18 +17,22 @@ interface DataProps{
     startDate:Date,
     endDate:Date,
     leads:Array<ConsultorLeads>
+    usuario:string
+}
+
+
+export interface AdesaoProps{
+    id_contrato:number,
+    dt_adesao:Date,
+    situacao:string,
+    associado:{nome:string},
+    valor_mensalidade:number
 }
 
 
 
 interface ResumoVendedorProps{
-    adesoes:Array<{
-        id_contrato:number,
-        dt_adesao:Date,
-        situacao:string,
-        associado:{nome:string},
-        valor_mensalidade:number
-    }>,
+    adesoes:Array<AdesaoProps>,
     leads:Array<{
         id_lead:number,
         data:Date,
@@ -37,17 +43,12 @@ interface ResumoVendedorProps{
 }
 
 
-
-
-
-
-
-
-export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor}:DataProps){
+export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor,usuario}:DataProps){
 
 
     const {data,postData,loading} = useApiPost<ResumoVendedorProps,{startDate:Date,endDate:Date,id_consultor:number|null,consultor:string}>("/vendas/resumoVendedor")
-
+    const componenteRef = useRef<ResumoVendedor>(null);
+    const [print,setPrint] = useState(false)
 
 
     useEffect(()=>{
@@ -57,11 +58,25 @@ export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor}:Dat
     },[])
 
 
+    useEffect(()=>{
+        print && handlePrint()
+
+    },[print])
 
 
-  
+    const handlePrint = useReactToPrint({
+        content:()=>componenteRef.current,
+        pageStyle:pageStyle,
+        onBeforeGetContent:()=>setPrint(false),
+    })
+
 
     return(
+        <>
+
+        <div style={{display:'none'}} className="">
+          {print &&  <ResumoVendedor usuario={usuario} endDate={endDate} startDate={startDate} vendedor={vendedor.consultor} adesoes={data?.adesoes??[]} ref={componenteRef} />}
+        </div>
         <Modal dismissible size={'2xl'} show={show} onClose={() => setModalVend(false)}>
         <Modal.Header >
            
@@ -159,12 +174,12 @@ export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor}:Dat
        </div> }
         </Modal.Body>
         <Modal.Footer>
-          <Button color="light" className="ml-auto" onClick={() => setModalVend(false)}>
+          <Button theme={{color:{light:'border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100'}}} color="light" className="ml-auto" onClick={()=>setPrint(!print)}>
             <MdPrint  className='mr-2 h-5 w-5'/>
             Imprimir Resumo
             </Button>
         </Modal.Footer>
     </Modal>
-
+    </>
     )
 }
