@@ -44,11 +44,14 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
 
   const handleAtualizarDados:SubmitHandler<AssociadoProps> = async(data)=>{
     try {
+      const dataAtual = new Date();
+      dataAtual.setTime(dataAtual.getTime() - dataAtual.getTimezoneOffset() * 60 * 1000);
         const response = await toast.promise(
             api.post('/atualizarAssociado',{
               id_global: data.id_global,
               nome: data.nome,
               cep: data.cep,
+              cpfcnpj: data.cpfcnpj,
               endereco: data.endereco,
               bairro: data.bairro,
               numero:data.numero,
@@ -61,7 +64,7 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
               celular2:data.celular2,
               telefone: data.telefone,
               edi_usu:usuario?.nome,
-              edi_dh: new Date(),
+              edi_dh: dataAtual,
               profissao: data.profissao,
               sexo: data.sexo,
               contrato: data.contrato

@@ -3,7 +3,7 @@
 import {  Timeline } from "flowbite-react";
 import {  HiOutlineCheck } from "react-icons/hi2";
 import {  HiX } from "react-icons/hi";
-import { ChildrenProps } from "./admContrato/cadastro/modalCadastro";
+import { ChildrenProps } from "./modalCadastro";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 
@@ -14,14 +14,20 @@ export function ResumoCadastro({watch}:ChildrenProps){
  
     return(
        <div className="flex w-full">
-        <Timeline className="gap-8" horizontal>
+        <Timeline theme={{
+          item:{
+            content:{
+              body:{base:"mb-4 text-xs font-normal text-gray-500 dark:text-gray-400"},
+              title:{
+                base:"text-sm font-semibold text-gray-900 dark:text-white"
+                }}}}} className="gap-8" horizontal>
           
         <Timeline.Item>
-          <Timeline.Point  theme={{marker:{icon:{wrapper:`absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full ${watch('id_empresa')?"bg-cyan-200":"bg-red-300"}  ring-8 ring-white`,
+          <Timeline.Point  theme={{marker:{icon:{wrapper:`absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full ${selectEmp?"bg-cyan-200":"bg-red-300"}  ring-8 ring-white`,
           base:`${selectEmp?"text-cyan-600":"text-red-600 h-3 w-3"}`
         },
           
-          }}}    icon={watch('id_empresa')?HiOutlineCheck:HiX}  />
+          }}}    icon={selectEmp ? HiOutlineCheck:HiX}  />
           <Timeline.Content>
             <Timeline.Time>Empresa</Timeline.Time>
             <Timeline.Title className="whitespace-nowrap">{empresas?.find(emp=>emp.id===selectEmp)?.nome}</Timeline.Title>
@@ -35,9 +41,9 @@ export function ResumoCadastro({watch}:ChildrenProps){
           <Timeline.Point icon={HiOutlineCheck} />
           <Timeline.Content>
             <Timeline.Time>Dados Titular</Timeline.Time>
-            <Timeline.Title className="whitespace-nowrap">{watch('name')}</Timeline.Title>
+            <Timeline.Title className="whitespace-nowrap uppercase">{watch('name')}</Timeline.Title>
             <Timeline.Body>
-             Endereço:{watch('endereco')}
+             ENDEREÇO:{watch('endereco')}
             </Timeline.Body>
           
           </Timeline.Content>

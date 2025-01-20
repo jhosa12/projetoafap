@@ -35,7 +35,7 @@ export function ConsultorList({ dados, meta, setModalVend, setVendedor }: DataPr
 
                     {dados?.map((item, index) => {
                         return (
-                            <Table.Row className="cursor-pointer" onClick={() => { setModalVend(true), setVendedor({ ...item }) }} >
+                            <Table.Row key={index} className="cursor-pointer" onClick={() => { setModalVend(true), setVendedor({ ...item }) }} >
 
                                 <Table.Cell >{index + 1}</Table.Cell>
                                 <Table.Cell  >

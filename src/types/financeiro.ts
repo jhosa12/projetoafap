@@ -39,7 +39,7 @@ export type AcordoProps = {
     total_acordo: number,
     data_inicio: Date,
     data_fim: Date,
-    realizado_por: string,
+    realizado_por: string|undefined,
     dt_pgto: Date,
     mensalidade: Array<Partial<MensalidadeProps>>,
     status: string,

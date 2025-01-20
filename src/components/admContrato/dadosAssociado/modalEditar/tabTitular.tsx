@@ -56,7 +56,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
     name="cep"
     control={control}
     render={({ field:{onChange,value} }) => (
-      <InputMask  onChange={e=>onChange(e.target.value)} value={value} mask={'99999-9999'}  required className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+      <InputMask  onChange={e=>onChange(e.target.value)} value={value} mask={'99999-999'}  required className="flex  w-full  text-xs border  rounded-lg p-2 bg-gray-50 border-gray-300 placeholder-gray-400 " />
     )}
   />
  
@@ -165,7 +165,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
     name="cpfcnpj"
     control={control}
     render={({ field:{onChange,value} }) => (
-      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'999.999.999-99'}  className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'999.999.999-99'}  className="flex  w-full  text-xs border  rounded-lg p-2 bg-gray-50 border-gray-300 placeholder-gray-400 " />
     )}
   />
  
@@ -187,7 +187,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
     name="celular1"
     control={control}
     render={({ field:{onChange,value} }) => (
-      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'} className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'} className="flex  w-full  text-xs border  rounded-lg p-2 bg-gray-50 border-gray-300 placeholder-gray-400 " />
     )}
   />
  
@@ -201,7 +201,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
     name="celular2"
     control={control}
     render={({ field:{onChange,value} }) => (
-      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'}   className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'}   className="flex  w-full  text-xs border  rounded-lg p-2 bg-gray-50 border-gray-300 placeholder-gray-400 " />
     )}
     />
  
@@ -216,7 +216,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
     name="telefone"
     control={control}
     render={({ field:{onChange,value} }) => (
-      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'}   className="flex  w-full  text-sm border  rounded-lg p-1.5 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+      <InputMask onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'}   className="flex  w-full  text-xs border  rounded-lg p-2 bg-gray-50 border-gray-300 placeholder-gray-400 " />
     )}
   />
  

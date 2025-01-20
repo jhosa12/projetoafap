@@ -6,7 +6,7 @@ import pt from "date-fns/locale/pt";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { Label, Select, TextInput } from "flowbite-react";
-import { UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { Controller, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { ChildrenProps } from "./modalCadastro";
 
 
@@ -36,16 +36,12 @@ interface TitularProps{
   celular1:string,
   celular2:string,
   telefone:string,
-  cidades:Array<Partial<CidadesProps>>
-}
-interface DadosProps{
- // titular:Partial<TitularProps>
-  data:Partial<TitularProps>
-  closeModa: (fields:Partial<TitularProps>)=>void
+  //cidades:Array<Partial<CidadesProps>>
 }
 
 
-export function DadosTitular({register,setValue,watch}:ChildrenProps){
+
+export function DadosTitular({register,setValue,watch,control}:ChildrenProps){
 
   const {cidades}= useContext(AuthContext)
  
@@ -71,7 +67,14 @@ export function DadosTitular({register,setValue,watch}:ChildrenProps){
           <div className="mb-1 block">
           <Label htmlFor="nome" value="Nascimento" />
         </div>
-          <DatePicker  selected={watch('nasc')} locale={pt} onChange={e=>e && setValue('nasc',e)}  required className="flex w-full uppercase  text-xs   border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
+        <Controller
+        name="nasc"
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <DatePicker selected={value} dateFormat={"dd/MM/yyyy"}  locale={pt} onChange={e=> onChange(e)}  required className="flex w-full uppercase  text-xs   border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
+        )}
+        />
+       
           </div>
           <div className="col-span-1">
           <div className="mb-1 block">

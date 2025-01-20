@@ -5,13 +5,13 @@ import { useEffect, useState} from 'react'
 
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
-import { ResumoCadastro } from "@/components/resumoCadastro";
+import { ResumoCadastro } from "@/components/admContrato/cadastro/resumoCadastro";
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
 import { Modal } from "flowbite-react";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi2";
 import { HiInboxIn } from "react-icons/hi";
-import { SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
+import { Control, SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
 
 
 import { MultiStep } from "@/utils/multiStep";
@@ -35,6 +35,7 @@ export interface ChildrenProps{
     setValue:UseFormSetValue<DadosCadastro>,
     watch:UseFormWatch<DadosCadastro>
     trigger:UseFormTrigger<DadosCadastro>
+    control?:Control<DadosCadastro>
   }
 
 
@@ -47,7 +48,7 @@ interface ModalProps {
 
 export default function ModalCadastro({isOpen,onClose}:ModalProps) {
     const {usuario,carregarDados,selectEmp} = useContext(AuthContext)
-    const {register,handleSubmit,setValue,watch,trigger,reset} = useForm<DadosCadastro>()
+    const {register,handleSubmit,setValue,watch,trigger,control} = useForm<DadosCadastro>()
 
    
   
@@ -73,6 +74,25 @@ export default function ModalCadastro({isOpen,onClose}:ModalProps) {
    }
 
  const handleSave = async(data:DadosCadastro)=>{
+  const dataAtual = new Date();
+  dataAtual.setTime(dataAtual.getTime() - dataAtual.getTimezoneOffset() * 60 * 1000);
+
+  const dataNasc = new Date(data.nasc);
+  dataNasc.setTime(dataNasc.getTime() - dataNasc.getTimezoneOffset() * 60 * 1000);
+
+
+  let dataAdesao
+  if(data.contrato?.dt_adesao){
+    dataAdesao = new Date(data?.contrato?.dt_adesao);
+    dataAdesao.setTime(dataAdesao.getTime() - dataAdesao.getTimezoneOffset() * 60 * 1000);
+  }
+
+  let dataCarencia
+  if(data.contrato?.dt_carencia){
+    dataCarencia = new Date(data?.contrato?.dt_carencia);
+    dataCarencia.setTime(dataCarencia.getTime() - dataCarencia.getTimezoneOffset() * 60 * 1000);
+  }
+
 
     if(selectEmp === null){
         toast.warn('Selecione uma empresa')
@@ -84,6 +104,7 @@ export default function ModalCadastro({isOpen,onClose}:ModalProps) {
             id_empresa:selectEmp,
             nome:data.name.toUpperCase(),
             cep:data.cep,
+            cpfcnpj:data.cpf,
             endereco:data.endereco,
             bairro:data.bairro,
             numero:Number(data.numero),
@@ -91,15 +112,15 @@ export default function ModalCadastro({isOpen,onClose}:ModalProps) {
             uf:data.uf,
             guia_rua:data.referencia,
             email:data.email,
-            data_nasc:data.nasc && new Date(data.nasc),
-            data_cadastro:new Date(),
+            data_nasc:data.nasc ? dataNasc:undefined,
+            data_cadastro:dataAtual,
             celular1:data.celular1,
             celular2:data.celular2,
             telefone:data.telefone,
             cad_usu:usuario?.nome,
-            cad_dh:new Date(),
+            cad_dh:dataAtual,
             edi_usu:usuario?.nome,
-            edi_dh:new Date(),
+            edi_dh:dataAtual,
             profissao:data.profissao,
             sexo:data.sexo,
             contrato:{id_plano:data.contrato?.id_plano,
@@ -107,13 +128,13 @@ export default function ModalCadastro({isOpen,onClose}:ModalProps) {
               consultor:data.contrato?.consultor,
               situacao:"ATIVO",
               valor_mensalidade:data.contrato?.valor_mensalidade,
-              dt_adesao:data.contrato?.dt_adesao?new Date(data.contrato?.dt_adesao):new Date(),
+              dt_adesao:data.contrato?.dt_adesao?dataAdesao:dataAtual,
               cobrador:data.contrato?.cobrador,
               data_vencimento:data.contrato?.data_vencimento?new Date(data.contrato.data_vencimento):null,
               n_parcelas:Number(data.contrato?.n_parcelas),
               origem:data.contrato?.origem,
               carencia:"",
-              dt_carencia:data.contrato?.dt_carencia?new Date(data.contrato.dt_carencia):null
+              dt_carencia:data.contrato?.dt_carencia?dataCarencia:null
             },
             dependentes:data.arraydep,
             mensalidades:gerarMensalidade()
@@ -126,14 +147,16 @@ export default function ModalCadastro({isOpen,onClose}:ModalProps) {
       )
 
 
-      console.log(response.data)
+      //console.log(response.data)
      setValue('contrato.id_contrato',response.data.id_contrato)
        carregarDados(response.data.id_global)
+
+       onClose(false)
        
      // closeModa({id_associado:response.data.novoassociado.id_associado,contrato:{...data.contrato,id_contrato:response.data.novoContrato.id_contrato}})
      
     }catch(err){
-      console.log(err)
+      toast.error('Consulte o Administrador')
     }
   
    
@@ -144,7 +167,7 @@ export default function ModalCadastro({isOpen,onClose}:ModalProps) {
  
 
   const {steps,currentStepIndex,step,next,back} =MultiStep([
-    <DadosTitular trigger={trigger} key={1} register={register} setValue={setValue} watch={watch} />,
+    <DadosTitular control={control} trigger={trigger} key={1} register={register} setValue={setValue} watch={watch} />,
     <DadosPlano trigger={trigger} key={2} register={register} setValue={setValue} watch={watch}  />,
     <DadosDependentes key={3} trigger={trigger} register={register} setValue={setValue} watch={watch}  />,
     <ResumoCadastro key={4} trigger={trigger} register={register} setValue={setValue} watch={watch} />

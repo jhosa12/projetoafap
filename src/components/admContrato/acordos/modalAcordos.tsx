@@ -139,7 +139,10 @@ const handleNovaRef = async()=>{
     
 }
 
-
+const handleConsultorSelect = (id_consultor:number)=>{
+    setValue('id_consultor',id_consultor)
+    setValue('realizado_por',consultores?.find(consultor=>consultor.id_consultor===id_consultor)?.nome)
+}
 
 
 
@@ -149,26 +152,20 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
 }
 
 
-
-
-
-
-
-
-
-        
        const criarAcordo = async (data:AcordoProps) => {
      
-        if(!data.data_inicio||!data.data_fim||!data.descricao||!data.realizado_por){
+        if(!data.data_inicio||!data.data_fim||!data.descricao||!data.id_consultor){
             toast.info("Preencha todos os campos!")
             return;
         }
+       
 
         const dt_criacao= new Date();
         const dt_prev = new Date(data.data_fim);
         dt_criacao.setTime(dt_criacao.getTime() - dt_criacao.getTimezoneOffset() * 60 * 1000);
         dt_prev.setTime(dt_prev.getTime() - dt_prev.getTimezoneOffset() * 60 * 1000);
         try{
+        
             const response = await toast.promise(
                 api.post('/novoAcordo',{
                     usuario,
@@ -181,7 +178,7 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
                     data_inicio:dt_criacao.toISOString(),
                     data_fim:dt_prev.toISOString(),
                     total_acordo:Number(data.total_acordo),
-                    realizado_por:consultores.find(consultor=>consultor.id_consultor===Number(data.realizado_por))?.nome,
+                    realizado_por:data.realizado_por,
                     descricao:data.descricao,
                     metodo:data.metodo,
                     dt_criacao:new Date() ,
@@ -206,39 +203,13 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
     
      
 
-      async function baixarAcordo(){
-      
-        
-        try{
-            const response = await toast.promise(
-                api.put('/editarAcordo',{
-               id_acordo:watch('id_acordo'),
-               id_usuario:id_usuario,
-             
-                status:'P',
-                dt_pgto:new Date(),
-               // mensalidade:novasMensalidades
-                }),
-                {
-                error:'Erro ao efetuar baixa',
-                pending:'Efetuando Baixa',
-                success:'Baixa Efetuada com sucesso!'
-                }
-            )
-
-        }catch(err){
-
-           // console.log(err)
-            
-        }
-       id_global && await carregarDados(id_global);
-       
-      }
+   
 
       async function editarAcordo(data:AcordoProps){
-     
+          
 
         try{
+        
             const response = await toast.promise(
                 api.put('/editarAcordo',{
                id_acordo:data.id_acordo,
@@ -247,10 +218,10 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
                 //dt_pgto:new Date(),
                 data_inicio:data.data_inicio,
                 data_fim:data.data_fim,
-                descricao:data.descricao,
+                descricao:data.descricao.toUpperCase(),
                 metodo:data.metodo,
                 total_acordo:data.total_acordo,
-                realizado_por:consultores.find(consultor=>consultor.id_consultor===Number(data.id_consultor))?.nome,
+                realizado_por:data.realizado_por,
                 id_consultor:Number(data.id_consultor),
                 //mensalidade:novasMensalidades
                 //mensalidades:data.mensalidade
@@ -303,7 +274,7 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
  control={control}
  name="data_fim"
  render={({ field: { onChange, value } }) => (
-       <DatePicker selected={watch('data_fim')} showMonthDropdown  onChange={e=>e && setValue('data_fim',e)} dateFormat={"dd/MM/yyyy"} locale={pt}   required className="flex w-full  sm:text-xs  border  rounded-lg bg-gray-50 
+       <DatePicker selected={value} showMonthDropdown  onChange={e=>e && onChange(e)} dateFormat={"dd/MM/yyyy"} locale={pt}   required className="flex w-full  sm:text-xs  border  rounded-lg bg-gray-50 
       border-gray-300 placeholder-gray-400  "/>
  )}
  />
@@ -321,7 +292,7 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
        
        <Label  htmlFor="metodo" value="Realizado Por" />
 
-       <Select  required sizing={'sm'} {...register("id_consultor")} >
+       <Select value={watch('id_consultor')} onChange={(e)=>handleConsultorSelect(Number(e.target.value))}  required sizing={'sm'} >
         <option value="">SELECIONE</option>
         {consultores.map((item,index)=>(<option key={index} value={item.id_consultor}>{item.nome}</option>))}
        </Select>
@@ -332,7 +303,7 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
        
        <Label  htmlFor="descricao" value="Descrição" />
  
-    <TextInput required value={watch('descricao')?.toUpperCase()} className="uppercase" placeholder="Descreve os detalhers do acordo" {...register("descricao")} sizing={'sm'}/>
+    <TextInput required  className="uppercase" placeholder="Descreve os detalhers do acordo" {...register("descricao")} sizing={'sm'}/>
    </div>
  
 
