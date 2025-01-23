@@ -1,7 +1,10 @@
 
 import { Label, Select, TextInput } from "flowbite-react";
 import { UseFormLeadProps } from "./modalItem";
-
+import { Controller } from "react-hook-form";
+import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import pt from 'date-fns/locale/pt-BR';
 
 
 export function TabFormulario({control,register,setValue,trigger,watch}:UseFormLeadProps) {
@@ -21,11 +24,11 @@ export function TabFormulario({control,register,setValue,trigger,watch}:UseFormL
             </div>
             <div className="col-span-2">
                 <Label className="text-xs" value="Serviços usados na outra empresa" />
-                <TextInput sizing={'sm'} {...register('servicosUsados')} type="text" placeholder="Serviços usados na outra empresa" required/>
+                <TextInput sizing={'sm'} {...register('servicosUsados')} type="text" placeholder="Serviços usados na outra empresa"/>
             </div>
             <div className="">
                 <Label className="text-xs" value="Motivo de saida da outra empresa" />
-                <TextInput sizing={'sm'} {...register('motivo')} type="text" placeholder="Motivo" required/>
+                <TextInput sizing={'sm'} {...register('motivo')} type="text" placeholder="Motivo" />
             </div>
             <div className="">
                 <Label className="text-xs" value="Possui Plano de Saude" />
@@ -59,7 +62,13 @@ export function TabFormulario({control,register,setValue,trigger,watch}:UseFormL
             </div>
             <div className="">
                 <Label className="text-xs" value="Previsão de Visita" />
-                <TextInput sizing={'sm'} {...register('visita')} type="text" placeholder="Previsão de Visita" required/>
+                <Controller 
+                    name="visita"
+                    control={control}
+                    render={({ field:{onChange,value} }) => (
+                      <DatePicker selected={value}  onChange={e => { e && onChange(e) }} dateFormat={"dd/MM/yyyy"} locale={pt}  className="flex  w-full text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+                    )}
+                  />
             </div>
            
         

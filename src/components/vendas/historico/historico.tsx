@@ -7,7 +7,7 @@ import { MdDeleteForever, MdOutlinePlaylistAdd } from "react-icons/md";
 import { RiAddCircleFill, RiAlertLine } from "react-icons/ri";
 import { TbTransferVertical } from "react-icons/tb";
 import { FiltroLeads } from "./filtroHistorico";
-import { ModalItem } from "./modelItem/modalItem";
+import { ModalItem } from "./modalItem/modalItem";
 import { IoPrint } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { set } from "react-hook-form";
@@ -52,12 +52,12 @@ export interface LeadProps {
   }
 
 export function Historico() {
-    const {postData,data,setData} = useApiGet<Array<LeadProps>,undefined>("/lead/lista")
+    const {postData,data} = useApiGet<Array<LeadProps>,undefined>("/lead/lista")
     const [lead,setLead] = useState<Partial<LeadProps>>()
     const [modalLead,setModalLead] = useState(false)
     const [categoria,setCategoria] = useState("")
     const [modalConfirma,setModalConfirma] = useState(false)
-    const {data:novaCategoria,postData:postCategoria} = useApiPost<LeadProps,{id_lead:number|undefined,categoriaAtual:string,categoriaAnt:string|undefined,usuario:string|undefined}>("/leads/alterarCategoria")
+    const {postData:postCategoria} = useApiPost<LeadProps,{id_lead:number|undefined,categoriaAtual:string,categoriaAnt:string|undefined,usuario:string|undefined}>("/leads/alterarCategoria")
   
 
 
@@ -112,16 +112,10 @@ export function Historico() {
             <ModalItem item={lead??{}} open={modalLead} onClose={()=>setModalLead(false)}/>
             <ModalConfirmar pergunta={`Tem certeza que deseja alterar o(a) ${lead?.status} para um(a) ${categoria} ? Essa alteração será contabilizada na faturação!`}     handleConfirmar={handleAtualizarCategoria} openModal={modalConfirma} setOpenModal={setModalConfirma}/>
    
-            <div className="flex justify-end">
-                        <ButtonGroup >
-                            <Button  onClick={()=>{}} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' /> Adicionar</Button>
-                            <Button type='button' onClick={()=>{}} color='light' size='xs'>  <IoPrint className='mr-1 h-4 w-4' /> Imprimir</Button>
-                            <Button  onClick={() => {}} type="button" color='light' size='xs'><MdDeleteForever className='mr-1 h-4 w-4' /> Excluir</Button>
-                        </ButtonGroup>
-            </div>
+           
               
 
-      <div className="overflow-y-auto pt-1 px-2 max-h-[calc(100vh-170px)] bg-white  ">
+      <div className="overflow-y-auto pt-2 px-2 h-[calc(100vh-200px)]   ">
       <Table striped hoverable theme={{ body: { cell: { base: " px-3 py-2  text-xs text-black" } } }}  >
                   <Table.Head theme={{cell:{base:"px-3 py-2 text-xs text-black font-bold bg-gray-50"}}} >
                   <Table.HeadCell >

@@ -3,6 +3,7 @@ import Image from "next/image";
 import React from 'react';
 import { Table } from "flowbite-react";
 import { AdesaoProps } from "@/components/vendas/modalVendedor";
+import { roboto_Mono } from "@/fonts/fonts";
 interface DadosProps {
    adesoes:Array<AdesaoProps>,
    startDate:Date,
@@ -28,11 +29,12 @@ class ResumoVendedor extends React.Component<DadosProps> {
        // const dt = dataAtual.toLocaleDateString('pt-BR', options)
 
         return (
-            <div className='flex flex-col w-full gap-2 p-4 text-black'>
+          <div className={`${roboto_Mono.className} flex flex-col w-full gap-2 p-4 text-black !font-roboto`}>
+
                   <span className="text-xs ml-auto ">{usuario}-{new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</span>
                 <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', justifyContent: 'center', gap: '10px' }} >
                   <img src={'/afapsaude.jpg'} alt="logo" width={120} height={120} />
-                    <h1 style={{ fontWeight: 'bold', fontSize: '25px' }}>RESUMO DE VENDAS</h1>
+                    <h1 style={{ fontWeight: 'normal', fontSize: '25px' }}>RESUMO DE VENDAS</h1>
                 </div>
               
 

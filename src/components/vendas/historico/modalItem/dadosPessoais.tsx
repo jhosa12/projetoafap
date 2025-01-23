@@ -48,13 +48,13 @@ export function TabDadosPessoais({control,register,setValue,trigger,watch,cidade
                name="cep"
                control={control}
                render={({ field: { onChange, value } }) => (
-                <InputMask  onChange={e=>onChange(e.target.value)} value={value} mask={'99999-999'}  required className="flex  w-full  text-xs border  rounded-lg p-2 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+                <InputMask  onChange={e=>onChange(e.target.value)} value={value} mask={'99999-999'}   className="flex  w-full  text-xs border  rounded-lg p-2 bg-gray-50 border-gray-300 placeholder-gray-400 " />
                )}
                />
             </div>
             <div className="w-full flex flex-col">
                 <Label className="text-xs" value="Guia de Rua" />
-                <TextInput sizing={'sm'} {...register('guia_rua')} type="text" placeholder="Guia de Rua" required/>
+                <TextInput sizing={'sm'} {...register('guia_rua')} type="text" placeholder="Guia de Rua" />
             </div>
             <div className="w-full flex flex-col">
                 <Label className="text-xs" value="Celular1" />
@@ -73,7 +73,7 @@ export function TabDadosPessoais({control,register,setValue,trigger,watch,cidade
                 name="celular2"
                 control={control}
                 render={({ field: { onChange, value } }) => (
-                     <InputMask  onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'}  required className="flex  w-full  text-xs border  rounded-lg p-2 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+                     <InputMask  onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'} className="flex  w-full  text-xs border  rounded-lg p-2 bg-gray-50 border-gray-300 placeholder-gray-400 " />
                 )}
                 />
             </div>
@@ -97,7 +97,7 @@ export function TabDadosPessoais({control,register,setValue,trigger,watch,cidade
                 name="cpfcnpj"
                 control={control}
                 render={({ field: { onChange, value } }) => (
-                     <InputMask  onChange={e=>onChange(e.target.value)} value={value} mask={'999.999.999-99'}  required className="flex  w-full  text-xs border  rounded-lg p-2 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+                     <InputMask  onChange={e=>onChange(e.target.value)} value={value} mask={'999.999.999-99'} className="flex  w-full  text-xs border  rounded-lg p-2 bg-gray-50 border-gray-300 placeholder-gray-400 " />
                 )}
                 />
             </div>

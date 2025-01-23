@@ -19,7 +19,7 @@ export function ModalConfirmar({openModal,setOpenModal,handleConfirmar,pergunta}
         <Modal.Body>
           <div className="text-center">
             <HiOutlineExclamationCircle color="red" className="mx-auto mb-4 h-14 w-14  " />
-            <h3 className="mb-5 text-lg font-normal  dark:text-gray-400">
+            <h3 className="mb-5 text-sm font-normal  dark:text-gray-400">
              {pergunta}
             </h3>
             <div className="flex justify-center gap-4">
