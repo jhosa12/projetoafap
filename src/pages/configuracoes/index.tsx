@@ -6,7 +6,7 @@ import { Empresas } from "@/components/configuracoes/empresas/empresas"
 import { FaUsers } from "react-icons/fa"
 
 export default function TabsConfig() {
-    const [menuIndex, setMenuIndex] = useState(1)
+   
     
   return (
     <Tabs

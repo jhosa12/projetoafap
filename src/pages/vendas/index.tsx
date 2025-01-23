@@ -1,15 +1,11 @@
-import { Suspense, useContext, useEffect, useState, lazy, useCallback } from "react"
+import { Suspense, useContext, useEffect, useState, useCallback } from "react"
 import Head from "next/head"
 import { AuthContext } from "@/contexts/AuthContext"
-import { Button, Dropdown, Tabs } from "flowbite-react"
+import { Tabs } from "flowbite-react"
 import { FaStore } from "react-icons/fa"
 import { RiHistoryLine } from "react-icons/ri"
-
-import useApi from "@/hooks/useApiPost"
 import { Acompanhamento, SetorProps } from "@/components/vendas/acompanhamento"
 import { Historico } from "@/components/vendas/historico/historico"
-import { GoGoal } from "react-icons/go"
-import { MetasVendas } from "@/components/vendas/metas/metas"
 import useApiGet from "@/hooks/useApiGet"
 import { toast } from "react-toastify"
 
@@ -21,7 +17,7 @@ export interface FormProps {
   id_empresa: string | undefined
 }
 
-//const HistoricoMov = lazy(()=>import('@/components/estoque/historico/historico'))
+
 
 export interface EstoqueProps {
   id_produto: number,
@@ -79,14 +75,11 @@ export default function Vendas() {
           </Tabs.Item>
           <Tabs.Item active={tab === 1} title="HISTÓRICO" icon={()=><RiHistoryLine className="mr-2 h-4 w-4"/>}>
             {tab === 1 &&
-              <Suspense fallback={<div>Carregando...</div>}>
+              
                 <Historico />
-              </Suspense>}
+              }
           </Tabs.Item>
-          <Tabs.Item active={tab === 2} title="METAS" icon={()=><GoGoal className="mr-2 h-4 w-4"/>}>
-
-            {tab === 2 && <MetasVendas setores={data??[]} empresas={empresas} id_empresa={selectEmp}/>}
-          </Tabs.Item>
+       
         </Tabs>
     </>
 

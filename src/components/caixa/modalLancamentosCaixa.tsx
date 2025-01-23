@@ -106,8 +106,8 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
    }
 
      async function lancarMovimentacao(data:LancamentosProps){ 
-
-
+      const valorString = data.valor?.toString()??'';
+      const valorConvertido = parseFloat(valorString?.replace(',', '.'));
       const{dataIni:dt_lanc} = ajustarData(data.datalanc)
       const{dataIni:dt_real} = ajustarData(new Date())
 
@@ -139,7 +139,7 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
             conta_n:data.conta_n,
             descricao:data.descricao,
             historico:data?.historico?.toUpperCase(),
-            valor:data.valor,
+            valor:Number(valorConvertido),
             usuario:usuario?.nome.toUpperCase(),
             data:dt_real, 
             tipo:data.tipo,

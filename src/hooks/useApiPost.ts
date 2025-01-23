@@ -28,7 +28,8 @@ const useApiPost = <T=any,P=any>(url:string):{
 
     }catch(error:any){
         //setError(error as AxiosError)
-        toast.error(error?.response?.data.message)
+        console.log(error)
+        toast.error(error?.response?.data.message??'Erro ao salvar dados')
        
 
     }finally{

@@ -28,6 +28,8 @@ const handleFormSubmit:SubmitHandler<ExamesProps> = async (data) => {
 
 
 const handleAdicionarExame =async(data:ExamesProps)=>{
+
+
     if(!data.nome||!data.porcFun||!data.porcPlan||!data.valorBruto){
         toast.info('Preencha os campos obrigatórios!');
         return;

@@ -21,6 +21,7 @@ import { FaHandshake } from "react-icons/fa";
 
 import { VerificarSituacao } from "@/utils/admContrato/verificarSituacao";
 import { Acordos } from "@/components/admContrato/acordos/screen";
+import { inter, roboto_Mono, source_Sans_3 } from "@/fonts/fonts";
 
 
 
@@ -85,7 +86,7 @@ useEffect(() => {
         <>
         {loading &&    <Modal size={'sm'} popup show={loading}>
                 <Modal.Body>
-                    <div className=" flex flex-col mt-6 w-full justify-center items-center">
+                    <div className=" flex flex-col pt-6 w-full justify-center items-center">
                     <Spinner size={'lg'} color={'warning'}/>
                     <span>Localizando dados....</span>
                     </div>
@@ -97,7 +98,7 @@ useEffect(() => {
                 <title>Administrar Contrato</title>
 
             </Head>
-            <div className="flex flex-col w-full mr-2  justify-center">
+            <div className={source_Sans_3.className + ` flex flex-col w-full mr-2  justify-center`}>
                 {modalBusca && (<ModalBusca visible={modalBusca} setVisible={()=>setModalBusca(false)} />)}
                 {openCadastro && (<ModalCadastro onClose={setCadastro} isOpen={openCadastro} />)}
 

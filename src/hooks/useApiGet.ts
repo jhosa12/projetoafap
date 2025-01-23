@@ -17,7 +17,8 @@ const useApiGet = <T=any,P=any>(url:string):{
     data:T|null;
     error:AxiosError|null;
     loading:boolean;
-    postData:(payload:P)=>Promise<void>
+    postData:(payload:P)=>Promise<void>,
+    setData:(data:T|null)=>void
 }=>{
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<AxiosError | null>(null);
@@ -44,7 +45,7 @@ const useApiGet = <T=any,P=any>(url:string):{
     }
   }
 
-  return {data,error,loading,postData}
+  return {data,error,loading,postData,setData}
 }
 
 

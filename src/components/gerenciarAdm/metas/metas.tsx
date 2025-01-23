@@ -1,35 +1,37 @@
 import { Button, ButtonGroup, Table } from "flowbite-react";
-import { MetasProps, SetorProps } from "../acompanhamento";
+
 import useApiPost from "@/hooks/useApiPost";
 import { useEffect, useState } from "react";
 import { themeLight } from "@/components/admContrato/acordos/screen";
 import { FaFilter } from "react-icons/fa6";
 import { IoPrint } from "react-icons/io5";
-import { FormProps, ModalMetas } from "../modalMetas";
 import { IoMdAddCircle, IoMdTrash } from "react-icons/io";
-import { ModalFiltroMetas } from "../modalFiltro";
 import { ajustarData } from "@/utils/ajusteData";
 import { EmpresaProps } from "@/types/empresa";
 import { MdEdit } from "react-icons/md";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
+import { MetasProps, SetorProps } from "@/components/vendas/acompanhamento";
+import { FormProps, ModalMetas } from "@/components/vendas/modalMetas";
+import { ModalFiltroMetas } from "@/components/vendas/modalFiltro";
+import { PlanoContasProps } from "@/pages/financeiro";
 
 interface FormFiltro{
     startDate:string|undefined,
     endDate:string|undefined,
     id_empresa:string,
     
-    
 }
 interface DataProps {
   id_empresa:string
   empresas:Array<EmpresaProps>,
   setores:Array<SetorProps>
+  planoContas:Array<PlanoContasProps>
 }
 
 
 
-export function MetasVendas({id_empresa,empresas,setores}:DataProps) {
+export function GerenciarMetas({id_empresa,empresas,setores,planoContas}:DataProps) {
 
     const [modalFiltro,setModalFiltro] = useState(false)
     const [modalNovaMeta,setModalNovaMeta] = useState(false)
@@ -77,12 +79,13 @@ export function MetasVendas({id_empresa,empresas,setores}:DataProps) {
 
         <div className="flex flex-col w-full h-full px-4">
             {modalNovaMeta &&
-             <ModalMetas 
+             <ModalMetas
              handleNovaMeta={handleNovo}
             arrayMetas={data??[]}
             id_empresa={id_empresa}
             arraySetores={setores}
             meta={meta??{}}
+            planoContas={planoContas}
             setModalMetas={setModalNovaMeta}
             show={modalNovaMeta}
              />}

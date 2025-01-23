@@ -1,5 +1,5 @@
 
-import { Button, Label, Modal, Select, Table, TextInput } from "flowbite-react"
+import { Button, Label, Modal, Radio, Select, Table, TextInput } from "flowbite-react"
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
@@ -7,36 +7,43 @@ import { MetasProps, SetorProps } from "./acompanhamento";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
+import { useContext } from "react";
+import { PlanoContasProps } from "@/pages/financeiro";
+import { watch } from "fs";
 
 interface DataProps{
+    planoContas?:Array<PlanoContasProps>
     show:boolean,
     setModalMetas:(open:boolean)=>void
     arraySetores:Array<SetorProps>
     meta:Partial<MetasProps>
     arrayMetas :Array<MetasProps>
-    id_empresa:string
+    id_empresa:string,
+    handleNovaMeta:(data:FormProps)=>Promise<void>
 }
-interface FormProps{
+export interface FormProps{
     date:Date,
     id_meta:number,
     dateFimMeta:Date,
     valor:number|null,
     descricao:string,
     setor:string,
-    id_grupo:number|null
+    id_grupo:number|null,
+    radio:string
 }
 
-export function ModalMetas({show,setModalMetas,meta,arraySetores,arrayMetas,id_empresa}
+export function ModalMetas({show,setModalMetas,meta,arraySetores,arrayMetas,id_empresa,handleNovaMeta,planoContas}
 :DataProps){
-    const {register,control,handleSubmit} = useForm<FormProps>({
+    const {register,control,handleSubmit,watch,setValue} = useForm<FormProps>({
         defaultValues:meta
     })
+    
 
 
 
 
     const handleOnSubmit:SubmitHandler<FormProps> = (data) => {
-        meta.id_meta ? handleEdit(data) : handleNovo(data)
+        meta.id_meta ? handleEdit(data) : handleNovaMeta(data)
     }
 
 
@@ -47,36 +54,53 @@ export function ModalMetas({show,setModalMetas,meta,arraySetores,arrayMetas,id_e
     }
 
 
-   const handleNovo = async (data:FormProps) => {
-        try {
-         const response =   await toast.promise(
-                api.post('/vendas/novaMeta', {
-                    id_grupo: 1,
-                    id_empresa,
-                    date: data.date,
-                    dateFimMeta: data.dateFimMeta,
-                    valor: data.valor,
-                    descricao: `META SETOR ${data.setor}`,
-                }),
-                {
-                    error: 'Erro ao salvar dados',
-                    pending: 'Salvando Dados....',
-                    success: 'Dados Salvos com Sucesso',
-                }
-            );
-          //  setMetas([...arrayMetas,response.data])
-        } catch (error) {
-            console.log(error)
-            toast.error('Erro ao salvar nova meta');
-        }
-    };
+  
 
 
         return(
-            <Modal dismissible size={'sm'} show={show} onClose={() => setModalMetas(false)}>
+            <Modal dismissible size={'lg'} show={show} onClose={() => setModalMetas(false)}>
 
             <Modal.Body>
-                <form onSubmit={handleSubmit(handleOnSubmit)} className='flex flex-col gap-2 '>
+                <form onSubmit={handleSubmit(handleOnSubmit)} className='grid grid-cols-2 gap-2 '>
+
+
+                    <div className="col-span-2 inline-flex justify-around">
+                    <div className="flex items-center gap-2">
+        <Radio id="united-state"  value="VENDAS" {...register('radio')} checked={watch('radio') === 'VENDAS'} />
+        <Label htmlFor="united-state">Meta Vendas</Label>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Radio id="united-state" value='GASTOS'  {...register('radio')}  checked={watch('radio') === 'GASTOS'}  />
+        <Label htmlFor="united-state">Meta Gastos</Label>
+      </div>
+     
+                    </div>
+{watch('radio')==='GASTOS' &&
+                <div className="col-span-2">
+                        
+                        <Label htmlFor="email1" value="Plano de Contas" />
+               
+    
+                    <Select sizing={'sm'} {...register('id_grupo')} onChange={e => {
+                        const item = planoContas?.find(item => item.id_grupo === Number(e.target.value))
+                      
+    
+                    }}>
+                        <option value={0}>PLANO DE CONTAS</option>
+    
+                        {planoContas?.map((item, index) => (
+                            <option className="text-xs" key={index} value={item.id_grupo}>
+                                {item.descricao}
+                            </option>
+    
+                        ))}
+                    </Select>
+                </div>}
+
+
+
+
                     <div>
                         
                             <Label htmlFor="email1" value="Setor" />
@@ -100,12 +124,12 @@ export function ModalMetas({show,setModalMetas,meta,arraySetores,arrayMetas,id_e
 
 
 
-                    <div className='flex flex-col w-full'>
+                    <div >
                  
         <Label  value="Descrição" />
         
         
-        <TextInput sizing="sm" {...register('descricao')}  type="text" placeholder="Descrição" required />
+        <TextInput sizing="sm" {...register('descricao')}  type="text" placeholder="DESCRIÇÃO" required />
                       
                     </div>
 
@@ -150,7 +174,7 @@ export function ModalMetas({show,setModalMetas,meta,arraySetores,arrayMetas,id_e
         <TextInput sizing="sm" {...register('valor')}  type="number" placeholder="Valor" required />
                       
                     </div>
-                    <Button type="submit" size={'sm'}>{meta?.id_meta ? "Atualizar" : "Adicionar"}</Button>
+                    <Button className="col-span-2" type="submit" size={'sm'}>{meta?.id_meta ? "Atualizar" : "Adicionar"}</Button>
                     
         
                 </form>

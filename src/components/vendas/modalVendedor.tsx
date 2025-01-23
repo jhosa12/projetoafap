@@ -74,7 +74,7 @@ export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor,usua
     return(
         <>
 
-        <div style={{display:'none'}} className="">
+        <div style={{display:'none'}}>
           {print &&  <ResumoVendedor usuario={usuario} endDate={endDate} startDate={startDate} vendedor={vendedor.consultor} adesoes={data?.adesoes??[]} ref={componenteRef} />}
         </div>
         <Modal dismissible size={'2xl'} show={show} onClose={() => setModalVend(false)}>

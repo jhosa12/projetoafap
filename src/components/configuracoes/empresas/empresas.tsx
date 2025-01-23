@@ -1,3 +1,4 @@
+import { inter, roboto_Mono } from "@/fonts/fonts";
 import { api } from "@/services/apiClient";
 import { EmpresaProps } from "@/types/empresa";
 import { Button, Table } from "flowbite-react";
@@ -5,12 +6,15 @@ import { useCallback, useEffect, useState } from "react";
 import { HiMiniCog6Tooth, HiMiniPencil } from "react-icons/hi2";
 import { IoIosAddCircle } from "react-icons/io";
 import { toast } from "react-toastify";
+import { ModalEmpresa } from "./modalEmpresa/modalEmpresa";
 
 
 
 
 export function Empresas() {
     const [empresas,setEmpresas] = useState<Array<EmpresaProps>>([])
+    const [empresa,setEmpresa] = useState<EmpresaProps>({} as EmpresaProps)
+    const [open,onClose]=useState(false)
 
 const handleListarEmp = useCallback(async()=>{
     try {
@@ -26,14 +30,21 @@ useEffect(()=>{
     handleListarEmp()
 },[])
 
+const handleOpenEmpresa = useCallback((item:EmpresaProps)=>{
+    setEmpresa(item)
+    onClose(true)
+},[])
+
 
 
     return (
-        <div className="flex flex-col  px-4 w-full overflow-y-auto h-[calc(100vh-138px)]  ">
-            <Button className="inline-flex justify-items-center ml-auto bg-blue-600 " size={'sm'} ><IoIosAddCircle size={22} className="mr-2"/>Nova empresa</Button>
+        <div className={ `flex flex-col  px-4 w-full overflow-y-auto h-[calc(100vh-138px)]`}>
 
-            <div>
-                <Table hoverable={true}>
+            <ModalEmpresa open={open} onClose={onClose} />
+            <Button type="button" className="ml-auto mb-2" color="blue" size="sm" ><IoIosAddCircle size={22} className="mr-2 "/>NOVA EMPRESA</Button>
+
+            <div className={roboto_Mono.className}>
+                <Table theme={{root:{shadow:'none'}, body: { cell: { base: " px-6 py-2  text-xs text-black font-semibold" } } }} hoverable={true}>
                     <Table.Head>
                         <Table.HeadCell>
                             Nome
@@ -69,12 +80,12 @@ useEffect(()=>{
                             <Table.Cell>
                                 {item.cnpj}
                             </Table.Cell>
-                            <Table.Cell>
+                            <Table.Cell >
                                 {}
                             </Table.Cell>
                             <Table.Cell className="flex gap-4">
-                           <button className="text-gray-500 hover:text-yellow-500"><HiMiniCog6Tooth size={15} /></button> 
-                           <button className="text-gray-500 hover:text-blue-500"><HiMiniPencil size={15} /></button> 
+                           <button onClick={()=>handleOpenEmpresa(item)} className="text-gray-500 hover:text-yellow-500"><HiMiniCog6Tooth size={15} /></button> 
+                           
                             </Table.Cell>
                         </Table.Row>
                       ))}

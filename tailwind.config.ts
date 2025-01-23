@@ -1,6 +1,6 @@
 // tailwind.config.js
 import type { Config } from 'tailwindcss'
-import flowbite from "flowbite-react/tailwind";
+const flowbite = require("flowbite-react/tailwind");
 const config: Config = {
   darkMode: 'class',
   content: [
@@ -8,7 +8,7 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./node_modules/flowbite-react/**/*.{js,ts,jsx,tsx}",
-    flowbite.content(),
+   flowbite.content()
     // Se você estiver usando NextUI e precisa incluir os componentes do NextUI,
     // você pode adicionar o caminho apropriado aqui, mas verifique a documentação do NextUI para os caminhos corretos.
     // "./node_modules/@nextui-org/theme/dist/components/*.js"

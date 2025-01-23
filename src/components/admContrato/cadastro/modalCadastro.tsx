@@ -1,8 +1,5 @@
 
 
-
-import { useEffect, useState} from 'react'
-
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { ResumoCadastro } from "@/components/admContrato/cadastro/resumoCadastro";
@@ -175,6 +172,8 @@ export default function ModalCadastro({isOpen,onClose}:ModalProps) {
   const onSubmit:SubmitHandler<DadosCadastro>=(data)=>{
     steps.length-1===currentStepIndex ? handleSave(data):next()
   }
+
+
   return ( 
      
         <Modal
@@ -192,8 +191,6 @@ export default function ModalCadastro({isOpen,onClose}:ModalProps) {
              {currentStepIndex!==0 &&(<button className="bg-blue-600 p-2 rounded-lg justify-center items-center" type="button" onClick={back}><HiOutlineChevronLeft color="white" size={25}/></button>)} 
           
                {steps.length-1===currentStepIndex ?(<button  className="flex flex-row bg-blue-600 rounded-lg p-2 gap-2 text-white" type="submit" ><HiInboxIn size={22}/> SALVAR</button>):
-               
-               
                <button  className="bg-blue-600 p-2 rounded-lg justify-center items-center" type="submit"><HiOutlineChevronRight color="white" size={25}/></button>} 
              
             </div>

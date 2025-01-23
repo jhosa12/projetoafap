@@ -1,12 +1,20 @@
-import { GerenciarConvalescenca } from "@/components/gerenciarAdm/convalescencia";
-import { GerenciarMetas } from "@/components/gerenciarAdm/metas";
-import { PlanoContas } from "@/components/gerenciarAdm/planoContas";
-import { GerenciarPlanos } from "@/components/gerenciarAdm/planos";
+import { GerenciarConvalescenca } from "@/components/gerenciarAdm/convalescencia/convalescencia";
+import { GerenciarMetas } from "@/components/gerenciarAdm/metas/metas";
+import { PlanoContas } from "@/components/gerenciarAdm/planoContas/planoContas";
+import { GerenciarPlanos } from "@/components/gerenciarAdm/planos/planos";
 import { AuthContext } from "@/contexts/AuthContext";
 import { api } from "@/services/apiClient"
+import { Tabs } from "flowbite-react";
 import Head from "next/head"
 import React, {useContext, useEffect, useState } from "react"
+import { BiSolidInjection } from "react-icons/bi";
+import { FaCalendarAlt } from "react-icons/fa";
+import { HiClipboardList } from "react-icons/hi";
+import { IoMdSettings } from "react-icons/io";
+import { a } from "react-spring";
 import { toast } from "react-toastify";
+import { PlanoContasProps } from "../financeiro";
+import { Veiculos } from "@/components/gerenciarAdm/veiculos/veiculos";
 
 interface MetasProps{
     id_meta:number,
@@ -18,19 +26,7 @@ interface MetasProps{
     grupo:GruposProps
 }
 
-interface PlanoContas{
-    conta: string,
-    id_grupo: number,
-    descricao: string,
-    tipo: string,
-    saldo: number,
-    perm_lanc: string,
-    data: Date,
-    hora: Date,
-    usuario: string,
-    contaf: string,
-  
-}
+
 interface GruposProps{
     id_grupo:number,
     descricao:string
@@ -63,22 +59,18 @@ status: string
 
 
 export default function gerenciarAdministrativo(){
-    const [PlanosContas,setPlanosContas] =useState(true)
-    const [metas,setMetas]=useState(false)
-    const [Planos,setPlanos] = useState(false)
-    const [Convalescencia,setConv] =useState(false)
-    const [arrayPlanoContas,setArrayPlanoContas] = useState<Array<PlanoContas>>([])
+   
+    const [arrayPlanoContas,setArrayPlanoContas] = useState<Array<PlanoContasProps>>([])
     const [arraygrupos,setArrayGrupos] = useState<Array<GruposProps>>([])
     const [arrayPlanos,setArrayPlanos]= useState<Array<PlanosProps>>([])
     const [arrayConv,setArrayConv]= useState<Array<ConvProps>>([])
     const [arrayMetas,setArrayMetas]=useState<Array<MetasProps>>([])
-    const [tipo,setTipo]=useState('')
-    const {usuario,signOut} = useContext(AuthContext)
+    const {usuario,signOut,selectEmp,empresas} = useContext(AuthContext)
 
 
 
 
-const setarDados =(planoContas:Array<PlanoContas>,grupos:Array<GruposProps>)=>{
+const setarDados =(planoContas:Array<PlanoContasProps>,grupos:Array<GruposProps>)=>{
     setArrayPlanoContas(planoContas)
     setArrayGrupos(grupos)
 }
@@ -129,29 +121,31 @@ async function carregarDados() {
     <title>Gerenciar setor Administrativo</title>
 </Head>
 
+  <Tabs theme={{base: 'bg-white rounded-b-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-70px)]',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
+        on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
+        off:"border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
+      }}}}}}}  variant="underline">
 
-<div className="flex-col w-full  mt-1 p-2 justify-center  rounded-lg shadow  ">
-    <ul className="flex flex-wrap text-sm font-medium text-center  border-b  rounded-t-lg  border-gray-700 text-gray-400 "  >
-        <li className="me-2">
-            <button  type="button" onClick={()=>{setPlanos(false);setPlanosContas(true),setConv(false),setMetas(false)}}    className={`inline-block p-2  rounded-t-lg hover:bg-gray-700 ${PlanosContas && "text-blue-500"} hover:text-gray-300  `}>Plano de Contas</button>
-        </li>
-        <li className="me-2">
-            <button  type="button" onClick={()=>{setPlanos(false);setPlanosContas(false),setConv(false),setMetas(true)}}    className={`inline-block p-2  rounded-t-lg hover:bg-gray-700 ${metas && "text-blue-500"} hover:text-gray-300  `}>Metas</button>
-        </li>
-        <li className="me-2">
-            <button type="button"  onClick={()=>{setPlanos(true);setPlanosContas(false),setConv(false),setMetas(false)}}   className={`inline-block p-2  rounded-t-lg hover:bg-gray-700 ${Planos && "text-blue-500"} hover:text-gray-300  `}>Planos</button>
-        </li>
-        <li className="me-2">
-            <button type="button"  onClick={()=>{setPlanos(false);setPlanosContas(false),setConv(true),setMetas(false)}}  className={`inline-block p-2  rounded-t-lg hover:bg-gray-700 ${Convalescencia && "text-blue-500"} hover:text-gray-300  `}>Convalescencia</button>
-        </li>
+<Tabs.Item  active title="PLANO DE CONTAS" icon={()=><FaCalendarAlt className="mr-2 h-4 w-4"/>}>
 
-    </ul>
+<PlanoContas carregarDados={carregarDados} arrayPlanoContas={arrayPlanoContas} arraygrupos={arraygrupos} setarDados={setarDados}/>
+     
+      </Tabs.Item>
+      <Tabs.Item title="PLANOS" icon={()=><HiClipboardList className="mr-2 h-4 w-4"/>}>
+      <GerenciarPlanos carregarDados={carregarDados}  setarPlanos={setarPlanos} arrayPlanos={arrayPlanos}/>
+      </Tabs.Item>
+      <Tabs.Item title="CONVALESCENTES" icon={()=><BiSolidInjection className="mr-2 h-4 w-4"/>}>
+      <GerenciarConvalescenca carregarDados={carregarDados}  setarConv={setarConv} arrayConv={arrayConv}/>
+      </Tabs.Item>
+      <Tabs.Item  icon={()=><IoMdSettings className="mr-2 h-4 w-4"/>}  title="METAS CONTAS">
+      <GerenciarMetas planoContas={arrayPlanoContas} empresas={empresas} id_empresa={selectEmp} setores={arraygrupos} />
+      </Tabs.Item>
+      <Tabs.Item  icon={()=><IoMdSettings className="mr-2 h-4 w-4"/>}  title="VEICULOS">
+      <Veiculos empresas={empresas} id_empresa={selectEmp}  />
+      </Tabs.Item>
+    </Tabs>
 
- {PlanosContas && <PlanoContas carregarDados={carregarDados} arrayPlanoContas={arrayPlanoContas} arraygrupos={arraygrupos} setarDados={setarDados}/>}
- {Planos && <GerenciarPlanos carregarDados={carregarDados}  setarPlanos={setarPlanos} arrayPlanos={arrayPlanos}/>}
- {Convalescencia && <GerenciarConvalescenca carregarDados={carregarDados}  setarConv={setarConv} arrayConv={arrayConv}/>}
- {metas && <GerenciarMetas carregarDados={carregarDados} setarMetas={setarMetas} arrayMetas={arrayMetas} arraygrupos={arraygrupos} arrayPlanoContas={arrayPlanoContas}/>}
-</div>
+
 
 </>)
 }

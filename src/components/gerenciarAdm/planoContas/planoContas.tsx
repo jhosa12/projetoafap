@@ -1,37 +1,24 @@
 import { api } from "@/services/apiClient"
-import { useContext, useEffect, useState } from "react"
+import {  useState } from "react"
 import { toast } from "react-toastify"
 import { MdDelete } from "react-icons/md";
 import { RiSaveFill } from "react-icons/ri";
 import { IoMdAddCircle } from "react-icons/io";
 import InputMask from 'react-input-mask'
-import { AuthContext } from "@/contexts/AuthContext";
 import { Card, Select, TextInput } from "flowbite-react";
+import { PlanoContasProps } from "@/pages/financeiro";
 
 
-interface PlanoContas{
-    conta: string,
-    id_grupo: number,
-    descricao: string,
-    tipo: string,
-    saldo: number,
-    perm_lanc: string,
-    data: Date,
-    hora: Date,
-    usuario: string,
-    contaf: string,
-  
-}
+
 interface GruposProps{
     id_grupo:number,
     descricao:string
 }
 interface DadosProps{
     carregarDados:()=>Promise<void>
-    arrayPlanoContas:Array<PlanoContas>,
+    arrayPlanoContas:Array<PlanoContasProps>,
     arraygrupos:Array<GruposProps>
-    setarDados:(planoContas:Array<PlanoContas>,grupos:Array<GruposProps>)=>void
-
+    setarDados:(planoContas:Array<PlanoContasProps>,grupos:Array<GruposProps>)=>void
 }
 
 

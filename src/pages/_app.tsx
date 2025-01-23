@@ -70,7 +70,7 @@ function PrivateRouter({ Component, pageProps }: AppProps) {
 
 export default function App({ Component, pageProps,router }: AppProps) {
   return (
-    <StrictMode>
+    <StrictMode >
       <AuthProvider>
         <PrivateRouter router={router} Component={Component} pageProps={pageProps} />
         <ToastContainer

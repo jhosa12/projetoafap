@@ -6,13 +6,9 @@ import { GiStairsGoal } from "react-icons/gi";
 import { FaFilter } from "react-icons/fa6";
 import "react-datepicker/dist/react-datepicker.css";
 import { Button, ButtonGroup, Dropdown } from 'flowbite-react';
-
 import { ModalVendedor } from '@/components/vendas/modalVendedor';
-
 import { ConsultorList } from '@/components/vendas/ConsultorList';
-
 import { themeLight } from '../admContrato/acordos/screen';
-
 import { IoPrint } from 'react-icons/io5';
 import { FaPercentage } from 'react-icons/fa';
 import { ModalFiltroMetas } from './modalFiltro';
@@ -69,6 +65,8 @@ interface ResponseProps {
     endFilter: Date
 }
 
+
+
 export function Acompanhamento({ empresa, setores,usuario }: { empresa: string, setores: SetorProps[],usuario:string }) {
 
     const [startDate, setStartDate] = useState<Date>(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
@@ -115,9 +113,12 @@ export function Acompanhamento({ empresa, setores,usuario }: { empresa: string, 
 
     return (
 
-        <div className="flex flex-col w-full  bg-white">
-            {modalVend && <ModalVendedor usuario={usuario} leads={reqData?.leads} show={modalVend} setModalVend={setModalVend} vendedor={vendedor} startDate={reqData.startFilter} endDate={reqData.endFilter} />}
+        <>
 
+{modalVend && <ModalVendedor usuario={usuario} leads={reqData?.leads} show={modalVend} setModalVend={setModalVend} vendedor={vendedor} startDate={reqData.startFilter} endDate={reqData.endFilter} />}
+
+        <div className="flex flex-col w-full  bg-white">
+           
             <div className="inline-flex w-full justify-between  py-2 px-6 rounded-lg text-black">
                 <InfoBlock icon={<GoGoal size={20} />} title="META" value={reqData.metaAtual ? (reqData?.metaAtual * reqData?.consultores?.length).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '0,00'} />
                 <InfoBlock icon={<FaPercentage size={20} />} title="PERCENTUAL" value={getPercentual(reqData?.grupos, reqData?.metaAtual, reqData?.consultores)} />
@@ -125,7 +126,7 @@ export function Acompanhamento({ empresa, setores,usuario }: { empresa: string, 
             </div>
 
 
-            <ButtonGroup className="ml-auto mr-2 mb-1">
+            <ButtonGroup className="ml-auto mr-2 pb-1">
                 <Button theme={themeLight} onClick={() => setFiltro(true)} type="button" color='light' size='xs'><FaFilter className='mr-1 h-4 w-4' />FILTRAR</Button>
 
 
@@ -152,7 +153,7 @@ export function Acompanhamento({ empresa, setores,usuario }: { empresa: string, 
 
             {filtro && <ModalFiltroMetas filtrar={dadosVendas} loading={loading} arraySetores={setores} show={filtro} setFiltro={setFiltro} startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />}
         </div>
-
+        </>
 
     );
 }

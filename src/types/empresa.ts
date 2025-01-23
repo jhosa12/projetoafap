@@ -18,4 +18,5 @@ export interface EmpresaProps{
     validade_carteira:number,
     local_pagamento:string,
     arte_car_dep:string,
+    instrucoes_carne:string
 }
