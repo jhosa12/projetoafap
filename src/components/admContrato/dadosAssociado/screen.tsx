@@ -117,9 +117,9 @@ export function DadosAssociado({dadosassociado}:DataProps){
 
 
     return(
-        <div className={`flex flex-col h-[calc(100vh-190px)]   p-4  rounded-b-lg w-full `}>
+        <div className={`flex flex-col h-[calc(100vh-190px)]  text-xs p-4  rounded-b-lg w-full `}>
 
-                                <div className="inline-flex w-full justify-between  gap-3 mb-3 pl-2 text-xl font-semibold tracking-tight text-black">
+                                <div className="inline-flex w-full justify-between  gap-3 mb-3 pl-2 text-sm font-semibold tracking-tight text-black">
                                     <div className="inline-flex gap-3 items-center ">
                                     {dadosassociado?.contrato?.id_contrato}-{dadosassociado?.nome}
                                     <span>CATEGORIA:
@@ -138,16 +138,16 @@ export function DadosAssociado({dadosassociado}:DataProps){
                                     ))}
 
 </div>
-<ButtonGroup outline >
-    <Button className="text-black font-semibold" color={'gray'} size={'xs'} onClick={()=>setOpenAltPlano(true)}>ALTERAR CATEGORIA</Button>
-   <Button  className="text-black font-semibold" disabled={!permissoes.includes('ADM1.1.3')}  onClick={()=>setOpenInativar(true)} color={'gray'} size={'xs'} >{dadosassociado?.contrato?.situacao === 'ATIVO' ? "INATIVAR CONTRATO" : "ATIVAR CONTRATO"}</Button>
+<ButtonGroup  outline >
+    <Button className="text-black  " color={'gray'} size={'xs'} onClick={()=>setOpenAltPlano(true)}>Alterar Categoria</Button>
+   <Button  className="text-black " disabled={!permissoes.includes('ADM1.1.3')}  onClick={()=>setOpenInativar(true)} color={'gray'} size={'xs'} >{dadosassociado?.contrato?.situacao === 'ATIVO' ? "Inativar Contrato" : "Ativar Contrato"}</Button>
 
  
-    <Dropdown label="" renderTrigger={()=><Button theme={{color:{gray:"border border-gray-200 bg-white text-gray-900  enabled:hover:bg-gray-100 enabled:hover:text-cyan-700"},pill:{off:'rounded-r-lg'}}} className="text-black font-semibold" color={'gray'} size={'xs'} >IMPRIMIR DOCUMENTOS</Button>} >
-    <Dropdown.Item className="text-xs" onClick={()=>setPrintContrato(true)}>CONTRATO</Dropdown.Item>
-      <Dropdown.Item className="text-xs" onClick={()=>setPrintCarne(true)}>CARNÊ</Dropdown.Item>
-      <Dropdown.Item className="text-xs"  onClick={()=>setPrintCarteira(true)}>CARTEIRAS</Dropdown.Item>  
-      <Dropdown.Item className="text-xs" onClick={()=>setPrintResumo(true)}>RESUMO DE CONTRATO</Dropdown.Item>                               
+    <Dropdown label="" renderTrigger={()=><Button theme={{color:{gray:"border border-gray-200 bg-white text-gray-900  enabled:hover:bg-gray-100 enabled:hover:text-cyan-700"},pill:{off:'rounded-r-lg'}}} className="text-black " color={'gray'} size={'xs'} >Imprimir Documentos</Button>} >
+    <Dropdown.Item className="text-xs" onClick={()=>setPrintContrato(true)}>Contrato</Dropdown.Item>
+      <Dropdown.Item className="text-xs" onClick={()=>setPrintCarne(true)}>Carnê</Dropdown.Item>
+      <Dropdown.Item className="text-xs"  onClick={()=>setPrintCarteira(true)}>Carteiras</Dropdown.Item>  
+      <Dropdown.Item className="text-xs" onClick={()=>setPrintResumo(true)}>Resumo de Contrato</Dropdown.Item>                               
     </Dropdown>
   
     
@@ -161,18 +161,18 @@ export function DadosAssociado({dadosassociado}:DataProps){
 
 setModalEdit(true)
 }}  className="w-full text-black text-xs cursor-pointer">
-                                        <h2 className="text-sm font-semibold mb-4  text-black">DADOS  DO TITULAR </h2>
+                                        <h2 className="text-sm font-semibold mb-4  text-black">Dados Titular </h2>
 
-                                        <div className="mb-1 inline-flex justify-between  gap-2 font-semibold tracking-tight  ">
-                                            <p className="mb-1  ">ENDEREÇO: {dadosassociado?.endereco}</p>
+                                        <div className="mb-1 inline-flex justify-between  gap-2  tracking-tight  ">
+                                            <p className="mb-1  ">Endereço: {dadosassociado?.endereco}</p>
                                             <p className="mb-1  ">Nº: {dadosassociado?.numero}</p>
-                                            <p className="mb-1 ">BAIRRO: {dadosassociado?.bairro}</p>
-                                            <p className="mb-1 ">CIDADE:{dadosassociado?.cidade}</p>
+                                            <p className="mb-1 ">Bairro: {dadosassociado?.bairro}</p>
+                                            <p className="mb-1 ">Cidade:{dadosassociado?.cidade}</p>
                                         </div>
-                                        <div className="mb-1 flex flex-row justify-between gap-2 font-semibold ">
+                                        <div className="mb-1 flex flex-row justify-between gap-2  ">
                                             <p >PONTO REF: {dadosassociado?.guia_rua}</p>
-                                            <p><span  className="font-semibold" >CELULAR1: </span>{dadosassociado?.celular1}</p>
-                                            <p className="mb-1 ">CELULAR2:{dadosassociado?.celular2}</p>
+                                            <span   >Celular1: {dadosassociado?.celular1} </span>
+                                            <p className="mb-1 ">Celular2:{dadosassociado?.celular2}</p>
 
                                         </div>
 
@@ -185,19 +185,19 @@ setModalEdit(true)
                                                 setModalEdit(true)
                                             }} className="flex w-full text-black text-xs cursor-pointer">
                                    
-                                        <h2 className="text-sm font-semibold mb-4 ">DADOS  DO PLANO</h2>
+                                        <h2 className="text-sm font-semibold mb-4 ">Dados do Plano</h2>
 
-                                        <div className="mb-1 flex flex-row justify-between gap-2 font-semibold">
+                                        <div className="mb-1 flex flex-row justify-between gap-2 ">
 
-                                            <p className="mb-1 ">CATEGORIA: {dadosassociado?.contrato?.plano}</p>
-                                            <p className="mb-1 ">VALOR: R$ {dadosassociado?.contrato?.valor_mensalidade}</p>
-                                            <p className="mb-1 ">ADESÃO:  {dadosassociado.contrato?.dt_adesao && new Date(dadosassociado?.contrato?.dt_adesao).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</p>
-                                            <p className="mb-1 ">CARÊNCIA: {dadosassociado.contrato?.dt_carencia && new Date(dadosassociado?.contrato?.dt_carencia).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</p>
+                                            <p className="mb-1 ">Categoria: {dadosassociado?.contrato?.plano}</p>
+                                            <p className="mb-1 ">Valor: R$ {dadosassociado?.contrato?.valor_mensalidade}</p>
+                                            <p className="mb-1 ">Adesão:  {dadosassociado.contrato?.dt_adesao && new Date(dadosassociado?.contrato?.dt_adesao).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</p>
+                                            <p className="mb-1 ">Carência: {dadosassociado.contrato?.dt_carencia && new Date(dadosassociado?.contrato?.dt_carencia).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</p>
                                         </div>
-                                        <div className="mb-1 flex flex-row justify-between gap-2  tracking-tight font-semibold  ">
-                                            <p className="  ">ORIGEM: {dadosassociado?.contrato?.origem}</p>
-                                            <p className=" ">CONSULTOR: {dadosassociado?.contrato?.consultor}</p>
-                                            <p className=" ">COBRADOR: {dadosassociado?.contrato?.cobrador}</p>
+                                        <div className="mb-1 flex flex-row justify-between gap-2  tracking-tight  ">
+                                            <p className="  ">Origem: {dadosassociado?.contrato?.origem}</p>
+                                            <p className=" ">Consultor: {dadosassociado?.contrato?.consultor}</p>
+                                            <p className=" ">Cobrador: {dadosassociado?.contrato?.cobrador}</p>
                                         </div>
 
                                       

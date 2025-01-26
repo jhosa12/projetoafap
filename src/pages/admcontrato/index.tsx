@@ -11,7 +11,7 @@ import Head from "next/head";
 import CarteirasDep from "../../components/admContrato/carteiras/carteirasDep";
 import { HistoricoMensalidade } from "@/components/admContrato/historicoMensalidade/historicoMensalidade";
 import ObitosAssociado from "@/components/admContrato/obitos/obitos";
-import { Button, Modal, Spinner, Tabs } from "flowbite-react";
+import {  Modal, Spinner, Tabs } from "flowbite-react";
 import { HiIdentification, HiMiniInbox, HiMiniWallet, HiPrinter, HiUserCircle, HiUserGroup } from "react-icons/hi2";
 import { DadosAssociado } from "@/components/admContrato/dadosAssociado/screen";
 import { Dependentes } from "@/components/admContrato/dependentes/dependentes";
@@ -22,7 +22,7 @@ import { FaHandshake } from "react-icons/fa";
 import { VerificarSituacao } from "@/utils/admContrato/verificarSituacao";
 import { Acordos } from "@/components/admContrato/acordos/screen";
 import { inter, roboto_Mono, source_Sans_3 } from "@/fonts/fonts";
-
+import { Button } from "@/components/ui/button"
 
 
 export default function AdmContrato() {
@@ -98,29 +98,29 @@ useEffect(() => {
                 <title>Administrar Contrato</title>
 
             </Head>
-            <div className={source_Sans_3.className + ` flex flex-col w-full mr-2  justify-center`}>
+            <div className={`flex flex-col w-full mr-2  justify-center`}>
                 {modalBusca && (<ModalBusca visible={modalBusca} setVisible={()=>setModalBusca(false)} />)}
                 {openCadastro && (<ModalCadastro onClose={setCadastro} isOpen={openCadastro} />)}
 
                 <div className="flex  flex-col px-4  ">
                     <div className="flex  flex-row justify-start gap-2 items-center w-full mt-2 pb-1">
-                        <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100" } }} size={'sm'} onClick={() => setModalBusca(true)} type="button" color={'light'}>
+                        <Button variant={'outline'} size={'sm'} onClick={() => setModalBusca(true)} type="button" >
                             <IoMdSearch size={18} />
-                            BUSCAR CLIENTE
+                            Buscar Cliente
                         </Button>
-                        <Button size={'sm'} type="button" onClick={() => setCadastro(true)} color={'warning'}>
+                        <Button variant={'outline'} size={'sm'} type="button" onClick={() => setCadastro(true)} >
                         <IoMdAdd size={18} />
-                            NOVO ASSOCIADO
+                            Novo Associado
                         </Button>
                     </div>
-                    <div className="flex-col w-full border  rounded-lg shadow  border-gray-700">
-                        <Tabs theme={{ base: 'bg-white rounded-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-165px)]', tablist: { tabitem: { base: "flex items-center justify-center enabled:text-black rounded-t-lg p-4 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 " } } }} aria-label="Tabs with icons" variant="underline" onActiveTabChange={e => setIndex(e)} >
+                    <div className="flex-col w-full   rounded-lg   border-gray-700">
+                        <Tabs theme={{ base: 'bg-white rounded-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-165px)] py-1', tablist: { tabitem: { base: "flex items-center justify-center enabled:text-black rounded-t-lg p-4 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 " } } }} aria-label="Tabs with icons" variant="underline" onActiveTabChange={e => setIndex(e)} >
 
-                            <Tabs.Item  active={indexTab === 0} title="DADOS ASSOCIADO" icon={HiUserCircle}>
+                            <Tabs.Item  active={indexTab === 0} title="Dados Associado" icon={HiUserCircle}>
                                 {indexTab === 0 && <DadosAssociado dadosassociado={dadosassociado ?? {}} />}
                             </Tabs.Item>
 
-                            <Tabs.Item active={indexTab === 1} disabled={!permissoes.includes('ADM1.2')} title="HISTÓRICO/MENSALIDADE" icon={HiMiniWallet}>
+                            <Tabs.Item active={indexTab === 1} disabled={!permissoes.includes('ADM1.2')} title="Histórico/Mensalidade" icon={HiMiniWallet}>
                                 {indexTab === 1 && <HistoricoMensalidade
                                     carregarDados={carregarDados}
                                     dados={{  closeModalPlano: data.closeModalPlano ?? false, id_associado: dadosassociado?.id_associado ?? 0, mensalidade: data.mensalidade ?? {}, mensalidadeAnt: data.mensalidadeAnt ?? {} }}
@@ -146,7 +146,7 @@ useEffect(() => {
                                     usuario={{ id: usuario?.id, nome: usuario?.nome ?? '' }}
                                 />}
                             </Tabs.Item>
-                            <Tabs.Item active={indexTab === 2}  title="ACORDOS" icon={FaHandshake}>
+                            <Tabs.Item active={indexTab === 2}  title="Acordos" icon={FaHandshake}>
 
                                {indexTab===2 && <Acordos 
                                id_empresa={dadosassociado?.id_empresa??''}
@@ -160,11 +160,11 @@ useEffect(() => {
                                />}
 
                             </Tabs.Item>
-                            <Tabs.Item active={indexTab === 3} disabled={!permissoes.includes('ADM1.3')} title="DEPENDENTES" icon={HiUserGroup
+                            <Tabs.Item active={indexTab === 3} disabled={!permissoes.includes('ADM1.3')} title="Dependentes" icon={HiUserGroup
                             }>
                                 {indexTab === 3 && <Dependentes />}
                             </Tabs.Item>
-                            <Tabs.Item active={indexTab === 4} title="CARTEIRAS" icon={HiIdentification}>
+                            <Tabs.Item active={indexTab === 4} title="Carteiras" icon={HiIdentification}>
                                 {indexTab === 4 && <CarteirasDep
                                     titular={dadosassociado?.nome ?? ''}
                                     dependentes={dadosassociado?.dependentes ?? []}
@@ -178,7 +178,7 @@ useEffect(() => {
                                     uf={dadosassociado?.uf ?? ''}
                                 />}
                             </Tabs.Item>
-                            <Tabs.Item active={indexTab === 5} disabled={!permissoes.includes('ADM1.5')} title="ÓBITOS" icon={HiMiniInbox
+                            <Tabs.Item active={indexTab === 5} disabled={!permissoes.includes('ADM1.5')} title="Óbitos" icon={HiMiniInbox
                             }>
                                 {indexTab === 5 && <ObitosAssociado
                                     obitos={dadosassociado?.contrato?.obitos ?? []}

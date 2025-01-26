@@ -6,7 +6,7 @@ import { IoPrint } from "react-icons/io5";
 import { AuthContext } from "@/contexts/AuthContext";
 import ReactPaginate from "react-paginate";
 import { HiFilter } from "react-icons/hi";
-import { Badge, Button, Table } from "flowbite-react";
+import { Badge, Table } from "flowbite-react";
 import { ModalFiltroCobranca } from "@/components/cobranca/modalCobranca";
 import { SubmitHandler } from "react-hook-form";
 import { ConsultoresProps } from "@/types/consultores";
@@ -14,6 +14,7 @@ import useApiPost from "@/hooks/useApiPost";
 import { HiChevronLeft } from "react-icons/hi2";
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
 import RelatorioInadimplencia from "@/Documents/relatorioCobranca/RelatorioIndimplencia";
+import { Button } from "@/components/ui/button";
 
 
 
@@ -223,7 +224,7 @@ useEffect(()=>{
         <RelatorioInadimplencia usuario={usuario?.nome} dados={data??[]} ref={componenteRef} />
       </div>
  
-      <div className="flex flex-col bg-white w-full border  rounded-b-lg shadow  border-gray-700 h-[calc(100vh-100px)] ">
+      <div className="flex flex-col w-full h-[calc(100vh-100px)] ">
       
         <div className="flex flex-row w-full justify-between items-end p-2">
          <div className="inline-flex gap-4">
@@ -233,19 +234,20 @@ useEffect(()=>{
          <Badge color="red" >Mais de 3: {cont?.nn}</Badge>
         </div>   
        
-        <div className="flex items-end gap-2 ">
+        <div className="flex items-end gap-2 text-black">
               <Button 
-              theme={{color:{light:"border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 "}}}
+              variant={'outline'}
                 disabled={!permissoes.includes('ADM3.1')}
-              size='xs' onClick={() => setFiltro(true)} color='light'>
-                <HiFilter className="mr-2 h-4 w-4" /> FILTRO
+              size='sm' onClick={() => setFiltro(true)} color='light'>
+                <HiFilter /> FILTRO
               </Button>
               <Button
+              variant={'outline'}
               disabled={!permissoes.includes('ADM3.2')}
-                size={'xs'}
+                size={'sm'}
                 onClick={() => imprimirRelatorio()}
                
-              ><IoPrint className="mr-2 h-4 w-4"  />IMPRIMIR</Button>
+              ><IoPrint  />IMPRIMIR</Button>
             </div>
         </div>
          

@@ -11,15 +11,15 @@ import { Stringifier } from "postcss";
 interface DataProps{
     show:boolean,
     setFiltro:(open:boolean)=>void,
-    buscarConsultas:({startDate,endDate,id_med}:{startDate:Date,endDate:Date,id_med?:number,status:string|undefined})=>Promise<void>,
+    buscarConsultas:({startDate,endDate,id_med}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined})=>Promise<void>,
     loading:boolean,
     medicos:Array<MedicoProps>  
 
 }
 
 export function ModalFiltroConsultas({loading,setFiltro,show,buscarConsultas,medicos}:DataProps){
-    const [startDate,setStartDate] = useState<Date>(new Date())
-    const [endDate,setEndDate] = useState<Date>(new Date())
+    const [startDate,setStartDate] = useState<Date|undefined>(undefined)
+    const [endDate,setEndDate] = useState<Date|undefined>(undefined)
     const [id_med,setId] = useState<number|undefined>(undefined)
     const [status,setStatus] = useState('')
     return(
@@ -39,7 +39,7 @@ export function ModalFiltroConsultas({loading,setFiltro,show,buscarConsultas,med
         </div>
                        <Select value={id_med??''} onChange={(e) =>setId(e.target.value ? Number(e.target.value) : undefined)} sizing={'sm'}>
                         <option value={''}>Selecione</option>
-                        {medicos.map((item,index)=>(<option key={index} value={item.id_med}>{item.nome}</option>))}
+                        {medicos.map((item,index)=>(<option key={index} value={item.id_med}>{item.nome}-{item.espec}</option>))}
                        </Select>
                         </div>
 

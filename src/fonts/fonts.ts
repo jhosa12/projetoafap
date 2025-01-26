@@ -1,4 +1,4 @@
-import {Inter, Roboto_Mono,Source_Sans_3} from 'next/font/google';
+import {Inter, Roboto_Mono,Source_Sans_3,Geist} from 'next/font/google';
 
 
 export const source_Sans_3 = Source_Sans_3({
@@ -14,4 +14,9 @@ export const inter = Inter({
 export const roboto_Mono = Roboto_Mono({
     subsets:['latin'],
     display:'swap',
+})
+
+export const geist = Geist({
+    subsets:['latin'],
+   
 })

@@ -5,7 +5,7 @@ import { GoGoal } from "react-icons/go";
 import { GiStairsGoal } from "react-icons/gi";
 import { FaFilter } from "react-icons/fa6";
 import "react-datepicker/dist/react-datepicker.css";
-import { Button, ButtonGroup, Dropdown } from 'flowbite-react';
+
 import { ModalVendedor } from '@/components/vendas/modalVendedor';
 import { ConsultorList } from '@/components/vendas/ConsultorList';
 import { themeLight } from '../admContrato/acordos/screen';
@@ -14,6 +14,16 @@ import { FaPercentage } from 'react-icons/fa';
 import { ModalFiltroMetas } from './modalFiltro';
 import { ajustarData } from '@/utils/ajusteData';
 
+
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+  } from "@/components/ui/card"
+import { Button } from '../ui/button';
 
 export interface VendasProps {
     id_consultor: number | null;
@@ -126,17 +136,12 @@ export function Acompanhamento({ empresa, setores,usuario }: { empresa: string, 
             </div>
 
 
-            <ButtonGroup className="ml-auto mr-2 pb-1">
-                <Button theme={themeLight} onClick={() => setFiltro(true)} type="button" color='light' size='xs'><FaFilter className='mr-1 h-4 w-4' />FILTRAR</Button>
+            <div className="flex ml-auto mr-4 pb-1 gap-2 text-black">
+                <Button variant={'outline'} onClick={() => setFiltro(true)} type="button" color='light' size='sm'><FaFilter />FILTRAR</Button>
+                <Button variant={'outline'} size='sm'>  <IoPrint /> IMPRIMIR</Button>
 
-
-                <Dropdown label="" dismissOnClick={false} renderTrigger={() => <Button theme={{ ...themeLight, pill: { on: "rounded-r-lg" } }} pill color='light' size='xs'>  <IoPrint className='mr-1 h-4 w-4' /> IMPRIMIR</Button>}>
-                    <Dropdown.Item>Relatorio por vendedor</Dropdown.Item>
-                    <Dropdown.Item>Relatorio geral</Dropdown.Item>
-                    <Dropdown.Item>Earnings</Dropdown.Item>
-                    <Dropdown.Item>Sign out</Dropdown.Item>
-                </Dropdown>
-            </ButtonGroup>
+              
+            </div>
 
 
             <ConsultorList dados={reqData?.grupos} setModalVend={setModalVend} setVendedor={setVendedor} meta={reqData?.metaAtual ?? 0} />
@@ -160,15 +165,11 @@ export function Acompanhamento({ empresa, setores,usuario }: { empresa: string, 
 
 
 const InfoBlock = ({ icon, title, value }: { icon: JSX.Element, title: string, value: string }) => (
-    <div className='inline-flex items-center gap-1 bg-blue-600 text-white rounded-md p-2'>
-        <div className='border-2 border-white rounded-lg p-1'>
-            {icon}
-        </div>
-
-        <div className='flex flex-col'>
-            <span className='leading-none text-xs'>{title}</span>
-            <span className='leading-none'>{value}</span>
-        </div>
+    <div className="flex flex-col p-2 px-4 shadow-md rounded-md">
+    
+      <div className='text-sm font-semibold'>{title}</div>
+      <div className='text-xs text-gray-500'>{value}</div>
+    
     </div>
 );
 

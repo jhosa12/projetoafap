@@ -1,5 +1,4 @@
 
-import { ModalAcordos } from '@/components/admContrato/acordos/modalAcordos';
 import ImpressaoCarne from '@/Documents/mensalidade/ImpressaoCarne';
 import { api } from '@/services/apiClient';
 import { useReactToPrint } from 'react-to-print';
@@ -293,50 +292,50 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
             <div className="flex w-full p-2 max-h-[calc(100vh-205px)]">
                 <table
                     className="block w-full overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse  text-gray-600">
-                    <thead className="sticky w-full top-0  text-xs   bg-gray-100 text-gray-600">
+                    <thead className="sticky w-full top-0  text-xs   bg-white text-gray-600">
                         <tr >
                             <th scope="col" className="px-6 py-1">
-                                NP
+                                Np
                             </th>
                             <th scope="col" className=" px-6 py-1">
-                                VENC.
+                                Venc.
                             </th>
                             <th scope="col" className=" px-6 py-1">
-                                REF
+                                Ref
                             </th>
                             <th scope="col" className="px-6 py-1">
-                                DATA AGEND.
+                                Data Agend.
                             </th>
                             <th scope="col" className="px-6 py-1">
-                                VALOR
+                                Valor
                             </th>
                             <th scope="col" className="px-6 py-1">
-                                STATUS
+                                status
                             </th>
                             <th scope="col" className=" px-6 py-1">
-                                 PAG.
+                                 Pag.
                             </th>
                             <th scope="col" className=" px-6 py-1">
-                                HR PAG.
+                                Hr Pag.
                             </th>
                             <th scope="col" className=" px-6 py-1">
-                                USUÁRIO
+                                Usuário
                             </th>
                             <th scope="col" className=" px-6 py-1">
-                                VAL. PAGO
+                                Val. Pago
                             </th>
                             <th scope="col" className=" px-6 py-1">
-                                FORMA
+                                Forma
                             </th>
                             <th scope="col" className=" px-6 py-1">
-                                ATRASO
+                                Atraso
                             </th>
                             <th scope="col" className="px-12 py-1">
-                                <span>AÇÕES</span>
+                                <span>Ações</span>
                             </th>
                         </tr>
                     </thead>
-                    <tbody  >
+                    <tbody className='divide-y' >
 
 
                         {Array.isArray(dadosAssociado?.arrayMensalidade) && dadosAssociado?.arrayMensalidade?.map((item, index) => {
@@ -350,7 +349,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
 
                                         <tr  key={index}
                                             onClick={() => toggleSelecionada(item)}
-                                            className={`font-semibold divide-y text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"}  ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : "bg-gray-50"}  ${item.status === 'P' && "text-blue-600"}   hover:bg-gray-300 hover:text-black hover:cursor-pointer }`}>
+                                            className={`  text-[10px] font-semibold text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"}  ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : ""}  ${item.status === 'P' && "text-blue-600"}   hover:bg-gray-300 hover:text-black hover:cursor-pointer }`}>
                                             <th scope="row" className={`px-5 py-1  `}>
                                                 {item.parcela_n}
                                             </th>
@@ -412,7 +411,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
                                     ) : item.status !== 'P' && (
                                         <tr key={index}
                                             onClick={() => toggleSelecionada(item)}
-                                            className={`font-semibold  divide-y text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && "text-red-600"}   ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : ""}   hover:bg-gray-300 hover:text-black hover:cursor-pointer  }`}>
+                                            className={`font-semibold text-[10px]  text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && "text-red-600"}   ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : ""}   hover:bg-gray-300 hover:text-black hover:cursor-pointer  }`}>
                                             <td className="px-5 py-1   ">
                                                 {item.parcela_n}
                                             </td>

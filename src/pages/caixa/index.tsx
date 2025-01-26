@@ -10,7 +10,7 @@ import { ModalLancamentosCaixa } from "@/components/caixa/modalLancamentosCaixa"
 import { AuthContext } from "@/contexts/AuthContext";
 import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
-import { Button, Label, Modal, Spinner, Table, TextInput } from "flowbite-react";
+import { Label, Modal, Spinner, Table, TextInput } from "flowbite-react";
 import {  HiPencil } from "react-icons/hi2";
 import { toast } from "react-toastify";
 import { ModalExcluir } from "@/components/modalExcluir";
@@ -20,6 +20,8 @@ import { ModalImpressao } from "@/components/caixa/modalImpressao";
 import { ajustarData } from "@/utils/ajusteData";
 import { ScreenCloseCaixa } from "@/components/caixa/screenCloseCaixa";
 import { ModalMensalidade } from "@/components/admContrato/historicoMensalidade/modalmensalidade";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 
 registerLocale('pt', pt)
@@ -365,7 +367,7 @@ setOpenModal={setModalDados}
 <div className="flex flex-col  w-full ">
     <div className=" bg-white inline-flex items-center w-full justify-between">
    
-    <form onSubmit={handleSubmit(listarLancamentos)}  className="flex w-full flex-row justify-end p-1 gap-4 text-black font-semibold">
+    <form onSubmit={handleSubmit(listarLancamentos)}  className="flex w-full flex-row justify-end p-1 gap-4 text-black ">
 
     <div >
         <div className=" block">
@@ -375,7 +377,7 @@ setOpenModal={setModalDados}
         control={control}
         name="startDate"
         render={({ field:{ onChange, value} }) => (
-            <DatePicker selected={value} onChange={e=>e && onChange(e)}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase  z-50 text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+            <DatePicker selected={value} onChange={e=>e && onChange(e)}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full shadow-sm uppercase  z-50 text-[13px] leading-[14px]   border  rounded-sm    border-gray-200 placeholder-gray-400  " />
         )}
         />
       
@@ -391,7 +393,10 @@ setOpenModal={setModalDados}
         control={control}
         name="endDate" 
         render={({ field:{ onChange, value} })=>(
-                  <DatePicker selected={value} onChange={e=>e && onChange(e)}     dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase  z-50 text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+                  <DatePicker selected={value} onChange={e=>e && onChange(e)}     dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex shadow-sm w-full uppercase  z-50 text-[13px]   border  rounded-sm    border-gray-200 placeholder-gray-400 leading-[14px] " 
+                  
+                  
+                  />
         )}
         />
  
@@ -401,16 +406,16 @@ setOpenModal={setModalDados}
         <div className=" block">
           <Label className="text-xs" value="Buscar" />
         </div>
-        <TextInput {...register('descricao')}   sizing={'sm'}  />
+        <Input {...register('descricao')}    />
       </div> 
          
                    <div className="flex items-end gap-4">
-                   <Button isProcessing={loading}  size={'sm'} type="submit" ><IoSearchSharp className="mr-2 h-5 w-5"/> Buscar</Button>
+                   <Button variant={'outline'}  size={'sm'} type="submit" ><IoSearchSharp /> Buscar</Button>
 
                   
                    </div>
                    <div className="flex   items-end justify-end pr-2 ">
-                   <Button disabled={!permissoes.includes('ADM2.1.1')||!!fechado} color={'success'} size={'sm'} onClick={()=>{setMov({conta:'',conta_n:'',ccustos_desc:'',data:undefined,datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal(true)}} ><MdOutlineAddCircle className="mr-2 h-5 w-5"/> Novo</Button>
+                   <Button variant={'outline'} disabled={!permissoes.includes('ADM2.1.1')||!!fechado} color={'success'} size={'sm'} onClick={()=>{setMov({conta:'',conta_n:'',ccustos_desc:'',data:undefined,datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal(true)}} ><MdOutlineAddCircle /> Novo</Button>
                    </div>
                    
         </form>
@@ -521,8 +526,8 @@ setOpenModal={setModalDados}
   </div>
 
 
-  <Button onClick={()=>setPrint(true)} className="ml-auto" size={'xs'}><IoPrint className="mr-2 h-4 w-4" /> Imprimir Caixa</Button>
-  <Button onClick={()=>setFecModal(true)} className="ml-auto" size={'xs'}>Fechar Caixa</Button>
+  <Button size={'sm'} onClick={()=>setPrint(true)} className="ml-auto" ><IoPrint className="mr-2 h-4 w-4" /> Imprimir Caixa</Button>
+  <Button size={'sm'} onClick={()=>setFecModal(true)} className="ml-auto" >Fechar Caixa</Button>
     </div>}
 
     </div>

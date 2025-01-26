@@ -6,13 +6,14 @@ import {  Drawer, Sidebar } from "flowbite-react";
 import Link from "next/link";
 import { useContext } from "react";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
-
+import { useSidebar } from "@/components/ui/sidebar"
 
 
 import { GiCardRandom } from "react-icons/gi";
 import { HiBriefcase, HiCog } from "react-icons/hi";
 import { HiArrowSmallLeft, HiMiniRectangleStack, HiWallet } from "react-icons/hi2";
 import { MdMedicalServices } from "react-icons/md";
+import { SidebarTrigger } from "../ui/sidebar";
 
 interface DataProps {
   isOpen: boolean,
@@ -32,6 +33,8 @@ export default function SideBar({ isOpen, setClose }: DataProps) {
         <Drawer.Items>
           <Sidebar aria-label="Sidebar with multi-level dropdown example"
             className="[&>div]:bg-transparent [&>div]:p-0">
+
+
             <Sidebar.Items>
               <Sidebar.ItemGroup>
                 <Sidebar.Collapse label="Administrativo" icon={HiWallet}>
@@ -41,6 +44,7 @@ export default function SideBar({ isOpen, setClose }: DataProps) {
                   <Sidebar.Item as={Link} href='/cobranca' >Cobrança</Sidebar.Item>
                   <Sidebar.Item as={Link} href='/estoque' >Estoque</Sidebar.Item>
                   <Sidebar.Item as={Link} href='/gerenciarAdministrativo' >Gerenciar</Sidebar.Item>
+                  <Sidebar.Item as={Link} href='/sideBar' >SIDEBAR</Sidebar.Item>
                 </Sidebar.Collapse>
                 <Sidebar.Collapse icon={HiBriefcase} label="Comercial">
                   <Sidebar.Item as={Link} href='/vendas' >Vendas</Sidebar.Item>

@@ -1,5 +1,4 @@
-import { Button, Checkbox, Dropdown, Label, Popover, Select, TextInput } from "flowbite-react"
-import { IoIosArrowDown } from "react-icons/io"
+import {   Popover, Select, TextInput } from "flowbite-react"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
@@ -7,6 +6,7 @@ import { HiFilter } from "react-icons/hi";
 import { FormProps, ProdutosProps } from "@/pages/estoque";
 import { useState } from "react";
 import { EmpresaProps } from "@/types/empresa";
+import { Button } from "../ui/button";
 
 
 interface DataProps {
@@ -42,8 +42,6 @@ export function FiltroEstoque({ produtos, loading, filtroEstoque,empresas }: Dat
 
                     </Select>
 
-S
-
           <Select onChange={e => setFormData({ ...formData, grupo: e.target.value })} className="font-semibold" sizing={'sm'}>
                         <option value={''}>CATEGORIA</option>
                         <option value={'cs'} className="font-semibold">CONSUMO</option>
@@ -61,15 +59,15 @@ S
                  
                     <TextInput value={formData.descricao} onChange={e => setFormData({ ...formData, descricao: e.target.value.toUpperCase() })} className=" font-semibold" placeholder="DESCRIÇÃO" sizing={'sm'}/>
 
-          <Button color="success" isProcessing={loading} onClick={() => filtroEstoque(formData)}>
+          <Button color="success"  onClick={() => filtroEstoque(formData)}>
             Aplicar Filtro
           </Button>
 
         </div>
       }
     >
-      <Button color={'light'} theme={{ color: { light: 'border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100' } }} size={'sm'}>
-        <HiFilter className="mr-2 w-5 h-5" />   Filtrar
+      <Button color={'light'} variant={'outline'} size={'sm'}>
+        <HiFilter  />   Filtrar
       </Button>
     </Popover>
   )

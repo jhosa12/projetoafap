@@ -7,12 +7,13 @@ import { IoPrint } from "react-icons/io5";
 import { AuthContext } from "@/contexts/AuthContext";
 import ReactPaginate from "react-paginate";
 import { HiFilter } from "react-icons/hi";
-import { Button, Table } from "flowbite-react";
+import {  Table } from "flowbite-react";
 import { ModalFiltroCobranca } from "@/components/cobranca/modalCobranca";
 import { SubmitHandler } from "react-hook-form";
 import { ConsultoresProps } from "@/types/consultores";
 import { ajustarData } from "@/utils/ajusteData";
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
+import { Button } from "@/components/ui/button";
 
 
 interface CobrancaProps {
@@ -211,30 +212,31 @@ export  function Cobranca() {
           usuario={usuario?.nome ?? ''}
         />
       </div>}
-      <div className="flex flex-col bg-white w-full border  rounded-b-lg shadow  border-gray-700 h-[calc(100vh-57px)] ">
+      <div className="flex flex-col  w-full     h-[calc(100vh-57px)] ">
       
         
-            <div className="flex  ml-auto items-end gap-2 p-2 ">
+            <div className="flex  ml-auto items-end gap-2 pb-2 mr-3 text-black ">
               <Button 
-              theme={{color:{light:"border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 "}}}
+                variant={'outline'}
                 disabled={!permissoes.includes('ADM3.1')}
-              size='xs' onClick={() => setFiltro(true)} color='light'>
-                <HiFilter className="mr-2 h-4 w-4" /> FILTRO
+              size='sm' onClick={() => setFiltro(true)} color='light'>
+                <HiFilter  /> FILTRO
               </Button>
 
               <Button
+              variant={'outline'}
               disabled={!permissoes.includes('ADM3.2')}
-                size={'xs'}
+                size={'sm'}
                 onClick={() => imprimirRelatorio()}
                
-              ><IoPrint className="mr-2 h-4 w-4"  />IMPRIMIR</Button>
+              ><IoPrint  />IMPRIMIR</Button>
             </div>
          
 
           <div className="overflow-y-auto p-2 max-h-[70vh] ">
-          <Table  hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 py-1 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg" } } }} 
+          <Table  hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 py-1 " } } }} 
     >
-            <Table.Head theme={{cell:{base:"bg-gray-50 px-4 py-1 group-first/head:first:rounded-tl-lg group-first/head:last:rounded-tr-lg "}}}>
+            <Table.Head theme={{cell:{base:"bg-gray-50 px-4 py-1  "}}}>
              
                 <Table.HeadCell>
                   REF.
@@ -262,7 +264,7 @@ export  function Cobranca() {
                 </Table.HeadCell>
              
             </Table.Head>
-            <Table.Body className="divide-y text-xs text-black font-semibold ">
+            <Table.Body className="divide-y text-xs text-black ">
               {currentItems.map((item, index) => (
                 <Table.Row key={item.id_mensalidade} >
                   <Table.Cell scope="row" >

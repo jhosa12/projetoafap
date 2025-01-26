@@ -9,14 +9,18 @@ import { memo, StrictMode, useEffect } from 'react';
 import { ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+
+const Header = memo(MenuLateral);
+
 function isLoginPage(pathname: string) {
   return pathname === '/' || pathname === '_error';
 }
 
+
 function PrivateLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      <MenuLateral />
+    <div className='flex flex-col'>
+      <Header />
       <div>{children}</div>
     </div>
   );

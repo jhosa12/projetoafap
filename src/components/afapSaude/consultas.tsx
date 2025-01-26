@@ -199,11 +199,11 @@ const imprimirRecibo = useCallback(useReactToPrint({
 
 
 
-const buscarConsultas = async ({startDate,endDate,id_med,status}:{startDate:Date,endDate:Date,id_med?:number,status:string|undefined})=>{
+const buscarConsultas = async ({startDate,endDate,id_med,status}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined})=>{
 
  const {dataIni,dataFim} =  ajustarData(startDate,endDate)
 
-  if (startDate > endDate) {
+  if ((startDate && endDate) && startDate > endDate) {
     toast.warning('Data inicial não pode ser maior que a data final')
     return
   }
@@ -369,12 +369,10 @@ const handleDeletar = useCallback(async () => {
         <MdDelete className="mr-2 h-4 w-4" />
         Excluir
       </Button>
+      <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 " } }} color={'light'} size={'sm'} onClick={() => setModalFiltro(true)}>  <HiFilter className="mr-2 h-4 w-4" /> Filtro</Button>
     </Button.Group>
-    <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 " } }} color={'light'} size={'sm'} onClick={() => setModalFiltro(true)}>  <HiFilter className="mr-2 h-4 w-4" /> Filtro</Button>
+  
       </div>
-
-
-
 
       <div className="overflow-y-auto h-[calc(100vh-160px)]">
         <Table  theme={{ body: { cell: { base: "px-6 text-black py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs" } } }}  >
