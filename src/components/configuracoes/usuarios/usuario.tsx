@@ -6,7 +6,8 @@ import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { IoIosAddCircle } from "react-icons/io";
 import { ModalNovoUsuario } from "./modalNovoUsuario";
-import { Button } from "flowbite-react";
+import { Button } from "@/components/ui/button";
+
 
 
 
@@ -267,7 +268,11 @@ export function Usuario() {
   return (
     <div className="flex w-full flex-col px-2 bg-white rounded-lg text-black">
     
-        <Button size={'sm'}  onClick={() => {
+        <Button
+        className="ml-auto"
+         size={'sm'} 
+        variant={'outline'}
+         onClick={() => {
           setarDadosUsuario({
             cargo: '',
             consultor: [],
@@ -283,7 +288,7 @@ export function Usuario() {
             avatarUrl: ''
           }),
           setModalAdicionar(!modalAdicionar)
-        }} className="inline-flex justify-items-center ml-auto bg-green-500  "><IoIosAddCircle size={20} />Adicionar</Button>
+        }} ><IoIosAddCircle size={20} />Adicionar</Button>
     
       <div className="flex flex-col  px-4 w-full overflow-y-auto h-[calc(100vh-175px)]  ">
 

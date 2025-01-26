@@ -19,7 +19,7 @@ interface DataProps{
 
 export function ModalEmpresa({open,onClose}:DataProps) {
     return (
-        <Modal className={roboto_Mono.className} show={open} size="7xl" onClose={() => onClose()} >
+        <Modal  show={open} size="7xl" onClose={() => onClose()} >
             <Modal.Header/>
             <Modal.Body>
             <form>

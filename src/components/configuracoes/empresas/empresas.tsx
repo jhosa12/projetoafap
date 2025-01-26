@@ -1,12 +1,13 @@
 import { inter, roboto_Mono } from "@/fonts/fonts";
 import { api } from "@/services/apiClient";
 import { EmpresaProps } from "@/types/empresa";
-import { Button, Table } from "flowbite-react";
+import { Table } from "flowbite-react";
 import { useCallback, useEffect, useState } from "react";
 import { HiMiniCog6Tooth, HiMiniPencil } from "react-icons/hi2";
 import { IoIosAddCircle } from "react-icons/io";
 import { toast } from "react-toastify";
 import { ModalEmpresa } from "./modalEmpresa/modalEmpresa";
+import { Button } from "@/components/ui/button";
 
 
 
@@ -41,11 +42,11 @@ const handleOpenEmpresa = useCallback((item:EmpresaProps)=>{
         <div className={ `flex flex-col  px-4 w-full overflow-y-auto h-[calc(100vh-138px)]`}>
 
             <ModalEmpresa open={open} onClose={onClose} />
-            <Button type="button" className="ml-auto mb-2" color="blue" size="sm" ><IoIosAddCircle size={22} className="mr-2 "/>NOVA EMPRESA</Button>
+            <Button type="button" className="ml-auto mb-2" variant={'outline'} size="sm" ><IoIosAddCircle size={20}  />NOVA EMPRESA</Button>
 
-            <div className={roboto_Mono.className}>
+            <div >
                 <Table theme={{root:{shadow:'none'}, body: { cell: { base: " px-6 py-2  text-xs text-black font-semibold" } } }} hoverable={true}>
-                    <Table.Head>
+                    <Table.Head theme={{cell: { base: " px-6 py-2  text-xs text-black font-semibold" }}}>
                         <Table.HeadCell>
                             Nome
                         </Table.HeadCell>

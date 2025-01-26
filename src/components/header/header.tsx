@@ -65,6 +65,16 @@ export function Header() {
           <MenubarItem>
            <Link href="/gerenciarAdministrativo">Gerenciar</Link> 
           </MenubarItem>
+          <MenubarItem>
+           <Link href="/financeiro">Financeiro</Link> 
+          </MenubarItem>
+          <MenubarSub>
+            <MenubarSubTrigger>Sorteios</MenubarSubTrigger>
+            <MenubarSubContent>
+              <MenubarItem><Link href="/sorteio">Sorteios</Link></MenubarItem>
+              <MenubarItem><Link href="/sorteio/configuracoes">Configurar Parâmetros</Link></MenubarItem>
+            </MenubarSubContent>
+          </MenubarSub>
         
          
         </MenubarContent>
@@ -76,64 +86,48 @@ export function Header() {
            <Link href="/vendas">Vendas</Link>
           </MenubarItem>
           <MenubarItem>
-            Redo <MenubarShortcut>⇧⌘Z</MenubarShortcut>
+          <Link href="/conveniados">Conveniados</Link>
           </MenubarItem>
-          <MenubarSeparator />
-          <MenubarSub>
-            <MenubarSubTrigger>Find</MenubarSubTrigger>
-            <MenubarSubContent>
-              <MenubarItem>Search the web</MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem>Find...</MenubarItem>
-              <MenubarItem>Find Next</MenubarItem>
-              <MenubarItem>Find Previous</MenubarItem>
-            </MenubarSubContent>
-          </MenubarSub>
-          <MenubarSeparator />
-          <MenubarItem>Cut</MenubarItem>
-          <MenubarItem>Copy</MenubarItem>
-          <MenubarItem>Paste</MenubarItem>
         </MenubarContent>
       </MenubarMenu>
-      <MenubarMenu>
-        <MenubarTrigger>Afap Saude</MenubarTrigger>
+  
+  <MenubarMenu>
+  <MenubarTrigger>
+        <Link href="/afapSaude">Afap Saude</Link>  
+          </MenubarTrigger>
+  </MenubarMenu>
+
+  <MenubarMenu>
+        <MenubarTrigger>Serviços</MenubarTrigger>
         <MenubarContent>
-          <MenubarCheckboxItem>Always Show Bookmarks Bar</MenubarCheckboxItem>
-          <MenubarCheckboxItem checked>
-            Always Show Full URLs
-          </MenubarCheckboxItem>
-          <MenubarSeparator />
-          <MenubarItem inset>
-            Reload <MenubarShortcut>⌘R</MenubarShortcut>
+          <MenubarItem>
+           <Link href="/servicos/listarObitos">Óbitos</Link>
           </MenubarItem>
-          <MenubarItem disabled inset>
-            Force Reload <MenubarShortcut>⇧⌘R</MenubarShortcut>
+          <MenubarItem>
+          <Link href="/servicos/convalescencia/listagem">Convalescentes</Link>
           </MenubarItem>
-          <MenubarSeparator />
-          <MenubarItem inset>Toggle Fullscreen</MenubarItem>
-          <MenubarSeparator />
-          <MenubarItem inset>Hide Sidebar</MenubarItem>
         </MenubarContent>
       </MenubarMenu>
+      
+       
+      
       <MenubarMenu>
-        <MenubarTrigger>Profiles</MenubarTrigger>
-        <MenubarContent>
-          <MenubarRadioGroup value="benoit">
-            <MenubarRadioItem value="andy">Andy</MenubarRadioItem>
-            <MenubarRadioItem value="benoit">Benoit</MenubarRadioItem>
-            <MenubarRadioItem value="Luis">Luis</MenubarRadioItem>
-          </MenubarRadioGroup>
-          <MenubarSeparator />
-          <MenubarItem inset>Edit...</MenubarItem>
-          <MenubarSeparator />
-          <MenubarItem inset>Add Profile...</MenubarItem>
-        </MenubarContent>
-      </MenubarMenu>
+  <MenubarTrigger>
+        <Link href="/configuracoes">Configurações</Link>  
+          </MenubarTrigger>
+  </MenubarMenu>
+
+ 
+
+
+
+
+
+
     </Menubar>
 
            
-            
-
+  
     <div className="inline-flex items-center gap-4 mr-2">
 
         <Button variant={"secondary"}>
