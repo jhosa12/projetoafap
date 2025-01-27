@@ -185,7 +185,7 @@ export function Acompanhamento({ empresa, setores, usuario }: { empresa: string,
 
                 </div>
 
-                {reqData.grupos.length > 0 &&
+                {reqData.grupos?.length > 0 &&
                     <div className='w-full inline-flex px-2 gap-2 '>
                         <Card >
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -236,7 +236,7 @@ const InfoBlock = ({ icon, title, value }: { icon: JSX.Element, title: string, v
 
 // Funções utilitárias para cálculos
 const getPercentual = (dados: VendasProps[], meta?: number, consultores?: ConsultoresProps[]) => {
-    const totalMeta = meta && consultores ? meta * consultores.length : 0;
+    const totalMeta = meta && consultores ? meta * consultores?.length : 0;
     const totalProduzido = dados?.reduce((acc, curr) => acc + Number(curr._sum.valor_mensalidade), 0);
     const percentual = totalMeta ? (totalProduzido / totalMeta) * 100 : 0;
     return `${percentual.toFixed(2)}%`;
