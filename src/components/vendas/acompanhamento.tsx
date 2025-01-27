@@ -24,6 +24,10 @@ import {
     CardTitle,
   } from "@/components/ui/card"
 import { Button } from '../ui/button';
+import { PieChartInfo } from '../charts/pie';
+import { ChartConfig } from '../ui/chart';
+import { arrayColors } from '@/utils/arrayColors';
+import { BarChartInfo } from '../charts/bar';
 
 export interface VendasProps {
     id_consultor: number | null;
@@ -76,6 +80,14 @@ interface ResponseProps {
 }
 
 
+export interface ChatProps{
+    x:string,
+    y:number,
+    fill?:string
+   
+}
+
+
 
 export function Acompanhamento({ empresa, setores,usuario }: { empresa: string, setores: SetorProps[],usuario:string }) {
 
@@ -86,6 +98,35 @@ export function Acompanhamento({ empresa, setores,usuario }: { empresa: string, 
     const [modalVend, setModalVend] = useState<boolean>(false);
     const [vendedor, setVendedor] = useState<VendasProps>({ _count: { dt_adesao: 0 }, _sum: { valor_mensalidade: 0 }, consultor: '', situacao: '', id_consultor: null });
     const [reqData, setData] = useState<ResponseProps>({} as ResponseProps)
+    const [chartData, setChartData] = useState<Array<ChatProps>>([])
+    const [perido, setPeriodo] = useState<{start:string|undefined,end:string|undefined}>({start:'',end:''})
+
+    function generateChartConfig(data: ChatProps[]): ChartConfig {
+       
+        return data.reduce((config, item,index) => {
+            
+          config[item.x] = {
+            label: item.x,
+            
+          };
+     
+          return config;
+        }, {} as ChartConfig);
+      }
+    useEffect(()=>{
+        ChartReqData()
+    },[reqData.grupos])
+    
+    const ChartReqData = ()=>{
+
+
+        
+       const chartTrat = reqData?.grupos?.map((item,index)=>{
+            return {x:item.consultor,y:Number(item._sum.valor_mensalidade),fill:arrayColors[index]}
+        })
+
+        setChartData(chartTrat??[])
+    }
 
 
     const dadosVendas = async () => {
@@ -103,6 +144,7 @@ export function Acompanhamento({ empresa, setores,usuario }: { empresa: string, 
 
 
             setData(response.data)
+            setPeriodo({start:dataIni,end:dataFim})
 
             setFiltro(false);
           //  console.log(response.data)
@@ -143,8 +185,27 @@ export function Acompanhamento({ empresa, setores,usuario }: { empresa: string, 
               
             </div>
 
+{reqData.grupos.length>0 &&
+    <div className='w-full inline-flex px-2 gap-2 '>
+    <Card >
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+       
+        </CardHeader>
+        <CardContent>
+        <ConsultorList dados={reqData?.grupos} setModalVend={setModalVend} setVendedor={setVendedor} meta={reqData?.metaAtual ?? 0} />
+      
+        </CardContent>
+    </Card>
+        <div className='w-1/2 '>
+        {chartData?.length>0 && <BarChartInfo chartConfig={generateChartConfig(chartData)} chartData={chartData} periodo={perido}/>}
+        </div>
+   
+    </div>}
 
-            <ConsultorList dados={reqData?.grupos} setModalVend={setModalVend} setVendedor={setVendedor} meta={reqData?.metaAtual ?? 0} />
+
+
+
+           
 
 
 

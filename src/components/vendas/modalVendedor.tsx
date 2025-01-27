@@ -1,5 +1,5 @@
 
-import { Button,Modal, Spinner, Table } from "flowbite-react";
+import { Modal, Spinner, Table } from "flowbite-react";
 import { ConsultorLeads, VendasProps } from "./acompanhamento";
 import useApiPost from "@/hooks/useApiPost";
 import { useEffect, useRef, useState } from "react";
@@ -9,6 +9,7 @@ import { IoArchive } from "react-icons/io5";
 import ResumoVendedor from "@/Documents/vendas/ResumoVendedor";
 import { useReactToPrint } from "react-to-print";
 import pageStyle from "@/utils/pageStyle";
+import { Button } from "../ui/button";
 
 interface DataProps{
     show:boolean,
@@ -174,8 +175,8 @@ export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor,usua
        </div> }
         </Modal.Body>
         <Modal.Footer>
-          <Button theme={{color:{light:'border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100'}}} color="light" className="ml-auto" onClick={()=>setPrint(!print)}>
-            <MdPrint  className='mr-2 h-5 w-5'/>
+          <Button variant="outline" className="ml-auto" onClick={()=>setPrint(!print)}>
+            <MdPrint />
             Imprimir Resumo
             </Button>
         </Modal.Footer>

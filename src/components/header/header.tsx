@@ -1,23 +1,27 @@
-import { geist, roboto_Mono } from "@/fonts/fonts";
+import { geist} from "@/fonts/fonts";
 import { Avatar, Label } from "flowbite-react";
 import { AuthContext, signOut } from "@/contexts/AuthContext";
 
 
 import {
     Menubar,
-    MenubarCheckboxItem,
     MenubarContent,
     MenubarItem,
     MenubarMenu,
-    MenubarRadioGroup,
-    MenubarRadioItem,
-    MenubarSeparator,
-    MenubarShortcut,
     MenubarSub,
     MenubarSubContent,
     MenubarSubTrigger,
     MenubarTrigger,
-  } from "@/components/ui/menubar"
+  } from "@/components/ui/menubar";
+  import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select";
 import { Bell, LogIn } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
@@ -26,16 +30,28 @@ import { useContext } from "react";
 
 export function Header() {
 
-    const {usuario} = useContext(AuthContext)
+    const {usuario,empresas,selectEmp,setSelectEmp} = useContext(AuthContext)
 
 
     return(
-        <header className={`${geist.className} bg-white border-b p-2 border-gray-200 inline-flex justify-between items-center `}>
+        <header className={`${geist.className} bg-white border-b px-2 py-1 border-gray-200 inline-flex justify-between items-center `}>
             <div className="inline-flex items-center gap-2">
         <Avatar   rounded alt="user" img={"/improved_logo.png"} />
             <div className="flex flex-col">
             <Label value="Sistema de Gestão AFAP - V 2.0"/>
-            <Label className="text-gray-600" value="AFAP - PARAÍSO"/>
+            <Select  value={selectEmp} onValueChange={(e) => setSelectEmp(e)}>
+      <SelectTrigger className="w-[180px] text-xs">
+        <SelectValue defaultValue={selectEmp}  />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup >
+         {empresas.map((emp) => (
+          <SelectItem key={emp.id} value={emp.id}>{emp.nome}</SelectItem>
+        ))}
+        
+        </SelectGroup>
+      </SelectContent>
+    </Select>
             </div>
            
             </div>
@@ -87,6 +103,9 @@ export function Header() {
           </MenubarItem>
           <MenubarItem>
           <Link href="/conveniados">Conveniados</Link>
+          </MenubarItem>
+          <MenubarItem>
+          <Link href="/chart">Graficos</Link>
           </MenubarItem>
         </MenubarContent>
       </MenubarMenu>
