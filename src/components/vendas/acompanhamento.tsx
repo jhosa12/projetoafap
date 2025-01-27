@@ -22,7 +22,7 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-  } from "@/components/ui/card"
+} from "@/components/ui/card"
 import { Button } from '../ui/button';
 import { PieChartInfo } from '../charts/pie';
 import { ChartConfig } from '../ui/chart';
@@ -80,16 +80,16 @@ interface ResponseProps {
 }
 
 
-export interface ChatProps{
-    x:string,
-    y:number,
-    fill?:string
-   
+export interface ChatProps {
+    x: string,
+    y: number,
+    fill?: string
+
 }
 
 
 
-export function Acompanhamento({ empresa, setores,usuario }: { empresa: string, setores: SetorProps[],usuario:string }) {
+export function Acompanhamento({ empresa, setores, usuario }: { empresa: string, setores: SetorProps[], usuario: string }) {
 
     const [startDate, setStartDate] = useState<Date>(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
     const [endDate, setEndDate] = useState<Date>(new Date());
@@ -99,33 +99,33 @@ export function Acompanhamento({ empresa, setores,usuario }: { empresa: string, 
     const [vendedor, setVendedor] = useState<VendasProps>({ _count: { dt_adesao: 0 }, _sum: { valor_mensalidade: 0 }, consultor: '', situacao: '', id_consultor: null });
     const [reqData, setData] = useState<ResponseProps>({} as ResponseProps)
     const [chartData, setChartData] = useState<Array<ChatProps>>([])
-    const [perido, setPeriodo] = useState<{start:string|undefined,end:string|undefined}>({start:'',end:''})
+    const [perido, setPeriodo] = useState<{ start: string | undefined, end: string | undefined }>({ start: '', end: '' })
 
     function generateChartConfig(data: ChatProps[]): ChartConfig {
-       
-        return data.reduce((config, item,index) => {
-            
-          config[item.x] = {
-            label: item.x,
-            
-          };
-     
-          return config;
+
+        return data.reduce((config, item, index) => {
+
+            config[item.x] = {
+                label: item.x,
+
+            };
+
+            return config;
         }, {} as ChartConfig);
-      }
-    useEffect(()=>{
+    }
+    useEffect(() => {
         ChartReqData()
-    },[reqData.grupos])
-    
-    const ChartReqData = ()=>{
+    }, [reqData.grupos])
+
+    const ChartReqData = () => {
 
 
-        
-       const chartTrat = reqData?.grupos?.map((item,index)=>{
-            return {x:item.consultor,y:Number(item._sum.valor_mensalidade),fill:arrayColors[index]}
+
+        const chartTrat = reqData?.grupos?.map((item, index) => {
+            return { x: item.consultor, y: Number(item._sum.valor_mensalidade), fill: arrayColors[index] }
         })
 
-        setChartData(chartTrat??[])
+        setChartData(chartTrat ?? [])
     }
 
 
@@ -144,10 +144,10 @@ export function Acompanhamento({ empresa, setores,usuario }: { empresa: string, 
 
 
             setData(response.data)
-            setPeriodo({start:dataIni,end:dataFim})
+            setPeriodo({ start: dataIni, end: dataFim })
 
             setFiltro(false);
-          //  console.log(response.data)
+            //  console.log(response.data)
 
         } catch (error) {
             //console.log(error)
@@ -167,58 +167,58 @@ export function Acompanhamento({ empresa, setores,usuario }: { empresa: string, 
 
         <>
 
-{modalVend && <ModalVendedor usuario={usuario} leads={reqData?.leads} show={modalVend} setModalVend={setModalVend} vendedor={vendedor} startDate={reqData.startFilter} endDate={reqData.endFilter} />}
+            {modalVend && <ModalVendedor usuario={usuario} leads={reqData?.leads} show={modalVend} setModalVend={setModalVend} vendedor={vendedor} startDate={reqData.startFilter} endDate={reqData.endFilter} />}
 
-        <div className="flex flex-col w-full  bg-white">
-           
-            <div className="inline-flex w-full justify-between  py-2 px-6 rounded-lg text-black">
-                <InfoBlock icon={<GoGoal size={20} />} title="META" value={reqData.metaAtual ? (reqData?.metaAtual * reqData?.consultores?.length).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '0,00'} />
-                <InfoBlock icon={<FaPercentage size={20} />} title="PERCENTUAL" value={getPercentual(reqData?.grupos, reqData?.metaAtual, reqData?.consultores)} />
-                <InfoBlock icon={<GiStairsGoal size={20} />} title="PRODUZIDO" value={getProduzido(reqData?.grupos)} />
+            <div className="flex flex-col w-full  bg-white">
+
+                <div className="inline-flex w-full justify-between  py-2 px-6 rounded-lg text-black">
+                    <InfoBlock icon={<GoGoal size={20} />} title="META" value={reqData.metaAtual ? (reqData?.metaAtual * reqData?.consultores?.length).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '0,00'} />
+                    <InfoBlock icon={<FaPercentage size={20} />} title="PERCENTUAL" value={getPercentual(reqData?.grupos, reqData?.metaAtual, reqData?.consultores)} />
+                    <InfoBlock icon={<GiStairsGoal size={20} />} title="PRODUZIDO" value={getProduzido(reqData?.grupos)} />
+                </div>
+
+
+                <div className="flex ml-auto mr-4 pb-1 gap-2 text-black">
+                    <Button variant={'outline'} onClick={() => setFiltro(true)} type="button" color='light' size='sm'><FaFilter />FILTRAR</Button>
+                    <Button variant={'outline'} size='sm'>  <IoPrint /> IMPRIMIR</Button>
+
+
+                </div>
+
+                {reqData.grupos.length > 0 &&
+                    <div className='w-full inline-flex px-2 gap-2 '>
+                        <Card >
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+
+                            </CardHeader>
+                            <CardContent>
+                                <ConsultorList dados={reqData?.grupos} setModalVend={setModalVend} setVendedor={setVendedor} meta={reqData?.metaAtual ?? 0} />
+
+                            </CardContent>
+                        </Card>
+                        <div className='w-1/2 '>
+                            {chartData?.length > 0 && <BarChartInfo chartConfig={generateChartConfig(chartData)} chartData={chartData} periodo={perido} />}
+                        </div>
+
+                    </div>}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                {filtro && <ModalFiltroMetas filtrar={dadosVendas} loading={loading} arraySetores={setores} show={filtro} setFiltro={setFiltro} startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />}
             </div>
-
-
-            <div className="flex ml-auto mr-4 pb-1 gap-2 text-black">
-                <Button variant={'outline'} onClick={() => setFiltro(true)} type="button" color='light' size='sm'><FaFilter />FILTRAR</Button>
-                <Button variant={'outline'} size='sm'>  <IoPrint /> IMPRIMIR</Button>
-
-              
-            </div>
-
-{reqData.grupos.length>0 &&
-    <div className='w-full inline-flex px-2 gap-2 '>
-    <Card >
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-       
-        </CardHeader>
-        <CardContent>
-        <ConsultorList dados={reqData?.grupos} setModalVend={setModalVend} setVendedor={setVendedor} meta={reqData?.metaAtual ?? 0} />
-      
-        </CardContent>
-    </Card>
-        <div className='w-1/2 '>
-        {chartData?.length>0 && <BarChartInfo chartConfig={generateChartConfig(chartData)} chartData={chartData} periodo={perido}/>}
-        </div>
-   
-    </div>}
-
-
-
-
-           
-
-
-
-
-
-
-
-
-
-
-
-            {filtro && <ModalFiltroMetas filtrar={dadosVendas} loading={loading} arraySetores={setores} show={filtro} setFiltro={setFiltro} startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />}
-        </div>
         </>
 
     );
@@ -227,10 +227,10 @@ export function Acompanhamento({ empresa, setores,usuario }: { empresa: string, 
 
 const InfoBlock = ({ icon, title, value }: { icon: JSX.Element, title: string, value: string }) => (
     <div className="flex flex-col p-2 px-4 shadow-md rounded-md">
-    
-      <div className='text-sm font-semibold'>{title}</div>
-      <div className='text-xs text-gray-500'>{value}</div>
-    
+
+        <div className='text-sm font-semibold'>{title}</div>
+        <div className='text-xs text-gray-500'>{value}</div>
+
     </div>
 );
 
