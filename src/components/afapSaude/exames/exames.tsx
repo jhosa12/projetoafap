@@ -314,34 +314,33 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
         
 
         <Button.Group >
-      
-      <Button className="text-blue-500" onClick={() =>{ setOpenModal(true),setExameSelected(valorInicial)}} size={'sm'} color="gray">
+      <Button className="text-blue-500" onClick={() =>{ setOpenModal(true),setExameSelected(valorInicial)}} size={'xs'} color="gray">
         <HiDocumentAdd className="mr-2 h-4 w-4" />
         Adicionar
       </Button>
-      <Button onClick={()=>setOpenModal(true)} size={'sm'} color="gray">
+      <Button onClick={()=>setOpenModal(true)} size={'xs'} color="gray">
         <HiAdjustments  className="mr-2 h-4 w-4" />
         Editar
       </Button>
-      <Button onClick={imprimirOrcamento} size={'sm'} color="gray">
+      <Button onClick={imprimirOrcamento} size={'xs'} color="gray">
         <HiPrinter className="mr-2 h-4 w-4" />
          Orçamento
       </Button>
 
-      <Button onClick={imprimirRecibo} size={'sm'} color="gray">
+      <Button onClick={imprimirRecibo} size={'xs'} color="gray">
         <BiMoneyWithdraw className="mr-2 h-4 w-4" />
          Recibo
       </Button>
-      <Button className="text-green-400" onClick={()=>setOpenModalReceber(true)} size={'sm'} color="gray">
+      <Button className="text-green-400" onClick={()=>setOpenModalReceber(true)} size={'xs'} color="gray">
         <HiMiniArrowDownOnSquare className="mr-2 h-4 w-4" />
         Receber
       </Button>
-      <Button  className="text-yellow-300" color="gray" type="button"  ><GiReturnArrow className="mr-2 h-4 w-4"/> Estornar</Button>
-      <Button onClick={()=>handleWhatsAppClick(exameSelected?.celular)} size={'sm'} color="gray">
+      <Button size="xs" className="text-yellow-300" color="gray" type="button"  ><GiReturnArrow className="mr-2 h-4 w-4"/> Estornar</Button>
+      <Button onClick={()=>handleWhatsAppClick(exameSelected?.celular)} size={'xs'} color="gray">
       <FaWhatsapp className="mr-2 h-4 w-4" />
         Abrir Conversa
       </Button>
-      <Button className="text-red-500" onClick={()=>setOpenModalDeletar(true)} size={'sm'} color="gray">
+      <Button className="text-red-500" onClick={()=>setOpenModalDeletar(true)} size={'xs'} color="gray">
         <MdDelete className="mr-2 h-4 w-4" />
         Excluir
       </Button>
@@ -349,8 +348,8 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
 
       </div>
 
-      <div className="overflow-x-auto h-[calc(100vh-160px)]">
-        <Table  theme={{ body: { cell: { base: "px-6 text-black py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs" } } }}  >
+      <div className="overflow-x-auto h-[calc(100vh-155px)]">
+        <Table  theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 text-black py-1 text-xs" } },head:{cell:{base:"px-4 text-black py-1 text-xs uppercase"}} }}  >
 
           <Table.Head>
             <Table.HeadCell>Nome</Table.HeadCell>

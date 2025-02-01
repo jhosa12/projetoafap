@@ -7,6 +7,7 @@ import { MdDelete } from "react-icons/md";
 import { IoIosAddCircle } from "react-icons/io";
 import { ModalNovoUsuario } from "./modalNovoUsuario";
 import { Button } from "@/components/ui/button";
+import { ConsultoresProps } from "@/types/consultores";
 
 
 
@@ -14,7 +15,7 @@ import { Button } from "@/components/ui/button";
 
 
 
-interface UsuarioProps {
+export interface UsuarioProps {
   nome: string,
   usuario: string,
   password: string,
@@ -27,48 +28,17 @@ interface UsuarioProps {
   editar: boolean,
   repSenha: string,
   permissoes: Array<string>,
-  consultor: Array<Partial<FuncionarioProps>>
+  consultor: Array<ConsultoresProps>
 }
 
 
-interface FuncionarioProps {
-  id_consultor: number | null,
-  nome: string,
-  cpf: string,
-  rg: string,
-  data_nascimento: Date | null,
-  cep: string,
-  endereco: string,
-  numero: string,
-  bairro: string,
-  cidade: string,
-  uf: string,
-  telefone: string,
-  email: string,
-  dt_admissao: Date | null,
-  cnh_categoria: string,
-  titulo_eleitor: string,
-  zona: number,
-  secao: number,
-  pis_pasep: string,
-  grau_instrucao: string,
-  nome_conjuge: string,
-  n_dependentes: number,
-  menores_14: number,
-  caso_emergencia: string,
-  salario: number,
-  contrato_exp: number,
-  prorrogacao_cont: number,
-  situacao: string,
-
-}
 
 
 export function Usuario() {
   const [userDados, setUserDados] = useState<Array<UsuarioProps>>()
   const [modalAdicionar, setModalAdicionar] = useState<boolean>(false)
   const [dadosUser, setDadosUser] = useState<Partial<UsuarioProps>>({})
-  const [dadosFuncionario, setDadosFuncionario] = useState<Partial<FuncionarioProps>>({})
+  const [dadosFuncionario, setDadosFuncionario] = useState<Partial<ConsultoresProps>>({})
   const [dadosPermissoes, setDadosPermissoes] = useState<Array<string>>([])
 
 
@@ -233,8 +203,8 @@ export function Usuario() {
 
   }
 
-  const setarDadosFuncionario = (fields: Partial<FuncionarioProps>) => {
-    setDadosFuncionario((prev: Partial<FuncionarioProps>) => {
+  const setarDadosFuncionario = (fields: Partial<ConsultoresProps>) => {
+    setDadosFuncionario((prev: Partial<ConsultoresProps>) => {
       if (prev) {
         return { ...prev, ...fields }
       }
@@ -309,7 +279,7 @@ export function Usuario() {
             userDados?.map((item, index) => {
 
               return (
-                <li className={`flex flex-col w-full p-2 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-300" : "bg-slate-200"} uppercase cursor-pointer`}>
+                <li key={index} className={`flex flex-col w-full p-2 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-300" : "bg-slate-200"} uppercase cursor-pointer`}>
                   <div className="inline-flex w-full items-center">
                     <div className="flex w-40 me-2 text-start font-semibold">
                       {item.image && <img className="w-[26px] h-[26px] rounded-full" src={`data:image/jpeg;base64,${item.image}`} alt="Rounded avatar"></img>}</div>

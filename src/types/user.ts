@@ -9,6 +9,4 @@ export type UserProps = {
     cargo: string,
     dir: string,
     image: string,
-
-
 }

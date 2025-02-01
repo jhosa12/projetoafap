@@ -5,10 +5,8 @@ import { GoGoal } from "react-icons/go";
 import { GiStairsGoal } from "react-icons/gi";
 import { FaFilter } from "react-icons/fa6";
 import "react-datepicker/dist/react-datepicker.css";
-
 import { ModalVendedor } from '@/components/vendas/modalVendedor';
 import { ConsultorList } from '@/components/vendas/ConsultorList';
-import { themeLight } from '../admContrato/acordos/screen';
 import { IoPrint } from 'react-icons/io5';
 import { FaPercentage } from 'react-icons/fa';
 import { ModalFiltroMetas } from './modalFiltro';
@@ -18,13 +16,9 @@ import { ajustarData } from '@/utils/ajusteData';
 import {
     Card,
     CardContent,
-    CardDescription,
-    CardFooter,
     CardHeader,
-    CardTitle,
 } from "@/components/ui/card"
 import { Button } from '../ui/button';
-import { PieChartInfo } from '../charts/pie';
 import { ChartConfig } from '../ui/chart';
 import { arrayColors } from '@/utils/arrayColors';
 import { BarChartInfo } from '../charts/bar';

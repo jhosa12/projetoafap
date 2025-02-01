@@ -335,47 +335,47 @@ const handleDeletar = useCallback(async () => {
        
         <Button.Group >
       
-      <Button  className="text-blue-500" onClick={() =>{setData(valorInicial), setOpenModal(true)}} size={'sm'} color="gray">
+      <Button  className="text-blue-500" onClick={() =>{setData(valorInicial), setOpenModal(true)}} size={'xs'} color="gray">
         <HiDocumentAdd className="mr-2 h-4 w-4" />
         Adicionar
       </Button>
-      <Button  onClick={() =>  setOpenModal(true)} size={'sm'} color="gray">
+      <Button  onClick={() =>  setOpenModal(true)} size={'xs'} color="gray">
         <HiPencil className="mr-2 h-4 w-4" />
         Editar
       </Button>
-        <Button onClick={imprimirConsultas} size={'sm'} color="gray">
+        <Button onClick={imprimirConsultas} size={'xs'} color="gray">
               <HiPrinter className="mr-2 h-4 w-4" />
               Imprimir
             </Button>
-      <Button onClick={() => imprimirFicha()} size={'sm'} color="gray">
+      <Button onClick={() => imprimirFicha()} size={'xs'} color="gray">
         <HiDocument className="mr-2 h-4 w-4" />
          Prontuário
       </Button>
 
-      <Button onClick={imprimirRecibo} size={'sm'} color="gray">
+      <Button onClick={imprimirRecibo} size={'xs'} color="gray">
         <BiMoneyWithdraw className="mr-2 h-4 w-4" />
          Recibo
       </Button>
-      <Button className="text-green-400" onClick={() => setModalReceber(true)} size={'sm'} color="gray">
+      <Button className="text-green-400" onClick={() => setModalReceber(true)} size={'xs'} color="gray">
         <HiMiniArrowDownOnSquare className="mr-2 h-4 w-4" />
         Receber
       </Button>
-      <Button onClick={()=>setModalEstornar(true)} size={'sm'} className="text-yellow-300" color="gray" type="button"  ><GiReturnArrow className="mr-2 h-4 w-4"/> Estornar</Button>
-      <Button onClick={()=>handleWhatsAppClick(data?.celular)} size={'sm'} color="gray">
+      <Button onClick={()=>setModalEstornar(true)} size={'xs'} className="text-yellow-300" color="gray" type="button"  ><GiReturnArrow className="mr-2 h-4 w-4"/> Estornar</Button>
+      <Button onClick={()=>handleWhatsAppClick(data?.celular)} size={'xs'} color="gray">
       <FaWhatsapp className="mr-2 h-4 w-4" />
         Abrir Conversa
       </Button>
-      <Button className="text-red-500" onClick={()=>setModalDeletar(true)} size={'sm'} color="gray">
+      <Button className="text-red-500" onClick={()=>setModalDeletar(true)} size={'xs'} color="gray">
         <MdDelete className="mr-2 h-4 w-4" />
         Excluir
       </Button>
-      <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 " } }} color={'light'} size={'sm'} onClick={() => setModalFiltro(true)}>  <HiFilter className="mr-2 h-4 w-4" /> Filtro</Button>
+      <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 " } }} color={'light'} size={'xs'} onClick={() => setModalFiltro(true)}>  <HiFilter className="mr-2 h-4 w-4" /> Filtro</Button>
     </Button.Group>
   
       </div>
 
-      <div className="overflow-y-auto h-[calc(100vh-160px)]">
-        <Table  theme={{ body: { cell: { base: "px-6 text-black py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs" } } }}  >
+      <div className="overflow-y-auto h-[calc(100vh-155px)] ">
+        <Table  theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 text-black py-1 text-xs" } },head: { cell: { base: "px-4 text-black py-1 text-xs" } } }}  >
 
           <Table.Head>
             <Table.HeadCell>Nome</Table.HeadCell>

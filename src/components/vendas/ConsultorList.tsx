@@ -1,5 +1,5 @@
 
-import { Avatar, Table } from "flowbite-react"
+import { Table } from "flowbite-react"
 import { VendasProps } from "./acompanhamento"
 
 

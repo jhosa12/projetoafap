@@ -26,6 +26,7 @@ import { Bell, LogIn } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { useContext } from "react";
+import Image from "next/image";
 
 
 export function Header() {
@@ -36,7 +37,7 @@ export function Header() {
     return(
         <header className={`${geist.className} bg-white border-b px-2 py-1 border-gray-200 inline-flex justify-between items-center `}>
             <div className="inline-flex items-center gap-2">
-        <Avatar   rounded alt="user" img={"/improved_logo.png"} />
+        <Image width={50} height={50} priority alt="user" src={"/improved_logo.png"} />
             <div className="flex flex-col">
             <Label value="Sistema de Gestão AFAP - V 2.0"/>
             <Select  value={selectEmp} onValueChange={(e) => setSelectEmp(e)}>

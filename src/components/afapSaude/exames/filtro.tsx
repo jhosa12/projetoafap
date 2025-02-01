@@ -120,7 +120,7 @@ export function FiltroExames({openModal,setOpenModal,filtroExames,loading}:DataP
           </form>
         }
       >
-        <Button color="gray" size={'sm'} onClick={()=>reset()}>  <HiFilter className="mr-2 h-4 w-4" /> Filtro</Button>
+        <Button color="gray" size={'xs'} onClick={()=>reset()}>  <HiFilter className="mr-2 h-4 w-4" /> Filtro</Button>
       </Popover>
 
 

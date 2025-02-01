@@ -4,7 +4,7 @@ import { destroyCookie, setCookie} from "nookies"
 import Router from 'next/router';
 import { toast } from 'react-toastify';
 import {  AssociadoProps, ConvProps, DadosCadastro,  ObitoProps } from '@/types/associado';
-import { SignInProps, UserProps } from '@/types/auth';
+import { SignInProps, UserProps } from '@/types/user';
 import { EmpresaProps } from '@/types/empresa';
 import { PlanosProps } from '@/types/planos';
 import { CidadesProps } from '@/types/cidades';

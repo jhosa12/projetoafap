@@ -1,49 +1,28 @@
 import { ChangeEvent, useState } from "react";
-import DatePicker, { registerLocale } from "react-datepicker";
-import sharp from 'sharp';
 import { MdOutlineFileUpload } from "react-icons/md";
-import { Button, Card, FloatingLabel, Modal, ToggleSwitch } from "flowbite-react";
+import {  Card, FloatingLabel, Modal } from "flowbite-react";
 import { Permissoes } from "./permissoes/permisssoes";
 import { ModalPassword } from "./modalPassword";
+import { Button } from "@/components/ui/button";
+import { PerfisUser } from "./perfisUser";
+import { UsuarioProps } from "./usuario";
 
-
-
-
-interface Usuario{
-    nome:string,
-    senhaAtual:string,
-    usuario:string,
-    password:string,
-    id_user:string,
-    cargo:string,
-    file:File|undefined,
-    avataUrl:string,
-    repSenha:string,
-    editar:boolean,
-    image:string,
-    permissoes:Array<string>
-    
-  }
-interface UsuarioProps{
-    setarDadosUsuario : (fields:Partial<Usuario>)=>void,
-    dadosUser:Partial<Usuario>
+interface DataProps{
+    setarDadosUsuario : (fields:Partial<UsuarioProps>)=>void,
+    dadosUser:Partial<UsuarioProps>
     show:boolean,
     setModal:(open:boolean)=>void
     handlePermission:(permission:string)=>void
     handleNovoCadastro:()=>Promise<void>;
     handleEditarCadastro:()=>Promise<void>
-
 }
 
 
-
-
-export function ModalNovoUsuario({setarDadosUsuario,dadosUser,setModal,show,handlePermission,handleEditarCadastro,handleNovoCadastro}:UsuarioProps) {
+export function ModalNovoUsuario({setarDadosUsuario,dadosUser,setModal,show,handlePermission,handleEditarCadastro,handleNovoCadastro}:DataProps) {
   const [modalPass,setModalPass] = useState<boolean>(false)
     
    
-
-
+console.log(dadosUser)
 
     const handleFile = (e:ChangeEvent<HTMLInputElement>)=>{
         if(!e.target.files){
@@ -55,7 +34,7 @@ if(!imagem ){
     return;
 }
 if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
-    setarDadosUsuario({...dadosUser,file:imagem,avataUrl:URL.createObjectURL(e.target.files[0]),image:''})
+    setarDadosUsuario({...dadosUser,file:imagem,avatarUrl:URL.createObjectURL(e.target.files[0]),image:''})
 }
 
 
@@ -76,9 +55,9 @@ if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
                                     <MdOutlineFileUpload size={25}/>
                                 </span>
                                 <input  className="hidden" onChange={handleFile} type="file" accept="image/png,image/jpeg"></input>
-                                {dadosUser.avataUrl && !dadosUser.image && <img className="w-full h-full object-cover rounded-lg" src={dadosUser.avataUrl} alt="fotoUser" width={150} height={100}></img>}
+                                {dadosUser.avatarUrl && !dadosUser.image && <img className="w-full h-full object-cover rounded-lg" src={dadosUser.avatarUrl} alt="fotoUser" width={150} height={100}></img>}
 
-                                {dadosUser.image && !dadosUser.avataUrl && <img className="w-full h-full object-cover rounded-lg" src={`data:image/jpeg;base64,${dadosUser.image}`} alt="fotoUser" width={150} height={100}></img>}
+                                {dadosUser.image && !dadosUser.avatarUrl && <img className="w-full h-full object-cover rounded-lg" src={`data:image/jpeg;base64,${dadosUser.image}`} alt="fotoUser" width={150} height={100}></img>}
 
                             </label>
                             </div>
@@ -99,17 +78,19 @@ if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
                                <Button onClick={()=>setModalPass(true)}>
                                 Alterar Senha
                                </Button>
+                               
+                               
                                 }
+                                <PerfisUser perfis={dadosUser.consultor??[]} id_user={dadosUser.id_user}/>
                         </div>
 
                         </Card>
                        
-
                      <Permissoes handlePermission={handlePermission} permissions={dadosUser.permissoes??[]}/>
                         </div>
 
                         <div className="flex w-full justify-end">
-                           {dadosUser.id_user ? <Button onClick={()=>handleEditarCadastro()}>Gravar alterações</Button>:<Button onClick={()=>handleNovoCadastro()}>Salvar</Button>}
+                           {dadosUser.id_user ? <Button variant={'outline'} onClick={()=>handleEditarCadastro()}>Gravar alterações</Button>:<Button onClick={()=>handleNovoCadastro()}>Salvar</Button>}
                         </div>
                       
                         </Modal.Body>

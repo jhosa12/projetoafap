@@ -1,4 +1,4 @@
-import { Button,Modal, Tabs } from "flowbite-react";
+import { Modal, Tabs } from "flowbite-react";
 import { LeadProps } from "../historico";
 import { Control, SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
 import { TabDadosPessoais } from "./dadosPessoais";
@@ -9,6 +9,7 @@ import { useContext, useEffect } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
+import { Button } from "@/components/ui/button";
 
 
 interface DataProps{
@@ -90,9 +91,9 @@ export function ModalItem({onClose,open,item}:DataProps) {
 
                           <div className= "inline-flex w-full gap-2 items-end">
 
-                          <Button className="ml-auto" >SALVAR</Button>
+                          <Button size={"sm"} variant={'outline'} className="ml-auto" >SALVAR</Button>
 
-                        <Button type="submit" >SALVAR</Button>
+                        <Button size={'sm'} type="submit" variant={'outline'} >SALVAR</Button>
 
 
                             </div> 
