@@ -1,7 +1,7 @@
 
 
 
-import Image from "next/image";
+
 import logo from "../../../public/logoafap.png"
 
 // DocumentTemplate.js
@@ -43,7 +43,7 @@ class DeclaracaoExclusao extends React.Component<DadosProps> {
         return (
             <div className='relative flex flex-col h-screen w-full p-2 '>
                 <div className="flex  w-full justify-center items-center mt-4">
-                    <Image className="flex w-44 h-16  " src={logo} alt="" />
+                    <img className="flex w-44 h-16" src={"/logoafap.png"} alt="logo" />
                 </div>
                 <h2 className='text-xl text-center font-semibold mt-2'>DECLARAÇÃO DE EXCLUSÃO DE DEPENDENTE</h2>
                 <p className="px-2 pt-2" style={{ textAlign: 'justify' }} >Eu, {titular}, inscrito(a) no CPF sob o nº {cpf} e residente à {endereco}-{numero} - {bairro} - {cidade}/{uf}, na qualidade de titular do plano funerário com contrato sob o n° {contrato}, junto à empresa [Nome da Funerária], venho por meio desta solicitar a exclusão do(a) seguinte dependente do referido plano:</p>

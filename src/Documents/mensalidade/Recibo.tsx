@@ -3,6 +3,7 @@ import {Component}  from 'react';
 import logo from "../../../public/novaLogo.png"
 import Image from "next/image";
 import BarCode from 'react-barcode';
+import { roboto_Mono } from "@/fonts/fonts";
 
 interface DataProps{
    valor:number
@@ -24,7 +25,7 @@ render(){
 
 
     return(
-        <div style={{display:'flex',flexDirection:'column',width:'100%',paddingInline:'20px',gap:'30px'}}>
+        <div className={roboto_Mono.className} style={{display:'flex',flexDirection:'column',width:'100%',paddingInline:'20px',gap:'30px'}}>
             <div style={{display:'flex', flexDirection:'column',width:'100%', borderRadius:'10px',border:'1px solid gray',padding:'20px',gap:'10px'}}>
                    <div style={{display:'flex',flexDirection:'row',width:'100%',justifyContent:'space-between',alignItems:'end'}}>
                         <h1 style={{fontSize:'30px',fontWeight:'bold',color:'gray'}}>RECIBO</h1>

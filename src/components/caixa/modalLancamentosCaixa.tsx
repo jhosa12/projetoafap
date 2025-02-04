@@ -108,7 +108,7 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
      async function lancarMovimentacao(data:LancamentosProps){ 
       const valorString = data.valor?.toString()??'';
       const valorConvertido = parseFloat(valorString?.replace(',', '.'));
-      const{dataIni:dt_lanc} = ajustarData(data.datalanc)
+      const{dataIni:dt_lanc} = ajustarData(data.data)
       const{dataIni:dt_real} = ajustarData(new Date())
 
       if(!id_empresa){
@@ -125,23 +125,20 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
             return;
       }
 
-   
-
-
         try {
 
         const response =   await toast.promise(
             api.post('/novoLancamento',{
             id_usuario:usuario?.id,
             id_grupo:Number(data.id_grupo),
-            datalanc:dt_lanc,
+            datalanc:dt_real,
             conta:data.conta,
             conta_n:data.conta_n,
             descricao:data.descricao,
             historico:data?.historico?.toUpperCase(),
             valor:Number(valorConvertido),
             usuario:usuario?.nome.toUpperCase(),
-            data:dt_real, 
+            data:dt_lanc, 
             tipo:data.tipo,
             empresa:id_empresa
             }),
@@ -166,8 +163,6 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
 
     return(
    
-       
- 
   <Modal size={'3xl'} show={openModal} onClose={()=>setOpenModal(false)}>
     <Modal.Header>Adminstrar Lançamento</Modal.Header>
     <Modal.Body>
@@ -175,16 +170,14 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
         <form onSubmit={handleSubmit(handleSubmitForm)}> 
 
 <div className="inline-flex gap-4 w-full text-black font-semibold">
-
-
-
+  
 <div >
         <div className=" block">
           <Label  value="Data" />
         </div>
         <Controller
         control={control}
-        name="datalanc"
+        name="data"
         render={({ field:{onChange,value} }) => (
           <DatePicker  onChange={e=>e && onChange(e)}  selected={value}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
         )}

@@ -35,9 +35,9 @@ export default function Home() {
        <div className="sm:w-5/6 md:w-3/4 lg:w-1/2 xl:w-1/3 flex flex-col gap-4  p-4 items-center justify-center rounded-lg shadow-xl bg-white">
        <Image priority className="w-32 h-16  mr-7" src={logo} alt="" />
     <Label className="text-xl" value="Login"/>
-    <form onSubmit={handleSubmit(handleSignUp)} className="flex flex-col gap-4 w-full items-center">
-   <TextInput placeholder="Usuario" required className="w-2/3" {...register("user")} />
-    <TextInput placeholder="Senha" type="password" required className="w-2/3" {...register("password")} />
+    <form autoComplete="off" onSubmit={handleSubmit(handleSignUp)} className="flex flex-col gap-4 w-full items-center">
+   <TextInput  autoComplete="off"  placeholder="Usuario" required className="w-2/3" {...register("user")} />
+    <TextInput autoComplete="new-password"  placeholder="Senha" type="password" required className="w-2/3" {...register("password")} />
     <Button disabled={loading} className="w-2/3" size={"lg"} type="submit" >
         {loading?<AiOutlineLoading3Quarters className="animate-spin"/>:"Acessar"}
     </Button>

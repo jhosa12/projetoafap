@@ -19,15 +19,15 @@ export function TabPlano({control,register,setValue,trigger,watch,planos}:TabPla
         <div className="grid grid-cols-4 gap-2">
             <div className="">
                 <Label className="text-xs" value="Categoria de Plano" />
-               <Select sizing={'sm'} onChange={(e) => {
+               <Select value={watch('id_plano')} sizing={'sm'} onChange={(e) => {
                 const plano = planos.find((plano) => plano.id_plano === Number(e.target.value));
-
                 if(plano) {
                 setValue('id_plano', Number(e.target.value))
                 setValue('plano', plano.descricao)
                 setValue('valor_mensalidade', plano.valor)
                 }
                 }}>
+                <option value=""></option>
                 {planos.map((plano) => (
                     <option key={plano.id_plano} value={plano.id_plano}>{plano.descricao}</option>
                 ))}
@@ -54,6 +54,10 @@ export function TabPlano({control,register,setValue,trigger,watch,planos}:TabPla
                       <DatePicker selected={value}  onChange={e => { e && onChange(e) }} dateFormat={"dd/MM/yyyy"} locale={pt}  className="flex  w-full text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
                     )}
                   />
+            </div>
+            <div className="">
+                <Label className="text-xs" value="Numero de Parcelas" />
+                <TextInput sizing={'sm'} {...register('n_parcelas')} type="number" placeholder="Parcelas" />
             </div>
         
         </div>

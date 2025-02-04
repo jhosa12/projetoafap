@@ -272,7 +272,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
             <div className="flex w-full  gap-2">
                 <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
                     <input disabled={!permissoes.includes('ADM1.2.10')} checked={checkMensal} onChange={() => setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer disabled:cursor-not-allowed" />
-                    <div className="  w-7 h-4 rounded-full peer bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[7px] after:start-[17px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
+                    <div className="  w-7 h-4 rounded-full peer bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[7px] after:start-[12px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
                     <span className="ms-3 text-xs font-medium">Exibir Pagas</span>
                 </label>
                 <ButtonGroup>
@@ -291,8 +291,8 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
             </div>
             <div className="flex w-full p-2 max-h-[calc(100vh-205px)]">
                 <table
-                    className="block w-full overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse  text-gray-600">
-                    <thead className="sticky w-full top-0  text-xs   bg-white text-gray-600">
+                    className="block w-full overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse  ">
+                    <thead className="sticky w-full top-0  text-xs   bg-white ">
                         <tr >
                             <th scope="col" className="px-6 py-1">
                                 Np
@@ -342,7 +342,6 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
 
 
                             return (
-
                                 checkMensal ?
 
                                     (
@@ -504,7 +503,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
             status:mensalidadeSelect?.status,
             valor_principal:mensalidadeSelect?.valor_principal
            }} 
-            handleAtualizar={async()=> await carregarDados(Number(dadosAssociado.id_global))}
+            handleAtualizar={async()=>{ await carregarDados(Number(dadosAssociado.id_global));setLinhasSelecionadas([])}}
             openModal={openModalMens}
              setOpenModal={setModalMens}
               />

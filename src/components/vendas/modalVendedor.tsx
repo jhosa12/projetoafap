@@ -78,7 +78,7 @@ export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor,usua
         <div style={{display:'none'}}>
           {print &&  <ResumoVendedor usuario={usuario} endDate={endDate} startDate={startDate} vendedor={vendedor.consultor} adesoes={data?.adesoes??[]} ref={componenteRef} />}
         </div>
-        <Modal dismissible size={'2xl'} show={show} onClose={() => setModalVend(false)}>
+        <Modal dismissible size={'3xl'} show={show} onClose={() => setModalVend(false)}>
         <Modal.Header >
            
            
@@ -152,8 +152,8 @@ export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor,usua
                 
             </ul>
         </div>
-        <Table theme={{ body: { cell: { base: " px-6 py-2  text-xs text-black" } } }} >
-        <Table.Head style={{fontSize:'9px'}} >
+        <Table theme={{ body: { cell: { base: " px-6 py-2  text-[10px] text-black" } },root:{shadow:'none'},head:{cell:{base:"px-6 py-2 text-[9px] text-black font-semibold"}} }} >
+        <Table.Head  >
         <Table.HeadCell>CONTRATO</Table.HeadCell>
           <Table.HeadCell>DATA</Table.HeadCell>
           <Table.HeadCell>NOME</Table.HeadCell>

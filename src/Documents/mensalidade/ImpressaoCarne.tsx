@@ -54,12 +54,13 @@ class ImpressaoCarne extends React.Component<DadosProps> {
                             width: '100%',
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
-                        }} className="inline-flex  w-full text-black text-xs  ">
+                            fontSize: '11px'
+                        }} className="inline-flex  w-full text-black">
 
                             {//  <Image src={carne} className=" object-cover  h-[250px]" alt="modeloCarne"  />
                             }
                             <div className="flex flex-col space-y-4 pl-8   " style={{ width: '28%' }}>
-                                <h1 className="mt-2 " style={{ fontSize: '13px' }} >ASSISTENCIA FAMILIAR PARAÍSO</h1>
+                                <h1 className="mt-2 " style={{ fontSize: '11px' }} >ASSISTENCIA FAMILIAR PARAÍSO</h1>
                                 <div className="inline-flex pl-8 w-full ">
                                     <span>{item.parcela_n}</span>
                                     <span className="flex w-full justify-end">{item.vencimento && new Date(item.vencimento).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
@@ -102,19 +103,19 @@ class ImpressaoCarne extends React.Component<DadosProps> {
                             <div className="flex flex-col  space-y-3 pl-8  " style={{ width: '70%' }}>
                                 <h1 className="mt-2  " style={{ fontSize: '13px', fontWeight: 'bold' }} >ASSISTENCIA FAMILIAR PARAÍSO</h1>
 
-                                <div className="inline-flex  pt-1 w-full ">
+                                <div className="inline-flex w-full ">
                                     <span className="pl-2 whitespace-nowrap">RUA ADAUTO CASTELO - 393 CENTRO CEDRO/CE</span>
                                     <span className=" pl-[110px] ">{item.vencimento && new Date(item.vencimento).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
                                     <span className=" flex w-full justify-end pl-10">{item.parcela_n}</span>
                                 </div>
-                                <div className="inline-flex  w-full pt-1 ">
+                                <div className="inline-flex  w-full  ">
                                     <span className="pl-2 whitespace-nowrap">16.784.573/0001-93 - ASSISTÊNCIA FAMILIAR PARAÍSO</span>
                                     <span className=" flex w-full justify-end pl-10">{Number(item.valor_principal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
                                 </div>
                                 <div className="inline-flex   w-full ">
                                     <span className="pl-2 ">{new Date().toLocaleDateString('pt-BR')}</span>
                                     <span className="pl-20  ">{item.id_contrato}</span>
-                                    <span className=" pl-[110px] whitespace-nowrap ">{dadosAssociado.plano}</span>
+                                    <span style={{paddingLeft:'20px'}} className=" whitespace-nowrap ">{dadosAssociado.plano}</span>
                                     <span className=" flex w-full justify-end pl-10">R$ 0,00</span>
 
                                 </div>

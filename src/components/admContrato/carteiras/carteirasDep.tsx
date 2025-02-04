@@ -1,5 +1,9 @@
 
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import DocumentTemplate from "@/Documents/carteiraAssociado/DocumentTemplate";
+import pageStyle from "@/utils/pageStyle";
+import { Table } from "flowbite-react";
 import { it } from "node:test";
 import { useEffect, useRef, useState } from "react";
 import { IoPrint } from "react-icons/io5";
@@ -46,18 +50,7 @@ export default function CarteirasDep({dependentes,contrato,plano,titular,enderec
 
     const handlePrint = useReactToPrint({
         content:()=>componentRef.current,
-        pageStyle: `
-        @page {
-            margin: 4px;
-        }
-        @media print {
-            body {
-                -webkit-print-color-adjust: exact;
-            }
-           
-          
-        }
-    `,
+        pageStyle: pageStyle,
     })
     const toggleSelecionada = (item:DependentesProps)=>{
         const index =linhasSelecionadas.findIndex((linha)=>linha.id_dependente===item.id_dependente);
@@ -97,59 +90,71 @@ export default function CarteirasDep({dependentes,contrato,plano,titular,enderec
     
     return (
         <div className="flex flex-col   max-h-[calc(100vh-200px)]  w-full  p-2 ">
-            <div className="flex px-2 mb-2 w-full text-black font-semibold">
-            <div className="flex items-center px-2 py-1">
-            <input onChange={() =>setTitular(!cartTitular)} type="checkbox" checked={cartTitular} />
-            <label className="ms-2  text-xs whitespace-nowrap  ">CARTEIRA TITULAR</label>
-            </div>
-            <div className="flex items-center px-2 py-1">
-            <input onChange={() =>setTodosDep(!todosDep)} type="checkbox" checked={todosDep} />
-            <label className="ms-2  text-xs whitespace-nowrap ">TODOS DEPENDENTES</label>
-            </div>
-            <button onClick={()=>ButtonPrintGeral()} className="flex p-1 rounded-lg justify-center bg-gray-500 gap-1 items-center text-xs z-40 text-white"><IoPrint size={18}/> PRINT</button>
+            <div className="flex px-2 mb-2 w-full text-black font-semibold gap-4">
+
+                    
+            <div className="flex items-center space-x-2">
+      <Checkbox checked={cartTitular} id="cart_titular" onClick={() =>setTitular(!cartTitular)} />
+      <label
+        htmlFor="cart_titular"
+        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+      >
+        Carteira titular
+      </label>
+    </div>
+
+    <div className="flex items-center space-x-2">
+      <Checkbox checked={todosDep} id="todos_dep" onClick={() =>setTodosDep(!todosDep)} />
+      <label
+        htmlFor="todos_dep"
+        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+      >
+        Todos dependentes
+      </label>
+    </div>
+            <Button size={"sm"} onClick={()=>ButtonPrintGeral()} variant={"outline"}><IoPrint size={18}/> PRINT</Button>
             </div>
           
-            <table
-                                    className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-600 ">
-                                    <thead className="sticky top-0  text-xs uppercase bg-gray-100 text-gray-600">
-                                       <tr>
-                                            <th scope="col" className=" px-2 py-1">
+            <Table theme={{root:{shadow:'none'},body:{cell:{base:"px-2 py-1 text-xs"}},head:{cell:{base:"px-2 py-1"}}}}>
+                                    <Table.Head >
+                                      
+                                            <Table.HeadCell >
                                                 NOME
-                                            </th>
-                                            <th scope="col" className="px-12 py-1">
+                                            </Table.HeadCell>
+                                            <Table.HeadCell >
                                                 ADESÃO
-                                            </th>
-                                            <th scope="col" className="px-12 py-1">
+                                            </Table.HeadCell>
+                                            <Table.HeadCell >
                                                 CARÊNCIA
-                                            </th>
-                                            <th scope="col" className="px-12 py-1">
+                                            </Table.HeadCell>
+                                            <Table.HeadCell >
                                                 NASC.
-                                            </th>
-                                            <th scope="col" className="px-12 py-1">
+                                            </Table.HeadCell>
+                                            <Table.HeadCell >
                                                 PARENTESCO
-                                            </th>
-                                            <th scope="col" className="px-4 py-1">
+                                            </Table.HeadCell>
+                                            <Table.HeadCell>
                                                 <span className="">Ações</span>
-                                            </th>
-                                        </tr>
-                                      </thead> 
-                                      <tbody>
+                                            </Table.HeadCell>
+                                        
+                                      </Table.Head> 
+                                      <Table.Body>
                                         {dependentes?.filter(item=>!item.excluido)?.map((item,index)=>(
-                                            <tr key={item.id_dependente} onClick={()=>toggleSelecionada(item)} className={`text-black font-semibold cursor-pointer hover:bg-gray-200  border-b  ${linhasSelecionadas.some(linha=>linha.id_dependente===item.id_dependente)?"bg-gray-300":"bg-gray-50"} border-gray-300`}>
-                                            <td scope="row" className="px-2 py-1  whitespace-nowrap">{item.nome}</td>
-                                            <td className="px-10 py-1">
+                                            <Table.Row key={item.id_dependente} onClick={()=>toggleSelecionada(item)} className={`text-black font-semibold cursor-pointer hover:bg-gray-200  border-b  ${linhasSelecionadas.some(linha=>linha.id_dependente===item.id_dependente)?"bg-gray-300":""} border-gray-300`}>
+                                            <Table.Cell >{item.nome}</Table.Cell>
+                                            <Table.Cell >
                                                         {new Date(item.data_adesao).toLocaleDateString()}
-                                                    </td>
-                                            <td className="px-10 py-1">
+                                                    </Table.Cell>
+                                            <Table.Cell >
                                             {new Date(item.carencia).toLocaleDateString()??''}
-                                        </td>
-                                        <td className="px-8 py-1">
+                                        </Table.Cell>
+                                        <Table.Cell >
                                                         {item?.data_nasc ? new Date(item.data_nasc).toLocaleDateString() : ''}
-                                                    </td>
-                                                    <td className="px-12 py-1">
+                                                    </Table.Cell>
+                                                    <Table.Cell >
                                                         {item.grau_parentesco}
-                                                    </td>
-                                                    <td className="px-6 py-1">
+                                                    </Table.Cell>
+                                                    <Table.Cell >
 
                                                     { //   <ReactToPrint
                                                     //    onBeforePrint={()=>handleArrayPrint(item.id_dependente)}
@@ -161,14 +166,14 @@ export default function CarteirasDep({dependentes,contrato,plano,titular,enderec
                                                      //   />
                                                      }
                                                      
-                                                    </td>
+                                                    </Table.Cell>
                                                    
                                                   
 
-                                        </tr>
+                                        </Table.Row>
                                         ))}
-                                      </tbody>
-                                      </table>
+                                      </Table.Body>
+                                      </Table>
                                       <div className="hidden">
             <DocumentTemplate
           ref={componentRef}

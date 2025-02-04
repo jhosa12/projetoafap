@@ -1,6 +1,6 @@
 import useApiGet from "@/hooks/useApiGet";
-import { Label, Modal, Select, Table, TextInput } from "flowbite-react";
-import { useCallback, useEffect, useState } from "react";
+import { Label, Modal, Select, Spinner, Table, TextInput } from "flowbite-react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { ModalItem } from "./modalItem/modalItem";
 import { ModalConfirmar } from "@/components/afapSaude/components/modalConfirmar";
 import useApiPost from "@/hooks/useApiPost";
@@ -10,19 +10,61 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Sub } from "@radix-ui/react-menubar";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { MdCheck, MdCheckCircle, MdCreateNewFolder } from "react-icons/md";
+import { Tooltip } from "react-tooltip";
+import { toast } from "react-toastify";
+import { AuthContext } from "@/contexts/AuthContext";
+import { gerarMensalidade, ParcelaData } from "@/utils/gerarArrayMensal";
+import { AssociadoProps, ContratoProps, DependentesProps } from "@/types/associado";
+import  Router  from "next/router";
 
 interface ReqProps{
     id?:string,
+    statusSelected?:string,
     status?:Array<string>,
     nome?:string,
     startDate?:string,
     endDate?:string
 }
 
+
+interface CadastroRequest {
+    id_empresa:string,
+    nome: string;
+    cpfcnpj: string;
+    rg:string;
+    cep: string;
+    endereco: string;
+    bairro: string;
+    numero: number;
+    cidade: string;
+    uf: string;
+    guia_rua: string;
+    email: string;
+    data_nasc: Date;
+    data_cadastro: Date;
+    celular1: string;
+    celular2: string;
+    telefone: string;
+    cad_usu: string;
+    cad_dh: Date;
+    edi_usu: string;
+    edi_dh: Date;
+    profissao: string;
+    sexo: string;
+    situacao:string;
+    contrato: Partial<ContratoProps>;
+    dependentes:Array<Partial<DependentesProps>>;
+    mensalidades: Array<Partial<ParcelaData>>;
+    empresa:string
+}
+
 export interface LeadProps {
     index: number,
     id_lead: number,
     visita: Date,
+    consultor: string,
     id_usuario: string,
     id_plano: number,
     plano: string,
@@ -30,6 +72,7 @@ export interface LeadProps {
     valor_mensalidade: number
     nome: string,
     endereco: string,
+    n_parcelas: number,
     possuiPet: string
     planoPet: string,
     status: string,
@@ -51,7 +94,7 @@ export interface LeadProps {
     indicacao: string,
     usuario: string,
     data: Date,
-    dependentes: Array<Partial<{ nome: string, celular: string, data_nasc: Date, grau_parentesco: string }>>
+    dependentes: Array<Partial<DependentesProps>>
 }
 
 export function Historico() {
@@ -61,8 +104,13 @@ export function Historico() {
     const [categoria, setCategoria] = useState("")
     const [modalConfirma, setModalConfirma] = useState(false)
     const [modalFiltro, setModalFiltro] = useState(false)
+    const [modalNovoContrato, setModalNovoContrato] = useState(false)
     const { postData: postCategoria } = useApiPost<LeadProps, { id_lead: number | undefined, categoriaAtual: string, categoriaAnt: string | undefined, usuario: string | undefined }>("/leads/alterarCategoria")
-
+    const {selectEmp,carregarDados} = useContext(AuthContext)
+    const {data:associado,loading,postData:postAssociado}= useApiPost<{  
+        id_contrato: number,
+        id_global: number,
+        id_contrato_global: number},Partial<CadastroRequest>>("/novoAssociado")
 
     const onChangeCategoria = (e: React.ChangeEvent<HTMLSelectElement>, lead: Partial<LeadProps>) => {
         if (lead.status === e.target.value) {
@@ -71,6 +119,57 @@ export function Historico() {
         setCategoria(e.target.value);
         setLead(lead);
         setModalConfirma(true)
+    }
+
+
+
+    const handleGerarContrato = async(item:Partial<LeadProps>) => {
+      
+        
+        if(item?.status!== 'VENDA'){
+            toast.warning('Selecione uma venda para gerar contrato!')
+            return
+        }
+        if(!item.endereco||!item.bairro||!item.cep||!item.cidade||!item.id_plano||!item.plano||!item.valor_mensalidade||!item.vencimento||!item.origem||!item.cpfcnpj||!item.n_parcelas){
+            toast.warning('Preencha todos os campos obrigatorios para gerar contrato!')
+            return
+        }
+        const adesao = new Date()
+        adesao.setTime(adesao.getTime() - adesao.getTimezoneOffset() * 60 * 1000)
+     let dtVencimento
+        if(item.vencimento){
+            dtVencimento = new Date(item.vencimento)
+            dtVencimento.setTime(dtVencimento.getTime() - dtVencimento.getTimezoneOffset() * 60 * 1000)
+        }
+        setModalNovoContrato(true)
+        await postAssociado({
+            dependentes:item.dependentes,
+            bairro:item.bairro,
+            celular1:item.celular1,
+            celular2:item.celular2,
+            cep:item.cep,
+            cidade:item.cidade,
+            cpfcnpj:item.cpfcnpj,
+            data_nasc:item.data_nasc,
+            endereco:item.endereco,
+            id_empresa:selectEmp,
+            nome:item.nome,
+            numero:item.numero,
+            rg:item.rg,
+            contrato:{
+                id_plano:item.id_plano,
+                plano:item.plano,
+                valor_mensalidade:item.valor_mensalidade,
+                n_parcelas:item.n_parcelas,
+                data_vencimento:dtVencimento,
+                dt_adesao:adesao,
+                dt_carencia:new Date(),
+                origem:item.origem,
+                consultor:item.consultor  
+            },
+            mensalidades:gerarMensalidade({vencimento:dtVencimento,n_parcelas:item.n_parcelas,valorMensalidade:Number(item.valor_mensalidade)}),
+         
+        })
     }
 
 
@@ -92,8 +191,9 @@ export function Historico() {
 
 
     const reqDados:SubmitHandler<ReqProps> = useCallback(async (data) => {
+        console.log({...data,status:data.statusSelected?data?.statusSelected?.split(','):[]})
         try {
-            postData(data)
+            postData({...data,status:data.statusSelected?data?.statusSelected?.split(','):[]})
 
         } catch (error) {
             console.log(error)
@@ -108,17 +208,17 @@ export function Historico() {
     return (
         <div className="flex-col w-full px-2 bg-white   ">
             <ModalFiltro handleOnSubmit={reqDados} show={modalFiltro} onClose={() => setModalFiltro(false)} />
-            <ModalItem item={lead ?? {}} open={modalLead} onClose={() => setModalLead(false)} />
+           {modalLead && <ModalItem item={lead ?? {}} open={modalLead} onClose={() => setModalLead(false)} />}
             <ModalConfirmar pergunta={`Tem certeza que deseja alterar o(a) ${lead?.status} para um(a) ${categoria} ? Essa alteração será contabilizada na faturação!`} handleConfirmar={handleAtualizarCategoria} openModal={modalConfirma} setOpenModal={setModalConfirma} />
-
+            <ModalNovoContrato id_global={associado?.id_global} carregarDados={carregarDados} id_contrato={associado?.id_contrato} loading={loading} show={modalNovoContrato} onClose={() => setModalNovoContrato(false)} />
             <div className="flex flex-row w-full ">
 
                 <Button onClick={() => setModalFiltro(true)} className="ml-auto" size={'sm'} variant={'outline'}>FILTRAR</Button>
             </div>
 
 
-            <div className="overflow-y-auto mt-2 px-2 h-[calc(100vh-145px)]   ">
-                <Table striped hoverable theme={{ body: { cell: { base: " px-3 py-1  text-[11px] text-black" } } }}  >
+            <div className="overflow-y-auto mt-2  h-[calc(100vh-145px)]   ">
+                <Table  hoverable theme={{ body: { cell: { base: " px-3 py-1  text-[11px] text-black" } } }}  >
                     <Table.Head theme={{ cell: { base: "px-3 py-2 text-xs text-black font-bold bg-gray-50" } }} >
                         <Table.HeadCell >
                             Nome
@@ -140,6 +240,10 @@ export function Historico() {
                         </Table.HeadCell>
                         <Table.HeadCell >
                             Celular2
+                        </Table.HeadCell>
+
+                        <Table.HeadCell >
+                            
                         </Table.HeadCell>
 
                     </Table.Head>
@@ -169,7 +273,7 @@ export function Historico() {
                                         </select>
                                     </Table.Cell>
                                     <Table.Cell >
-                                        {item?.usuario}
+                                        {item?.consultor}
                                     </Table.Cell>
 
                                     <Table.Cell >
@@ -178,6 +282,14 @@ export function Historico() {
 
                                     <Table.Cell >
                                         {item?.celular2}
+                                    </Table.Cell>
+
+
+                                    
+                                    <Table.Cell >
+                                       <button type="button" data-tooltip-id="tooltipAcoes" data-tooltip-content={'Criar Plano'} onClick={e => { e.stopPropagation(); handleGerarContrato(item) }}>
+                                        <MdCreateNewFolder size={20} />
+                                       </button>
                                     </Table.Cell>
 
 
@@ -192,7 +304,7 @@ export function Historico() {
 
                 </Table>
 
-
+                        <Tooltip id="tooltipAcoes"/>
 
             </div>
 
@@ -207,15 +319,21 @@ interface DataProps {
     onClose: () => void
     handleOnSubmit: SubmitHandler<ReqProps>
 }
+
+
+
+
 export const ModalFiltro = ({ onClose, show, handleOnSubmit }: DataProps) => {
     const {register,handleSubmit,control} = useForm<ReqProps>()
+
+
 
 
     return (
         <Modal size="sm" popup show={show} onClose={onClose}>
             <Modal.Header />
             <Modal.Body>
-                <form className="flex flex-col gap-2 mt-1" >
+                <form  onSubmit={handleSubmit(handleOnSubmit)}  className="flex flex-col gap-2 mt-1" >
                     <div>
                         <Label className="text-xs" value="Nome" />
                         <TextInput {...register('nome')} className="uppercase" sizing={'sm'} placeholder="NOME" />
@@ -223,7 +341,8 @@ export const ModalFiltro = ({ onClose, show, handleOnSubmit }: DataProps) => {
 
                     <div>
                         <Label className="text-xs" value="Categoria" />
-                        <Select {...register('status')} sizing={'sm'}>
+                        <Select {...register('statusSelected')} sizing={'sm'}>
+                        <option value={undefined}></option>
                             <option value={"LEAD"}>LEAD</option>
                             <option value={"PROSPECCAO"}>PROSPECÇÃO</option>
                             <option value={"PRE VENDA"}>PRE VENDA</option>
@@ -245,13 +364,45 @@ export const ModalFiltro = ({ onClose, show, handleOnSubmit }: DataProps) => {
                             <DatePicker selected={new Date()} onChange={e => { }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
                         </div>
                     </div>
-
-
-                    <Button>Aplicar</Button>
-
+                    <Button type="submit">Aplicar</Button>
                 </form>
             </Modal.Body>
 
+        </Modal>
+    )
+}
+
+
+interface ModalNovoContratoProps {
+    show: boolean,
+    onClose: () => void
+    loading: boolean,
+    id_contrato: number|undefined
+    id_global: number|undefined
+    carregarDados:Function
+    
+}
+export const ModalNovoContrato = ({id_contrato,loading,onClose,show,carregarDados,id_global}: ModalNovoContratoProps) =>{
+
+    return(
+        <Modal size="sm" popup show={show} onClose={onClose}>
+           
+            <Modal.Body>
+                <div className="flex flex-col justify-center items-center w-full gap-2 mt-6" >
+                   {loading ? <Spinner size="xl" /> : <div className="flex flex-col w-full gap-4">
+                    <div className="inline-flex items-center gap-1">
+                        <MdCheckCircle size={24} className="text-green-500" />
+                        <span className="font-semibold">Sucesso</span>
+                    </div>
+                    <h1 className="text-md font-semibold">Novo Contrato: {id_contrato?.toString()}</h1>
+                    <div className="flex w-full justify-between">
+                        <Button onClick={()=>{Router.push(`/admcontrato`); carregarDados(id_global)}} variant={'outline'}>Acessar Contrato</Button>
+                        <Button variant={'destructive'} onClick={onClose}>Fechar</Button>
+                    </div>
+                    </div>
+                 }
+                </div>
+            </Modal.Body>
         </Modal>
     )
 }

@@ -29,17 +29,17 @@ class ResumoVendedor extends React.Component<DadosProps> {
        // const dt = dataAtual.toLocaleDateString('pt-BR', options)
 
         return (
-          <div className={`${roboto_Mono.className} flex flex-col w-full gap-2 p-4 text-black !font-roboto`}>
+          <div className={`${roboto_Mono.className} flex flex-col w-full gap-2 p-4 text-black `}>
 
                   <span className="text-xs ml-auto ">{usuario}-{new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</span>
                 <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', justifyContent: 'center', gap: '10px' }} >
                   <img src={'/afapsaude.jpg'} alt="logo" width={120} height={120} />
-                    <h1 style={{ fontWeight: 'normal', fontSize: '25px' }}>RESUMO DE VENDAS</h1>
+                    <h1 style={{ fontWeight: 'normal', fontSize: '20px' }}>RESUMO DE VENDAS</h1>
                 </div>
               
 
-              <span style={{  fontSize: '15px' }}>VENDEDOR: {vendedor}</span>
-              <span style={{  fontSize: '15px' }}>PERIODO: {new Date(startDate).toLocaleDateString('pt-BR', {timeZone: 'UTC'})} - {new Date(endDate).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</span>
+              <span style={{  fontSize: '13px' }}>VENDEDOR: {vendedor}</span>
+              <span style={{  fontSize: '13px' }}>PERIODO: {new Date(startDate).toLocaleDateString('pt-BR', {timeZone: 'UTC'})} - {new Date(endDate).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</span>
 
                 <div>
                     <Table theme={{root:{shadow:'none'},body:{cell:{base:"px-6 py-1"}},head:{cell:{base:"px-6 py-1"}}}}>

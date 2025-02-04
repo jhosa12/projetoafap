@@ -39,9 +39,9 @@ export function TabFormulario({control,register,setValue,trigger,watch}:UseFormL
                     <option value="NÃO">NÃO</option>
                 </Select>
             </div>
-             <div className="">
+             <div className="col-span-2">
                 <Label className="text-xs" value="Indicação" />
-                <TextInput sizing={'sm'} {...register('indicacao')} type="text" placeholder="Indicação" required/>
+                <TextInput sizing={'sm'} {...register('indicacao')} type="text" placeholder="Indicação" />
             </div>
 
             <div className="">

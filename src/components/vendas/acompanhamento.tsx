@@ -163,7 +163,7 @@ export function Acompanhamento({ empresa, setores, usuario }: { empresa: string,
 
             {modalVend && <ModalVendedor usuario={usuario} leads={reqData?.leads} show={modalVend} setModalVend={setModalVend} vendedor={vendedor} startDate={reqData.startFilter} endDate={reqData.endFilter} />}
 
-            <div className="flex flex-col w-full  bg-white">
+            <div className="flex flex-col w-full  bg-white overflow-y-auto">
 
                 <div className="inline-flex w-full justify-between  py-2 px-6 rounded-lg text-black">
                     <InfoBlock icon={<GoGoal size={20} />} title="META" value={reqData.metaAtual ? (reqData?.metaAtual * reqData?.consultores?.length).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '0,00'} />
@@ -180,36 +180,19 @@ export function Acompanhamento({ empresa, setores, usuario }: { empresa: string,
                 </div>
 
                 {reqData.grupos?.length > 0 &&
-                    <div className='w-full inline-flex px-2 gap-2 '>
-                        <Card >
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-
-                            </CardHeader>
+                    <div className=' flex flex-row px-2 gap-6 pb-10'>
+                        <Card  >
+                            <CardHeader className='text-sm font-semibold'/>
                             <CardContent>
                                 <ConsultorList dados={reqData?.grupos} setModalVend={setModalVend} setVendedor={setVendedor} meta={reqData?.metaAtual ?? 0} />
 
                             </CardContent>
                         </Card>
-                        <div className='w-1/2 '>
+                    
                             {chartData?.length > 0 && <BarChartInfo chartConfig={generateChartConfig(chartData)} chartData={chartData} periodo={perido} />}
-                        </div>
+                     
 
                     </div>}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                 {filtro && <ModalFiltroMetas filtrar={dadosVendas} loading={loading} arraySetores={setores} show={filtro} setFiltro={setFiltro} startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />}
             </div>
@@ -222,7 +205,7 @@ export function Acompanhamento({ empresa, setores, usuario }: { empresa: string,
 const InfoBlock = ({ icon, title, value }: { icon: JSX.Element, title: string, value: string }) => (
     <div className="flex flex-col p-2 px-4 shadow-md rounded-md">
 
-        <div className='text-sm font-semibold'>{title}</div>
+        <div className='text-[13px] font-semibold'>{title}</div>
         <div className='text-xs text-gray-500'>{value}</div>
 
     </div>

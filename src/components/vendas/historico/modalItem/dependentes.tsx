@@ -6,16 +6,9 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { MdClose } from "react-icons/md";
+import { DependentesProps } from "@/types/associado";
 
 
-interface DependenteProps {
-    nome: string,
-    celular: string,
-    grau_parentesco: string,
-    data_nasc: Date,
-    carencia: Date,
-    adesao: Date
-}
 
 
 
@@ -24,18 +17,18 @@ export function TabDependentes({ control, register, setValue, trigger, watch }: 
     const [open, onClose] = useState(false)
     const [novo, setNovo] = useState(false)
 
-    const { register: registerDependente, setValue: setValueDependente, handleSubmit, control: controlDependente } = useForm<DependenteProps>()
+    const { register: registerDependente, setValue: setValueDependente, handleSubmit, control: controlDependente } = useForm<DependentesProps>()
 
-    const handleOnSubmit: SubmitHandler<DependenteProps> = async (data) => {
+    const handleOnSubmit: SubmitHandler<DependentesProps> = async (data) => {
         novo ? handleAdicionarDependente(data) : handleEditarDependente(data)
     }
 
-    const handleEditarDependente = (data: DependenteProps) => {
+    const handleEditarDependente = (data: DependentesProps) => {
 
 
 
     }
-    const handleAdicionarDependente = (data: DependenteProps) => {
+    const handleAdicionarDependente = (data: DependentesProps) => {
 
         setValue('dependentes', (watch('dependentes') ?? []).concat(data))
 
@@ -109,11 +102,23 @@ export function TabDependentes({ control, register, setValue, trigger, watch }: 
                         </div>
                         <div className="">
                             <Label className="text-xs" value="Carencia" />
-                            <TextInput sizing="sm" {...registerDependente('carencia')} />
+                            <Controller
+                                control={controlDependente}
+                                name="carencia"
+                                render={({ field: { onChange, value } }) => (
+                                    <DatePicker selected={value} onChange={e => { e && onChange(e) }} dateFormat={"dd/MM/yyyy"} locale={pt} className="flex  w-full text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+                                )}
+                            />
                         </div>
                         <div className="">
                             <Label className="text-xs" value="Adesão" />
-                            <TextInput sizing="sm" {...registerDependente('adesao')} />
+                            <Controller
+                                control={controlDependente}
+                                name="data_adesao"
+                                render={({ field: { onChange, value } }) => (
+                                    <DatePicker selected={value} onChange={e => { e && onChange(e) }} dateFormat={"dd/MM/yyyy"} locale={pt} className="flex  w-full text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+                                )}
+                            />
                         </div>
 
                         <div className="col-span-3 flex justify-end">

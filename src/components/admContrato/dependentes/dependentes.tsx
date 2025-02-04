@@ -1,7 +1,6 @@
 import { AuthContext} from "@/contexts/AuthContext"
 import { api } from "@/services/apiClient"
-import { useContext, useEffect, useRef, useState } from "react"
-import { IoIosClose } from "react-icons/io"
+import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { MdDeleteForever } from "react-icons/md"
 import { RiAddCircleFill } from "react-icons/ri"
 import {  TbWheelchair } from "react-icons/tb"
@@ -14,7 +13,7 @@ import { IoPrint } from "react-icons/io5"
 import { useReactToPrint } from "react-to-print"
 import { DependentesProps } from "@/types/associado"
 import pageStyle from "@/utils/pageStyle"
-import { Button, ButtonGroup } from "flowbite-react"
+import { Button, ButtonGroup, Table } from "flowbite-react"
 
 
 
@@ -49,6 +48,14 @@ export function Dependentes(){
     setIsReadyToPrint(true)
        
    }
+
+   const handleSelectDependente =useCallback( (item:DependentesProps) => {
+    if(data.dependente?.id_dependente===item.id_dependente){
+        closeModa({dependente:{}})
+        return
+    }
+    closeModa({dependente:item})
+   },[closeModa,data.dependente])
 
 
     async function excluirDep(motivo:string) {
@@ -101,7 +108,7 @@ export function Dependentes(){
 
                                 <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
                     <input disabled={!permissoes.includes('ADM1.3.1')} checked={checkDependente} onChange={() => setCheckDependente(!checkDependente)} type="checkbox" value="2" className="sr-only peer disabled:cursor-not-allowed" />
-                    <div className="  w-7 h-4 rounded-full peer bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[7px] after:start-[8px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
+                    <div className="  w-7 h-4 rounded-full peer bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[7px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
                     <Tooltip className="z-30" id="id_dependente" />
                     <span className="ms-3 text-xs font-medium">Exibir Excluidos</span>
                 </label>
@@ -113,89 +120,60 @@ export function Dependentes(){
                                                 </ButtonGroup>
                             
                                 </div>
-                                <table
-                                    className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse  text-gray-600 ">
-                                    <thead className="sticky top-0  text-xs uppercase bg-gray-100 text-gray-600">
-                                        {!checkDependente ? (<tr>
-                                            <th scope="col" className=" px-2 py-1">
-                                                NOME
-                                            </th>
-                                            <th scope="col" className="px-12 py-1">
-                                                ADESÃO
-                                            </th>
-                                            <th scope="col" className="px-12 py-1">
-                                                CARÊNCIA
-                                            </th>
-                                            <th scope="col" className="px-12 py-1">
-                                                NASC.
-                                            </th>
-                                            <th scope="col" className="px-12 py-1">
-                                                PARENTESCO
-                                            </th>
-                                            <th scope="col" className="px-12 py-1">
-                                                CELULAR
-                                            </th>
-                                            <th scope="col" className="px-4 py-1">
-                                                <span className="">Ações</span>
-                                            </th>
-                                        </tr>) : (
-                                            <tr>
-                                                <th scope="col" className=" px-6 py-1">
+                                <Table  theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 text-black py-1 text-xs" } },head: { cell: { base: "px-4 text-black py-1 text-xs" } } }} >
+                                            <Table.Head>
+                                                <Table.HeadCell  >
                                                     NOME
-                                                </th>
-                                                <th scope="col" className="px-6 py-1">
+                                                </Table.HeadCell>
+                                                <Table.HeadCell  >
                                                     ADESÃO
-                                                </th>
-                                                <th scope="col" className="px-6 py-1">
+                                                </Table.HeadCell>
+                                                <Table.HeadCell  >
                                                     CARÊNCIA
-                                                </th>
-                                                <th scope="col" className="px-6 py-1">
+                                                </Table.HeadCell>
+                                                <Table.HeadCell  >
                                                     NASC.
-                                                </th>
-                                                <th scope="col" className="px-6 py-1">
+                                                </Table.HeadCell>
+                                                <Table.HeadCell  >
                                                     PARENTESCO
-                                                </th>
+                                                </Table.HeadCell>
 
-                                                <th scope="col" className="px-6 py-1">
+                                                <Table.HeadCell  >
                                                     DATA EXCLUSÃO
-                                                </th>
-                                                <th scope="col" className="px-6 py-1">
+                                                </Table.HeadCell>
+                                                <Table.HeadCell  >
                                                     USUÁRIO
-                                                </th>
-                                                <th scope="col" className="px-4 py-1">
+                                                </Table.HeadCell>
+                                                <Table.HeadCell >
                                                     <span className="">Ações</span>
-                                                </th>
-                                            </tr>
-                                        )}
-                                    </thead>
-                                    <tbody>
-                                        {dadosassociado?.dependentes?.map((item, index) => (
-                                            checkDependente && item.excluido ? (
-                                                <tr key={index} onClick={() => closeModa({ dependente: { id_dependente: item.id_dependente, nome: item.nome, excluido: item.excluido } })} className={`border-b ${item.id_dependente === data.dependente?.id_dependente ? "bg-gray-300" : "bg-gray-50"} border-gray-300  hover:bg-gray-300 text-red-500`}>
-                                                    <th scope="row" className="px-6 py-1 font-medium  whitespace-nowrap">
+                                                </Table.HeadCell>
+                                            </Table.Head>
+                                    <Table.Body >
+                                             {dadosassociado?.dependentes?.filter(item=>!checkDependente?item.excluido===false||item.excluido===null:item.excluido===true).map((item,index) => (   <Table.Row key={index} onClick={() => handleSelectDependente(item)} className={`border-b ${item.id_dependente === data.dependente?.id_dependente ? "bg-gray-300" : ""} border-gray-300  hover:bg-gray-300 text-red-500`}>
+                                                    <Table.Cell>
                                                         {item.nome}
-                                                    </th>
-                                                    <td className="px-6 py-1">
+                                                    </Table.Cell>
+                                                    <Table.Cell>
                                                         {new Date(item.data_adesao).toLocaleDateString()}
-                                                    </td>
-                                                    <td className="px-6 py-1">
-                                                        {item?.carencia ? new Date(item.carencia).toLocaleDateString() : ''}
-                                                    </td>
-                                                    <td className="px-6 py-1">
-                                                        {item?.data_nasc ? new Date(item.data_nasc).toLocaleDateString() : ''}
-                                                    </td>
-                                                    <td className="px-6 py-1">
+                                                    </Table.Cell>
+                                                    <Table.Cell>
+                                                        {item?.carencia && new Date(item.carencia).toLocaleDateString()}
+                                                    </Table.Cell>
+                                                    <Table.Cell>
+                                                        {item?.data_nasc && new Date(item.data_nasc).toLocaleDateString() }
+                                                    </Table.Cell>
+                                                    <Table.Cell>
                                                         {item.grau_parentesco}
-                                                    </td>
-                                                    <td className="px-6 py-1">
-                                                        {new Date(item.dt_exclusao).toLocaleDateString()}
-                                                    </td>
-                                                    <td className="px-6 py-1">
+                                                    </Table.Cell>
+                                                    <Table.Cell>
+                                                        {item.dt_exclusao && new Date(item.dt_exclusao).toLocaleDateString()}
+                                                    </Table.Cell>
+                                                    <Table.Cell>
                                                         {item.user_exclusao}
-                                                    </td>
+                                                    </Table.Cell>
 
 
-                                                    <td className="inline-flex px-4 py-1 text-right items-center gap-4">
+                                                    <Table.Cell className="inline-flex text-right items-center gap-4">
                                                        
                                                        
                                                        <button onClick={e=>{e.stopPropagation(),handlePrintClick(item)}} className="text-gray-500 hover:text-blue-600">
@@ -207,55 +185,14 @@ export function Dependentes(){
                                                             dados?.status === 'ABERTO' && <button data-tooltip-id="id_dependente" data-tooltip-content={dados?.descricao} className="text-yellow-500">
                                                                 <TbWheelchair size={19} />
                                                             </button>
-
                                                         ))}
-                                                    </td>
-                                                </tr>) : !checkDependente && !item.excluido ? (
-                                                    <tr key={index} onClick={() => setDadosDep(item)} className={` font-semibold border-b text-black ${item.id_dependente === dadosDep.id_dependente ? "bg-blue-200" : "bg-gray-50"} border-gray-300  hover:bg-gray-300`}>
-                                                        <td scope="row" className="px-2 py-1  whitespace-nowrap w-full">
-                                                            {item.nome}
-                                                        </td>
-                                                        <td className="px-8 py-1 w-full">
-                                                            {new Date(item.data_adesao).toLocaleDateString()}
-                                                        </td>
-                                                        <td className={`px-10 py-1 w-full ${new Date(item.carencia) > new Date() ? "text-yellow-400" : ""}`}>
-                                                            {item?.carencia ? new Date(item.carencia).toLocaleDateString() : ''}
-                                                        </td>
-                                                        <td className="px-8 py-1 w-full">
-                                                            {item?.data_nasc ? new Date(item.data_nasc).toLocaleDateString() : ''}
-                                                        </td> 
-                                                        <td className="px-12 py-1 w-full">
-                                                            {item.grau_parentesco}
-                                                        </td>
+                                                    </Table.Cell>
+                                                </Table.Row>))}
+                                      
 
-                                                        <td className="px-6 py-1 w-full">
-                                                            {item.celular}
-                                                        </td>
-                                                        <td className="px-3 py-1 w-full">
-                                                            <div className="inline-flex gap-3">
-                                                                <button disabled={!permissoes.includes('ADM1.3.4')} onClick={(event) => {
-                                                                    event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                                                                    setModalDep(true),
-                                                                   setDadosDep(item)
-                                                                }} className="font-medium  text-blue-500 hover:underline">Edit</button>
+                                    </Table.Body>
 
-                                                                {item?.convalescenca?.convalescenca_prod?.map((dados, index) => (
-                                                                    dados?.status === 'ABERTO' && <button data-tooltip-id="id_dependente" 
-                                                                    key={index} data-tooltip-content={dados?.descricao} className="text-yellow-500">
-                                                                        <TbWheelchair size={19} />
-                                                                    </button>
-
-                                                                ))}
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                ) : ''
-
-                                        ))}
-
-                                    </tbody>
-
-                                </table>
+                                </Table>
 
                                 <ModalDependentes data={dadosDep} openModal={modalDep} setModal={setModalDep}/>
                                 <ModalExcluirDep nome={dadosDep?.nome} excluirDep={excluirDep} openModal={modalExcluirDep} setOpenModal={setModalExcDep}/>

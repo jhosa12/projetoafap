@@ -10,12 +10,46 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
+import useApiPost from "@/hooks/useApiPost";
+import { AssociadoProps, ContratoProps, DadosCadastro, DependentesProps } from "@/types/associado";
+import { gerarMensalidade, ParcelaData } from "@/utils/gerarArrayMensal";
 
 
 interface DataProps{
     open:boolean,
     onClose:Function,
     item:Partial<LeadProps>
+}
+
+interface CadastroRequest {
+    id_empresa:string,
+    nome: string;
+    cpfcnpj: string;
+    rg:string;
+    cep: string;
+    endereco: string;
+    bairro: string;
+    numero: number;
+    cidade: string;
+    uf: string;
+    guia_rua: string;
+    email: string;
+    data_nasc: Date;
+    data_cadastro: Date;
+    celular1: string;
+    celular2: string;
+    telefone: string;
+    cad_usu: string;
+    cad_dh: Date;
+    edi_usu: string;
+    edi_dh: Date;
+    profissao: string;
+    sexo: string;
+    situacao:string;
+    contrato: Partial<ContratoProps>;
+    dependentes:Array<Partial<DependentesProps>>;
+    mensalidades: Array<Partial<ParcelaData>>;
+    empresa:string
 }
 
 export interface UseFormLeadProps{
@@ -29,7 +63,8 @@ export interface UseFormLeadProps{
 
 export function ModalItem({onClose,open,item}:DataProps) {
 
-    const {cidades,planos} = useContext(AuthContext)
+    const {cidades,planos,selectEmp,usuario} = useContext(AuthContext)
+    const {data,loading,postData}= useApiPost<AssociadoProps,Partial<CadastroRequest>>("/novoAssociado")
 
     const {register,control,setValue,handleSubmit,trigger,watch,reset} = useForm<LeadProps>(
         {
@@ -40,6 +75,10 @@ export function ModalItem({onClose,open,item}:DataProps) {
     useEffect(()=>{
         reset(item)
     },[item])
+
+
+
+
 
     const handleOnSubmit:SubmitHandler<LeadProps> = async(data) =>{
 
@@ -84,16 +123,14 @@ export function ModalItem({onClose,open,item}:DataProps) {
                                 <TabDependentes control={control} register={register} setValue={setValue} watch={watch} trigger={trigger}/>
                             </Tabs.Item>
                         
-                          
-                          
                           </Tabs> 
 
 
-                          <div className= "inline-flex w-full gap-2 items-end">
+                          <div className= "flex flex-row w-full justify-between mt-2">
 
-                          <Button size={"sm"} variant={'outline'} className="ml-auto" >SALVAR</Button>
+                         
 
-                        <Button size={'sm'} type="submit" variant={'outline'} >SALVAR</Button>
+                        <Button size={'sm'} type="submit" variant={'outline'} >Salvar</Button>
 
 
                             </div> 

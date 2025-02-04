@@ -45,10 +45,10 @@ export const BarChartInfo = ({ chartData,chartConfig,periodo }: {chartData:Array
 
     return (
     
-        <Card className="flex flex-col h-full">
+        <Card className="flex flex-col w-full">
         <CardHeader>
-          <CardTitle>Vendas</CardTitle>
-          <CardDescription>{periodo?.start ? new Date(periodo?.start).toLocaleDateString('pt-BR',{timeZone:'UTC'}) : ''} - {periodo?.end && new Date(periodo?.end).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</CardDescription>
+         
+          <CardDescription  className="text-xs">{periodo?.start ? new Date(periodo?.start).toLocaleDateString('pt-BR',{timeZone:'UTC'}) : ''} - {periodo?.end && new Date(periodo?.end).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</CardDescription>
         </CardHeader>
         <CardContent>
           <ChartContainer config={chartConfig}>
@@ -73,8 +73,6 @@ export const BarChartInfo = ({ chartData,chartConfig,periodo }: {chartData:Array
             </BarChart>
           </ChartContainer>
         </CardContent>
-        <CardFooter className="flex-col items-start gap-2 text-sm">
-        </CardFooter>
       </Card>
             
         

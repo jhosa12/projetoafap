@@ -468,7 +468,7 @@ setOpenModal={setModalDados}
 {item.num_seq}
             </Table.Cell>
             <Table.Cell  data-tooltip-id="tooltip-hora" data-tooltip-place="bottom" data-tooltip-content={new Date(item.datalanc).toLocaleTimeString()} >
-            {new Date(item.datalanc).toLocaleDateString('pt-BR',{timeZone:'UTC'})}
+            {new Date(item.data).toLocaleDateString('pt-BR',{timeZone:'UTC'})}
             </Table.Cell>
             <Table.Cell>{item.conta}</Table.Cell>
             

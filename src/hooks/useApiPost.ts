@@ -24,13 +24,12 @@ const useApiPost = <T=any,P=any>(url:string):{
     try{
         const response:AxiosResponse = await api.post(url,payload)
         setData(response.data)
-     // console.log(response.data)
+      //console.log(response.data)
 
     }catch(error:any){
         //setError(error as AxiosError)
-        console.log(error)
+      //  console.log(error)
         toast.error(error?.response?.data.message??'Erro ao salvar dados')
-       
 
     }finally{
         setLoading(false)
