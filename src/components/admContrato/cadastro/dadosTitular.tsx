@@ -52,20 +52,20 @@ export function DadosTitular({register,setValue,watch,control}:ChildrenProps){
     return(
       
         <div className="flex flex-col w-full h-full ">
-        <div  className="grid gap-2  font-semibold grid-cols-4" >
+        <div  className="grid gap-2   grid-cols-4" >
 
 
         <div className="col-span-2">
-        <div className="mb-1 block">
-          <Label htmlFor="nome" value="Nome" />
+        <div >
+          <Label className="text-xs"  htmlFor="nome" value="Nome" />
         </div>
         <TextInput sizing={'sm'} id="nome" {...register('name')} type="text" required />
       </div>
         
       
           <div className="flex flex-col w-full">
-          <div className="mb-1 block">
-          <Label htmlFor="nome" value="Nascimento" />
+          <div >
+          <Label className="text-xs"  htmlFor="nome" value="Nascimento" />
         </div>
         <Controller
         name="nasc"
@@ -77,8 +77,8 @@ export function DadosTitular({register,setValue,watch,control}:ChildrenProps){
        
           </div>
           <div className="col-span-1">
-          <div className="mb-1 block">
-          <Label htmlFor="sexo" value="Sexo" />
+          <div >
+          <Label className="text-xs"  htmlFor="sexo" value="Sexo" />
         </div>
             <Select  sizing={'sm'} className="flex w-full" {...register('sexo')} >
               <option   selected></option>
@@ -88,43 +88,43 @@ export function DadosTitular({register,setValue,watch,control}:ChildrenProps){
           </div>
        
         <div className="col-span-1">
-        <div className="mb-1 block">
-          <Label htmlFor="cep" value="CEP" />
+        <div >
+          <Label className="text-xs" htmlFor="cep" value="CEP" />
         </div>
-          <InputMask value={watch('cep')} onChange={e=>setValue('cep',e.target.value)} mask={'99999-9999'} type="text" required className="flex uppercase w-full  text-xs  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
+          <InputMask value={watch('cep')} onChange={e=>setValue('cep',e.target.value)} mask={'99999-999'} type="text" required className="flex uppercase w-full  text-xs  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
           </div>
           <div className="col-span-2">
-          <div className="mb-1 block">
-          <Label htmlFor="endereco" value="Endereço" />
+          <div >
+          <Label className="text-xs" htmlFor="endereco" value="Endereço" />
         </div>
         <TextInput  sizing={'sm'} id="endereco" {...register('endereco')} type="text" required />
           </div>
 
           <div className="col-span-1">
-          <div className="mb-1 block">
-          <Label htmlFor="numero" value="Numero" />
+          <div >
+          <Label className="text-xs" htmlFor="numero" value="Numero" />
         </div>
         <TextInput  sizing={'sm'} id="numero" {...register('numero')}  type="number"  />
           </div>
         
           <div className="col-span-1">
-          <div className="mb-1 block">
-          <Label htmlFor="bairro" value="Bairro" />
+          <div >
+          <Label className="text-xs" htmlFor="bairro" value="Bairro" />
         </div>
         <TextInput  sizing={'sm'} id="bairro" {...register('bairro')} type="text" required />
           </div>
 
           <div className="col-span-2">
-          <div className="mb-1 block">
-          <Label htmlFor="ref" value="Referencia" />
+          <div >
+          <Label className="text-xs" htmlFor="ref" value="Referencia" />
         </div>
         <TextInput  sizing={'sm'} id="referencia" {...register('referencia')}  type="text"  />
           </div>
 
           
           <div className="col-span-1">
-          <div className="mb-1 block">
-          <Label htmlFor="uf" value="UF" />
+          <div >
+          <Label className="text-xs" htmlFor="uf" value="UF" />
         </div>
             <Select   sizing={'sm'} {...register('uf')} >
               <option selected></option>
@@ -160,8 +160,8 @@ export function DadosTitular({register,setValue,watch,control}:ChildrenProps){
             </Select>
           </div>
           <div className="col-span-1">
-          <div className="mb-1 block">
-          <Label htmlFor="cidade" value="Cidade" />
+          <div >
+          <Label className="text-xs" htmlFor="cidade" value="Cidade" />
         </div>
             <Select  sizing={'sm'} 
             {...register('cidade')} required  >
@@ -175,51 +175,51 @@ export function DadosTitular({register,setValue,watch,control}:ChildrenProps){
           </div>
 
           <div className="col-span-1">
-          <div className="mb-1 block">
-          <Label htmlFor="rg" value="RG" />
+          <div >
+          <Label className="text-xs" htmlFor="rg" value="RG" />
         </div>
         <TextInput   sizing={'sm'} id="rg" {...register('rg')} type="number"  />
           </div>
 
           <div className="col-span-1">
-          <div className="mb-1 block">
-          <Label  value="CPF" />
+          <div >
+          <Label className="text-xs"  value="CPF" />
         </div>
           <InputMask mask={'999.999.999-99'}  value={watch('cpf')} onChange={e=>setValue('cpf',e.target.value)} autoComplete="off" type="text" required className="flex uppercase w-full text-xs border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
           </div>
 
 
           <div className="col-span-1">
-          <div className="mb-1 block">
-          <Label htmlFor="naturalidade" value="Naturalidade" />
+          <div >
+          <Label className="text-xs" htmlFor="naturalidade" value="Naturalidade" />
         </div>
         <TextInput  sizing={'sm'} id="rg" {...register('naturalidade')} type="text"  />
           </div>
 
 
           <div className="col-span-1">
-          <div className="mb-1 block">
-          <Label  value="Email" />
+          <div >
+          <Label className="text-xs"  value="Email" />
         </div>
         <TextInput   sizing={'sm'} id="email" {...register('email')} type="text"  />
           </div>
 
       
           <div className="col-span-1">
-          <div className="mb-1 block">
-          <Label  value="Celular 1" />
+          <div >
+          <Label className="text-xs"  value="Celular 1" />
         </div>
           <InputMask value={watch('celular1')} onChange={e=>setValue('celular1',e.target.value)} mask={'(99) 9 9999-9999'} type="text" required className="flex uppercase w-full  text-xs  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
           </div>
           <div className="col-span-1">
-          <div className="mb-1 block">
-          <Label  value="Celular 2" />
+          <div >
+          <Label className="text-xs"  value="Celular 2" />
         </div>
           <InputMask value={watch('celular2')} onChange={e=>setValue('celular2',e.target.value)} mask={'(99) 9 9999-9999'} type="text"  className="flex uppercase w-full  text-xs  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400  "/>
           </div>
           <div className="col-span-1">
-          <div className="mb-1 block">
-          <Label  value="Telefone" />
+          <div >
+          <Label className="text-xs"  value="Telefone" />
         </div>
           <InputMask value={watch('telefone')} onChange={e=>setValue('telefone',e.target.value)} mask={'(99) 9 9999-9999'} type="text"  className="flex uppercase w-full  text-xs  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400  "/>
           </div>

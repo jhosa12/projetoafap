@@ -35,6 +35,7 @@ if(!imagem ){
 }
 if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
     setarDadosUsuario({...dadosUser,file:imagem,avatarUrl:URL.createObjectURL(e.target.files[0]),image:''})
+  
 }
 
 
@@ -57,7 +58,7 @@ if(imagem.type==='image/jpeg' || imagem.type==='image/png'){
                                 <input  className="hidden" onChange={handleFile} type="file" accept="image/png,image/jpeg"></input>
                                 {dadosUser.avatarUrl && !dadosUser.image && <img className="w-full h-full object-cover rounded-lg" src={dadosUser.avatarUrl} alt="fotoUser" width={150} height={100}></img>}
 
-                                {dadosUser.image && !dadosUser.avatarUrl && <img className="w-full h-full object-cover rounded-lg" src={`data:image/jpeg;base64,${dadosUser.image}`} alt="fotoUser" width={150} height={100}></img>}
+                                {dadosUser.image && !dadosUser.avatarUrl && <img className="w-full h-full object-cover rounded-lg" src={`${dadosUser.image}`} alt="fotoUser" width={150} height={100}></img>}
 
                             </label>
                             </div>

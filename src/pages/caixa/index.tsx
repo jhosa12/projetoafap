@@ -462,7 +462,7 @@ setOpenModal={setModalDados}
         </Table.Head>
         <Table.Body className="divide-y">
             {lancamentos?.map((item,index)=>(
-            <Table.Row className=" text-black font-semibold ">
+            <Table.Row className=" text-black  ">
 
 <Table.Cell className="whitespace-nowrap   ">
 {item.num_seq}

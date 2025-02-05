@@ -73,7 +73,14 @@ useEffect(() => {
 
     useEffect(() => {
 
-        VerificarSituacao(dadosassociado?.contrato?.situacao, dadosassociado?.mensalidade, dadosassociado?.contrato?.convalescencia)
+      
+      if(dadosassociado?.id_global)
+        VerificarSituacao({
+            situacao:dadosassociado?.contrato?.situacao??'',
+            mensalidades:dadosassociado?.mensalidade??[], 
+            convalescencia:dadosassociado?.contrato?.convalescencia??[],
+            carencia:dadosassociado?.contrato?.dt_carencia??null
+        })
 
 
       

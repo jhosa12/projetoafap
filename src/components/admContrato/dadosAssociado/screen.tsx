@@ -170,7 +170,7 @@ setModalEdit(true)
                                             <p className="mb-1 ">Cidade:{dadosassociado?.cidade}</p>
                                         </div>
                                         <div className="mb-1 flex flex-row justify-between gap-2  ">
-                                            <p >PONTO REF: {dadosassociado?.guia_rua}</p>
+                                            <p >Ponto ref: {dadosassociado?.guia_rua}</p>
                                             <span   >Celular1: {dadosassociado?.celular1} </span>
                                             <p className="mb-1 ">Celular2:{dadosassociado?.celular2}</p>
 

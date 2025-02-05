@@ -3,15 +3,17 @@ import { FormWrapper } from "../../organizador"
 import InputMask from 'react-input-mask'
 import { TiDeleteOutline } from "react-icons/ti";
 import { TiDelete } from "react-icons/ti";
-import { MdDeleteForever } from "react-icons/md";
+import { MdAdd, MdAddCircle, MdDeleteForever } from "react-icons/md";
 import { MdEditSquare } from "react-icons/md";
 import { AuthContext } from "@/contexts/AuthContext";
 import DatePicker,{registerLocale, setDefaultLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { Label, Select, Table, TextInput } from "flowbite-react";
+import { Label, Modal, Select, Table, TextInput } from "flowbite-react";
 import { ChildrenProps } from "./modalCadastro";
-import { useForm } from "react-hook-form";
+import { Control, Controller, useForm, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { watch } from "fs";
+import { Button } from "@/components/ui/button";
 registerLocale('pt', pt)
 
 interface UserProps{
@@ -26,8 +28,8 @@ interface UserProps{
 
 export function DadosDependentes({register,setValue,watch,trigger}:ChildrenProps){
 
-const {register:registerDep,setValue:setValueDep,watch:watchDep,reset:resetDep} = useForm<UserProps>()
-
+const {register:registerDep,setValue:setValueDep,watch:watchDep,reset:resetDep,control} = useForm<UserProps>()
+const [open,setOpen] = useState(false)
 
 
 
@@ -40,7 +42,9 @@ const {register:registerDep,setValue:setValueDep,watch:watchDep,reset:resetDep} 
             const currentItens = watch('arraydep')||[]
             setValue('arraydep',[...currentItens,dados]);
           // trigger('arraydep')
-           resetDep()
+           resetDep({
+            nome:'',data_nasc:null,grau_parentesco:'',data_adesao:new Date(),carencia:new Date(),celular:''
+           })
         }   
         }
         const handleExcluirDependente = (index: number) => {
@@ -56,84 +60,16 @@ const {register:registerDep,setValue:setValueDep,watch:watchDep,reset:resetDep} 
 
     return(
  
-        <div className="flex flex-row divide-x-2 max-h-96 gap-4  rounded-lg w-full">
-        <div  className="grid border-white h-2/3  border-r-2 pb-3 gap-2   w-2/6  grid-cols-2" >
-             
-             
-          <div className="col-span-2">
-          <div className="mb-1 block">
-          <Label  value="Nome" />
-        </div>
-        <TextInput {...registerDep('nome')} type="text"  />
-          </div>
-             
-             
-          <div className="col-span-1">
-          <div className="mb-1 block">
-          <Label  value="Nascimento" />
-        </div>
-          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={watchDep('data_nasc')||null} onChange={(date)=>date && setValueDep('data_nasc',date)}     className="flex uppercase w-full  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
-          </div>
-             
-          <div className="col-span-1">
-          <div className="mb-1 block">
-          <Label  value="Parentesco" />
-        </div>
-            <Select  {...registerDep('grau_parentesco')}  >
+        <div className="flex flex-col divide-x-2 max-h-96 gap-2  rounded-lg w-full">
+          <ModalAddDep adicionar={adicionar} show={open} onClose={()=>setOpen(false)} register={registerDep} control={control} setValue={setValueDep}/>
+          <h1 className="font-semibold">Dependentes: {watch('arraydep')?.length}</h1>   
 
-            <option selected className="text-gray-200">PARENTESCO</option>
-                    <option>CONJUGE</option>
-                    <option>PAI</option>
-                    <option>MÃE</option>
-                    <option>FILHO(A)</option>,
-                    <option>IRMÃO(Ã)</option>
-                    <option>PRIMO(A)</option>
-                    <option>SOBRINHA(A)</option>
-                    <option>NORA</option>
-                    <option>GENRO</option>
-                    <option>TIO(A)</option>
-                    <option>AVÔ(Ó)</option>
-                    <option>OUTROS</option>
-            </Select>
-          </div> 
+          <Button type="button" onClick={() => setOpen(true)} variant="outline" size={"sm"} className="mr-auto"><MdAddCircle size={20}/>Adicionar</Button> 
 
+          <div></div>           
 
-          <div className="col-span-1">
-          <div className="mb-1 block">
-          <Label  value="Celular" />
-        </div>
-          <InputMask  value={watchDep('celular')??''} onChange={e=>setValueDep('celular',e.target.value)} mask={'(99) 9 9999-9999'} type="text"  className="flex uppercase w-full  pr-2 pl-2  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
-          </div>
-            
-              
-          
-          <div className="col-span-1">
-          <div className="mb-1 block">
-          <Label  value="Adesão" />
-        </div>
-          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={watchDep('data_adesao')} onChange={(date)=>date && setValueDep('data_adesao',date)}   className="flex uppercase w-full  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
-          </div>
-
-
-          <div className="col-span-1">
-          <div className="mb-1 block">
-          <Label  value="Carência" />
-        </div>
-          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={watchDep('carencia')} onChange={(date)=>date && setValueDep('carencia',date)}   className="flex uppercase w-full  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
-          </div>
-
-
-
-          
-              <div className="col-span-2">
-              <button  type="button" onClick={adicionar}  className=" block  justify-center items-center w-full px-3 py-1.5 text-sm font-medium text-center text-white rounded-lg  focus:ring-4 focus:outline-none  bg-blue-600 hover:bg-blue-700 focus:ring-blue-800" >ADICIONAR</button>  
-              </div>
-             
-              </div>
-                         
-
-            <div className="flex w-4/5 overflow-x-auto">
-              <Table striped>
+            <div className="flex w-full overflow-x-auto">
+              <Table theme={{root:{shadow:'none'}, body: { cell: { base: " px-6 py-1  text-[11px] text-black" } },head:{cell:{base:"px-6 py-1 text-xs text-black font-semibold"}} }}>
                 <Table.Head>
                   <Table.HeadCell>
                   Nome
@@ -142,7 +78,7 @@ const {register:registerDep,setValue:setValueDep,watch:watchDep,reset:resetDep} 
                   Nasc
                   </Table.HeadCell>
                   <Table.HeadCell>
-                  Parent.
+                  Parentesco
                   </Table.HeadCell>
                   <Table.HeadCell>
                   Celular
@@ -157,9 +93,9 @@ const {register:registerDep,setValue:setValueDep,watch:watchDep,reset:resetDep} 
                   Ações
                   </Table.HeadCell>
                 </Table.Head>
-                <Table.Body>
+                <Table.Body className="divide-y">
                 {watch('arraydep')?.map((usuario, index) => (
-                           <Table.Row key={index} className="bg-white font-semibold text-black text-xs border-gray-700 p-1">
+                           <Table.Row key={index} >
                               <Table.Cell className="whitespace-nowrap" scope="row" >{usuario.nome}</Table.Cell>
                               <Table.Cell>{usuario.data_nasc?.toLocaleDateString()}</Table.Cell>
                               <Table.Cell>{usuario.grau_parentesco}</Table.Cell>
@@ -183,3 +119,122 @@ const {register:registerDep,setValue:setValueDep,watch:watchDep,reset:resetDep} 
         </div>
      
         )}
+
+
+interface DepProps {
+    register:UseFormRegister<UserProps>
+    control:Control<UserProps,any>
+    setValue:UseFormSetValue<UserProps>
+    show:boolean,
+  onClose:()=>void,
+  adicionar:()=>void
+}
+
+        export const ModalAddDep = ({control,onClose,register,setValue,show,adicionar}:DepProps)=>{
+          return(
+            <Modal show={show} size="md" onClose={() => onClose()} popup>
+            <Modal.Header />
+            <Modal.Body>
+            <div  className="grid border-white   border-r-2 pb-3 gap-2    grid-cols-2" >
+             
+             
+             <div className="col-span-2">
+             <div className="mb-1 block">
+             <Label className="text-xs"  value="Nome" />
+           </div>
+           <TextInput sizing="sm" {...register('nome')} type="text"  />
+             </div>
+                
+                
+             <div className="col-span-1">
+             <div className="mb-1 block">
+             <Label className="text-xs"  value="Nascimento" />
+           </div>
+           <Controller
+           name="data_nasc"
+           control={control}
+           render={({ field:{onChange,value} }) => (
+            <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={value} onChange={(date)=>onChange(date)}     className="flex uppercase w-full text-xs  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
+           )}
+           />
+           
+             </div>
+                
+             <div className="col-span-1">
+             <div className="mb-1 block">
+             <Label className="text-xs"  value="Parentesco" />
+           </div>
+               <Select sizing="sm"  {...register('grau_parentesco')}  >
+   
+               <option selected className="text-gray-200">PARENTESCO</option>
+                       <option>CONJUGE</option>
+                       <option>PAI</option>
+                       <option>MÃE</option>
+                       <option>FILHO(A)</option>,
+                       <option>IRMÃO(Ã)</option>
+                       <option>PRIMO(A)</option>
+                       <option>SOBRINHA(A)</option>
+                       <option>NORA</option>
+                       <option>GENRO</option>
+                       <option>TIO(A)</option>
+                       <option>AVÔ(Ó)</option>
+                       <option>OUTROS</option>
+               </Select>
+             </div> 
+   
+   
+             <div className="col-span-1">
+             <div className="mb-1 block">
+             <Label className="text-xs"  value="Celular" />
+           </div>
+           <Controller
+           name="celular"
+           control={control}
+           render={({ field:{onChange,value} }) => (
+            <InputMask  value={value} onChange={e=>onChange(e.target.value)} mask={'(99) 9 9999-9999'} type="text"  className="flex uppercase w-full text-xs pr-2 pl-2  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
+           )}
+           />
+           
+             </div>
+               
+                 
+             
+             <div className="col-span-1">
+             <div className="mb-1 block">
+             <Label className="text-xs"  value="Adesão" />
+           </div>
+
+           <Controller
+            name="data_adesao"
+            control={control}
+            render={({ field:{onChange,value} }) => (
+              <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={value} onChange={(date)=>onChange(date)}   className="flex uppercase w-full text-xs  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
+            )}
+           />
+           
+             </div>
+   
+   
+             <div className="col-span-1">
+             <div className="mb-1 block">
+             <Label className="text-xs"  value="Carência" />
+           </div>
+           <Controller
+           name="carencia"
+           control={control}
+           render={({ field:{onChange,value} }) => (
+            <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={value} onChange={(date)=>onChange(date)}   className="flex uppercase w-full text-xs pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
+           )}
+           />
+            
+             </div>
+   
+                 <div className="col-span-2 flex justify-end ">
+                 <Button className="" type="button" onClick={adicionar} size="sm">Adicionar</Button> 
+                 </div>
+                
+                 </div>
+            </Modal.Body>
+            </Modal>
+          )
+        }

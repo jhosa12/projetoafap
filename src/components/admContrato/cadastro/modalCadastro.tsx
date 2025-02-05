@@ -16,6 +16,7 @@ import { DadosCadastro } from '@/types/associado';
 import { DadosTitular } from './dadosTitular';
 import { DadosPlano } from './dadosPlano';
 import { DadosDependentes } from './dadosDependentes';
+import { Button } from "@/components/ui/button";
 
 
 interface ParcelaData {
@@ -116,8 +117,7 @@ export default function ModalCadastro({isOpen,onClose}:ModalProps) {
             telefone:data.telefone,
             cad_usu:usuario?.nome,
             cad_dh:dataAtual,
-            edi_usu:usuario?.nome,
-            edi_dh:dataAtual,
+            rg:data.rg,
             profissao:data.profissao,
             sexo:data.sexo,
             contrato:{id_plano:data.contrato?.id_plano,
@@ -188,10 +188,10 @@ export default function ModalCadastro({isOpen,onClose}:ModalProps) {
           <form onSubmit={handleSubmit(onSubmit)}>
             {step}
             <div className="flex mt-4 gap-8 p-2 justify-end">
-             {currentStepIndex!==0 &&(<button className="bg-blue-600 p-2 rounded-lg justify-center items-center" type="button" onClick={back}><HiOutlineChevronLeft color="white" size={25}/></button>)} 
+             {currentStepIndex!==0 &&(<button className="bg-black p-2 rounded-lg justify-center items-center" type="button" onClick={back}><HiOutlineChevronLeft color="white" size={15}/></button>)} 
           
-               {steps.length-1===currentStepIndex ?(<button  className="flex flex-row bg-blue-600 rounded-lg p-2 gap-2 text-white" type="submit" ><HiInboxIn size={22}/> SALVAR</button>):
-               <button  className="bg-blue-600 p-2 rounded-lg justify-center items-center" type="submit"><HiOutlineChevronRight color="white" size={25}/></button>} 
+               {steps.length-1===currentStepIndex ?(<Button  type="submit" ><HiInboxIn size={22}/> SALVAR</Button>):
+               <button  className="bg-black p-2 rounded-lg justify-center items-center" type="submit"><HiOutlineChevronRight color="white" size={15}/></button>} 
              
             </div>
           </form>

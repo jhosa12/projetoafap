@@ -1,4 +1,4 @@
-import { Suspense, useContext, useEffect, useState, useCallback } from "react"
+import { useContext, useEffect, useState, useCallback } from "react"
 import Head from "next/head"
 import { AuthContext } from "@/contexts/AuthContext"
 import { Tabs } from "flowbite-react"

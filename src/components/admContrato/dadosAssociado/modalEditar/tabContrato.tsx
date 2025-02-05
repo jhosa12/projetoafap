@@ -21,19 +21,19 @@ export function TabContrato({register,setValue,trigger,watch,control}:UseFormAss
         <>
              
           
-            <div className="grid gap-2 grid-flow-c-dense Z-50 pl-2 pr-2 w-full  grid-cols-4 font-semibold" >
+            <div className="grid gap-2 grid-flow-c-dense Z-50 pl-2 pr-2 w-full  grid-cols-4 " >
 
 
             <div className="col-span-1" >
         <div className=" block">
-          <Label  value="Contrato" />
+          <Label className="text-xs"  value="Contrato" />
         </div>
         <TextInput disabled sizing={'sm'} value={watch('contrato.id_contrato')}  type="number"  />
       </div> 
 
       <div className="col-span-1" >
         <div className=" block">
-          <Label  value="Vencimento" />
+          <Label className="text-xs"  value="Vencimento" />
         </div>
         <Controller
           name="contrato.data_vencimento"
@@ -47,7 +47,7 @@ export function TabContrato({register,setValue,trigger,watch,control}:UseFormAss
 
       <div className="col-span-1" >
         <div className=" block">
-          <Label  value="Adesão" />
+          <Label className="text-xs"  value="Adesão" />
         </div>
         <Controller
           name="contrato.dt_adesao"
@@ -61,7 +61,7 @@ export function TabContrato({register,setValue,trigger,watch,control}:UseFormAss
 
       <div className="col-span-1" >
         <div className=" block">
-          <Label  value="Carência" />
+          <Label className="text-xs"  value="Carência" />
         </div>
         <Controller
           name="contrato.dt_carencia"
@@ -75,18 +75,18 @@ export function TabContrato({register,setValue,trigger,watch,control}:UseFormAss
 
       <div className="col-span-1" >
         <div className=" block">
-          <Label  value="Origem" />
+          <Label className="text-xs"  value="Origem" />
         </div>
         <Select sizing={'sm'} {...register('contrato.origem')}>
                     <option selected></option>
                     <option value={'PLANO NOVO'} >PLANO NOVO</option>
-                    <option value={'TRANSFERÊNCIA'} >TRANSFERÊNCIA</option>
+                    <option value={'TRANSFERENCIA SEM CA'} >TRANSFERÊNCIA</option>
                   </Select >
       </div> 
 
       <div className="col-span-2" >
         <div className=" block">
-          <Label  value="Plano" />
+          <Label className="text-xs"  value="Plano" />
         </div>
         <Select disabled value={watch('contrato.id_plano')} sizing={'sm'}  onChange={(e) => {
     const selectedPlanId = Number(e.target.value); 
@@ -110,14 +110,14 @@ export function TabContrato({register,setValue,trigger,watch,control}:UseFormAss
        
       <div className="col-span-1" >
         <div className=" block">
-          <Label  value="Valor" />
+          <Label className="text-xs"  value="Valor" />
         </div>
         <TextInput  disabled sizing={'sm'} {...register('contrato.valor_mensalidade')}  type="number"  />
       </div> 
 
       <div className="col-span-1" >
         <div className=" block">
-          <Label  value="Cobrador" />
+          <Label className="text-xs"  value="Cobrador" />
         </div>
         <Select sizing={'sm'} {...register('contrato.cobrador')}>
                     <option selected></option>
@@ -131,7 +131,7 @@ export function TabContrato({register,setValue,trigger,watch,control}:UseFormAss
 
       <div className="col-span-1" >
         <div className=" block">
-          <Label  value="Consultor" />
+          <Label className="text-xs"  value="Consultor" />
         </div>
         <Select sizing={'sm'} {...register('contrato.consultor')}>
                     <option selected></option>
@@ -147,7 +147,7 @@ export function TabContrato({register,setValue,trigger,watch,control}:UseFormAss
               
       <div className="col-span-1" >
         <div className=" block">
-          <Label  value="Supervisor" />
+          <Label className="text-xs"  value="Supervisor" />
         </div>
         <Select sizing={'sm'} {...register('contrato.supervisor')}>
                     <option selected></option>
@@ -158,7 +158,7 @@ export function TabContrato({register,setValue,trigger,watch,control}:UseFormAss
             
       <div className="col-span-1" >
         <div className=" block">
-          <Label  value="Parcelas" />
+          <Label className="text-xs"  value="Parcelas" />
         </div>
         <TextInput  disabled sizing={'sm'} value={watch('contrato.n_parcelas')}  type="number"  />
       </div>  

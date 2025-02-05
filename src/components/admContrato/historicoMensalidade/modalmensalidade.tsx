@@ -51,6 +51,8 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
 
             const dataPgto = new Date(data.data_pgto);
             dataPgto.setTime(dataPgto.getTime() - dataPgto.getTimezoneOffset() * 60 * 1000);
+            const data_lanc = new Date();
+            data_lanc.setTime(data_lanc.getTime() - data_lanc.getTimezoneOffset() * 60 * 1000);
         
            
         
@@ -79,7 +81,8 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
                         status:data.status,
                         pix_por:data.pix_por,
                         id_empresa:selectEmp,
-                        valor_metodo:data?.valor_metodo
+                        valor_metodo:data?.valor_metodo,
+                        data_lanc:data_lanc
                     
                     },
                  

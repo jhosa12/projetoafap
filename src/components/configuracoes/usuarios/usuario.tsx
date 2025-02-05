@@ -152,7 +152,7 @@ export function Usuario() {
   data.append('permissoes',JSON.stringify(dadosUser.permissoes));
 
     if(dadosUser.file){
-      data.append( 'file',dadosUser.file);
+      data.append( 'file',dadosUser.file)
     }
    
 
@@ -223,7 +223,7 @@ export function Usuario() {
   async function getUsers() {
     try {
       const response = await api.get("/getUser")
-
+      console.log(response.data)
       setUserDados(response.data)
 
    
@@ -282,7 +282,7 @@ export function Usuario() {
                 <li key={index} className={`flex flex-col w-full p-2 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-300" : "bg-slate-200"} uppercase cursor-pointer`}>
                   <div className="inline-flex w-full items-center">
                     <div className="flex w-40 me-2 text-start font-semibold">
-                      {item.image && <img className="w-[26px] h-[26px] rounded-full" src={`data:image/jpeg;base64,${item.image}`} alt="Rounded avatar"></img>}</div>
+                      {item.image && <img className="w-[26px] h-[26px] rounded-full" src={`${item.image}`} alt="Rounded avatar"></img>}</div>
                     <span className="flex w-full text-start font-semibold">{item?.nome}</span>
                     <span className="flex w-full text-start font-semibold">{item.cargo}</span>
                     <span className="flex w-full text-start font-semibold">{''}</span>

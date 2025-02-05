@@ -38,7 +38,7 @@ export function TabPlano({control,register,setValue,trigger,watch,planos}:TabPla
                 <Select sizing={'sm'} {...register('origem')}>
                     <option value=""></option>
                     <option value='PLANO NOVO'>PLANO NOVO</option>
-                    <option value='TRANSFERENCIA'>TRANSFERENCIA</option>
+                    <option value='TRANSFERENCIA SEM CA'>TRANSFERENCIA</option>
                 </Select>
             </div>
             <div className="">

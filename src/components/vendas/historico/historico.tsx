@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Control, Controller, SubmitHandler, useForm, UseFormHandleSubmit, UseFormRegister } from "react-hook-form";
 import { Sub } from "@radix-ui/react-menubar";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdCheck, MdCheckCircle, MdCreateNewFolder } from "react-icons/md";
@@ -18,6 +18,7 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { gerarMensalidade, ParcelaData } from "@/utils/gerarArrayMensal";
 import { AssociadoProps, ContratoProps, DependentesProps } from "@/types/associado";
 import  Router  from "next/router";
+import { ajustarData } from "@/utils/ajusteData";
 
 interface ReqProps{
     id?:string,
@@ -30,7 +31,7 @@ interface ReqProps{
 
 
 interface CadastroRequest {
-    id_empresa:string,
+  dataPlano: Partial<{ id_empresa:string,
     nome: string;
     cpfcnpj: string;
     rg:string;
@@ -57,7 +58,8 @@ interface CadastroRequest {
     contrato: Partial<ContratoProps>;
     dependentes:Array<Partial<DependentesProps>>;
     mensalidades: Array<Partial<ParcelaData>>;
-    empresa:string
+    empresa:string}>,
+    id_lead:number
 }
 
 export interface LeadProps {
@@ -110,7 +112,13 @@ export function Historico() {
     const {data:associado,loading,postData:postAssociado}= useApiPost<{  
         id_contrato: number,
         id_global: number,
-        id_contrato_global: number},Partial<CadastroRequest>>("/novoAssociado")
+        id_contrato_global: number},Partial<CadastroRequest>>("/leads/gerarPlano")
+        const {register,handleSubmit,control,watch} = useForm<ReqProps>({
+            defaultValues:{
+                startDate:new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString(),
+                endDate:new Date().toISOString(),   
+            }
+        })
 
     const onChangeCategoria = (e: React.ChangeEvent<HTMLSelectElement>, lead: Partial<LeadProps>) => {
         if (lead.status === e.target.value) {
@@ -143,7 +151,7 @@ export function Historico() {
         }
         setModalNovoContrato(true)
         await postAssociado({
-            dependentes:item.dependentes,
+       dataPlano: {dependentes:item.dependentes,
             bairro:item.bairro,
             celular1:item.celular1,
             celular2:item.celular2,
@@ -167,9 +175,12 @@ export function Historico() {
                 origem:item.origem,
                 consultor:item.consultor  
             },
-            mensalidades:gerarMensalidade({vencimento:dtVencimento,n_parcelas:item.n_parcelas,valorMensalidade:Number(item.valor_mensalidade)}),
+            mensalidades:gerarMensalidade({vencimento:dtVencimento,n_parcelas:item.n_parcelas,valorMensalidade:Number(item.valor_mensalidade)})},
+            id_lead:item.id_lead
          
         })
+
+        reqDados({})
     }
 
 
@@ -178,22 +189,32 @@ export function Historico() {
             await postCategoria({ categoriaAtual: categoria, categoriaAnt: lead?.status, usuario: lead?.usuario, id_lead: lead?.id_lead })
 
             postData({})
-
+            reqDados({})
             setModalConfirma(false)
 
         } catch (error) {
             console.log(error)
         }
-
-
     }, [categoria, lead?.id_lead])
 
 
 
     const reqDados:SubmitHandler<ReqProps> = useCallback(async (data) => {
-        console.log({...data,status:data.statusSelected?data?.statusSelected?.split(','):[]})
+       const start =watch('startDate')
+      const  end = watch('endDate')
+
+      if(data.startDate&&data.endDate&&new Date(data.startDate)>new Date(data.endDate)){
+        toast.warning('Data inicial não pode ser maior que a data final')
+      }
+       const {dataIni,dataFim} = ajustarData(start?new Date(start):undefined,
+       end?new Date(end):undefined
+    )
         try {
-            postData({...data,status:data.statusSelected?data?.statusSelected?.split(','):[]})
+            postData({...data,
+                status:data.statusSelected?data?.statusSelected?.split(','):[],
+                startDate:dataIni,
+                endDate:dataFim
+            })
 
         } catch (error) {
             console.log(error)
@@ -201,13 +222,19 @@ export function Historico() {
     }, [])
 
     useEffect(() => {
-        reqDados({})
+        const start =watch('startDate')
+        const  end = watch('endDate')
+         const {dataIni,dataFim} = ajustarData(start?new Date(start):undefined,
+         end?new Date(end):undefined)
+        reqDados({
+           startDate:dataIni,
+           endDate:dataFim
+        })
     }, [])
-
 
     return (
         <div className="flex-col w-full px-2 bg-white   ">
-            <ModalFiltro handleOnSubmit={reqDados} show={modalFiltro} onClose={() => setModalFiltro(false)} />
+            <ModalFiltro handleSubmit={handleSubmit} register={register} control={control} handleOnSubmit={reqDados} show={modalFiltro} onClose={() => setModalFiltro(false)} />
            {modalLead && <ModalItem item={lead ?? {}} open={modalLead} onClose={() => setModalLead(false)} />}
             <ModalConfirmar pergunta={`Tem certeza que deseja alterar o(a) ${lead?.status} para um(a) ${categoria} ? Essa alteração será contabilizada na faturação!`} handleConfirmar={handleAtualizarCategoria} openModal={modalConfirma} setOpenModal={setModalConfirma} />
             <ModalNovoContrato id_global={associado?.id_global} carregarDados={carregarDados} id_contrato={associado?.id_contrato} loading={loading} show={modalNovoContrato} onClose={() => setModalNovoContrato(false)} />
@@ -287,9 +314,9 @@ export function Historico() {
 
                                     
                                     <Table.Cell >
-                                       <button type="button" data-tooltip-id="tooltipAcoes" data-tooltip-content={'Criar Plano'} onClick={e => { e.stopPropagation(); handleGerarContrato(item) }}>
+                                      {item.status==='VENDA' && <button type="button" data-tooltip-id="tooltipAcoes" data-tooltip-content={'Criar Plano'} onClick={e => { e.stopPropagation(); handleGerarContrato(item) }}>
                                         <MdCreateNewFolder size={20} />
-                                       </button>
+                                       </button>}
                                     </Table.Cell>
 
 
@@ -318,13 +345,16 @@ interface DataProps {
     show: boolean,
     onClose: () => void
     handleOnSubmit: SubmitHandler<ReqProps>
+    register: UseFormRegister<ReqProps>
+    control:Control<ReqProps,any>
+    handleSubmit:UseFormHandleSubmit<ReqProps>
 }
 
 
 
 
-export const ModalFiltro = ({ onClose, show, handleOnSubmit }: DataProps) => {
-    const {register,handleSubmit,control} = useForm<ReqProps>()
+export const ModalFiltro = ({ onClose, show, handleOnSubmit,register,control,handleSubmit }: DataProps) => {
+ 
 
 
 
@@ -353,15 +383,27 @@ export const ModalFiltro = ({ onClose, show, handleOnSubmit }: DataProps) => {
                         <div >
 
                             <Label className="text-xs" value="Data inicio" />
-
-                            <DatePicker selected={new Date()} onChange={e => { }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+                            <Controller
+                                control={control}
+                                name='startDate'
+                                render={({field: {onChange, value}}) => (
+                                    <DatePicker selected={value?new Date(value):null} onChange={e => onChange(e)} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+                                )}
+                            />
+                            
                         </div>
 
                         <div >
 
                             <Label className="text-xs" value="Data fim" />
-
-                            <DatePicker selected={new Date()} onChange={e => { }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+                            <Controller
+                                control={control}
+                                name='endDate'
+                                render={({field: {onChange, value}}) => (
+                                         <DatePicker selected={value?new Date(value):null} onChange={e => onChange(e)} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+                                )}
+                            />
+                           
                         </div>
                     </div>
                     <Button type="submit">Aplicar</Button>

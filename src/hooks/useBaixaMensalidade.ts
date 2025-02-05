@@ -15,6 +15,7 @@ interface PayloadProps {
     pix_por:string,
     id_mensalidade_global: number,
     id_mensalidade: number,
+    data_lanc:Date,
     data_pgto: Date,
     hora_pgto: string,
     valor_total: number,

@@ -16,17 +16,17 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
 
 
     return(
-        <div className="grid  grid-cols-5 gap-2 font-semibold ">
+        <div className="grid  grid-cols-5 gap-2 ">
 
         <div className="col-span-2" >
   <div className=" block">
-    <Label  value="Nome" />
+    <Label className="text-xs"  value="Nome" />
   </div>
   <TextInput  sizing={'sm'} {...register('nome')} type="text" placeholder="Nome" required />
 </div>
 <div className="col-span-1" >
   <div className=" block">
-    <Label  value="Nascimento" />
+    <Label className="text-xs"  value="Nascimento" />
   </div>
   <Controller 
     name="data_nasc"
@@ -39,7 +39,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
 
 <div className="col-span-1" >
   <div className=" block">
-    <Label htmlFor="email1" value="Sexo" />
+    <Label className="text-xs" htmlFor="email1" value="Sexo" />
   </div>
   <Select sizing={'sm'}  {...register('sexo')} id="sexo" >
               <option selected></option>
@@ -50,7 +50,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
 
 <div className="col-span-1" >
   <div className=" block">
-    <Label  value="CEP" />
+    <Label className="text-xs"  value="CEP" />
   </div>
   <Controller 
     name="cep"
@@ -65,7 +65,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
 
 <div className="col-span-2" >
   <div className=" block">
-    <Label  value="Endereço" />
+    <Label className="text-xs"  value="Endereço" />
   </div>
   <TextInput sizing={'sm'} {...register('endereco')} type="text" placeholder="Endereço" required />
 </div>
@@ -74,28 +74,28 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
 
 <div className="col-span-1" >
   <div className=" block">
-    <Label  value="Numero" />
+    <Label className="text-xs"  value="Numero" />
   </div>
   <TextInput sizing={'sm'} {...register('numero')} type="number" placeholder="Número"  />
 </div>
 
 <div className="col-span-2" >
   <div className=" block">
-    <Label  value="Bairro" />
+    <Label className="text-xs"  value="Bairro" />
   </div>
   <TextInput sizing={'sm'} {...register('bairro')} type="text" placeholder="Bairro" required />
 </div>
           
 <div className="col-span-2" >
   <div className=" block">
-    <Label  value="Ponto ref" />
+    <Label className="text-xs"  value="Ponto ref" />
   </div>
   <TextInput sizing={'sm'} {...register('guia_rua')} type="text" placeholder="referencia"  />
 </div> 
 
 <div className="col-span-1" >
   <div className=" block">
-    <Label htmlFor="email1" value="UF" />
+    <Label className="text-xs" htmlFor="email1" value="UF" />
   </div>
   <Select sizing={'sm'} {...register('uf')} id="uf" >
   <option selected></option>
@@ -136,7 +136,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
 
 <div className="col-span-1" >
   <div className=" block">
-    <Label  value="Cidade" />
+    <Label className="text-xs"  value="Cidade" />
   </div>
   <Select  sizing={'sm'} {...register('cidade')} id="cidade" required >
               <option selected></option>
@@ -150,7 +150,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
           
 <div className="col-span-1" >
   <div className=" block">
-    <Label  value="RG" />
+    <Label className="text-xs"  value="RG" />
   </div>
   <TextInput sizing={'sm'} {...register('rg')} type="number"  />
 </div> 
@@ -158,7 +158,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
        
 <div className="col-span-1" >
   <div className=" block">
-    <Label  value="CPF" />
+    <Label className="text-xs"  value="CPF" />
   </div>
 
   <Controller
@@ -173,7 +173,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
 
  <div className="col-span-1" >
   <div className=" block">
-    <Label  value="Naturalidade" />
+    <Label className="text-xs"  value="Naturalidade" />
   </div>
   <TextInput sizing={'sm'} {...register('naturalidade')} type="text"  />
 </div>   
@@ -181,7 +181,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
 
 <div className="col-span-1" >
   <div className=" block">
-    <Label  value="Celular1" />
+    <Label className="text-xs"  value="Celular1" />
   </div>
   <Controller
     name="celular1"
@@ -195,7 +195,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
 
 <div className="col-span-1" >
   <div className=" block">
-    <Label  value="Celular2" />
+    <Label className="text-xs"  value="Celular2" />
   </div>
   <Controller
     name="celular2"
@@ -210,7 +210,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
              
 <div className="col-span-1" >
   <div className=" block">
-    <Label  value="Telefone" />
+    <Label className="text-xs"  value="Telefone" />
   </div>
   <Controller
     name="telefone"
@@ -224,7 +224,7 @@ export function TabTitular({register,setValue,watch,control}:UseFormAssociadoPro
 
 <div className="col-span-2" >
   <div className=" block">
-    <Label  value="E-mail" />
+    <Label className="text-xs"  value="E-mail" />
   </div>
   <TextInput sizing={'sm'} {...register('email')} type="text"  />
 </div>       
