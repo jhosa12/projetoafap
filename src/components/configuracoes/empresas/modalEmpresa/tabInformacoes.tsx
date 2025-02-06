@@ -1,18 +1,32 @@
 import { EmpresaProps } from "@/types/empresa"
 import { FileInput, Label, Textarea, TextInput } from "flowbite-react"
+import { ChangeEvent, FormEvent } from "react"
 import { useForm } from "react-hook-form"
+import { FormEmpresaProps } from "./modalEmpresa"
+
+interface FormTabInformacoesProps extends FormEmpresaProps{empresa:Partial<EmpresaProps>}
+export const TabInformacoes = ({empresa,control,register,setValue,watch}:FormTabInformacoesProps) => {
 
 
+    const handleImage = (e:ChangeEvent<HTMLInputElement>) =>{
 
-
-export const TabInformacoes = () => {
-    const {register,control,setValue,watch,handleSubmit}= useForm<EmpresaProps>()
+        if(!e.target.files){
+            return;
+        }
+        const file = e.target.files[0]
+        if(file.type !== 'image/jpeg' &&  file.type !== 'image/png'){
+            return;
+        }
+        setValue('logo',file)
+        setValue('logoUrl',URL.createObjectURL(file))
+    }
     return (
     <form className="grid grid-cols-4 gap-2">
+      
         <div className="col-span-4 inline-flex gap-2">
                   <Label
                     htmlFor="dropzone-file"
-                    className="flex relative w-1/3 cursor-pointer p-2  flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 "
+                    className="flex relative w-1/4 cursor-pointer p-2  flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 "
                   >
                         <svg
                         className="absolute  z-20 mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
@@ -29,10 +43,11 @@ export const TabInformacoes = () => {
                           d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
                         />
                       </svg>
-                   {!watch('local_pagamento') && <div className="flex flex-col items-center justify-center pt-6">
+                   {!watch('logoUrl') && <div className="flex flex-col items-center justify-center pt-6">
                       <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG(MAX. 500x350px)</p>
                     </div>}
-                    <FileInput  onChange={()=>{}} id="dropzone-file" className="hidden" />
+                    <FileInput  onChange={handleImage} id="dropzone-file" className="hidden" />
+                   {watch('logoUrl') && <img className="w-full h-full object-cover rounded-lg" src={watch('logoUrl')} alt="logo" width={110} height={20}></img>}
                   </Label>
 
                   <Textarea rows={4}  {...register('local_pagamento')} placeholder="Cabeçalho de contrato/relatorios"/>
@@ -59,7 +74,7 @@ export const TabInformacoes = () => {
         </div>
         <div className="">
             <Label className="text-xs" value="Cidade/UF" />
-            <TextInput sizing={'sm'} {...register('cidade_uf')} type="text" placeholder="Insc. Estadual" required/>
+            <TextInput sizing={'sm'} {...register('cidade_uf')} type="text" placeholder="Cidade/UF" required/>
         </div>
         <div className="">
             <Label className="text-xs" value="Telefone" />

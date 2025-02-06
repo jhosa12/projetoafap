@@ -41,7 +41,7 @@ const handleOpenEmpresa = useCallback((item:EmpresaProps)=>{
     return (
         <div className={ `flex flex-col  px-4 w-full overflow-y-auto h-[calc(100vh-138px)]`}>
 
-            <ModalEmpresa open={open} onClose={onClose} />
+  {   open && <ModalEmpresa empresa={empresa} open={open} onClose={onClose} />}
             <Button type="button" className="ml-auto mb-2" variant={'outline'} size="sm" ><IoIosAddCircle size={20}  />NOVA EMPRESA</Button>
 
             <div >

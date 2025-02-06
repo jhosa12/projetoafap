@@ -19,4 +19,6 @@ export interface EmpresaProps{
     local_pagamento:string,
     arte_car_dep:string,
     instrucoes_carne:string
+    logo:File|null
+    logoUrl:string
 }

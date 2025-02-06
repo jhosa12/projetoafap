@@ -27,9 +27,11 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { useContext } from "react";
 import Image from "next/image";
+import { url } from "inspector";
 
 
-export function Header() {
+export function 
+Header() {
 
     const {usuario,empresas,selectEmp,setSelectEmp} = useContext(AuthContext)
 
@@ -157,10 +159,10 @@ export function Header() {
     <Button onClick={signOut} variant={"secondary"}>
     <LogIn  size={20} />
     </Button>
+        <Avatar rounded img={usuario?.image} />
 
-
-    <div className="flex flex-col">
-        <Label  value={usuario?.nome}/>
+    <div className="flex flex-col items-center">
+        <span  className="text-[13px] font-semibold">{usuario?.nome}</span>
         <span className="text-xs">{usuario?.cargo}</span>
     </div>
     
