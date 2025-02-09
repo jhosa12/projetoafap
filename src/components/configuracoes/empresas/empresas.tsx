@@ -1,4 +1,4 @@
-import { inter, roboto_Mono } from "@/fonts/fonts";
+
 import { api } from "@/services/apiClient";
 import { EmpresaProps } from "@/types/empresa";
 import { Table } from "flowbite-react";
@@ -8,7 +8,6 @@ import { IoIosAddCircle } from "react-icons/io";
 import { toast } from "react-toastify";
 import { ModalEmpresa } from "./modalEmpresa/modalEmpresa";
 import { Button } from "@/components/ui/button";
-
 
 
 

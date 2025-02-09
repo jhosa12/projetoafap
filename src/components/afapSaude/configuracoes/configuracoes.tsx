@@ -20,19 +20,19 @@ export default function Configuracoes({exames,setExames,medicos,setMedicos}:Data
 
     return(
         <div className="overflow-x-auto">
-      <Tabs theme={{tablist:{tabitem:{base:"flex  items-center justify-center rounded-t-lg p-2 text-sm font-medium first:ml-0 focus:outline-none disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{fullWidth:{active:{off:'bg-gray-600',on:'bg-gray-100 text-black'}}}}}}} aria-label="Full width tabs" variant="fullWidth">
-        <Tabs.Item active title="Exames" icon={HiUserCircle}>
+      <Tabs theme={{tablist:{tabitem:{base:"flex  items-center justify-center rounded-t-lg p-2 text-xs font-medium first:ml-0 focus:outline-none disabled:cursor-not-allowed disabled:text-gray-400",variant:{fullWidth:{active:{off:'bg-gray-600',on:'bg-gray-100 text-black'}}}}}}} aria-label="Full width tabs" variant="fullWidth">
+        <Tabs.Item active title="Exames" icon={()=><HiUserCircle  className="mr-2 h-3 w-3"/>}>
          <AddEditExames exames={exames} setExames={setExames}/>
         </Tabs.Item>
-        <Tabs.Item title="Administrar Médicos" icon={MdMedicalServices}>
+        <Tabs.Item title="Administrar Médicos" icon={()=><MdMedicalServices className="mr-2 h-3 w-3"/>}>
          <AdmMedico medicos={medicos} setArray={setMedicos}/>
         </Tabs.Item>
-        <Tabs.Item title="Settings" icon={HiAdjustments}>
+        <Tabs.Item title="Settings" icon={()=><HiAdjustments className="mr-2 h-3 w-3"/>}>
           This is <span className="font-medium text-white">Settings tab's associated content</span>.
           Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to
           control the content visibility and styling.
         </Tabs.Item>
-        <Tabs.Item title="Contacts" icon={HiClipboardList}>
+        <Tabs.Item title="Contacts" icon={()=><HiClipboardList className="mr-2 h-3 w-3"/>}>
           This is <span className="font-medium text-white">Contacts tab's associated content</span>.
           Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to
           control the content visibility and styling.

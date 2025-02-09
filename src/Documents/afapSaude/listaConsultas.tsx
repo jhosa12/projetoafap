@@ -28,13 +28,13 @@ class ListaConsultas extends React.Component<DadosProps> {
 
         return (
             <div className='flex flex-col w-full gap-3 p-4'>
-                <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', justifyContent: 'center', gap: '10px' }} >
+               {/* <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', justifyContent: 'center', gap: '10px' }} >
                     <Image width={120} height={120} src={logo} alt="logo" />
                     <h1 style={{ fontWeight: 'bold', fontSize: '18px' }}>RELATORIO DE CONSULTAS</h1>
-                </div>
+                </div>*/}
             
                 <div>
-                    <Table theme={{body:{cell:{base:"px-6 py-1 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-black"}}}}>
+                    <Table theme={{root:{shadow:'none'},body:{cell:{base:"px-2 py-1 text-xs text-black"}},head:{cell:{base:"px-2 py-1 text-xs text-black"}}}}>
                         <Table.Head>
                             <Table.HeadCell>NOME</Table.HeadCell>
                             <Table.HeadCell>ENDEREÇO</Table.HeadCell>

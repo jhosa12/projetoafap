@@ -32,7 +32,7 @@ interface FormDataProps{
 interface DataProps{
     openModal:boolean,
     setModal:(open:boolean)=>void
-    data:DependentesProps
+    data:Partial<DependentesProps>
 }
 
 
@@ -40,18 +40,12 @@ interface DataProps{
 
 export function ModalDependentes({openModal,setModal,data}:DataProps){
     const {usuario,dadosassociado,carregarDados}=useContext(AuthContext)
-    const {setValue,register,watch,handleSubmit} = useForm<FormDataProps>()
+    const {setValue,register,watch,handleSubmit,reset} = useForm<DependentesProps>({
+      defaultValues:data
+    })
 
-useEffect(()=>{
-  setValue('carencia',data.carencia)
-  setValue('data_adesao',data.data_adesao)
- data.data_nasc &&  setValue('data_nasc',data.data_nasc)
-  setValue('grau_parentesco',data.grau_parentesco)
-  setValue('nome',data.nome)
-  setValue('sexo',data.sexo)
-},[data])
 
-    const handleApiFunction:SubmitHandler<FormDataProps> = async(dadosForm)=>{
+    const handleApiFunction:SubmitHandler<DependentesProps> = async(dadosForm)=>{
       if (data.excluido) {
         // Se o dependente está excluído, você resgata ele.
         await resgatarDep();
@@ -65,7 +59,7 @@ useEffect(()=>{
 
     }
 
- async function addDependente(dados:FormDataProps){
+ async function addDependente(dados:DependentesProps){
     const response = await toast.promise(
         api.post('/novoDependente',{
           id_global:dadosassociado?.id_global,
@@ -91,7 +85,7 @@ useEffect(()=>{
    
  }
 
- async function atualizarDependente(dados:FormDataProps){
+ async function atualizarDependente(dados:DependentesProps){
     const response = await toast.promise(
         api.put('/atualizarDependente',{
           id_dependente_global:data.id_dependente_global,
@@ -146,13 +140,13 @@ useEffect(()=>{
         <form className="  grid gap-2 grid-cols-4 font-semibold" onSubmit={handleSubmit(handleApiFunction)}>
         <div className="col-span-2" >
   <div className=" block">
-    <Label  value="Nome" />
+    <Label className="text-xs"  value="Nome" />
   </div>
   <TextInput className="font-semibold" value={watch('nome')?.toUpperCase()} sizing={'sm'} {...register('nome')} type="text" placeholder="Nome" required />
 </div>
 <div className="col-span-1" >
   <div className=" block">
-    <Label  value="Nascimento" />
+    <Label className="text-xs"  value="Nascimento" />
   </div>
  <DatePicker selected={watch('data_nasc')} onChange={e=>e && setValue('data_nasc',e)}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
 </div>
@@ -161,7 +155,7 @@ useEffect(()=>{
 
 <div className="col-span-1" >
   <div className=" block">
-    <Label  value="Parentesco" />
+    <Label className="text-xs"  value="Parentesco" />
   </div>
   <Select sizing={'sm'} {...register('grau_parentesco')}>
   <option selected className="text-gray-200">PARENTESCO</option>
@@ -182,14 +176,14 @@ useEffect(()=>{
 
 <div className="col-span-1" >
   <div className=" block">
-    <Label  value="Adesão" />
+    <Label className="text-xs"  value="Adesão" />
   </div>
  <DatePicker selected={watch('data_adesao')} onChange={e=>e && setValue('data_adesao',e)}   dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
 </div>
 
 <div className="col-span-1" >
   <div className=" block">
-    <Label  value="Carência" />
+    <Label className="text-xs"  value="Carência" />
   </div>
  <DatePicker  selected={watch('carencia')} onChange={e=>e && setValue('carencia',e)}    dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
 </div>
@@ -199,7 +193,7 @@ useEffect(()=>{
 {data.exclusao_motivo && (
      <div className="col-span-2" >
      <div className=" block">
-       <Label  value="Motivo exclusão" />
+       <Label className="text-xs"  value="Motivo exclusão" />
      </div>
      <TextInput disabled={data.excluido}   sizing={'sm'} {...register('exclusao_motivo')}  type="text" placeholder="Motivo" required />
    </div>

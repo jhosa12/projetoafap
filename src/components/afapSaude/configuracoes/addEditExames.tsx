@@ -59,14 +59,6 @@ const handleDeletarExame=async ()=>{
 
 }
 
-
-
-
-
-
-
-
-
     return(
         <div className="space-y-2">
          <div className="flex flex-row justify-end gap-2 px-2">
@@ -74,7 +66,7 @@ const handleDeletarExame=async ()=>{
          <Button  onClick={imprimirRelatorio} size={'xs'} theme={{color:{light:"border border-gray-300 bg-white text-gray-900   enabled:hover:bg-gray-100  "}}} color={'light'}><IoIosPrint className="h-4 w-4 mr-2"/>Relatório</Button>
             </div>  
             <div className="overflow-y-auto h-[calc(100vh-210px)] ">
-      <Table theme={{root:{shadow:'none'},body:{cell:{base:"px-6 py-1"}},head:{cell:{base:"px-6 py-1"}}}} hoverable>
+      <Table theme={{root:{shadow:'none'},body:{cell:{base:"px-6 py-1 text-[11px]"}},head:{cell:{base:"px-6 py-1"}}}} hoverable>
         <Table.Head>
           <Table.HeadCell>Exame</Table.HeadCell>
           <Table.HeadCell>Valor Bruto</Table.HeadCell>
@@ -85,7 +77,7 @@ const handleDeletarExame=async ()=>{
             <span className="sr-only">Edit</span>
           </Table.HeadCell>
         </Table.Head>
-        <Table.Body className="divide-y text-black text-xs">
+        <Table.Body className="divide-y text-black">
           {exames.map((item,index)=>(
             <Table.Row key={item.id_exame} className="bg-white dark:border-gray-700 dark:bg-gray-800 ">
             <Table.Cell  className="whitespace-nowrap font-medium text-gray-900 dark:text-white ">

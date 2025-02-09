@@ -44,7 +44,7 @@ export default function Consultas({ medicos, consultas, setConsultas,events  }: 
 
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState<Partial<ConsultaProps>>()
-  const {usuario} = useContext(AuthContext)
+  const {usuario,infoEmpresa} = useContext(AuthContext)
   const [modalFiltro, setModalFiltro] = useState<boolean>(false)
   const [modalDeletar, setModalDeletar] = useState<boolean>(false)
   const [modalReceber,setModalReceber] = useState<boolean>(false)
@@ -170,7 +170,29 @@ const imprimirFicha = useCallback(useReactToPrint({
 }), [data?.id_consulta]);
 
 const imprimirConsultas = useCallback(useReactToPrint({
-  pageStyle: pageStyle,
+  pageStyle: `
+      @page {
+          size: landscape;
+          margin: 1rem;
+      }
+      @media print {
+          body {
+              -webkit-print-color-adjust: exact;
+          }
+          @page {
+              size: landscape;
+              margin: 1rem;
+          }
+          @page {
+              @top-center {
+                  content: none;
+              }
+              @bottom-center {
+                  content: none;
+              }
+          }
+      }
+  `,
   content: () => currentConsultas.current,
 }), [consultas]);
 
@@ -199,7 +221,7 @@ const imprimirRecibo = useCallback(useReactToPrint({
 
 
 
-const buscarConsultas = async ({startDate,endDate,id_med,status}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined})=>{
+const buscarConsultas = async ({startDate,endDate,id_med,status,buscar}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string})=>{
 
  const {dataIni,dataFim} =  ajustarData(startDate,endDate)
 
@@ -214,7 +236,9 @@ const buscarConsultas = async ({startDate,endDate,id_med,status}:{startDate:Date
         startDate:dataIni,
         endDate:dataFim,
         id_med,
-      status })
+      status,
+      buscar
+     })
       
       setConsultas(response.data)
       setLoading(false)
@@ -324,10 +348,6 @@ const handleDeletar = useCallback(async () => {
 }, [consultas, data, setConsultas]);
 
 
-
- 
-
-
   return (
     <div className="flex flex-col p-2 gap-2">
       <div className="ml-auto inline-flex gap-4">
@@ -375,7 +395,7 @@ const handleDeletar = useCallback(async () => {
       </div>
 
       <div className="overflow-y-auto h-[calc(100vh-155px)] ">
-        <Table  theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 text-black py-1 text-xs" } },head: { cell: { base: "px-4 text-black py-1 text-xs" } } }}  >
+        <Table  theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 text-black py-1 text-[11px]" } },head: { cell: { base: "px-4 text-black py-1 text-xs" } } }}  >
 
           <Table.Head>
             <Table.HeadCell>Nome</Table.HeadCell>
@@ -401,7 +421,7 @@ const handleDeletar = useCallback(async () => {
                 <Table.Cell>{Number(item?.procedimentos?.reduce((acc, curr) => acc + curr.valorFinal, 0)?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
                 <Table.Cell>{item?.user}</Table.Cell>
                 <Table.Cell onClick={(e) => e.stopPropagation()}>
-                <select   className={`font-semibold border-none rounded-lg focus:ring-0 hover:cursor-pointer  appearance-none outline-none text-xs ${
+                <select   className={`font-semibold border-none p-0 rounded-lg focus:ring-0 hover:cursor-pointer  appearance-none outline-none text-[11px] ${
     item?.status === 'AGENDADO' ? 'text-blue-500' :
     item?.status === 'AGUARDANDO DATA' ? 'text-yellow-500' :
     item?.status === 'CONFIRMADO' ? 'text-cyan-500' :
@@ -449,6 +469,7 @@ const handleDeletar = useCallback(async () => {
               
                ref={currentPage}/>
                <ReciboMensalidade
+               infoEmpresa={infoEmpresa}
                 associado={data?.nome??''}
                 contrato={data?.id_consulta??null}
                 data_pgto={data?.dt_pgto??null}

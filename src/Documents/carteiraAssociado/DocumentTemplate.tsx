@@ -4,6 +4,7 @@ import carteiraDep from "../../../public/carteiraDep.jpeg";
 // DocumentTemplate.js
 
 import React from 'react';
+import { EmpresaProps } from "@/types/empresa";
 interface DadosProps {
   dependentes: Array<Partial<{
     nome: string,
@@ -49,6 +50,7 @@ interface DadosProps {
     exclusao_motivo: string,
   
   }>>
+  infoEmpresa:EmpresaProps|null
 
 }
 
@@ -59,6 +61,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
     const { dependentes,
       contrato,
       plano,
+      infoEmpresa,
       titular,
       endereco,
       numero,
@@ -86,35 +89,52 @@ class DocumentTemplate extends React.Component<DadosProps> {
 
        {cartTitular && <div style={{
                             display: 'flex',
+                            flexDirection: 'row',
                             backgroundRepeat: 'no-repeat',
-                            backgroundImage: "url('/carteiraTitular.png')",
+                            backgroundImage: "url('/frenteverso.jpg')",
                             pageBreakInside: 'avoid',
                             height: '230px',
+                            color:'white',
                             fill: 'black',
                             width: '100%',
+                            fontSize:7,
                             backgroundSize: 'contain',
                             backgroundPosition: 'center',
                         }}  className="relative inline-flex col-span-2 w-full justify-center">
         {/*  <Image alt={'carteiraDep'} height={210} width={362} src={titularFrente} className="object-cover" />
           <Image alt={'carteiraDep'} height={210} width={362} src={titularVerso} className="object-cover " />*/}
-          <div className="absolute  flex flex-col justify-center items-center" style={{left:161,top:130,gap:2,width:222}}>
-           <span style={{fontSize:10}}>{titular}</span> 
+
+          <div style={{position:'absolute',left:42,top:85,gap:20,display:'flex',flexDirection:'column',fontWeight:'bold'}}>
+            <span>.</span>
+            <span>.</span>
+            <span>{infoEmpresa?.celular}</span>
+            <span style={{width:'63%'}}>{infoEmpresa?.endereco}</span>
+          </div>
+          <div className="absolute  flex flex-col  items-start" style={{left:161,top:20,gap:8,width:222}}>
+           <span style={{fontSize:9,fontWeight:'bold'}}>{titular}</span> 
           
-           <div className="inline-flex gap-10 ">
-            <span className="font-semibold" style={{fontSize:6}}>CONTRATO: {contrato}</span>
-            <span className="font-semibold" style={{fontSize:6}}>CATEGORIA: {plano}</span> 
-           </div>
          
-            <span className="font-semibold" style={{fontSize:7}}>{endereco} - {numero!=0 && numero}</span>
-            <span className="font-semibold" style={{fontSize:7}}>{bairro}/{cidade},{uf}</span>
-           {celular && <span className="font-semibold" style={{fontSize:7}}>FONE:{celular}</span>}
-            <span className="font-semibold" style={{fontSize:7}}>CARTÃO VÁLIDO ATÉ:{venc.toLocaleDateString()}</span>
+            <span className="font-semibold" >CONTRATO: {contrato}</span>
+            <span className="font-semibold" >CATEGORIA: {plano}</span> 
+            <span className="font-semibold" >ADESÃO: {contrato}</span>
+            <span className="font-semibold" >CPF: {contrato}</span>
+            <span className="font-semibold" >RG: {plano}</span> 
+          
+         
+            <span className="font-semibold" >{endereco} - {numero!=0 && numero}</span>
+            <span className="font-semibold" >{bairro}/{cidade},{uf}</span>
+           {celular && <span className="font-semibold" >FONE:{celular}</span>}
+            <span className="font-semibold" >CARTÃO VÁLIDO ATÉ: {venc.toLocaleDateString()}</span>
             </div>
-          {<ol className="absolute" style={{right:110,top:50,fontSize:8,listStyleType:'decimal'}}>
+            <div style={{position:'absolute',right:260,top:40,fontSize:9,fontWeight:'bold'}}>
+              <span >DEPENDENTES:</span>
+            {<ol className="absolute" style={{listStyleType:'decimal'}}>
            {dependentesTitular?.filter(it=>!it.excluido)?.map(item=>(
-            <li key={item.id_dependente} >{item.nome}</li>
+            <li style={{textWrap:'nowrap',textAlign:'left'}} key={item.id_dependente} >{item.nome}</li>
            )) }
             </ol>}
+            </div>
+        
           </div>}
           {dependentes.filter(it=>!it.excluido)?.map((item, index) => {
             return (
@@ -122,40 +142,45 @@ class DocumentTemplate extends React.Component<DadosProps> {
               style={{
                 display: 'flex',
                 backgroundRepeat: 'no-repeat',
-                backgroundImage: "url('/carteiraDep.jpeg')",
+                backgroundImage: "url('/dependenteCartao.png')",
                 pageBreakInside: 'avoid',
-                height: '230px',
+                height: '220px',
                 fill: 'black',
                 width: '100%',
-              
+                color:'white',
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
             }} 
                className="flex col-span-1  relative w-full  text-sm text-black items-center justify-center">
 
-                <div className="justify-center  " style={{display:'flex',fontSize:8,flexDirection:'column',position:'absolute',bottom:20,left:150,width:200,alignItems:'center',maxWidth:220,lineHeight:2}}>
-                  <div style={{margin:0,padding:0,display:'flex',flexDirection:'column',gap:1,lineHeight:1}}>
-                    <span style={{fontSize:6,paddingLeft:5}}>Dependente:</span>
-                  <h1 style={{fontWeight:'inherit',fontSize:10}}>{item.nome}</h1>
-                  </div>
-              
-                <div style={{fontSize:6}} className="flex w-full justify-around">
-                <span >CONTRATO: {contrato}</span>
-                <span >CATEGORIA: {plano}</span>
+                <div style={{position:'absolute',display:'flex',flexDirection:'column',fontSize:10,top:18,left:160,lineHeight:1}}>  
+                  <span>{infoEmpresa?.fantasia}</span>
+                  <span>CNPJ: {infoEmpresa?.cnpj}</span>
+                  <span>TELEFONES: {infoEmpresa?.fone}</span>
                 </div>
-                <div style={{fontSize:6}} className="flex w-full justify-around">
-                <span>PARENTESCO: {item.grau_parentesco}</span>
-                <span >NASC.: {item.data_nasc && new Date(item.data_nasc).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
-                </div>
+
+                <div  style={{display:'grid',gridTemplateColumns:'repeat(3, 1fr)',fontSize:9,position:'absolute',top:90,left:25,lineHeight:2,gap:17,width:'100%'}}>
+               
+                  
+                  <h1 style={{fontWeight:'bold',fontSize:10,gridColumn: '1 / -1'}}>{item.nome}</h1>
+                 
+             
+                <span > {contrato}</span>
+                <span > {item.data_nasc && new Date(item.data_nasc).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+     
+             
+                <span>{item.grau_parentesco}</span>
+               
+                <span style={{gridColumn: '1 / -1'}} >{plano}</span>
               
-                <div style={{fontSize:6}} className="flex w-full justify-around">
+              
+                <span  > {venc.toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+                <span  > {item.data_adesao && new Date(item.data_adesao).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+                <span > {item.carencia && new Date(item.carencia).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
                 
-                <span  >ADESÃO: {item.data_adesao && new Date(item.data_adesao).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
-                <span >CARÊNCIA: {item.carencia && new Date(item.carencia).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
-                </div>
               
-              <span style={{fontStyle:'oblique'}}>Esta carteirinha é de uso individual e intransferível</span>
-              <span style={{fontSize:6,fontWeight:'bold'}}  >CARTÃO VÁLIDO ATÉ:	{venc.toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+            
+           
                 </div>
               
               

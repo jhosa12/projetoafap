@@ -15,19 +15,18 @@ import {  Modal, Spinner, Tabs } from "flowbite-react";
 import { HiIdentification, HiMiniInbox, HiMiniWallet, HiPrinter, HiUserCircle, HiUserGroup } from "react-icons/hi2";
 import { DadosAssociado } from "@/components/admContrato/dadosAssociado/screen";
 import { Dependentes } from "@/components/admContrato/dependentes/dependentes";
-
 import ModalCadastro from "@/components/admContrato/cadastro/modalCadastro";
 import { FaHandshake } from "react-icons/fa";
-
 import { VerificarSituacao } from "@/utils/admContrato/verificarSituacao";
 import { Acordos } from "@/components/admContrato/acordos/screen";
-import { inter, roboto_Mono, source_Sans_3 } from "@/fonts/fonts";
 import { Button } from "@/components/ui/button"
-
+import parse from 'html-react-parser';
+import { SanitizeHtml } from "@/utils/sanitizeHtml";
+import { info } from "console";
 
 export default function AdmContrato() {
 
-    const { usuario,data,closeModa,  dadosassociado, carregarDados, permissoes,limparDados,loading } = useContext(AuthContext)
+    const { usuario,data,closeModa,  dadosassociado, carregarDados, permissoes,limparDados,loading,infoEmpresa } = useContext(AuthContext)
     const [indexTab, setIndex] = useState<number>(0)
     const [openCadastro, setCadastro] = useState<boolean>(false)
     const [modalBusca, setModalBusca] = useState<boolean>(false)
@@ -91,6 +90,7 @@ useEffect(() => {
 
     return (
         <>
+     
         {loading &&    <Modal size={'sm'} popup show={loading}>
                 <Modal.Body>
                     <div className=" flex flex-col pt-6 w-full justify-center items-center">
@@ -108,7 +108,7 @@ useEffect(() => {
             <div className={`flex flex-col w-full mr-2  justify-center`}>
                 {modalBusca && (<ModalBusca visible={modalBusca} setVisible={()=>setModalBusca(false)} />)}
                 {openCadastro && (<ModalCadastro onClose={setCadastro} isOpen={openCadastro} />)}
-
+              
                 <div className="flex  flex-col px-4  ">
                     <div className="flex  flex-row justify-start gap-2 items-center w-full mt-2 pb-1">
                         <Button variant={'outline'} size={'sm'} onClick={() => setModalBusca(true)} type="button" >
@@ -124,7 +124,7 @@ useEffect(() => {
                         <Tabs theme={{ base: 'bg-white rounded-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-165px)] py-1', tablist: { tabitem: { base: "flex items-center justify-center enabled:text-black rounded-t-lg p-4 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 " } } }} aria-label="Tabs with icons" variant="underline" onActiveTabChange={e => setIndex(e)} >
 
                             <Tabs.Item  active={indexTab === 0} title="Dados Associado" icon={HiUserCircle}>
-                                {indexTab === 0 && <DadosAssociado dadosassociado={dadosassociado ?? {}} />}
+                                {indexTab === 0 && <DadosAssociado infoEmpresa={infoEmpresa} dadosassociado={dadosassociado ?? {}} />}
                             </Tabs.Item>
 
                             <Tabs.Item active={indexTab === 1} disabled={!permissoes.includes('ADM1.2')} title="Histórico/Mensalidade" icon={HiMiniWallet}>
@@ -173,6 +173,7 @@ useEffect(() => {
                             </Tabs.Item>
                             <Tabs.Item active={indexTab === 4} title="Carteiras" icon={HiIdentification}>
                                 {indexTab === 4 && <CarteirasDep
+                                    infoEmpresa={infoEmpresa}
                                     titular={dadosassociado?.nome ?? ''}
                                     dependentes={dadosassociado?.dependentes ?? []}
                                     contrato={dadosassociado?.contrato?.id_contrato ?? 0}

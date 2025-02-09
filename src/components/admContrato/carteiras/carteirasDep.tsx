@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import DocumentTemplate from "@/Documents/carteiraAssociado/DocumentTemplate";
+import { EmpresaProps } from "@/types/empresa";
 import pageStyle from "@/utils/pageStyle";
 import { Table } from "flowbite-react";
 import { it } from "node:test";
@@ -20,6 +21,7 @@ interface DadosProps{
     cidade:string,
     celular:string,
     uf:string,
+    infoEmpresa:EmpresaProps|null
    
   }
 
@@ -40,7 +42,7 @@ interface DadosProps{
    
 }
 
-export default function CarteirasDep({dependentes,contrato,plano,titular,endereco,numero,bairro,cidade,celular,uf}:DadosProps){
+export default function CarteirasDep({dependentes,contrato,plano,titular,endereco,numero,bairro,cidade,celular,uf,infoEmpresa}:DadosProps){
     const [arrayPrint,setArrayPrint]=useState<Array<Partial<DependentesProps>>>([])
     const componentRef = useRef<DocumentTemplate>(null)
     const [todosDep,setTodosDep]=useState(false)
@@ -176,6 +178,7 @@ export default function CarteirasDep({dependentes,contrato,plano,titular,enderec
                                       </Table>
                                       <div className="hidden">
             <DocumentTemplate
+            infoEmpresa={infoEmpresa}
           ref={componentRef}
           dependentes={arrayPrint}
           plano={plano}

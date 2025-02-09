@@ -1,7 +1,7 @@
 import { AuthContext} from "@/contexts/AuthContext"
 import { api } from "@/services/apiClient"
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import { MdDeleteForever } from "react-icons/md"
+import { MdDeleteForever, MdEdit } from "react-icons/md"
 import { RiAddCircleFill } from "react-icons/ri"
 import {  TbWheelchair } from "react-icons/tb"
 import { toast } from "react-toastify"
@@ -23,7 +23,7 @@ export function Dependentes(){
     const {closeModa,dadosassociado,data,usuario,setarDadosAssociado,permissoes} =useContext(AuthContext)
     const [modalExcluirDep, setModalExcDep] = useState(false)
     const [modalDep,setModalDep] = useState<boolean>(false)
-    const [dadosDep,setDadosDep] = useState<DependentesProps>({} as DependentesProps)
+    const [dadosDep,setDadosDep] = useState<Partial<DependentesProps>>({} )
     const componentRef = useRef<DeclaracaoExclusao>(null)
     const [isReadyToPrint,setIsReadyToPrint] = useState(false)
 
@@ -55,7 +55,7 @@ export function Dependentes(){
         return
     }
     closeModa({dependente:item})
-   },[closeModa,data.dependente])
+   },[data.dependente])
 
 
     async function excluirDep(motivo:string) {
@@ -114,7 +114,14 @@ export function Dependentes(){
                 </label>
         
                                      <ButtonGroup>
-                                                    <Button disabled={!permissoes.includes('ADM1.3.2')} onClick={() => setModalDep(true)} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' /> Adicionar</Button>
+
+                                             <Button disabled={!permissoes.includes('ADM1.3.2')} onClick={() => {
+                                                 setDadosDep({})
+                                                setModalDep(true)}} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' /> Adicionar</Button>
+                                                    <Button disabled={!permissoes.includes('ADM1.3.2')} onClick={() => {
+                                                       
+                                                        setModalDep(true)
+                                                        }} type="button" color='light' size='xs'><MdEdit className='mr-1 h-4 w-4' />Editar</Button>
                                 
                                                     <Button disabled={!permissoes.includes('ADM1.3.3')} onClick={() => setModalExcDep(true)} type="button" color='light' size='xs'><MdDeleteForever className='mr-1 h-4 w-4' /> Excluir</Button>
                                                 </ButtonGroup>
@@ -194,19 +201,19 @@ export function Dependentes(){
 
                                 </Table>
 
-                                <ModalDependentes data={dadosDep} openModal={modalDep} setModal={setModalDep}/>
-                                <ModalExcluirDep nome={dadosDep?.nome} excluirDep={excluirDep} openModal={modalExcluirDep} setOpenModal={setModalExcDep}/>
+                              {modalDep &&  <ModalDependentes data={data.dependente??{}} openModal={modalDep} setModal={setModalDep}/>}
+                                <ModalExcluirDep nome={dadosDep?.nome??''} excluirDep={excluirDep} openModal={modalExcluirDep} setOpenModal={setModalExcDep}/>
 
                                 <div style={{ display: 'none' }}>
                                     <DeclaracaoExclusao 
-                                    data_nasc={dadosDep?.data_nasc}
+                                    data_nasc={dadosDep?.data_nasc??null}
                                     bairro={dadosassociado?.bairro ?? ''}
                                     cidade={dadosassociado?.cidade ?? ''}
                                     endereco={dadosassociado?.endereco ?? ''}
                                     uf={dadosassociado?.uf ?? ''}
                                     numero={dadosassociado?.numero ?? null}
                                     grau_parentesco={dadosDep.grau_parentesco ?? ''}
-                                    nome={dadosDep?.nome}
+                                    nome={dadosDep?.nome??''}
                                     cpf={dadosassociado?.cpfcnpj ?? ''}
                                     titular={dadosassociado?.nome ?? ''}
                                     contrato={dadosassociado?.contrato?.id_contrato_global ?? null}

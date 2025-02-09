@@ -1,7 +1,9 @@
+import { ModalLoading } from '@/components/loading/modalLoading';
 import { MenuLateral } from '@/components/menu';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { api } from '@/services/apiClient';
 import '@/styles/globals.css';
+import { Modal } from 'flowbite-react';
 import type { AppProps } from 'next/app';
 import Error from 'next/error';
 import { useRouter } from 'next/router';
@@ -27,7 +29,7 @@ function PrivateLayout({ children }: { children: React.ReactNode }) {
 }
 
 function PrivateRouter({ Component, pageProps }: AppProps) {
-  const { usuario, setPermissoes} = useAuth();
+  const { usuario, setPermissoes,loadingInfo} = useAuth();
   const router = useRouter();
 
   async function GetPermissions() {
@@ -64,6 +66,7 @@ function PrivateRouter({ Component, pageProps }: AppProps) {
   if (!isLoginPage(router.pathname)) {
     return (
       <PrivateLayout>
+        <ModalLoading show={loadingInfo} />
         <Component {...pageProps} />
       </PrivateLayout>
     );
@@ -76,6 +79,7 @@ export default function App({ Component, pageProps,router }: AppProps) {
   return (
     <StrictMode >
       <AuthProvider>
+        
         <PrivateRouter router={router} Component={Component} pageProps={pageProps} />
         <ToastContainer
           autoClose={4000}

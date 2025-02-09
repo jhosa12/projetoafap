@@ -36,7 +36,7 @@ export function TabFormulario({control,register,setValue,trigger,watch}:UseFormL
                 <Select sizing={'sm'} {...register('planodesaude')} >
                     <option value=""></option>
                     <option value="SIM">SIM</option>
-                    <option value="NÃO">NÃO</option>
+                    <option value="NAO">NÃO</option>
                 </Select>
             </div>
              <div className="col-span-2">
@@ -49,7 +49,7 @@ export function TabFormulario({control,register,setValue,trigger,watch}:UseFormL
                 <Select sizing={'sm'} {...register('possuiPet')} >
                     <option value=""></option>
                     <option value="SIM">SIM</option>
-                    <option value="NÃO">NÃO</option>
+                    <option value="NAO">NÃO</option>
                 </Select>
             </div>
             <div className="">
@@ -57,7 +57,7 @@ export function TabFormulario({control,register,setValue,trigger,watch}:UseFormL
                 <Select sizing={'sm'} {...register('planoPet')} >
                     <option value=""></option>
                     <option value="SIM">SIM</option>
-                    <option value="NÃO">NÃO</option>
+                    <option value="NAO">NÃO</option>
                 </Select>
             </div>
             <div className="">

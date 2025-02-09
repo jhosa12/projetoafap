@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button"
 import { useCallback } from "react"
 import { api } from "@/services/apiClient"
 import { toast } from "react-toastify"
+import { TabContrato } from "@/components/admContrato/dadosAssociado/modalEditar/tabContrato"
+import { TabContratoEmpresa } from "./tabContrato"
 
 
 export interface FormEmpresaProps{
@@ -29,25 +31,27 @@ export function ModalEmpresa({open,onClose,empresa}:DataProps) {
 
 
     const handleEditarEmpresa:SubmitHandler<EmpresaProps> = async(data)=>{
-        console.log(data)
+      
         const formData = new FormData();
         formData.append('id',data.id);
-        formData.append('nome',data.nome);
-        formData.append('cnpj',data.cnpj);
-        formData.append('celular',data.celular);
-        formData.append('email',data.email);
-        formData.append('endereco',data.endereco);
-        formData.append('celular2',data.celular2);
-        formData.append('site',data.site);
-        formData.append('fantasia',data.fantasia);
-        formData.append('fone',data.fone);
-        formData.append('local_pagamento',data.local_pagamento);
-        formData.append('cidade_uf',data.cidade_uf);
-        formData.append('dias_carencia',String(data.dias_carencia));
-        formData.append('email_come',data.email_come);
-        formData.append('ins_estadual',data.ins_estadual);
-        formData.append('validade_carteira',String(data.validade_carteira));
-        formData.append('instrucoes_carne',data.instrucoes_carne);
+        formData.append('razao_social',data.razao_social??'');
+        formData.append('nome',data.nome??'');
+        formData.append('cnpj',data.cnpj??'');
+        formData.append('celular',data.celular??'');
+        formData.append('email',data.email??'');
+        formData.append('endereco',data.endereco??'');
+        formData.append('celular2',data.celular2??'');
+        formData.append('site',data.site??'');
+        formData.append('fantasia',data.fantasia??'');
+        formData.append('fone',data.fone??'');
+        formData.append('local_pagamento',data.local_pagamento??'');
+        formData.append('cidade_uf',data.cidade_uf??'');
+        formData.append('dias_carencia',String(data.dias_carencia)??'');
+        formData.append('email_come',data.email_come??'');
+        formData.append('ins_estadual',data.ins_estadual??'');
+        formData.append('validade_carteira',String(data.validade_carteira)??'');
+        formData.append('instrucoes_carne',data.instrucoes_carne??'');
+        formData.append('cont_clausuras',data.cont_clausuras??'');
 
         if(data.logo){
             formData.append('file',data.logo);
@@ -92,6 +96,11 @@ export function ModalEmpresa({open,onClose,empresa}:DataProps) {
             
                                         <Tabs.Item   title="Imagens" >
                                         
+                                        </Tabs.Item>
+
+
+                                        <Tabs.Item   title="Contrato" >
+                                        <TabContratoEmpresa control={control} register={register} setValue={setValue} watch={watch} />
                                         </Tabs.Item>
             
                             

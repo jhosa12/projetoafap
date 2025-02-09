@@ -62,7 +62,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
     const [linhasSelecionadas, setLinhasSelecionadas] = useState<Array<Partial<MensalidadeProps>>>([]);
    // const [openModalAcordo, setModalAcordo] = useState({ open: false, visible: false })
     const componentRef = useRef<ImpressaoCarne>(null);
-    const { setarDadosAssociado, permissoes } = useContext(AuthContext)
+    const { setarDadosAssociado, permissoes,infoEmpresa } = useContext(AuthContext)
     const [openModalMens, setModalMens] = useState<boolean>(false)
     const [mensalidadeSelect, setMensalidade] = useState<Partial<MensalidadeProps>>();
     //const [openScanner,setOpenScanner] =useState<boolean>(false);
@@ -226,6 +226,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
 
             {mensalidadeRecibo?.id_mensalidade && <div style={{ display: 'none' }} >
                 <ReciboMensalidade
+                    infoEmpresa={infoEmpresa}
                     ref={componentRecibo}
                     associado={dadosAssociado.nome}
                     contrato={dadosAssociado.id_contrato}

@@ -20,5 +20,6 @@ export interface EmpresaProps{
     arte_car_dep:string,
     instrucoes_carne:string
     logo:File|null
-    logoUrl:string
+    logoUrl:string,
+    cont_clausuras:string
 }

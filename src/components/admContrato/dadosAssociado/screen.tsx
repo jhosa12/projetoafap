@@ -14,17 +14,19 @@ import ContratoResumo from "@/Documents/contratoResumido/ContratoResumo";
 import pageStyle from "@/utils/pageStyle";
 import DocumentTemplate from "@/Documents/contratoAdesão/DocumentTemplate";
 import Carteiras from "@/Documents/carteiraAssociado/DocumentTemplate";
+import { EmpresaProps } from "@/types/empresa";
 
 
 
 
 
 interface DataProps{
-    dadosassociado:Partial<AssociadoProps>
+    dadosassociado:Partial<AssociadoProps>,
+    infoEmpresa:EmpresaProps|null
 }
 
 
-export function DadosAssociado({dadosassociado}:DataProps){
+export function DadosAssociado({dadosassociado,infoEmpresa}:DataProps){
          const {usuario,closeModa,permissoes,setarDadosAssociado}= useContext(AuthContext)
         const [openEdit,setModalEdit]=useState<boolean>(false)
          const [verObs, setVerObs] = useState(false)
@@ -253,10 +255,11 @@ setModalEdit(true)
             numero={String(dadosassociado?.numero) ?? ''}
             rg={dadosassociado?.rg ?? ''}
             telefone={dadosassociado?.celular1 ?? ''}
-            
+            infoEmpresa={infoEmpresa}
         ref={componentContrato} />}
 
        { printCarteira && <Carteiras
+       infoEmpresa={infoEmpresa}
             dependentes={dadosassociado?.dependentes ?? []}
             plano={dadosassociado?.contrato?.plano ?? ''}
             ref={componentCarteira}

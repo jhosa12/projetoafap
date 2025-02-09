@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useCallback, useContext, useState } from 'react';
+import { ReactNode, createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { api } from "../services/apiClient"
 import { destroyCookie, setCookie} from "nookies"
 import Router from 'next/router';
@@ -10,6 +10,7 @@ import { PlanosProps } from '@/types/planos';
 import { CidadesProps } from '@/types/cidades';
 import { ConsultoresProps } from '@/types/consultores';
 import { decode } from 'jsonwebtoken';
+import useApiPost from '@/hooks/useApiPost';
 
 
 
@@ -39,6 +40,8 @@ type AuthContextData = {
     selectEmp:string,
     setSelectEmp:(empresa:string)=>void,
     loading:boolean
+    loadingInfo:boolean
+    infoEmpresa:EmpresaProps|null
 }
 
 
@@ -74,6 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(false) 
     const [servico, setServico] = useState<Partial<ObitoProps>>({ hr_sepultamento: new Date(), end_hora_falecimento: new Date(), end_hora_informaram: new Date() });
     const [permissoes,setPermissoes] =useState<Array<string>>([])
+    const {data:infoEmpresa,loading:loadingInfo,postData:reqInfoEmpresa}= useApiPost<EmpresaProps,{id:string}>('/empresa/infoEmpresa')
    /* const [token,setToken] = useState(()=>{
         const { "@nextauth.token": tokenAuth } = parseCookies();
         if(tokenAuth){
@@ -105,7 +109,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             console.log(error)
         }
        
-      };
+      }
+
+
+
+      useEffect(()=>{
+        if(selectEmp){
+            reqInfoEmpresa({id:selectEmp})
+           // limparDados()
+        }
+      },[selectEmp])
 
 
 
@@ -213,7 +226,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
     return (
-        <AuthContext.Provider value={{loading,selectEmp,setSelectEmp,getDadosFixos,planos,consultores,cidades,empresas,permissoes,setPermissoes, setarDadosAssociado, limparDados, usuario, sign, signOut, data, closeModa, dadosassociado, carregarDados, setarServico, servico, listaConv, setarListaConv }}>
+        <AuthContext.Provider value={{infoEmpresa,loadingInfo,loading,selectEmp,setSelectEmp,getDadosFixos,planos,consultores,cidades,empresas,permissoes,setPermissoes, setarDadosAssociado, limparDados, usuario, sign, signOut, data, closeModa, dadosassociado, carregarDados, setarServico, servico, listaConv, setarListaConv }}>
             {children}
         </AuthContext.Provider>
     );
