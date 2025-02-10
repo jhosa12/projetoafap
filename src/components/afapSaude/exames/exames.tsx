@@ -23,6 +23,7 @@ import { BiMoneyWithdraw } from "react-icons/bi";
 import pageStyle from "@/utils/pageStyle";
 import { ReciboMensalidade } from "@/Documents/mensalidade/Recibo";
 import { to } from "react-spring";
+import { info } from "console";
 
 
 
@@ -65,7 +66,7 @@ export default function Exames({exames}:DataProps) {
   const valorInicial = {id_exame:null,celular:'',data_orcamento:new Date(),data_realizado:new Date(),exames:[],coleta:'',tipoDesc:'',cpf:'',data_nasc:new Date(),nome_responsavel:'',parentesco:'',nome:'',status:'',user:'',endereco:'',id_selected:null,numero:null,bairro:'',cidade:''}
     const [examesRealizados,setExames] = useState<Array<ExameRealizadoProps>>([])
     const [exameSelected, setExameSelected] = useState<ExameRealizadoProps>(valorInicial)
-  const {usuario} = useContext(AuthContext)
+  const {usuario,infoEmpresa} = useContext(AuthContext)
   const [openModal, setOpenModal] = useState(false)
   const currentPage = useRef<Orcamento>(null)
   const [filtro,setFiltro] = useState<boolean>(false)
@@ -406,6 +407,7 @@ handleConfirmar={handleDeletar}
 
           
           <ReciboMensalidade
+                infoEmpresa={infoEmpresa}
                 associado={exameSelected.nome_responsavel?exameSelected?.nome_responsavel:exameSelected?.nome}
                 contrato={exameSelected?.id_exame??null}
                 data_pgto={exameSelected?.data_realizado??null}

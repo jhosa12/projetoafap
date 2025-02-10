@@ -26,7 +26,7 @@ import { AuthContext } from '@/contexts/AuthContext';
         content={() => componentRef.current}
       />
       <div className='text-white' style={{ display: 'none' }}>
-        <DocumentTemplate
+       {/* <DocumentTemplate
           ref={componentRef}
           nome={dadosassociado?.nome ??''}
           cpf={dadosassociado?.cpfcnpj??''}
@@ -43,7 +43,7 @@ import { AuthContext } from '@/contexts/AuthContext';
           estado={dadosassociado?.uf??''}
 
         
-        />
+        />*/}
       </div>
     </div>
   );
