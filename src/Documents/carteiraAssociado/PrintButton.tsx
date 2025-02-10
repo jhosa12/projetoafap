@@ -47,23 +47,7 @@ interface DadosProps{
         content={() => componentRef.current}
       />
       <div className='text-white' style={{ display: 'none' }}>
-        <DocumentTemplate
-          ref={componentRef}
-          dependentes={dadosassociado?.dependentes??[]}
-          plano={dadosassociado?.contrato?.plano??''}
-          contrato={dadosassociado?.contrato?.id_contrato??0}
-          bairro={dadosassociado?.bairro??''}
-          cartTitular={true}
-          celular={dadosassociado?.celular1??''}
-          cidade={dadosassociado?.cidade??''}
-          dependentesTitular={dadosassociado?.dependentes??[]}
-          endereco={dadosassociado?.endereco??''}
-
-          numero={dadosassociado?.numero??null}
-          titular={dadosassociado?.nome??''}
-          uf={dadosassociado?.uf??''}
-
-        />
+    
       </div>
     </div>
   );

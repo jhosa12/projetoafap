@@ -234,7 +234,7 @@ useEffect(() => {
              onChange={(date) =>date && onChange(date)} 
              selected={value} locale={pt} />
           )}
-          
+
           />
   
           </div>
