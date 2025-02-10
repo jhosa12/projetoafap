@@ -130,21 +130,8 @@ const handleExcluir = useCallback(async()=>{
   return (
     <div className="flex flex-col py-2 px-1 gap-2">
 
-
-      <Popover content={
-        <div>
- <TextInput>TESTE</TextInput>
-        </div>
-       
-
-      } >
-      <Button className="ml-auto mr-2" theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 " } }} color={'light'} size={'sm'} onClick={() => {}}>  <HiFilter className="mr-2 h-5 w-5" /> Filtro</Button>
-      </Popover>
-     
-       
-
-      <div className="overflow-x-auto">
-        <Table theme={{root:{shadow:'none'},body:{cell:{base:"px-4 py-1"}},head:{cell:{base:"px-4 py-1"}}}}  >
+      <div className="overflow-x-auto max-h-[calc(100vh-180px)]">
+        <Table theme={{root:{shadow:'none'},body:{cell:{base:"px-4 py-1 text-xs"}},head:{cell:{base:"px-4 py-1"}}}}  >
 
           <Table.Head>
             <Table.HeadCell>Caixa</Table.HeadCell>
@@ -157,10 +144,10 @@ const handleExcluir = useCallback(async()=>{
               <span className="sr-only">Edit</span>
             </Table.HeadCell>
           </Table.Head>
-          <Table.Body className="divide-y" theme={{ cell: { base: 'px-4 py-2' } }}>
+          <Table.Body className="divide-y" >
             {caixa?.map((item, index) => (
               <Table.Row key={item.id_conf} className="text-black ">
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                <Table.Cell className="whitespace-nowrap  text-gray-900">
                   {item?.ccustos?.descricao}
                 </Table.Cell>
                 <Table.Cell> {new Date(item.data).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</Table.Cell>
@@ -170,15 +157,15 @@ const handleExcluir = useCallback(async()=>{
                   
                   </Table.Cell>
                   <Table.Cell> {item.dataConf && new Date(item.dataConf).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</Table.Cell>
-                <Table.Cell>{Teste({caixaCadastrado:item.caixaCad,caixaReal:item.caixaReal,caixaVerificado:item.caixaVerif})==='PENDENTE'?<Badge className="justify-center" color="warning">PENDENTE</Badge>:Teste({caixaCadastrado:item.caixaCad,caixaReal:item.caixaReal,caixaVerificado:item.caixaVerif})==='DIVERGENTE'?<Badge className="justify-center" color="failure">DIVERGENTE</Badge>:<Badge color="success" className="justify-center">CONVERGENTE</Badge>}</Table.Cell>
+                <Table.Cell>{Teste({caixaCadastrado:item.caixaCad,caixaReal:item.caixaReal,caixaVerificado:item.caixaVerif})==='PENDENTE'?<Badge className="justify-center text-xs" color="warning">PENDENTE</Badge>:Teste({caixaCadastrado:item.caixaCad,caixaReal:item.caixaReal,caixaVerificado:item.caixaVerif})==='DIVERGENTE'?<Badge className="justify-center text-xs" color="failure">DIVERGENTE</Badge>:<Badge color="success" className="justify-center text-xs">CONVERGENTE</Badge>}</Table.Cell>
                 <Table.Cell>{item.observacao}</Table.Cell>
-                <Table.Cell className="space-x-6">
+                <Table.Cell className="space-x-4">
                 
-                  <button onClick={() => {setDadosCaixa({...item}), setExcluir(true)}} className="font-medium text-gray-500 hover:text-red-600 ">
-                    <IoMdTrash size={20} />
+                  <button onClick={() => {setDadosCaixa({...item}), setExcluir(true)}} className="text-gray-500 hover:text-red-600 ">
+                    <IoMdTrash size={18} />
                   </button>
                   <button onClick={() => {setDadosCaixa({...item}), setOpenModal(true)}} className="font-medium text-gray-500 hover:text-blue-600 ">
-                    <HiDocument size={20} />
+                    <HiDocument size={17} />
                   </button>
                 </Table.Cell>
 

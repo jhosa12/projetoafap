@@ -6,7 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { useState } from "react";
 import { GiExpense } from "react-icons/gi";
-import { Badge, Button } from "flowbite-react";
+import { Badge } from "flowbite-react";
 import { IoCheckmarkDoneCircleSharp, IoSearch } from "react-icons/io5";
 import { IoIosAddCircle, IoIosClose } from "react-icons/io";
 import { TbAlertTriangle } from "react-icons/tb";
@@ -15,6 +15,7 @@ import { ModalNovaConta } from "./modalNovaConta";
 import { ModalExcluir } from "@/components/modalExcluir";
 import { PlanoContasProps } from "@/pages/financeiro";
 import { ModalRecPag } from "./modalRecPag";
+import { Button } from "@/components/ui/button";
 
 export interface ContaProps {
     id_conta: number,
@@ -197,7 +198,7 @@ setTotal(totais)
             </div>
 
             <div className="flex  w-full bg-white px-4 mb-1 py-1 text-xs items-center justify-between rounded-sm  ">
-              <label className="flex bg-gray-200 border p-1 rounded-lg border-gray-300" >FILTROS</label>
+              <label className="flex bg-gray-200 border p-1 rounded-sm border-gray-200" >FILTROS</label>
               <div className="inline-flex  items-center  gap-3">
                 <div className="flex items-center ">
                   <input type="checkbox" checked={abertoFinalizado} onChange={() => { setAbertoFinalizado(!abertoFinalizado) }} className="w-4 h-4 text-blue-600  rounded    bg-gray-200 border-gray-300" />
@@ -230,12 +231,12 @@ setTotal(totais)
                   minDate={startDate}
                   className=" flex py-1.5 pl-2 text-xs  border rounded-lg  bg-gray-200 border-gray-300   "
                 />
-  <Button size={'sm'} isProcessing={loading} onClick={() => listarContasReq()}>BUSCAR<IoSearch size={18} /></Button>
+  <Button size={'sm'} variant={'outline'} onClick={() => listarContasReq()}>BUSCAR<IoSearch size={18} /></Button>
               </div>
               
               
               
-              <Button color={'success'} size={'sm'} onClick={() => setModalAdd(true)} ><IoIosAddCircle className="mr-1 h-5 w-5" /> NOVO</Button>
+              <Button variant={'outline'} size={'sm'} onClick={() => setModalAdd(true)} ><IoIosAddCircle className="mr-1 h-5 w-5" /> NOVO</Button>
             </div>
           
 

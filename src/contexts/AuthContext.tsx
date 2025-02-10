@@ -99,7 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if(empresas.length>0) return
      
         try {
-            const response = await api.get("/dadosFixos")
+            const response = await api.post("/dadosFixos")
            
             setEmpresas(response.data.empresas||[]);
             setCidades(response.data.cidades||[]);

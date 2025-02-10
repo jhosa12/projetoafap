@@ -35,7 +35,8 @@ export function TabDadosPessoais({control,register,setValue,trigger,watch,cidade
                 <Label className="text-xs" value="Cidade" />
 
                 <Select sizing="sm" {...register('cidade')}>
-                    {cidades.filter((cid) => cid.uf === 'CE').map((cidade) => (
+                    <option value=""></option>
+                    {cidades?.filter((cid) => cid.uf === 'CE')?.map((cidade) => (
                         <option key={cidade.id_cidade} value={cidade.cidade}>{cidade.cidade}</option>
                     ))}
                 </Select>

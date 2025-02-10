@@ -20,7 +20,7 @@ import { AssociadoProps, ContratoProps, DependentesProps } from "@/types/associa
 import  Router  from "next/router";
 import { ajustarData } from "@/utils/ajusteData";
 
-interface ReqProps{
+export interface ReqLeadsProps{
     id?:string,
     statusSelected?:string,
     status?:Array<string>,
@@ -71,6 +71,7 @@ export interface LeadProps {
     id_plano: number,
     plano: string,
     origem: string,
+    uf:string,
     valor_mensalidade: number
     nome: string,
     endereco: string,
@@ -100,7 +101,7 @@ export interface LeadProps {
 }
 
 export function Historico() {
-    const { postData, data } = useApiGet<Array<LeadProps>, ReqProps>("/lead/lista")
+    const { postData, data } = useApiGet<Array<LeadProps>, ReqLeadsProps>("/lead/lista")
     const [lead, setLead] = useState<Partial<LeadProps>>()
     const [modalLead, setModalLead] = useState(false)
     const [categoria, setCategoria] = useState("")
@@ -109,11 +110,12 @@ export function Historico() {
     const [modalNovoContrato, setModalNovoContrato] = useState(false)
     const { postData: postCategoria } = useApiPost<LeadProps, { id_lead: number | undefined, categoriaAtual: string, categoriaAnt: string | undefined, usuario: string | undefined }>("/leads/alterarCategoria")
     const {selectEmp,carregarDados} = useContext(AuthContext)
+
     const {data:associado,loading,postData:postAssociado}= useApiPost<{  
         id_contrato: number,
         id_global: number,
         id_contrato_global: number},Partial<CadastroRequest>>("/leads/gerarPlano")
-        const {register,handleSubmit,control,watch} = useForm<ReqProps>({
+        const {register,handleSubmit,control,watch} = useForm<ReqLeadsProps>({
             defaultValues:{
                 startDate:new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString(),
                 endDate:new Date().toISOString(),   
@@ -163,6 +165,7 @@ export function Historico() {
             id_empresa:selectEmp,
             nome:item.nome,
             numero:item.numero,
+            uf:item.uf,
             rg:item.rg,
             contrato:{
                 id_plano:item.id_plano,
@@ -199,7 +202,7 @@ export function Historico() {
 
 
 
-    const reqDados:SubmitHandler<ReqProps> = useCallback(async (data) => {
+    const reqDados:SubmitHandler<ReqLeadsProps> = useCallback(async (data) => {
        const start =watch('startDate')
       const  end = watch('endDate')
 
@@ -235,7 +238,7 @@ export function Historico() {
     return (
         <div className="flex-col w-full px-2 bg-white   ">
             <ModalFiltro handleSubmit={handleSubmit} register={register} control={control} handleOnSubmit={reqDados} show={modalFiltro} onClose={() => setModalFiltro(false)} />
-           {modalLead && <ModalItem item={lead ?? {}} open={modalLead} onClose={() => setModalLead(false)} />}
+           {modalLead && <ModalItem  handleLoadLeads={()=>reqDados({})} item={lead ?? {}} open={modalLead} onClose={() => setModalLead(false)} />}
             <ModalConfirmar pergunta={`Tem certeza que deseja alterar o(a) ${lead?.status} para um(a) ${categoria} ? Essa alteração será contabilizada na faturação!`} handleConfirmar={handleAtualizarCategoria} openModal={modalConfirma} setOpenModal={setModalConfirma} />
             <ModalNovoContrato id_global={associado?.id_global} carregarDados={carregarDados} id_contrato={associado?.id_contrato} loading={loading} show={modalNovoContrato} onClose={() => setModalNovoContrato(false)} />
             <div className="flex flex-row w-full ">
@@ -344,10 +347,10 @@ export function Historico() {
 interface DataProps {
     show: boolean,
     onClose: () => void
-    handleOnSubmit: SubmitHandler<ReqProps>
-    register: UseFormRegister<ReqProps>
-    control:Control<ReqProps,any>
-    handleSubmit:UseFormHandleSubmit<ReqProps>
+    handleOnSubmit: SubmitHandler<ReqLeadsProps>
+    register: UseFormRegister<ReqLeadsProps>
+    control:Control<ReqLeadsProps,any>
+    handleSubmit:UseFormHandleSubmit<ReqLeadsProps>
 }
 
 

@@ -2,10 +2,13 @@ import { Modal } from "flowbite-react";
 
 
 
+interface ModalFiltroProps{
+    show:boolean,
+    onClose:()=>void
+}
 
 
-
-export function ModalFiltroConferencia(){
+export function ModalFiltroConferencia({onClose,show}:ModalFiltroProps){
 
 
 
@@ -14,8 +17,12 @@ export function ModalFiltroConferencia(){
 
 
     return(
-        <Modal popup>
-            <Modal.Header  className="flex text-white items-start justify-between bg-gray-700 rounded-t border-b p-2 border-gray-60"> Filtro </Modal.Header>
+        <Modal show={show} onClose={onClose} popup>
+            <Modal.Header  > Filtro </Modal.Header>
+
+            <Modal.Body>
+
+            </Modal.Body>
 
         </Modal>
     )

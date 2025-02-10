@@ -38,7 +38,7 @@ interface DataProps {
 export function GraficoMensalidade({dados}:DataProps) {
   const [options, setOptions] = useState({}); // Estado para opções do gráfico
   const [series, setSeries] = useState<Array<{ name: string; data: Array<EixosProps> }>>([]); // Estado para série de dados do gráfico
-console.log(dados)
+
   useEffect(()=>{
   //  const datas= lancamentos.map(item => item.x);
     //const receitaMensalidade = lancamentos.map(item => Number(item?.y?.toFixed(2)));
@@ -85,13 +85,13 @@ console.log(dados)
         
         y: {
          formatter:  function (value:number, { seriesIndex }:{seriesIndex:number}) {
-            if (seriesIndex === 0) {
+          
 
              
                 return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
               
               
-            }
+            
             return value;
           }
         }
@@ -152,13 +152,13 @@ console.log(dados)
     <div className="app">
       <div className="row">
         <div className="mixed-chart">
-          <Chart
+         {series.length > 0 && <Chart
             options={options}
             series={series}
             type="bar"
             width={'100%'}
            height='400'
-          />
+          />}
         </div>
       </div>
     </div>

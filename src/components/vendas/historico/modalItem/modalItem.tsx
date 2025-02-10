@@ -11,14 +11,15 @@ import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import useApiPost from "@/hooks/useApiPost";
-import { AssociadoProps, ContratoProps, DadosCadastro, DependentesProps } from "@/types/associado";
-import { gerarMensalidade, ParcelaData } from "@/utils/gerarArrayMensal";
+import { AssociadoProps, ContratoProps, DependentesProps } from "@/types/associado";
+import {  ParcelaData } from "@/utils/gerarArrayMensal";
 
 
 interface DataProps{
     open:boolean,
     onClose:Function,
-    item:Partial<LeadProps>
+    item:Partial<LeadProps>,
+    handleLoadLeads:()=>void
 }
 
 interface CadastroRequest {
@@ -61,10 +62,10 @@ export interface UseFormLeadProps{
 }
 
 
-export function ModalItem({onClose,open,item}:DataProps) {
+export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
 
-    const {cidades,planos,selectEmp,usuario} = useContext(AuthContext)
-    const {data,loading,postData}= useApiPost<AssociadoProps,Partial<CadastroRequest>>("/novoAssociado")
+    const {cidades,planos} = useContext(AuthContext)
+
 
     const {register,control,setValue,handleSubmit,trigger,watch,reset} = useForm<LeadProps>(
         {
@@ -92,6 +93,7 @@ export function ModalItem({onClose,open,item}:DataProps) {
                         error:"Erro ao editar lead"
                     }
                 )
+                handleLoadLeads()
             } catch (error) {
                 console.log(error)
             }

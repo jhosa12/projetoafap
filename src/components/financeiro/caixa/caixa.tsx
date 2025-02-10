@@ -1,5 +1,5 @@
 
-import { Table, Select, Dropdown, Checkbox,  Button,  TableHead, TableHeadCell, TableBody, TableCell, TableRow, Card, Pagination } from "flowbite-react";
+import { Table, Select, Dropdown, Checkbox, TableHead, TableHeadCell, TableBody, TableCell, TableRow, Card, Pagination } from "flowbite-react";
 import { CaixaProps, CcustosProps } from "@/pages/financeiro";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaMoneyBillAlt } from "react-icons/fa";
@@ -9,7 +9,7 @@ import { FaCreditCard } from "react-icons/fa";
 import DatePicker, { registerLocale } from "react-datepicker";
 import pt from 'date-fns/locale/pt-BR';
 import { FcMultipleInputs } from "react-icons/fc";
-import { MdOutput } from "react-icons/md";
+import { MdOutput, MdPrint } from "react-icons/md";
 import { EmpresaProps } from "@/types/empresa";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ModalResumoTags } from "./modalResumoTags";
@@ -17,6 +17,8 @@ import { ModalRelatorio } from "./modalRelatorio";
 import { BiCalendarMinus } from "react-icons/bi";
 import useApiPost from "@/hooks/useApiPost";
 import { ajustarData } from "@/utils/ajusteData";
+import { Button } from "@/components/ui/button";
+import { BsSearch } from "react-icons/bs";
 
 
 interface DataProps {
@@ -139,7 +141,8 @@ useEffect(() => {
 
     
       <div className="flex flex-col  h-[calc(100vh-112px)] gap-2">
-        <div className="flex flex-row w-full text-xs justify-between cursor-pointer p-2 mb-1 text-black font-semibold">
+        <div className="flex flex-row w-full text-xs justify-between cursor-pointer p-2 mb-1 text-black 
+        ">
  
 
           <Card theme={{root:{children:"inline-flex h-full p-2 gap-2"}}} >
@@ -191,7 +194,7 @@ useEffect(() => {
         </div>
 
 
-        <form onSubmit={handleSubmit(handleFiltro)} className="inline-flex text-black font-semibold w-full  rounded-lg px-2 gap-7 items-center justify-evenly">
+        <form onSubmit={handleSubmit(handleFiltro)} className="inline-flex text-black  w-full  rounded-lg px-2 gap-7 items-center justify-evenly">
           <Select sizing={'sm'} style={{ padding: 6 }} className="w-[150px]" title="Empresa" {...register('id_empresa')}>
             <option value={''}>EMPRESAS</option>
            {empresas.map((item) => (
@@ -233,20 +236,12 @@ useEffect(() => {
           )}
           
           />
-    
-
-        
-
+  
           </div>
-            <Button isProcessing={loading} type="submit" size={'xs'} >FILTRAR</Button>
+            <Button  type="submit" size={'sm'} variant={'outline'}><BsSearch />Buscar</Button>
             
-            <Button  className="bg-green-500 hover:bg-green-600 text-white" onClick={() => setOpenModalImp(true)} size={'xs'} >RELATÓRIO</Button>
-
-         
-
+            <Button  variant={'outline'} onClick={() => setOpenModalImp(true)} size={'sm'} ><MdPrint  />Relatório</Button>
         </form>
-
-
         <div className="overflow-y-auto max-h-[calc(100vh-100px)] px-2">
           <Table hoverable theme={{root:{shadow:'none'},body:{cell:{base:"px-4 py-1"}},head:{cell:{base:"px-4 py-1"}}}}  >
             <TableHead>
