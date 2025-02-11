@@ -42,7 +42,8 @@ interface ReqProps{
     n_parcelas:number,
     param:string,
     startDate:Date,
-    endDate:Date
+    endDate:Date,
+    bairros:Array<string>
   }
 
 interface ContagemProps{
@@ -194,7 +195,7 @@ useEffect(()=>{
 
 
   const handleInadimplencia:SubmitHandler<FormProps> = async (data) => {
-        console.log(data)
+       // console.log(data)
     postData({
       startDate:data.startDate,
       endDate:data.endDate,
@@ -205,16 +206,11 @@ useEffect(()=>{
      // radio:watch('radio'),
      // status:watch('status'),
      // periodo:watch('periodo'),
-      param:data.param_nparcela
+      param:data.param_nparcela,
+      bairros:data.bairros.map(item => { if (item.check) { return item.bairro } }).filter(item => item != null),
     })
         
     }
-
-
-
-
-
-
 
 
 
@@ -254,9 +250,9 @@ useEffect(()=>{
          
 
           <div className="overflow-y-auto p-2 max-h-[70vh] ">
-          <Table  hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 py-1 " } } }} 
+          <Table  hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-3 py-1 text-[11px] " } } }} 
     >
-            <Table.Head theme={{cell:{base:"bg-gray-50 px-4 py-1 "}}}>
+            <Table.Head theme={{cell:{base:"bg-gray-50 px-3 py-1 "}}}>
              
                 <Table.HeadCell>
                   TITULAR
@@ -285,7 +281,7 @@ useEffect(()=>{
            
              
             </Table.Head>
-            <Table.Body className="divide-y text-xs text-black font-semibold ">
+            <Table.Body className="divide-y  text-black ">
               {currentItems?.map((item, index) => (
                 <Table.Row key={index} >
                   <Table.Cell scope="row" >
