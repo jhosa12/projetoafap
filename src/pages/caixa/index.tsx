@@ -22,6 +22,7 @@ import { ScreenCloseCaixa } from "@/components/caixa/screenCloseCaixa";
 import { ModalMensalidade } from "@/components/admContrato/historicoMensalidade/modalmensalidade";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PlanoContasProps } from "../financeiro";
 
 
 registerLocale('pt', pt)
@@ -109,24 +110,29 @@ export interface FechamentoProps{
                 observacao:string
 }
 
+interface ResponseCaixaProps{
+    lista:Array<LancamentosProps>|[],
+    dif:number|null,
+    plano_de_contas:Array<PlanoContasProps>,
+    grupo:Array<GrupoPrps>,
+    fechamento:FechamentoProps|null
+}
+
 
 export default function CaixaMovimentar(){
-    const [lancamentos,setLancamentos]=useState<Array<LancamentosProps>>([]);
     const [mov,setMov]=useState<Partial<LancamentosProps>>();
     const [saldo,setSaldo]=useState(0);
-    const [grupos,setGrupos] = useState<Array<GrupoPrps>>([])
-    const [despesas,setDespesas]=useState(0);
     const [openModalPrint,setPrint] = useState<boolean>(false);
-    const [planos,setPlanos]=useState([]);
     const {usuario,permissoes,selectEmp} = useContext(AuthContext);
     const [visible,setVisible] = useState(false);
     const [openModal,setModal] = useState<boolean>(false);
     const [openModalExc,setModalExc] = useState<boolean>(false);
     const [loading,setLoading] = useState<boolean>(false);
     const [openFecModal,setFecModal]= useState<boolean>(false)
-   const [fechado,setFechado] = useState<FechamentoProps|null>(null)
     const [mensalidade,setMensalidade] = useState<Partial<MensalidadeBaixaProps>>()
     const [modalDados,setModalDados] = useState<boolean>(false)
+    const [despesas,setDespesas] = useState<number>(0)
+    const [data,setData] = useState<Partial<ResponseCaixaProps>>()
     const {register,watch,handleSubmit,control}= useForm<FormProps>({
         defaultValues:{
             startDate:new Date(),
@@ -255,10 +261,11 @@ export default function CaixaMovimentar(){
                 success:'Deletado com sucesso'
             }
         )   
-        const novo = [...lancamentos]
+        const novo = [...(data?.lista||[])]
         const index = novo.findIndex(item=>item.lanc_id===mov?.lanc_id)
         novo.splice(index,1)
-        setLancamentos(novo)
+        setData({...data,lista:novo})
+       // setLancamentos(novo)
         setModalExc(false)
       
     } catch (error) {
@@ -292,12 +299,12 @@ export default function CaixaMovimentar(){
             })
 
        console.log(response.data)
-            const {lista,plano_de_contas,grupos,fechamento} = response.data
-
-            setLancamentos(lista)
-            setPlanos(plano_de_contas)
-            setGrupos(grupos)
-            setFechado(fechamento)
+           
+            setData(response.data)
+           // setLancamentos(lista)
+           // setPlanos(plano_de_contas)
+           // setGrupos(grupos)
+           // setFechado(fechamento)
           
         
 
@@ -312,13 +319,13 @@ export default function CaixaMovimentar(){
 
 
     useEffect(()=>{
-      if(lancamentos?.length>0) {
-            const soma =   lancamentos?.reduce((total,item)=>{
+      if(data?.lista && data?.lista.length>0) {
+            const soma = data.lista?.reduce((total,item)=>{
                     if(item.tipo ==='RECEITA'){ return total=total+Number(item.valor)}
                     else return total=total-Number(item.valor)
                 },0)
             setSaldo(soma)
-            const somadespesas = lancamentos?.reduce((total,item)=>{
+            const somadespesas = data.lista?.reduce((total,item)=>{
                 if(item.tipo==='DESPESA'){
                     return total=total+Number(item.valor)
                 }
@@ -331,13 +338,13 @@ export default function CaixaMovimentar(){
        }
    
 
-    },[lancamentos])
+    },[data?.lista])
 
 return(
 <>
 
 
-{openModal&&<ModalLancamentosCaixa id_empresa={selectEmp} handleFiltro={handleChamarFiltro}    arrayLanc={lancamentos} setLancamentos={setLancamentos}  mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={planos}  grupo={grupos}/>}
+{openModal&&<ModalLancamentosCaixa id_empresa={selectEmp} handleFiltro={handleChamarFiltro}    arrayLanc={data?.lista??[]}   mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={data?.plano_de_contas??[]}  grupo={data?.grupo??[]}/>}
 
 <ModalExcluir openModal={openModalExc} handleExcluir={handleExcluir} setOpenModal={setModalExc}/>
 
@@ -415,12 +422,12 @@ setOpenModal={setModalDados}
                   
                    </div>
                    <div className="flex   items-end justify-end pr-2 ">
-                   <Button variant={'outline'} disabled={!permissoes.includes('ADM2.1.1')||!!fechado} color={'success'} size={'sm'} onClick={()=>{setMov({conta:'',conta_n:'',ccustos_desc:'',data:undefined,datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal(true)}} ><MdOutlineAddCircle /> Novo</Button>
+                   <Button variant={'outline'} disabled={!permissoes.includes('ADM2.1.1')||!!data?.fechamento} color={'success'} size={'sm'} onClick={()=>{setMov({conta:'',conta_n:'',ccustos_desc:'',data:undefined,datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal(true)}} ><MdOutlineAddCircle /> Novo</Button>
                    </div>
                    
         </form>
     </div>
-  { !!fechado ? <ScreenCloseCaixa fechamento={fechado}/> : <div className="flex flex-col border-t-2 bg-white">
+  { !!data?.fechamento ? <ScreenCloseCaixa fechamento={data.fechamento}/> : <div className="flex flex-col border-t-2 bg-white">
     
        
         <div className="overflow-y-auto mt-1 px-2 h-[calc(100vh-174px)] ">
@@ -429,7 +436,7 @@ setOpenModal={setModalDados}
     >
         <Table.Head theme={{cell:{base:"bg-gray-50 px-4 py-1 "}}} >
         
-                <Table.HeadCell className="whitespace-nowrap" >
+                <Table.HeadCell  >
                     Nº LANC.
                 </Table.HeadCell>
                 <Table.HeadCell >
@@ -461,7 +468,7 @@ setOpenModal={setModalDados}
             
         </Table.Head>
         <Table.Body className="divide-y">
-            {lancamentos?.map((item,index)=>(
+            {data?.lista?.map((item,index)=>(
             <Table.Row className=" text-black  ">
 
 <Table.Cell className="whitespace-nowrap   ">
@@ -505,21 +512,30 @@ setOpenModal={setModalDados}
     </div>}
 
 
-{!fechado &&    <div className="inline-flex gap-2   text-black w-full bg-white p-2">
+{!data?.fechamento &&    <div className="inline-flex gap-3   text-black w-full bg-white p-2">
         <button disabled={!permissoes.includes('ADM2.1.5')} onClick={()=>setVisible(!visible)} className="justify-center items-center disabled:hover:cursor-not-allowed">
            {visible? <IoMdEye color="blue" size={20}/>:<IoMdEyeOff color="blue" size={20}/>}
             </button>
    
-    <div className="text{-black">
-        <span className={`inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border  rounded-s-lg  focus:z-10 focus:ring-2  bg-gray-100 border-gray-400 ${saldo<0?"text-red-500":""}`}>
+    <div className="text-black text-xs">
 
-   {visible?`Saldo: ${Number(saldo).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`:"------"}
+    <span className="inline-flex items-center  rounded-s-lg px-4 py-1 gap-1  font-medium  border-t border-b    bg-gray-100 border-gray-400  ">
+   
+   {visible?`Saldo:  ${Number(data?.dif).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`:"------"}
+   </span>
+
+
+        <span className={`inline-flex items-center px-4 py-1 gap-1  font-medium  border   focus:z-10 focus:ring-2  bg-gray-100 border-gray-400 ${saldo<0?"text-red-500":""}`}>
+
+   {visible?`Saldo Dia: ${Number(saldo).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`:"------"}
   </span>
-  <span className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border-t border-b    bg-gray-100 border-gray-400  ">
+
+  <span className="inline-flex items-center px-4 py-1 gap-1  font-medium  border-t border-b    bg-gray-100 border-gray-400  ">
    
   {visible?`Receitas:  ${Number(saldo+despesas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`:"------"}
   </span>
-  <span className="inline-flex items-center px-4 py-1 gap-1 text-sm font-medium  border 0 rounded-e-lg    bg-gray-100 border-gray-400 ">
+
+  <span className="inline-flex items-center px-4 py-1 gap-1  font-medium  border 0 rounded-e-lg    bg-gray-100 border-gray-400 ">
 
   {visible?`Despesas: ${Number(despesas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`:"------"}
   </span>
@@ -534,10 +550,10 @@ setOpenModal={setModalDados}
 
 
 
-<ModalFechamento listar={()=>listarLancamentos({endDate:watch('endDate'),startDate:watch('startDate'),id_empresa:selectEmp,descricao:watch('descricao')})} dataCaixaEnd={watch('endDate')} dataCaixa={watch('startDate')}  id_empresa={selectEmp} lancamentos={lancamentos} id_usuario={usuario?.id??''} openModal={openFecModal} setOpenModal={setFecModal}/>
+<ModalFechamento listar={()=>listarLancamentos({endDate:watch('endDate'),startDate:watch('startDate'),id_empresa:selectEmp,descricao:watch('descricao')})} dataCaixaEnd={watch('endDate')} dataCaixa={watch('startDate')}  id_empresa={selectEmp} lancamentos={data?.lista??[]} id_usuario={usuario?.id??''} openModal={openFecModal} setOpenModal={setFecModal}/>
 
 
-{openModalPrint && <ModalImpressao array={lancamentos} openModal={openModalPrint} setOpenModal={setPrint} startDate={watch('startDate')} endDate={watch('endDate')} usuario={usuario?.nome??''}/>}
+{openModalPrint && <ModalImpressao array={data?.lista??[]} openModal={openModalPrint} setOpenModal={setPrint} startDate={watch('startDate')} endDate={watch('endDate')} usuario={usuario?.nome??''}/>}
 
 
 </>

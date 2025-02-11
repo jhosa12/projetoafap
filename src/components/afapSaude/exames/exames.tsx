@@ -402,10 +402,6 @@ handleConfirmar={handleDeletar}
 
         <div style={{display:'none'}}>
           <Orcamento dados={exameSelected} usuario={usuario?.nome ??''} ref={currentPage} />
-
-
-
-          
           <ReciboMensalidade
                 infoEmpresa={infoEmpresa}
                 associado={exameSelected.nome_responsavel?exameSelected?.nome_responsavel:exameSelected?.nome}

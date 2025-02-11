@@ -24,7 +24,7 @@ interface ModalProps{
     mov:Partial<LancamentosProps>
    // setMov:(fields:Partial<LancamentosProps>)=>void
     arrayLanc:Array<LancamentosProps>,
-    setLancamentos:(array:Array<LancamentosProps>)=>void,
+    //setLancamentos:(array:Array<LancamentosProps>)=>void,
   //  listarLancamentos:()=>Promise<void>,
   
 
@@ -115,22 +115,27 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
         toast.info('Selecione a empresa')
         return;
       }
-      if(!data?.id_grupo){
-        toast.info('Selecione o setor')
-        return;
-      }
+     // if(!data?.id_grupo){
+     //   toast.info('Selecione o setor')
+      //  return;
+    //  }
 
        if(!data.descricao||!data.historico){
             toast.warn('Preencha todos os campos obrigatórios')
             return;
       }
+      
+      if(!data.conta){
+        toast.warn('Preencha todos os campos obrigatórios')
+        return;
+  }
 
         try {
 
         const response =   await toast.promise(
             api.post('/novoLancamento',{
             id_usuario:usuario?.id,
-            id_grupo:Number(data.id_grupo),
+            id_grupo:data.id_grupo?Number(data.id_grupo):undefined,
             datalanc:dt_real,
             conta:data.conta,
             conta_n:data.conta_n,
