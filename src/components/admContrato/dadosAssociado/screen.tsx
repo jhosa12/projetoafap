@@ -260,6 +260,10 @@ setModalEdit(true)
 
        { printCarteira && <Carteiras
        infoEmpresa={infoEmpresa}
+       adesao={dadosassociado.contrato?.dt_adesao??new Date()}
+       cpf={dadosassociado.cpfcnpj??''}
+       rg={dadosassociado.rg??""}
+       
             dependentes={dadosassociado?.dependentes ?? []}
             plano={dadosassociado?.contrato?.plano ?? ''}
             ref={componentCarteira}

@@ -15,6 +15,9 @@ interface DadosProps{
     contrato:number,
     plano:string,
     titular:string,
+    adesao:Date,
+    cpf:string,
+    rg:string,
     endereco:string,
     numero:number|null,
     bairro:string,
@@ -42,7 +45,7 @@ interface DadosProps{
    
 }
 
-export default function CarteirasDep({dependentes,contrato,plano,titular,endereco,numero,bairro,cidade,celular,uf,infoEmpresa}:DadosProps){
+export default function CarteirasDep({dependentes,contrato,plano,titular,endereco,numero,bairro,cidade,celular,uf,infoEmpresa,adesao,cpf,rg}:DadosProps){
     const [arrayPrint,setArrayPrint]=useState<Array<Partial<DependentesProps>>>([])
     const componentRef = useRef<DocumentTemplate>(null)
     const [todosDep,setTodosDep]=useState(false)
@@ -184,7 +187,10 @@ export default function CarteirasDep({dependentes,contrato,plano,titular,enderec
           plano={plano}
           contrato={contrato}
           titular={titular}
+          cpf={cpf}
+          rg={rg}
           endereco={endereco}
+          adesao={adesao}
           celular={celular}
           bairro={bairro}
           cidade={cidade}

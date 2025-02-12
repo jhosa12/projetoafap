@@ -28,6 +28,9 @@ interface DadosProps {
   plano:string,
   titular:string,
   endereco:string,
+  adesao:Date,
+  cpf:string,
+  rg:string,
   numero:number|null,
   bairro:string,
   cidade:string,
@@ -70,7 +73,10 @@ class DocumentTemplate extends React.Component<DadosProps> {
       celular,
       uf,
       dependentesTitular,
-      cartTitular
+      cartTitular,
+      adesao,
+      cpf,
+      rg
     } = this.props;
 
     const options: Intl.DateTimeFormatOptions = {
@@ -116,13 +122,13 @@ class DocumentTemplate extends React.Component<DadosProps> {
          
             <span className="font-semibold" >CONTRATO: {contrato}</span>
             <span className="font-semibold" >CATEGORIA: {plano}</span> 
-            <span className="font-semibold" >ADESÃO: {contrato}</span>
-            <span className="font-semibold" >CPF: {contrato}</span>
-            <span className="font-semibold" >RG: {plano}</span> 
+            <span className="font-semibold" >ADESÃO: {new Date(adesao).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+            <span className="font-semibold" >CPF: {cpf}</span>
+            <span className="font-semibold" >RG: {rg}</span> 
           
          
-            <span className="font-semibold" >{endereco} - {numero!=0 && numero}</span>
-            <span className="font-semibold" >{bairro}/{cidade},{uf}</span>
+            <span className="font-semibold" >ENDEREÇO:{endereco} - {numero!=0 && numero}</span>
+            <span className="font-semibold" >BAIRRO:{bairro}/{cidade},{uf}</span>
            {celular && <span className="font-semibold" >FONE:{celular}</span>}
             <span className="font-semibold" >CARTÃO VÁLIDO ATÉ: {venc.toLocaleDateString()}</span>
             </div>

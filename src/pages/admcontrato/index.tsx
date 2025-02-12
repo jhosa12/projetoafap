@@ -171,6 +171,9 @@ useEffect(() => {
                             </Tabs.Item>
                             <Tabs.Item active={indexTab === 4} title="Carteiras" icon={HiIdentification}>
                                 {indexTab === 4 && <CarteirasDep
+                                    adesao={dadosassociado?.contrato?.dt_adesao??new Date()}
+                                    cpf={dadosassociado?.cpfcnpj??''}
+                                    rg={dadosassociado?.rg??''}
                                     infoEmpresa={infoEmpresa}
                                     titular={dadosassociado?.nome ?? ''}
                                     dependentes={dadosassociado?.dependentes ?? []}
