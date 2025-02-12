@@ -55,7 +55,7 @@ export function signOut() {
         destroyCookie(undefined, '@nextauth.token')
         Router.push('/')
     } catch (err) {
-        console.log("erro ao deslogar")
+       toast.error('Erro ao deslogar')
     }
 };
 
@@ -154,7 +154,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         } catch (err) {
             toast.error('Erro no Login');
-            console.log(err)
+           // console.log(err)
         }
     }, []);
 

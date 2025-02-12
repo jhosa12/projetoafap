@@ -1,6 +1,5 @@
 import { api } from "@/services/apiClient";
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import Relatorio from '@/Documents/relatorioCobranca/DocumentTemplate';
 import { useReactToPrint } from "react-to-print";
 import { IoPrint } from "react-icons/io5";
 import { AuthContext } from "@/contexts/AuthContext";
@@ -11,10 +10,10 @@ import { ModalFiltroCobranca } from "@/components/cobranca/modalCobranca";
 import { SubmitHandler } from "react-hook-form";
 import { ConsultoresProps } from "@/types/consultores";
 import useApiPost from "@/hooks/useApiPost";
-import { HiChevronLeft } from "react-icons/hi2";
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
 import RelatorioInadimplencia from "@/Documents/relatorioCobranca/RelatorioIndimplencia";
 import { Button } from "@/components/ui/button";
+import { ajustarData } from "@/utils/ajusteData";
 
 
 
@@ -33,7 +32,8 @@ export interface InadimplenciaProps{
   mensalidade:Array<{valor_principal:number,referencia:string}>
   overdueCount:number,//numero de mensalidades vencidas
   totalOverdueAmount:number // Valor total das mensalidades vencidas
-  lastPaidPayment:Date
+  lastPaidPayment:Date,
+  cobranca:Date,
 }
 
 
@@ -43,6 +43,7 @@ interface ReqProps{
     param:string,
     startDate:Date,
     endDate:Date,
+    status:Array<string>,
     bairros:Array<string>
   }
 
@@ -195,10 +196,13 @@ useEffect(()=>{
 
 
   const handleInadimplencia:SubmitHandler<FormProps> = async (data) => {
+
+    
+   
        // console.log(data)
     postData({
-      startDate:data.startDate,
-      endDate:data.endDate,
+      startDate:data.periodo?new Date('1900-01-01'):data.startDate,
+      endDate:data.periodo?new Date():data.endDate,
       id_empresa:selectEmp,
       //cobradores:watch('cobrador').filter(item=>item.check).map(item=>item.nome),
      // bairros:watch('bairros').map(item => { if (item.check) { return item.bairro } }).filter(item => item != null),
@@ -206,6 +210,7 @@ useEffect(()=>{
      // radio:watch('radio'),
      // status:watch('status'),
      // periodo:watch('periodo'),
+     status:data.status.split(',').map(item=>item.trim()),
       param:data.param_nparcela,
       bairros:data.bairros.map(item => { if (item.check) { return item.bairro } }).filter(item => item != null),
     })
@@ -298,7 +303,7 @@ useEffect(()=>{
                     {item.associado.celular1}
                   </Table.Cell>
                   <Table.Cell >
-                   cobrança
+                   {item.cobranca && new Date(item.cobranca).toLocaleDateString('pt-BR',{timeZone:'UTC'})}
                   </Table.Cell>
                   <Table.Cell >
                     {item.lastPaidPayment && new Date(item.lastPaidPayment).toLocaleDateString('pt-BR',{timeZone:'UTC'})}

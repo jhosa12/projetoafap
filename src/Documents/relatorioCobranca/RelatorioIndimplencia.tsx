@@ -78,7 +78,7 @@ class RelatorioInadimplencia extends React.Component<DadosProps> {
                           {item.associado.celular1}
                         </Table.Cell>
                         <Table.Cell >
-                         cobrança
+                          {item.cobranca && new Date(item.cobranca).toLocaleDateString('pt-BR',{timeZone:'UTC'})}
                         </Table.Cell>
                         <Table.Cell >
                           {item.lastPaidPayment && new Date(item.lastPaidPayment).toLocaleDateString('pt-BR',{timeZone:'UTC'})}

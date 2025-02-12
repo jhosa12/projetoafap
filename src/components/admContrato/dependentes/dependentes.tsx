@@ -95,7 +95,7 @@ export function Dependentes(){
             
 
         } catch (err) {
-            console.log(err)
+            console.log('Erro ao excluir')
         }
 
 

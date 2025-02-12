@@ -153,6 +153,7 @@ export default function ModalCadastro({isOpen,onClose}:ModalProps) {
      // closeModa({id_associado:response.data.novoassociado.id_associado,contrato:{...data.contrato,id_contrato:response.data.novoContrato.id_contrato}})
      
     }catch(err){
+      console.log(err)
       toast.error('Consulte o Administrador')
     }
   

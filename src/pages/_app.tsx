@@ -41,7 +41,7 @@ function PrivateRouter({ Component, pageProps }: AppProps) {
         setPermissoes(permissions.data);
       }
     } catch (error) {
-      console.log(error);
+      console.log('Erro ao carregar permissões');
     }
   }
 

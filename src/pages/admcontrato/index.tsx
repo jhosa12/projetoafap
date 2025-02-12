@@ -20,9 +20,7 @@ import { FaHandshake } from "react-icons/fa";
 import { VerificarSituacao } from "@/utils/admContrato/verificarSituacao";
 import { Acordos } from "@/components/admContrato/acordos/screen";
 import { Button } from "@/components/ui/button"
-import parse from 'html-react-parser';
-import { SanitizeHtml } from "@/utils/sanitizeHtml";
-import { info } from "console";
+
 
 export default function AdmContrato() {
 

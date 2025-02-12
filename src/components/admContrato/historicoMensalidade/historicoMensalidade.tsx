@@ -167,7 +167,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
             setLinhasSelecionadas([])
            // setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
         } catch (err) {
-            console.log(err)
+            console.log('Erro ao excluir')
         }
     }
 
@@ -209,7 +209,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
 
         } catch (err) {
             toast.error('Erro ao Adicionar nova parcela')
-            console.log(err)
+          //  console.log(err)
         }
 
     }
