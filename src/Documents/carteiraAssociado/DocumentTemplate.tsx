@@ -5,6 +5,7 @@ import carteiraDep from "../../../public/carteiraDep.jpeg";
 
 import React from 'react';
 import { EmpresaProps } from "@/types/empresa";
+import { space } from "postcss/lib/list";
 interface DadosProps {
   dependentes: Array<Partial<{
     nome: string,
@@ -97,10 +98,9 @@ class DocumentTemplate extends React.Component<DadosProps> {
                             display: 'flex',
                             flexDirection: 'row',
                             backgroundRepeat: 'no-repeat',
-                            backgroundImage: "url('/frenteverso.jpg')",
+                            backgroundImage: "url('/frenteverso.png')",
                             pageBreakInside: 'avoid',
                             height: '230px',
-                            color:'white',
                             fill: 'black',
                             width: '100%',
                             fontSize:7,
@@ -110,28 +110,31 @@ class DocumentTemplate extends React.Component<DadosProps> {
         {/*  <Image alt={'carteiraDep'} height={210} width={362} src={titularFrente} className="object-cover" />
           <Image alt={'carteiraDep'} height={210} width={362} src={titularVerso} className="object-cover " />*/}
 
-          <div style={{position:'absolute',left:42,top:85,gap:20,display:'flex',flexDirection:'column',fontWeight:'bold'}}>
-            <span>.</span>
-            <span>.</span>
-            <span>{infoEmpresa?.celular}</span>
-            <span style={{width:'55%'}}>{infoEmpresa?.endereco}</span>
-          </div>
-          <div className="absolute  flex flex-col  items-start" style={{left:161,top:20,gap:8,width:222}}>
-           <span style={{fontSize:9,fontWeight:'bold'}}>{titular}</span> 
-          
-         
-            <span className="font-semibold" >CONTRATO: {contrato}</span>
-            <span className="font-semibold" >CATEGORIA: {plano}</span> 
-            <span className="font-semibold" >ADESÃO: {new Date(adesao).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
-            <span className="font-semibold" >CPF: {cpf}</span>
-            <span className="font-semibold" >RG: {rg}</span> 
-          
-         
-            <span className="font-semibold" >ENDEREÇO:{endereco} - {numero!=0 && numero}</span>
-            <span className="font-semibold" >BAIRRO:{bairro}/{cidade},{uf}</span>
-           {celular && <span className="font-semibold" >FONE:{celular}</span>}
-            <span className="font-semibold" >CARTÃO VÁLIDO ATÉ: {venc.toLocaleDateString()}</span>
-            </div>
+<div style={{position:'absolute',display:'flex',flexDirection:'column',fontSize:10,top:18,left:160,lineHeight:1}}>  
+                  <span>{infoEmpresa?.fantasia}</span>
+                  <span>CNPJ: {infoEmpresa?.cnpj}</span>
+                  <span>TELEFONES: {infoEmpresa?.fone}</span>
+                </div>
+
+                <div  style={{display:'grid',gridTemplateColumns:'repeat(3, 1fr)',fontSize:9,position:'absolute',top:100,left:25,lineHeight:2,gap:17,width:'50%',fontWeight:'bold'}}>
+               
+                  
+                  <h1 style={{fontSize:10,gridColumn: '1 / -1'}}>{titular}</h1>
+                 
+                 
+                <span > {contrato}</span>
+                <span > {adesao && new Date(adesao).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+                <span  > {adesao && new Date(adesao).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+
+                <div style={{gridColumn: '1 / -1',display:'flex',width:'100%',justifyContent:'space-between'}} >
+                <span style={{display:'flex',width:'100%'}}>{plano}</span>
+                <span style={{display:'flex',width:'100%'}}>{cpf}</span>
+                </div>
+              
+                <span style={{gridColumn: '1 / -1'}} >{endereco}-{bairro},{cidade}</span>
+                
+                </div>
+    
             <div style={{position:'absolute',right:260,top:40,fontSize:9,fontWeight:'bold'}}>
               <span >DEPENDENTES:</span>
             {<ol className="absolute" style={{listStyleType:'decimal'}}>
@@ -153,7 +156,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
                 height: '220px',
                 fill: 'black',
                 width: '100%',
-                color:'white',
+               
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
             }} 
