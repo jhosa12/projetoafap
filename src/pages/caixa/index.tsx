@@ -384,7 +384,7 @@ setOpenModal={setModalDados}
         control={control}
         name="startDate"
         render={({ field:{ onChange, value} }) => (
-            <DatePicker selected={value} onChange={e=>e && onChange(e)}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full shadow-sm uppercase  z-50 text-[13px] leading-[14px]   border  rounded-sm    border-gray-200 placeholder-gray-400  " />
+            <DatePicker selected={value} onChange={e=>e && onChange(e)}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full shadow-sm uppercase  z-50 text-[11px] leading-[14px]   border  rounded-sm    border-gray-200 placeholder-gray-400  " />
         )}
         />
       
@@ -400,7 +400,7 @@ setOpenModal={setModalDados}
         control={control}
         name="endDate" 
         render={({ field:{ onChange, value} })=>(
-                  <DatePicker selected={value} onChange={e=>e && onChange(e)}     dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex shadow-sm w-full uppercase  z-50 text-[13px]   border  rounded-sm    border-gray-200 placeholder-gray-400 leading-[14px] " 
+                  <DatePicker selected={value} onChange={e=>e && onChange(e)}     dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex shadow-sm w-full uppercase  z-50 text-[11px]   border  rounded-sm    border-gray-200 placeholder-gray-400 leading-[14px] " 
                   
                   
                   />
@@ -413,7 +413,7 @@ setOpenModal={setModalDados}
         <div className=" block">
           <Label className="text-xs" value="Buscar" />
         </div>
-        <Input {...register('descricao')}    />
+        <Input  className="w-full h-8 text-[11px]" {...register('descricao')}    />
       </div> 
          
                    <div className="flex items-end gap-4">
@@ -432,9 +432,9 @@ setOpenModal={setModalDados}
        
         <div className="overflow-y-auto mt-1 px-2 h-[calc(100vh-174px)] ">
        
-        <Table hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 py-1 text-xs" } } }} 
+        <Table hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-3 py-0 text-[10px]" } } }} 
     >
-        <Table.Head theme={{cell:{base:"bg-gray-50 px-4 py-1 "}}} >
+        <Table.Head theme={{cell:{base:"bg-gray-50 px-3 py-0 text-[11px]"}}} >
         
                 <Table.HeadCell  >
                     Nº LANC.
@@ -485,7 +485,7 @@ setOpenModal={setModalDados}
             <Table.Cell>  {item.notafiscal?item.notafiscal.toUpperCase():item?.descricao?.toUpperCase()}</Table.Cell>
             <Table.Cell> {item.historico}</Table.Cell>
             <Table.Cell className={`font-semibold ${item.tipo==='RECEITA'?"text-green-500":"text-red-500"}`}> {item.tipo}</Table.Cell>
-            <Table.Cell>{Number(item.valor).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
+            <Table.Cell className="font-semibold">{Number(item.valor).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
           
             <Table.Cell className="space-x-4 whitespace-nowrap">
             <button disabled={item.conta==='1.01.002'||!permissoes.includes('ADM2.1.3')} onClick={(event)=>{
@@ -498,7 +498,6 @@ setOpenModal={setModalDados}
                   <button disabled={item.conta==='1.01.002'|| !permissoes.includes('ADM2.1.4')} onClick={() =>{setMov({lanc_id:item.lanc_id}), setModalExc(true)}} className="font-medium text-gray-500 hover:text-red-600 disabled:cursor-not-allowed">
                     <MdDelete size={16} />
                   </button>
-            
                   </Table.Cell>
           
             </Table.Row>

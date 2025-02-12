@@ -263,7 +263,7 @@ setModalEdit(true)
        adesao={dadosassociado.contrato?.dt_adesao??new Date()}
        cpf={dadosassociado.cpfcnpj??''}
        rg={dadosassociado.rg??""}
-       
+
             dependentes={dadosassociado?.dependentes ?? []}
             plano={dadosassociado?.contrato?.plano ?? ''}
             ref={componentCarteira}
@@ -298,12 +298,10 @@ setModalEdit(true)
         />}
 
 {printResumo && <ContratoResumo
+infoEmpresa={infoEmpresa}
 ref={componentResumo}
 dados={dadosassociado??{}}
 />}
-
-
-
         </div>
                             </div>
     )
