@@ -242,6 +242,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
             {isPrinting &&
                 <div style={{ display: 'none' }}>
                     <ImpressaoCarne
+                    infoEmpresa={infoEmpresa}
                         ref={componentRef}
                         arrayMensalidade={linhasSelecionadas.length > 0 ? linhasSelecionadas : dadosAssociado.arrayMensalidade?.filter((item) => item.status !== 'P')}
                         dadosAssociado={{

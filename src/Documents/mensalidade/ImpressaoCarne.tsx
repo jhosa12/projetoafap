@@ -4,6 +4,7 @@ import BarCode from 'react-barcode';
 // DocumentTemplate.js
 
 import React from 'react';
+import { EmpresaProps } from '@/types/empresa';
 
 
 interface MensalidadeProps {
@@ -33,13 +34,14 @@ interface DadosAssociado{
 interface DadosProps {
     dadosAssociado:DadosAssociado
     arrayMensalidade: Array<Partial<MensalidadeProps>>
+    infoEmpresa:EmpresaProps|null
 }
 
 
 class ImpressaoCarne extends React.Component<DadosProps> {
 
     render() {
-        const { dadosAssociado, arrayMensalidade } = this.props;
+        const { dadosAssociado, arrayMensalidade,infoEmpresa } = this.props;
       
           return (
             <ul className="flex flex-col w-full justify-center items-center gap-4 ">
@@ -60,7 +62,7 @@ class ImpressaoCarne extends React.Component<DadosProps> {
                             {//  <Image src={carne} className=" object-cover  h-[250px]" alt="modeloCarne"  />
                             }
                             <div className="flex flex-col space-y-4 pl-8   " style={{ width: '28%' }}>
-                                <h1 className="mt-2 " style={{ fontSize: '11px' }} >ASSISTENCIA FAMILIAR PARAÍSO</h1>
+                                <h1 className="mt-2 " style={{ fontSize: '11px' }} >{infoEmpresa?.razao_social}</h1>
                                 <div className="inline-flex pl-8 w-full ">
                                     <span>{item.parcela_n}</span>
                                     <span className="flex w-full justify-end">{item.vencimento && new Date(item.vencimento).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
@@ -101,26 +103,25 @@ class ImpressaoCarne extends React.Component<DadosProps> {
 
 
                             <div className="flex flex-col  space-y-3 pl-8  " style={{ width: '70%' }}>
-                                <h1 className="mt-2  " style={{ fontSize: '13px', fontWeight: 'bold' }} >ASSISTENCIA FAMILIAR PARAÍSO</h1>
+                                <h1 className="mt-2  " style={{ fontSize: '13px', fontWeight: 'bold' }} >{infoEmpresa?.razao_social}</h1>
 
                                 <div className="inline-flex w-full ">
-                                    <span className="pl-2 whitespace-nowrap">RUA ADAUTO CASTELO - 393 CENTRO CEDRO/CE</span>
-                                    <span className=" pl-[110px] ">{item.vencimento && new Date(item.vencimento).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+                                    <span className="pl-2 whitespace-nowrap">{infoEmpresa?.endereco}</span>
+                                    <span style={{paddingLeft:'40px'}}>{item.vencimento && new Date(item.vencimento).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
                                     <span className=" flex w-full justify-end pl-10">{item.parcela_n}</span>
                                 </div>
                                 <div className="inline-flex  w-full  ">
-                                    <span className="pl-2 whitespace-nowrap">16.784.573/0001-93 - ASSISTÊNCIA FAMILIAR PARAÍSO</span>
+                                    <span className="pl-2 whitespace-nowrap">{infoEmpresa?.cnpj}-{infoEmpresa?.razao_social}</span>
                                     <span className=" flex w-full justify-end pl-10">{Number(item.valor_principal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
                                 </div>
                                 <div className="inline-flex   w-full ">
                                     <span className="pl-2 ">{new Date().toLocaleDateString('pt-BR')}</span>
                                     <span className="pl-20  ">{item.id_contrato}</span>
-                                    <span style={{paddingLeft:'20px'}} className=" whitespace-nowrap ">{dadosAssociado.plano}</span>
+                                    <span style={{paddingLeft:'30px'}} className=" whitespace-nowrap ">{dadosAssociado.plano}</span>
                                     <span className=" flex w-full justify-end pl-10">R$ 0,00</span>
-
                                 </div>
                                 <div className="flex flex-col w-full">
-                                    <span style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '1' }}>PIX: 16.784.573/0001-93</span>
+                                    <span style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '1' }}>PIX: {infoEmpresa?.cnpj}</span>
                                     <span style={{ fontSize: '9px', lineHeight: '1' }}>TITULAR FREITAS NETO COMERCIO E SERVIÇO- LTDA-ME</span>
                                     <span style={{ fontSize: '9px', lineHeight: '1', fontStyle: 'italic' }}>MANTENHA SEU PLANO DE EM DIA</span>
                                 </div>
@@ -135,7 +136,7 @@ class ImpressaoCarne extends React.Component<DadosProps> {
 
                                    
                                         {item.n_doc && <BarCode
-                                            width={3}
+                                            width={2}
                                             height={25}
                                             fontSize={5}
                                             textMargin={0}

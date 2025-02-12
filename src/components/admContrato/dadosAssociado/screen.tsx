@@ -276,6 +276,7 @@ setModalEdit(true)
         />}
 
         {printCarne && <ImpressaoCarne
+            infoEmpresa={infoEmpresa}
             ref={componentCarne}
           arrayMensalidade={dadosassociado?.mensalidade?.filter(mensalidade => mensalidade.status !== 'P') ?? []}
             dadosAssociado={

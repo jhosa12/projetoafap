@@ -108,7 +108,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
             <span>.</span>
             <span>.</span>
             <span>{infoEmpresa?.celular}</span>
-            <span style={{width:'63%'}}>{infoEmpresa?.endereco}</span>
+            <span style={{width:'55%'}}>{infoEmpresa?.endereco}</span>
           </div>
           <div className="absolute  flex flex-col  items-start" style={{left:161,top:20,gap:8,width:222}}>
            <span style={{fontSize:9,fontWeight:'bold'}}>{titular}</span> 

@@ -150,29 +150,9 @@ class DocumentTemplate extends Component<DadosProps> {
             </tbody>
           </table>
 
-        </div>
+        </div><br/>
 
-        <div className='uppercase mx-5 p-2 text-justify '>
-        <p style={{ fontSize: '12px' }} className="text-justify font-semibold ">  
-          ATENDIMENTO FUNERÁRIO <br />
-          I. Remoção do corpo no local do Óbito ao do velório<br />
-          II. Assepsia, preparação e vestimenta do corpo<br />
-          III. Ornamentação da urna mortuária<br />
-          IV. Orientação sobre o registro do óbito<br />
-          V. Facilitar e auxiliar na realização da cerimônia<br />
-          VI. Quilometragem 300 Km<br />
-          VII. Kit café.<br />
-          VIII. Nota de falecimento no rádio e volante<br />
-          IX. Veiculo fúnebre adequado.<br />
-          X. Assistência de velório qualificada<br />
-          XI. Cadeiras para velório<br />
-          XII. Gela água<br />
-          XIII. Abertura de cova   <br />
-          XIV. 50 lembracinhas<br />
-          XV. Urna básica com visor<br /><br />
-          </p>
-         
-        </div>
+  
 
 
 

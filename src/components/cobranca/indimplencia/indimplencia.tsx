@@ -196,9 +196,6 @@ useEffect(()=>{
 
 
   const handleInadimplencia:SubmitHandler<FormProps> = async (data) => {
-
-    
-   
        // console.log(data)
     postData({
       startDate:data.periodo?new Date('1900-01-01'):data.startDate,
