@@ -101,6 +101,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
                             backgroundImage: "url('/frenteverso.png')",
                             pageBreakInside: 'avoid',
                             height: '230px',
+                            border: '1px solid black',
                             fill: 'black',
                             width: '100%',
                             fontSize:7,
@@ -116,7 +117,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
                   <span>TELEFONES: {infoEmpresa?.fone}</span>
                 </div>
 
-                <div  style={{display:'grid',gridTemplateColumns:'repeat(3, 1fr)',fontSize:9,position:'absolute',top:100,left:25,lineHeight:2,gap:17,width:'50%',fontWeight:'bold'}}>
+                <div  style={{display:'grid',gridTemplateColumns:'repeat(3, 1fr)',fontSize:9,position:'absolute',top:95,left:25,lineHeight:2,gap:17,width:'50%',fontWeight:'bold'}}>
                
                   
                   <h1 style={{fontSize:10,gridColumn: '1 / -1'}}>{titular}</h1>
@@ -135,8 +136,8 @@ class DocumentTemplate extends React.Component<DadosProps> {
                 
                 </div>
     
-            <div style={{position:'absolute',right:260,top:40,fontSize:9,fontWeight:'bold'}}>
-              <span >DEPENDENTES:</span>
+            <div style={{position:'absolute',right:260,top:30,fontSize:9,fontWeight:'bold'}}>
+             
             {<ol className="absolute" style={{listStyleType:'decimal'}}>
            {dependentesTitular?.filter(it=>!it.excluido)?.map(item=>(
             <li style={{textWrap:'nowrap',textAlign:'left'}} key={item.id_dependente} >{item.nome}</li>
@@ -156,7 +157,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
                 height: '220px',
                 fill: 'black',
                 width: '100%',
-               
+                border: '1px solid black',
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
             }} 
