@@ -100,10 +100,10 @@ class DocumentTemplate extends React.Component<DadosProps> {
                             backgroundRepeat: 'no-repeat',
                             backgroundImage: "url('/frenteverso.png')",
                             pageBreakInside: 'avoid',
-                            height: '230px',
+                            height: '225px',
                             border: '1px solid black',
                             fill: 'black',
-                            width: '100%',
+                            width: '90%',
                             fontSize:7,
                             backgroundSize: 'contain',
                             backgroundPosition: 'center',
@@ -111,13 +111,13 @@ class DocumentTemplate extends React.Component<DadosProps> {
         {/*  <Image alt={'carteiraDep'} height={210} width={362} src={titularFrente} className="object-cover" />
           <Image alt={'carteiraDep'} height={210} width={362} src={titularVerso} className="object-cover " />*/}
 
-<div style={{position:'absolute',display:'flex',flexDirection:'column',fontSize:10,top:18,left:160,lineHeight:1}}>  
+<div style={{position:'absolute',fontWeight:'bold',display:'flex',flexDirection:'column',fontSize:10,top:18,left:160,lineHeight:1}}>  
                   <span>{infoEmpresa?.fantasia}</span>
                   <span>CNPJ: {infoEmpresa?.cnpj}</span>
                   <span>TELEFONES: {infoEmpresa?.fone}</span>
                 </div>
 
-                <div  style={{display:'grid',gridTemplateColumns:'repeat(3, 1fr)',fontSize:9,position:'absolute',top:95,left:25,lineHeight:2,gap:17,width:'50%',fontWeight:'bold'}}>
+                <div  style={{display:'grid',gridTemplateColumns:'repeat(3, 1fr)',fontSize:9,position:'absolute',top:95,left:25,lineHeight:2,gap:13,width:'50%',fontWeight:'bold'}}>
                
                   
                   <h1 style={{fontSize:10,gridColumn: '1 / -1'}}>{titular}</h1>
@@ -156,7 +156,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
                 pageBreakInside: 'avoid',
                 height: '220px',
                 fill: 'black',
-                width: '100%',
+                width: '92%',
                 border: '1px solid black',
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
@@ -169,10 +169,10 @@ class DocumentTemplate extends React.Component<DadosProps> {
                   <span>TELEFONES: {infoEmpresa?.fone}</span>
                 </div>
 
-                <div  style={{display:'grid',gridTemplateColumns:'repeat(3, 1fr)',fontSize:9,position:'absolute',top:90,left:25,lineHeight:2,gap:17,width:'100%'}}>
+                <div  style={{display:'grid',gridTemplateColumns:'repeat(3, 1fr)',fontSize:9,position:'absolute',top:90,left:25,lineHeight:2,gap:15,width:'100%',fontWeight:'bold'}}>
                
                   
-                  <h1 style={{fontWeight:'bold',fontSize:10,gridColumn: '1 / -1'}}>{item.nome}</h1>
+                  <h1 style={{fontSize:10,gridColumn: '1 / -1'}}>{item.nome}</h1>
                  
              
                 <span > {contrato}</span>
