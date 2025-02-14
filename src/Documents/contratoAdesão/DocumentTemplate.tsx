@@ -8,6 +8,7 @@ import React, {  Component, useContext } from 'react';
 import { AuthContext } from "@/contexts/AuthContext";
 import { EmpresaProps } from "@/types/empresa";
 import { SanitizeHtml } from "@/utils/sanitizeHtml";
+import { timesNewRoman } from "@/fonts/fonts";
 interface DadosProps {
   nome: string,
   cpf: string,
@@ -67,7 +68,7 @@ class DocumentTemplate extends Component<DadosProps> {
 
 
     return (
-      <div className='flex flex-col w-full   text-black'>
+      <div  className='flex flex-col w-full   text-black'>
 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
         <div className="flex justify-center items-center
          mt-4">
@@ -82,7 +83,7 @@ class DocumentTemplate extends Component<DadosProps> {
         </div>
         <br />
 
-        <div className="flex flex-col gap-3 w-full" style={{ fontSize: '13px' }}>
+        <div className="flex flex-col gap-3 w-full" style={{ fontSize: '15px' }}>
         <span  className="font-semibold ">Contrato: {contrato}</span>
         <div  className="inline-flex justify-between ">
           <span>Contratante: {nome}</span>
@@ -107,12 +108,12 @@ class DocumentTemplate extends Component<DadosProps> {
         </div>
        
 
+<br/><br/>
 
 
 
-
-        <div style={{ fontSize: '12px' }} className="flex flex-col  justify-center items-center w-full">
-        <h1 style={{ fontSize: '13px' }} className='text-xl text-center font-semibold mt-2'>RELAÇÃO DE DEPENDENTES</h1>
+        <div style={{ fontSize: '14px' }} className="flex flex-col  justify-center items-center w-full">
+        <h1 style={{ fontSize: '14px' }} className=' text-center font-semibold mt-2'>RELAÇÃO DE DEPENDENTES</h1>
           <table className="block  text-left rtl:text-center ">
             <thead className="top-0 uppercase  ">
               <tr>
@@ -150,7 +151,7 @@ class DocumentTemplate extends Component<DadosProps> {
             </tbody>
           </table>
 
-        </div><br/>
+        </div><br/><br/>
 
   
 
@@ -158,8 +159,12 @@ class DocumentTemplate extends Component<DadosProps> {
 
 
 
+<div className={timesNewRoman.className}>
+{infoEmpresa?.cont_clausuras && parse(SanitizeHtml(infoEmpresa?.cont_clausuras))}
+</div>
 
-        {infoEmpresa?.cont_clausuras && parse(SanitizeHtml(infoEmpresa?.cont_clausuras))}
+
+       
         
         
         
@@ -174,18 +179,18 @@ class DocumentTemplate extends Component<DadosProps> {
 
             <div className="flex flex-col  w-1/2  justify-center items-center "style={{paddingTop:85,position:'relative'}}>
             <div  style={{position:'absolute', top:5}}>
-            <Image className=" object-cover" width={300} alt="imagemAss" src={assinatura} />
+            <img className=" object-cover" width={300} alt="imagemAss" src={"/assinatura.jpg"} />
             </div>
            
            
           
-            <span className="absolute top-[20px] flex w-full border-b-[1px]  border-black " ></span>
-            <span  style={{position:'absolute',top:85}}>CONTRATADA(O)</span>
+            <span style={{borderColor:'black'}} className="absolute top-[20px] flex w-full border-b-[1px]  " ></span>
+            <span   style={{position:'absolute',top:85}}>CONTRATADA(O)</span>
            
 
             </div>
             <div className="flex flex-col w-1/2 justify-center items-center" style={{paddingTop:85,position:'relative'}}>
-              <span className=" absolute top-[20px]  flex  w-full border-b-[1px] border-black "></span>
+              <span style={{borderColor:'black'}} className=" absolute top-[20px]  flex  w-full border-b-[1px]  "></span>
               <span  style={{position:'absolute',top:85}} >CONTRATANTE</span>
             </div>
 
@@ -196,11 +201,11 @@ class DocumentTemplate extends Component<DadosProps> {
         <br /><br /><br /><br />
         <div className="inline-flex w-full gap-6 pt-8">
           <div className="flex flex-col w-1/2 justify-center items-center">
-            <span className="flex w-full border-b-[1px] border-black "></span>
+            <span style={{borderColor:'black'}} className="flex w-full border-b-[1px]  "></span>
             <span>TESTEMUNHA</span>
           </div>
           <div className="flex flex-col w-1/2 justify-center items-center">
-            <span className="flex w-full border-b-[1px] border-black "></span>
+            <span style={{borderColor:'black'}} className="flex w-full border-b-[1px]  "></span>
             <span>TESTEMUNHA</span>
           </div>
 
