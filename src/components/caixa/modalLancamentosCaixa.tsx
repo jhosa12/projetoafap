@@ -154,7 +154,7 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
             }
         )
         
-
+        handleFiltro()
      //   listarLancamentos()
          // setLancamentos([...arrayLanc,response.data])
         } catch (error) {
