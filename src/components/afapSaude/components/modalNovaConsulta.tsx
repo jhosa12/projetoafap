@@ -41,7 +41,7 @@ export function ModalConsulta({openModal,setOpenModal,medicos,consulta,setConsul
   }
 
 
-  console.log(consulta)
+  //console.log(consulta)
 
 
   const selectMed = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -158,6 +158,7 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
           data: new Date(),
           data_prev:dataIni,
           user:usuario,
+          numero:data.numero?Number(data.numero):undefined,
           id_usuario:id_usuario
         }),
         {

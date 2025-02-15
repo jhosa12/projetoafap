@@ -1,12 +1,8 @@
-import Image from "next/image";
-import logo from "../../../public/novaLogo.png"
+
 
 // DocumentTemplate.js
-
 import React from 'react';
-
 import { Table } from "flowbite-react";
-import { HistoricoProps } from "@/components/estoque/historico/historico";
 import { EstoqueProps } from "@/pages/estoque";
 
 
@@ -26,7 +22,7 @@ class RelatorioEstoque extends React.Component<DadosProps> {
     return (
       <div className='flex flex-col w-full  gap-5 '>
        <div className="flex  w-full justify-center ">
-       <Image width={100} height={100} src={logo} alt="logo"/>
+       <img width={100} height={100} src={"/novaLogo.png"} alt="logo"/>
        </div>
        <h1 style={{fontWeight:'bold',fontSize:'16px',textAlign:'center'}}>Relatório de Estoque</h1>
        <div className="flex flex-col gap-2">
@@ -35,7 +31,7 @@ class RelatorioEstoque extends React.Component<DadosProps> {
        </div>
 
 <div >
-       <Table theme={{ body: { cell: { base: " px-6 py-2  text-xs text-black" } } }} >
+       <Table theme={{root:{shadow:'none'}, body: { cell: { base: " px-3 py-2  text-xs text-black" } },head: { cell: { base: "px-3 py-2  text-xs text-black" } }}} >
         <Table.Head style={{fontSize:'9px'}}>
             <Table.HeadCell>EMPRESA</Table.HeadCell>
             <Table.HeadCell>PRODUTO</Table.HeadCell>

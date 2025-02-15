@@ -12,7 +12,6 @@ import { EmpresaProps } from "@/types/empresa";
 import { HiPrinter } from "react-icons/hi2";
 import { useReactToPrint } from "react-to-print";
 import RelatorioEstoque from "@/Documents/estoque/RelatorioEstoque";
-import ImpressaoCarne from "@/Documents/mensalidade/ImpressaoCarne";
 import pageStyle from "@/utils/pageStyle";
 import { Button } from "../ui/button";
 
@@ -97,8 +96,8 @@ export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos,
       
         
         
-        <div className="overflow-y-auto mt-2 px-2 max-h-[calc(100vh-170px)] bg-white  rounded-lg ">
-        <Table hoverable theme={{root:{shadow:'none'}, body: { cell: { base: " px-6 py-1 text-[12px] text-black" } } }}  >
+        <div className=" overflow-y-auto mt-2 px-2 max-h-[calc(100vh-170px)] bg-white  rounded-lg ">
+        <Table hoverable theme={{root:{shadow:'none'}, body: { cell: { base: " px-3 py-1 text-[11px] text-black" } },head:{cell:{base:"px-3 py-1 text-[12px] text-black border-b-[1px] border-black"}} }}  >
                     <Table.Head >
                     <Table.HeadCell >
                                 EMPRESA
@@ -122,18 +121,18 @@ export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos,
                 <>
                      <Table.Row className="bg-white cursor-pointer " key={index} onClick={()=>toogleAberto(index)} >
                       
-                        <Table.Cell className="font-semibold ">
+                        <Table.Cell>
                            {item?.empresa} 
                         </Table.Cell>   
-                        <Table.Cell className="font-semibold ">
+                        <Table.Cell >
                            {item?.produtos?.descricao} 
                         </Table.Cell>  
                     
                     
-                        <Table.Cell className="text-black font-semibold  inline-flex items-center gap-2">
+                        <Table.Cell className="text-black   inline-flex items-center gap-2">
                          {item?.quantidade} {item?.quantidade === 0 && <RiAlertLine size={18} color="red" />}
                         </Table.Cell>
-                        <Table.Cell className="text-black font-semibold ">
+                        <Table.Cell className="text-black  ">
                          {item?.produtos?.cod_prod}
                         </Table.Cell>
                      

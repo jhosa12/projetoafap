@@ -10,6 +10,7 @@ import { LancamentosProps } from "@/pages/caixa";
 import { SomaProps } from "@/components/financeiro/caixa/caixa";
 import Sintetico from "./sintetico";
 import { Analitico } from "./analitico";
+import { roboto_Mono } from "@/fonts/fonts";
 
 
 interface DadosProps {
@@ -63,12 +64,12 @@ class RelatorioMovimentacao extends React.Component<DadosProps> {
 
 
     return (
-      <div className='flex flex-col w-full p-2   gap-5 '>
+      <div className={roboto_Mono.className} style={{display: 'flex', flexDirection: 'column',padding:8,gap:20}} >
         <div className="flex  w-full justify-center ">
           <Image width={150} height={150} src={logo} alt="logo" />
         </div>
-        <h1 style={{ fontWeight: 'bold', fontSize: '25px', textAlign: 'center' }}>Resumo de Caixa</h1>
-        <div className="flex flex-col gap-2 pl-5 ">
+        <h1 style={{ fontWeight: 'bold', fontSize: '18px', textAlign: 'center' }}>Relatório de Movimentação de Caixa</h1>
+        <div className="flex flex-col gap-1 pl-5 ">
           <span>Usuário: {usuario}</span>
           <span>Data Expedição: {new Date().toLocaleDateString('pt-BR')}</span>
           <span>Periodo do Caixa:  {new Date(startDate).toLocaleDateString('pt-BR')} -  {new Date(endDate).toLocaleDateString('pt-BR')}</span>
