@@ -1,11 +1,9 @@
 
-import { Button, Table } from "flowbite-react"
+import {Table } from "flowbite-react"
 import { useContext, useEffect, useRef, useState, useTransition } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
-import { RiAlertLine } from "react-icons/ri";
 import { ModalFiltroMov } from "./modalFiltro";
 import { api } from "@/services/apiClient";
-import { HiArrowDown, HiDocumentArrowUp } from "react-icons/hi2";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { BiSolidPrinter } from "react-icons/bi";
 import { useReactToPrint } from "react-to-print";
@@ -15,6 +13,7 @@ import { Tooltip } from "react-tooltip";
 import { toast } from "react-toastify";
 import { ModalConfirm } from "./modalConfirm";
 import pageStyle from "@/utils/pageStyle";
+import { Button } from "@/components/ui/button";
 
 
 interface DataProps {
@@ -160,21 +159,19 @@ export default function  HistoricoMov({ id_usuario, usuario,permissoes }: DataPr
           {  <ModalConfirm status={'ESTORNO'} handleMovimentar={handleEstorno} open={openModalConfirm} setOpen={setOpenModalConfirm} />}
     
             <div className="flex-col w-full p-2  rounded-lg bg-white h-[79vh] ">
-
-                <Button theme={{
-                    color: {
-                        light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100   "
-                    }
-                }}
-                    color={"light"}
+<div className="flex w-full">
+<Button 
+                    variant={'outline'}
                     size={'sm'}
-                    className="ml-auto"
+                    className="ml-auto text-black  mr-8"
                     onClick={() => setOpenModal(true)}
                 >FILTRO
                 </Button>
+</div>
+             
 
                 <div className="overflow-y-auto mt-1 px-2 max-h-[70vh] ">
-                    <Table hoverable theme={{ body: { cell: { base: " px-6 py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs text-black" } } }}  >
+                    <Table hoverable theme={{root:{shadow:'none'}, body: { cell: { base: " px-4 py-1 text-xs text-black" } },head: { cell: { base: "px-4 py-1 text-xs text-black border-b-[1px]" }} }}  >
                         <Table.Head >
                             <Table.HeadCell >
                                 DESCRIÇÃO
@@ -199,24 +196,24 @@ export default function  HistoricoMov({ id_usuario, usuario,permissoes }: DataPr
                             </Table.HeadCell>
 
                         </Table.Head>
-                        <Table.Body className="divide-y">
+                        <Table.Body className="divide-y text-black">
                             {historico?.map((item, index) => {
 
 
                                 return (<>  <Table.Row className="bg-white hover:cursor-pointer " key={index} onClick={() => toogleAberto(index)} >
 
-                                    <Table.Cell className="font-semibold">
+                                    <Table.Cell >
                                         {item.descricao}
                                     </Table.Cell>
 
 
-                                    <Table.Cell className="text-black font-semibold  inline-flex items-center gap-2">
+                                    <Table.Cell className="inline-flex items-center gap-2">
                                         {new Date(item.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
                                     </Table.Cell>
-                                    <Table.Cell className="text-black font-semibold ">
+                                    <Table.Cell>
                                         {item.empresa}
                                     </Table.Cell>
-                                    <Table.Cell className="text-black font-semibold " >
+                                    <Table.Cell  >
                                         {item.usuario}
 
                                     </Table.Cell>
@@ -225,7 +222,7 @@ export default function  HistoricoMov({ id_usuario, usuario,permissoes }: DataPr
 
                                     </Table.Cell>
 
-                                    <Table.Cell className="inline-flex gap-6 text-gray-600  font-semibold" >
+                                    <Table.Cell className="inline-flex gap-6 text-gray-600 " >
                                         <button onClick={e => {
                                             e.stopPropagation(); setDadosMov(item)
                                         }} data-tooltip-id="tooltip" data-tooltip-content="Imprimir" className="hover:text-blue-600">  <BiSolidPrinter size={18} />
@@ -234,7 +231,7 @@ export default function  HistoricoMov({ id_usuario, usuario,permissoes }: DataPr
 
 
                                     </Table.Cell>
-                                    <Table.Cell className="text-black  font-semibold" >
+                                    <Table.Cell >
                                         <MdKeyboardArrowDown size={16} />
 
 

@@ -1,29 +1,43 @@
 
 import { api } from "@/services/apiClient";
 import { MdDelete, MdOutlineAddCircle } from "react-icons/md";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { IoPrint, IoSearchSharp } from "react-icons/io5";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { ModalLancamentosCaixa } from "@/components/caixa/modalLancamentosCaixa";
 import { AuthContext } from "@/contexts/AuthContext";
-import { IoMdEye } from "react-icons/io";
-import { IoMdEyeOff } from "react-icons/io";
+import {  IoMdOptions } from "react-icons/io";
+import RelatorioSintetico from "@/Documents/caixa/RelatorioMovimentacao";
 import { Label, Modal, Spinner, Table, TextInput } from "flowbite-react";
 import {  HiPencil } from "react-icons/hi2";
 import { toast } from "react-toastify";
 import { ModalExcluir } from "@/components/modalExcluir";
 import { ModalFechamento } from "../../components/caixa/modalFechamento";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { ModalImpressao } from "@/components/caixa/modalImpressao";
 import { ajustarData } from "@/utils/ajusteData";
 import { ScreenCloseCaixa } from "@/components/caixa/screenCloseCaixa";
 import { ModalMensalidade } from "@/components/admContrato/historicoMensalidade/modalmensalidade";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PlanoContasProps } from "../financeiro";
-
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuPortal,
+    DropdownMenuSeparator,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
+  } from "@/components/ui/dropdown-menu"
+import { useReactToPrint } from "react-to-print";
+import { SomaProps } from "@/components/financeiro/caixa/caixa";
+import pageStyle from "@/utils/pageStyle";
+  
 
 registerLocale('pt', pt)
 
@@ -122,9 +136,8 @@ interface ResponseCaixaProps{
 export default function CaixaMovimentar(){
     const [mov,setMov]=useState<Partial<LancamentosProps>>();
     const [saldo,setSaldo]=useState(0);
-    const [openModalPrint,setPrint] = useState<boolean>(false);
-    const {usuario,permissoes,selectEmp} = useContext(AuthContext);
-    const [visible,setVisible] = useState(false);
+    const {usuario,permissoes,infoEmpresa} = useContext(AuthContext);
+    const [selectRelatorio,setSelectRelatorio] = useState<string|null>(null)
     const [openModal,setModal] = useState<boolean>(false);
     const [openModalExc,setModalExc] = useState<boolean>(false);
     const [loading,setLoading] = useState<boolean>(false);
@@ -132,6 +145,7 @@ export default function CaixaMovimentar(){
     const [mensalidade,setMensalidade] = useState<Partial<MensalidadeBaixaProps>>()
     const [modalDados,setModalDados] = useState<boolean>(false)
     const [despesas,setDespesas] = useState<number>(0)
+    const currentPage = useRef<RelatorioSintetico>(null)
     const [data,setData] = useState<Partial<ResponseCaixaProps>>()
     const {register,watch,handleSubmit,control}= useForm<FormProps>({
         defaultValues:{
@@ -139,6 +153,27 @@ export default function CaixaMovimentar(){
             endDate:new Date(),
         }
     })
+
+
+    useEffect(()=>{
+        if(selectRelatorio){
+            ImprimirRelatorio();
+        }
+    },[selectRelatorio])
+
+
+  const ImprimirRelatorio = useReactToPrint({
+      pageStyle:pageStyle,
+        content:()=>currentPage.current,
+        onAfterPrint:()=>{},
+        onBeforeGetContent:()=>{setSelectRelatorio(null)},
+        removeAfterPrint:false
+    })
+
+
+
+
+
 
 
     useEffect(() => {
@@ -177,8 +212,7 @@ export default function CaixaMovimentar(){
         return () => {
           document.removeEventListener('keydown', handleKeyPress);
         };
-      }, [modalDados,selectEmp]);
-
+      }, [modalDados]);
 
 
   /*  useEffect(()=>{
@@ -214,7 +248,7 @@ export default function CaixaMovimentar(){
             try {
              const response = await api.post('/mensalidade/baixaDireta',{
                n_doc,
-               id_empresa:selectEmp
+               id_empresa:infoEmpresa?.id
              })
             
              setMensalidade(response.data)
@@ -229,7 +263,7 @@ export default function CaixaMovimentar(){
             } 
     
             setLoading(false)
-           },[selectEmp,mensalidade,modalDados]
+           },[infoEmpresa?.id,mensalidade,modalDados]
     )
     
     
@@ -241,20 +275,58 @@ export default function CaixaMovimentar(){
 
        useEffect(()=>{
 
-        listarLancamentos({endDate:new Date(),startDate:new Date(),id_empresa:selectEmp,descricao:''})
+       handleChamarFiltro()
            
-       },[])
+       },[infoEmpresa?.id])
+
+
+ const handleGerirRelatorio = useCallback(()=>{
+
+ 
+      return data?.lista?.reduce((acumulador, atual) => {
+        const valor = Number(atual.valor);
+       
+  
+    if( atual.tipo==='RECEITA' )  switch (atual?.mensalidade?.form_pagto) {
+          case 'PIX':
+            acumulador.pix += valor;
+            break;
+          case 'BOLETO':
+            acumulador.boleto += valor;
+            break;
+          case 'CARTAO':
+          case 'CARTÃO CREDITO':
+          case 'CARTÃO DEBITO':
+            acumulador.cartao += valor;
+            break;
+          case 'DINHEIRO':
+          case '':
+            acumulador.dinheiro += valor;
+            break;
+          default:
+            break; // Adicione uma ação padrão se necessário
+        }
+  
+        if (atual.tipo === 'DESPESA') {
+          acumulador.despesas += valor;
+        }
+        if(atual.tipo === 'RECEITA'){
+          acumulador.total+= valor;
+        }
+  
+        return acumulador;
+      }, { pix: 0, boleto: 0, cartao: 0, dinheiro: 0, deposito: 0, total: 0, transferencia: 0,despesas:0 } as SomaProps);
+     
+
+    },[selectRelatorio])
 
 
 
-
-
-
-  const  handleExcluir=async()=>{
+  const  handleExcluir=useCallback(async()=>{
 
     try {
       await toast.promise(
-            api.delete(`/caixa/deletar/${selectEmp}/${mov?.lanc_id}`),
+            api.delete(`/caixa/deletar/${infoEmpresa?.id}/${mov?.lanc_id}`),
             {
                 error:'Erro ao deletar lancamento',
                 pending:'Solicitando exclusão..',
@@ -272,11 +344,11 @@ export default function CaixaMovimentar(){
         console.log(error)
     }
 
-  }
+  },[mov?.lanc_id,data?.lista,infoEmpresa?.id])
     
 
   const handleChamarFiltro =()=>{
-    listarLancamentos({endDate:watch('endDate'),startDate:watch('startDate'),id_empresa:selectEmp,descricao:watch('descricao')})
+    listarLancamentos({endDate:watch('endDate'),startDate:watch('startDate'),id_empresa:infoEmpresa?.id??'',descricao:watch('descricao')})
   }
    
 
@@ -291,14 +363,14 @@ export default function CaixaMovimentar(){
         try{
             setLoading(true)
             const response = await api.post('/listarLancamentos',{
-                id_empresa:selectEmp,
+                id_empresa:infoEmpresa?.id,
                 dataInicial:dataIni,
                 dataFinal:dataFim,
                 descricao:data.descricao,
                 id_user:usuario?.id
             })
 
-       console.log(response.data)
+       //console.log(response.data)
            
             setData(response.data)
            // setLancamentos(lista)
@@ -344,14 +416,14 @@ return(
 <>
 
 
-{openModal&&<ModalLancamentosCaixa id_empresa={selectEmp} handleFiltro={handleChamarFiltro}    arrayLanc={data?.lista??[]}   mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={data?.plano_de_contas??[]}  grupo={data?.grupo??[]}/>}
+{openModal&&<ModalLancamentosCaixa id_empresa={infoEmpresa?.id??''} handleFiltro={handleChamarFiltro}    arrayLanc={data?.lista??[]}   mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={data?.plano_de_contas??[]}  grupo={data?.grupo??[]}/>}
 
 <ModalExcluir openModal={openModalExc} handleExcluir={handleExcluir} setOpenModal={setModalExc}/>
 
 {/*<ModalDadosMensalidade  handleChamarFiltro={handleChamarFiltro} setMensalidade={setMensalidade} mensalidade={mensalidade??{}} open={modalDados} setOpen={setModalDados}/>*/}
 
 {<ModalMensalidade
-handleAtualizar={()=>listarLancamentos({startDate:watch('startDate'),endDate:watch('endDate'),id_empresa:selectEmp,descricao:watch('descricao')})}
+handleAtualizar={()=>listarLancamentos({startDate:watch('startDate'),endDate:watch('endDate'),id_empresa:infoEmpresa?.id??'',descricao:watch('descricao')})}
 mensalidade={{
     ...mensalidade,
   
@@ -372,9 +444,43 @@ setOpenModal={setModalDados}
 </Modal>
 
 <div className="flex flex-col  w-full ">
-    <div className=" bg-white inline-flex items-center w-full justify-between">
+    <div className=" bg-white inline-flex items-end w-full gap-2 ">
+
+       
    
-    <form onSubmit={handleSubmit(listarLancamentos)}  className="flex w-full flex-row justify-end p-1 gap-4 text-black ">
+    <form onSubmit={handleSubmit(listarLancamentos)}  className="flex w-full items-end flex-row justify-end p-1 gap-4 text-black pr-2 ">
+
+    <div className="flex flex-col whitespace-nowrap ml-4 bg-gray-50 px-2 py-1 rounded-md ">
+        <span className="text-[11px] font-semibold">DETALHAMENTO DE CAIXA</span>
+        <div className="inline-flex items-center gap-4">
+            <div>
+            <span className="text-xs font-semibold">SALDO:</span>
+            <span className="text-xs font-semibold"> {Number(data?.dif).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+            </div>
+
+
+            <div>
+            <span className="text-xs font-semibold">SALDO DIA:</span>
+            <span className="text-xs font-semibold">R$ {saldo.toFixed(2)}</span>
+            </div>
+
+            <div>
+            <span className="text-xs font-semibold">DESPESAS:</span>
+            <span className="text-xs font-semibold"> {Number(despesas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+            </div>
+
+            <div>
+            <span className="text-xs font-semibold">RECEITAS:</span>
+            <span className="text-xs font-semibold"> {Number(saldo+despesas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+            </div>
+
+
+          
+           
+
+        </div>
+
+        </div>
 
     <div >
         <div className=" block">
@@ -409,28 +515,56 @@ setOpenModal={setModalDados}
  
       </div>
       
-      <div className="w-1/4" >
+      <div className="w-1/2" >
         <div className=" block">
           <Label className="text-xs" value="Buscar" />
         </div>
         <Input  className="w-full h-8 text-[11px]" {...register('descricao')}    />
       </div> 
          
-                   <div className="flex items-end gap-4">
+                   
                    <Button variant={'outline'}  size={'sm'} type="submit" ><IoSearchSharp /> Buscar</Button>
 
                   
-                   </div>
-                   <div className="flex   items-end justify-end pr-2 ">
-                   <Button variant={'outline'} disabled={!permissoes.includes('ADM2.1.1')||!!data?.fechamento} color={'success'} size={'sm'} onClick={()=>{setMov({conta:'',conta_n:'',ccustos_desc:'',data:undefined,datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal(true)}} ><MdOutlineAddCircle /> Novo</Button>
-                   </div>
-                   
+                 
+                  
+                  
+
+                   <DropdownMenu>
+  <DropdownMenuTrigger>
+  <Button variant={'outline'} disabled={!permissoes.includes('ADM2.1.1')||!!data?.fechamento} color={'success'} size={'sm'}  ><IoMdOptions />Ações</Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuLabel>Ações</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem
+      disabled={!permissoes.includes('ADM2.1.1')||!!data?.fechamento}
+      onClick={()=>{setMov({conta:'',conta_n:'',ccustos_desc:'',data:undefined,datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal(true)}}
+    >
+        <MdOutlineAddCircle />
+        Novo Lançamento
+    </DropdownMenuItem>
+    <DropdownMenuSub>
+            <DropdownMenuSubTrigger>Relatorio de Caixa</DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem onClick={()=>setSelectRelatorio('ANALITICO')}>Analitico</DropdownMenuItem>
+                <DropdownMenuItem onClick={()=>setSelectRelatorio('SINTETICO')}>Sintético</DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+
+          <DropdownMenuItem  onClick={()=>setFecModal(true)}>Fechar Caixa</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+
+          
         </form>
     </div>
   { !!data?.fechamento ? <ScreenCloseCaixa fechamento={data.fechamento}/> : <div className="flex flex-col border-t-2 bg-white">
     
        
-        <div className="overflow-y-auto mt-1 px-2 h-[calc(100vh-174px)] ">
+        <div className="overflow-y-auto mt-1 px-2 h-[calc(100vh-144px)] ">
        
         <Table hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-3 py-0 text-[10px]" } } }} 
     >
@@ -512,11 +646,11 @@ setOpenModal={setModalDados}
 
 
 {!data?.fechamento &&    <div className="inline-flex gap-3   text-black w-full bg-white p-2">
-        <button disabled={!permissoes.includes('ADM2.1.5')} onClick={()=>setVisible(!visible)} className="justify-center items-center disabled:hover:cursor-not-allowed">
+       {/*  <button disabled={!permissoes.includes('ADM2.1.5')} onClick={()=>setVisible(!visible)} className="justify-center items-center disabled:hover:cursor-not-allowed">
            {visible? <IoMdEye color="blue" size={20}/>:<IoMdEyeOff color="blue" size={20}/>}
             </button>
    
-    <div className="text-black text-xs">
+   <div className="text-black text-xs">
 
     <span className="inline-flex items-center  rounded-s-lg px-4 py-1 gap-1  font-medium  border-t border-b    bg-gray-100 border-gray-400  ">
    
@@ -538,23 +672,25 @@ setOpenModal={setModalDados}
 
   {visible?`Despesas: ${Number(despesas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`:"------"}
   </span>
-  </div>
+  </div>*/}
 
-
-  <Button size={'sm'} onClick={()=>setPrint(true)} className="ml-auto" ><IoPrint className="mr-2 h-4 w-4" /> Imprimir Caixa</Button>
-  <Button size={'sm'} onClick={()=>setFecModal(true)} className="ml-auto" >Fechar Caixa</Button>
     </div>}
 
     </div>
 
 
 
-<ModalFechamento listar={()=>listarLancamentos({endDate:watch('endDate'),startDate:watch('startDate'),id_empresa:selectEmp,descricao:watch('descricao')})} dataCaixaEnd={watch('endDate')} dataCaixa={watch('startDate')}  id_empresa={selectEmp} lancamentos={data?.lista??[]} id_usuario={usuario?.id??''} openModal={openFecModal} setOpenModal={setFecModal}/>
+{openFecModal && <ModalFechamento listar={()=>listarLancamentos({endDate:watch('endDate'),startDate:watch('startDate'),id_empresa:infoEmpresa?.id??'',descricao:watch('descricao')})} dataCaixaEnd={watch('endDate')} dataCaixa={watch('startDate')}  id_empresa={infoEmpresa?.id??''} lancamentos={data?.lista??[]} id_usuario={usuario?.id??''} openModal={openFecModal} setOpenModal={setFecModal}/>}
 
 
-{openModalPrint && <ModalImpressao array={data?.lista??[]} openModal={openModalPrint} setOpenModal={setPrint} startDate={watch('startDate')} endDate={watch('endDate')} usuario={usuario?.nome??''}/>}
+{/*openModalPrint && <ModalImpressao array={data?.lista??[]} openModal={openModalPrint} setOpenModal={setPrint} startDate={watch('startDate')} endDate={watch('endDate')} usuario={usuario?.nome??''}/>*/}
 
 
+
+<div style={{ display: "none" }}>
+        {/* Renderiza o componente de fechamento apenas uma vez */}
+       {selectRelatorio &&  <RelatorioSintetico infoEmpresa={infoEmpresa} tipoRelatorio={selectRelatorio} soma={handleGerirRelatorio()??{} as SomaProps} usuario={usuario?.nome??''} startDate={watch('startDate')} endDate={watch('endDate')} array={data?.lista  ??[]} ref={currentPage} />}
+      </div>
 </>
 )
 

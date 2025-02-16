@@ -11,6 +11,7 @@ import { SomaProps } from "@/components/financeiro/caixa/caixa";
 import Sintetico from "./sintetico";
 import { Analitico } from "./analitico";
 import { roboto_Mono } from "@/fonts/fonts";
+import { EmpresaProps } from "@/types/empresa";
 
 
 interface DadosProps {
@@ -19,7 +20,8 @@ interface DadosProps {
   soma: SomaProps,
   array: Array<LancamentosProps>,
   startDate: Date,
-  endDate: Date
+  endDate: Date,
+  infoEmpresa:EmpresaProps|null
 }
 
 class RelatorioMovimentacao extends React.Component<DadosProps> {
@@ -60,13 +62,13 @@ class RelatorioMovimentacao extends React.Component<DadosProps> {
 
 
   render() {
-    const { startDate, endDate, usuario, soma, tipoRelatorio } = this.props;
+    const { startDate, endDate, usuario, soma, tipoRelatorio,infoEmpresa } = this.props;
 
 
     return (
       <div className={roboto_Mono.className} style={{display: 'flex', flexDirection: 'column',padding:8,gap:20}} >
         <div className="flex  w-full justify-center ">
-          <Image width={150} height={150} src={logo} alt="logo" />
+          <img width={150} height={150} src={infoEmpresa?.logoUrl} alt="logo" />
         </div>
         <h1 style={{ fontWeight: 'bold', fontSize: '18px', textAlign: 'center' }}>Relatório de Movimentação de Caixa</h1>
         <div className="flex flex-col gap-1 pl-5 ">

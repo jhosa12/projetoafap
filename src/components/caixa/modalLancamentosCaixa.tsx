@@ -97,6 +97,7 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
     }
     )
     handleFiltro()
+    setOpenModal(false)
     } catch (error) {
       toast.warning('Consulte o TI')
       
@@ -155,6 +156,7 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
         )
         
         handleFiltro()
+        setOpenModal(false)
      //   listarLancamentos()
          // setLancamentos([...arrayLanc,response.data])
         } catch (error) {
@@ -162,7 +164,7 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
           console.log(error)
           
         }
-    handleFiltro()
+  //  handleFiltro()
         
      }
 

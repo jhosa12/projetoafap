@@ -15,7 +15,7 @@ export function Analitico({array,soma}:{array:Array<LancamentosProps>,soma:SomaP
                 <div style={{display:'flex',justifyContent:'space-between',width:'100%'}}>
         <strong>RECEITAS</strong>
         <span style={{flexGrow:1,borderBottom:'1px dotted black',margin:'0 10px'}}></span>
-        <span style={{whiteSpace:'nowrap'}}>{Number(soma.total).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+        <span style={{whiteSpace:'nowrap'}}>{Number(soma?.total).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
        </div>
     
         {array.map((item,index)=>(
@@ -32,7 +32,7 @@ export function Analitico({array,soma}:{array:Array<LancamentosProps>,soma:SomaP
                 <div style={{display:'flex',justifyContent:'space-between',width:'100%'}}>
         <strong style={{whiteSpace:'nowrap'}}>DESPESAS</strong>
         <span style={{flexGrow:1,borderBottom:'1px dotted black',margin:'0 10px'}}></span>
-        <span style={{whiteSpace:'nowrap'}}>{Number(soma.despesas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+        <span style={{whiteSpace:'nowrap'}}>{Number(soma?.despesas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
        </div>
     
         {array.map((item,index)=>(
