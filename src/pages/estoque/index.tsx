@@ -75,7 +75,7 @@ export default function AdministrarEstoque(){
       }}}}}}}  variant="underline"  onActiveTabChange={e=>setTab(e)}>
 
       <Tabs.Item  active={tab===0} title="Estoque" icon={FaStore}>
-       {tab===0 && <Estoque permissoes={permissoes} reqProdutos={()=>postData(undefined)} selectProdutos={data??[]} empresas={empresas}  id_usuario={usuario?.id??''} usuario={usuario?.nome??''}   />}
+       {tab===0 && <Estoque permissoes={permissoes} reqProdutos={()=>postData(undefined)} selectProdutos={data??[]} empresas={empresas}    />}
      
       </Tabs.Item>
       <Tabs.Item  active={tab===1} title="Histórico de Movimentação" icon={RiHistoryLine}>

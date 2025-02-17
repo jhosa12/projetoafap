@@ -15,10 +15,7 @@ import pageStyle from "@/utils/pageStyle";
 import DocumentTemplate from "@/Documents/contratoAdesão/DocumentTemplate";
 import Carteiras from "@/Documents/carteiraAssociado/DocumentTemplate";
 import { EmpresaProps } from "@/types/empresa";
-
-
-
-
+import { CartaNovoAssociado } from "@/Documents/cartaNovoAssociado/cartaDocument";
 
 interface DataProps{
     dadosassociado:Partial<AssociadoProps>,
@@ -27,78 +24,93 @@ interface DataProps{
 
 
 export function DadosAssociado({dadosassociado,infoEmpresa}:DataProps){
-         const {usuario,closeModa,permissoes,setarDadosAssociado}= useContext(AuthContext)
+         const {usuario,closeModa,permissoes}= useContext(AuthContext)
         const [openEdit,setModalEdit]=useState<boolean>(false)
          const [verObs, setVerObs] = useState(false)
          const [observacao, setObservacao] = useState('');
          const [openAltPlano,setOpenAltPlano] = useState<boolean>(false)
          const [openInativar,setOpenInativar] = useState<boolean>(false)
-         const componentContrato = useRef<DocumentTemplate>(null)
-         const componentCarteira = useRef<Carteiras>(null)
-         const componentCarne = useRef<ImpressaoCarne>(null)
-         const componentResumo = useRef<ContratoResumo>(null)
-         const [printCarne, setPrintCarne] = useState(false)
-         const [printContrato, setPrintContrato] = useState(false)
-         const [printCarteira, setPrintCarteira] = useState(false)
-         const [printResumo, setPrintResumo] = useState(false)
+         const [printState, setPrintState] = useState<{ [key: string]: boolean }>({
+            carne: false,
+            contrato: false,
+            carteira: false,
+            resumo: false,
+            carta:false
+          });
+          const componentRefs = {
+            contrato: useRef<DocumentTemplate>(null),
+            carteira: useRef<Carteiras>(null),
+            carne: useRef<ImpressaoCarne>(null),
+            resumo: useRef<ContratoResumo>(null),
+            carta:useRef<CartaNovoAssociado>(null)
+          };
 
 
-         const imprimirResumo =useReactToPrint({
+
+          const handlePrint = (doc: string) => {
+            setPrintState((prev) => ({ ...prev, [doc]: true }));
+          };
+
+        /*  const imprimirDocumento = (doc: string, component: React.RefObject<any>) => {
+            return useReactToPrint({
+              pageStyle: pageStyle,
+              documentTitle: doc.toUpperCase(),
+              content: () => component.current,
+              onAfterPrint: () => setPrintState((prev) => ({ ...prev, [doc]: false })),
+            });
+          };*/
+          const imprimirContrato = useReactToPrint({
             pageStyle: pageStyle,
-            documentTitle:'RESUMO CONTRATO',
-            content:()=>componentResumo.current,
-         
-            onAfterPrint:()=>{
-                setPrintResumo(false)
-            }
-            
-    
-       })
-    
-    
-    
-    
-        const imprimirCarne =useReactToPrint({
+            documentTitle: "CONTRATO",
+            content: () => componentRefs.contrato.current,
+            onAfterPrint: () => setPrintState((prev) => ({ ...prev, contrato: false })),
+          });
+          
+          const imprimirCarteira = useReactToPrint({
             pageStyle: pageStyle,
-            documentTitle:'CARNÊ ASSOCIADO',
-            content:()=>componentCarne.current,
-         
-            onAfterPrint:()=>{
-                setPrintCarne(false)
-            }
-            
-    
-       })
-    
+            documentTitle: "CARTEIRA",
+            content: () => componentRefs.carteira.current,
+            onAfterPrint: () => setPrintState((prev) => ({ ...prev, carteira: false })),
+          });
+          
+          const imprimirCarne = useReactToPrint({
+            pageStyle: pageStyle,
+            documentTitle: "CARNÊ",
+            content: () => componentRefs.carne.current,
+            onAfterPrint: () => setPrintState((prev) => ({ ...prev, carne: false })),
+          });
+          
+          const imprimirResumo = useReactToPrint({
+            pageStyle: pageStyle,
+            documentTitle: "RESUMO",
+            content: () => componentRefs.resumo.current,
+            onAfterPrint: () => setPrintState((prev) => ({ ...prev, resumo: false })),
+          });
+
+
+          const imprimirCarta = useReactToPrint({
+            pageStyle: pageStyle,
+            documentTitle: "CARTA",
+            content: () => componentRefs.carta.current,
+            onAfterPrint: () => setPrintState((prev) => ({ ...prev, carta: false })),
+          });
         
-        const imprimirContrato =useReactToPrint({
-            pageStyle: pageStyle,
-            documentTitle:'CONTRATO ASSOCIADO',
-            content:()=>componentContrato.current,
-            onAfterPrint:()=>{
-                setPrintContrato(false)
-            }
-    
-       })
-    
-    
-       const imprimirCarteira =useReactToPrint({
-        pageStyle:pageStyle,
-        documentTitle:'CONTRATO ASSOCIADO',
-        content:()=>componentCarteira.current,
-        onAfterPrint:()=>{
-            setPrintCarteira(false)
-        }
-    
-    })
+         /* useEffect(() => {
+            Object.keys(printState).forEach((doc) => {
+              if (printState[doc]) {
+                imprimirDocumento(doc, componentRefs[doc as keyof typeof componentRefs]);
+              }
+            });
+          }, [printState]);*/
 
-         
-             useEffect(()=>{
-                 printCarne && imprimirCarne()
-                 printContrato && imprimirContrato()
-                 printCarteira && imprimirCarteira()
-                 printResumo && imprimirResumo()
-             },[printCarne,printContrato,printCarteira,printResumo])
+          useEffect(() => {
+            if (printState.contrato) imprimirContrato();
+            if (printState.carteira) imprimirCarteira();
+            if (printState.carne) imprimirCarne();
+            if (printState.resumo) imprimirResumo();
+            if (printState.carta) imprimirCarta();
+          }, [printState]);
+     
 
          function handleObservacao() {
 
@@ -146,10 +158,21 @@ export function DadosAssociado({dadosassociado,infoEmpresa}:DataProps){
 
  
     <Dropdown label="" renderTrigger={()=><Button theme={{color:{gray:"border border-gray-200 bg-white text-gray-900  enabled:hover:bg-gray-100 enabled:hover:text-cyan-700"},pill:{off:'rounded-r-lg'}}} className="text-black " color={'gray'} size={'xs'} >Imprimir Documentos</Button>} >
-    <Dropdown.Item className="text-xs" onClick={()=>setPrintContrato(true)}>Contrato</Dropdown.Item>
-      <Dropdown.Item className="text-xs" onClick={()=>setPrintCarne(true)}>Carnê</Dropdown.Item>
-      <Dropdown.Item className="text-xs"  onClick={()=>setPrintCarteira(true)}>Carteiras</Dropdown.Item>  
-      <Dropdown.Item className="text-xs" onClick={()=>setPrintResumo(true)}>Resumo de Contrato</Dropdown.Item>                               
+    <Dropdown.Item className="text-xs" onClick={() => handlePrint('carta')}>
+              Carta
+            </Dropdown.Item>
+    <Dropdown.Item className="text-xs" onClick={() => handlePrint('contrato')}>
+              Contrato
+            </Dropdown.Item>
+            <Dropdown.Item className="text-xs" onClick={() => handlePrint('carne')}>
+              Carnê
+            </Dropdown.Item>
+            <Dropdown.Item className="text-xs" onClick={() => handlePrint('carteira')}>
+              Carteiras
+            </Dropdown.Item>
+            <Dropdown.Item className="text-xs" onClick={() => handlePrint('resumo')}>
+              Resumo de Contrato
+            </Dropdown.Item>
     </Dropdown>
   
     
@@ -241,7 +264,7 @@ setModalEdit(true)
 
 
                                <div style={{ display: 'none' }}>
-    {  printContrato &&      <DocumentTemplate
+    {  printState.contrato &&      <DocumentTemplate
             adesao={new Date(dadosassociado?.contrato?.dt_adesao ?? '')}
             bairro={dadosassociado?.bairro ?? ''}
             cidade={dadosassociado?.cidade ?? ''}
@@ -256,9 +279,9 @@ setModalEdit(true)
             rg={dadosassociado?.rg ?? ''}
             telefone={dadosassociado?.celular1 ?? ''}
             infoEmpresa={infoEmpresa}
-        ref={componentContrato} />}
+        ref={componentRefs.contrato} />}
 
-       { printCarteira && <Carteiras
+       { printState.carteira && <Carteiras
        infoEmpresa={infoEmpresa}
        adesao={dadosassociado.contrato?.dt_adesao??new Date()}
        cpf={dadosassociado.cpfcnpj??''}
@@ -266,7 +289,7 @@ setModalEdit(true)
 
             dependentes={dadosassociado?.dependentes ?? []}
             plano={dadosassociado?.contrato?.plano ?? ''}
-            ref={componentCarteira}
+            ref={componentRefs.carteira}
             bairro={dadosassociado?.bairro ?? ''}
             cartTitular={true}
             celular={dadosassociado?.celular1 ?? ''}
@@ -279,9 +302,9 @@ setModalEdit(true)
                 uf={dadosassociado?.uf ?? ''}
         />}
 
-        {printCarne && <ImpressaoCarne
+        {printState.carne && <ImpressaoCarne
             infoEmpresa={infoEmpresa}
-            ref={componentCarne}
+            ref={componentRefs.carne}
           arrayMensalidade={dadosassociado?.mensalidade?.filter(mensalidade => mensalidade.status !== 'P') ?? []}
             dadosAssociado={
                 {bairro: dadosassociado?.bairro ?? '',
@@ -297,11 +320,22 @@ setModalEdit(true)
         
         />}
 
-{printResumo && <ContratoResumo
+{printState.resumo && <ContratoResumo
 infoEmpresa={infoEmpresa}
-ref={componentResumo}
+ref={componentRefs.resumo}
 dados={dadosassociado??{}}
 />}
+
+{printState.carta && <CartaNovoAssociado
+infoEmpresa={infoEmpresa}
+ref={componentRefs.carta}
+contrato={dadosassociado?.contrato?.id_contrato??0}
+titular={dadosassociado?.nome??''}
+/>}
+
+
+
+
         </div>
                             </div>
     )
