@@ -4,6 +4,7 @@
 import React from 'react';
 import { Table } from "flowbite-react";
 import { EstoqueProps } from "@/pages/estoque";
+import { roboto_Mono } from '@/fonts/fonts';
 
 
 interface DadosProps {
@@ -18,14 +19,13 @@ interface DadosProps {
 class RelatorioEstoque extends React.Component<DadosProps> {
   render() {
     const {dados,usuario} = this.props;
- 
     return (
-      <div className='flex flex-col w-full  gap-5 '>
+      <div className={`${roboto_Mono.className} flex flex-col w-full  gap-5`}>
        <div className="flex  w-full justify-center ">
        <img width={100} height={100} src={"/novaLogo.png"} alt="logo"/>
        </div>
-       <h1 style={{fontWeight:'bold',fontSize:'16px',textAlign:'center'}}>Relatório de Estoque</h1>
-       <div className="flex flex-col gap-2">
+       <h1 style={{fontWeight:'bold',fontSize:'18px',textAlign:'center'}}>Relatório de Estoque</h1>
+       <div style={{display:'flex',flexDirection:'column',gap:'5px',fontSize:12}}>
        <span>Usuário: {usuario}</span>
        <span>Data Expedição: {new Date().toLocaleDateString('pt-BR')}</span>
        </div>

@@ -1,6 +1,6 @@
 import { EstoqueProps, FormProps, ProdutosProps } from "@/pages/estoque"
 import {  Spinner, Table } from "flowbite-react"
-import {  useEffect, useRef, useState } from "react";
+import {  useContext, useEffect, useRef, useState } from "react";
 import { ModalMov } from "./modalMovimentacao";
 import { ModalNovoProduto } from "./modalNovoProduto";
 import {RiAlertLine} from "react-icons/ri";
@@ -14,37 +14,36 @@ import { useReactToPrint } from "react-to-print";
 import RelatorioEstoque from "@/Documents/estoque/RelatorioEstoque";
 import pageStyle from "@/utils/pageStyle";
 import { Button } from "../ui/button";
+import { AuthContext } from "@/contexts/AuthContext";
 
 
 
 interface DataProps{
    
     empresas:Array<EmpresaProps>
-    usuario:string,
-    id_usuario:string,
     selectProdutos:Array<ProdutosProps>,
     reqProdutos:()=>Promise<void>,
     permissoes:Array<string>
      
 }
 
-export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos,permissoes}:DataProps){
+export function Estoque({empresas,selectProdutos,reqProdutos,permissoes}:DataProps){
     const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
     const [mov,setMov]= useState<boolean>(false)
     const [openModal,setOpenModal]= useState<boolean>(false)
     const {data,loading,postData} = useApi<Array<EstoqueProps>,FormProps>('/estoque/listar')
     const componentRef =useRef<RelatorioEstoque>(null);
+    const {usuario,infoEmpresa} = useContext(AuthContext)
     const handleFiltroEstoque = async()=>{
 
-     await postData({grupo:'',descricao:'',id_produto:null,id_empresa:undefined}) 
+     await postData({grupo:'',descricao:'',id_produto:null,id_empresa:infoEmpresa?.id}) 
      //console.log(data)
     
     }
 
     useEffect(()=>{
       handleFiltroEstoque()
-    },[])
-
+    },[infoEmpresa?.id])
 
 
     const handleImpressao = useReactToPrint({
@@ -71,15 +70,15 @@ export function Estoque({id_usuario,usuario,empresas,selectProdutos,reqProdutos,
         <div className="flex-col w-full px-2    ">
 
           <div style={{display:'none'}}>
-            <RelatorioEstoque usuario={usuario} ref={componentRef} dados={data ?? []}/>
+            <RelatorioEstoque usuario={usuario?.nome??''} ref={componentRef} dados={data ?? []}/>
           </div>
 
-      { mov && <ModalMov permissoes={permissoes}  setModalNovo={setOpenModal} reqDadosEstoq={postData} id_usuario={id_usuario} usuario={usuario} empresas={empresas} produtos={selectProdutos??[]}  setOpenModal={setMov}/>}
+      { mov && <ModalMov permissoes={permissoes}  setModalNovo={setOpenModal} reqDadosEstoq={postData} id_usuario={usuario?.id??''} usuario={usuario?.nome??''} empresas={empresas} produtos={selectProdutos??[]}  setOpenModal={setMov}/>}
     { openModal && <ModalNovoProduto reqProdutos={reqProdutos} reqDadosEstoq={postData} permissoes={permissoes}  openModal={openModal} setOpenModal={setOpenModal}/>}
 
                 <div className="inline-flex w-full justify-end items-end gap-4 text-black">
              
-                    <FiltroEstoque empresas={empresas} produtos={selectProdutos??[]} loading={loading}  filtroEstoque={postData}/>
+                    <FiltroEstoque id_empresa={infoEmpresa?.id} produtos={selectProdutos??[]} loading={loading}  filtroEstoque={postData}/>
                     <Button variant={'outline'}  onClick={()=>setMov(true)} size={'sm'}><TbTransferVertical  /> Movimentar</Button>
 
                     <Button variant={'outline'}  onClick={()=>setOpenModal(true)}  size={'sm'}><MdOutlinePlaylistAdd />Novo Produto</Button>

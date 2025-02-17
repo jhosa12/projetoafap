@@ -266,12 +266,6 @@ export default function CaixaMovimentar(){
            },[infoEmpresa?.id,mensalidade,modalDados]
     )
     
-    
-    
-    
-    
-       
-  
 
        useEffect(()=>{
 
@@ -352,7 +346,7 @@ export default function CaixaMovimentar(){
   }
    
 
-   const listarLancamentos:SubmitHandler<FormProps> = async(data)=> {
+   const listarLancamentos:SubmitHandler<FormProps> = useCallback(async(data)=> {
 
         if(data.startDate>data.endDate){
             toast.info('Data final deve ser maior que a data inicial')
@@ -387,7 +381,7 @@ export default function CaixaMovimentar(){
 
          setLoading(false)
         
-    }
+    },[infoEmpresa?.id,usuario?.id])
 
 
     useEffect(()=>{

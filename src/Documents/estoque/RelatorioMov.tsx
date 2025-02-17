@@ -7,6 +7,7 @@ import React from 'react';
 
 import { Table } from "flowbite-react";
 import { HistoricoProps } from "@/components/estoque/historico/historico";
+import { roboto_Mono } from "@/fonts/fonts";
 
 
 interface DadosProps {
@@ -22,12 +23,12 @@ class RelatorioMov extends React.Component<DadosProps> {
     const {dados} = this.props;
  
     return (
-      <div className='flex flex-col w-full p-2   gap-5 '>
+      <div className={`${roboto_Mono.className} flex flex-col w-full p-2   gap-5`}>
        <div className="flex  w-full justify-center ">
-       <Image width={150} height={150} src={logo} alt="logo"/>
+       <img width={150} height={150} src={"/novaLogo.png"} alt="logo"/>
        </div>
        <h1 style={{fontWeight:'bold',fontSize:'25px',textAlign:'center'}}>Relatório de Movimentação</h1>
-       <div className="flex flex-col gap-2 pl-5 ">
+       <div style={{display:'flex',flexDirection:'column',width:'100%',gap:'5px',fontSize:12}}>
        <span>Usuário: {dados.usuario}</span>
        <span>Data Expedição: {new Date().toLocaleDateString('pt-BR')}</span>
        <span>Data Movimentação:  {dados.data &&new Date(dados.data).toLocaleDateString('pt-BR',{timeZone:'UTC'})} </span>
@@ -37,7 +38,7 @@ class RelatorioMov extends React.Component<DadosProps> {
        </div>
 
 <div >
-       <Table >
+       <Table theme={{root:{shadow:'none'},body: { cell: { base: " px-3 py-2  text-xs text-black" } },head: { cell: { base: "px-3 py-2  text-xs text-black" } }}} >
         <Table.Head>
             <Table.HeadCell>PRODUTO</Table.HeadCell>
             <Table.HeadCell>QUANTIDADE</Table.HeadCell>

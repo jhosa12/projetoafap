@@ -269,7 +269,7 @@ export function Historico() {
                             Celular1
                         </Table.HeadCell>
                         <Table.HeadCell >
-                            Celular2
+                            Vencimento
                         </Table.HeadCell>
 
                         <Table.HeadCell >
@@ -311,7 +311,7 @@ export function Historico() {
                                     </Table.Cell>
 
                                     <Table.Cell >
-                                        {item?.celular2}
+                                        {item?.vencimento?new Date(item?.vencimento).toLocaleDateString('pt-BR', { timeZone: 'UTC' }):''}
                                     </Table.Cell>
 
 

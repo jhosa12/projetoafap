@@ -1,16 +1,16 @@
 
 import { AuthContext } from "@/contexts/AuthContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect} from "react";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
-import { Button, Label, Modal, Select, TextInput } from "flowbite-react";
+import { Label, Modal, Select, TextInput } from "flowbite-react";
 import { LancamentosProps } from "@/pages/caixa";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { EmpresaProps } from "@/types/empresa";
 import { ajustarData } from "@/utils/ajusteData";
+import { Button } from "../ui/button";
 
 
 
@@ -170,17 +170,17 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
 
     return(
    
-  <Modal size={'3xl'} show={openModal} onClose={()=>setOpenModal(false)}>
-    <Modal.Header>Adminstrar Lançamento</Modal.Header>
+  <Modal size={'2xl'} show={openModal} popup onClose={()=>setOpenModal(false)}>
+    <Modal.Header/>
     <Modal.Body>
+      <h1 className="text-base font-semibold mb-2">LANÇAMENTO</h1>
+        <form className="text-[10px]" onSubmit={handleSubmit(handleSubmitForm)}> 
 
-        <form onSubmit={handleSubmit(handleSubmitForm)}> 
-
-<div className="inline-flex gap-4 w-full text-black font-semibold">
+<div className="inline-flex gap-4 w-full text-black ">
   
 <div >
         <div className=" block">
-          <Label  value="Data" />
+          <Label className="text-[12px]"  value="Data" />
         </div>
         <Controller
         control={control}
@@ -197,7 +197,7 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
 
       <div  >
         <div className=" block">
-          <Label  value="Setor" />
+          <Label className="text-[12px]"  value="Setor" />
         </div>
         <Select {...register('id_grupo')} sizing={'sm'}    >
                     <option value={''}></option>
@@ -215,12 +215,12 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
 
 </div>
 
-        <div className="p-2   grid mt-2 gap-2 grid-flow-row-dense grid-cols-4 text-black font-semibold">
+        <div className="p-2   grid mt-2 gap-2 grid-flow-row-dense grid-cols-4 text-black">
 
 
         <div className=" col-span-1 " >
         <div className=" block">
-          <Label  value="Conta" />
+          <Label className="text-[12px]"  value="Conta" />
         </div>
         <TextInput disabled sizing={'sm'} required type="text" {...register('conta')}     />
       </div> 
@@ -229,9 +229,9 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
 
       <div className=" col-span-2" >
         <div className=" block">
-          <Label  value="Descrição" />
+          <Label className="text-[12px]"  value="Descrição" />
         </div>
-        <Select  value={watch('conta')} className="text-black"   onChange={e=>{
+        <Select  value={watch('conta')}    onChange={e=>{
         const tipo = planos.find((item)=>item.conta===e.target.value)
        
      if(tipo){ setValue('descricao',tipo.descricao)
@@ -242,7 +242,7 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
         {planos?.map((item,index)=>
             
             (
-              item.perm_lanc==='S' &&  <option key={index} value={item.conta}>{item.descricao.toUpperCase()}</option>
+              item.perm_lanc==='S' &&  <option className="text-black text-[10px]" key={index} value={item.conta}>{item.descricao.toUpperCase()}</option>
             )
         )}
 
@@ -251,7 +251,7 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
 
       <div className="col-span-1 " >
         <div className=" block">
-          <Label  value="Tipo" />
+          <Label className="text-[12px]"  value="Tipo" />
         </div>
         <TextInput disabled sizing={'sm'} required type="text" value={watch('tipo')}     />
       </div> 
@@ -259,7 +259,7 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
 
       <div className="col-span-3 " >
         <div className=" block">
-          <Label  value="Histórico" />
+          <Label className="text-[12px]"  value="Histórico" />
         </div>
         <TextInput  sizing={'sm'} required type="text" value={watch('historico')?.toUpperCase()} {...register('historico')}    />
       </div> 
@@ -267,16 +267,16 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
 
       <div className="col-span-1 " >
         <div className=" block">
-          <Label  value="Valor" />
+          <Label className="text-[12px]"  value="Valor" />
         </div>
         <TextInput  sizing={'sm'} required   {...register('valor')}   />
       </div> 
 
 
-<div className=" gap-2 col-span-4  flex flex-row justify-end">
+<div className=" gap-2 col-span-4 mt-2 flex flex-row justify-end">
 
 
-<Button size={'sm'}   type="submit" >
+<Button variant={'outline'} size={'sm'}   type="submit" >
   {mov.lanc_id ? 'Alterar':'Cadastrar'}
 </Button>
  
