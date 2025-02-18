@@ -5,7 +5,8 @@ import { Permissoes } from "./permissoes/permisssoes";
 import { ModalPassword } from "./modalPassword";
 import { Button } from "@/components/ui/button";
 import { PerfisUser } from "./perfisUser";
-import { UsuarioProps } from "./usuario";
+import { UsuarioProps } from "@/pages/configuracoes/usuario";
+
 
 interface DataProps{
     setarDadosUsuario : (fields:Partial<UsuarioProps>)=>void,

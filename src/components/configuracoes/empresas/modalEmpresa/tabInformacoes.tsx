@@ -1,7 +1,6 @@
 import { EmpresaProps } from "@/types/empresa"
 import { FileInput, Label, Textarea, TextInput } from "flowbite-react"
 import { ChangeEvent, FormEvent } from "react"
-import { useForm } from "react-hook-form"
 import { FormEmpresaProps } from "./modalEmpresa"
 
 interface FormTabInformacoesProps extends FormEmpresaProps{empresa:Partial<EmpresaProps>}
