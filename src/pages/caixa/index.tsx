@@ -129,7 +129,8 @@ interface ResponseCaixaProps{
     dif:number|null,
     plano_de_contas:Array<PlanoContasProps>,
     grupo:Array<GrupoPrps>,
-    fechamento:FechamentoProps|null
+    fechamento:FechamentoProps|null,
+    valorAnterior:number|null
 }
 
 
@@ -449,7 +450,7 @@ setOpenModal={setModalDados}
         <div className="inline-flex items-center gap-4">
             <div>
             <span className="text-xs font-semibold">SALDO:</span>
-            <span className="text-xs font-semibold"> {Number(data?.dif).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+            <span className="text-xs font-semibold"> {Number(data?.dif).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} - {data?.valorAnterior}</span>
             </div>
 
 

@@ -33,7 +33,7 @@ import { url } from "inspector";
 export function 
 Header() {
 
-    const {usuario,empresas,selectEmp,setSelectEmp} = useContext(AuthContext)
+    const {usuario,empresas,selectEmp,setSelectEmp,permissoes} = useContext(AuthContext)
 
 
     return(
@@ -131,13 +131,21 @@ Header() {
         </MenubarContent>
       </MenubarMenu>
       
+
+      <MenubarMenu>
+        <MenubarTrigger>Configurações</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem disabled={!permissoes.includes('CFG1')}>
+          <Link  href="/configuracoes">Usuários</Link>
+          </MenubarItem>
+          <MenubarItem disabled={!permissoes.includes('CFG1')}>
+          <Link  href="/configuracoes">Empresa</Link>
+          </MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
        
       
-      <MenubarMenu>
-  <MenubarTrigger>
-        <Link href="/configuracoes">Configurações</Link>  
-          </MenubarTrigger>
-  </MenubarMenu>
+
 
  
 

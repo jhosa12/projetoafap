@@ -2,7 +2,7 @@
 import ImpressaoCarne from '@/Documents/mensalidade/ImpressaoCarne';
 import { api } from '@/services/apiClient';
 import { useReactToPrint } from 'react-to-print';
-import React, {  useContext, useEffect, useRef, useState } from 'react';
+import React, {  useCallback, useContext, useEffect, useRef, useState } from 'react';
 import {  IoPrint } from 'react-icons/io5';
 import { MdDeleteForever} from 'react-icons/md';
 import { RiAddCircleFill } from 'react-icons/ri';
@@ -56,23 +56,18 @@ interface DadosProps {
     dados: SetAssociadoProps
     dadosAssociado: DadosAssociadoGeral
 }
-export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, setarDados, usuario }: DadosProps) {
+export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }: DadosProps) {
     const [checkMensal, setCheck] = useState(false)
     const [openExcluir, setOpenExcluir] = useState(false)
     const [linhasSelecionadas, setLinhasSelecionadas] = useState<Array<Partial<MensalidadeProps>>>([]);
-   // const [openModalAcordo, setModalAcordo] = useState({ open: false, visible: false })
     const componentRef = useRef<ImpressaoCarne>(null);
     const { setarDadosAssociado, permissoes,infoEmpresa } = useContext(AuthContext)
     const [openModalMens, setModalMens] = useState<boolean>(false)
     const [mensalidadeSelect, setMensalidade] = useState<Partial<MensalidadeProps>>();
-    //const [openScanner,setOpenScanner] =useState<boolean>(false);
     const [openEditar, setOpenEditar] = useState<boolean>(false);
-    //  const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
-    // const [arrayMensal,setArrayMensal] = useState<Array<MensalidadeProps>>([]);
     const [isPrinting, setIsPrinting] = useState(false);
     const componentRecibo = useRef<ReciboMensalidade>(null)
     const [mensalidadeRecibo, setMensalidadeRecibo] = useState<Partial<MensalidadeProps>>()
-   
 
 
 
@@ -127,7 +122,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
 
     };
 
-    async function excluirMesal() {
+    const excluirMesal = useCallback(async() =>{
         if (!linhasSelecionadas) {
             toast.info("Selecione uma mensalidade");
             return;
@@ -169,13 +164,13 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
         } catch (err) {
             console.log('Erro ao excluir')
         }
-    }
+    },[linhasSelecionadas,dadosAssociado.id_global]
+
+)
 
 
 
-
-
-    async function adicionarMensalidade() {
+    const adicionarMensalidade =useCallback( async () => {
         const ultimaMensalidade = dadosAssociado.arrayMensalidade && dadosAssociado?.arrayMensalidade[dadosAssociado?.arrayMensalidade?.length - 1]
         const vencimento = new Date(ultimaMensalidade?.vencimento ? ultimaMensalidade?.vencimento : '')
         const proxData = vencimento.setMonth(vencimento.getMonth() + 1)
@@ -212,8 +207,8 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
           //  console.log(err)
         }
 
-    }
-
+    },[dadosAssociado]
+)
 
 
 
@@ -266,11 +261,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, dados, set
             {openEditar && <ModalEditarMensalidade mensalidade={mensalidadeSelect ?? {}} openModal={openEditar} setMensalidade={setMensalidade} setOpenModal={setOpenEditar} />}
 
             {openExcluir && <ModalExcluirMens openModal={openExcluir} setOpenModal={setOpenExcluir} handleExcluirMensalidade={excluirMesal} />}
-
-
-
-      
-
+            
             <div className="flex w-full  gap-2">
                 <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
                     <input disabled={!permissoes.includes('ADM1.2.10')} checked={checkMensal} onChange={() => setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer disabled:cursor-not-allowed" />

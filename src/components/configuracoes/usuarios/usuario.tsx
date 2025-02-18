@@ -9,10 +9,14 @@ import { ModalNovoUsuario } from "./modalNovoUsuario";
 import { Button } from "@/components/ui/button";
 import { ConsultoresProps } from "@/types/consultores";
 
-
-
-
-
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 
 export interface UsuarioProps {
@@ -260,9 +264,49 @@ export function Usuario() {
           setModalAdicionar(!modalAdicionar)
         }} ><IoIosAddCircle size={20} />Adicionar</Button>
     
-      <div className="flex flex-col  px-4 w-full overflow-y-auto h-[calc(100vh-175px)]  ">
+      <div className="flex flex-col  px-2 w-full overflow-y-auto h-[calc(100vh-175px)]  ">
 
-        <ul className="flex flex-col w-full p-2 gap-1 text-sm">
+      <Table >
+  
+      <TableHeader >
+        <TableRow>
+        <TableHead >#</TableHead>
+          <TableHead >Nome</TableHead>
+          <TableHead>Cargo</TableHead>
+          <TableHead>Email</TableHead>
+          <TableHead className="text-right">Telefone</TableHead>
+          <TableHead className="text-right">Ações</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody className="text-[11px]">
+        {userDados?.map((invoice) => (
+          <TableRow key={invoice.id_user}>
+            <TableCell >  {invoice.image && <img className="w-[26px] h-[26px] rounded-full" src={`${invoice.image}`} alt="Rounded avatar"></img>}</TableCell>
+            <TableCell >{invoice.nome}</TableCell>
+            <TableCell>{invoice.cargo}</TableCell>
+            <TableCell>{''}</TableCell>
+            <TableCell>{''}</TableCell>
+            <TableCell className="text-right">{
+              <button
+                onClick={() => {
+                  setarDadosUsuario({
+                    ...invoice, password: '', repSenha: '', editar: true, avatarUrl: ''
+                  }),
+                  setarDadosFuncionario({ ...invoice.consultor[0] }),
+                 // setarDadosPermissoes([...item.permissoes]??[]),
+                  setModalAdicionar(true)
+                }}
+              >
+                <MdEdit color="gray" size={17} />
+              </button>
+              }</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    
+    </Table>
+
+     { /*  <ul className="flex flex-col w-full p-2 gap-1 text-sm">
           <li className="flex flex-col w-full  text-xs pl-4 border-b-[1px] font-bold ">
             <div className="inline-flex w-full items-center">
               <span className="flex w-40 me-2 justify-center ">#</span>
@@ -317,7 +361,7 @@ export function Usuario() {
               )
             })
           }
-        </ul>
+        </ul>*/}
         {/*modalAdicionar && <MenuMultiStep setarModalAdicionar={setarModalAdicionar} getUsers={getUsers} dadosFuncionario={dadosFuncionario} dadosPermissoes={dadosPermissoes} dadosUser={dadosUser} setarDadosFuncionario={setarDadosFuncionario} setarDadosPermissoes={setarDadosPermissoes} setarDadosUsuario={setarDadosUsuario} />*/}
        
       </div>

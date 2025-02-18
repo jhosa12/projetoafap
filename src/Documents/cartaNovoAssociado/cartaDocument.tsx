@@ -33,7 +33,7 @@ export class CartaNovoAssociado extends React.Component<Props> {
             <div>
                 <strong>Sr(a). {titular}</strong><br/><br/>
                <p> Seja bem vindo a(o) <strong>{infoEmpresa?.razao_social}</strong></p><br/>
-               <p> É um enorme prazer em tê-la como nossa associada. Temos certeza que lhe prestaremos um
+               <p> É um enorme prazer em tê-la(o) como nossa associada(o). Temos certeza que lhe prestaremos um
 atendimento de excelência.</p><br/>
 <p>Com imensa satisfação estamos enviando sua carteira de associado da nossa empresa. Nela
 constam os dados necessários para que possa usufruir dos benefícios de nosso plano, alem dos boletos para pagamento.</p><br/>
