@@ -19,6 +19,7 @@ import { ajustarData } from "@/utils/ajusteData";
 
 
 export interface InadimplenciaProps{
+  id_contrato:number,
   associado:{
     nome:string,
     endereco:string,

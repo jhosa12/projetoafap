@@ -69,7 +69,7 @@ export function ModalEmpresa({open,onClose,empresa}:DataProps) {
                 }
             )
         } catch (error) {
-            console.log(error)
+           // console.log(error)
             toast.error('Erro ao Editar Empresa')
         }
    

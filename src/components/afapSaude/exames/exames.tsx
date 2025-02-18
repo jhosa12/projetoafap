@@ -22,8 +22,7 @@ import { MdDelete } from "react-icons/md";
 import { BiMoneyWithdraw } from "react-icons/bi";
 import pageStyle from "@/utils/pageStyle";
 import { ReciboMensalidade } from "@/Documents/mensalidade/Recibo";
-import { to } from "react-spring";
-import { info } from "console";
+
 
 
 
@@ -399,7 +398,6 @@ handleConfirmar={handleDeletar}
   pergunta="Tem certeza que deseja excluir esse exame?"
   setOpenModal={setOpenModalDeletar}
 />
-
         <div style={{display:'none'}}>
           <Orcamento dados={exameSelected} usuario={usuario?.nome ??''} ref={currentPage} />
           <ReciboMensalidade

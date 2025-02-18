@@ -3,15 +3,15 @@ import { api } from "@/services/apiClient";
 import { EmpresaProps } from "@/types/empresa";
 import { Table } from "flowbite-react";
 import { useCallback, useEffect, useState } from "react";
-import { HiMiniCog6Tooth, HiMiniPencil } from "react-icons/hi2";
+import { HiMiniCog6Tooth } from "react-icons/hi2";
 import { IoIosAddCircle } from "react-icons/io";
 import { toast } from "react-toastify";
-import { ModalEmpresa } from "./modalEmpresa/modalEmpresa";
 import { Button } from "@/components/ui/button";
+import { ModalEmpresa } from "@/components/configuracoes/empresas/modalEmpresa/modalEmpresa";
 
 
 
-export function Empresas() {
+export default function Empresas() {
     const [empresas,setEmpresas] = useState<Array<EmpresaProps>>([])
     const [empresa,setEmpresa] = useState<EmpresaProps>({} as EmpresaProps)
     const [open,onClose]=useState(false)
@@ -38,12 +38,12 @@ const handleOpenEmpresa = useCallback((item:EmpresaProps)=>{
 
 
     return (
-        <div className={ `flex flex-col  px-4 w-full overflow-y-auto h-[calc(100vh-138px)]`}>
+        <div className={ `flex flex-col mt-2 px-4 w-full overflow-y-auto h-[calc(100vh-138px)]`}>
 
   {   open && <ModalEmpresa empresa={empresa} open={open} onClose={onClose} />}
-            <Button type="button" className="ml-auto mb-2" variant={'outline'} size="sm" ><IoIosAddCircle size={20}  />NOVA EMPRESA</Button>
+            <Button onClick={()=>{setEmpresa({} as EmpresaProps);onClose(true)}} type="button" className="mr-auto"  variant={'outline'} size="sm" ><IoIosAddCircle size={20}  />NOVA EMPRESA</Button>
 
-            <div >
+            <div className="max-h-[calc(100vh-200px)] overflow-y-auto mt-2" >
                 <Table theme={{root:{shadow:'none'}, body: { cell: { base: " px-6 py-2  text-xs text-black font-semibold" } } }} hoverable={true}>
                     <Table.Head theme={{cell: { base: " px-6 py-2  text-xs text-black font-semibold" }}}>
                         <Table.HeadCell>

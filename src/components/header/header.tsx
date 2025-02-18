@@ -48,7 +48,7 @@ Header() {
       </SelectTrigger>
       <SelectContent>
         <SelectGroup >
-         {empresas.map((emp) => (
+         {empresas?.filter(emp=>permissoes.includes(`EMP${emp.id}`))?.map((emp) => (
           <SelectItem key={emp.id} value={emp.id}>{emp.nome}</SelectItem>
         ))}
         
@@ -58,10 +58,6 @@ Header() {
             </div>
            
             </div>
-
-
-
-           
             <Menubar>
       <MenubarMenu>
         <MenubarTrigger>Administrativo</MenubarTrigger>
@@ -136,10 +132,10 @@ Header() {
         <MenubarTrigger>Configurações</MenubarTrigger>
         <MenubarContent>
           <MenubarItem disabled={!permissoes.includes('CFG1')}>
-          <Link  href="/configuracoes">Usuários</Link>
+          <Link  href="/configuracoes/usuario">Usuários</Link>
           </MenubarItem>
           <MenubarItem disabled={!permissoes.includes('CFG1')}>
-          <Link  href="/configuracoes">Empresa</Link>
+          <Link  href="/configuracoes/empresas">Empresa</Link>
           </MenubarItem>
         </MenubarContent>
       </MenubarMenu>

@@ -168,7 +168,7 @@ export default function CaixaMovimentar(){
         content:()=>currentPage.current,
         onAfterPrint:()=>{},
         onBeforeGetContent:()=>{setSelectRelatorio(null)},
-        removeAfterPrint:false
+      //  removeAfterPrint:false
     })
 
 
@@ -313,7 +313,7 @@ export default function CaixaMovimentar(){
       }, { pix: 0, boleto: 0, cartao: 0, dinheiro: 0, deposito: 0, total: 0, transferencia: 0,despesas:0 } as SomaProps);
      
 
-    },[selectRelatorio])
+    },[selectRelatorio,data?.lista])
 
 
 
@@ -598,7 +598,7 @@ setOpenModal={setModalDados}
         </Table.Head>
         <Table.Body className="divide-y">
             {data?.lista?.map((item,index)=>(
-            <Table.Row className=" text-black  ">
+            <Table.Row key={item.lanc_id} className=" text-black  ">
 
 <Table.Cell className="whitespace-nowrap   ">
 {item.num_seq}

@@ -24,7 +24,15 @@ import { ModalReceber } from "./exames/modalReceber";
 import { ajustarData } from "@/utils/ajusteData";
 import { ModalConfirmar } from "./components/modalConfirmar";
 import ListaConsultas from "@/Documents/afapSaude/listaConsultas";
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 
 
@@ -421,7 +429,8 @@ const handleDeletar = useCallback(async () => {
                 <Table.Cell>{Number(item?.procedimentos?.reduce((acc, curr) => acc + curr.valorFinal, 0)?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
                 <Table.Cell>{item?.user}</Table.Cell>
                 <Table.Cell onClick={(e) => e.stopPropagation()}>
-                <select   className={`font-semibold border-none p-0 rounded-lg focus:ring-0 hover:cursor-pointer  appearance-none outline-none text-[11px] ${
+
+               {/* <select   className={`font-semibold border-none p-0 rounded-lg focus:ring-0 hover:cursor-pointer  appearance-none outline-none text-[11px] ${
     item?.status === 'AGENDADO' ? 'text-blue-500' :
     item?.status === 'AGUARDANDO DATA' ? 'text-yellow-500' :
     item?.status === 'CONFIRMADO' ? 'text-cyan-500' :
@@ -435,7 +444,29 @@ const handleDeletar = useCallback(async () => {
                                         <option className="text-green-500 font-semibold" value={'CONFIRMADO'}>CONFIRMADO</option>
                                         <option className="text-red-500 font-semibold" value={'CANCELADO'}>CANCELADO</option>
                                         <option disabled className="text-green-500 font-semibold" value={'RECEBIDO'}>RECEBIDO</option>
-                                    </select>
+                                    </select>*/}
+
+<Select  value={item?.status} onValueChange={(e) => { handleChangeStatus({item, status:e})}} >
+      <SelectTrigger className={`border-0 shadow-none text-xs focus:ring-0 ${
+    item?.status === 'AGENDADO' ? 'text-blue-500' :
+    item?.status === 'AGUARDANDO DATA' ? 'text-yellow-500' :
+    item?.status === 'CONFIRMADO' ? 'text-cyan-500' :
+    item?.status === 'RECEBIDO' ? 'text-green-500' :
+    item?.status === 'CANCELADO' ? 'text-red-500' : ''
+  } `} >
+        <SelectValue placeholder="Select a fruit" />
+      </SelectTrigger>
+      <SelectContent className="shadow-none " >
+        <SelectGroup className="shadow-none ">
+          <SelectLabel className="text-xs">Categorias</SelectLabel>
+          <SelectItem disabled className="text-xs  text-blue-500" value="AGENDADO">AGENDADO</SelectItem>
+          <SelectItem className="text-xs text-yellow-500" value="AGUARDANDO DATA">AGUARDANDO DATA</SelectItem>
+          <SelectItem className="text-xs text-cyan-500" value="CONFIRMADO">CONFIRMADO</SelectItem>
+          <SelectItem className="text-xs text-red-500" value="CANCELADO">CANCELADO</SelectItem>
+          <SelectItem disabled className="text-xs  text-green-500" value="RECEBIDO">RECEBIDO</SelectItem>
+        </SelectGroup>
+      </SelectContent>
+    </Select>
                 </Table.Cell>
             
 

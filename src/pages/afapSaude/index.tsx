@@ -309,15 +309,13 @@ export default function AfapSaude() {
     try {
       const response = await api.post("/medico/lista")
       setMedicos(response.data)
-      console.log(response.data)
+     // console.log(response.data)
     } catch (error) {
       toast.error('ERRO NA REQUISIÇÃO')
 
     }
 
   }
-
-
 
   /*    const handleNovoEvento = useCallback(({start,end}:{start:Date,end:Date})=>{
              setDataEvent({start,end})  

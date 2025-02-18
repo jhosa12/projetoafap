@@ -1,11 +1,14 @@
+
+
+
+
+
 import { api } from "@/services/apiClient"
 import {  useEffect, useState } from "react"
 import { toast } from "react-toastify"
-import { BiSolidLockOpenAlt } from "react-icons/bi";
 import { MdEdit } from "react-icons/md";
-import { MdDelete } from "react-icons/md";
 import { IoIosAddCircle } from "react-icons/io";
-import { ModalNovoUsuario } from "./modalNovoUsuario";
+
 import { Button } from "@/components/ui/button";
 import { ConsultoresProps } from "@/types/consultores";
 
@@ -17,6 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { ModalNovoUsuario } from "@/components/configuracoes/usuarios/modalNovoUsuario";
 
 
 export interface UsuarioProps {
@@ -38,7 +42,7 @@ export interface UsuarioProps {
 
 
 
-export function Usuario() {
+export default function Usuario() {
   const [userDados, setUserDados] = useState<Array<UsuarioProps>>()
   const [modalAdicionar, setModalAdicionar] = useState<boolean>(false)
   const [dadosUser, setDadosUser] = useState<Partial<UsuarioProps>>({})
@@ -227,7 +231,7 @@ export function Usuario() {
   async function getUsers() {
     try {
       const response = await api.get("/getUser")
-      console.log(response.data)
+    //  console.log(response.data)
       setUserDados(response.data)
 
    
@@ -240,7 +244,7 @@ export function Usuario() {
 
 
   return (
-    <div className="flex w-full flex-col px-2 bg-white rounded-lg text-black">
+    <div className="flex w-full flex-col px-2 mt-2 bg-white rounded-lg text-black">
     
         <Button
         className="ml-auto"
@@ -264,7 +268,7 @@ export function Usuario() {
           setModalAdicionar(!modalAdicionar)
         }} ><IoIosAddCircle size={20} />Adicionar</Button>
     
-      <div className="flex flex-col  px-2 w-full overflow-y-auto h-[calc(100vh-175px)]  ">
+      <div className="flex flex-col mt-2 px-2 w-full overflow-y-auto h-[calc(100vh-145px)]  ">
 
       <Table >
   

@@ -30,15 +30,18 @@ class RelatorioInadimplencia extends React.Component<DadosProps> {
         <h2 className="  font-semibold text-sm">RELATÓRIO DE INADIMPLENTES</h2>
         {/*<h3 className="text-xs font-medium">{new Date(dataInicial).toLocaleDateString()} a {new Date(dataFinal).toLocaleDateString()}</h3>*/}
        
-        <Table  hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 py-0" } } }} 
+        <Table  hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-2 py-1" } } }} 
           >
-                  <Table.Head theme={{cell:{base:"px-4 py-1 "}}}>
+                  <Table.Head theme={{cell:{base:"px-2 py-1 text-xs"}}}>
                    
                       <Table.HeadCell>
                         TITULAR
                       </Table.HeadCell>
                       <Table.HeadCell>
                         ENDEREÇO
+                      </Table.HeadCell>
+                      <Table.HeadCell>
+                       BAIRRO
                       </Table.HeadCell>
                       <Table.HeadCell>
                         GUIA DE RUA
@@ -61,14 +64,17 @@ class RelatorioInadimplencia extends React.Component<DadosProps> {
                  
                    
                   </Table.Head>
-                  <Table.Body style={{fontSize:'11px'}} className="divide-y  text-black  ">
+                  <Table.Body style={{fontSize:'10px'}} className="divide-y  text-black  ">
                     {dados?.map((item, index) => (
                       <Table.Row key={index} >
-                        <Table.Cell scope="row" >
-                          {item.associado.nome}
+                        <Table.Cell style={{fontWeight:'bold',whiteSpace:'nowrap'}} >
+                         {item.id_contrato} - {item.associado.nome}
                         </Table.Cell>
-                        <Table.Cell data-tooltip-id="tooltip-hora" data-tooltip-place="bottom" >
+                        <Table.Cell  >
                           {item.associado.endereco}{item.associado.numero ? "-Nº" + item.associado.numero : ''}
+                        </Table.Cell>
+                        <Table.Cell  >
+                          {item.associado.bairro}
                         </Table.Cell>
                         <Table.Cell >
                           {item.associado.guia_rua}
@@ -86,12 +92,45 @@ class RelatorioInadimplencia extends React.Component<DadosProps> {
                         <Table.Cell >
                           {item.overdueCount}
                         </Table.Cell>
-                        <Table.Cell >
+                        <Table.Cell style={{fontWeight:'bold'}} >
                           {Number(item.totalOverdueAmount).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                         </Table.Cell>
                       </Table.Row>
       
                     ))}
+
+
+
+<Table.Row  >
+                        <Table.Cell style={{fontWeight:'bold',whiteSpace:'nowrap'}} >
+                        TOTAL
+                        </Table.Cell>
+                        <Table.Cell  >
+                          {}
+                        </Table.Cell>
+                        <Table.Cell  >
+                          {}
+                        </Table.Cell>
+                        <Table.Cell >
+                          {}
+      
+                        </Table.Cell>
+                        <Table.Cell className="whitespace-nowrap" >
+                          {}
+                        </Table.Cell>
+                        <Table.Cell >
+                          {}
+                        </Table.Cell>
+                        <Table.Cell >
+                          {}
+                        </Table.Cell>
+                        <Table.Cell >
+                          {dados?.reduce((total, item) => total + item.overdueCount, 0)}
+                        </Table.Cell>
+                        <Table.Cell style={{fontWeight:'bold'}} >
+                          {Number(dados?.reduce((total, item) => total + item.totalOverdueAmount, 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        </Table.Cell>
+                      </Table.Row>
       
       </Table.Body>
                 
