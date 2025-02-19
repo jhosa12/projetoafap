@@ -29,7 +29,7 @@ export function TabDadosPessoais({control,register,setValue,trigger,watch,cidade
             </div>
             <div className="w-full flex flex-col">
                 <Label className="text-xs" value="Número" />
-                <TextInput sizing={'sm'} {...register('numero')} type="number" placeholder="Número" required/>
+                <TextInput sizing={'sm'} {...register('numero')} type="number" placeholder="Número" />
             </div>
              <div className="w-full flex flex-col">
                 <Label className="text-xs" value="Cidade" />

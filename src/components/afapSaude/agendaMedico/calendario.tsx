@@ -1,7 +1,7 @@
 
 
 
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
 import moment from 'moment'
@@ -18,6 +18,8 @@ import ptBR from 'date-fns/locale/pt-BR';
 import { format, parse, startOfWeek } from 'date-fns';
 import { AuthContext } from "@/contexts/AuthContext";
 import { getDay } from "date-fns";
+import { api } from "@/services/apiClient";
+import { toast } from "react-toastify";
 
 const locales = {
   'pt-BR':ptBR,
@@ -40,11 +42,7 @@ interface DataProps {
   medicos: Array<MedicoProps>
   events: Array<EventProps>
   setArrayEvent: (array: Array<EventProps>) => void
-  dataEvent: Partial<EventProps>
-  setarDataEvento: (fields: Partial<EventProps>) => void
-  deletarEvento: () => Promise<void>
-  consultas:Array<ConsultaProps>
-  setConsultas:(array:Array<ConsultaProps>)=>void
+
  
 }
 
@@ -63,15 +61,54 @@ interface ObjectArrayMod {
 
 }
 
-export default function Calendario({ medicos, events, setArrayEvent, dataEvent, setarDataEvento, deletarEvento,consultas,setConsultas }: DataProps) {
+export default function Calendario({ medicos,events, setArrayEvent }: DataProps) {
 
   const [isOpen, setIsOpen] = useState(false);
   const [modalDelete, setModalDel] = useState(false)
   const {usuario} = useContext(AuthContext)
+  const [dataEvent, setDataEvent] = useState<Partial<EventProps>>({})
 
 
   
+ const deletarEvento = useCallback(async function () {
+    if (!dataEvent.id_agmed) {
+      setDataEvent({
+        celular: '',
+        data: new Date(),
+        nome: '',
+        endereco: '',
+        status: '',
+        obs: '',
+        tipoAg: '',
+        title: ''
+      })
+      setIsOpen(false);
+      return;
+    }
 
+    try {
+
+
+     
+        const response = await toast.promise(
+          api.delete(`/agenda/deletarEvento/${dataEvent.tipoAg}/${dataEvent.id_agmed}`),
+          {
+            error: 'Erro ao deletar dados',
+            pending: 'Apagando dados...',
+            success: 'Dados deletados com sucesso!'
+          }
+        )
+        const novoArray = [...events]
+        const index = novoArray.findIndex(item => item.id_agmed === dataEvent.id_agmed)
+        novoArray.splice(index, 1)
+        setArrayEvent(novoArray)
+      
+ 
+    } catch (error) {
+      toast.error('erro na requisição')
+    }
+
+  },[dataEvent.id_agmed,events])
  
 
   useEffect(() => {
@@ -108,18 +145,18 @@ export default function Calendario({ medicos, events, setArrayEvent, dataEvent, 
 
 
   const handleEventClick = (event: Partial<EventProps>) => {
-    setarDataEvento({ ...event })
+    setDataEvent({ ...event })
     toggleDrawer()
     
-  }
+  } 
 
-  const toggleDrawer = () => {
-    setIsOpen(!isOpen);
-  };
+const toggleDrawer = () => {
+  setIsOpen(!isOpen);
+};  
 
 
   const handleNovoEvento = ({ start, end }: { start: Date, end: Date }) => {
-    setarDataEvento({ start, end, data: undefined, id_agmed: undefined, id_med: undefined, obs: '', status: 'AB', title: '', celular: '', nome: '', tipoAg: 'md', endereco: '', editar: true })
+    setDataEvent({ start, end, data: undefined, id_agmed: undefined, id_med: undefined, obs: '', status: 'AB', title: '', celular: '', nome: '', tipoAg: 'md', endereco: '', editar: true })
     toggleDrawer()
   }
 
@@ -177,10 +214,6 @@ export default function Calendario({ medicos, events, setArrayEvent, dataEvent, 
         </Modal>
       </div>
    
-
-
-
-
     </>
   )
 }

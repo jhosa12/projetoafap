@@ -3,7 +3,6 @@ import { MenuLateral } from '@/components/menu';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { api } from '@/services/apiClient';
 import '@/styles/globals.css';
-import { Modal } from 'flowbite-react';
 import type { AppProps } from 'next/app';
 import Error from 'next/error';
 import { useRouter } from 'next/router';
@@ -29,7 +28,7 @@ function PrivateLayout({ children }: { children: React.ReactNode }) {
 }
 
 function PrivateRouter({ Component, pageProps }: AppProps) {
-  const { usuario, setPermissoes,loadingInfo} = useAuth();
+  const { usuario, setPermissoes,loadingInfo,signOut} = useAuth();
   const router = useRouter();
 
   async function GetPermissions() {
@@ -42,6 +41,8 @@ function PrivateRouter({ Component, pageProps }: AppProps) {
       }
     } catch (error) {
       console.log('Erro ao carregar permissões');
+      signOut()
+     
     }
   }
 
@@ -49,7 +50,7 @@ function PrivateRouter({ Component, pageProps }: AppProps) {
     if (!isLoginPage(router.pathname)) {
       if (!usuario) {
         // Redireciona para a página inicial se o usuário não estiver autenticado
-        router.push('/');
+        signOut();
       } else {
         // Carrega as permissões quando o usuário está autenticado
         GetPermissions();

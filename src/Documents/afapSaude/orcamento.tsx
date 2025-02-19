@@ -1,9 +1,5 @@
 
-
-
-
-
-import logo from "../../../public/afapsaude.png"
+'use client'
 
 
 import React from 'react';
@@ -12,7 +8,8 @@ import { Table } from "flowbite-react";
 import { roboto_Mono } from "@/fonts/fonts";
 interface DadosProps {
     dados: ExameRealizadoProps
-    usuario: string
+    usuario: string,
+
 
 }
 
@@ -29,8 +26,10 @@ class Orcamento extends React.Component<DadosProps> {
             month: 'long', // Mês por extenso
             day: 'numeric' // Dia do mês
         };
-        const dataAtual = new Date();
-        const dt = dataAtual.toLocaleDateString('pt-BR', options)
+
+    
+       const dataAtual = new Date();
+      //  const dt = dataAtual.toLocaleDateString('pt-BR', options)
 
         return (
             <div className={`${roboto_Mono.className} flex flex-col w-full  gap-3 p-4`}>
@@ -133,7 +132,7 @@ class Orcamento extends React.Component<DadosProps> {
                     </div>
 
 
-                    <span style={{position:'absolute',top:'0px',right:'10px',fontSize:'12px'}}>{usuario} {new Date().toLocaleDateString('pt-BR')} - {new Date().toLocaleTimeString('pt-BR')}</span>
+                    <span style={{position:'absolute',top:'0px',right:'10px',fontSize:'12px'}}>{usuario} {dataAtual.toLocaleDateString('pt-BR')}</span>
 
             </div>
         );

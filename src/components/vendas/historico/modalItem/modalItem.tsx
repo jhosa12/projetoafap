@@ -83,7 +83,7 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
 
     const handleOnSubmit:SubmitHandler<LeadProps> = async(data) =>{
 
-   
+        console.log(data)
             try {
                 const res = await toast.promise(
                     api.put("/lead/editarLead",{lead:data}),
@@ -94,6 +94,7 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
                     }
                 )
                 handleLoadLeads()
+                onClose()
             } catch (error) {
                 console.log(error)
             }

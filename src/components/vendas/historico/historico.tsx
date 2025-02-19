@@ -55,7 +55,10 @@ interface CadastroRequest {
     profissao: string;
     sexo: string;
     situacao:string;
-    contrato: Partial<ContratoProps>;
+    contrato: Partial<ContratoProps & {
+        form_pag: string,
+        adesao: Date
+    }>;
     dependentes:Array<Partial<DependentesProps>>;
     mensalidades: Array<Partial<ParcelaData>>;
     empresa:string}>,
@@ -97,7 +100,9 @@ export interface LeadProps {
     indicacao: string,
     usuario: string,
     data: Date,
-    dependentes: Array<Partial<DependentesProps>>
+    dependentes: Array<Partial<DependentesProps>>,
+    form_pag?: string,
+    adesao?: Date
 }
 
 export function Historico() {
@@ -144,8 +149,9 @@ export function Historico() {
             toast.warning('Preencha todos os campos obrigatorios para gerar contrato!')
             return
         }
-        const adesao = new Date()
-        adesao.setTime(adesao.getTime() - adesao.getTimezoneOffset() * 60 * 1000)
+        let adesao
+      if(item.adesao) {  adesao = new Date(item.adesao)
+        adesao.setTime(adesao.getTime() - adesao.getTimezoneOffset() * 60 * 1000)}
      let dtVencimento
         if(item.vencimento){
             dtVencimento = new Date(item.vencimento)
@@ -176,7 +182,9 @@ export function Historico() {
                 dt_adesao:adesao,
                 dt_carencia:new Date(),
                 origem:item.origem,
-                consultor:item.consultor  
+                consultor:item.consultor,
+               // form_pag: item.form_pag,
+               
             },
             mensalidades:gerarMensalidade({vencimento:dtVencimento,n_parcelas:item.n_parcelas,valorMensalidade:Number(item.valor_mensalidade)})},
             id_lead:item.id_lead

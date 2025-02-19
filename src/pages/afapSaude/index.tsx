@@ -159,8 +159,7 @@ export interface EventProps {
 export default function AfapSaude() {
   const [medicos, setMedicos] = useState<Array<MedicoProps>>([])
   const [events, setEvents] = useState<Array<EventProps>>([])
-  const [isOpen, setIsOpen] = useState(false);
-  const [dataEvent, setDataEvent] = useState<Partial<EventProps>>({})
+ // const [dataEvent, setDataEvent] = useState<Partial<EventProps>>({})
   const [menuIndex, setMenuIndex] = useState(1)
   const [consultas,setConsultas] =useState<Array<ConsultaProps>>([])
   const [exames,setExames] = useState<Array<ExamesProps>>([])
@@ -170,70 +169,12 @@ export default function AfapSaude() {
 
   const buscarExames = async ()=>{
     try {
-
         const response  = await api.post("/afapSaude/exames")
-
-
         setExames(response.data)
-        
     } catch (error) {
         console.log(error)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-  async function deletarEvento() {
-    if (!dataEvent.id_agmed) {
-      setarDataEvento({
-        celular: '',
-        data: new Date(),
-        nome: '',
-        endereco: '',
-        status: '',
-        obs: '',
-        tipoAg: '',
-        title: ''
-      })
-      setIsOpen(false);
-      return;
-    }
-
-    try {
-
-
-     
-        const response = await toast.promise(
-          api.delete(`/agenda/deletarEvento/${dataEvent.tipoAg}/${dataEvent.id_agmed}`),
-          {
-            error: 'Erro ao deletar dados',
-            pending: 'Apagando dados...',
-            success: 'Dados deletados com sucesso!'
-          }
-        )
-        const novoArray = [...events]
-        const index = novoArray.findIndex(item => item.id_agmed === dataEvent.id_agmed)
-        novoArray.splice(index, 1)
-        setArrayEvent(novoArray)
-      
- 
-    } catch (error) {
-      toast.error('erro na requisição')
-    }
-
-  }
-
-
-
-
 
 
 
@@ -258,7 +199,7 @@ export default function AfapSaude() {
   }
 
 
-  const setarDataEvento = (fields: Partial<EventProps>) => {
+  /*const setarDataEvento = (fields: Partial<EventProps>) => {
     setDataEvent((prev: Partial<EventProps>) => {
 
       if (prev) {
@@ -267,11 +208,9 @@ export default function AfapSaude() {
       else return { ...fields }
 
     })
-  }
+  }*/
 
-  const setArrayEvent = (array: Array<EventProps>) => {
-    setEvents(array)
-  }
+
 
 
   /*   const toggleDrawer = () => {
@@ -336,7 +275,7 @@ export default function AfapSaude() {
 
 <Tabs.Item  active title="AGENDA MÉDICA" icon={()=><FaCalendarAlt className="mr-2 h-4 w-4"/>}>
 
-      <Calendario consultas={consultas} setConsultas={setConsultas}  deletarEvento={deletarEvento} setarDataEvento={setarDataEvento} dataEvent={dataEvent} events={events} medicos={medicos} setArrayEvent={setArrayEvent} />
+      <Calendario  events={events} medicos={medicos} setArrayEvent={setEvents} />
      
       </Tabs.Item>
       <Tabs.Item title="CONSULTAS" icon={()=><HiClipboardList className="mr-2 h-4 w-4"/>}>
