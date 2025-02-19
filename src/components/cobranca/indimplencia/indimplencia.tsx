@@ -13,7 +13,7 @@ import useApiPost from "@/hooks/useApiPost";
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
 import RelatorioInadimplencia from "@/Documents/relatorioCobranca/RelatorioIndimplencia";
 import { Button } from "@/components/ui/button";
-import { ajustarData } from "@/utils/ajusteData";
+
 
 
 
@@ -126,11 +126,6 @@ useEffect(()=>{
 
 
 
-
-
-
-
-
   const offset = currentPage * itemsPerPage;
   const currentItems = data?.slice(offset, offset + itemsPerPage);
   const pageCount = Math.ceil((data?.length ?? 0) / itemsPerPage);
@@ -220,17 +215,19 @@ useEffect(()=>{
   return (
     <div className="flex  w-full justify-center ">
       <div style={{ display: 'none' }}>
-        <RelatorioInadimplencia usuario={usuario?.nome} dados={data??[]} ref={componenteRef} />
+        {isPrint && <RelatorioInadimplencia usuario={usuario?.nome} dados={data??[]} ref={componenteRef} />}
       </div>
  
       <div className="flex flex-col w-full h-[calc(100vh-100px)] ">
       
         <div className="flex flex-row w-full justify-between items-end p-2">
          <div className="inline-flex gap-4">
+      
          <Badge  color="success" >1 Mensalidade: {cont?.n1}</Badge>
          <Badge color="info" >2 Mensalidades: {cont?.n2}</Badge>
          <Badge color="warning" >3 Mensalidades: {cont?.n3}</Badge>
          <Badge color="red" >Mais de 3: {cont?.nn}</Badge>
+        
         </div>   
        
         <div className="flex items-end gap-2 text-black">
@@ -253,15 +250,18 @@ useEffect(()=>{
          
 
           <div className="overflow-y-auto p-2 max-h-[70vh] ">
-          <Table  hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-3 py-1 text-[11px] " } } }} 
+          <Table  hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-2 py-0 text-[10px] " } } }} 
     >
-            <Table.Head theme={{cell:{base:"bg-gray-50 px-3 py-1 "}}}>
+            <Table.Head theme={{cell:{base:"px-2 py-1 "}}}>
              
                 <Table.HeadCell>
                   TITULAR
                 </Table.HeadCell>
                 <Table.HeadCell>
                   ENDEREÇO
+                </Table.HeadCell>
+                <Table.HeadCell>
+                 BAIRRO
                 </Table.HeadCell>
                 <Table.HeadCell>
                   GUIA DE RUA
@@ -287,11 +287,14 @@ useEffect(()=>{
             <Table.Body className="divide-y  text-black ">
               {currentItems?.map((item, index) => (
                 <Table.Row key={index} >
-                  <Table.Cell scope="row" >
+                  <Table.Cell  className="whitespace-nowrap" >
                     {item.associado.nome}
                   </Table.Cell>
-                  <Table.Cell data-tooltip-id="tooltip-hora" data-tooltip-place="bottom" >
+                  <Table.Cell  >
                     {item.associado.endereco}{item.associado.numero ? "-Nº" + item.associado.numero : ''}
+                  </Table.Cell>
+                  <Table.Cell  >
+                    {item.associado.bairro}
                   </Table.Cell>
                   <Table.Cell >
                     {item.associado.guia_rua}
@@ -345,7 +348,7 @@ useEffect(()=>{
 
 
 
-{data &&<div className="flex w-full  justify-end mt-auto pr-8 ">
+{data && <div className="flex w-full  justify-end mt-auto pr-8 ">
 <ReactPaginate
 previousLabel={(<IoIosArrowDropleftCircle className="mr-2 h-5 w-5" />)}
 nextLabel={(<IoIosArrowDroprightCircle className="mr-2 h-5 w-5" />)}

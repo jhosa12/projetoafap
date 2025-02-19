@@ -445,36 +445,38 @@ setOpenModal={setModalDados}
    
     <form onSubmit={handleSubmit(listarLancamentos)}  className="flex w-full items-end flex-row justify-end p-1 gap-4 text-black pr-2 ">
 
-    <div className="flex flex-col whitespace-nowrap ml-4 bg-gray-50 px-2 py-1 rounded-md ">
-        <span className="text-[11px] font-semibold">DETALHAMENTO DE CAIXA</span>
+    <div className="flex flex-col whitespace-nowrap ml-4 bg-gray-50 px-2 py-1 text-[11px] rounded-md ">
+        <span className=" font-semibold">DETALHAMENTO DE CAIXA</span>
         <div className="inline-flex items-center gap-4">
             <div>
-            <span className="text-xs font-semibold">SALDO:</span>
-            <span className="text-xs font-semibold"> {Number(data?.dif).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} - {data?.valorAnterior}</span>
-            </div>
-
-
-            <div>
-            <span className="text-xs font-semibold">SALDO DIA:</span>
-            <span className="text-xs font-semibold">R$ {saldo.toFixed(2)}</span>
+            <span >SALDO:</span>
+            <span > {Number(data?.dif).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
             </div>
 
             <div>
-            <span className="text-xs font-semibold">DESPESAS:</span>
-            <span className="text-xs font-semibold"> {Number(despesas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+            <span >DIA ANTERIOR:</span>
+            <span > {Number(data?.valorAnterior).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
             </div>
-
-            <div>
-            <span className="text-xs font-semibold">RECEITAS:</span>
-            <span className="text-xs font-semibold"> {Number(saldo+despesas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
-            </div>
-
-
-          
-           
 
         </div>
 
+
+        <div className="inline-flex items-center gap-4">
+            <div>
+            <span >SALDO DIA:</span>
+            <span >R$ {saldo.toFixed(2)}</span>
+            </div>
+
+            <div>
+            <span >DESPESAS:</span>
+            <span > {Number(despesas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+            </div>
+
+            <div>
+            <span >RECEITAS:</span>
+            <span > {Number(saldo+despesas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+            </div>
+            </div>
         </div>
 
     <div >

@@ -168,7 +168,7 @@ export function Acompanhamento({ empresa, setores, usuario }: { empresa: string,
                 <div className="inline-flex w-full justify-between  py-2 px-6 rounded-lg text-black">
                     <InfoBlock icon={<GoGoal size={20} />} title="META" value={reqData.metaAtual ? (reqData?.metaAtual * reqData?.consultores?.length).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '0,00'} />
                     <InfoBlock icon={<FaPercentage size={20} />} title="PERCENTUAL" value={getPercentual(reqData?.grupos, reqData?.metaAtual, reqData?.consultores)} />
-                    <InfoBlock icon={<GiStairsGoal size={20} />} title="PRODUZIDO" value={getProduzido(reqData?.grupos)} />
+                    <InfoBlock icon={<GiStairsGoal size={20} />} title="PRODUZIDO" value={`${getProduzido(reqData?.grupos)} (${reqData.grupos.reduce((acc, curr) => acc + Number(curr._count.dt_adesao), 0)})`} />
                 </div>
 
 
@@ -180,7 +180,7 @@ export function Acompanhamento({ empresa, setores, usuario }: { empresa: string,
                 </div>
 
                 {reqData.grupos?.length > 0 &&
-                    <div className=' flex flex-row px-2 gap-6 pb-10'>
+                    <div className=' flex flex-col md:flex-row px-2 gap-6 pb-10'>
                         <Card  >
                             <CardHeader className='text-sm font-semibold'/>
                             <CardContent>
@@ -206,7 +206,7 @@ const InfoBlock = ({ icon, title, value }: { icon: JSX.Element, title: string, v
     <div className="flex flex-col p-2 px-4 shadow-md rounded-md">
 
         <div className='text-[13px] font-semibold'>{title}</div>
-        <div className='text-xs text-gray-500'>{value}</div>
+        <div className='text-xs '>{value}</div>
 
     </div>
 );

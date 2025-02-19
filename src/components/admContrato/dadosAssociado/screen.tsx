@@ -46,7 +46,6 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
     };
 
 
-
     const handlePrint = (doc: string) => {
         setPrintState((prev) => ({ ...prev, [doc]: true }));
     };
