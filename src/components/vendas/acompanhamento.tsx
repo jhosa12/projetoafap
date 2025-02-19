@@ -168,7 +168,7 @@ export function Acompanhamento({ empresa, setores, usuario }: { empresa: string,
                 <div className="inline-flex w-full justify-between  py-2 px-6 rounded-lg text-black">
                     <InfoBlock icon={<GoGoal size={20} />} title="META" value={reqData.metaAtual ? (reqData?.metaAtual * reqData?.consultores?.length).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '0,00'} />
                     <InfoBlock icon={<FaPercentage size={20} />} title="PERCENTUAL" value={getPercentual(reqData?.grupos, reqData?.metaAtual, reqData?.consultores)} />
-                    <InfoBlock icon={<GiStairsGoal size={20} />} title="PRODUZIDO" value={`${getProduzido(reqData?.grupos)} (${reqData.grupos.reduce((acc, curr) => acc + Number(curr._count.dt_adesao), 0)})`} />
+                    <InfoBlock icon={<GiStairsGoal size={20} />} title="PRODUZIDO" value={`${getProduzido(reqData?.grupos)} (${reqData?.grupos?.reduce((acc, curr) => acc + Number(curr._count.dt_adesao), 0)})`} />
                 </div>
 
 
