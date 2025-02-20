@@ -271,21 +271,21 @@ export default function AfapSaude() {
       <Tabs theme={{base: 'bg-white rounded-b-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-70px)]',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
         on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
         off:"border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
-      }}}}}}}  variant="underline">
+      }}}}}}} onActiveTabChange={setMenuIndex} variant="underline">
 
 <Tabs.Item  active title="AGENDA MÉDICA" icon={()=><FaCalendarAlt className="mr-2 h-4 w-4"/>}>
 
-      <Calendario  events={events} medicos={medicos} setArrayEvent={setEvents} />
+     {menuIndex === 0 && <Calendario  events={events} medicos={medicos} setArrayEvent={setEvents} />}
      
       </Tabs.Item>
       <Tabs.Item title="CONSULTAS" icon={()=><HiClipboardList className="mr-2 h-4 w-4"/>}>
-      <Consultas events={events.filter(item => new Date(item.end) >= new Date())} setConsultas={setConsultas}  consultas={consultas} medicos={medicos}/>
+     {menuIndex === 1 && <Consultas events={events.filter(item => new Date(item.end) >= new Date())} setConsultas={setConsultas}  consultas={consultas} medicos={medicos}/>}
       </Tabs.Item>
       <Tabs.Item title="EXAMES" icon={()=><BiSolidInjection className="mr-2 h-4 w-4"/>}>
-     <Exames exames={exames}/>
+    {menuIndex === 2 && <Exames exames={exames}/>}
       </Tabs.Item>
       <Tabs.Item  icon={()=><IoMdSettings className="mr-2 h-4 w-4"/>}  title="CONFIGURAR">
-       <Configuracoes medicos={medicos} setMedicos={setArrayMedicos} setExames={setExames} exames={exames}/>
+     { menuIndex === 3 && <Configuracoes medicos={medicos} setMedicos={setArrayMedicos} setExames={setExames} exames={exames}/>}
       </Tabs.Item>
     </Tabs>
   

@@ -1,6 +1,5 @@
 import { Button, Label, Popover, TextInput } from "flowbite-react"
 import { useState } from "react"
-import { IoIosTime } from 'react-icons/io';
 import { MdAutorenew } from "react-icons/md";
 
 interface DataProps{
@@ -12,14 +11,7 @@ interface DataProps{
 
 
 export function PopoverRenovar({handleFunction,n_Parcelas,setParcelas}:DataProps) {
-    const [date, setDate] = useState(new Date());
-
-
   
-
-
-
-
 
 
 
