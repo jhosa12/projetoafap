@@ -67,7 +67,7 @@ export interface ListaProps{
 
 
 export default function Renovacao(){
-const {selectEmp} = useContext(AuthContext)
+const {infoEmpresa} = useContext(AuthContext)
 const [openModalFiltro,setModalFiltro]=useState<boolean>(false)
 const [loading,setLoading] =useState<boolean>(false)
 const [dataFiltro,setFiltro] = useState<FiltroProps>({contratoInicial:null,mensAberto:null,contratoFinal:null})
@@ -134,7 +134,7 @@ MensImp.length>0 && imprimirCarne()
 
 
 const handleRenovacao = async()=>{
-    
+  
     try {
 
         const response = await toast.promise(
@@ -167,7 +167,7 @@ const filtrar = async()=>{
             contratoInicial:dataFiltro.contratoInicial,
             contratoFinal:dataFiltro.contratoFinal,
             quant:dataFiltro.mensAberto,
-            id_empresa:selectEmp
+            id_empresa:infoEmpresa?.id
         })
 
         setArray(response.data)

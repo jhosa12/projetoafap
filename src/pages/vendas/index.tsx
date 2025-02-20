@@ -63,7 +63,7 @@ export default function Vendas() {
         <title>Vendas</title>
       </Head>
 
-        <Tabs theme={{base: 'bg-white rounded-b-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-100px)]',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 ",variant:{underline:{active:{
+        <Tabs theme={{base: 'bg-white rounded-b-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-100px)]',tablist:{tabitem:{base: "flex items-center  justify-center px-4 py-3 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 ",variant:{underline:{active:{
         on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
         off:"border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
       }}}}}}} variant="underline" onActiveTabChange={e => setTab(e)}>

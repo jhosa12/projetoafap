@@ -197,6 +197,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const limparDados = useCallback(() => {
         setDadosAssociado({
+            id_global:null,
             acordo: [],
             bairro: '',
             celular1: '',

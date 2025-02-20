@@ -31,7 +31,7 @@ export function PopoverRenovar({handleFunction,n_Parcelas,setParcelas}:DataProps
         
     </div>
 
-    <Button onClick={()=>handleFunction} as={'button'} size="xs">Aplicar</Button>
+    <Button onClick={()=>handleFunction()} as={'button'} size="xs">Aplicar</Button>
 
 </div>)}   >
 <Button theme={{pill:{on:"rounded-r-lg"},color:{
