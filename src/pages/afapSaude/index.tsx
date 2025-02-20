@@ -1,6 +1,6 @@
 
 
-import {  useEffect, useState,Suspense } from "react";
+import {  useEffect, useState,Suspense, useCallback } from "react";
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
 import "react-datepicker/dist/react-datepicker.css";
@@ -160,22 +160,22 @@ export default function AfapSaude() {
   const [medicos, setMedicos] = useState<Array<MedicoProps>>([])
   const [events, setEvents] = useState<Array<EventProps>>([])
  // const [dataEvent, setDataEvent] = useState<Partial<EventProps>>({})
-  const [menuIndex, setMenuIndex] = useState(1)
+  const [menuIndex, setMenuIndex] = useState(0)
   const [consultas,setConsultas] =useState<Array<ConsultaProps>>([])
   const [exames,setExames] = useState<Array<ExamesProps>>([])
   
 
 
 
-  const buscarExames = async ()=>{
+  const buscarExames =useCallback(async ()=>{
     try {
         const response  = await api.post("/afapSaude/exames")
         setExames(response.data)
     } catch (error) {
         console.log(error)
     }
-}
-
+},[]
+)
 
 
   const setArrayMedicos = (array: Array<MedicoProps>) => {
@@ -232,7 +232,7 @@ export default function AfapSaude() {
   }, [])
 
 
-  async function agenda() {
+  const agenda = useCallback(async  ()=> {
     try {
       const response = await api.post("/agenda/listaEventos", {
         tipo: 'td'
@@ -243,8 +243,8 @@ export default function AfapSaude() {
     } catch (error) {
       toast.error('ERRO NA REQUISIÇÃO')
     }
-  }
-  async function getMedicos() {
+  },[])
+  const getMedicos =useCallback( async() => {
     try {
       const response = await api.post("/medico/lista")
       setMedicos(response.data)
@@ -254,8 +254,8 @@ export default function AfapSaude() {
 
     }
 
-  }
-
+  },[]
+)
   /*    const handleNovoEvento = useCallback(({start,end}:{start:Date,end:Date})=>{
              setDataEvent({start,end})  
              toggleDrawer()
