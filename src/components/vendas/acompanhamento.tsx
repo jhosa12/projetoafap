@@ -181,17 +181,13 @@ export function Acompanhamento({ empresa, setores, usuario }: { empresa: string,
 
                 {reqData.grupos?.length > 0 &&
                     <div className=' flex flex-col md:flex-row px-2 gap-6 pb-10'>
-                        <Card  >
+                        <Card className='md:w-1/2' >
                             <CardHeader className='text-sm font-semibold'/>
                             <CardContent>
                                 <ConsultorList dados={reqData?.grupos} setModalVend={setModalVend} setVendedor={setVendedor} meta={reqData?.metaAtual ?? 0} />
-
                             </CardContent>
                         </Card>
-                    
                             {chartData?.length > 0 && <BarChartInfo chartConfig={generateChartConfig(chartData)} chartData={chartData} periodo={perido} />}
-                     
-
                     </div>}
 
                 {filtro && <ModalFiltroMetas filtrar={dadosVendas} loading={loading} arraySetores={setores} show={filtro} setFiltro={setFiltro} startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />}

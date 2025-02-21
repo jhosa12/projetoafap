@@ -271,20 +271,20 @@ export default function AfapSaude() {
       <Tabs theme={{base: 'bg-white rounded-b-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-70px)]',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
         on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
         off:"border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
-      }}}}}}} onActiveTabChange={setMenuIndex} variant="underline">
+      }}}}}}} onActiveTabChange={event => setMenuIndex(event)} variant="underline">
 
-<Tabs.Item  active title="AGENDA MÉDICA" icon={()=><FaCalendarAlt className="mr-2 h-4 w-4"/>}>
+<Tabs.Item  active={menuIndex === 0} title="AGENDA MÉDICA" icon={()=><FaCalendarAlt className="mr-2 h-4 w-4"/>}>
 
      {menuIndex === 0 && <Calendario  events={events} medicos={medicos} setArrayEvent={setEvents} />}
      
       </Tabs.Item>
-      <Tabs.Item title="CONSULTAS" icon={()=><HiClipboardList className="mr-2 h-4 w-4"/>}>
+      <Tabs.Item  active={menuIndex === 1}  title="CONSULTAS" icon={()=><HiClipboardList className="mr-2 h-4 w-4"/>}>
      {menuIndex === 1 && <Consultas events={events.filter(item => new Date(item.end) >= new Date())} setConsultas={setConsultas}  consultas={consultas} medicos={medicos}/>}
       </Tabs.Item>
-      <Tabs.Item title="EXAMES" icon={()=><BiSolidInjection className="mr-2 h-4 w-4"/>}>
+      <Tabs.Item  active={menuIndex === 2}  title="EXAMES" icon={()=><BiSolidInjection className="mr-2 h-4 w-4"/>}>
     {menuIndex === 2 && <Exames exames={exames}/>}
       </Tabs.Item>
-      <Tabs.Item  icon={()=><IoMdSettings className="mr-2 h-4 w-4"/>}  title="CONFIGURAR">
+      <Tabs.Item  active={menuIndex === 3}  icon={()=><IoMdSettings className="mr-2 h-4 w-4"/>}  title="CONFIGURAR">
      { menuIndex === 3 && <Configuracoes medicos={medicos} setMedicos={setArrayMedicos} setExames={setExames} exames={exames}/>}
       </Tabs.Item>
     </Tabs>

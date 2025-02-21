@@ -19,7 +19,7 @@ export function ConsultorList({ dados, meta, setModalVend, setVendedor }: DataPr
     return (
 
   
-        <div className=" text-black overflow-y-auto overflow-x-hidden max-h-[calc(100vh-250px)]">
+        <div className="className='md:w-1/2'text-black overflow-y-auto overflow-x-hidden max-h-[calc(100vh-250px)]">
             <Table theme={{root:{shadow:'none'}, body: { cell: { base: " px-3 py-1  text-xs text-black font-semibold" } } }}>
                 <Table.Head theme={{cell:{base:"px-3 py-1 text-xs text-black font-semibold"}}}>
 

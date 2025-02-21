@@ -42,8 +42,6 @@ interface DataProps {
   medicos: Array<MedicoProps>
   events: Array<EventProps>
   setArrayEvent: (array: Array<EventProps>) => void
-
- 
 }
 
 interface ObjectArrayMod {
@@ -57,8 +55,6 @@ interface ObjectArrayMod {
   status: string,
   obs: string,
   clientes: Array<EventProps>
-
-
 }
 
 export default function Calendario({ medicos,events, setArrayEvent }: DataProps) {
