@@ -159,11 +159,11 @@ export function Acompanhamento({ empresa, setores, usuario }: { empresa: string,
 
     return (
 
-        <>
+        <div className="flex flex-col w-full h-full bg-white overflow-y-auto">
 
             {modalVend && <ModalVendedor usuario={usuario} leads={reqData?.leads} show={modalVend} setModalVend={setModalVend} vendedor={vendedor} startDate={reqData.startFilter} endDate={reqData.endFilter} />}
 
-            <div className="flex flex-col w-full  bg-white overflow-y-auto">
+         
 
                 <div className="inline-flex w-full justify-between  py-2 px-6 rounded-lg text-black">
                     <InfoBlock icon={<GoGoal size={20} />} title="META" value={reqData.metaAtual ? (reqData?.metaAtual * reqData?.consultores?.length).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '0,00'} />
@@ -195,8 +195,8 @@ export function Acompanhamento({ empresa, setores, usuario }: { empresa: string,
                     </div>}
 
                 {filtro && <ModalFiltroMetas filtrar={dadosVendas} loading={loading} arraySetores={setores} show={filtro} setFiltro={setFiltro} startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />}
-            </div>
-        </>
+         
+                </div>
 
     );
 }
