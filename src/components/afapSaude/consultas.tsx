@@ -53,14 +53,19 @@ export default function Consultas({ medicos, consultas, setConsultas,events  }: 
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState<Partial<ConsultaProps>>()
   const {usuario,infoEmpresa} = useContext(AuthContext)
-  const [modalFiltro, setModalFiltro] = useState<boolean>(false)
-  const [modalDeletar, setModalDeletar] = useState<boolean>(false)
-  const [modalReceber,setModalReceber] = useState<boolean>(false)
+ // const [modalFiltro, setModalFiltro] = useState<boolean>(false)
+ // const [modalDeletar, setModalDeletar] = useState<boolean>(false)
+ // const [modalReceber,setModalReceber] = useState<boolean>(false)
   const [formPag,setFormPag] = useState<string>('')
   const [loading,setLoading] = useState<boolean>(false)
   const [openStatus,setOpenStatus] = useState<boolean>(false)
-  const [modalEstornar,setModalEstornar] = useState<boolean>(false)
-
+  //const [modalEstornar,setModalEstornar] = useState<boolean>(false)
+  const [modal,setModal] = useState<{[key:string]:boolean}>({
+      filtro:false,
+      deletar:false,
+      receber:false,
+      estornar:false
+  })
 const currentPage = useRef<FichaConsulta>(null)
 const currentRecibo = useRef<ReciboMensalidade>(null)
 const currentConsultas = useRef<ListaConsultas>(null)
@@ -85,7 +90,7 @@ const handleEstornarConsulta = async ()=>{
       }
     )
 
-    setModalEstornar(false)
+    setModal({estornar:false})
     setData(undefined)
 
     
@@ -238,21 +243,23 @@ const buscarConsultas = async ({startDate,endDate,id_med,status,buscar}:{startDa
     return
   }
 
+
   try {
     setLoading(true)
       const response = await api.post("/afapSaude/consultas",{
         startDate:dataIni,
         endDate:dataFim,
-        id_med,
+        id_med:id_med?Number(id_med):undefined,
       status,
       buscar
      })
       
       setConsultas(response.data)
-      setLoading(false)
+  
   } catch (error) {
       console.log(error)
   }
+  setLoading(false)
 }
 
 
@@ -311,7 +318,7 @@ try {
   )
   buscarConsultas({startDate:new Date(),endDate:new Date(),status:undefined})
   setData(valorInicial)
-  setModalReceber(false)
+  setModal({receber:false})
 } catch (error) {
   console.log(error)
 }
@@ -350,7 +357,7 @@ const handleDeletar = useCallback(async () => {
     console.log(error);
 
   }
-  setModalDeletar(false);
+  setModal({deletar:false})
   setData(valorInicial);
 
 }, [consultas, data, setConsultas]);
@@ -384,20 +391,20 @@ const handleDeletar = useCallback(async () => {
         <BiMoneyWithdraw className="mr-2 h-4 w-4" />
          Recibo
       </Button>
-      <Button className="text-green-400" onClick={() => setModalReceber(true)} size={'xs'} color="gray">
+      <Button className="text-green-400" onClick={() => setModal({receber:true})} size={'xs'} color="gray">
         <HiMiniArrowDownOnSquare className="mr-2 h-4 w-4" />
         Receber
       </Button>
-      <Button onClick={()=>setModalEstornar(true)} size={'xs'} className="text-yellow-300" color="gray" type="button"  ><GiReturnArrow className="mr-2 h-4 w-4"/> Estornar</Button>
+      <Button onClick={()=>setModal({estornar:true})} size={'xs'} className="text-yellow-300" color="gray" type="button"  ><GiReturnArrow className="mr-2 h-4 w-4"/> Estornar</Button>
       <Button onClick={()=>handleWhatsAppClick(data?.celular)} size={'xs'} color="gray">
       <FaWhatsapp className="mr-2 h-4 w-4" />
         Abrir Conversa
       </Button>
-      <Button className="text-red-500" onClick={()=>setModalDeletar(true)} size={'xs'} color="gray">
+      <Button className="text-red-500" onClick={()=>setModal({deletar:true})} size={'xs'} color="gray">
         <MdDelete className="mr-2 h-4 w-4" />
         Excluir
       </Button>
-      <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 " } }} color={'light'} size={'xs'} onClick={() => setModalFiltro(true)}>  <HiFilter className="mr-2 h-4 w-4" /> Filtro</Button>
+      <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 " } }} color={'light'} size={'xs'} onClick={() => setModal({filtro: true})}>  <HiFilter className="mr-2 h-4 w-4" /> Filtro</Button>
     </Button.Group>
   
       </div>
@@ -476,12 +483,14 @@ const handleDeletar = useCallback(async () => {
         </Table>
       </div>
 
-     {openModal && <ModalConsulta usuario={usuario?.nome} id_usuario={usuario?.id} events={events} setConsulta={setData} consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={openModal} setOpenModal={setOpenModal} />}
+     {openModal && <ModalConsulta usuario={usuario?.nome} id_usuario={usuario?.id} events={events} setConsulta={setData} consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={openModal} setOpenModal={setOpenModal} buscarConsultas={buscarConsultas} />}
 
-      <ModalDeletarExame setOpenModal={setModalDeletar} show={modalDeletar} handleDeletarExame={handleDeletar} />
-     {modalFiltro && <ModalFiltroConsultas medicos={medicos} buscarConsultas={buscarConsultas} loading={loading} setFiltro={setModalFiltro} show={modalFiltro} />
+      <ModalDeletarExame setOpenModal={()=>setModal({deletar:false})} show={modal.deletar} handleDeletarExame={handleDeletar} />
+
+
+     {modal.filtro && <ModalFiltroConsultas medicos={medicos} buscarConsultas={buscarConsultas} loading={loading} setFiltro={()=>setModal({filtro:false})} show={modal.filtro} />
 }
-   {modalReceber &&   <ModalReceber formPag={formPag} setFormPag={setFormPag} handleReceberExame={handleReceberConsulta}  openModal={modalReceber} setOpenModal={setModalReceber} />}
+   {modal.receber &&   <ModalReceber formPag={formPag} setFormPag={setFormPag} handleReceberExame={handleReceberConsulta}  openModal={modal.receber} setOpenModal={()=>setModal({receber:false})} />}
 
 
 
@@ -524,8 +533,7 @@ const handleDeletar = useCallback(async () => {
 
       <ModalConfirmar pergunta="Realmente deseja alterar o status?" handleConfirmar={handleAlterarStatus} openModal={openStatus} setOpenModal={setOpenStatus}/>
 
-      <ModalConfirmar pergunta="Realmente deseja Estornar a consulta?" handleConfirmar={handleEstornarConsulta} openModal={modalEstornar} setOpenModal={setModalEstornar}/>
-
+      <ModalConfirmar pergunta="Realmente deseja Estornar a consulta?" handleConfirmar={handleEstornarConsulta} openModal={modal.estornar} setOpenModal={()=>setModal({estornar:false})}/>
 
     </div>
   );

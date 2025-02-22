@@ -9,7 +9,6 @@ export default function middleware(req:NextRequest) {
     }
 }
 
-
 export const config = {
-matcher: ['/admcontrato','/caixa','/cobranca','/estoque','/gerenciarAdministrativo','/vendas','/conveniados','/renovacao','/afapSaude','/servicos/:path*','/configuracoes/:path*','/financeiro','/sorteio/:path*'],
+matcher: ['/admcontrato','/afapSaude','/caixa','/cobranca','/estoque','/gerenciarAdministrativo','/vendas','/conveniados','/renovacao','/servicos/:path*','/configuracoes/:path*','/financeiro','/sorteio/:path*'],
 }

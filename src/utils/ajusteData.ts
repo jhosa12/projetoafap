@@ -18,6 +18,7 @@ export function ajustarData(startDate: Date|undefined,endDate?: Date): {dataIni:
    }
 
    if(dataOut){
+    dataOut?.setTime(dataOut?.getTime() - dataOut?.getTimezoneOffset()*60*1000)
     dataOut.setUTCHours(23,59,59,999)
    }else{
     dataOut = undefined

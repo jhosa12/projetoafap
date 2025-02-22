@@ -13,6 +13,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { ajustarData } from "@/utils/ajusteData";
+import { da } from "date-fns/locale";
 
 interface DataProps{
     openModal:boolean,
@@ -20,7 +21,8 @@ interface DataProps{
     medicos:Array<MedicoProps>
     consultas:Array<ConsultaProps>
     consulta:Partial<ConsultaProps> ,
-    setConsultas:(array:Array<ConsultaProps>)=>void
+    buscarConsultas:({startDate,endDate,id_med}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string})=>Promise<void>
+   setConsultas:(array:Array<ConsultaProps>)=>void
     setConsulta:(consulta:Partial<ConsultaProps>)=>void
     events: Array<EventProps>
     usuario?:string
@@ -28,7 +30,7 @@ interface DataProps{
 
 }
 
-export function ModalConsulta({openModal,setOpenModal,medicos,consulta,setConsultas,consultas,setConsulta,events,id_usuario,usuario}:DataProps) {
+export function ModalConsulta({openModal,setOpenModal,medicos,consulta,buscarConsultas,consultas,setConsulta,events,id_usuario,usuario,setConsultas}:DataProps) {
   const [visible,setvisible] = useState(false)
   const {register,setValue,handleSubmit,watch,control,reset} =  useForm<ConsultaProps>({defaultValues:consulta})
   
@@ -127,10 +129,11 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
           success: 'Dados alterados com sucesso!'
         }
       )
-      const novoArray = [...consultas]
-      const index = novoArray.findIndex(item => item.id_consulta === data?.id_consulta)
-      novoArray[index] = { ...response.data }
-      setConsultas(novoArray)
+     // const novoArray = [...consultas]
+    //  const index = novoArray.findIndex(item => item.id_consulta === data?.id_consulta)
+    //  novoArray[index] = { ...response.data }
+    //  setConsultas(novoArray)
+    buscarConsultas({startDate:new Date(),endDate:new Date(),id_med:undefined,status:undefined,buscar:undefined})
       setConsulta(valorInicial)
       setOpenModal(false)
     } catch (error) {
@@ -168,7 +171,8 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
         }
       )
 
-      setConsultas([...consultas, response.data])
+      //setConsultas([...consultas, response.data])
+      buscarConsultas({startDate:data.data_prev,endDate:data.data_prev,id_med:undefined,status:undefined,buscar:undefined})
       setOpenModal(false)
 
     } catch (error) {
@@ -418,7 +422,7 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
                        showTimeSelectOnly
                        timeIntervals={15}
                        timeCaption="Time"
-                       dateFormat="h:mm"
+                       dateFormat="HH:mm"
                        timeFormat="HH:mm"
                        className="flex py-2 text-black px-2 w-full rounded-lg border 0  bg-gray-50 text-xs border-gray-300 "
                      />
