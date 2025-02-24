@@ -37,6 +37,8 @@ import {
 import { useReactToPrint } from "react-to-print";
 import { SomaProps } from "@/components/financeiro/caixa/caixa";
 import pageStyle from "@/utils/pageStyle";
+import { ModalLancamento } from "@/components/caixa/modalLancamento";
+import { parse } from "path";
   
 
 registerLocale('pt', pt)
@@ -46,6 +48,9 @@ export interface LancamentosProps{
     lanc_id:number,
     forma_pagamento:string,
     num_seq:number|null,
+    valorForma?:string
+    valor_restante?:number,
+    observacao?:string,
     conta:string,
     ccustos_id:number|null,
     ccustos_desc:string,
@@ -63,6 +68,7 @@ export interface LancamentosProps{
     banco:string,
     empresa:string,
     mensalidade:{ form_pagto:string}
+    lancamentoForma:Array<{id_forma?:number,forma:string,valor:number,banco?:string|undefined,observacao?:string|undefined}>|[],
 }
 interface GrupoPrps{
     id_grupo:number,
@@ -72,6 +78,11 @@ interface GrupoPrps{
 export interface MensalidadeBaixaProps{
     id_mensalidade:number,
     id_global:number,
+    lancamentoForma:Array<{
+        valor:number,
+        forma:string,
+        banco?:string,
+        observacao?:string}>,
     id_mensalidade_global:number,
     aut:string,
     valor_metodo:number,
@@ -148,6 +159,7 @@ export default function CaixaMovimentar(){
     const [despesas,setDespesas] = useState<number>(0)
     const currentPage = useRef<RelatorioSintetico>(null)
     const [data,setData] = useState<Partial<ResponseCaixaProps>>()
+    const [valorForma,setValorForma] = useState<Record<string, number>>()
     const {register,watch,handleSubmit,control}= useForm<FormProps>({
         defaultValues:{
             startDate:new Date(),
@@ -385,8 +397,26 @@ export default function CaixaMovimentar(){
     },[infoEmpresa?.id,usuario?.id])
 
 
+
+
+  
+
+
     useEffect(()=>{
       if(data?.lista && data?.lista.length>0) {
+       
+          const totalPorFormaPagamento =data?.lista?.reduce((acc, lancamento) => {
+       if(lancamento.lancamentoForma && typeof lancamento.lancamentoForma === 'object') {    Object?.entries(lancamento?.lancamentoForma)?.forEach(([forma, dados]) => {
+            
+            lancamento.tipo ==="RECEITA"?  acc[dados.forma] = (acc[dados.forma] || 0) + Number(dados.valor): acc[dados.forma] = (acc[dados.forma] || 0) - Number(dados.valor);
+            });}
+            return acc;
+          }, {} as Record<string, number>);
+  
+  
+  
+          setValorForma(totalPorFormaPagamento)
+      
             const soma = data.lista?.reduce((total,item)=>{
                     if(item.tipo ==='RECEITA'){ return total=total+Number(item.valor)}
                     else return total=total-Number(item.valor)
@@ -410,8 +440,8 @@ export default function CaixaMovimentar(){
 return(
 <>
 
-
-{openModal&&<ModalLancamentosCaixa id_empresa={infoEmpresa?.id??''} handleFiltro={handleChamarFiltro}    arrayLanc={data?.lista??[]}   mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={data?.plano_de_contas??[]}  grupo={data?.grupo??[]}/>}
+{/*openModal&& <ModalLancamento bancos={infoEmpresa?.bancos??[]} id_empresa={infoEmpresa?.id??''} handleFiltro={handleChamarFiltro}  mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={data?.plano_de_contas??[]}  grupo={data?.grupo??[]}/>*/}
+{openModal&&<ModalLancamentosCaixa id_empresa={infoEmpresa?.id??''} handleFiltro={handleChamarFiltro} mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={data?.plano_de_contas??[]}  grupo={data?.grupo??[]}/>}
 
 <ModalExcluir openModal={openModalExc} handleExcluir={handleExcluir} setOpenModal={setModalExc}/>
 
@@ -446,7 +476,7 @@ setOpenModal={setModalDados}
     <form onSubmit={handleSubmit(listarLancamentos)}  className="flex w-full items-end flex-row justify-end p-1 gap-4 text-black pr-2 ">
 
     <div className="flex flex-col whitespace-nowrap ml-4 bg-gray-50 px-2 py-1 text-[11px] rounded-md ">
-        <span className=" font-semibold">DETALHAMENTO DE CAIXA</span>
+        
         <div className="inline-flex items-center gap-4">
             <div>
             <span >SALDO:</span>
@@ -477,6 +507,17 @@ setOpenModal={setModalDados}
             <span > {Number(saldo+despesas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
             </div>
             </div>
+
+
+
+
+            <ul className="inline-flex gap-4">
+        {valorForma && Object.entries(valorForma).map(([forma, valor]) => (
+          <li key={forma}>
+            <strong>{forma}:</strong> {Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+          </li>
+        ))}
+      </ul>
         </div>
 
     <div >
@@ -619,7 +660,7 @@ setOpenModal={setModalDados}
             <Table.Cell className="font-semibold">{Number(item.valor).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
           
             <Table.Cell className="space-x-4 whitespace-nowrap">
-            <button disabled={item.conta==='1.01.002'||!permissoes.includes('ADM2.1.3')} onClick={(event)=>{
+            <button disabled={!permissoes.includes('ADM2.1.3')} onClick={(event)=>{
                                event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                                setMov({...item})
                               setModal(true)

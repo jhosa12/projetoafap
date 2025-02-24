@@ -9,6 +9,9 @@ import { useRouter } from 'next/router';
 import { memo, StrictMode, useEffect } from 'react';
 import { ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Toaster } from "@/components/ui/sonner";
+
+
 
 
 const Header = memo(MenuLateral);
@@ -89,6 +92,7 @@ export default function App({ Component, pageProps,router }: AppProps) {
           transition={Zoom}
           toastStyle={{ color: 'black', backgroundColor: '#d5dad9' }}
         />
+         <Toaster richColors position="top-center" />
       </AuthProvider>
     </StrictMode>
   );

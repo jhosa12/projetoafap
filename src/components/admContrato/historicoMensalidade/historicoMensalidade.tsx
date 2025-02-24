@@ -18,6 +18,7 @@ import pageStyle from '@/utils/pageStyle';
 import { Button, ButtonGroup } from 'flowbite-react';
 import { PopoverVencimento } from './popoverVencimento';
 import { PopoverReagendamento } from './popoverReagendamento';
+import ModalBaixaMensalidade from '@/pages/formasPag';
 
 
 
@@ -281,6 +282,8 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                 <Button disabled={!permissoes.includes('ADM1.2.3')} onClick={() => setOpenExcluir(!openExcluir)} type="button" color='light' size='xs'><MdDeleteForever className='mr-1 h-4 w-4' /> Excluir</Button>
             </ButtonGroup>
 
+         
+
             </div>
             <div className="flex w-full p-2 max-h-[calc(100vh-205px)]">
                 <table
@@ -501,6 +504,31 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
              setOpenModal={setModalMens}
               />
              }
+
+                {/*openModalMens &&   <ModalBaixaMensalidade
+
+mensalidade={{
+    associado:{...dadosAssociado,mensalidade:dadosAssociado.arrayMensalidade},
+    aut:mensalidadeSelect?.aut,
+    banco_dest:mensalidadeSelect?.banco_dest,
+    contrato:{situacao:dadosAssociado.situacao},
+    data_pgto:mensalidadeSelect?.data_pgto,
+    id_mensalidade_global:mensalidadeSelect?.id_mensalidade_global,
+    form_pagto:mensalidadeSelect?.form_pagto,
+    id_contrato:mensalidadeSelect?.id_contrato,
+    id_mensalidade:mensalidadeSelect?.id_mensalidade,
+    valor_metodo:mensalidadeSelect?.valor_metodo,
+    valor_total:mensalidadeSelect?.valor_total,
+    referencia:mensalidadeSelect?.referencia,
+    vencimento:mensalidadeSelect?.vencimento,
+    status:mensalidadeSelect?.status,
+    valor_principal:mensalidadeSelect?.valor_principal
+   }} 
+    handleAtualizar={async()=>{ await carregarDados(Number(dadosAssociado.id_global));setLinhasSelecionadas([])}}
+    openModal={openModalMens}
+     setOpenModal={setModalMens}
+/>*/}
+
         
         
         </div>

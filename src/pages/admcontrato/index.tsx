@@ -20,6 +20,7 @@ import { FaHandshake } from "react-icons/fa";
 import { VerificarSituacao } from "@/utils/admContrato/verificarSituacao";
 import { Acordos } from "@/components/admContrato/acordos/screen";
 import { Button } from "@/components/ui/button"
+import ModalBaixaMensalidade from "../formasPag";
 
 
 export default function AdmContrato() {
@@ -106,6 +107,7 @@ export default function AdmContrato() {
             <div className={`flex flex-col w-full mr-2  justify-center`}>
                 {modalBusca && (<ModalBusca visible={modalBusca} setVisible={() => setModalBusca(false)} />)}
                 {openCadastro && (<ModalCadastro onClose={setCadastro} isOpen={openCadastro} />)}
+               
 
                 <div className="flex  flex-col px-4  ">
                     <div className="flex  flex-row justify-start gap-2 items-center w-full mt-2 pb-1">
@@ -117,6 +119,7 @@ export default function AdmContrato() {
                             <IoMdAdd size={18} />
                             Novo Associado
                         </Button>
+                       
                     </div>
                     <div className="flex-col w-full   rounded-lg   border-gray-700">
                         <Tabs theme={{ base: 'bg-white rounded-lg', tabpanel: 'bg-white rounded-b-lg h-[calc(100vh-165px)] py-1', tablist: { tabitem: { base: "flex items-center justify-center enabled:text-black rounded-t-lg p-4 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 " } } }} aria-label="Tabs with icons" variant="underline" onActiveTabChange={e => setIndex(e)} >

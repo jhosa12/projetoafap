@@ -12,6 +12,7 @@ export type ToastType = 'success' | 'error' | 'info' | 'warn'
 interface PayloadProps {
     id_global:number|null,
     id_usuario:string,
+    lancamentoForma:Array<{forma:string,valor:number,banco?:string|undefined,observacao?:string|undefined}>,
     pix_por:string,
     id_mensalidade_global: number,
     id_mensalidade: number,
@@ -52,18 +53,18 @@ interface PayloadProps {
             return ;
         };
         // Validações iniciais
-        if (!payload?.form_pagto) {
-            return exibirToastERetornar('Informe a forma de pagamento!');
-        }
+     //   if (!payload?.form_pagto) {
+      //      return exibirToastERetornar('Informe a forma de pagamento!');
+      //  }
 
         if(payload.form_pagto === 'PIX' && !payload.pix_por) {
             return exibirToastERetornar('Informe o pix por!');
             
         }
         
-        if (payload.form_pagto !== 'DINHEIRO' && !payload.banco_dest) {
-            return exibirToastERetornar('Informe o banco de destino');
-        }
+     //   if (payload.form_pagto !== 'DINHEIRO' && !payload.banco_dest) {
+         //   return exibirToastERetornar('Informe o banco de destino');
+      //  }
         
         if (payload?.status === 'P') {
             return exibirToastERetornar('Mensalidade com baixa já realizada', 'error');

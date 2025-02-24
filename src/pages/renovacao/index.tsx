@@ -56,6 +56,7 @@ export interface ListaProps{
         planos:{acrescimo:number,valor:number},
         id_contrato: number,
         id_contrato_global: number,
+        id_empresa:string
         mensalidade: Array< {vencimento: Date}>,
         associado: {
             id_global: number,
@@ -141,7 +142,7 @@ const handleRenovacao = async()=>{
 
         const response = await toast.promise(
             api.post('/renovacao',{
-                contratos:array?.map(item=>{ return {id_contrato:item.id_contrato,valor_mensalidade:item.planos.valor,id_associado:item.associado.id_associado,acrescimo:item.planos.acrescimo,dependentes:item.associado._count.dependentes,id_global:item.associado.id_global,id_contrato_global:item.id_contrato_global}}),
+                contratos:array?.map(item=>{ return {id_contrato:item.id_contrato,valor_mensalidade:item.planos.valor,id_associado:item.associado.id_associado,acrescimo:item.planos.acrescimo,dependentes:item.associado._count.dependentes,id_global:item.associado.id_global,id_contrato_global:item.id_contrato_global,id_empresa:item.id_empresa}}),
                 quantidade:parcelas
             }),
             {

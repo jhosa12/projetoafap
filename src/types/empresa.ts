@@ -22,4 +22,5 @@ export interface EmpresaProps{
     logo:File|null
     logoUrl:string,
     cont_clausuras:string
+    bancos:Array<{banco:string,agencia:string,conta:string}>
 }

@@ -42,8 +42,8 @@ Header() {
         <Image width={50} height={50} priority alt="user" src={"/improved_logo.png"} />
             <div className="flex flex-col">
             <Label value="Sistema de Gestão AFAP - V 2.0"/>
-            <Select  value={selectEmp} onValueChange={(e) => setSelectEmp(e)}>
-      <SelectTrigger className="w-[180px] text-xs">
+            <Select   value={selectEmp} onValueChange={(e) => setSelectEmp(e)}>
+      <SelectTrigger className="w-[180px] text-xs h-7">
         <SelectValue defaultValue={selectEmp}  />
       </SelectTrigger>
       <SelectContent>

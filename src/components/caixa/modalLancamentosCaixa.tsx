@@ -23,7 +23,7 @@ interface ModalProps{
     setOpenModal:(open:boolean)=>void
     mov:Partial<LancamentosProps>
    // setMov:(fields:Partial<LancamentosProps>)=>void
-    arrayLanc:Array<LancamentosProps>,
+  //  arrayLanc:Array<LancamentosProps>,
     //setLancamentos:(array:Array<LancamentosProps>)=>void,
   //  listarLancamentos:()=>Promise<void>,
   
