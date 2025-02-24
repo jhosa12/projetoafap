@@ -183,8 +183,8 @@ export default function ModalBaixaMensalidade({ handleAtualizar, mensalidade, op
         </DialogHeader>
         <div>
           <span className="flex w-full text-gray-500 border-b">Associado</span>
-          <h1 className="font-semibold text-sm">{mensalidade.id_contrato}-{mensalidade.associado?.nome}</h1>
-          <p className="text-sm">Referência:<strong>{mensalidade.referencia}</strong></p>
+          <h1 className="font-semibold text-sm">{mensalidade?.id_contrato}-{mensalidade?.associado?.nome}</h1>
+          <p className="text-sm">Referência:<strong>{mensalidade?.referencia}</strong></p>
         </div>
 
         <form onSubmit={handleSubmit(adicionarPagamento)} className="space-y-3">
@@ -196,7 +196,7 @@ export default function ModalBaixaMensalidade({ handleAtualizar, mensalidade, op
 
 
 
-            <p className="inline-flex items-center">Valor Total Pago: <Input disabled={pagamentos.length > 0} type="number" placeholder="Valor" value={watch('valorPago')} onChange={OnChangeValorPago} className="w-[100px] text-[10px] h-6 " /></p>
+            <p className="inline-flex items-center">Valor Total Pago: <Input disabled={pagamentos?.length > 0} type="number" placeholder="Valor" value={watch('valorPago')} onChange={OnChangeValorPago} className="w-[100px] text-[10px] h-6 " /></p>
 
             <div className="inline-flex items-center">
               Data Pagamento:
