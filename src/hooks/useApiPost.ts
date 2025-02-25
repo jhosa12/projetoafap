@@ -1,3 +1,4 @@
+import { set } from 'date-fns';
 import { api } from "@/services/apiClient";
 import { AxiosError, AxiosResponse } from "axios";
 import { useState } from "react";
@@ -11,6 +12,7 @@ const useApiPost = <T=any,P=any>(url:string):{
     data:T|null;
     loading:boolean;
     postData:(payload:P)=>Promise<void>
+    setData:(data:T|null)=>void
 }=>{
   const [data, setData] = useState<T | null>(null);
 
@@ -39,7 +41,7 @@ const useApiPost = <T=any,P=any>(url:string):{
 
 
  
-  return {data,loading,postData}
+  return {data,loading,postData,setData}
 
 
 

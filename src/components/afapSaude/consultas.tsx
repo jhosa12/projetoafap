@@ -52,7 +52,7 @@ export default function Consultas({ medicos, consultas, setConsultas,events  }: 
 
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState<Partial<ConsultaProps>>()
-  const {usuario,infoEmpresa} = useContext(AuthContext)
+  const {usuario,infoEmpresa,consultores} = useContext(AuthContext)
  // const [modalFiltro, setModalFiltro] = useState<boolean>(false)
  // const [modalDeletar, setModalDeletar] = useState<boolean>(false)
  // const [modalReceber,setModalReceber] = useState<boolean>(false)
@@ -141,7 +141,7 @@ const handleAlterarStatus = async () => {
 
    
   try {
-   alert(data.status)
+   //alert(data.status)
       const evento = await toast.promise(
  
           api.put("/afapSaude/consultas/Editarcadastro", {
@@ -234,7 +234,7 @@ const imprimirRecibo = useCallback(useReactToPrint({
 
 
 
-const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string,nome?:string})=>{
+const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome,id_consultor}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string,nome?:string,id_consultor?:number})=>{
 
  const {dataIni,dataFim} =  ajustarData(startDate,endDate)
 
@@ -252,7 +252,8 @@ const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome}:{st
         id_med:id_med?Number(id_med):undefined,
       status,
       buscar,
-      nome
+      nome,
+      id_consultor
      })
       
       setConsultas(response.data)
@@ -412,7 +413,7 @@ const handleDeletar = useCallback(async () => {
       </div>
 
       <div className="overflow-y-auto h-[calc(100vh-155px)] ">
-        <Table  theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 text-black py-1 text-[11px]" } },head: { cell: { base: "px-4 text-black py-1 text-xs" } } }}  >
+        <Table  theme={{root:{shadow:'none'}, body: { cell: { base: "px-3 text-black py-0 text-[10px] font-medium" } },head: { cell: { base: "px-3 text-black py-0 text-xs" } } }}  >
 
           <Table.Head>
             <Table.HeadCell>Nome</Table.HeadCell>
@@ -456,14 +457,15 @@ const handleDeletar = useCallback(async () => {
                                     </select>*/}
 
 <Select  value={item?.status} onValueChange={(e) => { handleChangeStatus({item, status:e})}} >
-      <SelectTrigger className={`border-0 shadow-none text-xs focus:ring-0 ${
+      <SelectTrigger className={`border-0 w-[150px] shadow-none font-semibold text-[11px] focus:ring-0 ${
     item?.status === 'AGENDADO' ? 'text-blue-500' :
     item?.status === 'AGUARDANDO DATA' ? 'text-yellow-500' :
     item?.status === 'CONFIRMADO' ? 'text-cyan-500' :
     item?.status === 'RECEBIDO' ? 'text-green-500' :
+        item?.status === 'ATENDIDO' ? 'text-violet-600' :
     item?.status === 'CANCELADO' ? 'text-red-500' : ''
   } `} >
-        <SelectValue placeholder="Select a fruit" />
+        <SelectValue placeholder="Select a status" />
       </SelectTrigger>
       <SelectContent className="shadow-none " >
         <SelectGroup className="shadow-none ">
@@ -488,7 +490,7 @@ const handleDeletar = useCallback(async () => {
       <ModalDeletarExame setOpenModal={()=>setModal({deletar:false})} show={modal.deletar} handleDeletarExame={handleDeletar} />
 
 
-     {modal.filtro && <ModalFiltroConsultas medicos={medicos} buscarConsultas={buscarConsultas} loading={loading} setFiltro={()=>setModal({filtro:false})} show={modal.filtro} />
+     {modal.filtro && <ModalFiltroConsultas consultores={consultores} medicos={medicos} buscarConsultas={buscarConsultas} loading={loading} setFiltro={()=>setModal({filtro:false})} show={modal.filtro} />
 }
    {modal.receber &&   <ModalReceber formPag={formPag} setFormPag={setFormPag} handleReceberExame={handleReceberConsulta}  openModal={modal.receber} setOpenModal={()=>setModal({receber:false})} />}
 

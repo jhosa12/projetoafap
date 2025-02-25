@@ -25,15 +25,17 @@ import {
 import { Bell, LogIn } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import Image from "next/image";
 import { url } from "inspector";
+import { ModalAtivosInativos } from "../ativosInativos/modalAtivosInativos";
 
 
 export function 
 Header() {
 
     const {usuario,empresas,selectEmp,setSelectEmp,permissoes} = useContext(AuthContext)
+    const [open,setOpen] = useState(false)
 
 
     return(
@@ -99,6 +101,9 @@ Header() {
         <MenubarContent>
           <MenubarItem>
            <Link href="/vendas">Vendas</Link>
+          </MenubarItem>
+          <MenubarItem onClick={() => setOpen(true)}>
+           <span>Ativos/Inativos</span>
           </MenubarItem>
           <MenubarItem>
           <Link href="/conveniados">Conveniados</Link>
@@ -172,7 +177,7 @@ Header() {
     
 
     </div>
-            
+  { open && <ModalAtivosInativos open={open} onClose={()=>setOpen(false)} id_empresa={selectEmp}/> }
 
         </header>
     )

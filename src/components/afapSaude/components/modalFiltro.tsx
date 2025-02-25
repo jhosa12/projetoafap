@@ -8,14 +8,17 @@ import { useState } from "react";
 import { MedicoProps } from "@/pages/afapSaude";
 import { Button } from "@/components/ui/button";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { status } from "../consultas";
+import { ConsultoresProps } from "@/types/consultores";
 registerLocale('pt-br', pt)
 
 interface DataProps{
     show:boolean,
     setFiltro:(open:boolean)=>void,
-    buscarConsultas:({startDate,endDate,id_med}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string,nome?:string})=>Promise<void>,
+    buscarConsultas:({startDate,endDate,id_med}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string,nome?:string,id_consultor?:number})=>Promise<void>,
     loading:boolean,
-    medicos:Array<MedicoProps>  
+    medicos:Array<MedicoProps> 
+    consultores:Array<Partial<ConsultoresProps>>
 
 }
 
@@ -26,10 +29,11 @@ interface FiltroProps{
   id_med?:number,
   status:string|undefined,
   buscar?:string,
-  nome?:string
+  nome?:string,
+  id_consultor?:number
 }
 
-export function ModalFiltroConsultas({loading,setFiltro,show,buscarConsultas,medicos}:DataProps){
+export function ModalFiltroConsultas({loading,setFiltro,show,buscarConsultas,medicos,consultores}:DataProps){
 
     const {register,handleSubmit,control} = useForm<FiltroProps>()
 
@@ -68,6 +72,16 @@ export function ModalFiltroConsultas({loading,setFiltro,show,buscarConsultas,med
                        <TextInput sizing="sm" {...register('nome')} type="text" placeholder="Nome" />
                         </div>
 
+                        <div className="flex flex-col w-full" >
+                        <div className="block">
+          <Label className="text-xs"  value="Consultor" />
+        </div>
+                       <Select {...register('id_consultor')} sizing={'sm'}>
+                        <option value={''}>Selecione o consultor</option>
+                      {consultores.filter(item=>item.funcao=='PROMOTOR(A) DE VENDAS').map((item,index)=>(<option key={item.id_consultor} value={item.id_consultor}>{item.nome}</option>))}
+                       </Select>
+                        </div>
+
 
 <div className="inline-flex w-full gap-2" >
 
@@ -77,16 +91,12 @@ export function ModalFiltroConsultas({loading,setFiltro,show,buscarConsultas,med
         </div>
                        <Select {...register('status')} sizing={'sm'}>
                         <option value={''}>Selecione o status</option>
-                        <option value={'AGENDADO'}>AGENDADO</option>
-                        <option value={'CANCELADO'}>CANCELADO</option>
-                        <option value={'AGUARDANDO DATA'}>AGUARDANDO DATA</option>
-                        <option value={'RECEBIDO'}>RECEBIDO</option>
-                        <option value={'CONFIRMADO'}>CONFIRMADO</option>
+                      {status.map((item,index)=>(<option key={index} value={item}>{item}</option>))}
                        </Select>
                         </div>
 
 
-
+                 
 
 
                         <div className="flex flex-col w-full" >
