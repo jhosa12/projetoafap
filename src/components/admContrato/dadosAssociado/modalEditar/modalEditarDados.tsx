@@ -54,7 +54,7 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
               cpfcnpj: data.cpfcnpj,
               endereco: data.endereco,
               bairro: data.bairro,
-              numero:data.numero,
+              numero:data.numero?Number(data.numero):undefined,
               cidade: data.cidade,
               uf: data.uf,
               guia_rua: data.guia_rua,
