@@ -45,7 +45,7 @@ interface DataProps {
 }
 
 export const valorInicial ={celular:'',cpf:'',data:new Date(),espec:'',exames:[],id_consulta:null,id_med:null,nome:'',tipoDesc:'',vl_consulta:0,vl_desc:0,vl_final:0}
-
+export const status = ["AGENDADO","AGUARDANDO DATA","CONFIRMADO","ATENDIDO","CANCELADO","RECEBIDO"]
 
 export default function Consultas({ medicos, consultas, setConsultas,events  }: DataProps) {
 
@@ -234,7 +234,7 @@ const imprimirRecibo = useCallback(useReactToPrint({
 
 
 
-const buscarConsultas = async ({startDate,endDate,id_med,status,buscar}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string})=>{
+const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string,nome?:string})=>{
 
  const {dataIni,dataFim} =  ajustarData(startDate,endDate)
 
@@ -251,10 +251,12 @@ const buscarConsultas = async ({startDate,endDate,id_med,status,buscar}:{startDa
         endDate:dataFim,
         id_med:id_med?Number(id_med):undefined,
       status,
-      buscar
+      buscar,
+      nome
      })
       
       setConsultas(response.data)
+      setModal({filtro:false})
   
   } catch (error) {
       console.log(error)
@@ -465,12 +467,10 @@ const handleDeletar = useCallback(async () => {
       </SelectTrigger>
       <SelectContent className="shadow-none " >
         <SelectGroup className="shadow-none ">
-          <SelectLabel className="text-xs">Categorias</SelectLabel>
-          <SelectItem disabled className="text-xs  text-blue-500" value="AGENDADO">AGENDADO</SelectItem>
-          <SelectItem className="text-xs text-yellow-500" value="AGUARDANDO DATA">AGUARDANDO DATA</SelectItem>
-          <SelectItem className="text-xs text-cyan-500" value="CONFIRMADO">CONFIRMADO</SelectItem>
-          <SelectItem className="text-xs text-red-500" value="CANCELADO">CANCELADO</SelectItem>
-          <SelectItem disabled className="text-xs  text-green-500" value="RECEBIDO">RECEBIDO</SelectItem>
+         
+       {  status.map(item=>(<SelectItem className="text-xs" disabled={item==='AGENDADO'||item==='RECEBIDO'} key={item} value={item} >{item}</SelectItem>))}
+
+        
         </SelectGroup>
       </SelectContent>
     </Select>

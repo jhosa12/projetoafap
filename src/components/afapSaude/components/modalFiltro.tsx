@@ -3,7 +3,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { HiFilter } from "react-icons/hi"
-import {  Label, Modal, Select, Spinner } from "flowbite-react";
+import {  Label, Modal, Select, Spinner, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { MedicoProps } from "@/pages/afapSaude";
 import { Button } from "@/components/ui/button";
@@ -13,25 +13,24 @@ registerLocale('pt-br', pt)
 interface DataProps{
     show:boolean,
     setFiltro:(open:boolean)=>void,
-    buscarConsultas:({startDate,endDate,id_med}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string})=>Promise<void>,
+    buscarConsultas:({startDate,endDate,id_med}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string,nome?:string})=>Promise<void>,
     loading:boolean,
     medicos:Array<MedicoProps>  
 
 }
 
 
-interface FiltroProps{startDate:Date|undefined,
+interface FiltroProps{
+  startDate:Date|undefined,
   endDate:Date|undefined,
   id_med?:number,
   status:string|undefined,
-  buscar?:string}
+  buscar?:string,
+  nome?:string
+}
 
 export function ModalFiltroConsultas({loading,setFiltro,show,buscarConsultas,medicos}:DataProps){
-    const [startDate,setStartDate] = useState<Date|undefined>(undefined)
-    const [endDate,setEndDate] = useState<Date|undefined>(undefined)
-    const [id_med,setId] = useState<number|undefined>(undefined)
-    const [status,setStatus] = useState('')
-    const [buscar,setBuscar] = useState('')
+
     const {register,handleSubmit,control} = useForm<FiltroProps>()
 
     const handleOnSubmit:SubmitHandler<FiltroProps>=(data:FiltroProps)=>{
@@ -49,7 +48,7 @@ export function ModalFiltroConsultas({loading,setFiltro,show,buscarConsultas,med
                    
                     </Modal.Header>*/}
                 <Modal.Body>
-                 <form onSubmit={handleSubmit(handleOnSubmit)} className='space-y-2'>
+                 <form onSubmit={handleSubmit(handleOnSubmit)} className='space-y-2 flex flex-col w-full'>
                  <div >
                         <div className=" block">
           <Label className="text-xs"  value="Especialista" />
@@ -58,6 +57,15 @@ export function ModalFiltroConsultas({loading,setFiltro,show,buscarConsultas,med
                         <option value={''}>Selecione</option>
                         {medicos.map((item,index)=>(<option key={index} value={item.id_med}>{item.nome}-{item.espec}</option>))}
                        </Select>
+                        </div>
+
+
+
+                        <div >
+                        
+          <Label className="text-xs"  value="Nome Cliente" />
+        
+                       <TextInput sizing="sm" {...register('nome')} type="text" placeholder="Nome" />
                         </div>
 
 
@@ -132,9 +140,10 @@ export function ModalFiltroConsultas({loading,setFiltro,show,buscarConsultas,med
                         </div>
                         </div>
 
-                        <Button variant={'outline'}  className='ml-auto'  type="submit" size={'sm'}>{loading && <Spinner color="gray" />}Aplicar Filtro</Button>
-                        
 
+                    
+                        <Button variant={'outline'}  className='ml-auto'  type="submit" size={'sm'}>{loading && <Spinner color="gray" />}Aplicar Filtro</Button>
+                  
                         </form>
                 </Modal.Body>
             </Modal>
