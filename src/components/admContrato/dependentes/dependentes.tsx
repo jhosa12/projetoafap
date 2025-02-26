@@ -21,11 +21,16 @@ import { Button, ButtonGroup, Table } from "flowbite-react"
 export function Dependentes(){
     const [checkDependente, setCheckDependente] = useState(false)
     const {closeModa,dadosassociado,data,usuario,setarDadosAssociado,permissoes} =useContext(AuthContext)
-    const [modalExcluirDep, setModalExcDep] = useState(false)
-    const [modalDep,setModalDep] = useState<boolean>(false)
+   // const [modalExcluirDep, setModalExcDep] = useState(false)
+   // const [modalDep,setModalDep] = useState<boolean>(false)
     const [dadosDep,setDadosDep] = useState<Partial<DependentesProps>>({} )
     const componentRef = useRef<DeclaracaoExclusao>(null)
-    const [isReadyToPrint,setIsReadyToPrint] = useState(false)
+   // const [isReadyToPrint,setIsReadyToPrint] = useState(false)
+    const [modal,setModal] = useState<{[key:string]:boolean}>({
+        dependente:false,
+        excluir:false,
+        print:false
+    })
 
 
     const imprimirDeclaracao =useReactToPrint({
@@ -36,16 +41,18 @@ export function Dependentes(){
    })
 
    useEffect(()=>{
-    if (isReadyToPrint && dadosDep) {
+    if (modal.print && dadosDep) {
         imprimirDeclaracao();  // Chama a impressão apenas quando os dados são atualizados
-        setIsReadyToPrint(false);  // Reseta o estado
+        //setIsReadyToPrint(false);  // Reseta o estado
+        setModal({print:false})
     }
 
-   },[isReadyToPrint,imprimirDeclaracao])
+   },[modal.print,imprimirDeclaracao])
 
    const handlePrintClick = (item:DependentesProps) => {
     setDadosDep(item)
-    setIsReadyToPrint(true)
+    //setIsReadyToPrint(true)
+    setModal({print:true})
        
    }
 
@@ -91,7 +98,9 @@ export function Dependentes(){
             novo.splice(index,1)
             setarDadosAssociado({...dadosassociado,dependentes:novo})
          //   await carregarDados()
-           setModalExcDep(false)
+
+          // setModalExcDep(false)
+           setModal({excluir:false})
             
 
         } catch (err) {
@@ -117,13 +126,13 @@ export function Dependentes(){
 
                                              <Button disabled={!permissoes.includes('ADM1.3.2')} onClick={() => {
                                                  setDadosDep({})
-                                                setModalDep(true)}} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' /> Adicionar</Button>
+                                                setModal({dependente:true})}} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' /> Adicionar</Button>
                                                     <Button disabled={!permissoes.includes('ADM1.3.2')} onClick={() => {
                                                        
-                                                        setModalDep(true)
+                                                        setModal({dependente:true})
                                                         }} type="button" color='light' size='xs'><MdEdit className='mr-1 h-4 w-4' />Editar</Button>
                                 
-                                                    <Button disabled={!permissoes.includes('ADM1.3.3')} onClick={() => setModalExcDep(true)} type="button" color='light' size='xs'><MdDeleteForever className='mr-1 h-4 w-4' /> Excluir</Button>
+                                                    <Button disabled={!permissoes.includes('ADM1.3.3')} onClick={() =>setModal({excluir:true}) } type="button" color='light' size='xs'><MdDeleteForever className='mr-1 h-4 w-4' /> Excluir</Button>
                                                 </ButtonGroup>
                             
                                 </div>
@@ -201,8 +210,8 @@ export function Dependentes(){
 
                                 </Table>
 
-                              {modalDep &&  <ModalDependentes data={data.dependente??{}} openModal={modalDep} setModal={setModalDep}/>}
-                                <ModalExcluirDep nome={dadosDep?.nome??''} excluirDep={excluirDep} openModal={modalExcluirDep} setOpenModal={setModalExcDep}/>
+                              {modal.dependente &&  <ModalDependentes data={data.dependente??{}} openModal={modal.dependente} setModal={()=>setModal({dependente:false})}/>}
+                                <ModalExcluirDep nome={dadosDep?.nome??''} excluirDep={excluirDep} openModal={modal.excluir} setOpenModal={()=>setModal({excluir:false})}/>
 
                                 <div style={{ display: 'none' }}>
                                     <DeclaracaoExclusao 

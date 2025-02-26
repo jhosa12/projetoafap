@@ -178,10 +178,10 @@ const handleExcluir = useCallback(async()=>{
 
 
 
-      <div className="hidden">
+     {/* <div className="hidden">
      <FichaConsulta nascimento={new Date()} parentesco="" responsavel="" bairro="" cidade=""  cpf="" endereco=""  nome="" rg="" celular=""  ref={currentPage}/>
-      </div>
-
+      </div>*/
+}
 
 
 

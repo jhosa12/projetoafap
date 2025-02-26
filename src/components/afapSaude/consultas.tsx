@@ -496,7 +496,11 @@ const handleDeletar = useCallback(async () => {
 
       <div className="hidden" style={{display:'none'}}>
         <FichaConsulta 
+          ref={currentPage}
+        especialista={medicos.find(item=>item.id_med===data?.id_med)?.nome ??''}
+        id_consulta={data?.id_consulta??null}
         bairro={data?.bairro??''}
+        data={data?.data_prev? new Date(data?.data_prev): new Date()}
          cidade={data?.cidade??''} 
           cpf={data?.cpf??''}
           endereco={data?.endereco??''} 
@@ -506,8 +510,11 @@ const handleDeletar = useCallback(async () => {
             rg=""
              celular={data?.celular??''}
              parentesco={data?.grau_parentesco??''}
-              
-               ref={currentPage}/>
+             />
+
+
+
+
                <ReciboMensalidade
                infoEmpresa={infoEmpresa}
                 associado={data?.nome??''}
