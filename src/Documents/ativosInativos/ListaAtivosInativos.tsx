@@ -23,8 +23,12 @@ interface ResponseProps{
 }
 
 interface DadosProps {
-    dados:Array<ResponseProps>|[]
-    usuario:string
+    dados:Array<ResponseProps>|[],
+    usuario:string|undefined,
+    logo:string|undefined,
+    periodo:{start:Date,end:Date}
+    tipo:string
+
 }
 
 
@@ -33,16 +37,18 @@ interface DadosProps {
 
 class AtivosInativos extends React.Component<DadosProps> {
   render() {
-    const {dados,usuario} = this.props;
+    const {dados,usuario,logo,periodo,tipo} = this.props;
     return (
       <div className={`${roboto_Mono.className} flex flex-col w-full  gap-5`}>
        <div className="flex  w-full justify-center ">
-       <img width={100} height={100} src={"/novaLogo.png"} alt="logo"/>
+       <img width={100} height={100} src={logo} alt="logo"/>
        </div>
-       <h1 style={{fontWeight:'bold',fontSize:'18px',textAlign:'center'}}>Relatório de Estoque</h1>
+       <h1 style={{fontWeight:'bold',fontSize:'18px',textAlign:'center'}}>RELATÓRIO DE CONTRATOS {tipo}S</h1>
        <div style={{display:'flex',flexDirection:'column',gap:'5px',fontSize:12}}>
        <span>Usuário: {usuario}</span>
        <span>Data Expedição: {new Date().toLocaleDateString('pt-BR')}</span>
+       <span>Periodo: {periodo.start && new Date(periodo.start).toLocaleDateString('pt-BR')} -  {periodo.end && new Date(periodo.end).toLocaleDateString('pt-BR')}</span>
+
        </div>
 
 <div >
@@ -52,7 +58,7 @@ class AtivosInativos extends React.Component<DadosProps> {
             <Table.HeadCell>ASSOCIADO</Table.HeadCell>
             <Table.HeadCell>ENDEREÇO</Table.HeadCell>
             <Table.HeadCell>BAIRRO</Table.HeadCell>
-            <Table.HeadCell>DT ADESÃO</Table.HeadCell>
+            <Table.HeadCell>ADESÃO</Table.HeadCell>
             <Table.HeadCell>CANCEL.</Table.HeadCell>
        
         </Table.Head>

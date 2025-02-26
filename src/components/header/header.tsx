@@ -34,7 +34,7 @@ import { ModalAtivosInativos } from "../ativosInativos/modalAtivosInativos";
 export function 
 Header() {
 
-    const {usuario,empresas,selectEmp,setSelectEmp,permissoes} = useContext(AuthContext)
+    const {usuario,empresas,selectEmp,setSelectEmp,permissoes,infoEmpresa} = useContext(AuthContext)
     const [open,setOpen] = useState(false)
 
 
@@ -45,13 +45,13 @@ Header() {
             <div className="flex flex-col">
             <Label value="Sistema de Gestão AFAP - V 2.0"/>
             <Select   value={selectEmp} onValueChange={(e) => setSelectEmp(e)}>
-      <SelectTrigger className="w-[180px] text-xs h-7">
+      <SelectTrigger className="w-[150px] text-xs h-6">
         <SelectValue defaultValue={selectEmp}  />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup >
          {empresas?.filter(emp=>permissoes.includes(`EMP${emp.id}`))?.map((emp) => (
-          <SelectItem key={emp.id} value={emp.id}>{emp.nome}</SelectItem>
+          <SelectItem className="text-xs" key={emp.id} value={emp.id}>{emp.nome}</SelectItem>
         ))}
         
         </SelectGroup>
@@ -177,7 +177,7 @@ Header() {
     
 
     </div>
-  { open && <ModalAtivosInativos open={open} onClose={()=>setOpen(false)} id_empresa={selectEmp}/> }
+  { open && <ModalAtivosInativos usuario={usuario?.nome} logo={infoEmpresa?.logoUrl} open={open} onClose={()=>setOpen(false)} id_empresa={selectEmp}/> }
 
         </header>
     )

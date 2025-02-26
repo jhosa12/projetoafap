@@ -38,7 +38,7 @@ import { useReactToPrint } from "react-to-print";
 import { SomaProps } from "@/components/financeiro/caixa/caixa";
 import pageStyle from "@/utils/pageStyle";
 import { ModalLancamento } from "@/components/caixa/modalLancamento";
-import { parse } from "path";
+
   
 
 registerLocale('pt', pt)
@@ -150,16 +150,21 @@ export default function CaixaMovimentar(){
     const [saldo,setSaldo]=useState(0);
     const {usuario,permissoes,infoEmpresa} = useContext(AuthContext);
     const [selectRelatorio,setSelectRelatorio] = useState<string|null>(null)
-    const [openModal,setModal] = useState<boolean>(false);
-    const [openModalExc,setModalExc] = useState<boolean>(false);
+    //const [openModal,setModal] = useState<boolean>(false);
+   // const [openModalExc,setModalExc] = useState<boolean>(false);
     const [loading,setLoading] = useState<boolean>(false);
-    const [openFecModal,setFecModal]= useState<boolean>(false)
+   // const [openFecModal,setFecModal]= useState<boolean>(false)
     const [mensalidade,setMensalidade] = useState<Partial<MensalidadeBaixaProps>>()
     const [modalDados,setModalDados] = useState<boolean>(false)
     const [despesas,setDespesas] = useState<number>(0)
     const currentPage = useRef<RelatorioSintetico>(null)
     const [data,setData] = useState<Partial<ResponseCaixaProps>>()
     const [valorForma,setValorForma] = useState<Record<string, number>>()
+    const [openModal,setModal] = useState<{[key:string]:boolean}>({
+      lancar:false,
+      excluir:false,
+      fecharCaixa:false
+    })
     const {register,watch,handleSubmit,control}= useForm<FormProps>({
         defaultValues:{
             startDate:new Date(),
@@ -205,7 +210,7 @@ export default function CaixaMovimentar(){
         event.stopPropagation();
           buscarMensalidade(currentBarcode)
             currentBarcode = ''; // Reinicia o código de barras após a leitura
-            setModal(false)
+            setModal({lancar:false})
           } else {
             //Acumula os caracteres do código de barras
             currentBarcode += event.key;
@@ -345,7 +350,8 @@ export default function CaixaMovimentar(){
         novo.splice(index,1)
         setData({...data,lista:novo})
        // setLancamentos(novo)
-        setModalExc(false)
+       setModal({excluir:false})
+        //setModalExc(false)
       
     } catch (error) {
         console.log(error)
@@ -440,10 +446,10 @@ export default function CaixaMovimentar(){
 return(
 <>
 
-{/*openModal&& <ModalLancamento bancos={infoEmpresa?.bancos??[]} id_empresa={infoEmpresa?.id??''} handleFiltro={handleChamarFiltro}  mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={data?.plano_de_contas??[]}  grupo={data?.grupo??[]}/>*/}
-{openModal&&<ModalLancamentosCaixa id_empresa={infoEmpresa?.id??''} handleFiltro={handleChamarFiltro} mov={mov??{}} openModal={openModal} setOpenModal={setModal}  planos={data?.plano_de_contas??[]}  grupo={data?.grupo??[]}/>}
+{/*openModal.lancar && <ModalLancamento bancos={infoEmpresa?.bancos??[]} id_empresa={infoEmpresa?.id??''} handleFiltro={handleChamarFiltro}  mov={mov??{}} openModal={openModal.lancar} setOpenModal={()=>setModal({lancar:false})}  planos={data?.plano_de_contas??[]}  grupo={data?.grupo??[]}/>*/}
+{openModal.lancar &&<ModalLancamentosCaixa id_empresa={infoEmpresa?.id??''} handleFiltro={handleChamarFiltro} mov={mov??{}} openModal={openModal.lancar} setOpenModal={()=>setModal({lancar:false})}  planos={data?.plano_de_contas??[]}  grupo={data?.grupo??[]}/>}
 
-<ModalExcluir openModal={openModalExc} handleExcluir={handleExcluir} setOpenModal={setModalExc}/>
+<ModalExcluir openModal={openModal.excluir} handleExcluir={handleExcluir} setOpenModal={()=>setModal({excluir:false})}/>
 
 {/*<ModalDadosMensalidade  handleChamarFiltro={handleChamarFiltro} setMensalidade={setMensalidade} mensalidade={mensalidade??{}} open={modalDados} setOpen={setModalDados}/>*/}
 
@@ -577,7 +583,7 @@ setOpenModal={setModalDados}
     <DropdownMenuSeparator />
     <DropdownMenuItem
       disabled={!permissoes.includes('ADM2.1.1')||!!data?.fechamento}
-      onClick={()=>{setMov({conta:'',conta_n:'',ccustos_desc:'',data:undefined,datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal(true)}}
+      onClick={()=>{setMov({conta:'',conta_n:'',ccustos_desc:'',data:undefined,datalanc:new Date(),descricao:'',historico:'',num_seq:null,tipo:'',usuario:'',valor:null,ccustos_id:null,notafiscal:''}),setModal({lancar:true})}}
     >
         <MdOutlineAddCircle />
         Novo Lançamento
@@ -592,7 +598,7 @@ setOpenModal={setModalDados}
             </DropdownMenuPortal>
           </DropdownMenuSub>
 
-          <DropdownMenuItem  onClick={()=>setFecModal(true)}>Fechar Caixa</DropdownMenuItem>
+          <DropdownMenuItem  onClick={()=>setModal({fecharCaixa:true})}>Fechar Caixa</DropdownMenuItem>
   </DropdownMenuContent>
 </DropdownMenu>
 
@@ -660,14 +666,14 @@ setOpenModal={setModalDados}
             <Table.Cell className="font-semibold">{Number(item.valor).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
           
             <Table.Cell className="space-x-4 whitespace-nowrap">
-            <button disabled={!permissoes.includes('ADM2.1.3')} onClick={(event)=>{
+            <button disabled={item.conta==='1.01.002'|| !permissoes.includes('ADM2.1.3')} onClick={(event)=>{
                                event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                                setMov({...item})
-                              setModal(true)
+                              setModal({lancar:true})
                             }} className="font-medium text-gray-500 hover:text-cyan-600 disabled:cursor-not-allowed">
                     <HiPencil size={14} />
                   </button>
-                  <button disabled={item.conta==='1.01.002'|| !permissoes.includes('ADM2.1.4')} onClick={() =>{setMov({lanc_id:item.lanc_id}), setModalExc(true)}} className="font-medium text-gray-500 hover:text-red-600 disabled:cursor-not-allowed">
+                  <button disabled={item.conta==='1.01.002'|| !permissoes.includes('ADM2.1.4')} onClick={() =>{setMov({lanc_id:item.lanc_id}),setModal({excluir:true}) }} className="font-medium text-gray-500 hover:text-red-600 disabled:cursor-not-allowed">
                     <MdDelete size={16} />
                   </button>
                   </Table.Cell>
@@ -718,7 +724,7 @@ setOpenModal={setModalDados}
 
 
 
-{openFecModal && <ModalFechamento listar={()=>listarLancamentos({endDate:watch('endDate'),startDate:watch('startDate'),id_empresa:infoEmpresa?.id??'',descricao:watch('descricao')})} dataCaixaEnd={watch('endDate')} dataCaixa={watch('startDate')}  id_empresa={infoEmpresa?.id??''} lancamentos={data?.lista??[]} id_usuario={usuario?.id??''} openModal={openFecModal} setOpenModal={setFecModal}/>}
+{openModal.fecharCaixa && <ModalFechamento listar={()=>listarLancamentos({endDate:watch('endDate'),startDate:watch('startDate'),id_empresa:infoEmpresa?.id??'',descricao:watch('descricao')})} dataCaixaEnd={watch('endDate')} dataCaixa={watch('startDate')}  id_empresa={infoEmpresa?.id??''} lancamentos={data?.lista??[]} id_usuario={usuario?.id??''} openModal={openModal.fecharCaixa} setOpenModal={()=>setModal({fecharCaixa:false})}/>}
 
 
 {/*openModalPrint && <ModalImpressao array={data?.lista??[]} openModal={openModalPrint} setOpenModal={setPrint} startDate={watch('startDate')} endDate={watch('endDate')} usuario={usuario?.nome??''}/>*/}

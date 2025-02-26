@@ -281,7 +281,7 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
                   control={control}
                   name="cpf"
                   render={({ field:{onChange,value} }) => (
-                    <ReactInputMask value={value} onChange={e=>onChange(e.target.value)} id="cpf" placeholder="CPF" className="px-2 py-2 text-xs focus:outline-none bg-gray-100 w-full rounded-lg border-[1px] border-gray-300" mask={'999.999.999-99'} required/>
+                    <ReactInputMask value={value} onChange={e=>onChange(e.target.value)} id="cpf" placeholder="CPF" className="px-2 py-2 text-xs focus:outline-none bg-gray-100 w-full rounded-lg border-[1px] border-gray-300" mask={'999.999.999-99'} />
                   )}
                   />
               </div>

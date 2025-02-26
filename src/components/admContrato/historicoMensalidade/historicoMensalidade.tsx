@@ -59,16 +59,18 @@ interface DadosProps {
 }
 export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }: DadosProps) {
     const [checkMensal, setCheck] = useState(false)
-    const [openExcluir, setOpenExcluir] = useState(false)
     const [linhasSelecionadas, setLinhasSelecionadas] = useState<Array<Partial<MensalidadeProps>>>([]);
     const componentRef = useRef<ImpressaoCarne>(null);
     const { setarDadosAssociado, permissoes,infoEmpresa } = useContext(AuthContext)
-    const [openModalMens, setModalMens] = useState<boolean>(false)
     const [mensalidadeSelect, setMensalidade] = useState<Partial<MensalidadeProps>>();
-    const [openEditar, setOpenEditar] = useState<boolean>(false);
-    const [isPrinting, setIsPrinting] = useState(false);
     const componentRecibo = useRef<ReciboMensalidade>(null)
     const [mensalidadeRecibo, setMensalidadeRecibo] = useState<Partial<MensalidadeProps>>()
+    const [openModal,setModal] = useState<{[key:string]:boolean}>({
+        excluir:false,
+        baixar:false,
+        editar:false,
+        recibo:false
+    })
 
 
 
@@ -76,7 +78,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
         pageStyle: pageStyle,
         documentTitle: 'RECIBO MENSALIDADE',
         content: () => componentRecibo.current,
-        onBeforeGetContent: () => setIsPrinting(true),  // Ativa antes da impressão
+        onBeforeGetContent: () => setModal({recibo:true}),  // Ativa antes da impressão
         onAfterPrint: () => setMensalidadeRecibo(undefined),        // Desativa após a impressão
 
     })
@@ -92,8 +94,8 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
         pageStyle:pageStyle,
         documentTitle: 'CARNÊ ASSOCIADO',
         content: () => componentRef.current,
-        onBeforeGetContent: () => setIsPrinting(true),  // Ativa antes da impressão
-        onAfterPrint: () => setIsPrinting(false),        // Desativa após a impressão
+        onBeforeGetContent: () => setModal({recibo:true}),  // Ativa antes da impressão
+        onAfterPrint: () => setModal({recibo:false}),        // Desativa após a impressão
     })
 
 
@@ -159,7 +161,8 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
             dadosAssociado.id_global && await carregarDados(dadosAssociado.id_global)
             // setarDados({ mensalidade: {} })
             // setarDadosAssociado({mensalidade:mensalidades})
-            setOpenExcluir(false)
+           // setOpenExcluir(false)
+            setModal({excluir:false})
             setLinhasSelecionadas([])
            // setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
         } catch (err) {
@@ -235,7 +238,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                 />
             </div>}
 
-            {isPrinting &&
+            {openModal.recibo &&
                 <div style={{ display: 'none' }}>
                     <ImpressaoCarne
                     infoEmpresa={infoEmpresa}
@@ -259,9 +262,9 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
 
             {/*openScanner && <Scanner verficarTicket={verificarBaixa} openModal={openScanner} setModal={setOpenScanner}   />*/}
 
-            {openEditar && <ModalEditarMensalidade mensalidade={mensalidadeSelect ?? {}} openModal={openEditar} setMensalidade={setMensalidade} setOpenModal={setOpenEditar} />}
+            {openModal.editar && <ModalEditarMensalidade mensalidade={mensalidadeSelect ?? {}} openModal={openModal.editar} setMensalidade={setMensalidade} setOpenModal={()=>setModal({editar:false})} />}
 
-            {openExcluir && <ModalExcluirMens openModal={openExcluir} setOpenModal={setOpenExcluir} handleExcluirMensalidade={excluirMesal} />}
+            {openModal.excluir && <ModalExcluirMens openModal={openModal.excluir} setOpenModal={()=>setModal({excluir:false})} handleExcluirMensalidade={excluirMesal} />}
             
             <div className="flex w-full  gap-2">
                 <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
@@ -279,7 +282,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                 <PopoverVencimento  id_global={dadosAssociado.id_global}  />
              
                
-                <Button disabled={!permissoes.includes('ADM1.2.3')} onClick={() => setOpenExcluir(!openExcluir)} type="button" color='light' size='xs'><MdDeleteForever className='mr-1 h-4 w-4' /> Excluir</Button>
+                <Button disabled={!permissoes.includes('ADM1.2.3')} onClick={()=>setModal({excluir:true})} type="button" color='light' size='xs'><MdDeleteForever className='mr-1 h-4 w-4' /> Excluir</Button>
             </ButtonGroup>
 
          
@@ -387,13 +390,15 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
 
                                                 <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                                                    setOpenEditar(true)
+                                                   // setOpenEditar(true)
+                                                    setModal({editar:true})
                                                     setMensalidade({ ...item, valor_total: item.status === 'A' ? item.valor_principal : item.valor_total })
                                                 }} className={`  hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-600'}`}>Editar</button>
                                                {item.status!=='P' && <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                                                     if(dadosAssociado.situacao === 'INATIVO') return toast.warning('Contrato inativo, impossível baixar mensalidade')
-                                                    setModalMens(true)
+                                                   // setModalMens(true)
+                                                setModal({baixar:true})
                                                     setMensalidade({ ...item, valor_total: item.status === 'A' || item.status === 'R' || item.status === 'R' ? item.valor_principal : item.valor_total, data_pgto: item.data_pgto ? item.data_pgto : new Date() })
                                                 }} className={`   hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-600'}`}>Baixar</button>}
 
@@ -447,7 +452,8 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                                             <td className=" px-4 py-1 space-x-2 whitespace-nowrap">
                                                 <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                                                    setOpenEditar(true),
+                                                   // setOpenEditar(true),
+                                                    setModal({editar:true})
                                                         setMensalidade({ ...item, valor_total: item.status === 'A' ? item.valor_principal : item.valor_total })
                                                 }} className={`hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-600" : 'text-blue-600'}`}>Editar</button>
 
@@ -455,7 +461,8 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                                             {item.status!=='P' && <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                                                     if(dadosAssociado.situacao === 'INATIVO') return toast.warning('Contrato inativo, impossível baixar mensalidade')
-                                                    setModalMens(true)
+                                                    //setModalMens(true)
+                                                setModal({baixar:true})
                                                     setMensalidade({ ...item, valor_total: item.status === 'A' || item.status === 'E' || item.status === 'R' ? item.valor_principal : item.valor_total, data_pgto: item.data_pgto ? item.data_pgto : new Date() })
                                                 }} className={`  hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-600" : 'text-blue-600'}`}>Baixar</button>}
 
@@ -481,7 +488,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                 </table>
             </div>
 
-            {openModalMens && <ModalMensalidade 
+            {openModal.baixar && <ModalMensalidade 
            mensalidade={{
             associado:{...dadosAssociado,mensalidade:dadosAssociado.arrayMensalidade},
             aut:mensalidadeSelect?.aut,
@@ -500,12 +507,12 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
             valor_principal:mensalidadeSelect?.valor_principal
            }} 
             handleAtualizar={async()=>{ await carregarDados(Number(dadosAssociado.id_global));setLinhasSelecionadas([])}}
-            openModal={openModalMens}
-             setOpenModal={setModalMens}
+            openModal={openModal.baixar}
+             setOpenModal={()=>setModal({baixar:false})}
               />
              }
 
-                {/*openModalMens &&   <ModalBaixaMensalidade
+                {/*openModal.baixar &&   <ModalBaixaMensalidade
 
 mensalidade={{
     associado:{...dadosAssociado,mensalidade:dadosAssociado.arrayMensalidade},
@@ -525,8 +532,8 @@ mensalidade={{
     valor_principal:mensalidadeSelect?.valor_principal
    }} 
     handleAtualizar={async()=>{ await carregarDados(Number(dadosAssociado.id_global));setLinhasSelecionadas([])}}
-    openModal={openModalMens}
-     setOpenModal={setModalMens}
+    openModal={openModal.baixar}
+     setOpenModal={()=>setModal({baixar:false})}
 />*/}
 
         

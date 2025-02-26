@@ -6,27 +6,50 @@ import { useContext } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import "react-datepicker/dist/react-datepicker.css";
-import { Modal, ModalBody, ModalHeader, TextInput, Button } from "flowbite-react";
+import { Modal, ModalBody, ModalHeader, TextInput} from "flowbite-react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { MensalidadeProps } from "@/types/financeiro";
+import { Button } from "@/components/ui/button";
 
 
 
 
-interface rops {
+interface Props {
     openModal: boolean,
     setOpenModal: (open: boolean) => void
     mensalidade: Partial<MensalidadeProps>,
     setMensalidade: (mensalidade: Partial<MensalidadeProps>) => void
+    
 }
 
-export function ModalEditarMensalidade({ openModal, setOpenModal, mensalidade, setMensalidade }: rops) {
-    const { usuario, dadosassociado, permissoes, setarDadosAssociado } = useContext(AuthContext)
+export function ModalEditarMensalidade({ openModal, setOpenModal, mensalidade, setMensalidade }: Props) {
+    const { usuario, dadosassociado, permissoes, setarDadosAssociado,carregarDados } = useContext(AuthContext)
 
 
 
+
+    const handleEditar = async()=>{
+        try{
+            const response = await toast.promise(
+                api.put('/mensalidade/editar',{
+                    id_mensalidade: mensalidade.id_mensalidade_global,
+                    cobranca:mensalidade.cobranca,
+                    vencimento:mensalidade.vencimento,
+                    valor_principal: mensalidade.valor_principal,
+                }),
+                {
+                    error: 'Erro na tentativa de edição, consulte o TI',
+                    pending: 'Realizando edição.....',
+                    success: 'Edição efetuada com sucesso!'
+                }
+            )
+           dadosassociado?.id_global && carregarDados(dadosassociado?.id_global)
+        }catch(error){
+
+        }
+    }
     const handleEstorno = async () => {
         const novoArray = [...(dadosassociado?.mensalidade || [])]
         const index = novoArray.findIndex(item => item.id_mensalidade === mensalidade.id_mensalidade)
@@ -78,7 +101,7 @@ export function ModalEditarMensalidade({ openModal, setOpenModal, mensalidade, s
                 <h1 className="text-white">Editar Dados</h1>
             </ModalHeader>
             <ModalBody>
-                <div className="grid grid-cols-4 px-2 mt-4 border-b-[1px] border-gray-500 max-h-[68vh] overflow-y-auto gap-2">
+                <div className="grid grid-cols-4 px-2 mt-4  max-h-[68vh] overflow-y-auto gap-2">
                     <div className="mb-1 col-span-1 ">
                         <label className="block mb-1 text-xs font-medium  text-black">REFERÊNCIA</label>
                         <TextInput disabled style={{ padding: 6 }} value={mensalidade?.referencia} onChange={e => setMensalidade({ ...(mensalidade || {}), referencia: e.target.value })} placeholder="REFERÊNCIA" />
@@ -112,22 +135,14 @@ export function ModalEditarMensalidade({ openModal, setOpenModal, mensalidade, s
                     </div>
 
 
+                    
+                <div className={` col-span-4 inline-flex w-full ${mensalidade.status === "P" ? "justify-between" : "justify-end"}`}>
+                    {mensalidade.status === 'P' && <Button disabled={!permissoes.includes('ADM1.2.6')} color={'failure'} type="button" onClick={() => handleEstorno()} ><GiReturnArrow className="mr-2 h-5 w-5" /> ESTORNAR</Button>}
+                    <Button disabled={!permissoes.includes('ADM1.2.6') || mensalidade.status === 'P'} color={'success'} type="button" onClick={handleEditar} ><GiReturnArrow className="mr-2 h-5 w-5" />Gravar Alterações</Button>
+                </div>
+
                 </div>
             </ModalBody>
-
-            <Modal.Footer>
-                <div className={`inline-flex w-full ${mensalidade.status === "P" ? "justify-between" : "justify-end"}`}>
-                    {mensalidade.status === 'P' && <Button disabled={!permissoes.includes('ADM1.2.6')} color={'failure'} type="button" onClick={() => handleEstorno()} ><GiReturnArrow className="mr-2 h-5 w-5" /> ESTORNAR</Button>}
-                    <Button disabled={!permissoes.includes('ADM1.2.6') || mensalidade.status === 'P'} color={'success'} type="button" onClick={() => { }} ><GiReturnArrow className="mr-2 h-5 w-5" />Gravar Alterações</Button>
-                </div>
-
-
-
-
-            </Modal.Footer>
-
-
-
 
         </Modal>
 

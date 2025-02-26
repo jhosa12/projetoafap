@@ -151,7 +151,7 @@ export default function ModalBaixaMensalidade({ handleAtualizar, mensalidade, op
       return;
     }
 
-    setPagamentos([...pagamentos, { valor: valorNumerico, forma: data.formaPagamento, banco: data.banco, observacao: data.observacao }]);
+    setPagamentos([...pagamentos, { valor: valorNumerico, forma: data.formaPagamento, banco: data.banco, observacao: data.observacao?.toUpperCase() }]);
 
     reset({
       valor: '',

@@ -53,18 +53,14 @@ export default function Consultas({ medicos, consultas, setConsultas,events  }: 
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState<Partial<ConsultaProps>>()
   const {usuario,infoEmpresa,consultores} = useContext(AuthContext)
- // const [modalFiltro, setModalFiltro] = useState<boolean>(false)
- // const [modalDeletar, setModalDeletar] = useState<boolean>(false)
- // const [modalReceber,setModalReceber] = useState<boolean>(false)
   const [formPag,setFormPag] = useState<string>('')
   const [loading,setLoading] = useState<boolean>(false)
-  const [openStatus,setOpenStatus] = useState<boolean>(false)
-  //const [modalEstornar,setModalEstornar] = useState<boolean>(false)
   const [modal,setModal] = useState<{[key:string]:boolean}>({
       filtro:false,
       deletar:false,
       receber:false,
-      estornar:false
+      estornar:false,
+      status:false
   })
 const currentPage = useRef<FichaConsulta>(null)
 const currentRecibo = useRef<ReciboMensalidade>(null)
@@ -126,7 +122,8 @@ const handleChangeStatus = async ({status,item}:{status: string,item:ConsultaPro
   setData({...item,status:status})
  }
 
- setOpenStatus(true)
+ //setOpenStatus(true)
+ setModal({status:true})
 
  
 }
@@ -164,7 +161,8 @@ const handleAlterarStatus = async () => {
         
           setConsultas(novo)
 
-        setOpenStatus(false)
+        //setOpenStatus(false)
+        setModal({status:false})
         setData({})
 
   } catch (error) {
@@ -533,7 +531,7 @@ const handleDeletar = useCallback(async () => {
 
 
 
-      <ModalConfirmar pergunta="Realmente deseja alterar o status?" handleConfirmar={handleAlterarStatus} openModal={openStatus} setOpenModal={setOpenStatus}/>
+      <ModalConfirmar pergunta="Realmente deseja alterar o status?" handleConfirmar={handleAlterarStatus} openModal={modal.status} setOpenModal={()=>setModal({status:false})}/>
 
       <ModalConfirmar pergunta="Realmente deseja Estornar a consulta?" handleConfirmar={handleEstornarConsulta} openModal={modal.estornar} setOpenModal={()=>setModal({estornar:false})}/>
 
