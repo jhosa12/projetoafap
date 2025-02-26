@@ -171,6 +171,15 @@ export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor,usua
             </Table.Row>
           ))}
         </Table.Body>
+
+        <Table.Row >
+                 <Table.Cell>TOTAL: {data?.adesoes?.length}</Table.Cell>
+              <Table.Cell>{}</Table.Cell>   
+              <Table.Cell>{}</Table.Cell>
+              <Table.Cell>{}</Table.Cell>
+              <Table.Cell>{}</Table.Cell>
+            </Table.Row>
+       
       </Table>
        </div> }
         </Modal.Body>
