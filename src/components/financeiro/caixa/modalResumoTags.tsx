@@ -1,12 +1,14 @@
 import { CaixaProps } from "@/pages/financeiro";
 import { Button, Modal, Table } from "flowbite-react";
 import {  useMemo, useState } from "react";
+import { SomaProps } from "./caixa";
 
 interface DataProps {
     openModal: boolean;
     setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
     array:Array<CaixaProps>|null
     tag:string
+    
 }
 
 
@@ -47,7 +49,7 @@ const [selectBanco,setSelectBanco] = useState<string>('TODOS')
         </Modal.Header>
         <Modal.Body>
           <div className="">
-            <Table hoverable theme={{root:{shadow:'none'},body:{cell:{base:"px-6 py-1"}},head:{cell:{base:"px-6 py-1"}}}} >
+            <Table hoverable theme={{root:{shadow:'none'},body:{cell:{base:"px-3 py-1 text-black font-medium text-[10px]"}},head:{cell:{base:"px-3 py-1"}}}} >
               <Table.Head>
 
                 <Table.HeadCell>Data</Table.HeadCell>
@@ -56,13 +58,13 @@ const [selectBanco,setSelectBanco] = useState<string>('TODOS')
                 <Table.HeadCell>Histórico</Table.HeadCell>
                 <Table.HeadCell>Valor</Table.HeadCell>
               </Table.Head>
-              <Table.Body className="divide-y text-xs text-black font-semibold" theme={{ cell: { base: 'px-6 py-1 ' } }}>
+              <Table.Body className="divide-y" >
                 {handleSelecao?.map((item,index) =>
                 (<Table.Row key={index} className="bg-white">
 
                   <Table.Cell>{new Date(item.datalanc).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
                   <Table.Cell>{item.banco}</Table.Cell>
-                  <Table.Cell>{item.descricao}</Table.Cell>
+                  <Table.Cell>{item.notafiscal?item.notafiscal:item.descricao}</Table.Cell>
                   <Table.Cell>{item.historico}</Table.Cell>
 
                   <Table.Cell>{Number(item.valor).toLocaleString('pt-BR', {

@@ -243,9 +243,9 @@ useEffect(() => {
             <Button  variant={'outline'} onClick={() => setOpenModalImp(true)} size={'sm'} ><MdPrint  />Relatório</Button>
         </form>
         <div className="overflow-y-auto max-h-[calc(100vh-100px)] px-2">
-          <Table hoverable theme={{root:{shadow:'none'},body:{cell:{base:"px-4 py-1"}},head:{cell:{base:"px-4 py-1"}}}}  >
+          <Table hoverable theme={{root:{shadow:'none'},body:{cell:{base:"px-2 py-1 text-[10px] text-black font-medium"}},head:{cell:{base:"px-2 py-1"}}}}  >
             <TableHead>
-              <TableHeadCell className="whitespace-nowrap">Nº Lanc.</TableHeadCell>
+              <TableHeadCell >Nº Lanc.</TableHeadCell>
               <TableHeadCell>Data</TableHeadCell>
               <TableHeadCell>Conta</TableHeadCell>
               <TableHeadCell>Ccusto</TableHeadCell>
@@ -254,10 +254,10 @@ useEffect(() => {
               <TableHeadCell>Tipo</TableHeadCell>
               <TableHeadCell>Valor</TableHeadCell>
             </TableHead>
-            <Table.Body className="divide-y" theme={{ cell: { base: 'px-4 py-2 ' } }}>
+            <Table.Body className="divide-y" >
               {caixa?.map((item) =>
-              (<TableRow key={item.lanc_id} className="bg-white text-xs font-semibold text-black">
-                <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+              (<TableRow key={item.lanc_id} >
+                <TableCell className="whitespace-nowrap font-medium text-gray-900">
                   {item.num_seq}
                 </TableCell>
                 <TableCell>{new Date(item.datalanc).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</TableCell>
@@ -265,7 +265,7 @@ useEffect(() => {
                 <TableCell>{item.ccustos_desc}</TableCell>
                 <TableCell>{item.descricao}</TableCell>
                 <TableCell>{item.historico}</TableCell>
-                <TableCell className={`${item.tipo === 'RECEITA' ? 'text-green-500' : 'text-red-600'}`}>{item.tipo}</TableCell>
+                <TableCell className={`${item.tipo === 'RECEITA' ? 'text-green-600' : 'text-red-600'}`}>{item.tipo}</TableCell>
                 <TableCell>{Number(item.valor).toLocaleString('pt-BR', {
                   style: 'currency',
                   currency: 'BRL'

@@ -69,7 +69,7 @@ export function ModalRelatorio({openModal,setOpenModal,caixa,arrayCcustos,startD
 
     const handleImpressao = () => {
       
-        const formasDePagamento = ['BOLETO', 'PIX', 'CARTAO', 'DEPOSITO', 'DINHEIRO', 'TRANSFERENCIA'] as const;
+        const formasDePagamento = ['BOLETO', 'PIX', 'CARTAO CREDITO', 'DEPOSITO', 'DINHEIRO', 'TRANSFERENCIA','CARTAO DEBITO','CARTAO',''] as const;
     
         const caixaMap = caixa?.reduce((map, atual) => {
             const { ccustos_desc, valor, mensalidade } = atual;
@@ -94,13 +94,21 @@ export function ModalRelatorio({openModal,setOpenModal,caixa,arrayCcustos,startD
             // Adiciona o lançamento
             itemExistente.lancamentos.push(atual);
     
+
+            switch (formPagto) {
+              case 'PIX':atual.tipo==='RECEITA' ?itemExistente.pix -= Number(valor):itemExistente.pix += Number(valor); break;
+              case 'BOLETO':atual.tipo==='RECEITA' ?itemExistente.boleto -= Number(valor):itemExistente.boleto += Number(valor); break;
+              case 'CARTAO': case 'CARTAO CREDITO': case 'CARTAO DEBITO': atual.tipo==='RECEITA' ?itemExistente.cartao -= Number(valor):itemExistente.cartao += Number(valor); break;
+              case 'DINHEIRO':case undefined:case '':case null:atual.tipo==='RECEITA' ?itemExistente.dinheiro += Number(valor):itemExistente.dinheiro -= Number(valor); break;
+              default: break;
+            }
             // Atualiza a forma de pagamento correspondente
-            if (formPagto === 'BOLETO') itemExistente.boleto += Number(valor);
-            else if (formPagto === 'PIX') itemExistente.pix += Number(valor);
-            else if (formPagto === 'CARTAO') itemExistente.cartao += Number(valor);
-            else if (formPagto === 'DEPOSITO') itemExistente.deposito += Number(valor);
-            else if (formPagto === 'DINHEIRO') itemExistente.dinheiro += Number(valor);
-            else if (formPagto === 'TRANSFERENCIA') itemExistente.transferencia += Number(valor);
+          //  if (formPagto === 'BOLETO') itemExistente.boleto += Number(valor);
+         //   else if (formPagto === 'PIX') itemExistente.pix += Number(valor);
+           // else if (formPagto === 'CARTAO') itemExistente.cartao += Number(valor);
+          //  else if (formPagto === 'DEPOSITO') itemExistente.deposito += Number(valor);
+           // else if (formPagto === 'DINHEIRO') itemExistente.dinheiro += Number(valor);
+          //  else if (formPagto === 'TRANSFERENCIA') itemExistente.transferencia += Number(valor);
     
             return map;
         }, new Map<string, ArrayGeral>());

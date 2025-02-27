@@ -111,9 +111,9 @@ class ImpressaoCarne extends React.Component<DadosProps> {
                             <h1 className="mt-2  " style={{ fontSize: '13px', fontWeight: 'bold' }} >{infoEmpresa?.razao_social}</h1>
 
                             <div style={{ display: 'flex',width:'100%'}}>
-                                <span style={{whiteSpace: 'nowrap',width:"80%"}}>{infoEmpresa?.endereco}</span>
-                                <span style={{ paddingLeft: '40px' }}>{item.vencimento && new Date(item.vencimento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</span>
-                                <span className=" flex w-full justify-end pl-10">{item.parcela_n}</span>
+                                <span style={{display:'flex',whiteSpace: 'nowrap',width:"68%"}}>{infoEmpresa?.endereco}</span>
+                                <span style={{width:"17%",paddingLeft:'5px'}} >{item.vencimento && new Date(item.vencimento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</span>
+                                <span style={{width:"17%",textAlign:'right'}} >{item.parcela_n}</span>
                             </div>
                             <div className="inline-flex  w-full  ">
                                 <span className="pl-2 whitespace-nowrap">{infoEmpresa?.cnpj}-{infoEmpresa?.razao_social}</span>
