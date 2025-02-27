@@ -170,15 +170,17 @@ export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor,usua
               <Table.Cell>{Number(item.valor_mensalidade).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
             </Table.Row>
           ))}
-        </Table.Body>
 
-        <Table.Row >
-                 <Table.Cell>TOTAL: {data?.adesoes?.length}</Table.Cell>
+<Table.Row >
+                 <Table.Cell className="font-semibold">TOTAL: {data?.adesoes?.length}</Table.Cell>
               <Table.Cell>{}</Table.Cell>   
               <Table.Cell>{}</Table.Cell>
               <Table.Cell>{}</Table.Cell>
               <Table.Cell>{}</Table.Cell>
             </Table.Row>
+        </Table.Body>
+
+ 
        
       </Table>
        </div> }

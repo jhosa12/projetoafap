@@ -24,6 +24,7 @@ export interface InadimplenciaProps{
     nome:string,
     endereco:string,
     bairro:string,
+    telefone:string,
     celular1:string,
     celular2:string,
     numero:string,
@@ -301,7 +302,7 @@ useEffect(()=>{
 
                   </Table.Cell>
                   <Table.Cell className="whitespace-nowrap" >
-                    {item.associado.celular1}
+                  {item.associado.celular1?item.associado.celular1:item.associado.celular2?item.associado.celular2:item.associado.telefone}
                   </Table.Cell>
                   <Table.Cell >
                    {item.cobranca && new Date(item.cobranca).toLocaleDateString('pt-BR',{timeZone:'UTC'})}
