@@ -20,15 +20,16 @@ import { FaHandshake } from "react-icons/fa";
 import { VerificarSituacao } from "@/utils/admContrato/verificarSituacao";
 import { Acordos } from "@/components/admContrato/acordos/screen";
 import { Button } from "@/components/ui/button"
-import ModalBaixaMensalidade from "../formasPag";
 
 
 export default function AdmContrato() {
 
     const { usuario, data, closeModa, dadosassociado, carregarDados, permissoes, limparDados, loading, infoEmpresa } = useContext(AuthContext)
     const [indexTab, setIndex] = useState<number>(0)
-    const [openCadastro, setCadastro] = useState<boolean>(false)
-    const [modalBusca, setModalBusca] = useState<boolean>(false)
+    const [modal, setModal] = useState<{ [key: string]: boolean }>({
+        busca: false,
+        cadastro: false
+    })
 
     /*  useEffect(() => {
           async function listaCadastro() {
@@ -37,9 +38,7 @@ export default function AdmContrato() {
           }
           listaCadastro()
       }, [])*/
-    useEffect(() => {
-        limparDados()
-    }, [])
+
 
 
 
@@ -71,19 +70,29 @@ export default function AdmContrato() {
 
     useEffect(() => {
 
-
-        if (dadosassociado?.id_global)
+      
+           
+      
+        if (dadosassociado?.id_global){
             VerificarSituacao({
                 situacao: dadosassociado?.contrato?.situacao ?? '',
                 mensalidades: dadosassociado?.mensalidade ?? [],
                 convalescencia: dadosassociado?.contrato?.convalescencia ?? [],
                 carencia: dadosassociado?.contrato?.dt_carencia ?? null
             })
-
+        }
+       
+        
 
 
     }, [dadosassociado?.id_global]);
 
+    
+    useEffect(() => {
+        return () => {
+            limparDados();
+        };
+    }, []); 
 
 
 
@@ -105,21 +114,21 @@ export default function AdmContrato() {
 
             </Head>
             <div className={`flex flex-col w-full mr-2  justify-center`}>
-                {modalBusca && (<ModalBusca visible={modalBusca} setVisible={() => setModalBusca(false)} />)}
-                {openCadastro && (<ModalCadastro onClose={setCadastro} isOpen={openCadastro} />)}
-               
+                {modal.busca && (<ModalBusca visible={modal.busca} setVisible={() => setModal({ busca: false })} />)}
+                {modal.cadastro && (<ModalCadastro onClose={() => setModal({ cadastro: false })} isOpen={modal.cadastro} />)}
+
 
                 <div className="flex  flex-col px-4  ">
                     <div className="flex  flex-row justify-start gap-2 items-center w-full mt-2 pb-1">
-                        <Button variant={'outline'} size={'sm'} onClick={() => setModalBusca(true)} type="button" >
+                        <Button variant={'outline'} size={'sm'} onClick={() => setModal({ busca: true })} type="button" >
                             <IoMdSearch size={18} />
                             Buscar Cliente
                         </Button>
-                        <Button variant={'outline'} size={'sm'} type="button" onClick={() => setCadastro(true)} >
+                        <Button variant={'outline'} size={'sm'} type="button" onClick={() => setModal({ cadastro: true })} >
                             <IoMdAdd size={18} />
                             Novo Associado
                         </Button>
-                       
+
                     </div>
                     <div className="flex-col w-full   rounded-lg   border-gray-700">
                         <Tabs theme={{ base: 'bg-white rounded-lg', tabpanel: 'bg-white rounded-b-lg h-[calc(100vh-165px)] py-1', tablist: { tabitem: { base: "flex items-center justify-center enabled:text-black rounded-t-lg p-4 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 " } } }} aria-label="Tabs with icons" variant="underline" onActiveTabChange={e => setIndex(e)} >

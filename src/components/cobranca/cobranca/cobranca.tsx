@@ -14,6 +14,7 @@ import { ConsultoresProps } from "@/types/consultores";
 import { ajustarData } from "@/utils/ajusteData";
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
 import { Button } from "@/components/ui/button";
+import pageStyle from "@/utils/pageStyle";
 
 
 interface CobrancaProps {
@@ -83,11 +84,11 @@ export  function Cobranca() {
   const [ultimosPag, setUltimosPag] = useState<Array<UltimosPagProps>>([])
   const [currentPage, setCurrentPage] = useState(0);
   const [filtro, setFiltro] = useState<boolean>(false)
-  const {consultores,usuario,selectEmp,permissoes} = useContext(AuthContext)
+  const {consultores,usuario,permissoes,infoEmpresa} = useContext(AuthContext)
   const [isPrint,setIsPrint] = useState<boolean>(false)
 
 
-  const itemsPerPage = 19;
+  const itemsPerPage = 25;
   const handlePageClick = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected)
 
@@ -102,29 +103,7 @@ export  function Cobranca() {
 
 
   const imprimirRelatorio = useReactToPrint({
-    pageStyle: `
-      @page {
-          size: A4 portrait;
-          margin: 1rem;
-      }
-      @media print {
-          body {
-              -webkit-print-color-adjust: exact;
-          }
-          @page {
-              size: A4 portrait;
-              margin: 1rem;
-          }
-          @page {
-              @top-center {
-                  content: none;
-              }
-              @bottom-center {
-                  content: none;
-              }
-          }
-      }
-  `,
+    pageStyle:pageStyle,
   onBeforeGetContent:()=>{
     setIsPrint(true)
   },
@@ -168,17 +147,23 @@ export  function Cobranca() {
     setDataicial(data.startDate)
     setDataFinal(data.endDate)
    const {dataIni,dataFim} =  ajustarData(data.startDate, data.endDate)
-    if (arrayBairros.length > 0) {
+   const cobradores = data.cobrador?.map(item => { if (item.check) { return item.nome} }).filter(item => item != null)
+      let bairros
+   if(arrayBairros.length>0){
+
+    bairros =data.bairros.map(item => { if (item.check) { return item.bairro } }).filter(item => item != null)
+
+   }
       try {
-        console.log(data.status)
+        //console.log(data.status)
         setLoading(true)
         const response = await api.post("/cobranca/lista", {
           dataInicial:dataIni,
           dataFinal:dataFim,
-          cobradores:data.cobrador?.map(item => { if (item.check) { return item.nome} }).filter(item => item != null),
-          id_empresa:selectEmp,
+          cobradores,
+          id_empresa:infoEmpresa?.id,
           status: data.status.split(','),
-          bairros: data.bairros.map(item => { if (item.check) { return item.bairro } }).filter(item => item != null)
+          bairros: bairros
         })
         const valor = response.data.cobranca.reduce((acumulador: number, item: CobrancaProps) => {
           return acumulador += Number(item.valor_principal)
@@ -187,11 +172,12 @@ export  function Cobranca() {
         setArrayCobranca(response.data.cobranca)
         setValor(valor)
         setUltimosPag(response.data.ultimosPag)
+        setCurrentPage(0)
       } catch (error) {
       //  console.log(error)
         toast.error('Erro na Requisição')
       }
-    }
+    
 
     setLoading(false)
     setFiltro(false)
@@ -204,7 +190,8 @@ export  function Cobranca() {
         <Relatorio
           ref={componenteRef}
           arrayCobranca={arrayCobranca}
-        
+          empresa={infoEmpresa?.razao_social??''}
+          logo={infoEmpresa?.logoUrl??''}
           cobrador={[]}
           dataFinal={dataFinal}
           dataInicial={dataInicial}
@@ -212,7 +199,7 @@ export  function Cobranca() {
           usuario={usuario?.nome ?? ''}
         />
       </div>}
-      <div className="flex flex-col  w-full     h-[calc(100vh-57px)] ">
+      <div className="flex flex-col  w-full  h-[calc(100vh-57px)] ">
       
         
             <div className="flex  ml-auto items-end gap-2 pb-2 mr-3 text-black ">
@@ -233,10 +220,10 @@ export  function Cobranca() {
             </div>
          
 
-          <div className="overflow-y-auto p-2 max-h-[70vh] ">
-          <Table  hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 py-1 " } } }} 
+          <div className="overflow-y-auto max-h-[calc(100vh-162px)] ">
+          <Table  hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-2 py-0 text-[11px] text-black" } },head:{cell:{base:"bg-gray-50 px-2 py-1  "}} }} 
     >
-            <Table.Head theme={{cell:{base:"bg-gray-50 px-4 py-1  "}}}>
+            <Table.Head >
              
                 <Table.HeadCell>
                   REF.
@@ -264,7 +251,7 @@ export  function Cobranca() {
                 </Table.HeadCell>
              
             </Table.Head>
-            <Table.Body className="divide-y text-xs text-black ">
+            <Table.Body className="divide-y">
               {currentItems.map((item, index) => (
                 <Table.Row key={item.id_mensalidade} >
                   <Table.Cell scope="row" >
@@ -305,40 +292,34 @@ export  function Cobranca() {
           </div>
 
 
-          <div className="flex flex-row justify-between text-black">
+          <div className="flex flex-row justify-between text-black bg-gray-200">
 
        
               <div className="inline-flex gap-4 ml-2">
-                <span   className="whitespace-nowrap font-sans text-[12px]  ">TOTAL MENSALIDADES: {arrayCobranca.length}</span>
+                <span   className="whitespace-nowrap text-[12px] ">TOTAL MENSALIDADES: {arrayCobranca.length}</span>
 
-                <span  className="whitespace-nowrap  font-sans text-[12px]">VALOR: {formatter.format(valorTotal)}</span>
-
-
+                <span  className="whitespace-nowrap text-[12px]">VALOR: {formatter.format(valorTotal)}</span>
               </div>
           
-
-
        { arrayCobranca.length > 0 &&  <div className="flex w-full  justify-end mt-auto pr-8 ">
           <ReactPaginate
               previousLabel={(<IoIosArrowDropleftCircle className="mr-2 h-5 w-5" />)}
               nextLabel={(<IoIosArrowDroprightCircle className="mr-2 h-5 w-5" />)}
               breakLabel={'...'}
               breakClassName="breack-me"
+              
               pageCount={pageCount}
               marginPagesDisplayed={2}
               pageRangeDisplayed={5}
               onPageChange={handlePageClick}
-              containerClassName={'pagination inline-flex text-gray-600 gap-4 ml-auto justify-end   rounded-lg  font-sans text-[13px] '}
+              containerClassName={'pagination inline-flex text-gray-600 gap-4 ml-auto justify-end font-sans text-[13px] '}
               activeClassName={'active text-blue-600'}
 
             />
           </div>}
           </div>
-    
-      
-       
       </div>
-   {filtro && <ModalFiltroCobranca  inad={false} setArrayBairros={setArrayBairros}  empresa={selectEmp}   selectCobrador={consultores} listarCobranca={handleListarCobranca} loading={loading} setFiltro={setFiltro}  show={filtro} arrayBairros={arrayBairros}/>}
+   {filtro && <ModalFiltroCobranca  inad={false} setArrayBairros={setArrayBairros}  empresa={infoEmpresa?.id??''}   selectCobrador={consultores} listarCobranca={handleListarCobranca} loading={loading} setFiltro={setFiltro}  show={filtro} arrayBairros={arrayBairros}/>}
     </div>
   )
 }

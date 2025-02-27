@@ -25,11 +25,20 @@ interface DataProps {
 
 export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
     const { usuario, closeModa, permissoes } = useContext(AuthContext)
-    const [openEdit, setModalEdit] = useState<boolean>(false)
-    const [verObs, setVerObs] = useState(false)
+   // const [openEdit, setModalEdit] = useState<boolean>(false)
+   // const [verObs, setVerObs] = useState(false)
     const [observacao, setObservacao] = useState('');
-    const [openAltPlano, setOpenAltPlano] = useState<boolean>(false)
-    const [openInativar, setOpenInativar] = useState<boolean>(false)
+   // const [openAltPlano, setOpenAltPlano] = useState<boolean>(false)
+   // const [openInativar, setOpenInativar] = useState<boolean>(false)
+    const [modal,setModal] =useState<{[key:string]:boolean}>({
+        editar:false,
+        observacao:false,
+        altPlano:false,
+        inativar:false
+    })
+
+
+
     const [printState, setPrintState] = useState<{ [key: string]: boolean }>({
         carne: false,
         contrato: false,
@@ -146,8 +155,8 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
 
                 </div>
                 <ButtonGroup outline >
-                    <Button className="text-black  " color={'gray'} size={'xs'} onClick={() => setOpenAltPlano(true)}>Alterar Categoria</Button>
-                    <Button className="text-black " disabled={!permissoes.includes('ADM1.1.3')} onClick={() => setOpenInativar(true)} color={'gray'} size={'xs'} >{dadosassociado?.contrato?.situacao === 'ATIVO' ? "Inativar Contrato" : "Ativar Contrato"}</Button>
+                    <Button className="text-black  " color={'gray'} size={'xs'} onClick={() => setModal({altPlano:true})}>Alterar Categoria</Button>
+                    <Button className="text-black " disabled={!permissoes.includes('ADM1.1.3')} onClick={() => setModal({inativar:true})} color={'gray'} size={'xs'} >{dadosassociado?.contrato?.situacao === 'ATIVO' ? "Inativar Contrato" : "Ativar Contrato"}</Button>
 
 
                     <Dropdown label="" renderTrigger={() => <Button theme={{ color: { gray: "border border-gray-200 bg-white text-gray-900  enabled:hover:bg-gray-100 enabled:hover:text-cyan-700" }, pill: { off: 'rounded-r-lg' } }} className="text-black " color={'gray'} size={'xs'} >Imprimir Documentos</Button>} >
@@ -177,7 +186,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
                 <Card onClick={() => {
 
 
-                    setModalEdit(true)
+                    setModal({editar:true})
                 }} className="w-full text-black text-xs cursor-pointer">
                     <h2 className="text-sm font-semibold mb-4  text-black">Dados Titular </h2>
 
@@ -200,7 +209,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
 
                 <Card onClick={() => {
 
-                    setModalEdit(true)
+                    setModal({editar:true})
                 }} className="flex w-full text-black text-xs cursor-pointer">
 
                     <h2 className="text-sm font-semibold mb-4 ">Dados do Plano</h2>
@@ -226,8 +235,8 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
             <div>
                 <div className="w-full  mt-2 border  rounded-lg  bg-gray-50 border-gray-300">
                     <div className="flex gap-2 items-center justify-end px-2 py-1 border-b border-gray-300">
-                        <button onClick={() => setVerObs(!verObs)} type="button" className="inline-flex items-center py-1 px-2  text-center text-gray-600 0 rounded-lg  hover:bg-blue-800">
-                            {verObs ? <IoMdEye data-tooltip-id="my-tooltip"
+                        <button onClick={() => setModal({observacao:!modal.observacao})} type="button" className="inline-flex items-center py-1 px-2  text-center text-gray-600 0 rounded-lg  hover:bg-blue-800">
+                            {modal.observacao ? <IoMdEye data-tooltip-id="my-tooltip"
                                 data-tooltip-content="Ocultar Observações" size={20} /> : <IoMdEyeOff data-tooltip-id="my-tooltip"
                                     data-tooltip-content="Visualizar Observações" size={20} />}
                         </button>
@@ -240,16 +249,16 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
                     </div>
                     <div className="px-4 py-2 rounded-b-lg bg-gray-100">
 
-                        <textarea value={verObs && dadosassociado.contrato?.anotacoes ? dadosassociado.contrato?.anotacoes : ''} disabled rows={3} className="w-full px-0 text-sm pl-2  border-0  focus:ring-0 bg-gray-100 text-gray-400 placeholder-gray-400" />
+                        <textarea value={modal.observacao && dadosassociado.contrato?.anotacoes ? dadosassociado.contrato?.anotacoes : ''} disabled rows={3} className="w-full px-0 text-sm pl-2  border-0  focus:ring-0 bg-gray-100 text-gray-400 placeholder-gray-400" />
                     </div>
 
                 </div>
             </div>
 
-            {openEdit && <ModalEditarDados dataForm={dadosassociado} setModalEdit={setModalEdit} openEdit={openEdit} />}
+            {modal.editar && <ModalEditarDados dataForm={dadosassociado} setModalEdit={()=>setModal({editar:false})} openEdit={modal.editar} />}
 
-            {openAltPlano && <ModalAlterarPlano openModal={openAltPlano} setOpenModal={setOpenAltPlano} />}
-            {openInativar && <ModalInativar openModal={openInativar} setModal={setOpenInativar} />}
+            {modal.altPlano && <ModalAlterarPlano openModal={modal.altPlano} setOpenModal={()=>setModal({altPlano:false})} />}
+            {modal.inativar && <ModalInativar openModal={modal.inativar} setModal={()=>setModal({inativar:false})} />}
 
 
             <div style={{ display: 'none' }}>

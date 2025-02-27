@@ -1,6 +1,7 @@
+import { Button } from "@/components/ui/button"
 import { AuthContext } from "@/contexts/AuthContext"
 import { api } from "@/services/apiClient"
-import { Button, Modal, TextInput } from "flowbite-react"
+import { Modal, TextInput } from "flowbite-react"
 import { useContext, useState } from "react"
 import { TbAlertTriangle } from "react-icons/tb"
 import { toast } from "react-toastify"
@@ -18,10 +19,16 @@ openModal:boolean
 
 export function ModalInativar({openModal,setModal}:DataProps){
   const {dadosassociado,setarDadosAssociado}= useContext(AuthContext)
-  const [motivoFinanceiro, setMotivoFinanceiro] = useState(false)
-  const [motivoNaoLocalizado, setNaoLocalizado] = useState(false)
-  const [motivoDesagrado, setMotivoDesagrado] = useState(false)
+
+  //const [motivoDesagrado, setMotivoDesagrado] = useState(false)
   const [descMotivo, setDescMotivo] = useState('')
+
+  const [motivo,setMotivo] = useState<{[key:string]:boolean}>({
+      financeiro:false,
+      nLocalizado:false,
+      desagrado:false
+  })
+
 
 
 
@@ -32,18 +39,18 @@ export function ModalInativar({openModal,setModal}:DataProps){
 
     let categoria_inativo = ''
     if (st === 'INATIVO') {
-      if (motivoDesagrado) {
+      if (motivo.desagrado) {
         categoria_inativo = 'Desagrado'
       }
-      if (motivoFinanceiro) {
+      if (motivo.financeiro) {
         categoria_inativo = 'Financeiro'
       }
-      if (motivoNaoLocalizado) {
+      if (motivo.nLocalizado) {
         categoria_inativo = 'Nao Localizado'
       }
     }
 
-    if (st === 'INATIVO' && !motivoDesagrado && !motivoFinanceiro && !motivoNaoLocalizado) {
+    if (st === 'INATIVO' && !motivo.desagrado && !motivo.financeiro && !motivo.nLocalizado) {
       toast.warning('Selecione a categoria do motivo')
 
       return;
@@ -81,34 +88,34 @@ export function ModalInativar({openModal,setModal}:DataProps){
 
   return(
 
-    <Modal show={openModal} onClose={()=>setModal(false)} popup>
+    <Modal size="md" show={openModal} onClose={()=>setModal(false)} popup>
 
        <Modal.Header/>
    <Modal.Body>
   
         <div className="space-y-4 text-center">
           <div className="flex w-full justify-center items-center">
-            <TbAlertTriangle className='text-gray-400' size={60} />
+            <TbAlertTriangle color="red" size={40} />
           </div>
-          <h3 className="mb-5 text-lg font-normal  ">{`Realmente deseja alterar o contrato Nº ${dadosassociado?.contrato?.id_contrato}`}?</h3>
+          <h3 className="mb-5 text-sm font-normal  ">{`Realmente deseja alterar o contrato Nº ${dadosassociado?.contrato?.id_contrato}`}?</h3>
 {
       dadosassociado?.contrato?.situacao==='ATIVO' &&    <>
-          <div className="inline-flex gap-8">
+          <div className="inline-flex gap-8 text-xs font-medium">
             <div className="flex items-center ">
-              <input type="checkbox" checked={motivoFinanceiro} onClick={() => setMotivoFinanceiro(!motivoFinanceiro)}  className="w-4 h-4 text-blue-600  rounded    bg-gray-300 border-gray-400" />
-              <label className="ms-2 text-sm font-medium whitespace-nowrap ">FINANCEIRO</label>
+              <input type="checkbox" checked={motivo.financeiro} onClick={() => setMotivo({financeir:!motivo.financeiro})}  className="w-4 h-4 text-blue-600  rounded    bg-gray-300 border-gray-400" />
+              <label className="ms-2   whitespace-nowrap ">FINANCEIRO</label>
             </div>
             <div className="flex items-center ">
-              <input type="checkbox" checked={motivoNaoLocalizado} onClick={() => setNaoLocalizado(!motivoNaoLocalizado)}  className="w-4 h-4 text-blue-600  rounded    bg-gray-300 border-gray-400" />
-              <label className="ms-2 text-sm font-medium whitespace-nowrap ">NÃO LOCALIZADO</label>
+              <input type="checkbox" checked={motivo.nLocalizado} onClick={() => setMotivo({nLocalizado:!motivo.nLocalizado})}  className="w-4 h-4 text-blue-600  rounded    bg-gray-300 border-gray-400" />
+              <label className="ms-2   whitespace-nowrap ">NÃO LOCALIZADO</label>
             </div>
             <div className="flex items-center ">
-              <input type="checkbox" checked={motivoDesagrado} onClick={() => setMotivoDesagrado(!motivoDesagrado)}  className="w-4 h-4 text-blue-600  rounded    bg-gray-300 border-gray-400" />
-              <label className="ms-2 text-sm font-medium whitespace-nowrap ">DESAGRADO</label>
+              <input type="checkbox" checked={motivo.desagrado} onClick={() => setMotivo({desagrado:!motivo.desagrado})}  className="w-4 h-4 text-blue-600  rounded    bg-gray-300 border-gray-400" />
+              <label className="ms-2   whitespace-nowrap ">DESAGRADO</label>
             </div>
 
           </div>
-          <TextInput  value={descMotivo} onChange={e => setDescMotivo(e.target.value)} placeholder="Informe o motivo da Inativação" autoComplete='off' type="text" required />
+          <TextInput sizing="sm"  value={descMotivo} onChange={e => setDescMotivo(e.target.value)} placeholder="Informe o motivo da Inativação" autoComplete='off' type="text" required />
           </>}
 
      
@@ -118,11 +125,11 @@ export function ModalInativar({openModal,setModal}:DataProps){
 
 
 <div className="inline-flex  gap-4">
-<Button  color={'warning'} onClick={() => inativarAtivarContrato()} >
+<Button size={'sm'} variant={'outline'} onClick={() => inativarAtivarContrato()} >
 
 Sim, tenho certeza
 </Button>
-<Button color={'light'} onClick={() => {  }} >Não, cancelar</Button>
+<Button size={'sm'} variant={'destructive'}  onClick={() => setModal(false)} >Não, cancelar</Button>
 </div>
         
         </div>

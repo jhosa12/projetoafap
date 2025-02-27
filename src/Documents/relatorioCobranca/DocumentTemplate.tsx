@@ -1,10 +1,10 @@
-import Image from "next/image";
-import logo from "../../../public/logoafap.png"
+
 
 // DocumentTemplate.js
 
 import React from 'react';
 import { UltimosPagProps } from "@/components/cobranca/cobranca/cobranca";
+import { roboto_Mono } from '@/fonts/fonts';
 
 
 interface CobrancaProps{
@@ -41,12 +41,13 @@ interface DadosProps{
   
   usuario:string,
   ultimosPag:Array<UltimosPagProps>
+  empresa:string,
+  logo:string
 }
 
 
 
 interface RefProps{
-
   id_mensalidade:number,
   id_contrato:number,
   id_acordo:number,
@@ -78,7 +79,7 @@ interface RefProps{
 class DocumentTemplate extends React.Component<DadosProps> {
 
   render() {
-    const { arrayCobranca,dataInicial,dataFinal,usuario,ultimosPag } = this.props;
+    const { arrayCobranca,dataInicial,dataFinal,usuario,ultimosPag,cobrador,empresa,logo } = this.props;
     let formatter = new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
@@ -100,29 +101,33 @@ class DocumentTemplate extends React.Component<DadosProps> {
 
 
     return (
-      <div className='flex flex-col w-full p-2  items-center  '>
+        <div className={`${roboto_Mono.className} flex flex-col w-full  items-center`}>
         <span className="text-xs ml-auto">{usuario}-{new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</span>
-        <h1 className="font-semibold text-lg">ASSISTÊNCIA FAMILIAR PARAÍSO</h1>
+        <img   width={150} height={150}  src={logo}/>
+        <h1 className="font-semibold text-lg">{empresa}</h1>
         <h2 className="  font-semibold text-base">RELATÓRIO DE COBRANÇA</h2>
         <h3 className="text-xs font-medium">{new Date(dataInicial).toLocaleDateString()} a {new Date(dataFinal).toLocaleDateString()}</h3>
        
-       
-  
-       
-        <ul className="list-item px-2 mx-3 ">
-          {novoArray.map((item)=>{
+      
+        <ul className="mt-4 flex flex-col w-full gap-3 ">
+          {novoArray.sort((a,b)=>(a.associado?.bairro??'')?.localeCompare(b.associado?.bairro??''))?.map((item)=>{
             const arrayRef = item.referencia?.split('-')
             const tamanho = arrayRef?.length
 return(
-  <li key={item.id_mensalidade} className="flex flex-col p-2 gap-1 mx-2 border-b-[1px] text-xs border-black">
-  <span className="inline-flex">{item.id_contrato}-{item.associado?.nome}-END.: {item.associado?.endereco}-Nº{item.associado?.numero}-BAIRRO: {item.associado?.bairro} -  COMPL.: {item.associado?.guia_rua}</span>
+  <li key={item.id_mensalidade} className="flex flex-col gap-2  border-b-[1px] text-xs border-gray">
+  <span className="inline-flex font-medium">{item.id_contrato}-{item.associado?.nome}-END.: {item.associado?.endereco}-Nº{item.associado?.numero}-BAIRRO: {item.associado?.bairro} -  COMPL.: {item.associado?.guia_rua}</span>
   <span className="block">REFERENCIA: {arrayRef && `${arrayRef[0]} até ${tamanho && arrayRef[tamanho-1]}`} - <b className="whitespace-nowrap">TOT.: {formatter.format(item.valor_principal??0)}</b></span>
-  {item.associado?.celular1&&<span>CELULAR: {item.associado?.celular1}  NUMERO ATUAL: {'(___)__ _____-_____'}</span>}
+
+    <div className='flex  w-full justify-between' >
+     <span>CELULAR: {item.associado?.celular1||item.associado?.celular2||item.associado?.telefone}</span> 
+      <span>NUMERO ATUAL: {'(___)__ _____-_____'}</span> 
+       </div>
+    
 
  <div className="inline-flex w-full">{item.ultimoPag && 
   <span className="whitespace-nowrap">ULTIMO PAGAMENTO: {new Date(item.ultimoPag?._max.data_pgto).toLocaleDateString('pt',{timeZone:'UTC'})}</span>} <span className="flex w-full justify-end">NOVA DATA: 
   ___/___/______</span></div> 
-  <span className="flex pt-2">OBSERVAÇÃO:_____________________________________________________________________________________________________________</span>
+  <span className="flex pt-2 w-full border-b-[1px] border-black">OBSERVAÇÃO:</span>
   
   </li>
 
@@ -135,7 +140,13 @@ return(
 
         </ul>
      
-     
+     <div className='flex flex-row w-full gap-4'>
+     <span>CONTRATOS:{novoArray?.length}</span> 
+     <span>TOTAL:{Number(novoArray?.reduce((acc,at)=>{
+            acc+=Number(at.valor_principal)
+            return acc
+     },0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
+      </div>
 
 
        
