@@ -106,15 +106,20 @@ export interface LeadProps {
 }
 
 export function Historico() {
-    const { postData, data } = useApiGet<Array<LeadProps>, ReqLeadsProps>("/lead/lista")
+    const { postData, data,loading:loadingLeads } = useApiGet<Array<LeadProps>, ReqLeadsProps>("/lead/lista")
     const [lead, setLead] = useState<Partial<LeadProps>>()
-    const [modalLead, setModalLead] = useState(false)
     const [categoria, setCategoria] = useState("")
-    const [modalConfirma, setModalConfirma] = useState(false)
-    const [modalFiltro, setModalFiltro] = useState(false)
-    const [modalNovoContrato, setModalNovoContrato] = useState(false)
+   // const [modal.confirma, setModalConfirma] = useState(false)
+  //  const [modal.filtro, setModalFiltro] = useState(false)
+   // const [modalNovoContrato, setModalNovoContrato] = useState(false)
     const { postData: postCategoria } = useApiPost<LeadProps, { id_lead: number | undefined, categoriaAtual: string, categoriaAnt: string | undefined, usuario: string | undefined }>("/leads/alterarCategoria")
     const {selectEmp,carregarDados} = useContext(AuthContext)
+    const [modal,setModal] = useState<{[key:string]:boolean}>({
+        lead:false,
+        confirma:false,
+        filtro:false,
+        novo:false
+    })
 
     const {data:associado,loading,postData:postAssociado}= useApiPost<{  
         id_contrato: number,
@@ -133,7 +138,7 @@ export function Historico() {
         };
         setCategoria(e.target.value);
         setLead(lead);
-        setModalConfirma(true)
+        setModal({confirma:true})
     }
 
 
@@ -157,41 +162,50 @@ export function Historico() {
             dtVencimento = new Date(item.vencimento)
             dtVencimento.setTime(dtVencimento.getTime() - dtVencimento.getTimezoneOffset() * 60 * 1000)
         }
-        setModalNovoContrato(true)
-        await postAssociado({
-       dataPlano: {dependentes:item.dependentes,
-            bairro:item.bairro,
-            celular1:item.celular1,
-            celular2:item.celular2,
-            cep:item.cep,
-            cidade:item.cidade,
-            cpfcnpj:item.cpfcnpj,
-            data_nasc:item.data_nasc,
-            endereco:item.endereco,
-            id_empresa:selectEmp,
-            nome:item.nome,
-            numero:item.numero,
-            uf:item.uf,
-            rg:item.rg,
-            contrato:{
-                id_plano:item.id_plano,
-                plano:item.plano,
-                valor_mensalidade:item.valor_mensalidade,
-                n_parcelas:item.n_parcelas,
-                data_vencimento:dtVencimento,
-                dt_adesao:adesao,
-                dt_carencia:new Date(),
-                origem:item.origem,
-                consultor:item.consultor,
-               // form_pag: item.form_pag,
-               
-            },
-            mensalidades:gerarMensalidade({vencimento:dtVencimento,n_parcelas:item.n_parcelas,valorMensalidade:Number(item.valor_mensalidade)})},
-            id_lead:item.id_lead
-         
-        })
+      
 
-        reqDados({})
+        try {
+
+            await postAssociado({
+                dataPlano: {dependentes:item.dependentes,
+                     bairro:item.bairro,
+                     celular1:item.celular1,
+                     celular2:item.celular2,
+                     cep:item.cep,
+                     cidade:item.cidade,
+                     cpfcnpj:item.cpfcnpj,
+                     data_nasc:item.data_nasc,
+                     endereco:item.endereco,
+                     id_empresa:selectEmp,
+                     nome:item.nome,
+                     numero:item.numero,
+                     uf:item.uf,
+                     rg:item.rg,
+                     contrato:{
+                         id_plano:item.id_plano,
+                         plano:item.plano,
+                         valor_mensalidade:item.valor_mensalidade,
+                         n_parcelas:item.n_parcelas,
+                         data_vencimento:dtVencimento,
+                         dt_adesao:adesao,
+                         dt_carencia:new Date(),
+                         origem:item.origem,
+                         consultor:item.consultor,
+                        // form_pag: item.form_pag,
+                        
+                     },
+                     mensalidades:gerarMensalidade({vencimento:dtVencimento,n_parcelas:item.n_parcelas,valorMensalidade:Number(item.valor_mensalidade)})},
+                     id_lead:item.id_lead
+                  
+                 })
+                 setModal({novo:true})
+                 reqDados({})
+
+            
+        } catch (error) {
+            
+        }
+     
     }
 
 
@@ -201,7 +215,7 @@ export function Historico() {
 
             postData({})
             reqDados({})
-            setModalConfirma(false)
+            setModal({confirma:false})
 
         } catch (error) {
             console.log(error)
@@ -221,11 +235,13 @@ export function Historico() {
        end?new Date(end):undefined
     )
         try {
-            postData({...data,
+           await postData({...data,
                 status:data.statusSelected?data?.statusSelected?.split(','):[],
                 startDate:dataIni,
                 endDate:dataFim
             })
+
+            setModal({filtro:false})
 
         } catch (error) {
             console.log(error)
@@ -245,19 +261,19 @@ export function Historico() {
 
     return (
         <div className="flex-col w-full px-2 bg-white   ">
-            <ModalFiltro handleSubmit={handleSubmit} register={register} control={control} handleOnSubmit={reqDados} show={modalFiltro} onClose={() => setModalFiltro(false)} />
-           {modalLead && <ModalItem  handleLoadLeads={()=>reqDados({})} item={lead ?? {}} open={modalLead} onClose={() => setModalLead(false)} />}
-            <ModalConfirmar pergunta={`Tem certeza que deseja alterar o(a) ${lead?.status} para um(a) ${categoria} ? Essa alteração será contabilizada na faturação!`} handleConfirmar={handleAtualizarCategoria} openModal={modalConfirma} setOpenModal={setModalConfirma} />
-            <ModalNovoContrato id_global={associado?.id_global} carregarDados={carregarDados} id_contrato={associado?.id_contrato} loading={loading} show={modalNovoContrato} onClose={() => setModalNovoContrato(false)} />
+            <ModalFiltro loading={loadingLeads} handleSubmit={handleSubmit} register={register} control={control} handleOnSubmit={reqDados} show={modal.filtro} onClose={() => setModal({filtro:false})} />
+           {modal.lead && <ModalItem  handleLoadLeads={()=>reqDados({})} item={lead ?? {}} open={modal.lead} onClose={() => setModal({lead:false})} />}
+            <ModalConfirmar pergunta={`Tem certeza que deseja alterar o(a) ${lead?.status} para um(a) ${categoria} ? Essa alteração será contabilizada na faturação!`} handleConfirmar={handleAtualizarCategoria} openModal={modal.confirma} setOpenModal={()=>setModal({confirma:false})} />
+            <ModalNovoContrato id_global={associado?.id_global} carregarDados={carregarDados} id_contrato={associado?.id_contrato} loading={loading} show={modal.novo} onClose={() => setModal({novo:false})} />
             <div className="flex flex-row w-full ">
 
-                <Button onClick={() => setModalFiltro(true)} className="ml-auto" size={'sm'} variant={'outline'}>FILTRAR</Button>
+                <Button onClick={() => setModal({filtro:true})} className="ml-auto" size={'sm'} variant={'outline'}>FILTRAR</Button>
             </div>
 
 
             <div className="overflow-y-auto mt-2  h-[calc(100vh-145px)]   ">
-                <Table  hoverable theme={{ body: { cell: { base: " px-3 py-1  text-[11px] text-black" } } }}  >
-                    <Table.Head theme={{ cell: { base: "px-3 py-2 text-xs text-black font-bold bg-gray-50" } }} >
+                <Table  hoverable theme={{root:{shadow:'none'}, body: { cell: { base: " px-2 py-0  text-[11px] text-black" } } }}  >
+                    <Table.Head theme={{ cell: { base: "px-3 py-1 text-xs text-black font-bold bg-gray-50" } }} >
                         <Table.HeadCell >
                             Nome
                         </Table.HeadCell>
@@ -289,7 +305,7 @@ export function Historico() {
                         {data?.map((item, index) => (
 
                             <>
-                                <Table.Row className="bg-white cursor-pointer " key={index} onClick={() => { setLead(item), setModalLead(true) }} >
+                                <Table.Row className="cursor-pointer " key={index} onClick={() => { setLead(item), setModal({lead:true}) }} >
 
                                     <Table.Cell className="">
                                         {item?.nome}
@@ -355,6 +371,7 @@ export function Historico() {
 interface DataProps {
     show: boolean,
     onClose: () => void
+    loading: boolean
     handleOnSubmit: SubmitHandler<ReqLeadsProps>
     register: UseFormRegister<ReqLeadsProps>
     control:Control<ReqLeadsProps,any>
@@ -364,7 +381,7 @@ interface DataProps {
 
 
 
-export const ModalFiltro = ({ onClose, show, handleOnSubmit,register,control,handleSubmit }: DataProps) => {
+export const ModalFiltro = ({ onClose, show, handleOnSubmit,register,control,handleSubmit,loading }: DataProps) => {
  
 
 
@@ -417,7 +434,7 @@ export const ModalFiltro = ({ onClose, show, handleOnSubmit,register,control,han
                            
                         </div>
                     </div>
-                    <Button type="submit">Aplicar</Button>
+                    <Button type="submit">{loading?<Spinner size="sm" />:'Aplicar'}</Button>
                 </form>
             </Modal.Body>
 
