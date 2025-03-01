@@ -249,13 +249,12 @@ export function Historico() {
     }, [])
 
     useEffect(() => {
-        const start =watch('startDate')
-        const  end = watch('endDate')
-         const {dataIni,dataFim} = ajustarData(start?new Date(start):undefined,
-         end?new Date(end):undefined)
+       // const start =watch('startDate')
+       // const  end = watch('endDate')
+       //  const {dataIni,dataFim} = ajustarData(start?new Date(start):undefined,
+       //  end?new Date(end):undefined)
         reqDados({
-           startDate:dataIni,
-           endDate:dataFim
+           status:['VENDA'],
         })
     }, [])
 
