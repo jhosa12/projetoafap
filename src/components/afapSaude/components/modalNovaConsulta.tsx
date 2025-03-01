@@ -300,7 +300,7 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
             <Label className="text-xs" value="Parentesco" />
       
           <Select sizing={'sm'} {...register('grau_parentesco')} className="focus:outline-none"  >
-          <option selected className="text-gray-200">PARENTESCO</option>
+          <option value={''} className="text-gray-200">PARENTESCO</option>
                     <option value={'CONJUGE'}>CONJUGE</option>
                     <option value={'PAI'}>PAI</option>
                     <option value={'MÃE'}>MÃE</option>

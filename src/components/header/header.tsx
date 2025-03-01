@@ -1,7 +1,7 @@
-import { geist} from "@/fonts/fonts";
+
 import { Avatar, Label } from "flowbite-react";
 import { AuthContext, signOut } from "@/contexts/AuthContext";
-
+import Router from 'next/router';
 
 import {
     Menubar,
@@ -18,7 +18,6 @@ import {
     SelectContent,
     SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select";
@@ -27,8 +26,8 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { useContext, useState } from "react";
 import Image from "next/image";
-import { url } from "inspector";
 import { ModalAtivosInativos } from "../ativosInativos/modalAtivosInativos";
+
 
 
 export function 
@@ -39,7 +38,7 @@ Header() {
 
 
     return(
-        <header className={`${geist.className} bg-white border-b px-2 py-1 border-gray-200 inline-flex justify-between items-center `}>
+        <header className={` bg-white border-b px-2 py-1 border-gray-200 inline-flex justify-between items-center `}>
             <div className="inline-flex items-center gap-2">
         <Image width={50} height={50} priority alt="user" src={"/improved_logo.png"} />
             <div className="flex flex-col">
@@ -114,9 +113,10 @@ Header() {
         </MenubarContent>
       </MenubarMenu>
   
-  <MenubarMenu>
-  <MenubarTrigger>
-        <Link href="/afapSaude">Afap Saude</Link>  
+  <MenubarMenu >
+  <MenubarTrigger >
+    <button disabled={!permissoes.includes('EMP4e61a06f-dee3-4c74-8b31-aca0d771dbff')} className="disabled:cursor-not-allowed disabled:text-gray-400" onClick={() => Router.push("/afapSaude")} type="button">Afap Saúde</button>
+     
           </MenubarTrigger>
   </MenubarMenu>
 

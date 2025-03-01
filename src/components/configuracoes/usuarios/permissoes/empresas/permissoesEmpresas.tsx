@@ -19,8 +19,6 @@ export function PermissoesEmpresas({permissions,handlePermission}:DataProps){
 
             {empresas.map(empresa=>{return(<ToggleSwitch  sizing={'sm'} checked={permissions.includes(`EMP${empresa.id}`)} onChange={()=>handlePermission(`EMP${empresa.id}`)} label={empresa.nome}/>)})}
             
-        
-
         </Card>
      
     )
