@@ -225,14 +225,14 @@ export function Historico() {
 
 
     const reqDados:SubmitHandler<ReqLeadsProps> = useCallback(async (data) => {
-       const start =watch('startDate')
-      const  end = watch('endDate')
+      // const start =watch('startDate')
+      //const  end = watch('endDate')
 
       if(data.startDate&&data.endDate&&new Date(data.startDate)>new Date(data.endDate)){
         toast.warning('Data inicial não pode ser maior que a data final')
       }
-       const {dataIni,dataFim} = ajustarData(start?new Date(start):undefined,
-       end?new Date(end):undefined
+       const {dataIni,dataFim} = ajustarData(data.startDate?new Date(data.startDate):undefined,
+       data.endDate?new Date(data.endDate):undefined
     )
         try {
            await postData({...data,
@@ -254,7 +254,7 @@ export function Historico() {
        //  const {dataIni,dataFim} = ajustarData(start?new Date(start):undefined,
        //  end?new Date(end):undefined)
         reqDados({
-           status:['VENDA'],
+           statusSelected:'VENDA',
         })
     }, [])
 
