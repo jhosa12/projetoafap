@@ -1,12 +1,20 @@
 import { api } from "@/services/apiClient"
-import {  useState } from "react"
+import {  ChangeEvent, useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import { MdDelete } from "react-icons/md";
 import { RiSaveFill } from "react-icons/ri";
-import { IoMdAddCircle } from "react-icons/io";
+import { IoIosAddCircle, IoMdAddCircle } from "react-icons/io";
 import InputMask from 'react-input-mask'
-import { Card, Select, TextInput } from "flowbite-react";
+import { Card,  TextInput } from "flowbite-react";
 import { PlanoContasProps } from "@/pages/financeiro";
+import { construirHierarquia, NodoConta } from "@/utils/listaContas";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { roboto_Mono } from "@/fonts/fonts";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 
 
@@ -24,9 +32,9 @@ interface DadosProps{
 
 export function PlanoContas({carregarDados,arrayPlanoContas,arraygrupos,setarDados}:DadosProps){
     const [descricaoGrupo,setDescricaoGrupo] =useState('')
-    const [conta,setConta]=useState('')
-    const [descricaoPlanoContas,setDescricaoPlanoC]=useState('')
-    const [tipo,setTipo]=useState<string>()
+    const [modal,setModal] = useState<{[key:string]:boolean}>({
+        conta:false
+    })
  
 
 
@@ -46,6 +54,8 @@ export function PlanoContas({carregarDados,arrayPlanoContas,arraygrupos,setarDad
         newgrupo[index].descricao =event.target.value;
         setarDados(arrayPlanoContas,newgrupo)
     }
+
+
 
  
 
@@ -155,17 +165,24 @@ const adicionarGrupo = async()=>{
     
 }
 
-const adicionarPlanoContas = async()=>{
-    if(!conta||!tipo||!descricaoPlanoContas){
+const adicionarPlanoContas = async(data:NovoPlanoProps)=>{
+    if(!data.conta||!data.tipo||!data.descricao){
         toast.info('Preencha todos os campos!')
         return;
     }
+
+    const dataAtual = new Date();
+    dataAtual.setTime(dataAtual.getTime() - dataAtual.getTimezoneOffset() * 60 * 1000);
+    const horaAtual = dataAtual.toLocaleTimeString('pt-BR', { hour12: false, timeZone: 'UTC' });
     try{
        const response =  await toast.promise(
             api.post('/gerenciarAdministrativo/adicionarPlanoContas',{
-                    conta,
-                    descricao:descricaoPlanoContas.toUpperCase(),
-                    tipo
+                    conta:data.conta,
+                    descricao:data?.descricao?.toUpperCase(),
+                    tipo:data.tipo,
+                    perm_lanc:data.perm_lanc,
+                    data:dataAtual,
+                    hora:horaAtual
                 
             }),
             {
@@ -175,10 +192,10 @@ const adicionarPlanoContas = async()=>{
             }
         )
 
-        setarDados([...arrayPlanoContas,response.data],arraygrupos)
-
+       // setarDados([...arrayPlanoContas,response.data],arraygrupos)
+            carregarDados()
     }catch(erro:any){
-        toast.warn(erro.response.data.error)
+        toast.warn(erro?.response?.data?.message??'Erro ao salvar dados')
 
     }
 
@@ -194,8 +211,28 @@ const adicionarPlanoContas = async()=>{
 
 
     return(
-        <div className="inline-flex rounded-lg gap-2 bg-white justify-between p-2 w-full max-h-[calc(100vh-120px)]  ">
-        <Card className="w-full text-black font-semibold" theme={{root:{children:"flex h-full flex-col  gap-2 p-4"}}}>
+        <div className="gap-2 p-2">
+            <div className="inline-flex gap-2">
+                <Button size={'sm'} variant={'outline'} onClick={()=>setModal({conta:true})}>
+                    <IoIosAddCircle />Adicionar Conta</Button>
+            </div>
+            <ModalAdicionar adicionar={adicionarPlanoContas} open={modal.conta} onClose={()=>setModal({conta:false})}/>
+        <div className="inline-flex rounded-lg gap-2 overflow-y-auto bg-white justify-between p-2 w-full max-h-[calc(100vh-120px)]  ">
+
+
+<Accordion type="single" collapsible className="w-full px-2">
+            {construirHierarquia(arrayPlanoContas)?.map((item, index) => (
+                <GrupoItem key={item.id} item={item} />
+            ))}
+</Accordion>
+
+
+
+
+
+
+
+       {/* <Card className="w-full text-black font-semibold" theme={{root:{children:"flex h-full flex-col  gap-2 p-4"}}}>
         <h1 className="flex w-full text-gray-800 font-medium">SETORES</h1>
             <div className="flex flex-row p-2 gap-2">
           
@@ -306,8 +343,125 @@ const adicionarPlanoContas = async()=>{
         
         </table>
     
-        </Card>
+        </Card>*/}
         </div>
+        </div>
+    )
+}
 
+
+
+
+
+const GrupoItem = ({ item }: {item:NodoConta}) => {
+  return (
+
+ 
+        
+         
+               <AccordionItem value={item.id} >
+                <AccordionTrigger className={`${roboto_Mono.className} flex flex-row-reverse justify-end items-center gap-2 text-[11px] uppercase`}>
+                    {item.id}-{item.descricao}
+                    </AccordionTrigger>
+                <AccordionContent>
+                    {item.subcontas && item.subcontas.length > 0 ?(
+                        <Accordion type="single" collapsible className="pl-8">
+                           {item.subcontas.map((subgrupo, index) => (
+                               <GrupoItem key={subgrupo.id} item={subgrupo} />
+                           ))}
+                        </Accordion>
+                    ):<p className="text-[10px] italic">Nenhum subgrupo</p>
+                    }
+                </AccordionContent>
+               </AccordionItem>
+
+  )
+}
+
+
+interface NovoPlanoProps{
+    conta:string,
+    descricao:string,
+    tipo:string,
+    perm_lanc:string,
+    data:string,
+    hora:string
+}
+
+interface ModalProps{
+    open:boolean,
+    onClose:()=>void
+    adicionar:(data:NovoPlanoProps)=>Promise<void>
+}
+
+export const ModalAdicionar = ({open,onClose,adicionar}:ModalProps) =>{
+    const {register,setValue,handleSubmit,control} = useForm<NovoPlanoProps>()
+
+
+     
+
+        const handleOnSubmit:SubmitHandler<NovoPlanoProps> = (data)=>{
+            let conta = data.conta.replace(/[_]/g,"")
+            conta = conta.replace(/\.$/,"")
+
+           // console.log(data)
+            adicionar({...data,conta:conta})
+        }
+
+
+
+
+
+
+    return(
+        <Dialog open={open} onOpenChange={onClose}>
+            <DialogContent className="max-w-sm">
+            <DialogHeader>
+                <DialogTitle>ADICIONAR CONTA</DialogTitle>
+            </DialogHeader>
+                <form onSubmit={handleSubmit(handleOnSubmit)} className="flex flex-col gap-4">
+                <InputMask mask={'9.99.999'}  {...register('conta')} placeholder="CONTA" autoComplete="off" type="text" required className="h-8 pb-1 pt-1 pr-2 pl-2 text-sm border  rounded-md   border-gray-200 placeholder-gray-500  "/>
+      
+                    <Input {...register('descricao')} className="h-8" placeholder="DESCRIÇÃO"/>
+
+                    <Controller
+                        control={control}
+                        name="tipo"
+                        render={({ field:{onChange,value} }) => (
+                            <Select value={value} onValueChange={onChange}>
+                              <SelectTrigger className="h-8">
+                                <SelectValue placeholder="TIPO" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="RECEITA">RECEITA</SelectItem>
+                                <SelectItem value="DESPESA">DESPESA</SelectItem>
+                              </SelectContent>
+                            </Select>
+                        )}
+                    />
+
+<Controller
+                        control={control}
+                        name="perm_lanc"
+                        render={({ field:{onChange,value} }) => (
+                            <Select value={value} onValueChange={onChange}>
+                              <SelectTrigger className="h-8">
+                                <SelectValue placeholder="LANÇAVEL ?" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="S">SIM</SelectItem>
+                                <SelectItem value="N">NÃO</SelectItem>
+                              </SelectContent>
+                            </Select>
+                        )}
+                    />
+
+
+                    <Button type="submit" >ADICIONAR</Button>
+                </form>
+
+
+            </DialogContent>
+        </Dialog>
     )
 }

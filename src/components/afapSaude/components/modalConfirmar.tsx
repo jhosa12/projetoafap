@@ -1,5 +1,6 @@
+import { Button } from "@/components/ui/button"
 import { roboto_Mono } from "@/fonts/fonts"
-import { Button, Modal } from "flowbite-react"
+import {  Modal } from "flowbite-react"
 import { HiOutlineExclamationCircle } from "react-icons/hi2"
 
 
@@ -22,11 +23,11 @@ export function ModalConfirmar({openModal,setOpenModal,handleConfirmar,pergunta}
             <h3 className="mb-5 text-sm font-normal  dark:text-gray-400">
              {pergunta}
             </h3>
-            <div className="flex justify-center gap-4">
-              <Button color="failure" onClick={handleConfirmar}>
+            <div className="flex justify-center w-full gap-8">
+              <Button size={'sm'} variant={'destructive'} onClick={handleConfirmar}>
                 {"Sim, tenho certeza"}
               </Button>
-              <Button color="gray" onClick={() => setOpenModal(false)}>
+              <Button size={'sm'} variant={'outline'} onClick={() => setOpenModal(false)}>
                 Não, cancelar
               </Button>
             </div>

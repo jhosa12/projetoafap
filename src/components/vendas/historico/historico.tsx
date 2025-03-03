@@ -19,6 +19,7 @@ import { gerarMensalidade, ParcelaData } from "@/utils/gerarArrayMensal";
 import { AssociadoProps, ContratoProps, DependentesProps } from "@/types/associado";
 import  Router  from "next/router";
 import { ajustarData } from "@/utils/ajusteData";
+import { ModalLoading } from "@/components/loading/modalLoading";
 
 export interface ReqLeadsProps{
     id?:string,
@@ -109,16 +110,14 @@ export function Historico() {
     const { postData, data,loading:loadingLeads } = useApiGet<Array<LeadProps>, ReqLeadsProps>("/lead/lista")
     const [lead, setLead] = useState<Partial<LeadProps>>()
     const [categoria, setCategoria] = useState("")
-   // const [modal.confirma, setModalConfirma] = useState(false)
-  //  const [modal.filtro, setModalFiltro] = useState(false)
-   // const [modalNovoContrato, setModalNovoContrato] = useState(false)
     const { postData: postCategoria } = useApiPost<LeadProps, { id_lead: number | undefined, categoriaAtual: string, categoriaAnt: string | undefined, usuario: string | undefined }>("/leads/alterarCategoria")
     const {selectEmp,carregarDados} = useContext(AuthContext)
     const [modal,setModal] = useState<{[key:string]:boolean}>({
         lead:false,
-        confirma:false,
+        confirmaCategoria:false,
         filtro:false,
-        novo:false
+        novo:false,
+        confirmaPlano:false
     })
 
     const {data:associado,loading,postData:postAssociado}= useApiPost<{  
@@ -138,28 +137,28 @@ export function Historico() {
         };
         setCategoria(e.target.value);
         setLead(lead);
-        setModal({confirma:true})
+        setModal({confirmaCategoria:true})
     }
 
 
 
-    const handleGerarContrato = async(item:Partial<LeadProps>) => {
+    const handleGerarContrato = async() => {
       
         
-        if(item?.status!== 'VENDA'){
+        if(lead?.status!== 'VENDA'){
             toast.warning('Selecione uma venda para gerar contrato!')
             return
         }
-        if(!item.endereco||!item.bairro||!item.cep||!item.cidade||!item.id_plano||!item.plano||!item.valor_mensalidade||!item.vencimento||!item.origem||!item.cpfcnpj||!item.n_parcelas){
+        if(!lead.endereco||!lead.bairro||!lead.cep||!lead.cidade||!lead.id_plano||!lead.plano||!lead.valor_mensalidade||!lead.vencimento||!lead.origem||!lead.cpfcnpj||!lead.n_parcelas){
             toast.warning('Preencha todos os campos obrigatorios para gerar contrato!')
             return
         }
         let adesao
-      if(item.adesao) {  adesao = new Date(item.adesao)
+      if(lead.adesao) {  adesao = new Date(lead.adesao)
         adesao.setTime(adesao.getTime() - adesao.getTimezoneOffset() * 60 * 1000)}
      let dtVencimento
-        if(item.vencimento){
-            dtVencimento = new Date(item.vencimento)
+        if(lead.vencimento){
+            dtVencimento = new Date(lead.vencimento)
             dtVencimento.setTime(dtVencimento.getTime() - dtVencimento.getTimezoneOffset() * 60 * 1000)
         }
       
@@ -167,40 +166,40 @@ export function Historico() {
         try {
 
             await postAssociado({
-                dataPlano: {dependentes:item.dependentes,
-                     bairro:item.bairro,
-                     celular1:item.celular1,
-                     celular2:item.celular2,
-                     cep:item.cep,
-                     cidade:item.cidade,
-                     cpfcnpj:item.cpfcnpj,
-                     data_nasc:item.data_nasc,
-                     endereco:item.endereco,
+                dataPlano: {dependentes:lead.dependentes,
+                     bairro:lead.bairro,
+                     celular1:lead.celular1,
+                     celular2:lead.celular2,
+                     cep:lead.cep,
+                     cidade:lead.cidade,
+                     cpfcnpj:lead.cpfcnpj,
+                     data_nasc:lead.data_nasc,
+                     endereco:lead.endereco,
                      id_empresa:selectEmp,
-                     nome:item.nome,
-                     numero:item.numero,
-                     uf:item.uf,
-                     rg:item.rg,
+                     nome:lead.nome,
+                     numero:lead.numero,
+                     uf:lead.uf,
+                     rg:lead.rg,
                      contrato:{
-                         id_plano:item.id_plano,
-                         plano:item.plano,
-                         valor_mensalidade:item.valor_mensalidade,
-                         n_parcelas:item.n_parcelas,
+                         id_plano:lead.id_plano,
+                         plano:lead.plano,
+                         valor_mensalidade:lead.valor_mensalidade,
+                         n_parcelas:lead.n_parcelas,
                          data_vencimento:dtVencimento,
                          dt_adesao:adesao,
                          dt_carencia:new Date(),
-                         origem:item.origem,
-                         consultor:item.consultor,
-                        // form_pag: item.form_pag,
+                         origem:lead.origem,
+                         consultor:lead.consultor,
+                        // form_pag: lead.form_pag,
                         
                      },
-                     mensalidades:gerarMensalidade({vencimento:dtVencimento,n_parcelas:item.n_parcelas,valorMensalidade:Number(item.valor_mensalidade)})},
-                     id_lead:item.id_lead
+                     mensalidades:gerarMensalidade({vencimento:dtVencimento,n_parcelas:lead.n_parcelas,valorMensalidade:Number(lead.valor_mensalidade)})},
+                     id_lead:lead.id_lead
                   
                  })
+                 
+                await reqDados({})
                  setModal({novo:true})
-                 reqDados({})
-
             
         } catch (error) {
             
@@ -215,7 +214,7 @@ export function Historico() {
 
             postData({})
             reqDados({})
-            setModal({confirma:false})
+            setModal({confirmaCategoria:false})
 
         } catch (error) {
             console.log(error)
@@ -262,15 +261,22 @@ export function Historico() {
         <div className="flex-col w-full px-2 bg-white   ">
             <ModalFiltro loading={loadingLeads} handleSubmit={handleSubmit} register={register} control={control} handleOnSubmit={reqDados} show={modal.filtro} onClose={() => setModal({filtro:false})} />
            {modal.lead && <ModalItem  handleLoadLeads={()=>reqDados({})} item={lead ?? {}} open={modal.lead} onClose={() => setModal({lead:false})} />}
-            <ModalConfirmar pergunta={`Tem certeza que deseja alterar o(a) ${lead?.status} para um(a) ${categoria} ? Essa alteração será contabilizada na faturação!`} handleConfirmar={handleAtualizarCategoria} openModal={modal.confirma} setOpenModal={()=>setModal({confirma:false})} />
-            <ModalNovoContrato id_global={associado?.id_global} carregarDados={carregarDados} id_contrato={associado?.id_contrato} loading={loading} show={modal.novo} onClose={() => setModal({novo:false})} />
-            <div className="flex flex-row w-full ">
+            <ModalConfirmar pergunta={`Tem certeza que deseja alterar o(a) ${lead?.status} para um(a) ${categoria} ? Essa alteração será contabilizada na faturação!`} handleConfirmar={handleAtualizarCategoria} openModal={modal.confirmaCategoria} setOpenModal={()=>setModal({confirmaCategoria:false})} />
 
+      {  modal.confirmaPlano &&   <ModalConfirmar pergunta={`Tem certeza que deseja Transformar essa venda em Plano ?`} handleConfirmar={handleGerarContrato} openModal={modal.confirmaPlano} setOpenModal={()=>setModal({confirmaPlano:false})} />}
+
+
+
+
+{modal.novo &&
+         <ModalNovoContrato id_global={associado?.id_global} carregarDados={carregarDados} id_contrato={associado?.id_contrato} loading={loading} show={modal.novo} onClose={() => setModal({novo:false})} />}
+            <div className="flex flex-row w-full ">
+`
                 <Button onClick={() => setModal({filtro:true})} className="ml-auto" size={'sm'} variant={'outline'}>FILTRAR</Button>
             </div>
 
 
-            <div className="overflow-y-auto mt-2  h-[calc(100vh-145px)]   ">
+           {loadingLeads ? <ModalLoading show={loadingLeads} /> : <div className="overflow-y-auto mt-2  h-[calc(100vh-145px)]   ">
                 <Table  hoverable theme={{root:{shadow:'none'}, body: { cell: { base: " px-2 py-0  text-[11px] text-black" } } }}  >
                     <Table.Head theme={{ cell: { base: "px-3 py-1 text-xs text-black font-bold bg-gray-50" } }} >
                         <Table.HeadCell >
@@ -340,7 +346,7 @@ export function Historico() {
 
                                     
                                     <Table.Cell >
-                                      {item.status==='VENDA' && <button type="button" data-tooltip-id="tooltipAcoes" data-tooltip-content={'Criar Plano'} onClick={e => { e.stopPropagation(); handleGerarContrato(item) }}>
+                                      {item.status==='VENDA' && <button type="button" data-tooltip-id="tooltipAcoes" data-tooltip-content={'Criar Plano'} onClick={e => { e.stopPropagation();setLead(item), setModal({confirmaPlano:true})}}>
                                         <MdCreateNewFolder size={20} />
                                        </button>}
                                     </Table.Cell>
@@ -359,7 +365,7 @@ export function Historico() {
 
                         <Tooltip id="tooltipAcoes"/>
 
-            </div>
+            </div>}
 
         </div>
     )
