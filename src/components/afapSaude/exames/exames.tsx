@@ -21,7 +21,7 @@ import handleWhatsAppClick from "@/utils/openWhats";
 import { MdDelete } from "react-icons/md";
 import { BiMoneyWithdraw } from "react-icons/bi";
 import pageStyle from "@/utils/pageStyle";
-import { ReciboMensalidade } from "@/Documents/mensalidade/Recibo";
+import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
 
 
 

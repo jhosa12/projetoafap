@@ -9,13 +9,14 @@ import { TbWheelchair } from "react-icons/tb";
 import { ModalAlterarPlano } from "./modalAlterarPlano";
 import { ModalInativar } from "./modalEditar/modalInativar";
 import { useReactToPrint } from "react-to-print";
-import ImpressaoCarne from "@/Documents/mensalidade/ImpressaoCarne";
-import ContratoResumo from "@/Documents/contratoResumido/ContratoResumo";
+import ImpressaoCarne from "@/Documents/associado/mensalidade/ImpressaoCarne";
+import ContratoResumo from "@/Documents/associado/contratoResumido/ContratoResumo";
 import pageStyle from "@/utils/pageStyle";
-import DocumentTemplate from "@/Documents/contratoAdesão/DocumentTemplate";
-import Carteiras from "@/Documents/carteiraAssociado/DocumentTemplate";
+import DocumentTemplate from "@/Documents/associado/contratoAdesão/DocumentTemplate";
+import Carteiras from "@/Documents/associado/carteiraAssociado/DocumentTemplate";
 import { EmpresaProps } from "@/types/empresa";
-import { CartaNovoAssociado } from "@/Documents/cartaNovoAssociado/cartaDocument";
+import { CartaNovoAssociado } from "@/Documents/associado/cartaNovoAssociado/cartaDocument";
+import { ProtocoloCancelamento } from "@/Documents/associado/protocoloCancelamento/ProtocoloCancelamento";
 
 interface DataProps {
     dadosassociado: Partial<AssociadoProps>,
@@ -44,14 +45,18 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
         contrato: false,
         carteira: false,
         resumo: false,
-        carta: false
+        carta: false,
+        cancelamento: false
     });
+
+
     const componentRefs = {
         contrato: useRef<DocumentTemplate>(null),
         carteira: useRef<Carteiras>(null),
         carne: useRef<ImpressaoCarne>(null),
         resumo: useRef<ContratoResumo>(null),
-        carta: useRef<CartaNovoAssociado>(null)
+        carta: useRef<CartaNovoAssociado>(null),
+        cancelamento: useRef<ProtocoloCancelamento>(null)
     };
 
 
@@ -59,14 +64,18 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
         setPrintState((prev) => ({ ...prev, [doc]: true }));
     };
 
-    /*  const imprimirDocumento = (doc: string, component: React.RefObject<any>) => {
-        return useReactToPrint({
-          pageStyle: pageStyle,
-          documentTitle: doc.toUpperCase(),
-          content: () => component.current,
-          onAfterPrint: () => setPrintState((prev) => ({ ...prev, [doc]: false })),
-        });
-      };*/
+
+
+
+    const imprimirCancelamento = useReactToPrint({
+        pageStyle: pageStyle,
+        documentTitle: "CANCELAMENTO",
+        content: () => componentRefs.cancelamento.current,
+        onAfterPrint: () => setPrintState((prev) => ({ ...prev, cancelamento: false })),
+    });
+
+
+
     const imprimirContrato = useReactToPrint({
         pageStyle: pageStyle,
         documentTitle: "CONTRATO",
@@ -117,6 +126,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
         if (printState.carne) imprimirCarne();
         if (printState.resumo) imprimirResumo();
         if (printState.carta) imprimirCarta();
+        if (printState.cancelamento) imprimirCancelamento();
     }, [printState]);
 
 
@@ -174,6 +184,9 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
                         </Dropdown.Item>
                         <Dropdown.Item className="text-xs" onClick={() => handlePrint('resumo')}>
                             Resumo de Contrato
+                        </Dropdown.Item>
+                        <Dropdown.Item className="text-xs" onClick={() => handlePrint('cancelamento')}>
+                            Cancelamento
                         </Dropdown.Item>
                     </Dropdown>
 
@@ -330,6 +343,19 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
                     ref={componentRefs.carta}
                     contrato={dadosassociado?.contrato?.id_contrato ?? 0}
                     titular={dadosassociado?.nome ?? ''}
+                    
+                />}
+
+{printState.cancelamento && <ProtocoloCancelamento
+                    infoEmpresa={infoEmpresa}
+                    ref={componentRefs.cancelamento}
+                    contrato={dadosassociado?.contrato?.id_contrato ?? 0}
+                    titular={dadosassociado?.nome ?? ''}
+                    bairro={dadosassociado?.bairro ?? ''}
+                    cidade={dadosassociado?.cidade ?? ''}
+                    endereco={dadosassociado?.endereco ?? ''}
+                    cpf={dadosassociado?.cpfcnpj ?? ''}
+                    usuario={usuario?.nome ?? ''}
                 />}
             </div>
         </div>

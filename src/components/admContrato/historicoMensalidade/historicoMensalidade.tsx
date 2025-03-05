@@ -1,5 +1,5 @@
 
-import ImpressaoCarne from '@/Documents/mensalidade/ImpressaoCarne';
+import ImpressaoCarne from '@/Documents/associado/mensalidade/ImpressaoCarne';
 import { api } from '@/services/apiClient';
 import { useReactToPrint } from 'react-to-print';
 import React, {  useCallback, useContext, useEffect, useRef, useState } from 'react';
@@ -13,7 +13,7 @@ import { ModalMensalidade } from './modalmensalidade';
 import { ModalEditarMensalidade } from './modalEditarMensalidade';
 import { ModalExcluirMens } from './modalExcluirMens';
 import { AcordoProps, MensalidadeProps } from '@/types/financeiro';
-import { ReciboMensalidade } from '@/Documents/mensalidade/Recibo';
+import { ReciboMensalidade } from '@/Documents/associado/mensalidade/Recibo';
 import pageStyle from '@/utils/pageStyle';
 import { Button, ButtonGroup } from 'flowbite-react';
 import { PopoverVencimento } from './popoverVencimento';

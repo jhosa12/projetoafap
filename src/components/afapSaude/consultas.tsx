@@ -19,7 +19,7 @@ import { GiReturnArrow } from "react-icons/gi";
 import { FaWhatsapp } from "react-icons/fa";
 import handleWhatsAppClick from "@/utils/openWhats";
 import pageStyle from "@/utils/pageStyle";
-import { ReciboMensalidade } from "@/Documents/mensalidade/Recibo";
+import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
 import { ModalReceber } from "./exames/modalReceber";
 import { ajustarData } from "@/utils/ajusteData";
 import { ModalConfirmar } from "./components/modalConfirmar";
