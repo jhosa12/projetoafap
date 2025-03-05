@@ -86,6 +86,7 @@ export interface MensalidadeBaixaProps{
     id_mensalidade_global:number,
     aut:string,
     valor_metodo:number,
+    recebido_por:string,
     contrato:{situacao:string},
     data_pgto:Date,
     associado:Partial<{

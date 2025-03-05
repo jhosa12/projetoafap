@@ -23,7 +23,7 @@ interface Props{
 
 export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtualizar}:Props){
 
-    const {usuario,permissoes,selectEmp}=useContext(AuthContext)
+    const {usuario,permissoes,selectEmp,consultores}=useContext(AuthContext)
     const [desconto,setDesconto] = useState(false)
     const {error,postData} = useBaixaMensalidade('/mensalidade/baixa',setOpenModal,handleAtualizar)
     const {register,handleSubmit,watch,control,reset} = useForm<MensalidadeBaixaProps>(
@@ -82,7 +82,8 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
                         pix_por:data.pix_por,
                         id_empresa:selectEmp,
                         valor_metodo:data?.valor_metodo,
-                        data_lanc:data_lanc
+                        data_lanc:data_lanc,
+                        recebido_por:data.recebido_por
                     
                     },
                  
@@ -133,7 +134,12 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-black">RECEBIDO POR</label>
-    <TextInput style={{padding:6}} value={''} onChange={()=>{}} placeholder="RECEBIDO POR "/>
+    <Select  {...register('recebido_por')}  style={{padding:6}}>
+            <option value={''}>{''}</option>
+            {consultores?.map((consultor)=>(<option className="text-[11px]" key={consultor.id_consultor} value={consultor.nome}>{consultor.nome}</option>))}
+           
+    </Select>
+  
 </div>
 <div className="mb-1 col-span-1">
     <label  className="block mb-1 text-xs font-medium  text-black">FORMA PAG.</label>

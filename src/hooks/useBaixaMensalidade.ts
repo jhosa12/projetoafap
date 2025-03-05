@@ -18,6 +18,7 @@ interface PayloadProps {
     id_mensalidade: number,
     data_lanc:Date,
     data_pgto: Date,
+    recebido_por?:string,
     hora_pgto: string,
     valor_total: number,
     motivo_bonus:string,
