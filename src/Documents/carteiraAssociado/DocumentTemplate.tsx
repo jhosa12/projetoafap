@@ -113,6 +113,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
                      <img
                             src="/frenteverso.png"
                             alt="Fundo do carnê"
+                            fetchPriority="high"
                             style={{
                                 position: 'absolute',
                                 top: 0,
@@ -177,6 +178,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
                      <img
                             src="/dependenteCartao.png"
                             alt="dependente"
+                            fetchPriority="high"
                             style={{
                                 position: 'absolute',
                                 top: 0,

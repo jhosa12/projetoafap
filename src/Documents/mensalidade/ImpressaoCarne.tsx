@@ -61,6 +61,7 @@ class ImpressaoCarne extends React.Component<DadosProps> {
                         <img
                             src="/carneAtualizado.png"
                             alt="Fundo do carnê"
+                            fetchPriority="high"
                             style={{
                                 position: 'absolute',
                                 top: 0,
