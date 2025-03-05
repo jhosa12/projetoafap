@@ -3,15 +3,15 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { HiFilter } from "react-icons/hi"
-import { Button, Checkbox, Dropdown, Label, Modal, Radio, Select, TextInput } from "flowbite-react";
-import {  useEffect, useState } from "react";
+import {  Checkbox, Label, Modal, TextInput } from "flowbite-react";
 import { IoIosArrowDown } from "react-icons/io";
-
 import { Controller, SubmitHandler, useForm} from "react-hook-form";
 import { ConsultoresProps } from "@/types/consultores";
-import useApiPost from "@/hooks/useApiPost";
 import { FormProps } from "./cobranca/cobranca";
-
+import { MultiSelect } from "../multi-select";
+import { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Button } from "../ui/button";
 
 
 
@@ -33,7 +33,7 @@ export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, 
   const { register, watch, handleSubmit, control, setValue } = useForm<FormProps>({
     defaultValues: {
       status:'A,R',
-      cobrador:selectCobrador,
+     // cobrador:selectCobrador,
       id_empresa: empresa,
       startDate:new Date(),
       endDate:new Date(), 
@@ -41,32 +41,36 @@ export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, 
     }
   })
  
+ 
 
 
 
-  const toggleBairro = (index: number)=> {
+ 
+
+
+  /*const toggleBairro = (index: number)=> {
     
     setValue('bairros',
       watch('bairros').map((item,i)=> i===index ? {...item,check:!item.check}:item)
     )
-  }
+  }*/
 
 
-  const toggleCobrador = (index: number) =>
+ /* const toggleCobrador = (index: number) =>
     setValue(
       "cobrador",
       watch("cobrador").map((item, i) =>
         i === index ? { ...item, check: !item.check } : item
       )
-    );
+    );*/
 
 
- useEffect(()=>{
+ /*useEffect(()=>{
    if(empresa){
       setValue('bairros',(arrayBairros.filter(item=>item.id_empresa===empresa)))
    }else setValue('bairros',[])
     
-  },[empresa]) 
+  },[empresa]) */
 
 
 
@@ -80,7 +84,7 @@ export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, 
 
       </Modal.Header>
       <Modal.Body>
-        <form onSubmit={handleSubmit(listarCobranca)} className='space-y-2'>
+        <form onSubmit={handleSubmit(listarCobranca)} className='flex flex-col space-y-2 w-full'>
 {/*
           <div className="inline-flex gap-6 w-full">
           <div className="flex items-center gap-2">
@@ -94,97 +98,76 @@ export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, 
           </div>*/}
 
 
+          <Controller
+            control={control}
+            name="bairros"
+            render={({ field }) => (
+              <MultiSelect
+              options={arrayBairros?.map((item, index) => ({ label: item.bairro?? '', value: item.bairro??'' }))??[]}
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+              placeholder="Selececione o bairro"
+              variant="default"
+              animation={undefined}
+              maxCount={3}
+            
+            />
+            )}
+          />
+   
+
+
+   
+   <Controller
+            control={control}
+            name="cobrador"
+            render={({ field }) => (
+              <MultiSelect
+              options={selectCobrador?.map((item, index) => ({ label: item.nome?? '', value: item.nome??'' }))??[]}
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+              placeholder="Selececione o Cobrador"
+              variant="default"
+              animation={undefined}
+              maxCount={3}
+            
+            />
+            )}
+          />
+
           <div className="inline-flex gap-4 w-full">
          
             <div className="w-full">
               <div className=" block">
                 <Label className="text-xs" htmlFor="email1" value="Status" />
               </div>
-              <Select sizing={'sm'} onChange={e => setValue('status', e.target.value)}>
+
+              <Controller
+              name="status"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                  <Select  value={value} onValueChange={onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="A,R">ABERTO/REAGENDADO</SelectItem>
+                      <SelectItem value="A">ABERTO</SelectItem>
+                      <SelectItem value="R">REAGENDADO</SelectItem>
+                    </SelectContent>
+                  </Select>
+              )}
+              />
+            {/*  <Select sizing={'sm'} onChange={e => setValue('status', e.target.value)}>
                 <option value="A,R" >ABERTO/REAGENDADO</option>
                 <option value="A" >ABERTO</option>
                 <option value="R" >REAGENDADO</option>
-              </Select>
+              </Select>*/}
             </div>
 
           </div>
 
-
-
-
-          <div className="inline-flex gap-4 w-full">
-
-            <div className="w-full h-full">
-              <div className=" block">
-                <Label className="text-xs" value="Bairros" />
-              </div>
-              <Dropdown dismissOnClick={false} placement="bottom" label="Bairros" renderTrigger={() => (
-
-                <button type="button"
-                  className="flex w-full h-full justify-between items-center py-2 pl-2 pr-2 uppercase border rounded-lg  text-xs bg-gray-50 border-gray-300 placeholder-gray-400 text-gray-500 ">
-
-                 SELECIONE OS BAIRROS
-                  <IoIosArrowDown size={16} />
-
-
-                </button>
-
-              )}>
-                <ul className="max-h-64 overflow-y-auto  px-2"> {/* Limite de altura com rolagem */}
-
-           
-                  {watch('bairros')?.map((item, index) => (
-
-                    <li key={index}  className="flex  items-center gap-4 p-2">
-                      <Checkbox onChange={() => toggleBairro(index)} checked={item.check} id={`bairro-${index}`} />
-                      <Label className="hover:cursor-pointer" htmlFor={`bairro-${index}`}>{item.bairro}</Label>
-                    </li>
-
-                  ))}
-                </ul>
-
-
-
-              </Dropdown>
-            </div>
-
-
-
-
-            <div className="w-full">
-              <div className=" block">
-                <Label className="text-xs" htmlFor="cobrador" value="Cobrador" />
-              </div>
-
-
-              <div>
-                <button type="button" onClick={() => setDropCobrador(!dropCobrador)}
-                  className="flex w-full h-full justify-between items-center py-2 pl-2 pr-2 uppercase border rounded-lg  text-xs bg-gray-50 border-gray-300 placeholder-gray-400 text-gray-500 ">
-
-                  COBRADOR
-                  <IoIosArrowDown size={16} />
-                </button>
-                {dropCobrador && <ul className="flex bg-white flex-col w-3/6 absolute z-50 top-[230px]  left-60 max-h-64 overflow-y-auto   p-1 rounded-lg  border-[1px] border-gray-300">
-                
-                  {watch('cobrador')?.map((item, index) => {
-                    return (
-                     item.funcao==='COBRADOR (RDA)' && <li key={item.id_consultor} className="flex items-center px-2 py-1">
-                        <input onChange={() => toggleCobrador(index)} type="checkbox" checked={item.check}  />
-                        <label className="ms-2 font-semibold text-xs whitespace-nowrap ">{item?.nome.toUpperCase()}</label>
-                      </li>
-                    )
-                  })}
-                </ul>}
-
-
-
-              </div>
-            </div>
-
-          </div>
-
-
-
+ 
           <div className='inline-flex gap-4 w-full justify-between'>
             <div  className=" flex flex-col w-full" >
               <div className=" block">
@@ -226,11 +209,24 @@ export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, 
              <Label className="text-xs" htmlFor="email1" value="Numero de parcelas" />
            </div>
                 <div className="flex flex-row w-full gap-4">
-                <Select sizing={'sm'} {...register('param_nparcela')}>
-                <option value="=" >Igual a</option>
-             <option value=">" >Maior que</option>
-             <option value="<" >Menor que</option>
-           </Select>
+
+                <Controller
+              name="param_nparcela"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                  <Select value={value} onValueChange={onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="=">Igual a</SelectItem>
+                      <SelectItem value=">">Maior que</SelectItem>
+                      <SelectItem value="<">Menor que</SelectItem>
+                    </SelectContent>
+                  </Select>
+              )}
+              />
+             
 
            <TextInput {...register('numeroParcelas')} placeholder="numero de parcelas" sizing={'sm'}  type="number"/>
                 </div>
@@ -250,7 +246,7 @@ export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, 
 
 
 
-          <Button type="submit" isProcessing={loading} className='cursor-pointer ml-auto' size={'sm'}>Aplicar Filtro</Button>
+          <Button variant={'outline'} type="submit" className='ml-auto' size={'sm'}>Aplicar Filtro</Button>
          
         
          

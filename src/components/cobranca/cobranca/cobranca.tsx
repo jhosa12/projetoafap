@@ -52,8 +52,8 @@ export interface FormProps{
   numeroParcelas:number,
   radio:boolean
   status:string,
-  cobrador:Array<ConsultoresProps>
-  bairros:Array<Partial<{ bairro: string, check: boolean }>>
+  cobrador:Array<string>
+  bairros:Array<string>
 }
 
 
@@ -147,13 +147,8 @@ export  function Cobranca() {
     setDataicial(data.startDate)
     setDataFinal(data.endDate)
    const {dataIni,dataFim} =  ajustarData(data.startDate, data.endDate)
-   const cobradores = data.cobrador?.map(item => { if (item.check) { return item.nome} }).filter(item => item != null)
-      let bairros
-   if(arrayBairros.length>0){
-
-    bairros =data.bairros.map(item => { if (item.check) { return item.bairro } }).filter(item => item != null)
-
-   }
+   const cobradores = data.cobrador
+  
       try {
         //console.log(data.status)
         setLoading(true)
@@ -163,7 +158,7 @@ export  function Cobranca() {
           cobradores,
           id_empresa:infoEmpresa?.id,
           status: data.status.split(','),
-          bairros: bairros
+          bairros: data.bairros
         })
         const valor = response.data.cobranca.reduce((acumulador: number, item: CobrancaProps) => {
           return acumulador += Number(item.valor_principal)

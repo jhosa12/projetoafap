@@ -207,6 +207,12 @@ const adicionarPlanoContas = async(data:NovoPlanoProps)=>{
 
 
 
+useEffect(()=>{
+    console.log(construirHierarquia(arrayPlanoContas))
+},[arrayPlanoContas])
+
+
+
 
 
 

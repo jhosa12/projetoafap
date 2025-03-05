@@ -65,8 +65,8 @@ export interface FormProps{
   numeroParcelas:number,
   radio:boolean
   status:string,
-  cobrador:Array<ConsultoresProps>
-  bairros:Array<Partial<{ bairro: string, check: boolean }>>
+  cobrador:Array<string>
+  bairros:Array<string>
 }
 
 
@@ -192,21 +192,21 @@ useEffect(()=>{
 
 
 
-  const handleInadimplencia:SubmitHandler<FormProps> = async (data) => {
-       // console.log(data)
+  const handleInadimplencia:SubmitHandler<FormProps> = async (dataReq) => {
+      //console.log(dataReq)
     postData({
-      startDate:data.periodo?new Date('1900-01-01'):data.startDate,
-      endDate:data.periodo?new Date():data.endDate,
+      startDate:dataReq.periodo?new Date('1900-01-01'):dataReq.startDate,
+      endDate:dataReq.periodo?new Date():dataReq.endDate,
       id_empresa:selectEmp,
       //cobradores:watch('cobrador').filter(item=>item.check).map(item=>item.nome),
      // bairros:watch('bairros').map(item => { if (item.check) { return item.bairro } }).filter(item => item != null),
-      n_parcelas:Number(data.numeroParcelas),
+      n_parcelas:Number(dataReq.numeroParcelas),
      // radio:watch('radio'),
      // status:watch('status'),
      // periodo:watch('periodo'),
-     status:data.status.split(',').map(item=>item.trim()),
-      param:data.param_nparcela,
-      bairros:data.bairros.map(item => { if (item.check) { return item.bairro } }).filter(item => item != null),
+     status:dataReq.status.split(',').map(item=>item.trim()),
+      param:dataReq.param_nparcela,
+      bairros:dataReq.bairros
     })
         
     }
