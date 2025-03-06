@@ -440,10 +440,14 @@ export default function CaixaMovimentar(){
                 
                 },0)
                 setDespesas(somadespesas)
+       }else{
+        setSaldo(0)
+        setDespesas(0)
+        setValorForma({})
        }
    
 
-    },[data?.lista])
+    },[data])
 
 return(
 <>
