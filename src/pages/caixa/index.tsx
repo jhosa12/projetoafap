@@ -38,6 +38,7 @@ import { useReactToPrint } from "react-to-print";
 import { SomaProps } from "@/components/financeiro/caixa/caixa";
 import pageStyle from "@/utils/pageStyle";
 import { ModalLancamento } from "@/components/caixa/modalLancamento";
+import { BiCalendarMinus } from "react-icons/bi";
 
   
 
@@ -527,10 +528,9 @@ setOpenModal={setModalDados}
       </ul>
         </div>
 
+        <div className="flex items-center gap-2">
     <div >
-        <div className=" block">
-          <Label className="text-xs"  value="Data inicial" />
-        </div>
+      
         <Controller
         control={control}
         name="startDate"
@@ -541,12 +541,10 @@ setOpenModal={setModalDados}
       
       </div>
 
-
+        <BiCalendarMinus size={25} />
 
       <div >
-        <div className=" block">
-          <Label className="text-xs" value="Data final" />
-        </div>
+      
         <Controller
         control={control}
         name="endDate" 
@@ -559,14 +557,12 @@ setOpenModal={setModalDados}
         />
  
       </div>
+
+      </div>
       
       <div className="w-1/2" >
-        <div className=" block">
-          <Label className="text-xs" value="Buscar" />
-        </div>
-        <Input  className="w-full h-8 text-[11px]" {...register('descricao')}    />
+        <Input placeholder="Descrição"  className="w-full h-8 text-[11px]" {...register('descricao')}    />
       </div> 
-         
                    
                    <Button variant={'outline'}  size={'sm'} type="submit" ><IoSearchSharp /> Buscar</Button>
 
