@@ -67,6 +67,13 @@ const currentConsultas = useRef<ListaConsultas>(null)
 
 
 
+
+
+
+
+
+
+
 const handleEstornarConsulta = async ()=>{
   if (!data?.id_consulta){
     return
@@ -409,8 +416,8 @@ const handleDeletar = useCallback(async () => {
   
       </div>
 
-      <div className="overflow-y-auto h-[calc(100vh-155px)] ">
-        <Table  theme={{root:{shadow:'none'}, body: { cell: { base: "px-3 text-black py-0 text-[10px] font-medium" } },head: { cell: { base: "px-3 text-black py-0 text-xs" } } }}  >
+      <div className="overflow-y-auto h-[calc(100vh-140px)] ">
+        <Table  theme={{root:{shadow:'none'}, body: { cell: { base: "px-3 text-black py-0 text-[10px] font-medium" } },head: { cell: { base: "px-3 text-black py-0 text-[11px]" } } }}  >
 
           <Table.Head>
             <Table.HeadCell>Nome</Table.HeadCell>
@@ -420,12 +427,13 @@ const handleDeletar = useCallback(async () => {
             <Table.HeadCell>Hora Prev</Table.HeadCell>
             <Table.HeadCell>Valor</Table.HeadCell>
             <Table.HeadCell>Usuário</Table.HeadCell>
+            <Table.HeadCell>Retorno</Table.HeadCell>
             <Table.HeadCell>Status</Table.HeadCell>    
           </Table.Head>
           <Table.Body className="divide-y">
             {consultas.map((item, index) => (
-              <Table.Row onClick={() => setData(item)} key={item.id_consulta} className={`bg-white hover:cursor-pointer ${data?.id_consulta === item.id_consulta ? 'bg-gray-300 text-white' : ''} `}>
-                <Table.Cell className="whitespace-nowrap font-medium ">
+              <Table.Row onClick={() => setData(item)} key={item.id_consulta} className={`font-medium bg-white hover:cursor-pointer ${data?.id_consulta === item.id_consulta ? 'bg-gray-300 text-white' : ''} `}>
+                <Table.Cell className="whitespace-nowrap  ">
                   {item.nome}
                 </Table.Cell>
                 <Table.Cell>{item.espec}</Table.Cell>
@@ -435,26 +443,11 @@ const handleDeletar = useCallback(async () => {
                 <Table.Cell>{item.hora_prev && new Date(item?.hora_prev).toLocaleTimeString('pt-BR')}</Table.Cell>
                 <Table.Cell>{Number(item?.procedimentos?.reduce((acc, curr) => acc + curr.valorFinal, 0)?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
                 <Table.Cell>{item?.user}</Table.Cell>
+                <Table.Cell className="font-semibold text-red-600">{item?.retorno}</Table.Cell>
                 <Table.Cell onClick={(e) => e.stopPropagation()}>
 
-               {/* <select   className={`font-semibold border-none p-0 rounded-lg focus:ring-0 hover:cursor-pointer  appearance-none outline-none text-[11px] ${
-    item?.status === 'AGENDADO' ? 'text-blue-500' :
-    item?.status === 'AGUARDANDO DATA' ? 'text-yellow-500' :
-    item?.status === 'CONFIRMADO' ? 'text-cyan-500' :
-    item?.status === 'RECEBIDO' ? 'text-green-500' :
-    item?.status === 'CANCELADO' ? 'text-red-500' : ''
-  }`}  value={item?.status} onChange={(e)=> { handleChangeStatus({item, status:e.target.value})}}>
-                                        <option disabled className="font-semibold text-blue-500" value={'AGENDADO'}>
-                                        AGENDADO
-                                            </option>
-                                        <option className="text-yellow-500 font-semibold" value={'AGUARDANDO DATA'}>AGUARDANDO DATA</option>
-                                        <option className="text-green-500 font-semibold" value={'CONFIRMADO'}>CONFIRMADO</option>
-                                        <option className="text-red-500 font-semibold" value={'CANCELADO'}>CANCELADO</option>
-                                        <option disabled className="text-green-500 font-semibold" value={'RECEBIDO'}>RECEBIDO</option>
-                                    </select>*/}
-
 <Select  value={item?.status} onValueChange={(e) => { handleChangeStatus({item, status:e})}} >
-      <SelectTrigger className={`border-0 w-[150px] shadow-none font-semibold text-[11px] focus:ring-0 ${
+      <SelectTrigger className={`border-0 w-[140px] shadow-none font-semibold text-[11px] focus:ring-0 ${
     item?.status === 'AGENDADO' ? 'text-blue-500' :
     item?.status === 'AGUARDANDO DATA' ? 'text-yellow-500' :
     item?.status === 'CONFIRMADO' ? 'text-cyan-500' :

@@ -1,5 +1,5 @@
 import { ConsultaProps, EventProps, ExamesData, ExamesProps, MedicoProps } from "@/pages/afapSaude";
-import { Button, Label, Modal, Select, Table, TextInput } from "flowbite-react";
+import {  Label, Modal, Select, Table, TextInput } from "flowbite-react";
 import ReactInputMask from "react-input-mask";
 import { ChangeEvent, useState } from "react";
 import { api } from "@/services/apiClient";
@@ -13,7 +13,8 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { ajustarData } from "@/utils/ajusteData";
-import { da } from "date-fns/locale";
+import { Button } from "@/components/ui/button";
+
 
 interface DataProps{
     openModal:boolean,
@@ -98,12 +99,13 @@ const handleMedico =(event:ChangeEvent<HTMLSelectElement>) => {
 
   const handleEditarConsulta = async (data:ConsultaProps) => {
 
-    if(!data?.id_med){
-      toast.info('Selecione um especialista')
-    }
-    if(!data?.tipoDesc){
-      toast.info('Selecione um tipo de desconto')
-    }
+   // if(!data?.id_med){
+    //  toast.info('Selecione um especialista')
+      
+  //  }
+  //  if(!data?.tipoDesc){
+  //    toast.info('Selecione um tipo de desconto')
+  //  }
 
 
 let dataInit=undefined
@@ -129,11 +131,22 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
           success: 'Dados alterados com sucesso!'
         }
       )
-     // const novoArray = [...consultas]
-    //  const index = novoArray.findIndex(item => item.id_consulta === data?.id_consulta)
-    //  novoArray[index] = { ...response.data }
-    //  setConsultas(novoArray)
-    buscarConsultas({startDate:new Date(),endDate:new Date(),id_med:undefined,status:undefined,buscar:undefined})
+
+      const novo = [...consultas]
+      const index = consultas.findIndex(item => item.id_consulta === data?.id_consulta)
+      if (index !== -1) {
+        novo[index] = { ...novo[index], ...response.data }; // Mantém a referência original, apenas atualiza os valores
+      }
+
+      const consultasOrdenadas = [...novo].sort((a, b) => {
+        const dataA = a.hora_prev ? new Date(a.hora_prev).getTime() : Infinity; // Se for null, vai para o final
+        const dataB = b.hora_prev ? new Date(b.hora_prev).getTime() : Infinity;
+      
+        return dataA - dataB;
+      });
+
+     setConsultas(consultasOrdenadas)
+    //buscarConsultas({startDate:new Date(),endDate:new Date(),id_med:undefined,status:undefined,buscar:undefined})
       setConsulta(valorInicial)
       setOpenModal(false)
     } catch (error) {
@@ -152,7 +165,7 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
       return
     }
 
-    const {dataIni,dataFim} = ajustarData(data.data_prev,undefined)
+    const {dataIni,dataFim} = ajustarData(data.data_prev,data.data_prev)
     try {
 
       const response = await toast.promise(
@@ -171,8 +184,10 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
         }
       )
 
-      //setConsultas([...consultas, response.data])
-      buscarConsultas({startDate:data.data_prev,endDate:data.data_prev,id_med:undefined,status:undefined,buscar:undefined})
+
+      
+     // setConsultas([...consultas, response.data])
+     buscarConsultas({startDate:data.data_prev,endDate:data.data_prev,id_med:data.id_med,status:undefined,buscar:undefined})
       setOpenModal(false)
 
     } catch (error) {
@@ -244,16 +259,16 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
 
 
     return(
-        <Modal show={openModal} size="4xl"   onClose={() => setOpenModal(false)} >
+        <Modal show={openModal} size="4xl" popup  onClose={() => setOpenModal(false)} >
         <Modal.Header>
-          <div className="inline-flex gap-4 items-center">
+          <div className="inline-flex gap-4 ml-3 items-center text-sm">
           Administrar Consulta  
-            {!consulta.id_consulta && <Button onClick={()=>setvisible(!visible)} theme={{color:{light:"border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100"}}}  className="mr-auto " color="light" size="sm"><AiOutlineClockCircle className="mr-1 h-5 w-5"/>Setar por consultas anteriores</Button>}
+            {!consulta.id_consulta && <Button onClick={()=>setvisible(!visible)} variant={'outline'}  className="mr-auto "  size="sm"><AiOutlineClockCircle className="mr-1 h-5 w-5"/>Setar por consultas anteriores</Button>}
             </div>
             </Modal.Header>
         <Modal.Body className="flex flex-col gap-4">
 
-          <form onSubmit={handleSubmit(handleOnSubmit)} >
+          <form className="flex flex-col w-full" onSubmit={handleSubmit(handleOnSubmit)} >
             <div className="grid grid-cols-4 gap-2 ">
             <div className="col-span-2 "> 
                 <Label className="text-xs" htmlFor="email" value="Nome Paciente" />
@@ -295,7 +310,7 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
         </div>
 
 
-        <div className="w-full">
+        <div className="col-span-2 ">
             
             <Label className="text-xs" value="Parentesco" />
       
@@ -348,7 +363,7 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
         </div>
 
 
-              <div >
+              <div className="col-span-2" >
             
             <Label className="text-xs" value="Endereço" />
        
@@ -383,7 +398,7 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
         </div>   
 
 
-<div className="flex flex-col w-full">
+<div >
              
                 <Label className="text-xs" htmlFor="espec" value="Especialidade" />
           
@@ -396,7 +411,7 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
             </div>
 
 
-            <div className="flex flex-col w-full">
+            <div >
                            
                            <Label className="text-xs" htmlFor="small" value="Consulta/Data" />
                      
@@ -449,6 +464,16 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
                    </div>
 
 
+                   <div className="flex flex-col w-full">
+                           <Label className="text-xs" htmlFor="small" value="Retorno ?" />
+                       <Select  {...register('retorno')} sizing="sm" >
+                           <option selected value={''}></option>
+                           <option value={'SIM'}>SIM</option>
+                           <option value={'NAO'}>NÃO</option>
+                       </Select>
+                   </div>
+
+
 
           </div>
 
@@ -459,7 +484,7 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
             
             <Label className="text-xs" value="Desconto" />
       
-          <Select disabled={watch('procedimentos')?.length>0} sizing={'sm'} {...register('tipoDesc')} onChange={e=>handleDesconto(e)} className="focus:outline-none"   required >
+          <Select disabled={watch('procedimentos')?.length>0} sizing={'sm'} {...register('tipoDesc')} onChange={e=>handleDesconto(e)} className="focus:outline-none">
                 <option value={''}></option>
                 <option value={'PARTICULAR'}>PARTICULAR</option>
                 
@@ -471,18 +496,18 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
 
                 <Label htmlFor="procedimentos" className="text-xs" value="Procedimentos" />
 
-                <Select {...register('id_selected')} id="procedimentos" sizing={'sm'}  className="focus:outline-none"  >
+                <Select  {...register('id_selected')} id="procedimentos" sizing={'sm'}  className="focus:outline-none"  >
                   <option value={''}></option>
                     {medicos.find(item=>item.id_med===Number(watch('id_med')))?.exames.map((item,index)=>(
                         <option value={item.id_exame} key={item.id_exame}>{item.nome}</option>
                     ))}
                 </Select>
               </div>
-              <Button onClick={handleAdicionarProcedimento} type="button" size={'xs'}  className="mt-auto p-1">Adicionar</Button>
+              <Button onClick={handleAdicionarProcedimento} type="button" size={'sm'}  className="mt-auto p-1">Adicionar</Button>
 
             </div>
             <div className="overflow-x-auto ">
-              <Table theme={{ body: { cell: { base: "px-6 text-black py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs" } }, head: { cell: { base: "bg-gray-50 px-6 py-1 group-first/head:first:rounded-tl-lg group-first/head:last:rounded-tr-lg " } } }} >
+              <Table  theme={{root:{shadow:'none'}, body: { cell: { base: "px-3 text-black py-0 text-[10px] font-medium" } },head: { cell: { base: "px-3 text-black py-0 text-[11px] bg-gray-200" } } }}  >
                 <Table.Head>
                   <Table.HeadCell>Procedimento</Table.HeadCell>
                   <Table.HeadCell>Valor Procedimento</Table.HeadCell>
@@ -540,7 +565,7 @@ if(data?.id_agmed && data?.id_agmed !== consulta.id_agmed){
 
 
 
-          <Button className="ml-auto" type="submit">{consulta?.id_consulta ? 'Atualizar' : 'Cadastrar'}</Button>
+          <Button variant={'secondary'} className="ml-auto" type="submit">{consulta?.id_consulta ? 'Atualizar' : 'Cadastrar'}</Button>
           </form>
 
        

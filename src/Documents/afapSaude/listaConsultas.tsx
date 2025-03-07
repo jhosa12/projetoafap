@@ -61,16 +61,16 @@ class ListaConsultas extends React.Component<DadosProps> {
     })}
 
 
-{/*<Table.Row className="font-semibold" >
-                    <Table.Cell className="whitespace-nowrap  ">
-                      Total
+{<Table.Row className="font-semibold" >
+                    <Table.Cell className="whitespace-nowrap text-base">
+                      Total: {dados?.length}
                     </Table.Cell>
 
-                    <Table.Cell>{Number(totalBruto).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }</Table.Cell>
-                    <Table.Cell >{Number(totalParticular).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
-                    <Table.Cell>{Number(totalFuneraria).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
-                    <Table.Cell >{Number(totalPlano).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
-                  </Table.Row>*/}
+                    <Table.Cell>{ }</Table.Cell>
+                    <Table.Cell >{}</Table.Cell>
+                    <Table.Cell>{}</Table.Cell>
+                    <Table.Cell >{}</Table.Cell>
+                  </Table.Row>}
                         </Table.Body>
                     </Table>
                 
