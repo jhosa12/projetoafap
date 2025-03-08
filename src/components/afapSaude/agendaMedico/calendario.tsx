@@ -123,7 +123,7 @@ export default function Calendario({ medicos,events, setArrayEvent }: DataProps)
   const components: any = {
     event: ({ event, index }: { event: EventProps, index: number }) => {
       return (
-        <Alert theme={{base:"flex flex-col gap-2 p-2 text-xs break-words",icon:"mr-2 inline h-4 w-4 flex-shrink-0",}} className="text-xs break-words" color={event.status === 'ABERTO'?'success':event.status === 'CANCELADO'?'failure':'warning'}  icon={event.status === 'ABERTO'?FaCheck :event.status === 'CANCELADO'?ImCancelCircle :MdAccessTime }>
+        <Alert theme={{base:"flex flex-col gap-2 p-2 text-[11px] ",icon:"mr-2 inline h-4 w-4 flex-shrink-0",}} className="text-[11px]" color={event.status === 'ABERTO'?'success':event.status === 'CANCELADO'?'failure':'warning'}  icon={event.status === 'ABERTO'?FaCheck :event.status === 'CANCELADO'?ImCancelCircle :MdAccessTime }>
       
            {event.status} - {event.title}
         </Alert>
@@ -158,7 +158,7 @@ const toggleDrawer = () => {
 
 
   return (
-    <>
+   
       <div >
 
   
@@ -173,7 +173,7 @@ const toggleDrawer = () => {
           selectable
           onSelectSlot={handleNovoEvento}
           selected={true}
-          style={{ height: 'calc(100vh - 110px)'}}
+          style={{ height: 'calc(100vh - 90px)'}}
           messages={{
             next: "Próximo",
             previous: "Anterior",
@@ -210,6 +210,6 @@ const toggleDrawer = () => {
         </Modal>
       </div>
    
-    </>
+   
   )
 }

@@ -248,7 +248,14 @@ export default function AfapSaude() {
   const getMedicos =useCallback( async() => {
     try {
       const response = await api.post("/medico/lista")
-      setMedicos(response.data)
+      const ordenarMedicos = (a: { nome: string }, b: { nome: string }) => {
+        const nomeA = a.nome.replace(/^DR\.?\s|^DRA\.?\s/i, "").trim();
+        const nomeB = b.nome.replace(/^DR\.?\s|^DRA\.?\s/i, "").trim();
+        return nomeA.localeCompare(nomeB);
+      };
+
+      const medicosOrdenados = response.data.sort(ordenarMedicos);
+      setMedicos(medicosOrdenados)
      // console.log(response.data)
     } catch (error) {
       toast.error('ERRO NA REQUISIÇÃO')

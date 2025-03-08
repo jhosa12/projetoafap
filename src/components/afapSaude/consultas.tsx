@@ -2,7 +2,7 @@
 
 import {  ConsultaProps, EventProps, MedicoProps } from "@/pages/afapSaude";
 import { api } from "@/services/apiClient";
-import {  Button, Table } from "flowbite-react";
+import {   Table } from "flowbite-react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ModalConsulta } from "./components/modalNovaConsulta";
 import { toast } from "react-toastify";
@@ -12,7 +12,7 @@ import {   HiDocumentAdd, HiFilter } from "react-icons/hi";
 import { ModalFiltroConsultas } from "./components/modalFiltro";
 import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
 import { useReactToPrint } from "react-to-print";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { BiMoneyWithdraw } from "react-icons/bi";
 import { AuthContext } from "@/contexts/AuthContext";
 import { GiReturnArrow } from "react-icons/gi";
@@ -24,6 +24,7 @@ import { ModalReceber } from "./exames/modalReceber";
 import { ajustarData } from "@/utils/ajusteData";
 import { ModalConfirmar } from "./components/modalConfirmar";
 import ListaConsultas from "@/Documents/afapSaude/listaConsultas";
+import { SlOptions } from "react-icons/sl";
 import {
   Select,
   SelectContent,
@@ -33,6 +34,17 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { set } from "react-hook-form";
+import { Button } from "../ui/button";
 
 
 interface DataProps {
@@ -49,7 +61,7 @@ export const status = ["AGENDADO","AGUARDANDO DATA","CONFIRMADO","ATENDIDO","CAN
 export default function Consultas({ medicos, consultas, setConsultas,events  }: DataProps) {
 
 
-  const [openModal, setOpenModal] = useState(false);
+ 
   const [data, setData] = useState<Partial<ConsultaProps>>()
   const {usuario,infoEmpresa,consultores} = useContext(AuthContext)
   const [formPag,setFormPag] = useState<string>('')
@@ -58,8 +70,12 @@ export default function Consultas({ medicos, consultas, setConsultas,events  }: 
       filtro:false,
       deletar:false,
       receber:false,
+      editar:false,
       estornar:false,
-      status:false
+      status:false,
+      printProntuario:false,
+      printRecibo:false,
+      printListaConsultas:false
   })
 const currentPage = useRef<FichaConsulta>(null)
 const currentRecibo = useRef<ReciboMensalidade>(null)
@@ -67,7 +83,12 @@ const currentConsultas = useRef<ListaConsultas>(null)
 
 
 
-
+useEffect(()=>{
+modal.printProntuario && imprimirFicha()
+modal.printRecibo && imprimirRecibo()
+modal.printListaConsultas && imprimirConsultas()
+ 
+},[modal.printProntuario,modal.printRecibo,modal.printListaConsultas])
 
 
 
@@ -184,6 +205,7 @@ const handleAlterarStatus = async () => {
 const imprimirFicha = useCallback(useReactToPrint({
   pageStyle: pageStyle,
   content: () => currentPage.current,
+  onAfterPrint: () => {setData({}),setModal({printProntuario:false})}
 }), [data?.id_consulta]);
 
 const imprimirConsultas = useCallback(useReactToPrint({
@@ -211,6 +233,7 @@ const imprimirConsultas = useCallback(useReactToPrint({
       }
   `,
   content: () => currentConsultas.current,
+  onAfterPrint: () => {setData({}),setModal({printListaConsultas:false})}
 }), [consultas]);
 
 
@@ -233,7 +256,8 @@ const imprimirRecibo = useCallback(useReactToPrint({
       return Promise.reject();
     }
     Promise.resolve();
-  }
+  },
+  onAfterPrint: () => {setData({}),setModal({printRecibo:false})}
 }), [data?.id_consulta]);
 
 
@@ -372,54 +396,34 @@ const handleDeletar = useCallback(async () => {
 
   return (
     <div className="flex flex-col p-2 gap-2">
-      <div className="ml-auto inline-flex gap-4">
+      <div className=" inline-flex w-full justify-between text-black items-center">
       
        
-        <Button.Group >
       
-      <Button  className="text-blue-500" onClick={() =>{setData(valorInicial), setOpenModal(true)}} size={'xs'} color="gray">
-        <HiDocumentAdd className="mr-2 h-4 w-4" />
+      <div className="inline-flex gap-4">
+      <Button  variant={'outline'} onClick={() =>{setData({}), setModal({editar:true})}} size={'sm'} color="gray">
+        <HiDocumentAdd className=" h-4 w-4" />
         Adicionar
       </Button>
-      <Button  onClick={() =>  setOpenModal(true)} size={'xs'} color="gray">
-        <HiPencil className="mr-2 h-4 w-4" />
-        Editar
-      </Button>
-        <Button onClick={imprimirConsultas} size={'xs'} color="gray">
-              <HiPrinter className="mr-2 h-4 w-4" />
-              Imprimir
+    
+        <Button  variant={'outline'} onClick={()=>setModal({printListaConsultas:true})} size={'sm'} >
+              <HiPrinter className=" h-4 w-4" />
+              Imprimir Lista
             </Button>
-      <Button onClick={() => imprimirFicha()} size={'xs'} color="gray">
-        <HiDocument className="mr-2 h-4 w-4" />
-         Prontuário
-      </Button>
+  
+   
+   
+      <Button  variant={'outline'}  size={'sm'} onClick={() => setModal({filtro: true})}>  <HiFilter className=" h-4 w-4" /> Filtro</Button>
+      </div>
 
-      <Button onClick={imprimirRecibo} size={'xs'} color="gray">
-        <BiMoneyWithdraw className="mr-2 h-4 w-4" />
-         Recibo
-      </Button>
-      <Button className="text-green-400" onClick={() => setModal({receber:true})} size={'xs'} color="gray">
-        <HiMiniArrowDownOnSquare className="mr-2 h-4 w-4" />
-        Receber
-      </Button>
-      <Button onClick={()=>setModal({estornar:true})} size={'xs'} className="text-yellow-300" color="gray" type="button"  ><GiReturnArrow className="mr-2 h-4 w-4"/> Estornar</Button>
-      <Button onClick={()=>handleWhatsAppClick(data?.celular)} size={'xs'} color="gray">
-      <FaWhatsapp className="mr-2 h-4 w-4" />
-        Abrir Conversa
-      </Button>
-      <Button className="text-red-500" onClick={()=>setModal({deletar:true})} size={'xs'} color="gray">
-        <MdDelete className="mr-2 h-4 w-4" />
-        Excluir
-      </Button>
-      <Button theme={{ color: { light: "border border-gray-300 bg-white text-gray-900  enabled:hover:bg-gray-100 " } }} color={'light'} size={'xs'} onClick={() => setModal({filtro: true})}>  <HiFilter className="mr-2 h-4 w-4" /> Filtro</Button>
-    </Button.Group>
+      <span className="text-xs font-medium">Total de consultas: {consultas.length}</span>
   
       </div>
 
       <div className="overflow-y-auto h-[calc(100vh-140px)] ">
-        <Table  theme={{root:{shadow:'none'}, body: { cell: { base: "px-3 text-black py-0 text-[10px] font-medium" } },head: { cell: { base: "px-3 text-black py-0 text-[11px]" } } }}  >
+        <Table  theme={{root:{shadow:'none'}, body: { cell: { base: "px-2 text-black py-0 text-[10px] font-medium" } },head: { cell: { base: "px-2 text-black py-0 text-[11px]" } } }}  >
 
-          <Table.Head>
+          <Table.Head className="sticky top-0 bg-white z-10 border-b-2">
             <Table.HeadCell>Nome</Table.HeadCell>
             <Table.HeadCell>Especialidade</Table.HeadCell>
             <Table.HeadCell>Data</Table.HeadCell>
@@ -429,10 +433,11 @@ const handleDeletar = useCallback(async () => {
             <Table.HeadCell>Usuário</Table.HeadCell>
             <Table.HeadCell>Retorno</Table.HeadCell>
             <Table.HeadCell>Status</Table.HeadCell>    
+            <Table.HeadCell></Table.HeadCell> 
           </Table.Head>
           <Table.Body className="divide-y">
             {consultas.map((item, index) => (
-              <Table.Row onClick={() => setData(item)} key={item.id_consulta} className={`font-medium bg-white hover:cursor-pointer ${data?.id_consulta === item.id_consulta ? 'bg-gray-300 text-white' : ''} `}>
+              <Table.Row  key={item.id_consulta} className={`font-medium bg-white hover:cursor-pointer `}>
                 <Table.Cell className="whitespace-nowrap  ">
                   {item.nome}
                 </Table.Cell>
@@ -447,7 +452,7 @@ const handleDeletar = useCallback(async () => {
                 <Table.Cell onClick={(e) => e.stopPropagation()}>
 
 <Select  value={item?.status} onValueChange={(e) => { handleChangeStatus({item, status:e})}} >
-      <SelectTrigger className={`border-0 w-[140px] shadow-none font-semibold text-[11px] focus:ring-0 ${
+      <SelectTrigger className={`border-0 w-[140px] shadow-none font-semibold text-[10px] focus:ring-0 ${
     item?.status === 'AGENDADO' ? 'text-blue-500' :
     item?.status === 'AGUARDANDO DATA' ? 'text-yellow-500' :
     item?.status === 'CONFIRMADO' ? 'text-cyan-500' :
@@ -467,6 +472,46 @@ const handleDeletar = useCallback(async () => {
       </SelectContent>
     </Select>
                 </Table.Cell>
+
+                <Table.Cell  onClick={(e) => e.stopPropagation()}>
+                   <DropdownMenu onOpenChange={(open) => open && setData(item)}>
+      <DropdownMenuTrigger asChild  >
+      <button><SlOptions size={17} /></button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-36 shadow-none">
+ 
+        <DropdownMenuGroup>
+          <DropdownMenuItem onClick={() =>{setModal({editar:true})}}>
+            <MdEdit />
+            Editar
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => {setModal({printProntuario:true})}}>
+          <HiPrinter className=" h-3 w-3" />
+            Prontuário
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => {setModal({printRecibo:true})}}>
+          <BiMoneyWithdraw className=" h-3 w-3" />
+            Recibo
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setModal({receber:true})}>
+          <HiMiniArrowDownOnSquare className="h-3 w-3" />
+            Receber
+          </DropdownMenuItem>
+          <DropdownMenuItem  onClick={()=>setModal({estornar:true})}>
+          <GiReturnArrow className="h-3 w-3"/>
+           Estornar
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={()=>handleWhatsAppClick(item?.celular)}>
+          <FaWhatsapp className=" h-3 w-3" />
+            Contato
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={()=>setModal({deletar:true})}>
+            <MdDelete />
+            Excluir
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu></Table.Cell>
             
 
               </Table.Row>
@@ -475,7 +520,7 @@ const handleDeletar = useCallback(async () => {
         </Table>
       </div>
 
-     {openModal && <ModalConsulta usuario={usuario?.nome} id_usuario={usuario?.id} events={events} setConsulta={setData} consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={openModal} setOpenModal={setOpenModal} buscarConsultas={buscarConsultas} />}
+     {modal.editar && <ModalConsulta usuario={usuario?.nome} id_usuario={usuario?.id} events={events} setConsulta={setData} consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={modal.editar} setOpenModal={()=>setModal({editar:false})} buscarConsultas={buscarConsultas} />}
 
       <ModalDeletarExame setOpenModal={()=>setModal({deletar:false})} show={modal.deletar} handleDeletarExame={handleDeletar} />
 
@@ -487,7 +532,7 @@ const handleDeletar = useCallback(async () => {
 
 
       <div className="hidden" style={{display:'none'}}>
-        <FichaConsulta 
+      { modal.printProntuario && <FichaConsulta 
           ref={currentPage}
         especialista={medicos.find(item=>item.id_med===data?.id_med)?.nome ??''}
         id_consulta={data?.id_consulta??null}
@@ -502,12 +547,12 @@ const handleDeletar = useCallback(async () => {
             rg=""
              celular={data?.celular??''}
              parentesco={data?.grau_parentesco??''}
-             />
+             />}
 
 
 
 
-               <ReciboMensalidade
+              {modal.printRecibo && <ReciboMensalidade
                infoEmpresa={infoEmpresa}
                 associado={data?.nome??''}
                 contrato={data?.id_consulta??null}
@@ -520,9 +565,9 @@ const handleDeletar = useCallback(async () => {
                 referente={`Consulta Médica - ${data?.espec}`}
 
                
-               />
+               />}
 
-               <ListaConsultas ref={currentConsultas} dados={consultas}/>
+             {modal.printListaConsultas &&  <ListaConsultas ref={currentConsultas} dados={consultas}/>}
               
       </div>
 

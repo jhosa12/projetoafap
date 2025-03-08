@@ -195,10 +195,10 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
 
    {arrayMedicos.map(item=>(
     
-      <Dropdown.Item className="inline-flex items-center gap-4" onClick={()=> {setValue('title',`${item.nome}-(${item.espec})`);setValue('id_med',item.id_med)}} key={item.id_med}>
+      <Dropdown.Item className="inline-flex items-center text-xs gap-2" onClick={()=> {setValue('title',`${item.nome}-(${item.espec})`);setValue('id_med',item.id_med)}} key={item.id_med}>
       
        
-          <img className="w-[36px] h-[36px] rounded-full" src={`${process.env.NEXT_PUBLIC_API_URL}/file/${item.imageUrl}`} alt="Rounded avatar"></img>
+          <img className="w-[30px] h-[30px] rounded-full" src={`${process.env.NEXT_PUBLIC_API_URL}/file/${item.imageUrl}`} alt="Rounded avatar"></img>
               {item.nome}-{`(${item.espec})`}
          
      
