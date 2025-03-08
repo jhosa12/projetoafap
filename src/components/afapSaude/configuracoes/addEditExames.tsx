@@ -5,12 +5,12 @@ import { useCallback, useContext, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
-import { ModalDeletarExame } from "../components/modalDeletarExame";
 import { AuthContext } from "@/contexts/AuthContext";
 import { IoIosPrint } from "react-icons/io";
 import { useReactToPrint } from "react-to-print";
 import RelatorioLucroExames from "@/Documents/afapSaude/relatorioLucroExames";
 import pageStyle from "@/utils/pageStyle";
+import { ModalConfirmar } from "../components/modalConfirmar";
 
 interface DataProps{
     exames:Array<ExamesProps>
@@ -103,7 +103,7 @@ const handleDeletarExame=async ()=>{
 
    {openModal && <ModalEditExames exames={exames}  exame={data} setExames={setExames} openModal={openModal} setOpenModal={setOpenModal}/>}
 {
-  openDeletar &&  <ModalDeletarExame handleDeletarExame={handleDeletarExame} setOpenModal={setOpenDeletar} show={openDeletar}/>}
+  openDeletar &&  <ModalConfirmar pergunta="Tem certeza que deseja deletar esse exame?" handleConfirmar={handleDeletarExame} setOpenModal={setOpenDeletar} openModal={openDeletar}/>}
 
 
   <div style={{display:'none'}}>

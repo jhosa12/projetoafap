@@ -114,7 +114,7 @@ Header() {
       </MenubarMenu>
   
   <MenubarMenu >
-  <MenubarTrigger >
+  <MenubarTrigger asChild >
     <button disabled={!permissoes.includes('EMP4e61a06f-dee3-4c74-8b31-aca0d771dbff')} className="disabled:cursor-not-allowed disabled:text-gray-400" onClick={() => Router.push("/afapSaude")} type="button">Afap Saúde</button>
      
           </MenubarTrigger>

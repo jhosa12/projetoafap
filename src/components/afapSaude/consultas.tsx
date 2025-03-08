@@ -7,7 +7,6 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ModalConsulta } from "./components/modalNovaConsulta";
 import { toast } from "react-toastify";
 import { HiDocument, HiMiniArrowDownOnSquare, HiPencil, HiPrinter } from "react-icons/hi2";
-import { ModalDeletarExame } from "./components/modalDeletarExame";
 import {   HiDocumentAdd, HiFilter } from "react-icons/hi";
 import { ModalFiltroConsultas } from "./components/modalFiltro";
 import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
@@ -522,7 +521,9 @@ const handleDeletar = useCallback(async () => {
 
      {modal.editar && <ModalConsulta usuario={usuario?.nome} id_usuario={usuario?.id} events={events} setConsulta={setData} consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={modal.editar} setOpenModal={()=>setModal({editar:false})} buscarConsultas={buscarConsultas} />}
 
-      <ModalDeletarExame setOpenModal={()=>setModal({deletar:false})} show={modal.deletar} handleDeletarExame={handleDeletar} />
+      
+
+        <ModalConfirmar openModal={modal.deletar} setOpenModal={()=>setModal({deletar:false})} handleConfirmar={handleDeletar} pergunta={'Realmente deseja deletar essa consulta?'} />
 
 
      {modal.filtro && <ModalFiltroConsultas consultores={consultores} medicos={medicos} buscarConsultas={buscarConsultas} loading={loading} setFiltro={()=>setModal({filtro:false})} show={modal.filtro} />

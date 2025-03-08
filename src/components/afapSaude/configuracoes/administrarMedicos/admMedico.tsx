@@ -6,6 +6,7 @@ import { ChangeEvent, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import { ModalMedico } from "./modalMedico";
+import Image from "next/image";
 
 
 interface DataProps{
@@ -71,8 +72,8 @@ setArray(novoArray)
     <Card 
     key={item.id_med} 
      className=" relative  max-w-sm col-span-1 h-full" 
-     imgSrc={`${process.env.NEXT_PUBLIC_API_URL}/file/${item.imageUrl}`}
-   // renderImage={()=><Image alt="image med" className="rounded-lg w-full" width={250} height={100} src={convertBufferToUrl(item.image.data)}/>}
+    // imgSrc={}
+    renderImage={()=><img  alt="image med"  className="rounded-t-lg w-full object-fill h-44" src={`${process.env.NEXT_PUBLIC_API_URL}/file/${item.imageUrl}`}/>}
     
      
       >
@@ -98,15 +99,12 @@ setArray(novoArray)
         </Dropdown>
       </div>
         <div className="flex flex-col">
-        <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+        <h5 className="text-1xl font-bold tracking-tight text-gray-900 dark:text-white">
       {item.nome}
     </h5>
-    <span className="text-sm text-gray-500 dark:text-gray-400">{item.espec}</span>
+    <span className="text-xs text-gray-600 dark:text-gray-400">{item.espec}</span>
         </div>
 
-    <p className=" font-normal break-words overflow-y-auto text-gray-700 dark:text-gray-400">
-     {item.sobre}
-    </p>
   </Card>
    )) }
       <Card onClick={()=>{
@@ -125,7 +123,7 @@ setArray(novoArray)
           time:undefined
         })
         setOpenModal(true)
-        }} className="flex cursor-pointer justify-center items-center max-w-sm bg-gray-800"  horizontal>
+        }} className="flex cursor-pointer justify-center items-center max-w-sm bg-gray-400"  horizontal>
             <IoAddOutline size={60}/>
       </Card>
         </div>
