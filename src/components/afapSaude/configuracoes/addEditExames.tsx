@@ -18,7 +18,7 @@ interface DataProps{
 }
 
 export function AddEditExames({exames,setExames}:DataProps){
-const resetValues ={data:new Date(),id_exame:0,nome:'',porcFun:0,porcPart:0,porcPlan:0,usuario:'',valorBruto:0,valorFinal:0,obs:''}
+const resetValues ={data:new Date(),id_exame:0,nome:'',porcFun:0,porcPart:0,porcPlan:0,usuario:'',valorBruto:0,valorFinal:0,obs:'',valorRepasse:0}
 const [openModal,setOpenModal]= useState<boolean>(false)
 const [data,setData] = useState<ExamesProps>(resetValues)
 const {usuario} = useContext(AuthContext)

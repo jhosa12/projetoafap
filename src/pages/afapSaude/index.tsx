@@ -49,7 +49,8 @@ export interface ExamesProps{
   porcFun:number,
   porcPart:number,
   porcPlan:number
-  valorFinal:number
+  valorFinal:number,
+  valorRepasse:number,
   obs:string
 }
 
@@ -92,7 +93,7 @@ export interface ConsultaProps{
   hora_prev:Date,
   buscar:string,
   data_prev:Date|undefined,
-  retorno:boolean
+  retorno:string
 }
 
 export interface MedicoProps {

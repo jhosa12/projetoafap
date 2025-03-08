@@ -1,14 +1,24 @@
-import { MedicoProps } from "@/pages/afapSaude"
+import { ConsultaProps, MedicoProps } from "@/pages/afapSaude"
 import { api } from "@/services/apiClient"
-import { Button, FileInput, FloatingLabel, Label, Modal, Textarea } from "flowbite-react"
-import { ChangeEvent, useContext, useState } from "react"
+import { FileInput, Label, Modal, Popover, Textarea } from "flowbite-react"
+import { ChangeEvent, useContext, useEffect, useRef, useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { FaNotesMedical } from "react-icons/fa"
 import { IoIosSave } from "react-icons/io"
-import { MdCancel } from "react-icons/md"
 import { toast } from "react-toastify"
 import { ModalProcedimentos } from "./modalProcedimentos"
 import { AuthContext } from "@/contexts/AuthContext"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { BiMoneyWithdraw } from "react-icons/bi"
+import useApiPost from "@/hooks/useApiPost"
+import ReciboRepasse from "@/Documents/afapSaude/reciboRepasse"
+import { useReactToPrint } from "react-to-print"
+import pageStyle from "@/utils/pageStyle"
+import DatePicker,{registerLocale} from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import pt from 'date-fns/locale/pt-BR';
+import { ajustarData } from "@/utils/ajusteData"
 
 
 interface DataProps {
@@ -20,11 +30,52 @@ interface DataProps {
     setArray:(array:Array<MedicoProps>)=>void
 }
 
+interface ReqReciboProps {
+    id_med:number
+    startDate:string|undefined
+    endDate:string|undefined
+}
+
+
+
 
 
 export function ModalMedico({openModal,setOpenModal,dataMedico,medicos,setArray,setDataMedico}:DataProps) {
     const [openProcedimentos,setModalProcedimentos] = useState(false);
     const {usuario} = useContext(AuthContext)
+    const {postData,data,setData,loading} = useApiPost<Array<ConsultaProps>,ReqReciboProps>('/reciboRepasse')
+    const [date,setDate] = useState(new Date())
+const currentRef  = useRef<ReciboRepasse>(null)
+
+
+const imprimirRecibo = useReactToPrint({
+  pageStyle:pageStyle,
+    content:()=>currentRef.current,
+    documentTitle:'Recibo de Repasse',
+    onAfterPrint:()=>setData([])
+})
+
+    const handleRecibo = async()=>{
+
+        if(!dataMedico.id_med){
+            return
+        }
+        const {dataFim,dataIni} = ajustarData(date,date)
+        await postData({id_med:dataMedico.id_med,startDate:dataIni,endDate:dataFim})
+    }
+
+
+    useEffect(()=>{
+   if ( data && data.length>0) imprimirRecibo()
+
+    
+    },[data])
+
+    
+
+
+
+
 
     const {register,formState:{errors},handleSubmit,watch,control,reset,setValue} = useForm<MedicoProps>(
         {
@@ -131,37 +182,52 @@ setArray(novoArray)
     return (
         <>
         <Modal
-        className="absolute bg-transparent overflow-y-auto"
-        content={"base"}
+       
+      
          show={openModal}
          onClose={()=>setOpenModal(false)}
-          size={'xl'}
+          size={'2xl'}
            popup 
         
         
           >
            
-            <Modal.Header className="flex text-white items-start justify-between bg-gray-800 rounded-t border-b p-2 border-gray-60">
-                {dataMedico.id_med?<h1 className="text-white">Editar Dados</h1>:<h1 className="text-white">Adicionar Novo Medico</h1>}
+            <Modal.Header className="flex text-white items-start justify-between bg-gray-800 rounded-t border-b  px-2 py-1 border-gray-60">
+               <span className="text-white text-base">Administrar Médico</span>
                 </Modal.Header>
             <Modal.Body>
 
                 <form  onSubmit={handleSubmit(handleOnSubmit)} className="flex flex-col space-y-2 px-2 pt-2  ">
               
-      <Button.Group outline>
-        <Button type="submit" size="sm" color="gray">
-          <IoIosSave  className="mr-3 h-4 w-4" />
+      <div className="flex flex-row gap-2">
+        <Button type="submit" size="sm" variant={'outline'}>
+          <IoIosSave  className="h-3 w-3" />
           {dataMedico.id_med?'Atualizar':'Salvar'}
         </Button>
-        <Button onClick={() => setModalProcedimentos(true)} type="button" size="sm" color="gray">
-          <FaNotesMedical className="mr-3 h-4 w-4" />
+        <Button onClick={() => setModalProcedimentos(true)} type="button" size="sm" variant={'outline'}>
+          <FaNotesMedical className="h-3 w-3" />
           Procedimentos
         </Button>
-        <Button onClick={() => setOpenModal(false)} type="button" size="sm" color="gray">
-          <MdCancel className="mr-3 h-4 w-4" />
-          Cancelar
+
+
+
+        <Popover content={(   <div className="flex flex-col p-2 gap-2" >
+            <div className="flex flex-col">
+                <Label className="text-xs">Data da Consulta</Label>
+                <DatePicker className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  "  dateFormat={"dd/MM/yyyy"} onChange={e => { e && setDate(e) }} selected={date} locale={pt} />
+                
+            </div>
+        
+            <Button disabled={loading}  onClick={handleRecibo} type="button" size="sm">{loading?'Carregando...':'Aplicar'}</Button>
+        
+        </div>)}   >
+        <Button type="button" size="sm" variant={'outline'}>
+          <BiMoneyWithdraw className="h-3 w-3" />
+          Recibo de repasse
         </Button>
-      </Button.Group>
+        </Popover>
+    
+      </div>
   
     
    
@@ -170,7 +236,7 @@ setArray(novoArray)
         className="flex relative w-full cursor-pointer mt-2 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
       >
             <svg
-            className="absolute  z-20 mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
+            className="absolute  z-5 mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -190,20 +256,25 @@ setArray(novoArray)
         <FileInput  onChange={handleFile} id="dropzone-file" className="hidden" />
        {(watch('imageUrl') || watch('tmpUrl')) &&  <img className="w-full h-28 object-center rounded-lg" src={watch('imageUrl')?`${process.env.NEXT_PUBLIC_API_URL}/file/${watch('imageUrl')}`:watch('tmpUrl')} alt="fotoUser"  ></img>}
       </Label>
-      <FloatingLabel sizing="sm" label="Nome do Médico" variant="outlined" {...register('nome')}  />
-      <FloatingLabel sizing="sm" label="Especialidade" variant="outlined" {...register('espec')} />
-        <div className=" inline-flex gap-4">
+
+      <Input {...register('nome')}  placeholder="Nome do Médico" />
+      
+      <Input {...register('espec')}  placeholder="Especialidade" />
+     {/* <FloatingLabel sizing="sm" label="Nome do Médico" variant="outlined" {...register('nome')}  />
+      <FloatingLabel sizing="sm" label="Especialidade" variant="outlined" {...register('espec')} />*/}
+       
 
    {/*     <FloatingLabel sizing="sm" label="Valor Plano" variant="outlined" type="number" {...register('plano')} />
 
         <FloatingLabel sizing="sm" label="Valor Funerária" variant="outlined" type="number" {...register('funeraria')} />
 
         <FloatingLabel sizing="sm" label="Valor Particular" variant="outlined" type="number" {...register('particular')} />*/}
-      </div>
+    
+      
+      <Input {...register('time')}  placeholder="Intervalo médio entre consultas em minutos" />
+     { /*  <FloatingLabel sizing="sm" label="Intervalo médio entre consultas em minutos" variant="outlined" type="number" {...register('time')}/>*/}
 
-      <FloatingLabel sizing="sm" label="Intervalo médio entre consultas em minutos" variant="outlined" type="number" {...register('time')}/>
-
-      <Textarea   className="min-h-[40px] h-auto text-xs"  {...register('sobre')} rows={2} placeholder="Descreva suas atividades"/>
+      <Textarea   className="min-h-[40px] h-auto text-xs bg-white rounded-sm"  {...register('sobre')} rows={3} placeholder="Descreva suas atividades"/>
 
     
           </form>
@@ -211,6 +282,19 @@ setArray(novoArray)
         </Modal>
 
       { openProcedimentos && <ModalProcedimentos setMedico={setDataMedico} medicos={medicos} setArrray={setArray} usuario={usuario?.nome}  medico={dataMedico} openModal={openProcedimentos} setOpenModal={setModalProcedimentos} />}
+
+
+        <div style={{display:'none'}}>
+            <ReciboRepasse
+                ref={currentRef}
+                dados={data??[]}
+                especialidade={dataMedico.espec??''}
+                exames={dataMedico.exames??[]}
+                medico={dataMedico.nome??''}
+                usuario={usuario?.nome??''}
+            />
+        </div>
+
 
         </>
     )

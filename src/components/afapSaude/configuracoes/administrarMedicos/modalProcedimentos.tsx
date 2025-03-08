@@ -1,12 +1,14 @@
-import { ModalConfirm } from "@/components/estoque/historico/modalConfirm"
+
 import { ExamesProps, MedicoProps } from "@/pages/afapSaude"
 import { api } from "@/services/apiClient"
-import { Button, Modal, Table, TextInput } from "flowbite-react"
+import {Modal, Table } from "flowbite-react"
 import { useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
-import { MdDelete } from "react-icons/md"
+import { MdAdd, MdDelete, MdEdit } from "react-icons/md"
 import { toast } from "react-toastify"
 import { ModalConfirmar } from "../../components/modalConfirmar"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 
 interface DataProps {
@@ -22,11 +24,13 @@ interface DataProps {
 
 export function ModalProcedimentos({openModal,setOpenModal,medico,usuario,medicos,setArrray,setMedico}:DataProps) {
 
-    const {register,handleSubmit,watch,reset} = useForm<ExamesProps>()
+   
     const [openExcluir, setOpenExcluir] = useState(false)
     const [excluirId, setExcluirId] = useState<number|null>(null)
+    const [openEditar, setOpenEditar] = useState(false)
+    const [proced, setProced] = useState<ExamesProps>({} as ExamesProps)
 
-    const handleAdicionarExame:SubmitHandler<ExamesProps> =async(data)=>{
+    const handleAdicionarExame =async(data:ExamesProps)=>{
         if(!data.nome||!data.porcFun||!data.porcPlan){
             toast.info('Preencha os campos obrigatórios!');
             return;
@@ -50,7 +54,7 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,usuario,medico
 
 
             setMedico({...medico,exames:[...medico.exames??[],response.data]})
-            reset()
+          //  reset()
 
             
     
@@ -77,6 +81,8 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,usuario,medico
             setArrray(novoArray)
            // setExames(novoArray)
            setMedico({...medico,exames:novoArray[index].exames.filter(item=>item.id_exame!==excluirId)})
+
+           setOpenExcluir(false)
            
         } catch (error) {
             toast.warn('Consulte o TI')
@@ -86,23 +92,56 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,usuario,medico
 
 
 
+    const handleEditarExame =async(data:ExamesProps)=>{
+        if(!data.nome||!data.porcFun||!data.porcPlan){
+            toast.info('Preencha os campos obrigatórios!');
+            return;
+        }
+        try {
+            
+            const response = await toast.promise(
+                api.put('/afapSaude/exames/editarExame',
+                    data
+                ),
+                {
+                    error:'Erro ao atualizar Exame',
+                    pending:'Atualizando.....',
+                    success:'Atualização realizada com sucesso!'
+                }
+            )
+    
+           // const novoArray =[...exames]
+           // const index = novoArray.findIndex(item=>item.id_exame===data.id_exame)
+          //  novoArray[index] = {...response.data}
+           //setExames(novoArray)
+           const novoArray = [...medicos]
+           const index = novoArray.findIndex(item=>item.id_med==medico.id_med)
+           
+           const index2 = novoArray[index].exames.findIndex(item=>item.id_exame===data.id_exame)
+           novoArray[index].exames[index2] = {...response.data}
+           setArrray(novoArray)
+          // setExames(novoArray)
+          setMedico({...medico,exames:novoArray[index].exames})
+            setOpenEditar(false)
+    
+        } catch (error) {
+                toast.warn('Consulte o TI')
+        }
+    }
+
+
 
 
 
     return (
         <>
         <Modal show={openModal} size="3xl" onClose={() => setOpenModal(false)} popup>
-        <Modal.Header>{medico.nome}</Modal.Header>
+        <Modal.Header className="text-xs">{medico.nome}</Modal.Header>
         <Modal.Body >
-            <form onSubmit={handleSubmit(handleAdicionarExame)} className="space-y-2">
-            <div className="flex flex-row gap-2 w-full mt-1">
-                <TextInput className="w-full" sizing="sm" placeholder="Procedimento" {...register('nome')} />
-                <TextInput sizing="sm" placeholder="Particular"  {...register('porcPart')}/>
-                <TextInput sizing="sm" placeholder="Funerária" {...register('porcFun')}/>
-                <TextInput sizing="sm" placeholder="Plano" {...register('porcPlan')} />
-                <Button type="submit" size="xs">Adicionar</Button>
-            </div>
-            <Table theme={{body:{cell:{base:"px-6 py-1 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg"}}}}>
+            <div  className="space-y-2">
+      
+            <Button onClick={()=>{setProced({} as ExamesProps);setOpenEditar(true)}} variant={'outline'} size="sm"><MdAdd/>Adicionar</Button>
+            <Table theme={{root:{shadow:'none'},body:{cell:{base:"px-4 py-1"}},head:{cell:{base:"px-4 py-1 border-b-2"}}}}>
                 <Table.Head>
                     <Table.HeadCell>
                         Procedimento
@@ -122,7 +161,7 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,usuario,medico
                 </Table.Head>
                 <Table.Body className="divide-y">
                     {medico?.exames?.map((item,index)=>(
-                             <Table.Row className="text-xs font-semibold text-black">
+                             <Table.Row className="text-xs font-medium text-black">
                              <Table.Cell>
                                  {item.nome}
                              </Table.Cell>
@@ -135,9 +174,13 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,usuario,medico
                              <Table.Cell>
                                 {Number(item.porcPlan).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
                              </Table.Cell>
-                             <Table.Cell>
+                             <Table.Cell className="inline-flex gap-2">
                                 <button onClick={()=>{setExcluirId(item.id_exame);setOpenExcluir(true)}} type="button" className="hover:text-red-500">
                                 <MdDelete size={16}/>
+                                </button>
+
+                                <button onClick={()=>{setProced(item);setOpenEditar(true)}} type="button" className="hover:text-blue-500">
+                                <MdEdit size={16}/>
                                 </button>
                              </Table.Cell>
                          </Table.Row>
@@ -146,7 +189,7 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,usuario,medico
                 </Table.Body>
             </Table>
 
-            </form>
+            </div>
         </Modal.Body>
 
         </Modal>
@@ -157,6 +200,76 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,usuario,medico
           pergunta="Tem certeza que deseja excluir o procedimento?"
           handleConfirmar={handleDeletarExame}
            />
+
+       {openEditar && <ModalEditarProced
+        handleEditar={handleEditarExame}
+         handleNovo={handleAdicionarExame}
+          open={openEditar}
+           onClose={()=>setOpenEditar(false)}
+           proced={proced}/>}
         </>
     )
+}
+
+
+
+interface ProcedProps{
+    open:boolean
+    onClose:()=>void,
+    proced:ExamesProps,
+    handleNovo:(data:ExamesProps)=>Promise<void>
+    handleEditar:(data:ExamesProps)=>Promise<void>
+}
+
+export const ModalEditarProced = ({onClose,open,proced,handleNovo,handleEditar}:ProcedProps)=>{
+    const {register,handleSubmit,watch,reset} = useForm<ExamesProps>({
+        defaultValues:proced
+    })
+
+        const handleOnSubmit:SubmitHandler<ExamesProps> = (data) =>{
+          data.id_exame ? handleEditar(data) : handleNovo(data)
+        }
+
+
+       
+
+
+      return ( 
+      <Modal size="md" show={open} onClose={onClose} popup>
+            <Modal.Header/>
+            <Modal.Body>
+                <form onSubmit={handleSubmit(handleOnSubmit)} className="grid grid-cols-2 gap-4">
+                    <div className="col-span-2" >
+                        <label className="text-xs"  htmlFor="nome">Procedimento</label>
+                        <Input id="nome"  placeholder="Procedimento" {...register('nome')} />
+                    </div>
+                    <div>
+                        <label className="text-xs"  htmlFor="porcPart">Particular</label>
+                        <Input id="porcPart" placeholder="Particular"  {...register('porcPart')}/>
+                    </div>
+
+                    <div>
+                        <label className="text-xs" htmlFor="porcFun">Funerária</label>
+                        <Input id="porcFun" placeholder="Funerária" {...register('porcFun')}/>
+                    </div>
+
+                    <div>
+                        <label className="text-xs" htmlFor="porcPlan">Plano</label>
+                        <Input id="porcPlan"  placeholder="Plano" {...register('porcPlan')} />
+                    </div>
+
+
+                    
+                    <div>
+                        <label className="text-xs" htmlFor="valorRepasse">Valor Repasse</label>
+                        <Input id="valorRepasse" placeholder="Valor de Repasse" {...register('valorRepasse')} />
+                    </div>
+               
+               
+                <Button className="col-span-2" type="submit" size="sm">{proced.id_exame?'EDITAR':'ADICIONAR'}</Button>
+                    
+                </form>
+
+            </Modal.Body>
+        </Modal>)
 }

@@ -77,12 +77,12 @@ setArray(novoArray)
     
      
       >
-        <div className="absolute top-0 right-0 z-10 flex justify-end px-4 pt-4">
+        <div className="absolute top-0 right-0 z-10 flex justify-end px-2 pt-2">
         <Dropdown inline label="" theme={{arrowIcon:"ml-2 h-4 w-4 text-gray-600 bg-white rounded-lg "}}>
           <Dropdown.Item  onClick={()=>{setarDadosMedico({...item,tmpUrl:undefined,exames:item.exames}),setOpenModal(true)}}>
             <span
               
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
+              className="block  text-xs text-gray-700 hover:bg-gray-100"
             >
               Editar
             </span>
@@ -91,7 +91,7 @@ setArray(novoArray)
           <Dropdown.Item>
             <button
               onClick={()=>deletarMedico(item.id_med)}
-              className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
+              className="block   text-xs text-red-600 hover:bg-gray-100"
             >
               Deletar
             </button>
