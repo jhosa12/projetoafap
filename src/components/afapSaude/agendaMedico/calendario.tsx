@@ -4,10 +4,6 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
-import moment from 'moment'
-import { FaCheck } from "react-icons/fa";
-import { ImCancelCircle } from "react-icons/im";
-import { MdAccessTime } from "react-icons/md";
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
 import { ModalDrawer } from "@/components/afapSaude/agendaMedico/drawer";
@@ -20,10 +16,19 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { getDay } from "date-fns";
 import { api } from "@/services/apiClient";
 import { toast } from "react-toastify";
+import { LuCalendarCheck, LuCalendarClock, LuCalendarX } from "react-icons/lu";
 
 const locales = {
   'pt-BR':ptBR,
 } 
+
+
+const colors ={
+  failure: "border-red-500 bg-red-300 text-black ",
+  success: "border-green-500 bg-green-200 text-black  ",
+    warning: "border-yellow-500 bg-yellow-200 text-black  "
+}
+
 const localizer = dateFnsLocalizer({
   format: (date: Date, formatStr: string) => format(date, formatStr, { locale: ptBR }),
   parse: (dateString: string, formatString: string) => parse(dateString, formatString, new Date(), { locale: ptBR }),
@@ -34,7 +39,16 @@ const localizer = dateFnsLocalizer({
 
 // Configura o moment para usar o idioma português
 
-
+const eventPropGetter = (event: any) => {
+  return {
+    style: {
+      backgroundColor: "transparent", // Remove a cor de fundo
+      border: "none", // Opcional: Remove a borda do evento
+      color: "#000", // Ajuste a cor do texto para melhor visualização
+    
+    },
+  };
+};
 
 
 
@@ -122,17 +136,15 @@ export default function Calendario({ medicos,events, setArrayEvent }: DataProps)
 
   const components: any = {
     event: ({ event, index }: { event: EventProps, index: number }) => {
+      const data = new Date()
+      const eventDate = new Date(event.end)
+      const verifyDate = data>eventDate
       return (
-        <Alert theme={{base:"flex flex-col gap-2 p-2 text-[11px] ",icon:"mr-2 inline h-4 w-4 flex-shrink-0",}} className="text-[11px]" color={event.status === 'ABERTO'?'success':event.status === 'CANCELADO'?'failure':'warning'}  icon={event.status === 'ABERTO'?FaCheck :event.status === 'CANCELADO'?ImCancelCircle :MdAccessTime }>
+        <Alert theme={{color:colors,rounded:'rounded-sm',base:"flex  p-2 text-[11px]",icon:"mr-1 inline h-4 w-4 flex-shrink-0"}} className="text-[11px]" color={event.status === 'CANCELADO'?'failure':verifyDate?'success':'warning'}  icon={event.status === 'CANCELADO'?LuCalendarX :verifyDate?LuCalendarCheck :LuCalendarClock }>
       
-           {event.status} - {event.title}
+            {event.title}
         </Alert>
-
-
-
       )
-
-
     }
   }
 
@@ -168,6 +180,7 @@ const toggleDrawer = () => {
           events={events.filter((item) => item.tipoAg !== 'tp')}
           components={components}
           onSelectEvent={handleEventClick}
+          eventPropGetter={eventPropGetter}
           startAccessor="start"
           endAccessor="end"
           selectable

@@ -209,17 +209,13 @@ setArray(novoArray)
           Procedimentos
         </Button>
 
-
-
         <Popover content={(   <div className="flex flex-col p-2 gap-2" >
             <div className="flex flex-col">
                 <Label className="text-xs">Data da Consulta</Label>
                 <DatePicker className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  "  dateFormat={"dd/MM/yyyy"} onChange={e => { e && setDate(e) }} selected={date} locale={pt} />
                 
             </div>
-        
             <Button disabled={loading}  onClick={handleRecibo} type="button" size="sm">{loading?'Carregando...':'Aplicar'}</Button>
-        
         </div>)}   >
         <Button type="button" size="sm" variant={'outline'}>
           <BiMoneyWithdraw className="h-3 w-3" />
@@ -229,8 +225,6 @@ setArray(novoArray)
     
       </div>
   
-    
-   
                 <Label
         htmlFor="dropzone-file"
         className="flex relative w-full cursor-pointer mt-2 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"

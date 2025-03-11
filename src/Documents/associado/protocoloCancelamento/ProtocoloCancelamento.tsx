@@ -1,12 +1,8 @@
 
 
-
-
-
-import { timesNewRoman } from "@/fonts/fonts";
-import { EmpresaProps } from "@/types/empresa";
 import React from "react";
-
+import { EmpresaProps } from "@/types/empresa";
+import { timesNewRoman } from "@/fonts/fonts";
 
 
 interface Props{
@@ -28,7 +24,7 @@ export class ProtocoloCancelamento extends React.Component<Props> {
     render(){
         const {contrato,infoEmpresa,titular,bairro,cidade,endereco,cpf,usuario} = this.props
         return (
-           <div className={timesNewRoman.className} style={{display:'flex',flexDirection:'column',width:'100%',gap:'50px'}}>
+           <div style={{display:'flex',flexDirection:'column',width:'100%',gap:'50px'}} className={timesNewRoman.className}>
 
             <div style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
                 <img width={200} height={200} src={infoEmpresa?.logoUrl} alt="logo" />

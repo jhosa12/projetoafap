@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import { api } from "@/services/apiClient";
 import 'react-datepicker/dist/react-datepicker.css';
 import { EventProps, MedicoProps } from "@/pages/afapSaude";
-import ReactInputMask from "react-input-mask";
 import { AuthContext } from "@/contexts/AuthContext";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
@@ -213,7 +212,6 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
             <option value={''}>SELECIONE O STATUS</option>
             <option value="ABERTO">ABERTO</option>
             <option value="CANCELADO">CANCELADO</option>
-            <option value="ADIADO">ADIADO</option>
           </select>
         </div>
 
