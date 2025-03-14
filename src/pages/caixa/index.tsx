@@ -576,7 +576,7 @@ setOpenModal={setModalDados}
                   
 
                    <DropdownMenu>
-  <DropdownMenuTrigger>
+  <DropdownMenuTrigger asChild>
   <Button variant={'outline'} disabled={!permissoes.includes('ADM2.1.1')||!!data?.fechamento} color={'success'} size={'sm'}  ><IoMdOptions />Ações</Button>
   </DropdownMenuTrigger>
   <DropdownMenuContent>
