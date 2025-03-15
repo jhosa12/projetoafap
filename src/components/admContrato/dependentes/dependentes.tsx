@@ -20,7 +20,7 @@ import { Button, ButtonGroup, Table } from "flowbite-react"
 
 export function Dependentes(){
     const [checkDependente, setCheckDependente] = useState(false)
-    const {dadosassociado,usuario,setarDadosAssociado,permissoes} =useContext(AuthContext)
+    const {dadosassociado,usuario,setarDadosAssociado,permissoes,infoEmpresa} =useContext(AuthContext)
     const [dadosDep,setDadosDep] = useState<Partial<DependentesProps>>({} )
     const componentRef = useRef<DeclaracaoExclusao>(null)
     const [modal,setModal] = useState<{[key:string]:boolean}>({
@@ -33,7 +33,8 @@ export function Dependentes(){
     const imprimirDeclaracao =useReactToPrint({
         pageStyle:pageStyle,
         documentTitle:'DECLARAÇÃO DE EXCLUSÃO DEPENDENTE',
-        content:()=>componentRef.current
+        content:()=>componentRef.current,
+        onBeforeGetContent:()=>setModal({print:false})
 
    })
 
@@ -41,10 +42,10 @@ export function Dependentes(){
     if (modal.print && dadosDep) {
         imprimirDeclaracao();  // Chama a impressão apenas quando os dados são atualizados
         //setIsReadyToPrint(false);  // Reseta o estado
-        setModal({print:false})
+       
     }
 
-   },[modal.print,imprimirDeclaracao])
+   },[modal.print])
 
    const handlePrintClick = (item:DependentesProps) => {
     setDadosDep(item)
@@ -205,7 +206,8 @@ export function Dependentes(){
                                 <ModalExcluirDep nome={dadosDep?.nome??''} excluirDep={excluirDep} openModal={modal.excluir} setOpenModal={()=>setModal({excluir:false})}/>
 
                                 <div style={{ display: 'none' }}>
-                                    <DeclaracaoExclusao 
+                                  { modal.print && <DeclaracaoExclusao 
+                                    logoUrl={infoEmpresa?.logoUrl ?? ''}
                                     data_nasc={dadosDep?.data_nasc??null}
                                     bairro={dadosassociado?.bairro ?? ''}
                                     cidade={dadosassociado?.cidade ?? ''}
@@ -218,7 +220,7 @@ export function Dependentes(){
                                     titular={dadosassociado?.nome ?? ''}
                                     contrato={dadosassociado?.contrato?.id_contrato_global ?? null}
                                     ref={componentRef}
-                                        />
+                                        />}
                                 </div>
                             </div>
     )

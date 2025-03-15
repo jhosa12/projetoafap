@@ -25,12 +25,8 @@ interface DataProps {
 
 
 export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
-    const { usuario, closeModa, permissoes } = useContext(AuthContext)
-   // const [openEdit, setModalEdit] = useState<boolean>(false)
-   // const [verObs, setVerObs] = useState(false)
+    const { usuario,permissoes } = useContext(AuthContext)
     const [observacao, setObservacao] = useState('');
-   // const [openAltPlano, setOpenAltPlano] = useState<boolean>(false)
-   // const [openInativar, setOpenInativar] = useState<boolean>(false)
     const [modal,setModal] =useState<{[key:string]:boolean}>({
         editar:false,
         observacao:false,
@@ -130,7 +126,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
     }, [printState]);
 
 
-    function handleObservacao() {
+  /*  function handleObservacao() {
 
         const novaObservacao = observacao.trim(); // Remove espaços em branco
 
@@ -139,8 +135,8 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
             closeModa({ contrato: { anotacoes: anotacoesAntigas + novaObservacao + ' ' + `[${usuario?.nome + ' ' + 'em' + ' ' + new Date().toLocaleDateString()}]` + '\n' } });
             setObservacao('')
         }
-    }
-
+   
+}*/
 
     return (
         <div className={`flex flex-col h-[calc(100vh-190px)]  text-xs p-4  rounded-b-lg w-full `}>
@@ -255,7 +251,10 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
                         </button>
 
                         <input value={observacao ?? ''} onChange={e => setObservacao(e.target.value ?? '')} placeholder="Digite aqui todas as observações em relação ao plano" type="text" className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-sm bg-gray-100 border-gray-300 placeholder-gray-600 text-gray-600 focus:ring-blue-500 focus:border-blue-500" />
-                        <Button size={'xs'} disabled={!permissoes.includes('ADM1.1.2')} onClick={() => handleObservacao()}>
+                        <Button size={'xs'} disabled={!permissoes.includes('ADM1.1.2')} onClick={() =>{}
+                        //handleObservacao()
+                        
+                        }>
                             <BiSave size={20} />
                         </Button>
 
