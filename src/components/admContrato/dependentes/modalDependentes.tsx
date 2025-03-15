@@ -10,7 +10,7 @@ import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { Button, Label, Modal, Select, TextInput } from "flowbite-react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { DependentesProps } from "@/types/associado";
 
 registerLocale('pt', pt)
@@ -40,7 +40,7 @@ interface DataProps{
 
 export function ModalDependentes({openModal,setModal,data}:DataProps){
     const {usuario,dadosassociado,carregarDados}=useContext(AuthContext)
-    const {setValue,register,watch,handleSubmit,reset} = useForm<DependentesProps>({
+    const {setValue,register,watch,handleSubmit,reset,control} = useForm<DependentesProps>({
       defaultValues:data
     })
 
@@ -90,7 +90,7 @@ export function ModalDependentes({openModal,setModal,data}:DataProps){
         api.put('/atualizarDependente',{
           id_dependente_global:data.id_dependente_global,
             id_dependente:data.id_dependente,
-            nome:dados.nome,
+            nome:dados.nome.toUpperCase(),
             data_nasc:dados.data_nasc,
             grau_parentesco:dados.grau_parentesco,
             data_adesao:dados.data_adesao,
@@ -142,13 +142,22 @@ export function ModalDependentes({openModal,setModal,data}:DataProps){
   <div className=" block">
     <Label className="text-xs"  value="Nome" />
   </div>
-  <TextInput className="font-semibold" value={watch('nome')?.toUpperCase()} sizing={'sm'} {...register('nome')} type="text" placeholder="Nome" required />
+  <TextInput className="font-semibold" sizing={'sm'} {...register('nome')} type="text" placeholder="Nome" required />
 </div>
 <div className="col-span-1" >
   <div className=" block">
     <Label className="text-xs"  value="Nascimento" />
   </div>
- <DatePicker selected={watch('data_nasc')} onChange={e=>e && setValue('data_nasc',e)}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+  <Controller
+  control={control}
+  name="data_nasc"
+  render={({ field:{onChange,value} }) => (
+<DatePicker selected={value} onChange={onChange}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+
+  )}
+  
+  />
+ 
 </div>
 
 
@@ -178,14 +187,27 @@ export function ModalDependentes({openModal,setModal,data}:DataProps){
   <div className=" block">
     <Label className="text-xs"  value="Adesão" />
   </div>
- <DatePicker selected={watch('data_adesao')} onChange={e=>e && setValue('data_adesao',e)}   dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+  <Controller
+  control={control}
+  name="data_adesao"
+  render={({ field:{onChange,value} }) => (
+    <DatePicker selected={value} onChange={onChange}   dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+  )}
+  />
 </div>
 
 <div className="col-span-1" >
   <div className=" block">
     <Label className="text-xs"  value="Carência" />
   </div>
- <DatePicker  selected={watch('carencia')} onChange={e=>e && setValue('carencia',e)}    dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+  <Controller
+  control={control}
+  name="carencia"
+  render={({ field:{onChange,value} }) => (
+    <DatePicker  selected={value} onChange={onChange}    dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+  )}
+  />
+
 </div>
 
 
@@ -201,11 +223,7 @@ export function ModalDependentes({openModal,setModal,data}:DataProps){
 
 <div className=" gap-2 col-span-4  flex flex-row justify-end">
 <Button size={'sm'} type="submit">
-    {data.excluido ? (
-      <>
-        <TfiReload size={20} /> Resgatar
-      </>
-    ) : data.id_dependente ? (
+    { data.id_dependente ? (
       <>
         <MdSaveAlt size={22} /> Salvar
       </>

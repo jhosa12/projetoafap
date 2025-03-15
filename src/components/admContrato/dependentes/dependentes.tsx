@@ -20,12 +20,9 @@ import { Button, ButtonGroup, Table } from "flowbite-react"
 
 export function Dependentes(){
     const [checkDependente, setCheckDependente] = useState(false)
-    const {closeModa,dadosassociado,data,usuario,setarDadosAssociado,permissoes} =useContext(AuthContext)
-   // const [modalExcluirDep, setModalExcDep] = useState(false)
-   // const [modalDep,setModalDep] = useState<boolean>(false)
+    const {dadosassociado,usuario,setarDadosAssociado,permissoes} =useContext(AuthContext)
     const [dadosDep,setDadosDep] = useState<Partial<DependentesProps>>({} )
     const componentRef = useRef<DeclaracaoExclusao>(null)
-   // const [isReadyToPrint,setIsReadyToPrint] = useState(false)
     const [modal,setModal] = useState<{[key:string]:boolean}>({
         dependente:false,
         excluir:false,
@@ -56,13 +53,7 @@ export function Dependentes(){
        
    }
 
-   const handleSelectDependente =useCallback( (item:DependentesProps) => {
-    if(data.dependente?.id_dependente===item.id_dependente){
-        closeModa({dependente:{}})
-        return
-    }
-    closeModa({dependente:item})
-   },[data.dependente])
+
 
 
     async function excluirDep(motivo:string) {
@@ -125,7 +116,7 @@ export function Dependentes(){
                                      <ButtonGroup>
 
                                              <Button disabled={!permissoes.includes('ADM1.3.2')} onClick={() => {
-                                                 setDadosDep({})
+                                                 setDadosDep({}),
                                                 setModal({dependente:true})}} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' /> Adicionar</Button>
                                                     <Button disabled={!permissoes.includes('ADM1.3.2')} onClick={() => {
                                                        
@@ -165,7 +156,7 @@ export function Dependentes(){
                                                 </Table.HeadCell>
                                             </Table.Head>
                                     <Table.Body >
-                                             {dadosassociado?.dependentes?.filter(item=>!checkDependente?item.excluido===false||item.excluido===null:item.excluido===true).map((item,index) => (   <Table.Row key={index} onClick={() => handleSelectDependente(item)} className={`border-b ${item.id_dependente === data.dependente?.id_dependente ? "bg-gray-300" : ""} border-gray-300  hover:bg-gray-300 text-red-500`}>
+                                             {dadosassociado?.dependentes?.filter(item=>!checkDependente?item.excluido===false||item.excluido===null:item.excluido===true).map((item,index) => (   <Table.Row key={index} onClick={() =>setDadosDep(item)} className={`border-b ${item.id_dependente === dadosDep?.id_dependente ? "bg-gray-300" : ""} border-gray-300  hover:bg-gray-300 text-red-500`}>
                                                     <Table.Cell>
                                                         {item.nome}
                                                     </Table.Cell>
@@ -210,7 +201,7 @@ export function Dependentes(){
 
                                 </Table>
 
-                              {modal.dependente &&  <ModalDependentes data={data.dependente??{}} openModal={modal.dependente} setModal={()=>setModal({dependente:false})}/>}
+                              {modal.dependente &&  <ModalDependentes data={dadosDep??{}} openModal={modal.dependente} setModal={()=>setModal({dependente:false})}/>}
                                 <ModalExcluirDep nome={dadosDep?.nome??''} excluirDep={excluirDep} openModal={modal.excluir} setOpenModal={()=>setModal({excluir:false})}/>
 
                                 <div style={{ display: 'none' }}>
