@@ -128,7 +128,7 @@ class ImpressaoCarne extends React.Component<DadosProps> {
                             </div>
                             <div className="flex flex-col w-full">
                                 <span style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '1' }}>PIX: {infoEmpresa?.cnpj}</span>
-                                <span style={{ fontSize: '9px', lineHeight: '1' }}>TITULAR FREITAS NETO COMERCIO E SERVIÇO- LTDA-ME</span>
+                                <span style={{ fontSize: '9px', lineHeight: '1' }}>TITULAR AFAP VIVA MAIS</span>
                                 <span style={{ fontSize: '9px', lineHeight: '1', fontStyle: 'italic' }}>MANTENHA SEU PLANO DE EM DIA</span>
                             </div>
 
