@@ -100,7 +100,8 @@ export type ContratoProps = {
     categoria_inativo: string,
     motivo_inativo: string,
     dt_cancelamento: Date,
-    obitos:Array<ObitoProps>
+    obitos:Array<ObitoProps>,
+    impressoes:Array<ImpressoesProps>
 }
 
 export type AssociadoProps = {
@@ -332,4 +333,12 @@ export interface ArrayProdutoProps {
     desconto: number | null,
     acrescimo: number | null,
     valor_total: number | null
+}
+
+
+
+export interface ImpressoesProps{
+    arquivo:string,
+    date:Date,
+    user:string|undefined
 }

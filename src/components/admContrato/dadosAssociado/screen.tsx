@@ -2,7 +2,7 @@ import { ModalEditarDados } from "@/components/admContrato/dadosAssociado/modalE
 import { AuthContext } from "@/contexts/AuthContext";
 import { AssociadoProps } from "@/types/associado";
 import { Badge, Button, ButtonGroup, Card, Dropdown } from "flowbite-react";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { BiSave } from "react-icons/bi";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { TbWheelchair } from "react-icons/tb";
@@ -17,6 +17,9 @@ import Carteiras from "@/Documents/associado/carteiraAssociado/DocumentTemplate"
 import { EmpresaProps } from "@/types/empresa";
 import { CartaNovoAssociado } from "@/Documents/associado/cartaNovoAssociado/cartaDocument";
 import { ProtocoloCancelamento } from "@/Documents/associado/protocoloCancelamento/ProtocoloCancelamento";
+import { api } from "@/services/apiClient";
+import { toast } from "react-toastify";
+import { ModalConfirmar } from "@/components/afapSaude/components/modalConfirmar";
 
 interface DataProps {
     dadosassociado: Partial<AssociadoProps>,
@@ -31,7 +34,8 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
         editar:false,
         observacao:false,
         altPlano:false,
-        inativar:false
+        inativar:false,
+        impressao:false
     })
 
 
@@ -56,8 +60,13 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
     };
 
 
+    const chaveAtiva = printState 
+  ? Object.entries(printState).find(([_, valor]) => valor === true)?.[0] 
+  : null;
+
+
     const handlePrint = (doc: string) => {
-        setPrintState((prev) => ({ ...prev, [doc]: true }));
+        setPrintState((prev) => ({ [doc]: true }));
     };
 
 
@@ -67,7 +76,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
         pageStyle: pageStyle,
         documentTitle: "CANCELAMENTO",
         content: () => componentRefs.cancelamento.current,
-        onAfterPrint: () => setPrintState((prev) => ({ ...prev, cancelamento: false })),
+        onAfterPrint: () => setPrintState((prev) => ({  cancelamento: false })),
     });
 
 
@@ -76,28 +85,43 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
         pageStyle: pageStyle,
         documentTitle: "CONTRATO",
         content: () => componentRefs.contrato.current,
-        onAfterPrint: () => setPrintState((prev) => ({ ...prev, contrato: false })),
+        onAfterPrint: async() => {
+            setPrintState((prev) => ({ contrato: false }));
+           await handleRegisterImpressao('contrato');
+        },
     });
 
     const imprimirCarteira = useReactToPrint({
         pageStyle: pageStyle,
         documentTitle: "CARTEIRA",
         content: () => componentRefs.carteira.current,
-        onAfterPrint: () => setPrintState((prev) => ({ ...prev, carteira: false })),
+        onAfterPrint: async() => {
+            setPrintState((prev) => ({carteira: false }));
+            await handleRegisterImpressao('carteira');
+        
+        
+        },
     });
 
     const imprimirCarne = useReactToPrint({
         pageStyle: pageStyle,
         documentTitle: "CARNÊ",
         content: () => componentRefs.carne.current,
-        onAfterPrint: () => setPrintState((prev) => ({ ...prev, carne: false })),
+        onAfterPrint: async() => {
+            setPrintState((prev) => ({carne: false }));
+            await handleRegisterImpressao('carne');
+        
+        },
     });
 
     const imprimirResumo = useReactToPrint({
         pageStyle: pageStyle,
         documentTitle: "RESUMO",
         content: () => componentRefs.resumo.current,
-        onAfterPrint: () => setPrintState((prev) => ({ ...prev, resumo: false })),
+        onAfterPrint: async() => {
+            setPrintState((prev) => ({ resumo: false }));
+            await handleRegisterImpressao('resumo');
+        },
     });
 
 
@@ -105,7 +129,10 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
         pageStyle: pageStyle,
         documentTitle: "CARTA",
         content: () => componentRefs.carta.current,
-        onAfterPrint: () => setPrintState((prev) => ({ ...prev, carta: false })),
+        onAfterPrint:async() => {
+            setPrintState((prev) => ({  carta: false }));
+            await handleRegisterImpressao('carta');
+        },
     });
 
     /* useEffect(() => {
@@ -116,14 +143,36 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
        });
      }, [printState]);*/
 
-    useEffect(() => {
-        if (printState.contrato) imprimirContrato();
-        if (printState.carteira) imprimirCarteira();
-        if (printState.carne) imprimirCarne();
-        if (printState.resumo) imprimirResumo();
-        if (printState.carta) imprimirCarta();
-        if (printState.cancelamento) imprimirCancelamento();
-    }, [printState]);
+  const handleImpressao = useCallback(async() => {
+
+ 
+            if (printState.contrato) imprimirContrato();
+            if (printState.carteira) imprimirCarteira();
+            if (printState.carne) imprimirCarne();
+            if (printState.resumo) imprimirResumo();
+            if (printState.carta) imprimirCarta();
+            if (printState.cancelamento) imprimirCancelamento();
+        
+      
+    },[printState])
+
+    
+
+
+    const handleRegisterImpressao = useCallback(async (arquivo: string) => {
+        const impressoes =[...( dadosassociado.contrato?.impressoes||[])];
+        const index = impressoes.findIndex((imp) => imp.arquivo === arquivo);
+        if (index === -1) {
+            impressoes.push({ arquivo: arquivo, date: new Date(), user: usuario?.nome });
+        }else {impressoes[index] = { ...impressoes[index], date: new Date(),user: usuario?.nome };}
+        try {
+         const response = await api.put('/contrato/impressoes', {id_contrato_global:dadosassociado?.contrato?.id_contrato_global,impressoes:impressoes})
+            setModal({impressao:false})
+        } catch (error) {
+            console.log(error)
+            toast.error('Erro ao registrar impressão')
+        }
+    },[dadosassociado])
 
 
   /*  function handleObservacao() {
@@ -150,7 +199,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
                     </span>
 
                     <Badge size={'sm'} color={dadosassociado.contrato?.situacao === 'ATIVO' ? 'success' : `failure`}>{dadosassociado?.contrato?.situacao}</Badge>
-
+                     
                     {dadosassociado?.contrato?.convalescencia?.map(item => (
                         <>
                             {item.convalescenca_prod?.map((dados, index) => (!item.id_dependente || item.id_dependente === null) && item.status === 'ABERTO' && <button data-tooltip-id="my-tooltip" data-tooltip-content={dados?.descricao ?? ''} className="text-yellow-500">
@@ -166,22 +215,22 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
 
 
                     <Dropdown label="" renderTrigger={() => <Button theme={{ color: { gray: "border border-gray-200 bg-white text-gray-900  enabled:hover:bg-gray-100 enabled:hover:text-cyan-700" }, pill: { off: 'rounded-r-lg' } }} className="text-black " color={'gray'} size={'xs'} >Imprimir Documentos</Button>} >
-                        <Dropdown.Item className="text-xs" onClick={() => handlePrint('carta')}>
+                        <Dropdown.Item className="text-xs" onClick={() => {handlePrint('carta'),setModal({...{},impressao:true})}}>
                             Carta
                         </Dropdown.Item>
-                        <Dropdown.Item className="text-xs" onClick={() => handlePrint('contrato')}>
+                        <Dropdown.Item className="text-xs" onClick={() =>{ handlePrint('contrato'),setModal({...{},impressao:true})}}>
                             Contrato
                         </Dropdown.Item>
-                        <Dropdown.Item className="text-xs" onClick={() => handlePrint('carne')}>
+                        <Dropdown.Item className="text-xs" onClick={() =>{ handlePrint('carne'),setModal({...{},impressao:true,})}}>
                             Carnê
                         </Dropdown.Item>
-                        <Dropdown.Item className="text-xs" onClick={() => handlePrint('carteira')}>
+                        <Dropdown.Item className="text-xs" onClick={() =>{ handlePrint('carteira'),setModal({impressao:true})}}>
                             Carteiras
                         </Dropdown.Item>
-                        <Dropdown.Item className="text-xs" onClick={() => handlePrint('resumo')}>
+                        <Dropdown.Item className="text-xs" onClick={() =>{ handlePrint('resumo'),setModal({impressao:true})}}>
                             Resumo de Contrato
                         </Dropdown.Item>
-                        <Dropdown.Item className="text-xs" onClick={() => handlePrint('cancelamento')}>
+                        <Dropdown.Item className="text-xs" onClick={() =>{ handlePrint('cancelamento'),setModal({impressao:true})}}>
                             Cancelamento
                         </Dropdown.Item>
                     </Dropdown>
@@ -190,6 +239,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
                 </ButtonGroup>
 
             </div>
+       {  dadosassociado.contrato?.situacao === 'INATIVO' &&   <span className="text-[10px] text-red-500 font-medium">MOTIVO INATIVO:{dadosassociado.contrato?.dt_cancelamento && new Date(dadosassociado.contrato?.dt_cancelamento).toLocaleDateString('pt-BR', {timeZone: 'UTC', day: '2-digit', month: '2-digit', year: 'numeric' })}  - {dadosassociado.contrato?.motivo_inativo}</span>  }
             <div className="flex w-full flex-row gap-2">
 
                 <Card onClick={() => {
@@ -267,10 +317,19 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
                 </div>
             </div>
 
+            <ul className="flex gap-3 uppercase flex-wrap text-[11px] font-medium text-center  border-b   border-gray-300  ">
+                <li>Ultimas Impressões{"->"}</li>
+                {dadosassociado?.contrato?.impressoes?.map((item, index) => (
+                    <li key={index}>{item.arquivo}: {item.date && new Date(item.date).toLocaleDateString('pt-BR')}-{item.user}</li>
+                ))}
+            </ul>
+
             {modal.editar && <ModalEditarDados dataForm={dadosassociado} setModalEdit={()=>setModal({editar:false})} openEdit={modal.editar} />}
 
             {modal.altPlano && <ModalAlterarPlano openModal={modal.altPlano} setOpenModal={()=>setModal({altPlano:false})} />}
             {modal.inativar && <ModalInativar openModal={modal.inativar} setModal={()=>setModal({inativar:false})} />}
+
+                {modal.impressao &&<ModalConfirmar pergunta={`Realmente deseja imprimir o(a) ${chaveAtiva}?. Esteja ciente de que ao confirmar, os dados de data e usuario que realizou a impressão serão atualizados!`} openModal={modal.impressao} setOpenModal={()=>setModal({impressao:false})} handleConfirmar={handleImpressao}/>}
 
 
             <div style={{ display: 'none' }}>
