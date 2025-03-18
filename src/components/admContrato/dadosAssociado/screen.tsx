@@ -188,9 +188,9 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
 }*/
 
     return (
-        <div className={`flex flex-col h-[calc(100vh-190px)]  text-xs p-4  rounded-b-lg w-full `}>
+        <div className={`flex flex-col w-full  text-xs p-4 h-screen rounded-b-lg `}>
 
-            <div className="inline-flex w-full justify-between  gap-3 mb-3 pl-2 text-sm font-semibold tracking-tight text-black">
+            <div className="inline-flex w-full justify-between  gap-3 mb-3 pl-2 text-sm font-semibold  text-black">
                 <div className="inline-flex gap-3 items-center ">
                     {dadosassociado?.contrato?.id_contrato}-{dadosassociado?.nome}
                     <span>CATEGORIA:
@@ -210,11 +210,11 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
 
                 </div>
                 <ButtonGroup outline >
-                    <Button className="text-black  " color={'gray'} size={'xs'} onClick={() => setModal({altPlano:true})}>Alterar Categoria</Button>
-                    <Button className="text-black " disabled={!permissoes.includes('ADM1.1.3')} onClick={() => setModal({inativar:true})} color={'gray'} size={'xs'} >{dadosassociado?.contrato?.situacao === 'ATIVO' ? "Inativar Contrato" : "Ativar Contrato"}</Button>
+                    <Button className="text-black truncate " color={'gray'} size={'xs'} onClick={() => setModal({altPlano:true})}>Alterar Categoria</Button>
+                    <Button className="text-black truncate " disabled={!permissoes.includes('ADM1.1.3')} onClick={() => setModal({inativar:true})} color={'gray'} size={'xs'} >{dadosassociado?.contrato?.situacao === 'ATIVO' ? "Inativar Contrato" : "Ativar Contrato"}</Button>
 
 
-                    <Dropdown label="" renderTrigger={() => <Button theme={{ color: { gray: "border border-gray-200 bg-white text-gray-900  enabled:hover:bg-gray-100 enabled:hover:text-cyan-700" }, pill: { off: 'rounded-r-lg' } }} className="text-black " color={'gray'} size={'xs'} >Imprimir Documentos</Button>} >
+                    <Dropdown label="" renderTrigger={() => <Button theme={{ color: { gray: "border border-gray-200 bg-white text-gray-900  enabled:hover:bg-gray-100 enabled:hover:text-cyan-700" }, pill: { off: 'rounded-r-lg' } }} className="text-black truncate" color={'gray'} size={'xs'} >Imprimir Documentos</Button>} >
                         <Dropdown.Item className="text-xs" onClick={() => {handlePrint('carta'),setModal({...{},impressao:true})}}>
                             Carta
                         </Dropdown.Item>
@@ -246,7 +246,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
 
 
                     setModal({editar:true})
-                }} className="w-full text-black text-xs cursor-pointer">
+                }} className="flex flex-col w-full text-black text-xs cursor-pointer">
                     <h2 className="text-sm font-semibold mb-4  text-black">Dados Titular </h2>
 
                     <div className="mb-1 inline-flex justify-between  gap-2  tracking-tight  ">

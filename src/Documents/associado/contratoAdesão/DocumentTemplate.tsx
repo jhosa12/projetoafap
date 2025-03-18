@@ -114,9 +114,9 @@ class DocumentTemplate extends Component<DadosProps> {
 
         <div style={{ fontSize: '14px' }} className="flex flex-col  justify-center items-center w-full">
         <h1 style={{ fontSize: '14px' }} className=' text-center font-semibold mt-2'>RELAÇÃO DE DEPENDENTES</h1>
-          <table className="block  text-left rtl:text-center ">
-            <thead className="top-0 uppercase  ">
-              <tr>
+          <table style={{borderColor:'black',borderWidth:'1px'}} className="text-left rtl:text-center  ">
+            <thead className="top-0 uppercase ">
+              <tr >
               <th scope="col" className="px-10 py-1 ">
                   
                 </th>
@@ -159,7 +159,7 @@ class DocumentTemplate extends Component<DadosProps> {
 
 
 
-<div className={timesNewRoman.className}>
+<div  className={timesNewRoman.className}>
 {infoEmpresa?.cont_clausuras && parse(SanitizeHtml(infoEmpresa?.cont_clausuras))}
 </div>
 
@@ -179,7 +179,7 @@ class DocumentTemplate extends Component<DadosProps> {
 
             <div className="flex flex-col  w-1/2  justify-center items-center "style={{paddingTop:85,position:'relative'}}>
             <div  style={{position:'absolute', top:5}}>
-            <img className=" object-cover" width={300} alt="imagemAss" src={"/assinatura.jpg"} />
+            <img fetchPriority="high" className=" object-cover" width={300} alt="imagemAss" src={"/assinatura.jpg"} />
             </div>
            
            

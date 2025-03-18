@@ -23,9 +23,11 @@ function isLoginPage(pathname: string) {
 
 function PrivateLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className='flex flex-col'>
+    <div className="w-full flex flex-col ">
       <Header />
-      <div>{children}</div>
+      
+      {children}
+     
     </div>
   );
 }
@@ -69,9 +71,9 @@ function PrivateRouter({ Component, pageProps }: AppProps) {
   // Renderiza o layout privado apenas para rotas protegidas
   if (!isLoginPage(router.pathname)) {
     return (
-      <PrivateLayout>
+      <PrivateLayout >
         <ModalLoading show={loadingInfo} />
-        <Component {...pageProps} />
+        <Component  {...pageProps} />
       </PrivateLayout>
     );
   }
@@ -82,7 +84,7 @@ function PrivateRouter({ Component, pageProps }: AppProps) {
 export default function App({ Component, pageProps,router }: AppProps) {
   return (
     <StrictMode >
-      <AuthProvider>
+      <AuthProvider >
         
         <PrivateRouter router={router} Component={Component} pageProps={pageProps} />
         <ToastContainer

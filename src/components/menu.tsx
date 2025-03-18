@@ -52,12 +52,12 @@ async function contagem() {
 
   return (
  
-    <div className='flex flex-col w-full'>
+   
 <Header/>
 
   
  
 
-</div>
+
   )  
 }

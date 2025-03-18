@@ -38,7 +38,7 @@ Header() {
 
 
     return(
-        <header className={` bg-white border-b px-2 py-1 border-gray-200 inline-flex justify-between items-center `}>
+        <div className={`flex flex-row w-full bg-white border-b px-2 py-1 border-gray-200  justify-between items-center `}>
             <div className="inline-flex items-center gap-2">
         <Image width={50} height={50} priority alt="user" src={"/improved_logo.png"} />
             <div className="flex flex-col">
@@ -145,16 +145,6 @@ Header() {
         </MenubarContent>
       </MenubarMenu>
        
-      
-
-
- 
-
-
-
-
-
-
     </Menubar>
 
            
@@ -179,7 +169,7 @@ Header() {
     </div>
   { open && <ModalAtivosInativos usuario={usuario?.nome} logo={infoEmpresa?.logoUrl} open={open} onClose={()=>setOpen(false)} id_empresa={selectEmp}/> }
 
-        </header>
+        </div>
     )
 }
 
