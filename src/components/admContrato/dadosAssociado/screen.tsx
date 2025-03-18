@@ -188,7 +188,14 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
 }*/
 
     return (
-        <div className={`flex flex-col w-full  text-xs p-4 h-screen rounded-b-lg `}>
+        <div className={`flex flex-col w-full  text-xs p-4 rounded-b-lg `}>
+                
+            {modal.editar && <ModalEditarDados dataForm={dadosassociado} setModalEdit={()=>setModal({editar:false})} openEdit={modal.editar} />}
+
+{modal.altPlano && <ModalAlterarPlano openModal={modal.altPlano} setOpenModal={()=>setModal({altPlano:false})} />}
+{modal.inativar && <ModalInativar openModal={modal.inativar} setModal={()=>setModal({inativar:false})} />}
+
+    {modal.impressao &&<ModalConfirmar pergunta={`Realmente deseja imprimir o(a) ${chaveAtiva}?. Esteja ciente de que ao confirmar, os dados de data e usuario que realizou a impressão serão atualizados!`} openModal={modal.impressao} setOpenModal={()=>setModal({impressao:false})} handleConfirmar={handleImpressao}/>}
 
             <div className="inline-flex w-full justify-between  gap-3 mb-3 pl-2 text-sm font-semibold  text-black">
                 <div className="inline-flex gap-3 items-center ">
@@ -323,13 +330,6 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
                     <li key={index}>{item.arquivo}: {item.date && new Date(item.date).toLocaleDateString('pt-BR')}-{item.user}</li>
                 ))}
             </ul>
-
-            {modal.editar && <ModalEditarDados dataForm={dadosassociado} setModalEdit={()=>setModal({editar:false})} openEdit={modal.editar} />}
-
-            {modal.altPlano && <ModalAlterarPlano openModal={modal.altPlano} setOpenModal={()=>setModal({altPlano:false})} />}
-            {modal.inativar && <ModalInativar openModal={modal.inativar} setModal={()=>setModal({inativar:false})} />}
-
-                {modal.impressao &&<ModalConfirmar pergunta={`Realmente deseja imprimir o(a) ${chaveAtiva}?. Esteja ciente de que ao confirmar, os dados de data e usuario que realizou a impressão serão atualizados!`} openModal={modal.impressao} setOpenModal={()=>setModal({impressao:false})} handleConfirmar={handleImpressao}/>}
 
 
             <div style={{ display: 'none' }}>

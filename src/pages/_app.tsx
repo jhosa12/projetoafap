@@ -23,10 +23,10 @@ function isLoginPage(pathname: string) {
 
 function PrivateLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="w-full flex flex-col ">
+    <div className="w-full">
       <Header />
       
-      {children}
+     <div> {children}</div>
      
     </div>
   );
