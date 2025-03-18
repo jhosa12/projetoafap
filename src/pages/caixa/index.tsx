@@ -196,6 +196,7 @@ export default function CaixaMovimentar(){
 
 
 
+   /* ----- LEITURA DE CODIGO DE BARRAS ------
     useEffect(() => {
 
 
@@ -232,7 +233,7 @@ export default function CaixaMovimentar(){
         return () => {
           document.removeEventListener('keydown', handleKeyPress);
         };
-      }, [modalDados]);
+      }, [modalDados]);*/
 
 
   /*  useEffect(()=>{
