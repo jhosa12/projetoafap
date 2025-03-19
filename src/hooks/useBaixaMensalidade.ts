@@ -16,8 +16,8 @@ interface PayloadProps {
     pix_por:string,
     id_mensalidade_global: number,
     id_mensalidade: number,
-    data_lanc:Date,
-    data_pgto: Date,
+    data_lanc:string,
+    data_pgto:string,
     recebido_por?:string,
     hora_pgto: string,
     valor_total: number,
@@ -82,7 +82,7 @@ interface PayloadProps {
        
         try{
             const response:AxiosResponse = await toast.promise(
-                api.put(url,{...payload,data_pgto:payload?.data_pgto?.toISOString()}),
+                api.put(url,{...payload}),
                 {
                     error: 'Erro na Requisição',
                     pending: 'Realizando Baixa',

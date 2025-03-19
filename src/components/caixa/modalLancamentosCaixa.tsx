@@ -11,6 +11,7 @@ import { LancamentosProps } from "@/pages/caixa";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ajustarData } from "@/utils/ajusteData";
 import { Button } from "../ui/button";
+import { removerFusoDate } from "@/utils/removerFusoDate";
 
 
 
@@ -75,7 +76,12 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
 
 
    async function editarMovimentacao(data:LancamentosProps){
-    const{dataIni:dt_lanc} = ajustarData(data.datalanc)
+      let dt_lanc =undefined
+    if(data.data!==mov.data){
+      const{newDate} =removerFusoDate(new Date(data.data))
+      dt_lanc = newDate
+    }
+   
    
     try {
       await toast.promise(
@@ -87,7 +93,7 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
         historico:data.historico,
         valor:data.valor,
         usuario:usuario?.nome,
-        datalanc:dt_lanc,
+        data:dt_lanc,
         tipo:data.tipo,
         empresa:id_empresa
         }),
@@ -109,8 +115,8 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
      async function lancarMovimentacao(data:LancamentosProps){ 
       const valorString = data.valor?.toString()??'';
       const valorConvertido = parseFloat(valorString?.replace(',', '.'));
-      const{dataIni:dt_lanc} = ajustarData(data.data)
-      const{dataIni:dt_real} = ajustarData(new Date())
+          const {newDate:dt_lanc} = removerFusoDate(new Date(data.data))
+            const{newDate:dt_real} = removerFusoDate(new Date())
 
       if(!id_empresa){
         toast.info('Selecione a empresa')

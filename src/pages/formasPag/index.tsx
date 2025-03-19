@@ -18,6 +18,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { AuthContext } from "@/contexts/AuthContext";
 import { bancos, formasDePagamento } from "@/utils/bancosFormasPag";
+import { removerFusoDate } from "@/utils/removerFusoDate";
 
 
 export interface Pagamento {
@@ -81,12 +82,9 @@ export default function ModalBaixaMensalidade({ handleAtualizar, mensalidade, op
       return toast.info('Mensalidade anterior em aberto!');
     }
 
-    const dataPgto = new Date(dataPag);
-    dataPgto.setTime(dataPgto.getTime() - dataPgto.getTimezoneOffset() * 60 * 1000);
-    const data_lanc = new Date();
-    data_lanc.setTime(data_lanc.getTime() - data_lanc.getTimezoneOffset() * 60 * 1000);
 
-
+      const {newDate:dataPgto} = removerFusoDate(dataPag);
+                const {newDate:data_lanc} = removerFusoDate(new Date());
 
     try {
 

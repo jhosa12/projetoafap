@@ -17,6 +17,7 @@ import { ajustarData } from "@/utils/ajusteData";
 import { api } from "@/services/apiClient";
 import { useCallback, useContext, useEffect } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
+import { removerFusoDate } from "@/utils/removerFusoDate";
 
 
 
@@ -134,8 +135,9 @@ useEffect(()=>{
     const lancarMovimentacao=useCallback(async(data:LancamentosProps)=>{ 
       const valorString = data.valor?.toString()??'';
       const valorConvertido = parseFloat(valorString?.replace(',', '.'));
-      const{dataIni:dt_lanc} = ajustarData(data.data)
-      const{dataIni:dt_real} = ajustarData(new Date())
+     
+      const {newDate:dt_lanc} = removerFusoDate(new Date(data.data))
+      const{newDate:dt_real} = removerFusoDate(new Date())
 
       if(!id_empresa){
         toast.info('Selecione a empresa')

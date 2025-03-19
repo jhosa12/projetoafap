@@ -12,6 +12,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { MensalidadeBaixaProps } from "@/pages/caixa";
 import { Button, Checkbox, Modal, Select, TextInput } from "flowbite-react";
 import { set } from "date-fns";
+import { removerFusoDate } from "@/utils/removerFusoDate";
 
 interface Props{
     handleAtualizar:Function
@@ -49,10 +50,10 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
                 return toast.info('Mensalidade anterior em aberto!');
             }
 
-            const dataPgto = new Date(data.data_pgto);
-            dataPgto.setTime(dataPgto.getTime() - dataPgto.getTimezoneOffset() * 60 * 1000);
-            const data_lanc = new Date();
-            data_lanc.setTime(data_lanc.getTime() - data_lanc.getTimezoneOffset() * 60 * 1000);
+            
+
+            const {newDate:dataPgto} = removerFusoDate(data.data_pgto);
+            const {newDate:data_lanc} = removerFusoDate(new Date());
         
            
         
