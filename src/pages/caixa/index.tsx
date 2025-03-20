@@ -612,9 +612,9 @@ setOpenModal={setModalDados}
        
         <div className="overflow-y-auto mt-1 px-2 h-[calc(100vh-144px)] ">
        
-        <Table hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-3 py-0 text-[10px]" } } }} 
+        <Table hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-2 py-0 text-[10px]" } } }} 
     >
-        <Table.Head theme={{cell:{base:"bg-gray-50 px-3 py-0 text-[11px]"}}} >
+         <Table.Head  className="sticky top-0 bg-white z-5 border-b-2" theme={{ cell: { base: "bg-gray-50 px-2 py-0 text-[11px]" } }} >
         
                 <Table.HeadCell  >
                     Nº LANC.
