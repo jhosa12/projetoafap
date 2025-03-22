@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { HiDocument, HiMiniArrowDownOnSquare, HiPencil, HiPrinter } from "react-icons/hi2";
 import {   HiDocumentAdd, HiFilter } from "react-icons/hi";
 import { ModalFiltroConsultas } from "./components/modalFiltro";
-import FichaConsulta from "@/documents/afapSaude/fichaConsulta";
+import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
 import { useReactToPrint } from "react-to-print";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { BiMoneyWithdraw } from "react-icons/bi";
@@ -18,11 +18,11 @@ import { GiReturnArrow } from "react-icons/gi";
 import { FaWhatsapp } from "react-icons/fa";
 import handleWhatsAppClick from "@/utils/openWhats";
 import pageStyle from "@/utils/pageStyle";
-import { ReciboMensalidade } from "@/documents/associado/mensalidade/Recibo";
+import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
 import { ModalReceber } from "./exames/modalReceber";
 import { ajustarData } from "@/utils/ajusteData";
 import { ModalConfirmar } from "./components/modalConfirmar";
-import ListaConsultas from "@/documents/afapSaude/listaConsultas";
+import ListaConsultas from "@/Documents/afapSaude/listaConsultas";
 import { SlOptions } from "react-icons/sl";
 import {
   Select,

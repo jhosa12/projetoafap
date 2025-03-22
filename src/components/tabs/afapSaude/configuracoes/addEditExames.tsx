@@ -8,7 +8,7 @@ import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
 import { AuthContext } from "@/store/AuthContext";
 import { IoIosPrint } from "react-icons/io";
 import { useReactToPrint } from "react-to-print";
-import RelatorioLucroExames from "@/documents/afapSaude/relatorioLucroExames";
+import RelatorioLucroExames from "@/Documents/afapSaude/relatorioLucroExames";
 import pageStyle from "@/utils/pageStyle";
 import { ModalConfirmar } from "../components/modalConfirmar";
 

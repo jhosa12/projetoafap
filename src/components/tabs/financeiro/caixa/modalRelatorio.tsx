@@ -5,7 +5,7 @@ import { useRef, useState } from "react"
 import { PiPrinterFill } from "react-icons/pi"
 import { TagsProps } from "./caixa"
 import { IReactToPrintProps, useReactToPrint } from "react-to-print"
-import DocumentTemplate from "@/documents/financeiro/caixa/DocumentTemplate"
+import DocumentTemplate from "@/Documents/financeiro/caixa/DocumentTemplate"
 import { endOfDay } from "date-fns"
 
 interface DataProps {

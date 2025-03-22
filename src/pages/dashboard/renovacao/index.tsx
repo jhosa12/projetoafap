@@ -4,7 +4,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { api } from "@/lib/axios/apiClient";
 import { toast } from "react-toastify";
 import { useReactToPrint } from "react-to-print";
-import DocumentTemplate from "@/documents/renovacao/impressao";
+import DocumentTemplate from "@/Documents/renovacao/impressao";
 import pageStyle from "@/utils/pageStyle";
 import { AuthContext } from "@/store/AuthContext";
 import { IoPrint } from "react-icons/io5";

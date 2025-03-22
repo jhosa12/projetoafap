@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { BiMoneyWithdraw } from "react-icons/bi"
 import useApiPost from "@/hooks/useApiPost"
-import ReciboRepasse from "@/documents/afapSaude/reciboRepasse"
+import ReciboRepasse from "@/Documents/afapSaude/reciboRepasse"
 import { useReactToPrint } from "react-to-print"
 import pageStyle from "@/utils/pageStyle"
 import DatePicker,{registerLocale} from "react-datepicker";

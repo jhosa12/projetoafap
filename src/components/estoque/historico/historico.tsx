@@ -7,7 +7,7 @@ import { api } from "@/lib/axios/apiClient";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { BiSolidPrinter } from "react-icons/bi";
 import { useReactToPrint } from "react-to-print";
-import RelatorioMov from "@/documents/estoque/RelatorioMov";
+import RelatorioMov from "@/Documents/estoque/RelatorioMov";
 import { GrRevert } from "react-icons/gr";
 import { Tooltip } from "react-tooltip";
 import { toast } from "react-toastify";

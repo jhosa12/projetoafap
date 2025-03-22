@@ -13,11 +13,11 @@ import { ModalBusca } from "@/components/modals/modalBusca";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import PrintButtonContrato from "@/documents/convalescenca/contrato/PrintButton";
-import PrintButtonComprovante from "@/documents/convalescenca/comprovante/PrintButton";
+import PrintButtonContrato from "@/Documents/convalescenca/contrato/PrintButton";
+import PrintButtonComprovante from "@/Documents/convalescenca/comprovante/PrintButton";
 import { Router, useRouter } from "next/router";
-import DocumentTemplate from "@/documents/convalescenca/contrato/DocumentTemplate";
-import ComprovanteDocTemplte from '@/documents/convalescenca/comprovante/DocumentTemplate'
+import DocumentTemplate from "@/Documents/convalescenca/contrato/DocumentTemplate";
+import ComprovanteDocTemplte from '@/Documents/convalescenca/comprovante/DocumentTemplate'
 import { useReactToPrint } from "react-to-print";
 import { IoPrint } from "react-icons/io5";
 import { IoTicket } from "react-icons/io5";

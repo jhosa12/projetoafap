@@ -10,7 +10,7 @@ import {  HiAdjustments, HiDocumentAdd, HiPrinter } from "react-icons/hi";
 import { useReactToPrint } from "react-to-print";
 import { AuthContext } from "@/store/AuthContext";
 import { ModalAdministrarExame } from "./modalAdministrarExame";
-import Orcamento from "@/documents/afapSaude/orcamento";
+import Orcamento from "@/Documents/afapSaude/orcamento";
 import { FaWhatsapp } from "react-icons/fa";
 import { GiReturnArrow } from "react-icons/gi";
 import { FiltroExames } from "./filtro";
@@ -21,7 +21,7 @@ import handleWhatsAppClick from "@/utils/openWhats";
 import { MdDelete } from "react-icons/md";
 import { BiMoneyWithdraw } from "react-icons/bi";
 import pageStyle from "@/utils/pageStyle";
-import { ReciboMensalidade } from "@/documents/associado/mensalidade/Recibo";
+import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
 
 
 

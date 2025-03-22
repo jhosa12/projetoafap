@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { HiDocument } from "react-icons/hi2";
 import { HiFilter } from "react-icons/hi";
-import FichaConsulta from "@/documents/afapSaude/fichaConsulta";
+import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
 import { useReactToPrint } from "react-to-print";
 import { ModalConferencia } from "./modalConferencia";
 import { IoMdTrash } from "react-icons/io";

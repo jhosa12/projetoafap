@@ -1,5 +1,5 @@
 
-import ImpressaoCarne from '@/documents/associado/mensalidade/ImpressaoCarne';
+import ImpressaoCarne from '@/Documents/associado/mensalidade/ImpressaoCarne';
 import { api } from '@/lib/axios/apiClient';
 import { useReactToPrint } from 'react-to-print';
 import React, {  useCallback, useContext, useEffect, useRef, useState } from 'react';
@@ -13,7 +13,7 @@ import { ModalMensalidade } from '../../../modals/admContrato/historico/modalmen
 import { ModalEditarMensalidade } from '../../../modals/admContrato/historico/modalEditarMensalidade';
 import { ModalExcluirMens } from '../../../modals/admContrato/historico/modalExcluirMens';
 import { AcordoProps, MensalidadeProps } from '@/types/financeiro';
-import { ReciboMensalidade } from '@/documents/associado/mensalidade/Recibo';
+import { ReciboMensalidade } from '@/Documents/associado/mensalidade/Recibo';
 import pageStyle from '@/utils/pageStyle';
 import { Button, ButtonGroup } from 'flowbite-react';
 import { PopoverVencimento } from './popoverVencimento';

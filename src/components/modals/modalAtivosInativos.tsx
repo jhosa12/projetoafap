@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { Button } from "../ui/button"
 import useApiPost from "@/hooks/useApiPost"
-import { AtivosInativos } from "@/documents/ativosInativos/ListaAtivosInativos"
+import { AtivosInativos } from "@/Documents/ativosInativos/ListaAtivosInativos"
 import { useReactToPrint } from "react-to-print"
 import pageStyle from "@/utils/pageStyle"
 import { ajustarData } from "@/utils/ajusteData"

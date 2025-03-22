@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import DocumentTemplate from "@/documents/associado/carteiraAssociado/DocumentTemplate";
+import DocumentTemplate from "@/Documents/associado/carteiraAssociado/DocumentTemplate";
 import { EmpresaProps } from "@/types/empresa";
 import pageStyle from "@/utils/pageStyle";
 import { Table } from "flowbite-react";

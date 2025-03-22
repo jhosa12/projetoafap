@@ -9,7 +9,7 @@ import pt from 'date-fns/locale/pt-BR';
 import { ModalLancamentosCaixa } from "@/components/modals/caixa/modalLancamentosCaixa";
 import { AuthContext } from "@/store/AuthContext";
 import {  IoMdOptions } from "react-icons/io";
-import RelatorioSintetico from "@/documents/caixa/RelatorioMovimentacao";
+import RelatorioSintetico from "@/Documents/caixa/RelatorioMovimentacao";
 import { Label, Modal, Spinner, Table, TextInput } from "flowbite-react";
 import {  HiPencil } from "react-icons/hi2";
 import { toast } from "react-toastify";

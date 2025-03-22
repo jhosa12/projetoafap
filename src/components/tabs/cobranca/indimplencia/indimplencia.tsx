@@ -11,7 +11,7 @@ import { SubmitHandler } from "react-hook-form";
 import { ConsultoresProps } from "@/types/consultores";
 import useApiPost from "@/hooks/useApiPost";
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
-import RelatorioInadimplencia from "@/documents/relatorioCobranca/RelatorioIndimplencia";
+import RelatorioInadimplencia from "@/Documents/relatorioCobranca/RelatorioIndimplencia";
 import { Button } from "@/components/ui/button";
 
 

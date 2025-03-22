@@ -8,11 +8,11 @@ import { MdModeEditOutline } from "react-icons/md";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { IoSearch } from "react-icons/io5";
 import React from 'react';
-import PrintButton from "@/documents/sorteados/PrintButton";
+import PrintButton from "@/Documents/sorteados/PrintButton";
 import { Button, Select } from "flowbite-react";
 import { AuthContext } from "@/store/AuthContext";
 import { api } from "@/lib/axios/apiClient";
-import DocumentTemplate from "@/documents/sorteados/DocumentTemplate";
+import DocumentTemplate from "@/Documents/sorteados/DocumentTemplate";
 import { useReactToPrint } from "react-to-print";
 interface GanhadoresProps{
     id_contrato:number,
