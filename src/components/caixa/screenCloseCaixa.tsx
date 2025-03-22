@@ -1,5 +1,5 @@
 
-import FechamentoResumo from "@/documents/caixa/FechamentoCaixa";
+//import FechamentoResumo from "@/documents/caixa/FechamentoCaixa";
 import { FechamentoProps } from "@/pages/dashboard/caixa";
 import pageStyle from "@/utils/pageStyle";
 import { Button } from "flowbite-react";
@@ -17,24 +17,24 @@ interface Props {
 export function ScreenCloseCaixa({fechamento}:Props) {
 
 
-  const currentPage = useRef<FechamentoResumo>(null)
+ // const currentPage = useRef<FechamentoResumo>(null)
      const [printFecha, setPrintFecha] = useState(false)
 
-  const imprimir =useReactToPrint({
+/*  const imprimir =useReactToPrint({
     pageStyle: pageStyle,
     content: () => currentPage.current,
     onAfterPrint: () => {
       
     }
-  })
+  })*/
 
 
-  useEffect(()=>{
+/*  useEffect(()=>{
     if(printFecha){
       imprimir()
       setPrintFecha(false)
     }
-  },[printFecha])
+  },[printFecha])*/
 
 
 
@@ -45,7 +45,7 @@ export function ScreenCloseCaixa({fechamento}:Props) {
     return(
         <div className="flex flex-col gap-4 justify-center bg-white items-center h-[calc(100vh-120px)]">
         <div style={{display:"none"}} >
-          <FechamentoResumo fechamento={fechamento}  ref={currentPage}  />
+          {/*<FechamentoResumo fechamento={fechamento}  ref={currentPage}  />*/}
         </div>
           <HiCheckCircle color="green" size={110} />
           <h1 className="text-2xl font-bold">CAIXA FECHADO</h1>
