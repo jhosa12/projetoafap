@@ -1,8 +1,8 @@
-import { EstoqueProps, FormProps, ProdutosProps } from "@/pages/estoque"
+import { EstoqueProps, FormProps, ProdutosProps } from "@/pages/dashboard/estoque"
 import {  Spinner, Table } from "flowbite-react"
 import {  useContext, useEffect, useRef, useState } from "react";
-import { ModalMov } from "./modalMovimentacao";
-import { ModalNovoProduto } from "./modalNovoProduto";
+import { ModalMov } from "../modals/estoque/modalMovimentacao";
+import { ModalNovoProduto } from "../modals/estoque/modalNovoProduto";
 import {RiAlertLine} from "react-icons/ri";
 import {  MdOutlinePlaylistAdd } from "react-icons/md";
 import { FiltroEstoque } from "./PopoverFiltro";
@@ -11,10 +11,10 @@ import useApi from "@/hooks/useApiPost";
 import { EmpresaProps } from "@/types/empresa";
 import { HiPrinter } from "react-icons/hi2";
 import { useReactToPrint } from "react-to-print";
-import RelatorioEstoque from "@/Documents/estoque/RelatorioEstoque";
+import RelatorioEstoque from "@/documents/estoque/RelatorioEstoque";
 import pageStyle from "@/utils/pageStyle";
 import { Button } from "../ui/button";
-import { AuthContext } from "@/contexts/AuthContext";
+import { AuthContext } from "@/store/AuthContext";
 
 
 

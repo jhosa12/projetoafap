@@ -2,7 +2,7 @@ import useApiGet from "@/hooks/useApiGet";
 import { Label, Modal, Select, Spinner, Table, TextInput } from "flowbite-react";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { ModalItem } from "./modalItem/modalItem";
-import { ModalConfirmar } from "@/components/afapSaude/components/modalConfirmar";
+import { ModalConfirmar } from "@/components/tabs/afapSaude/components/modalConfirmar";
 import useApiPost from "@/hooks/useApiPost";
 import { Button } from "@/components/ui/button";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -14,12 +14,12 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdCheck, MdCheckCircle, MdCreateNewFolder } from "react-icons/md";
 import { Tooltip } from "react-tooltip";
 import { toast } from "react-toastify";
-import { AuthContext } from "@/contexts/AuthContext";
+import { AuthContext } from "@/store/AuthContext";
 import { gerarMensalidade, ParcelaData } from "@/utils/gerarArrayMensal";
 import { AssociadoProps, ContratoProps, DependentesProps } from "@/types/associado";
 import  Router  from "next/router";
 import { ajustarData } from "@/utils/ajusteData";
-import { ModalLoading } from "@/components/loading/modalLoading";
+import { ModalLoading } from "@/components/modals/loading/modalLoading";
 
 export interface ReqLeadsProps{
     id?:string,

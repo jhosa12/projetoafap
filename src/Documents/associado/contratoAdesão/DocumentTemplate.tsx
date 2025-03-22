@@ -5,7 +5,7 @@ import parse from 'html-react-parser';
 // DocumentTemplate.js
 
 import React, {  Component, useContext } from 'react';
-import { AuthContext } from "@/contexts/AuthContext";
+import { AuthContext } from "@/store/AuthContext";
 import { EmpresaProps } from "@/types/empresa";
 import { SanitizeHtml } from "@/utils/sanitizeHtml";
 import { timesNewRoman } from "@/fonts/fonts";

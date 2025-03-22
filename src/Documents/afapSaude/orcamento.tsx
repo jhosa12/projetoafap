@@ -3,7 +3,7 @@
 
 
 import React from 'react';
-import { ExameRealizadoProps } from "@/components/afapSaude/exames/exames";
+import { ExameRealizadoProps } from "@/components/tabs/afapSaude/exames/exames";
 import { Table } from "flowbite-react";
 import { roboto_Mono } from "@/fonts/fonts";
 interface DadosProps {

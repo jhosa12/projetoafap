@@ -3,13 +3,13 @@ import React from 'react';
 import { MdDelete } from "react-icons/md";
 import { MdModeEditOutline } from "react-icons/md";
 import { FaRepeat } from "react-icons/fa6";
-import { api } from "@/services/apiClient";
+import { api } from "@/lib/axios/apiClient";
 import { toast } from "react-toastify";
 import  ModalPremio  from "../components/modalPremio";
 import { Button } from "flowbite-react";
-import { PremioProps } from "@/pages/sorteio/configuracoes";
-import { AuthContext } from "@/contexts/AuthContext";
-import { ConveniadosProps } from "@/pages/conveniados";
+import { PremioProps } from "@/pages/dashboard/sorteio/configuracoes";
+import { AuthContext } from "@/store/AuthContext";
+import { ConveniadosProps } from "@/pages/dashboard/conveniados";
 
 
 

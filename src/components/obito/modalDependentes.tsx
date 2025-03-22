@@ -1,4 +1,4 @@
-import { AuthContext } from "@/contexts/AuthContext";
+import { AuthContext } from "@/store/AuthContext";
 import { Modal } from "flowbite-react";
 import { useContext } from "react";
 

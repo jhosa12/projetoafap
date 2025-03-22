@@ -1,5 +1,5 @@
-import { set } from 'date-fns';
-import { api } from "@/services/apiClient";
+
+import { api } from "@/lib/axios/apiClient";
 import { AxiosError, AxiosResponse } from "axios";
 import { useState } from "react";
 import { toast } from "react-toastify";

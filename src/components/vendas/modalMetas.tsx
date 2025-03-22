@@ -5,10 +5,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { MetasProps, SetorProps } from "./acompanhamento";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { api } from "@/services/apiClient";
+import { api } from "@/lib/axios/apiClient";
 import { toast } from "react-toastify";
 import { useContext } from "react";
-import { PlanoContasProps } from "@/pages/financeiro";
+import { PlanoContasProps } from "@/pages/dashboard/financeiro";
 import { watch } from "fs";
 
 interface DataProps{

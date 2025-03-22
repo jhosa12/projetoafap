@@ -1,4 +1,4 @@
-import { PlanoContasProps } from "@/pages/financeiro";
+import { PlanoContasProps } from "@/pages/dashboard/financeiro";
 
 type Conta = {
     id: string;

@@ -1,8 +1,7 @@
 import { Button, ButtonGroup, Table } from "flowbite-react";
-
 import useApiPost from "@/hooks/useApiPost";
 import { useEffect, useState } from "react";
-import { themeLight } from "@/components/admContrato/acordos/screen";
+import { themeLight } from "@/components/tabs/admContrato/acordos/screen";
 import { FaFilter } from "react-icons/fa6";
 import { IoPrint } from "react-icons/io5";
 import { IoMdAddCircle, IoMdTrash } from "react-icons/io";
@@ -10,11 +9,11 @@ import { ajustarData } from "@/utils/ajusteData";
 import { EmpresaProps } from "@/types/empresa";
 import { MdEdit } from "react-icons/md";
 import { toast } from "react-toastify";
-import { api } from "@/services/apiClient";
+import { api } from "@/lib/axios/apiClient";
 import { MetasProps, SetorProps } from "@/components/vendas/acompanhamento";
 import { FormProps, ModalMetas } from "@/components/vendas/modalMetas";
 import { ModalFiltroMetas } from "@/components/vendas/modalFiltro";
-import { PlanoContasProps } from "@/pages/financeiro";
+import { PlanoContasProps } from "@/pages/dashboard/financeiro";
 
 interface FormFiltro{
     startDate:string|undefined,

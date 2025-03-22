@@ -137,8 +137,8 @@ class DocumentTemplate extends React.Component<DadosProps> {
                  
                  
                 <span > {contrato}</span>
-                <span > {adesao && new Date(adesao).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
-                <span  > {adesao && new Date(adesao).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+                <span > {adesao ? new Date(adesao).toLocaleDateString('pt-BR',{timeZone:'UTC'}):"."}</span>
+                <span  > {adesao ? new Date(adesao).toLocaleDateString('pt-BR',{timeZone:'UTC'}):"."}</span>
 
                 <div style={{gridColumn: '1 / -1',display:'flex',width:'100%',justifyContent:'space-between'}} >
                 <span style={{display:'flex',width:'100%'}}>{plano}</span>
@@ -202,7 +202,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
                  
              
                 <span > {contrato}</span>
-                <span > {item.data_nasc && new Date(item.data_nasc).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+                <span > {item.data_nasc ? new Date(item.data_nasc).toLocaleDateString('pt-BR',{timeZone:'UTC'}):'.'}</span>
      
              
                 <span>{item.grau_parentesco}</span>

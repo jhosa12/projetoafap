@@ -1,17 +1,17 @@
 
 import {Table } from "flowbite-react"
 import { useContext, useEffect, useRef, useState, useTransition } from "react";
-import { AuthContext } from "@/contexts/AuthContext";
-import { ModalFiltroMov } from "./modalFiltro";
-import { api } from "@/services/apiClient";
+import { AuthContext } from "@/store/AuthContext";
+import { ModalFiltroMov } from "../../modals/estoque/modalFiltro";
+import { api } from "@/lib/axios/apiClient";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { BiSolidPrinter } from "react-icons/bi";
 import { useReactToPrint } from "react-to-print";
-import RelatorioMov from "@/Documents/estoque/RelatorioMov";
+import RelatorioMov from "@/documents/estoque/RelatorioMov";
 import { GrRevert } from "react-icons/gr";
 import { Tooltip } from "react-tooltip";
 import { toast } from "react-toastify";
-import { ModalConfirm } from "./modalConfirm";
+import { ModalConfirm } from "../../modals/estoque/modalConfirm";
 import pageStyle from "@/utils/pageStyle";
 import { Button } from "@/components/ui/button";
 

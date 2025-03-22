@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { MdCall, MdPrint } from "react-icons/md";
 import { BiSolidUserPlus } from "react-icons/bi";
 import { IoArchive } from "react-icons/io5";
-import ResumoVendedor from "@/Documents/vendas/ResumoVendedor";
+import ResumoVendedor from "@/documents/vendas/ResumoVendedor";
 import { useReactToPrint } from "react-to-print";
 import pageStyle from "@/utils/pageStyle";
 import { Button } from "../ui/button";

@@ -4,7 +4,7 @@
 import React, { useContext, useRef } from 'react';
 import ReactToPrint from 'react-to-print';
 import DocumentTemplate from './ResumoContrato';
-import { AuthContext } from '@/contexts/AuthContext';
+import { AuthContext } from '@/store/AuthContext';
 import { HiOutlineTicket } from "react-icons/hi";
 
 interface DadosProps{

@@ -3,7 +3,7 @@ import {useState,useContext} from "react"
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import Image from "next/image";
 import logo from "../../public/novaLogo.png"
-import {AuthContext} from "../contexts/AuthContext"
+import {AuthContext} from "../store/AuthContext"
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Label, TextInput } from "flowbite-react";
 import { Button } from "@/components/ui/button";

@@ -1,4 +1,4 @@
-import { api } from "@/services/apiClient";
+import { api } from "@/lib/axios/apiClient";
 import { Button, Label, Select, Table, TextInput } from "flowbite-react";
 import { FormEvent,useEffect,useState } from "react"
 import { MdClose } from "react-icons/md";

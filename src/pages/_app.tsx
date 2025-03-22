@@ -1,7 +1,7 @@
-import { ModalLoading } from '@/components/loading/modalLoading';
-import { MenuLateral } from '@/components/menu';
-import { AuthProvider, useAuth } from '@/contexts/AuthContext';
-import { api } from '@/services/apiClient';
+import { ModalLoading } from '@/components/modals/loading/modalLoading';
+import { MenuLateral } from '@/components/layouts/menu';
+import { AuthProvider, useAuth } from '@/store/AuthContext';
+import { api } from '@/lib/axios/apiClient';
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import Error from 'next/error';

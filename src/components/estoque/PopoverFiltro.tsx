@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { HiFilter } from "react-icons/hi";
-import { FormProps, ProdutosProps } from "@/pages/estoque";
+import { FormProps, ProdutosProps } from "@/pages/dashboard/estoque";
 import { useState } from "react";
 import { EmpresaProps } from "@/types/empresa";
 import { Button } from "../ui/button";

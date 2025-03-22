@@ -4,9 +4,9 @@ import logo from "../../../../public/novaLogo.png"
 // DocumentTemplate.js
 
 import React from 'react';
-import { CcustosProps } from "@/pages/financeiro";
+import { CcustosProps } from "@/pages/dashboard/financeiro";
 import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
-import { ArrayGeral } from "@/components/financeiro/caixa/modalRelatorio";
+import { ArrayGeral } from "@/components/tabs/financeiro/caixa/modalRelatorio";
 import { roboto_Mono } from "@/fonts/fonts";
 
 

@@ -3,7 +3,7 @@
 // DocumentTemplate.js
 
 import React from 'react';
-import { UltimosPagProps } from "@/components/cobranca/cobranca/cobranca";
+import { UltimosPagProps } from "@/components/tabs/cobranca/cobranca/cobranca";
 import { roboto_Mono } from '@/fonts/fonts';
 
 

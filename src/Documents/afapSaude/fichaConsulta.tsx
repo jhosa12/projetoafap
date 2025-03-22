@@ -94,7 +94,7 @@ class FichaConsulta extends React.Component<DadosProps> {
          <h2 style={{fontWeight:'bold',fontSize:'12px',backgroundColor:'gray',color:'white',width:'100%',textAlign:'center',}}>DADOS DA CONSULTA</h2>
          <div style={{display:'flex',flexDirection:'column',width:'100%',fontSize:'12px',gap:'5px'}}>
           <div style={{display:'flex',justifyContent:'space-between',width:'100%'}} >
-            <span >Data da Consulta: {data.toLocaleDateString('pt-BR',{timeZone:'America/Fortaleza'})}</span>
+            <span >Data da Consulta: {data.toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
             <span>Horário da Consulta:</span>
           </div>
           <div style={{display:'flex',justifyContent:'space-between',width:'100%'}} >

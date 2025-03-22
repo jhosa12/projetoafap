@@ -1,4 +1,4 @@
-import { api } from "@/services/apiClient"
+import { api } from "@/lib/axios/apiClient"
 import { useState } from "react"
 import { toast } from "react-toastify"
 import { MdDelete } from "react-icons/md";

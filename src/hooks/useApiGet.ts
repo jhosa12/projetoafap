@@ -5,9 +5,9 @@
 
 
 
-import { api } from "@/services/apiClient";
+import { api } from "@/lib/axios/apiClient";
 import { AxiosError, AxiosResponse } from "axios";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 
 
 

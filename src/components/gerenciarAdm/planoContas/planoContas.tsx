@@ -1,12 +1,9 @@
-import { api } from "@/services/apiClient"
-import {  ChangeEvent, useEffect, useState } from "react"
+import { api } from "@/lib/axios/apiClient"
+import {  useEffect, useState } from "react"
 import { toast } from "react-toastify"
-import { MdDelete } from "react-icons/md";
-import { RiSaveFill } from "react-icons/ri";
-import { IoIosAddCircle, IoMdAddCircle } from "react-icons/io";
+import { IoIosAddCircle} from "react-icons/io";
 import InputMask from 'react-input-mask'
-import { Card,  TextInput } from "flowbite-react";
-import { PlanoContasProps } from "@/pages/financeiro";
+import { PlanoContasProps } from "@/pages/dashboard/financeiro";
 import { construirHierarquia, NodoConta } from "@/utils/listaContas";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { roboto_Mono } from "@/fonts/fonts";

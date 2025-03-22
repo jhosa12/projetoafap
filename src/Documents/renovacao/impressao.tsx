@@ -6,7 +6,7 @@ import BarCode from 'react-barcode';
 // DocumentTemplate.js
 
 import React, { useEffect } from 'react';
-import { DadosImpressao } from "@/pages/renovacao";
+import { DadosImpressao } from "@/pages/dashboard/renovacao";
 
 
 interface MensalidadeProps {

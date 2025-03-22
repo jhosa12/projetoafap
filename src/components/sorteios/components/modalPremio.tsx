@@ -2,13 +2,13 @@
 import { FormEvent } from "react";
 import { IoIosClose } from "react-icons/io";
 import React from 'react';
-import { PremioProps } from "@/pages/sorteio/configuracoes";
+import { PremioProps } from "@/pages/dashboard/sorteio/configuracoes";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Button, Label, Modal, Select, TextInput } from "flowbite-react";
 import { toast } from "react-toastify";
-import { api } from "@/services/apiClient";
+import { api } from "@/lib/axios/apiClient";
 import { EmpresaProps } from "@/types/empresa";
-import { ConveniadosProps } from "@/pages/conveniados";
+import { ConveniadosProps } from "@/pages/dashboard/conveniados";
 
 
 interface CadastroProps {

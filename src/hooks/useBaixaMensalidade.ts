@@ -1,6 +1,5 @@
 
-import { AuthContext } from "@/contexts/AuthContext";
-import { api } from "@/services/apiClient";
+import { api } from "@/lib/axios/apiClient";
 import { MensalidadeProps } from "@/types/financeiro";
 
 import { AxiosError, AxiosResponse } from "axios";

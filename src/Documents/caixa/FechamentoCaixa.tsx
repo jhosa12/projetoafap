@@ -6,7 +6,7 @@ import logo from "../../../public/novaLogo.png"
 import React from 'react';
 
 import { Table } from "flowbite-react";
-import { FechamentoProps } from "@/pages/caixa";
+import { FechamentoProps } from "@/pages/dashboard/caixa";
 
 
 

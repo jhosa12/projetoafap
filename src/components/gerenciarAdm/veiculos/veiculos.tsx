@@ -1,7 +1,7 @@
 import { Button, ButtonGroup, Table } from "flowbite-react";
 import useApiPost from "@/hooks/useApiPost";
 import {  useCallback, useEffect, useState } from "react";
-import { themeLight } from "@/components/admContrato/acordos/screen";
+import { themeLight } from "@/components/tabs/admContrato/acordos/screen";
 import { FaFilter } from "react-icons/fa6";
 import { IoPrint } from "react-icons/io5";
 import { IoMdAddCircle, IoMdTrash } from "react-icons/io";

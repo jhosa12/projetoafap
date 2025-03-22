@@ -7,7 +7,7 @@ import { HiFilter } from "react-icons/hi";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { FiltroProps } from "@/pages/renovacao";
+import { FiltroProps } from "@/pages/dashboard/renovacao";
 
 
 interface DataProps{

@@ -1,5 +1,5 @@
-import FechamentoResumo from "@/Documents/caixa/FechamentoCaixa";
-import { FechamentoProps } from "@/pages/caixa";
+import FechamentoResumo from "@/documents/caixa/FechamentoCaixa";
+import { FechamentoProps } from "@/pages/dashboard/caixa";
 import pageStyle from "@/utils/pageStyle";
 import { Button } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";

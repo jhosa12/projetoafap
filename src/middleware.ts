@@ -10,5 +10,5 @@ export default function middleware(req:NextRequest) {
 }
 
 export const config = {
-matcher: ['/admcontrato','/afapSaude','/caixa','/cobranca','/estoque','/gerenciarAdministrativo','/vendas','/conveniados','/renovacao','/servicos/:path*','/configuracoes/:path*','/financeiro','/sorteio/:path*'],
+matcher: ['/dashboard/:path*'],
 }

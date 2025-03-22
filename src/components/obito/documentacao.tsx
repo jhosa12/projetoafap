@@ -1,7 +1,7 @@
 import { useReactToPrint } from "react-to-print"
-import OrdemServico from "@/Documents/obito/OrdemServico"
+import OrdemServico from "@/documents/obito/OrdemServico"
 import { useRef, useState } from "react"
-import AutTanato from "@/Documents/obito/Tanato"
+import AutTanato from "@/documents/obito/Tanato"
 import { LiaFileContractSolid } from "react-icons/lia"
 import { ObitoProps } from "@/types/associado"
 

@@ -3,7 +3,7 @@
 // DocumentTemplate.js
 import React from 'react';
 import { Table } from "flowbite-react";
-import { EstoqueProps } from "@/pages/estoque";
+import { EstoqueProps } from "@/pages/dashboard/estoque";
 import { roboto_Mono } from '@/fonts/fonts';
 
 

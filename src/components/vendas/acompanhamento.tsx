@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import { api } from '@/services/apiClient';
+import { api } from '@/lib/axios/apiClient';
 import { GoGoal } from "react-icons/go";
 import { GiStairsGoal } from "react-icons/gi";
 import { FaFilter } from "react-icons/fa6";
@@ -21,7 +21,7 @@ import {
 import { Button } from '../ui/button';
 import { ChartConfig } from '../ui/chart';
 import { arrayColors } from '@/utils/arrayColors';
-import { BarChartInfo } from '../charts/bar';
+import { BarChartInfo } from '../layouts/charts/bar';
 
 export interface VendasProps {
     id_consultor: number | null;
