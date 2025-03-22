@@ -1,3 +1,4 @@
+
 import FechamentoResumo from "@/documents/caixa/FechamentoCaixa";
 import { FechamentoProps } from "@/pages/dashboard/caixa";
 import pageStyle from "@/utils/pageStyle";
