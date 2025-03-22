@@ -13,8 +13,8 @@ import { FechamentoProps } from "@/pages/dashboard/caixa";
 interface DadosProps {
 
 
- fechamento:FechamentoProps,
- 
+  fechamento: FechamentoProps,
+
 }
 
 class FechamentoResumo extends React.Component<DadosProps> {
@@ -34,30 +34,30 @@ class FechamentoResumo extends React.Component<DadosProps> {
           <span>Data Fechamento:  {new Date(fechamento.data).toLocaleDateString('pt-BR')}-{new Date(fechamento.data).toLocaleTimeString('pt-BR')}</span>
         </div>
         <div className="p-2">
-       <Table theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 py-1 " } } }}>
-        <Table.Head theme={{cell:{base:"bg-gray-50 px-4 py-1 "}}}>
-            <Table.HeadCell>CÉDULA</Table.HeadCell>
-            <Table.HeadCell>PIX</Table.HeadCell>
-            <Table.HeadCell>CARTÃO</Table.HeadCell>
-            <Table.HeadCell>TRANSFERÊNCIA</Table.HeadCell>
-        </Table.Head>
-        <Table.Body>
-            <Table.Row>
-                <Table.Cell>{Number(fechamento.caixaCad.cedulas).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
-                <Table.Cell>{Number(fechamento.caixaCad.pix).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
-                <Table.Cell>{Number(fechamento.caixaCad.cartao).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
-                <Table.Cell>{Number(fechamento.caixaCad.transferencia).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
+          <Table theme={{ root: { shadow: 'none' }, body: { cell: { base: "px-4 py-1 " } } }}>
+            <Table.Head theme={{ cell: { base: "bg-gray-50 px-4 py-1 " } }}>
+              <Table.HeadCell>CÉDULA</Table.HeadCell>
+              <Table.HeadCell>PIX</Table.HeadCell>
+              <Table.HeadCell>CARTÃO</Table.HeadCell>
+              <Table.HeadCell>TRANSFERÊNCIA</Table.HeadCell>
+            </Table.Head>
+            <Table.Body>
+              <Table.Row>
+                <Table.Cell>{Number(fechamento.caixaCad.cedulas).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
+                <Table.Cell>{Number(fechamento.caixaCad.pix).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
+                <Table.Cell>{Number(fechamento.caixaCad.cartao).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
+                <Table.Cell>{Number(fechamento.caixaCad.transferencia).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
 
-            </Table.Row>
-        </Table.Body>
-       </Table>
-       </div>
+              </Table.Row>
+            </Table.Body>
+          </Table>
+        </div>
 
 
-       
+
 
         <br />
-        <span style={{color:'red'}}>Observação: {fechamento.observacao}</span>
+        <span style={{ color: 'red' }}>Observação: {fechamento.observacao}</span>
 
         <div className="flex flex-col items-center gap-5">
           {/*   <div className="flex flex-col items-center">
