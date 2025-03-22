@@ -55,4 +55,4 @@ class RelatorioEstoque extends React.Component<DadosProps> {
   }
 }
 
-export default RelatorioEstoque;
+export {RelatorioEstoque};
