@@ -126,7 +126,7 @@ export type AssociadoProps = {
     uf: string,
     empresa:string,
     mensalidade: Array<MensalidadeProps>|[],
-    contrato: ContratoProps,
+    contrato: Partial<ContratoProps>,
     dependentes: Array<DependentesProps>
     acordo: Array<AcordoProps>
     

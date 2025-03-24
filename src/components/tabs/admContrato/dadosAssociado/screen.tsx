@@ -23,7 +23,7 @@ import { ModalConfirmar } from "@/components/tabs/afapSaude/components/modalConf
 import { removerFusoDate } from "@/utils/removerFusoDate";
 
 interface DataProps {
-    dadosassociado: AssociadoProps,
+    dadosassociado:Partial<AssociadoProps> | AssociadoProps,
     infoEmpresa: EmpresaProps | null
 }
 

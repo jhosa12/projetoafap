@@ -19,6 +19,7 @@ import { FaHandshake } from "react-icons/fa";
 import { VerificarSituacao } from "@/utils/admContrato/verificarSituacao";
 import { Acordos } from "@/components/tabs/admContrato/acordos/screen";
 import { Button } from "@/components/ui/button"
+import { AssociadoProps } from "@/types/associado";
 
 
 export default function AdmContrato() {
@@ -129,7 +130,7 @@ export default function AdmContrato() {
                         <Tabs theme={{ base: 'block w-full', tabpanel: 'w-full py-1', tablist: {base:' inline-flex w-full', tabitem: { base: "flex items-center justify-center enabled:text-black rounded-t-lg p-2 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 " } } }} aria-label="Tabs with icons" variant="underline" onActiveTabChange={e => setIndex(e)} >
 
                             <Tabs.Item  active={indexTab === 0} title="Dados Associado" icon={HiUserCircle}>
-                                {indexTab === 0 && <DadosAssociado infoEmpresa={infoEmpresa} dadosassociado={dadosassociado ?? {}} />}
+                                {indexTab === 0 && <DadosAssociado infoEmpresa={infoEmpresa} dadosassociado={dadosassociado ?? {} as Partial<AssociadoProps>} />}
                             </Tabs.Item>
 
                             <Tabs.Item active={indexTab === 1} disabled={!permissoes.includes('ADM1.2')} title="Histórico/Mensalidade" icon={HiMiniWallet}>
