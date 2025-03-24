@@ -8,7 +8,6 @@ import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
 import { ModalDrawer } from "@/components/tabs/afapSaude/agendaMedico/drawer";
 import {  Button, Modal, Alert } from "flowbite-react";
-import {ConsultaProps, EventProps, MedicoProps } from "@/pages/dashboard/afapSaude";
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
 import ptBR from 'date-fns/locale/pt-BR';
 import { format, parse, startOfWeek } from 'date-fns';
@@ -17,6 +16,7 @@ import { getDay } from "date-fns";
 import { api } from "@/lib/axios/apiClient";
 import { toast } from "react-toastify";
 import { LuCalendarCheck, LuCalendarClock, LuCalendarX } from "react-icons/lu";
+import { EventProps, MedicoProps } from "@/types/afapSaude";
 
 const locales = {
   'pt-BR':ptBR,

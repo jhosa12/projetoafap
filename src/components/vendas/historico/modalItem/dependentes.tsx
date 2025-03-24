@@ -116,7 +116,7 @@ export function TabDependentes({ control, register, setValue, trigger, watch }: 
                                 control={controlDependente}
                                 name="data_adesao"
                                 render={({ field: { onChange, value } }) => (
-                                    <DatePicker selected={value} onChange={e => { e && onChange(e) }} dateFormat={"dd/MM/yyyy"} locale={pt} className="flex  w-full text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+                                    <DatePicker selected={value} required onChange={e => { e && onChange(e) }} dateFormat={"dd/MM/yyyy"} locale={pt} className="flex  w-full text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
                                 )}
                             />
                         </div>

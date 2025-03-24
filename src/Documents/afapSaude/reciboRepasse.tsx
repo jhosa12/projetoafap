@@ -5,7 +5,8 @@
 import React from 'react';
 import { Table } from "flowbite-react";
 import { roboto_Mono } from "@/fonts/fonts";
-import { ConsultaProps, ExamesProps } from '@/pages/dashboard/afapSaude';
+import { ConsultaProps, ExamesProps } from '@/types/afapSaude';
+
 interface DadosProps {
     dados: Array<ConsultaProps>,
     usuario: string,

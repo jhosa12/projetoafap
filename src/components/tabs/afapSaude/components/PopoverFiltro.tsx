@@ -4,8 +4,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { useState } from "react";
 import { HiFilter } from "react-icons/hi";
-import { MedicoProps } from "@/pages/dashboard/afapSaude";
-import { set } from "date-fns";
+import { MedicoProps } from "@/types/afapSaude";
+
 
 interface DataProps{
     openModal:boolean

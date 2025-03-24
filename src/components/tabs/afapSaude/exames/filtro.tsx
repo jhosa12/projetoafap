@@ -2,10 +2,7 @@ import { Button, Label, Popover, Select, TextInput } from "flowbite-react"
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { useState } from "react";
 import { HiFilter } from "react-icons/hi";
-import { MedicoProps } from "@/pages/dashboard/afapSaude";
-import { set } from "date-fns";
 import { FiltroForm } from "./exames";
 import { useForm,Controller, SubmitHandler } from "react-hook-form";
 

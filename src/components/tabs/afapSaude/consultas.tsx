@@ -1,6 +1,4 @@
 
-
-import {  ConsultaProps, EventProps, MedicoProps } from "@/pages/dashboard/afapSaude";
 import { api } from "@/lib/axios/apiClient";
 import {   Table } from "flowbite-react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
@@ -42,8 +40,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { set } from "react-hook-form";
 import { Button } from "../../ui/button";
+import { ConsultaProps, EventProps, MedicoProps } from "@/types/afapSaude";
 
 
 interface DataProps {
@@ -543,9 +541,11 @@ const handleDeletar = useCallback(async () => {
           cpf={data?.cpf??''}
           endereco={data?.endereco??''} 
           nascimento={data?.nascimento??undefined}
+          identidade={data?.identidade??''}
+          especialidade={medicos.find(item=>item.id_med===data?.id_med)?.espec ??''}
           responsavel={data?.responsavel??''}
            nome={data?.nome??''}
-            rg=""
+           procedimentos={data?.procedimentos}
              celular={data?.celular??''}
              parentesco={data?.grau_parentesco??''}
              />}

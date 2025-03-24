@@ -1,6 +1,6 @@
-import useApiGet from "@/hooks/useApiGet"
+
 import useApiPost from "@/hooks/useApiPost"
-import { ConsultaProps } from "@/pages/dashboard/afapSaude"
+import { ConsultaProps } from "@/types/afapSaude"
 import { Dropdown, Modal, TextInput } from "flowbite-react"
 import { FormEvent, useState } from "react"
 import { UseFormReset } from "react-hook-form"

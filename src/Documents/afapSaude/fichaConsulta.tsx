@@ -1,27 +1,25 @@
 
 
-
-
-import Image from "next/image";
-import logo from "../../../public/afapsaude.png"
-
-
 import React from 'react';
 import { roboto_Mono } from "@/fonts/fonts";
+import { ExamesData } from '@/types/afapSaude';
+import { time } from 'console';
 interface DadosProps{
     nome:string, 
     cpf:string,
-    rg:string,
     endereco:string,
     data:Date
     bairro:string,
     cidade:string,
+    especialidade:string,
+    identidade:string,
     celular:string,
     nascimento:Date|undefined
     responsavel:string,
     parentesco:string|undefined,
     especialista:string|undefined
-    id_consulta:number|null
+    id_consulta:number|null,
+    procedimentos:Array<ExamesData>|undefined
 }
 
 class FichaConsulta extends React.Component<DadosProps> {
@@ -29,18 +27,51 @@ class FichaConsulta extends React.Component<DadosProps> {
   render() {
     const {nome, 
         cpf,
-        rg,
         data,
         endereco,
         bairro,
+        identidade,
         cidade,
        celular,
        nascimento,
        parentesco,
         responsavel,
         especialista,
-        id_consulta
-         } = this.props;
+        especialidade,
+        id_consulta,
+        procedimentos
+         } = this.props;  
+
+
+
+         const calcularIdade = (date:Date)=>{
+
+
+          if(!date)return ''
+            const hoje = new Date();
+            const nasc = new Date(date)
+            const anoAtual = hoje.getFullYear();
+            const mesAtual = hoje.getMonth();
+            const diaAtual = hoje.getDate();
+            const anoNascimento = nasc.getFullYear();
+            const mesNascimento = nasc.getMonth();
+            const diaNascimento = nasc.getDate();
+
+
+
+
+            let idade = 0;
+             idade = anoAtual - anoNascimento;
+
+
+            if (mesNascimento > mesAtual || (mesNascimento === mesAtual && diaNascimento > diaAtual)) {
+                // Se o aniversariante ainda não fez aniversário este ano, calcular a idade com base no aniversário do próximo ano
+                
+                idade--
+            }
+            return idade
+
+         }
 
         const options:Intl.DateTimeFormatOptions = {
             weekday: 'long', // Dia da semana por extenso
@@ -67,11 +98,12 @@ class FichaConsulta extends React.Component<DadosProps> {
          <div style={{display:'flex',flexDirection:'column',width:'100%',fontSize:'12px',gap:'5px'}}>
           <div style={{display:'flex',justifyContent:'space-between',width:'100%'}} >
             <span >Paciente: {nome} </span>
-            <span>Nascimento: {nascimento && new Date(nascimento).toLocaleDateString('pt-BR')}</span>
+            <span>Nasc.: {nascimento && new Date(nascimento).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+            <span>Idade: {nascimento && calcularIdade(nascimento)}</span>
           </div>
           <div style={{display:'flex',justifyContent:'space-between',width:'100%'}} >
             <span >CPF: {cpf} </span>
-            <span>Identidade: {rg}</span>
+            <span>Identidade: {identidade}</span>
             <span>Celular: {celular}</span>
           </div>
 
@@ -98,8 +130,14 @@ class FichaConsulta extends React.Component<DadosProps> {
             <span>Horário da Consulta:</span>
           </div>
           <div style={{display:'flex',justifyContent:'space-between',width:'100%'}} >
-            <span >Nome do Profissional de Saude: {especialista} </span>
-            <span>Especialidade:</span>
+            <span >Profissional: {especialista} </span>
+            <span>Especialidade:{especialidade}</span>
+          </div>
+          <div>
+            <span>Procedimentos:</span>
+            <ul className='inline-flex'>
+              {procedimentos?.map((item,index)=><li key={index}>{item.nome}{procedimentos.length-1 !== index ? ',':'.'}</li>)}
+            </ul>
           </div>
          </div>
 

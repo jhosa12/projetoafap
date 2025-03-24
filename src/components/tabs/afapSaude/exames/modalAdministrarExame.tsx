@@ -1,14 +1,12 @@
 
-import { ConsultaProps, ExamesData, ExamesProps, MedicoProps } from "@/pages/dashboard/afapSaude";
+
 import { Button, Label, Modal, Select, Table, TextInput } from "flowbite-react";
 import ReactInputMask from "react-input-mask";
-import { ChangeEvent, useState } from "react";
-import { api } from "@/lib/axios/apiClient";
+import { ChangeEvent } from "react";
 import { toast } from "react-toastify";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { ExameRealizadoProps } from "./exames";
-import { IoAddCircle, IoAddCircleOutline } from "react-icons/io5";
-import { HiOutlineTrash, HiTrash } from "react-icons/hi2";
+import {  HiTrash } from "react-icons/hi2";
+import { ExameRealizadoProps, ExamesData, ExamesProps } from "@/types/afapSaude";
 
 
 interface DataProps {

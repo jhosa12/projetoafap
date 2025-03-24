@@ -1,6 +1,4 @@
 
-
-import { ExamesData, ExamesProps} from "@/pages/dashboard/afapSaude";
 import { api } from "@/lib/axios/apiClient";
 import { Badge, Button, Table } from "flowbite-react";
 import {  useCallback, useContext, useEffect, useRef, useState } from "react";
@@ -22,6 +20,7 @@ import { MdDelete } from "react-icons/md";
 import { BiMoneyWithdraw } from "react-icons/bi";
 import pageStyle from "@/utils/pageStyle";
 import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
+import { ExameRealizadoProps, ExamesData, ExamesProps } from "@/types/afapSaude";
 
 
 
@@ -39,27 +38,7 @@ export interface FiltroForm {
 }
 
 
-export interface ExameRealizadoProps{
-  id_exame:number|null,
-  id_selected:number|null,
-  celular:string,
-  endereco:string,
-  numero:number|null,
-  bairro:string,
-  cidade:string,
-  data_orcamento: Date,
-  data_realizado:Date,
-  exames:Array<ExamesData>,
-  coleta:string,
-  tipoDesc:string,
-  cpf:string,
-  data_nasc:Date,
-  nome_responsavel:string,
-  parentesco:string,
-  nome:string,
-  status:string,
-  user:string,
-}
+
 
 export default function Exames({exames}:DataProps) {
   const valorInicial = {id_exame:null,celular:'',data_orcamento:new Date(),data_realizado:new Date(),exames:[],coleta:'',tipoDesc:'',cpf:'',data_nasc:new Date(),nome_responsavel:'',parentesco:'',nome:'',status:'',user:'',endereco:'',id_selected:null,numero:null,bairro:'',cidade:''}

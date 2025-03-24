@@ -1,12 +1,11 @@
 
-import { Card,Modal,ModalHeader,ModalBody,Button,Label,FileInput,Textarea,Dropdown, FloatingLabel } from "flowbite-react";
-import { MedicoProps } from "@/pages/dashboard/afapSaude";
+import { Card,Dropdown } from "flowbite-react";
 import { IoAddOutline } from "react-icons/io5";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/lib/axios/apiClient";
 import { ModalMedico } from "./modalMedico";
-import Image from "next/image";
+import { MedicoProps } from "@/types/afapSaude";
 
 
 interface DataProps{

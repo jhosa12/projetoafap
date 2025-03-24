@@ -141,10 +141,10 @@ Header() {
         <MenubarTrigger>Configurações</MenubarTrigger>
         <MenubarContent>
           <MenubarItem disabled={!permissoes.includes('CFG1')}>
-          <Link  href="/dashboard/configuracoes/usuario">Usuários</Link>
+          <Link  href="/settings/configuracoes/usuario">Usuários</Link>
           </MenubarItem>
           <MenubarItem disabled={!permissoes.includes('CFG1')}>
-          <Link  href="/dashboard/configuracoes/empresas">Empresa</Link>
+          <Link  href="/settings/configuracoes/empresas">Empresa</Link>
           </MenubarItem>
         </MenubarContent>
       </MenubarMenu>

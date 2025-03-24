@@ -1,5 +1,4 @@
 
-import { ExamesProps, MedicoProps } from "@/pages/dashboard/afapSaude"
 import { api } from "@/lib/axios/apiClient"
 import {Modal, Table } from "flowbite-react"
 import { useState } from "react"
@@ -9,6 +8,7 @@ import { toast } from "react-toastify"
 import { ModalConfirmar } from "../../components/modalConfirmar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { ExamesProps, MedicoProps } from "@/types/afapSaude"
 
 
 interface DataProps {

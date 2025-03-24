@@ -1,11 +1,10 @@
 import { Tabs } from "flowbite-react";
 import { HiAdjustments, HiClipboardList } from "react-icons/hi";
 import { HiUserCircle } from "react-icons/hi2";
-import { MdAccessTimeFilled, MdDashboard, MdMedicalServices } from "react-icons/md";
-
-import { ExamesProps, MedicoProps } from "@/pages/dashboard/afapSaude";
+import {MdMedicalServices } from "react-icons/md";
 import { AddEditExames } from "./addEditExames";
 import AdmMedico from "./administrarMedicos/admMedico";
+import { ExamesProps, MedicoProps } from "@/types/afapSaude";
 
 
 interface DataProps{

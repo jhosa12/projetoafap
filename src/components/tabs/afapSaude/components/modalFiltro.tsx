@@ -2,14 +2,12 @@
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { HiFilter } from "react-icons/hi"
 import {  Label, Modal, Select, Spinner, TextInput } from "flowbite-react";
-import { useState } from "react";
-import { MedicoProps } from "@/pages/dashboard/afapSaude";
 import { Button } from "@/components/ui/button";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { status } from "../consultas";
 import { ConsultoresProps } from "@/types/consultores";
+import { MedicoProps } from "@/types/afapSaude";
 registerLocale('pt-br', pt)
 
 interface DataProps{

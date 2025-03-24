@@ -152,7 +152,7 @@ export function ModalDependentes({openModal,setModal,data}:DataProps){
   control={control}
   name="data_nasc"
   render={({ field:{onChange,value} }) => (
-<DatePicker selected={value} onChange={onChange}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+<DatePicker selected={value} onChange={onChange}  dateFormat={"dd/MM/yyyy"} locale={pt} className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
 
   )}
   

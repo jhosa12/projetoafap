@@ -6,9 +6,9 @@ import { useContext } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/lib/axios/apiClient";
 import 'react-datepicker/dist/react-datepicker.css';
-import { EventProps, MedicoProps } from "@/pages/dashboard/afapSaude";
 import { AuthContext } from "@/store/AuthContext";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { EventProps, MedicoProps } from "@/types/afapSaude";
 
 
 interface DrawerProps {

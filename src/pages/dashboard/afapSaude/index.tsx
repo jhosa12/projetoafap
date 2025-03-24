@@ -1,13 +1,11 @@
 
 
-import {  useEffect, useState,Suspense, useCallback } from "react";
+import {  useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/axios/apiClient";
 import { toast } from "react-toastify";
 import "react-datepicker/dist/react-datepicker.css";
-import {  momentLocalizer } from 'react-big-calendar'
-import moment from 'moment'
-
-
+//import {  momentLocalizer } from 'react-big-calendar'
+//import moment from 'moment'
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
 import Calendario from "@/components/tabs/afapSaude/agendaMedico/calendario";
@@ -16,146 +14,19 @@ import { Tabs } from "flowbite-react";
 import { FaCalendarAlt } from "react-icons/fa";
 import {HiClipboardList } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
-import { MdAccessTimeFilled } from "react-icons/md";
-
 import { BiSolidInjection } from "react-icons/bi";
 import Exames from "@/components/tabs/afapSaude/exames/exames";
 import Configuracoes from "@/components/tabs/afapSaude/configuracoes/configuracoes";
+import { ConsultaProps, ExamesProps, MedicoProps,EventProps } from "@/types/afapSaude";
+
 
 // Configura o moment para usar o idioma português
-moment.locale('pt-br');
-const localizer = momentLocalizer(moment)
+//moment.locale('pt-br');
+//const localizer = momentLocalizer(moment)
 
 
 
 
-
-export interface ExamesData{
-  id_exame:number,
-  nome:string,
-  obs:string,
-  data:Date,
-  valorExame:number,
-  desconto:number,
-  valorFinal:number,
-}
-
-export interface ExamesProps{
-  id_exame:number,
-  nome:string,
-  data:Date,
-  usuario:string,
-  valorBruto:number,
-  porcFun:number,
-  porcPart:number,
-  porcPlan:number
-  valorFinal:number,
-  valorRepasse:number,
-  obs:string
-}
-
-
-export interface ConsultaProps{
-  id_consulta:number|null,
-  id_med:number|null,
-  complemento:string,
-  dt_pgto:Date|null,
-  user:string,
-  procedimentos:Array<ExamesData>,
-  nome:string,
-  celular:string,
-  cpf:string,
-  espec:string,
-  status:string,
-  vl_consulta:number|null,
-  tipoDesc:string,
-  vl_desc:number|null,
-  vl_final:number|null,
-  data:Date,
-  exames:Array<ExamesData>,
-  nascimento:Date,
-  endereco:string,
-  bairro:string,
-  numero:number,
-  cidade:string,
-  responsavel:string,
-  grau_parentesco:string,
-  informacoes:string,
-  receita:string,
-  peso:number,
-  altura:number,
-  temperatura:number,
-  idade:number,
-  identidade:string,
-  observacao:string
-  id_selected:number,
-  id_agmed:number|null,
-  hora_prev:Date,
-  buscar:string,
-  data_prev:Date|undefined,
-  retorno:string
-}
-
-export interface MedicoProps {
-  id_med: number,
-  espec: string,
-  nome: string,
-  sobre: string,
-  file: File | undefined,
-  imageUrl: string,
-  tmpUrl: string,
-  funeraria: number,
-  particular: number,
-  plano: number,
-  time: number,
-  exames: Array<ExamesProps>
-
-}
-
-export interface ClientProps {
-  data_prev:Date|undefined,
-  id_agcli: number,
-  user:string,
-  espec: string,
-  medico: string,
-  id_agmed: number|null,
-  id_med: number,
-  id_usuario: number
-  data: Date
-  start: Date,
-  end: Date,
-  title: string
-  status: string,
-  endereco: string,
-  numero:number,
-  bairro:string
-  cidade:string
-  complemento:string,
-  buscar:string
-  obs: string,
-  nome: string,
-  hora_prev:Date,
-  celular: string,
-  tipoAg: string
-}
-export interface EventProps {
-
-  id_agcli: number,
-  id_agmed: number|null
-  id_med: number,
-  id_usuario: number
-  data: Date,
-  endereco: string,
-  start: Date,
-  end: Date,
-  title: string
-  status: string,
-  obs: string,
-  nome: string,
-  celular: string,
-  tipoAg: string,
-  editar: boolean
-}
 
 
 export default function AfapSaude() {

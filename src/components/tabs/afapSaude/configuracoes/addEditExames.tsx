@@ -1,4 +1,4 @@
-import { ExamesProps } from "@/pages/dashboard/afapSaude";
+
 import { Button, Table } from "flowbite-react";
 import { ModalEditExames } from "../components/modalAddEditExames";
 import { useCallback, useContext, useRef, useState } from "react";
@@ -11,6 +11,7 @@ import { useReactToPrint } from "react-to-print";
 import RelatorioLucroExames from "@/Documents/afapSaude/relatorioLucroExames";
 import pageStyle from "@/utils/pageStyle";
 import { ModalConfirmar } from "../components/modalConfirmar";
+import { ExamesProps } from "@/types/afapSaude";
 
 interface DataProps{
     exames:Array<ExamesProps>

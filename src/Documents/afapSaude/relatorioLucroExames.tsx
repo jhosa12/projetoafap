@@ -3,7 +3,7 @@ import Image from "next/image";
 import logo from "../../../public/afapsaude.png"
 import React from 'react';
 import { Table } from "flowbite-react";
-import { ExamesProps } from "@/pages/dashboard/afapSaude";
+import { ExamesProps } from "@/types/afapSaude";
 interface DadosProps {
     dados:Array<ExamesProps>
 

@@ -3,9 +3,9 @@
 
 
 import React from 'react';
-import { ExameRealizadoProps } from "@/components/tabs/afapSaude/exames/exames";
 import { Table } from "flowbite-react";
 import { roboto_Mono } from "@/fonts/fonts";
+import { ExameRealizadoProps } from '@/types/afapSaude';
 interface DadosProps {
     dados: ExameRealizadoProps
     usuario: string,

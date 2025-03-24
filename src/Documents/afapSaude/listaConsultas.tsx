@@ -1,10 +1,8 @@
 
-
-import Image from "next/image";
-import logo from "../../../public/afapsaude.png"
 import React from 'react';
 import { Table } from "flowbite-react";
-import { ConsultaProps } from "@/pages/dashboard/afapSaude";
+import { ConsultaProps } from '@/types/afapSaude';
+
 interface DadosProps {
     dados:Array<ConsultaProps>
 

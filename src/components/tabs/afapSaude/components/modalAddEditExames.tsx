@@ -1,5 +1,6 @@
-import { ExamesProps } from "@/pages/dashboard/afapSaude"
+
 import { api } from "@/lib/axios/apiClient"
+import { ExamesProps } from "@/types/afapSaude"
 import { Button, Label, Modal, Textarea, TextInput } from "flowbite-react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { toast } from "react-toastify"

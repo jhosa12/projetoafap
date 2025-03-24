@@ -1,4 +1,4 @@
-import { ConsultaProps, MedicoProps } from "@/pages/dashboard/afapSaude"
+
 import { api } from "@/lib/axios/apiClient"
 import { FileInput, Label, Modal, Popover, Textarea } from "flowbite-react"
 import { ChangeEvent, useContext, useEffect, useRef, useState } from "react"
@@ -19,6 +19,7 @@ import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { ajustarData } from "@/utils/ajusteData"
+import { ConsultaProps, MedicoProps } from "@/types/afapSaude"
 
 
 interface DataProps {
