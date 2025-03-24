@@ -339,6 +339,6 @@ export interface ArrayProdutoProps {
 
 export interface ImpressoesProps{
     arquivo:string,
-    date:Date,
+    date:Date|string,
     user:string|undefined
 }

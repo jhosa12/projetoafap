@@ -20,15 +20,16 @@ import { ProtocoloCancelamento } from "@/Documents/associado/protocoloCancelamen
 import { api } from "@/lib/axios/apiClient";
 import { toast } from "react-toastify";
 import { ModalConfirmar } from "@/components/tabs/afapSaude/components/modalConfirmar";
+import { removerFusoDate } from "@/utils/removerFusoDate";
 
 interface DataProps {
-    dadosassociado: Partial<AssociadoProps>,
+    dadosassociado: AssociadoProps,
     infoEmpresa: EmpresaProps | null
 }
 
 
 export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
-    const { usuario,permissoes } = useContext(AuthContext)
+    const { usuario,permissoes,setarDadosAssociado } = useContext(AuthContext)
     const [observacao, setObservacao] = useState('');
     const [modal,setModal] =useState<{[key:string]:boolean}>({
         editar:false,
@@ -85,21 +86,18 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
         pageStyle: pageStyle,
         documentTitle: "CONTRATO",
         content: () => componentRefs.contrato.current,
-        onAfterPrint: async() => {
-            setPrintState((prev) => ({ contrato: false }));
-           await handleRegisterImpressao('contrato');
+        onBeforeGetContent: async() => {
+            await handleRegisterImpressao('contrato');
         },
+        
     });
 
     const imprimirCarteira = useReactToPrint({
         pageStyle: pageStyle,
         documentTitle: "CARTEIRA",
         content: () => componentRefs.carteira.current,
-        onAfterPrint: async() => {
-            setPrintState((prev) => ({carteira: false }));
-            await handleRegisterImpressao('carteira');
-        
-        
+        onBeforeGetContent: async() => {
+           await handleRegisterImpressao('carteira');
         },
     });
 
@@ -107,10 +105,8 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
         pageStyle: pageStyle,
         documentTitle: "CARNÊ",
         content: () => componentRefs.carne.current,
-        onAfterPrint: async() => {
-            setPrintState((prev) => ({carne: false }));
-            await handleRegisterImpressao('carne');
-        
+        onBeforeGetContent:async() => {
+           await handleRegisterImpressao('carne');
         },
     });
 
@@ -118,9 +114,10 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
         pageStyle: pageStyle,
         documentTitle: "RESUMO",
         content: () => componentRefs.resumo.current,
-        onAfterPrint: async() => {
-            setPrintState((prev) => ({ resumo: false }));
-            await handleRegisterImpressao('resumo');
+        onBeforeGetContent: async() => {
+           await handleRegisterImpressao('resumo');
+           
+           
         },
     });
 
@@ -129,8 +126,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
         pageStyle: pageStyle,
         documentTitle: "CARTA",
         content: () => componentRefs.carta.current,
-        onAfterPrint:async() => {
-            setPrintState((prev) => ({  carta: false }));
+        onBeforeGetContent:async() => {
             await handleRegisterImpressao('carta');
         },
     });
@@ -144,8 +140,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
      }, [printState]);*/
 
   const handleImpressao = useCallback(async() => {
-
- 
+     
             if (printState.contrato) imprimirContrato();
             if (printState.carteira) imprimirCarteira();
             if (printState.carne) imprimirCarne();
@@ -160,19 +155,23 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
 
 
     const handleRegisterImpressao = useCallback(async (arquivo: string) => {
+ 
+        const {newDate} = removerFusoDate(new Date())
         const impressoes =[...( dadosassociado.contrato?.impressoes||[])];
         const index = impressoes.findIndex((imp) => imp.arquivo === arquivo);
         if (index === -1) {
-            impressoes.push({ arquivo: arquivo, date: new Date(), user: usuario?.nome });
-        }else {impressoes[index] = { ...impressoes[index], date: new Date(),user: usuario?.nome };}
+            impressoes.push({ arquivo: arquivo, date: newDate, user: usuario?.nome });
+        }else {impressoes[index] = { ...impressoes[index], date: newDate,user: usuario?.nome };}
         try {
          const response = await api.put('/contrato/impressoes', {id_contrato_global:dadosassociado?.contrato?.id_contrato_global,impressoes:impressoes})
             setModal({impressao:false})
+            setPrintState({ [arquivo]: false });
+            setarDadosAssociado({contrato:{...dadosassociado?.contrato,impressoes:response.data.impressoes}})
         } catch (error) {
-            console.log(error)
+            //console.log(error)
             toast.error('Erro ao registrar impressão')
         }
-    },[dadosassociado])
+    },[dadosassociado,printState,usuario?.nome,infoEmpresa])
 
 
   /*  function handleObservacao() {
