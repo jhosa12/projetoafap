@@ -611,81 +611,59 @@ setOpenModal={setModalDados}
        
         <div className="overflow-y-auto mt-1 px-2 h-[calc(100vh-144px)] ">
        
-        <Table hoverable theme={{root:{shadow:'none'}, body: { cell: { base: "px-2 py-0 text-[10px]" } } }} 
-    >
-         <Table.Head  className="sticky top-0 bg-white z-5 border-b-2" theme={{ cell: { base: "bg-gray-50 px-2 py-0 text-[11px]" } }} >
-        
-                <Table.HeadCell  >
-                    Nº LANC.
-                </Table.HeadCell>
-                <Table.HeadCell >
-                    DATA
-                </Table.HeadCell>
-                <Table.HeadCell >
-                    CONTA
-                </Table.HeadCell>
-                <Table.HeadCell >
-                    C.CUSTOS
-                </Table.HeadCell>
-                <Table.HeadCell >
-                    DOCUMENTO
-                </Table.HeadCell> 
-                <Table.HeadCell >
-                    HISTÓRICO
-                </Table.HeadCell> 
-                <Table.HeadCell >
-                    TIPO
-                </Table.HeadCell>
-                <Table.HeadCell >
-                    VALOR
-                </Table.HeadCell>  
-                <Table.HeadCell >
-                    AÇÕES
-                </Table.HeadCell> 
-             
-            
-            
-        </Table.Head>
-        <Table.Body className="divide-y">
-            {data?.lista?.map((item,index)=>(
-            <Table.Row key={item.lanc_id} className=" text-black  ">
-
-<Table.Cell className="whitespace-nowrap   ">
-{item.num_seq}
-            </Table.Cell>
-            <Table.Cell  data-tooltip-id="tooltip-hora" data-tooltip-place="bottom" data-tooltip-content={new Date(item.datalanc).toLocaleTimeString()} >
-            {new Date(item.data).toLocaleDateString('pt-BR',{timeZone:'UTC'})}
-            </Table.Cell>
-            <Table.Cell>{item.conta}</Table.Cell>
-            
-            
-           
-            <Table.Cell className="whitespace-nowrap">{item.ccustos_desc  }</Table.Cell>
-            <Table.Cell>  {item.notafiscal?item.notafiscal.toUpperCase():item?.descricao?.toUpperCase()}</Table.Cell>
-            <Table.Cell> {item.historico}</Table.Cell>
-            <Table.Cell className={`font-semibold ${item.tipo==='RECEITA'?"text-green-500":"text-red-500"}`}> {item.tipo}</Table.Cell>
-            <Table.Cell className="font-semibold">{Number(item.valor).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
-          
-            <Table.Cell className="space-x-4 whitespace-nowrap">
-            <button disabled={item.conta==='1.01.002'|| !permissoes.includes('ADM2.1.3')} onClick={(event)=>{
-                               event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                               setMov({...item})
-                              setModal({lancar:true})
-                            }} className="font-medium text-gray-500 hover:text-cyan-600 disabled:cursor-not-allowed">
-                    <HiPencil size={14} />
-                  </button>
-                  <button disabled={item.conta==='1.01.002'|| !permissoes.includes('ADM2.1.4')} onClick={() =>{setMov({lanc_id:item.lanc_id}),setModal({excluir:true}) }} className="font-medium text-gray-500 hover:text-red-600 disabled:cursor-not-allowed">
-                    <MdDelete size={16} />
-                  </button>
-                  </Table.Cell>
-          
-            </Table.Row>
-
-            ))}
-           
-           </Table.Body>
+        <Table 
+    hoverable 
+    theme={{
+        root: { shadow: 'none' }, 
+        body: { cell: { base: "px-2 py-0 text-[10px] font-medium" } } 
+    }}
     
-    </Table>
+>
+    <Table.Head 
+        className="sticky top-0 bg-white z-5 border-b-[1px] border-gray-300"
+        theme={{ cell: { base: "bg-gray-50 px-2 py-0 text-[11px] border border-gray-300" } }}
+    >
+        <Table.HeadCell className="border border-gray-300">Nº</Table.HeadCell>
+        <Table.HeadCell className="border border-gray-300">DATA</Table.HeadCell>
+        <Table.HeadCell className="border border-gray-300">CONTA</Table.HeadCell>
+        <Table.HeadCell className="border border-gray-300">C.CUSTOS</Table.HeadCell>
+        <Table.HeadCell className="border border-gray-300">DOCUMENTO</Table.HeadCell> 
+        <Table.HeadCell className="border border-gray-300">HISTÓRICO</Table.HeadCell> 
+        <Table.HeadCell className="border border-gray-300">TIPO</Table.HeadCell>
+        <Table.HeadCell className="border border-gray-300">VALOR</Table.HeadCell>  
+        <Table.HeadCell className="border border-gray-300">AÇÕES</Table.HeadCell> 
+    </Table.Head>
+
+    <Table.Body className="divide-y divide-gray-300">
+        {data?.lista?.map((item) => (
+            <Table.Row key={item.lanc_id} className="text-black">
+                <Table.Cell className="whitespace-nowrap border border-gray-300">{item.num_seq}</Table.Cell>
+                <Table.Cell className="border border-gray-300" data-tooltip-id="tooltip-hora" data-tooltip-place="bottom" data-tooltip-content={new Date(item.datalanc).toLocaleTimeString()}>
+                    {new Date(item.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
+                </Table.Cell>
+                <Table.Cell className="border border-gray-300">{item.conta}</Table.Cell>
+                <Table.Cell className="whitespace-nowrap border border-gray-300">{item.ccustos_desc}</Table.Cell>
+                <Table.Cell className="border border-gray-300">{item.notafiscal ? item.notafiscal.toUpperCase() : item?.descricao?.toUpperCase()}</Table.Cell>
+                <Table.Cell className="border border-gray-300">{item.historico}</Table.Cell>
+                <Table.Cell className={`font-semibold border border-gray-300 ${item.tipo === 'RECEITA' ? "text-green-500" : "text-red-500"}`}>{item.tipo}</Table.Cell>
+                <Table.Cell className="font-semibold border border-gray-300">{Number(item.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
+                <Table.Cell className="space-x-4 whitespace-nowrap border border-gray-300">
+                    <button disabled={item.conta === '1.01.002' || !permissoes.includes('ADM2.1.3')} onClick={(event) => {
+                        event.stopPropagation();
+                        setMov({ ...item });
+                        setModal({ lancar: true });
+                    }} className="font-medium text-gray-500 hover:text-cyan-600 disabled:cursor-not-allowed">
+                        <HiPencil size={14} />
+                    </button>
+                    <button disabled={item.conta === '1.01.002' || !permissoes.includes('ADM2.1.4')} onClick={() => { setMov({ lanc_id: item.lanc_id }), setModal({ excluir: true }) }} className="font-medium text-gray-500 hover:text-red-600 disabled:cursor-not-allowed">
+                        <MdDelete size={16} />
+                    </button>
+                </Table.Cell>
+            </Table.Row>
+        ))}
+    </Table.Body>
+</Table>
+
     </div>
     </div>}
 

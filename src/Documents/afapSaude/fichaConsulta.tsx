@@ -98,7 +98,7 @@ class FichaConsulta extends React.Component<DadosProps> {
          <div style={{display:'flex',flexDirection:'column',width:'100%',fontSize:'12px',gap:'5px'}}>
           <div style={{display:'flex',justifyContent:'space-between',width:'100%'}} >
             <span >Paciente: {nome} </span>
-            <span>Nasc.: {nascimento && new Date(nascimento).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+            <span>Nasc.: {nascimento && new Date(nascimento).toLocaleDateString('pt-BR')}</span>
             <span>Idade: {nascimento && calcularIdade(nascimento)}</span>
           </div>
           <div style={{display:'flex',justifyContent:'space-between',width:'100%'}} >

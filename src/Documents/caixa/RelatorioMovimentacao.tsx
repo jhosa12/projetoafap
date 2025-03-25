@@ -70,8 +70,8 @@ class RelatorioMovimentacao extends React.Component<DadosProps> {
         <div className="flex  w-full justify-center ">
           <img width={150} height={150} src={infoEmpresa?.logoUrl} alt="logo" />
         </div>
-        <h1 style={{ fontWeight: 'bold', fontSize: '18px', textAlign: 'center' }}>Relatório de Movimentação de Caixa</h1>
-        <div className="flex flex-col gap-1 pl-5 ">
+        <h1 style={{ fontWeight: 'bold', fontSize: '24px', textAlign: 'center' }}>Relatório de Movimentação de Caixa</h1>
+        <div style={{fontSize:'14px'}} className="flex flex-col gap-1 ">
           <span>Usuário: {usuario}</span>
           <span>Data Expedição: {new Date().toLocaleDateString('pt-BR')}</span>
           <span>Periodo do Caixa:  {new Date(startDate).toLocaleDateString('pt-BR')} -  {new Date(endDate).toLocaleDateString('pt-BR')}</span>
