@@ -146,6 +146,7 @@ const config: Config = {
     flowbite.plugin(),
       require("tailwindcss-animate")
 ],
+
 }
 
 export default config

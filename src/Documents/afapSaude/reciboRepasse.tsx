@@ -6,6 +6,7 @@ import React from 'react';
 import { Table } from "flowbite-react";
 import { roboto_Mono } from "@/fonts/fonts";
 import { ConsultaProps, ExamesProps } from '@/types/afapSaude';
+import { url } from 'inspector';
 
 interface DadosProps {
     dados: Array<ConsultaProps>,

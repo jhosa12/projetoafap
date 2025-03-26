@@ -15,7 +15,7 @@ import { ModalExcluirMens } from '../../../modals/admContrato/historico/modalExc
 import { AcordoProps, MensalidadeProps } from '@/types/financeiro';
 import { ReciboMensalidade } from '@/Documents/associado/mensalidade/Recibo';
 import pageStyle from '@/utils/pageStyle';
-import { Button, ButtonGroup } from 'flowbite-react';
+import { Button, ButtonGroup, Table } from 'flowbite-react';
 import { PopoverVencimento } from './popoverVencimento';
 import { PopoverReagendamento } from './popoverReagendamento';
 import ModalBaixaMensalidade from '@/pages/dashboard/formasPag';
@@ -218,7 +218,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
 
 
     return (
-        <div className="flex flex-col rounded-lg  max-h-[calc(100vh-190px)]    sm:rounded-lg">
+        <div className="flex flex-col w-full">
 
           
 
@@ -288,53 +288,53 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
          
 
             </div>
-            <div className="flex w-full p-2 max-h-[calc(100vh-205px)]">
-                <table
-                    className="block w-full overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse  ">
-                    <thead className="sticky w-full top-0  text-xs   bg-white ">
-                        <tr >
-                            <th scope="col" className="px-6 py-1">
+            <div className="flex w-full overflow-auto mt-2 px-2 max-h-[calc(100vh-190px)]">
+                <Table hoverable theme={{root:{shadow:'none'}, body: { cell: { base: " px-5  py-1  text-[10px] text-black font-medium" } },head: { cell: { base: "px-5  py-1  text-xs text-black font-semibold" }}}}>
+                   
+                    <Table.Head className="sticky top-0 bg-white z-5 border-b-2">
+                       
+                            <Table.HeadCell >
                                 Np
-                            </th>
-                            <th scope="col" className=" px-6 py-1">
+                            </Table.HeadCell>
+                            <Table.HeadCell >
                                 Venc.
-                            </th>
-                            <th scope="col" className=" px-6 py-1">
+                            </Table.HeadCell>
+                            <Table.HeadCell >
                                 Ref
-                            </th>
-                            <th scope="col" className="px-6 py-1">
+                            </Table.HeadCell>
+                            <Table.HeadCell >
                                 Data Agend.
-                            </th>
-                            <th scope="col" className="px-6 py-1">
+                            </Table.HeadCell>
+                            <Table.HeadCell >
                                 Valor
-                            </th>
-                            <th scope="col" className="px-6 py-1">
+                            </Table.HeadCell>
+                            <Table.HeadCell >
                                 status
-                            </th>
-                            <th scope="col" className=" px-6 py-1">
+                            </Table.HeadCell>
+                            <Table.HeadCell >
                                  Pag.
-                            </th>
-                            <th scope="col" className=" px-6 py-1">
+                            </Table.HeadCell>
+                            <Table.HeadCell >
                                 Hr Pag.
-                            </th>
-                            <th scope="col" className=" px-6 py-1">
+                            </Table.HeadCell>
+                            <Table.HeadCell >
                                 Usuário
-                            </th>
-                            <th scope="col" className=" px-6 py-1">
+                            </Table.HeadCell>
+                            <Table.HeadCell >
                                 Val. Pago
-                            </th>
-                            <th scope="col" className=" px-6 py-1">
+                            </Table.HeadCell>
+                            <Table.HeadCell >
                                 Forma
-                            </th>
-                            <th scope="col" className=" px-6 py-1">
+                            </Table.HeadCell>
+                            <Table.HeadCell >
                                 Atraso
-                            </th>
-                            <th scope="col" className="px-12 py-1">
-                                <span>Ações</span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody className='divide-y' >
+                            </Table.HeadCell>
+                            <Table.HeadCell>
+                              Ações
+                            </Table.HeadCell>
+                     
+                    </Table.Head>
+                    <Table.Body className='divide-y' >
 
 
                         {Array.isArray(dadosAssociado?.arrayMensalidade) && dadosAssociado?.arrayMensalidade?.map((item, index) => {
@@ -345,48 +345,48 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
 
                                     (
 
-                                        <tr  key={index}
+                                        <Table.Row  key={index}
                                             onClick={() => toggleSelecionada(item)}
-                                            className={`  text-[10px] font-semibold text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"}  ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : ""}  ${item.status === 'P' && "text-blue-600"}   hover:bg-gray-300 hover:text-black hover:cursor-pointer }`}>
-                                            <th scope="row" className={`px-5 py-1  `}>
+                                            className={`  ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) && "bg-gray-300" }} }`}>
+                                            <Table.Cell >
                                                 {item.parcela_n}
-                                            </th>
-                                            <td className={`px-2 py-1 `}>
+                                            </Table.Cell>
+                                            <Table.Cell >
                                                 {item.vencimento && new Date(item.vencimento).toLocaleDateString('pt', { timeZone: 'UTC' })}
 
-                                            </td>
-                                            <td className="px-2 py-1">
+                                            </Table.Cell>
+                                            <Table.Cell >
                                                 {item.referencia}
-                                            </td>
-                                            <td className="px-5 py-1">
+                                            </Table.Cell>
+                                            <Table.Cell >
                                                 {item.cobranca && new Date(item.cobranca).toLocaleDateString('pt', { timeZone: 'UTC' })}
-                                            </td>
-                                            <td className="px-3 py-1">
+                                            </Table.Cell>
+                                            <Table.Cell >
                                                 {Number(item.valor_principal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                                            </td>
-                                            <td className={`px-4 py-1  font-bold ${item.status !== 'P' && "text-red-600"}`}>
+                                            </Table.Cell>
+                                            <Table.Cell className={`font-bold ${item.status === 'P'? "text-blue-600" : "text-red-600"}`}>
                                                 {item.status}
-                                            </td>
-                                            <td className="px-4 py-1">
+                                            </Table.Cell>
+                                            <Table.Cell >
                                                 {item.data_pgto ? new Date(item.data_pgto).toLocaleDateString('pt', { timeZone: 'UTC' }) : ''}
-                                            </td>
-                                            <td className="px-4 py-1">
+                                            </Table.Cell>
+                                            <Table.Cell >
                                                 {item.hora_pgto}
-                                            </td>
-                                            <td className="px-6 py-1 whitespace-nowrap">
+                                            </Table.Cell>
+                                            <Table.Cell className="whitespace-nowrap">
                                                 {item.usuario?.toUpperCase()}
-                                            </td>
-                                            <td className={`px-6 py-1`}>
+                                            </Table.Cell>
+                                            <Table.Cell >
                                                 {Number(item.valor_total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                                            </td>
-                                            <td className="px-4 py-1">
+                                            </Table.Cell>
+                                            <Table.Cell >
                                                 {item.form_pagto}
-                                            </td>
+                                            </Table.Cell>
 
-                                            <td className="px-4 py-1">
+                                            <Table.Cell className={`${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"}`} >
                                                 {calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) <= 0 ? 0 : calcularDiferencaEmDias(new Date(), new Date(item.vencimento))}
-                                            </td>
-                                            <td className={`inline-flex items-centerpx-4 py-1 space-x-2 whitespace-nowrap`}>
+                                            </Table.Cell>
+                                            <Table.Cell className={`inline-flex items-center space-x-2 whitespace-nowrap`}>
 
                                                 <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
@@ -404,52 +404,51 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
 
                                                 <button type="button" className='text-blue-600 hover:underline' onClick={(e) => { e.stopPropagation(); setMensalidadeRecibo({ ...item, data_pgto: item.data_pgto ? item.data_pgto : new Date() }) }} >
                                                     Recibo
-
                                                 </button>
-                                            </td>
-                                        </tr>
+                                            </Table.Cell>
+                                        </Table.Row>
                                     ) : item.status !== 'P' && (
-                                        <tr key={index}
+                                        <Table.Row key={index}
                                             onClick={() => toggleSelecionada(item)}
-                                            className={`font-semibold text-[10px]  text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && "text-red-600"}   ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : ""}   hover:bg-gray-300 hover:text-black hover:cursor-pointer  }`}>
-                                            <td className="px-5 py-1   ">
+                                            className={`font-semibold text-[10px]  text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && "text-red-600"}   ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : ""}     }`}>
+                                            <Table.Cell >
                                                 {item.parcela_n}
-                                            </td>
-                                            <td className="px-2 py-1">
+                                            </Table.Cell>
+                                            <Table.Cell >
                                                 {new Date(item.vencimento).toLocaleDateString('pt', { timeZone: 'UTC' })}
 
-                                            </td>
-                                            <td className="px-2 py-1">
+                                            </Table.Cell>
+                                            <Table.Cell >
                                                 {item.referencia}
-                                            </td>
-                                            <td className="px-5 py-1">
+                                            </Table.Cell>
+                                            <Table.Cell >
                                                 {new Date(item.cobranca).toLocaleDateString('pt', { timeZone: 'UTC' })}
-                                            </td>
-                                            <td className="px-3 py-1">
+                                            </Table.Cell>
+                                            <Table.Cell >
                                                 {Number(item.valor_principal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                                            </td>
-                                            <td className={`px-4 py-1  font-bold text-red-600`}>
+                                            </Table.Cell>
+                                            <Table.Cell className={`font-bold text-red-600`}>
                                                 {item.status}
-                                            </td>
-                                            <td className="px-4 py-1">
+                                            </Table.Cell>
+                                            <Table.Cell >
                                                 {item.data_pgto ? new Date(item.data_pgto).toLocaleDateString('pt', { timeZone: 'UTC' }) : ''}
-                                            </td>
-                                            <td className="px-4 py-1">
+                                            </Table.Cell>
+                                            <Table.Cell >
                                                 {item.hora_pgto}
-                                            </td>
-                                            <td className="px-6 py-1 whitespace-nowrap">
+                                            </Table.Cell>
+                                            <Table.Cell className=" whitespace-nowrap">
                                                 {item.usuario?.toUpperCase()}
-                                            </td>
-                                            <td className={`px-6 py-1`}>
+                                            </Table.Cell>
+                                            <Table.Cell >
                                                 {Number(item.valor_total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                                            </td>
-                                            <td className="px-4 py-1">
+                                            </Table.Cell>
+                                            <Table.Cell >
                                                 {item.form_pagto}
-                                            </td>
-                                            <td className="px-4 py-1">
+                                            </Table.Cell>
+                                            <Table.Cell >
                                                 {calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) <= 0 ? 0 : calcularDiferencaEmDias(new Date(), new Date(item.vencimento))}
-                                            </td>
-                                            <td className=" px-4 py-1 space-x-2 whitespace-nowrap">
+                                            </Table.Cell>
+                                            <Table.Cell className="space-x-2 whitespace-nowrap">
                                                 <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
                                                    // setOpenEditar(true),
@@ -473,8 +472,8 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                                                     Recibo
 
                                                 </button>
-                                            </td>
-                                        </tr>
+                                            </Table.Cell>
+                                        </Table.Row>
 
                                     )
 
@@ -483,9 +482,9 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
 
 
 
-                    </tbody>
+                    </Table.Body>
 
-                </table>
+                </Table>
             </div>
 
             {openModal.baixar && <ModalMensalidade 
