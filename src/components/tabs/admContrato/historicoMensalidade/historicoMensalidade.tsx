@@ -2,9 +2,9 @@
 import ImpressaoCarne from '@/Documents/associado/mensalidade/ImpressaoCarne';
 import { api } from '@/lib/axios/apiClient';
 import { useReactToPrint } from 'react-to-print';
-import React, {  useCallback, useContext, useEffect, useRef, useState } from 'react';
-import {  IoPrint } from 'react-icons/io5';
-import { MdDeleteForever} from 'react-icons/md';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { IoPrint } from 'react-icons/io5';
+import { MdDeleteForever } from 'react-icons/md';
 import { RiAddCircleFill } from 'react-icons/ri';
 import { toast } from 'react-toastify'
 import { AuthContext } from '@/store/AuthContext';
@@ -61,15 +61,15 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
     const [checkMensal, setCheck] = useState(false)
     const [linhasSelecionadas, setLinhasSelecionadas] = useState<Array<Partial<MensalidadeProps>>>([]);
     const componentRef = useRef<ImpressaoCarne>(null);
-    const { setarDadosAssociado, permissoes,infoEmpresa } = useContext(AuthContext)
+    const { setarDadosAssociado, permissoes, infoEmpresa } = useContext(AuthContext)
     const [mensalidadeSelect, setMensalidade] = useState<Partial<MensalidadeProps>>();
     const componentRecibo = useRef<ReciboMensalidade>(null)
     const [mensalidadeRecibo, setMensalidadeRecibo] = useState<Partial<MensalidadeProps>>()
-    const [openModal,setModal] = useState<{[key:string]:boolean}>({
-        excluir:false,
-        baixar:false,
-        editar:false,
-        recibo:false
+    const [openModal, setModal] = useState<{ [key: string]: boolean }>({
+        excluir: false,
+        baixar: false,
+        editar: false,
+        recibo: false
     })
 
 
@@ -78,7 +78,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
         pageStyle: pageStyle,
         documentTitle: 'RECIBO MENSALIDADE',
         content: () => componentRecibo.current,
-        onBeforeGetContent: () => setModal({recibo:true}),  // Ativa antes da impressão
+        onBeforeGetContent: () => setModal({ recibo: true }),  // Ativa antes da impressão
         onAfterPrint: () => setMensalidadeRecibo(undefined),        // Desativa após a impressão
 
     })
@@ -91,11 +91,11 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
 
 
     const imprimirCarne = useReactToPrint({
-        pageStyle:pageStyle,
+        pageStyle: pageStyle,
         documentTitle: 'CARNÊ ASSOCIADO',
         content: () => componentRef.current,
-        onBeforeGetContent: () => setModal({recibo:true}),  // Ativa antes da impressão
-        onAfterPrint: () => setModal({recibo:false}),        // Desativa após a impressão
+        onBeforeGetContent: () => setModal({ recibo: true }),  // Ativa antes da impressão
+        onAfterPrint: () => setModal({ recibo: false }),        // Desativa após a impressão
     })
 
 
@@ -114,18 +114,18 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
         if (index === -1) {
             // Adiciona a linha ao array se não estiver selecionada
             setLinhasSelecionadas([...linhasSelecionadas, item]);
-          //  setarDados({ acordo: { mensalidade: [...linhasSelecionadas, item] } })
+            //  setarDados({ acordo: { mensalidade: [...linhasSelecionadas, item] } })
         } else {
             // Remove a linha do array se já estiver selecionada
             const novasLinhasSelecionadas = [...linhasSelecionadas];
             novasLinhasSelecionadas.splice(index, 1);
             setLinhasSelecionadas(novasLinhasSelecionadas);
-           // setarDados({ acordo: { mensalidade: novasLinhasSelecionadas } })
+            // setarDados({ acordo: { mensalidade: novasLinhasSelecionadas } })
         }
 
     };
 
-    const excluirMesal = useCallback(async() =>{
+    const excluirMesal = useCallback(async () => {
         if (!linhasSelecionadas) {
             toast.info("Selecione uma mensalidade");
             return;
@@ -161,20 +161,20 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
             dadosAssociado.id_global && await carregarDados(dadosAssociado.id_global)
             // setarDados({ mensalidade: {} })
             // setarDadosAssociado({mensalidade:mensalidades})
-           // setOpenExcluir(false)
-            setModal({excluir:false})
+            // setOpenExcluir(false)
+            setModal({ excluir: false })
             setLinhasSelecionadas([])
-           // setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
+            // setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
         } catch (err) {
             console.log('Erro ao excluir')
         }
-    },[linhasSelecionadas,dadosAssociado.id_global]
+    }, [linhasSelecionadas, dadosAssociado.id_global]
 
-)
+    )
 
 
 
-    const adicionarMensalidade =useCallback( async () => {
+    const adicionarMensalidade = useCallback(async () => {
         const ultimaMensalidade = dadosAssociado.arrayMensalidade && dadosAssociado?.arrayMensalidade[dadosAssociado?.arrayMensalidade?.length - 1]
         const vencimento = new Date(ultimaMensalidade?.vencimento ? ultimaMensalidade?.vencimento : '')
         const proxData = vencimento.setMonth(vencimento.getMonth() + 1)
@@ -191,7 +191,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                     vencimento: new Date(proxData),
                     cobranca: new Date(proxData),
                     referencia: `${String(new Date(proxData).getMonth() + 1).padStart(2, '0')}/${new Date(proxData).getFullYear() % 100}`,
-                    id_empresa:dadosAssociado?.id_empresa
+                    id_empresa: dadosAssociado?.id_empresa
                 }),
                 {
                     pending: `Efetuando`,
@@ -202,17 +202,17 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
             )
             // carregarDados()
             setLinhasSelecionadas([])
-          //  setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
+            //  setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
 
             setarDadosAssociado({ ...dadosAssociado, mensalidade: [...dadosAssociado.arrayMensalidade, response.data] })
 
         } catch (err) {
             toast.error('Erro ao Adicionar nova parcela')
-          //  console.log(err)
+            //  console.log(err)
         }
 
-    },[dadosAssociado]
-)
+    }, [dadosAssociado]
+    )
 
 
 
@@ -220,7 +220,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
     return (
         <div className="flex flex-col w-full">
 
-          
+
 
 
             {mensalidadeRecibo?.id_mensalidade && <div style={{ display: 'none' }} >
@@ -241,7 +241,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
             {openModal.recibo &&
                 <div style={{ display: 'none' }}>
                     <ImpressaoCarne
-                    infoEmpresa={infoEmpresa}
+                        infoEmpresa={infoEmpresa}
                         ref={componentRef}
                         arrayMensalidade={linhasSelecionadas.length > 0 ? linhasSelecionadas : dadosAssociado.arrayMensalidade?.filter((item) => item.status !== 'P')}
                         dadosAssociado={{
@@ -262,10 +262,10 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
 
             {/*openScanner && <Scanner verficarTicket={verificarBaixa} openModal={openScanner} setModal={setOpenScanner}   />*/}
 
-            {openModal.editar && <ModalEditarMensalidade mensalidade={mensalidadeSelect ?? {}} openModal={openModal.editar} setMensalidade={setMensalidade} setOpenModal={()=>setModal({editar:false})} />}
+            {openModal.editar && <ModalEditarMensalidade mensalidade={mensalidadeSelect ?? {}} openModal={openModal.editar} setMensalidade={setMensalidade} setOpenModal={() => setModal({ editar: false })} />}
 
-            {openModal.excluir && <ModalExcluirMens openModal={openModal.excluir} setOpenModal={()=>setModal({excluir:false})} handleExcluirMensalidade={excluirMesal} />}
-            
+            {openModal.excluir && <ModalExcluirMens openModal={openModal.excluir} setOpenModal={() => setModal({ excluir: false })} handleExcluirMensalidade={excluirMesal} />}
+
             <div className="flex w-full  gap-2">
                 <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
                     <input disabled={!permissoes.includes('ADM1.2.10')} checked={checkMensal} onChange={() => setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer disabled:cursor-not-allowed" />
@@ -273,68 +273,68 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                     <span className="ms-3 text-xs font-medium">Exibir Pagas</span>
                 </label>
                 <ButtonGroup>
-                <Button disabled={!permissoes.includes('ADM1.2.1')} onClick={adicionarMensalidade} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' /> Adicionar</Button>
+                    <Button disabled={!permissoes.includes('ADM1.2.1')} onClick={adicionarMensalidade} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' /> Adicionar</Button>
 
-               <PopoverReagendamento setSelecionadas={setLinhasSelecionadas} id_usuario={usuario?.id} mensalidades={linhasSelecionadas} id_global={dadosAssociado.id_global}/>
+                    <PopoverReagendamento setSelecionadas={setLinhasSelecionadas} id_usuario={usuario?.id} mensalidades={linhasSelecionadas} id_global={dadosAssociado.id_global} />
 
-                <Button type='button' onClick={imprimirCarne} color='light' size='xs'>  <IoPrint className='mr-1 h-4 w-4' /> Imprimir</Button>
-              
-                <PopoverVencimento  id_global={dadosAssociado.id_global}  />
-             
-               
-                <Button disabled={!permissoes.includes('ADM1.2.3')} onClick={()=>setModal({excluir:true})} type="button" color='light' size='xs'><MdDeleteForever className='mr-1 h-4 w-4' /> Excluir</Button>
-            </ButtonGroup>
+                    <Button type='button' onClick={imprimirCarne} color='light' size='xs'>  <IoPrint className='mr-1 h-4 w-4' /> Imprimir</Button>
 
-         
+                    <PopoverVencimento id_global={dadosAssociado.id_global} />
+
+
+                    <Button disabled={!permissoes.includes('ADM1.2.3')} onClick={() => setModal({ excluir: true })} type="button" color='light' size='xs'><MdDeleteForever className='mr-1 h-4 w-4' /> Excluir</Button>
+                </ButtonGroup>
+
+
 
             </div>
             <div className="flex w-full overflow-auto mt-2 px-2 max-h-[calc(100vh-190px)]">
-                <Table hoverable theme={{root:{shadow:'none'}, body: { cell: { base: " px-5  py-1  text-[10px] text-black font-medium" } },head: { cell: { base: "px-5  py-1  text-xs text-black font-semibold" }}}}>
-                   
-                    <Table.Head className="sticky top-0 bg-white z-5 border-b-2">
-                       
-                            <Table.HeadCell >
-                                Np
-                            </Table.HeadCell>
-                            <Table.HeadCell >
-                                Venc.
-                            </Table.HeadCell>
-                            <Table.HeadCell >
-                                Ref
-                            </Table.HeadCell>
-                            <Table.HeadCell >
-                                Data Agend.
-                            </Table.HeadCell>
-                            <Table.HeadCell >
-                                Valor
-                            </Table.HeadCell>
-                            <Table.HeadCell >
-                                status
-                            </Table.HeadCell>
-                            <Table.HeadCell >
-                                 Pag.
-                            </Table.HeadCell>
-                            <Table.HeadCell >
-                                Hr Pag.
-                            </Table.HeadCell>
-                            <Table.HeadCell >
-                                Usuário
-                            </Table.HeadCell>
-                            <Table.HeadCell >
-                                Val. Pago
-                            </Table.HeadCell>
-                            <Table.HeadCell >
-                                Forma
-                            </Table.HeadCell>
-                            <Table.HeadCell >
-                                Atraso
-                            </Table.HeadCell>
-                            <Table.HeadCell>
-                              Ações
-                            </Table.HeadCell>
-                     
-                    </Table.Head>
-                    <Table.Body className='divide-y' >
+                <table
+                    className="block w-full overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse  ">
+                    <thead className="sticky w-full top-0  text-xs   bg-white ">
+                        <tr >
+                            <th scope="col" className="px-6 py-1">
+                                NP
+                            </th>
+                            <th scope="col" className=" px-6 py-1">
+                                VENC.
+                            </th>
+                            <th scope="col" className=" px-6 py-1">
+                                REF
+                            </th>
+                            <th scope="col" className="px-6 py-1">
+                                COBRANÇA
+                            </th>
+                            <th scope="col" className="px-6 py-1">
+                                VALOR
+                            </th>
+                            <th scope="col" className="px-6 py-1">
+                                STATUS
+                            </th>
+                            <th scope="col" className=" px-6 py-1">
+                                PAG.
+                            </th>
+                            <th scope="col" className=" px-6 py-1">
+                                HR PAG.
+                            </th>
+                            <th scope="col" className=" px-6 py-1">
+                                USUÁRIO
+                            </th>
+                            <th scope="col" className=" px-6 py-1">
+                                VAL. PAGO
+                            </th>
+                            <th scope="col" className=" px-6 py-1">
+                                FORMA
+                            </th>
+                            <th scope="col" className=" px-6 py-1">
+                                ATRASO
+                            </th>
+                            <th scope="col" className="px-12 py-1">
+
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody className='divide-y ' >
 
 
                         {Array.isArray(dadosAssociado?.arrayMensalidade) && dadosAssociado?.arrayMensalidade?.map((item, index) => {
@@ -345,173 +345,166 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
 
                                     (
 
-                                        <Table.Row  key={index}
+                                        <tr key={index}
                                             onClick={() => toggleSelecionada(item)}
-                                            className={`  ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) && "bg-gray-300" }} }`}>
-                                            <Table.Cell >
+                                            className={`  text-[10px] font-semibold text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"}  ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : ""}  ${item.status === 'P' && "text-blue-600"}   hover:bg-gray-300 hover:text-black hover:cursor-pointer }`}>
+                                            <th scope="row" className={`px-5 py-1  `}>
                                                 {item.parcela_n}
-                                            </Table.Cell>
-                                            <Table.Cell >
+                                            </th>
+                                            <td className={`px-2 py-1 `}>
                                                 {item.vencimento && new Date(item.vencimento).toLocaleDateString('pt', { timeZone: 'UTC' })}
 
-                                            </Table.Cell>
-                                            <Table.Cell >
+                                            </td>
+                                            <td className="px-2 py-1">
                                                 {item.referencia}
-                                            </Table.Cell>
-                                            <Table.Cell >
+                                            </td>
+                                            <td className="px-5 py-1">
                                                 {item.cobranca && new Date(item.cobranca).toLocaleDateString('pt', { timeZone: 'UTC' })}
-                                            </Table.Cell>
-                                            <Table.Cell >
+                                            </td>
+                                            <td className="px-3 py-1">
                                                 {Number(item.valor_principal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                                            </Table.Cell>
-                                            <Table.Cell className={`font-bold ${item.status === 'P'? "text-blue-600" : "text-red-600"}`}>
+                                            </td>
+                                            <td className={`px-4 py-1  font-bold ${item.status !== 'P' && "text-red-600"}`}>
                                                 {item.status}
-                                            </Table.Cell>
-                                            <Table.Cell >
+                                            </td>
+                                            <td className="px-4 py-1">
                                                 {item.data_pgto ? new Date(item.data_pgto).toLocaleDateString('pt', { timeZone: 'UTC' }) : ''}
-                                            </Table.Cell>
-                                            <Table.Cell >
+                                            </td>
+                                            <td className="px-4 py-1">
                                                 {item.hora_pgto}
-                                            </Table.Cell>
-                                            <Table.Cell className="whitespace-nowrap">
+                                            </td>
+                                            <td className="px-6 py-1 whitespace-nowrap">
                                                 {item.usuario?.toUpperCase()}
-                                            </Table.Cell>
-                                            <Table.Cell >
+                                            </td>
+                                            <td className={`px-6 py-1`}>
                                                 {Number(item.valor_total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                                            </Table.Cell>
-                                            <Table.Cell >
+                                            </td>
+                                            <td className="px-4 py-1">
                                                 {item.form_pagto}
-                                            </Table.Cell>
+                                            </td>
 
-                                            <Table.Cell className={`${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"}`} >
+                                            <td className="px-4 py-1">
                                                 {calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) <= 0 ? 0 : calcularDiferencaEmDias(new Date(), new Date(item.vencimento))}
-                                            </Table.Cell>
-                                            <Table.Cell className={`inline-flex items-center space-x-2 whitespace-nowrap`}>
+                                            </td>
+                                            <td className={`inline-flex items-center px-4 py-1 space-x-2 whitespace-nowrap  ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-600" : 'text-blue-600'}`}>
 
                                                 <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                                                   // setOpenEditar(true)
-                                                    setModal({editar:true})
+                                                    // setOpenEditar(true)
+                                                    setModal({ editar: true })
                                                     setMensalidade({ ...item, valor_total: item.status === 'A' ? item.valor_principal : item.valor_total })
-                                                }} className={`  hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-600'}`}>Editar</button>
-                                               {item.status!=='P' && <button onClick={(event) => {
+                                                }} className={`  hover:underline `}>Editar</button>
+                                                {item.status !== 'P' && <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                                                    if(dadosAssociado.situacao === 'INATIVO') return toast.warning('Contrato inativo, impossível baixar mensalidade')
-                                                   // setModalMens(true)
-                                                setModal({baixar:true})
+                                                    if (dadosAssociado.situacao === 'INATIVO') return toast.warning('Contrato inativo, impossível baixar mensalidade')
+                                                    // setModalMens(true)
+                                                    setModal({ baixar: true })
                                                     setMensalidade({ ...item, valor_total: item.status === 'A' || item.status === 'R' || item.status === 'R' ? item.valor_principal : item.valor_total, data_pgto: item.data_pgto ? item.data_pgto : new Date() })
-                                                }} className={`   hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-500" : 'text-blue-600'}`}>Baixar</button>}
+                                                }} className={`hover:underline`}>Baixar</button>}
 
-                                                <button type="button" className='text-blue-600 hover:underline' onClick={(e) => { e.stopPropagation(); setMensalidadeRecibo({ ...item, data_pgto: item.data_pgto ? item.data_pgto : new Date() }) }} >
+                                                <button type="button" className="hover:underline" onClick={(e) => { e.stopPropagation(); setMensalidadeRecibo({ ...item, data_pgto: item.data_pgto ? item.data_pgto : new Date() }) }} >
                                                     Recibo
+
                                                 </button>
-                                            </Table.Cell>
-                                        </Table.Row>
+                                            </td>
+                                        </tr>
                                     ) : item.status !== 'P' && (
-                                        <Table.Row key={index}
+                                        <tr key={index}
                                             onClick={() => toggleSelecionada(item)}
-                                            className={`font-semibold text-[10px]  text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && "text-red-600"}   ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : ""}     }`}>
-                                            <Table.Cell >
+                                            className={`font-semibold text-[10px]  text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && "text-red-600"}   ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : ""}   hover:bg-gray-300 hover:text-black hover:cursor-pointer  }`}>
+                                            <td className="px-5 py-1   ">
                                                 {item.parcela_n}
-                                            </Table.Cell>
-                                            <Table.Cell >
+                                            </td>
+                                            <td className="px-2 py-1">
                                                 {new Date(item.vencimento).toLocaleDateString('pt', { timeZone: 'UTC' })}
 
-                                            </Table.Cell>
-                                            <Table.Cell >
+                                            </td>
+                                            <td className="px-2 py-1">
                                                 {item.referencia}
-                                            </Table.Cell>
-                                            <Table.Cell >
+                                            </td>
+                                            <td className="px-5 py-1">
                                                 {new Date(item.cobranca).toLocaleDateString('pt', { timeZone: 'UTC' })}
-                                            </Table.Cell>
-                                            <Table.Cell >
+                                            </td>
+                                            <td className="px-3 py-1">
                                                 {Number(item.valor_principal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                                            </Table.Cell>
-                                            <Table.Cell className={`font-bold text-red-600`}>
+                                            </td>
+                                            <td className={`px-4 py-1  font-bold text-red-600`}>
                                                 {item.status}
-                                            </Table.Cell>
-                                            <Table.Cell >
+                                            </td>
+                                            <td className="px-4 py-1">
                                                 {item.data_pgto ? new Date(item.data_pgto).toLocaleDateString('pt', { timeZone: 'UTC' }) : ''}
-                                            </Table.Cell>
-                                            <Table.Cell >
+                                            </td>
+                                            <td className="px-4 py-1">
                                                 {item.hora_pgto}
-                                            </Table.Cell>
-                                            <Table.Cell className=" whitespace-nowrap">
+                                            </td>
+                                            <td className="px-6 py-1 whitespace-nowrap">
                                                 {item.usuario?.toUpperCase()}
-                                            </Table.Cell>
-                                            <Table.Cell >
+                                            </td>
+                                            <td className={`px-6 py-1`}>
                                                 {Number(item.valor_total).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                                            </Table.Cell>
-                                            <Table.Cell >
+                                            </td>
+                                            <td className="px-4 py-1">
                                                 {item.form_pagto}
-                                            </Table.Cell>
-                                            <Table.Cell >
+                                            </td>
+                                            <td className="px-4 py-1">
                                                 {calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) <= 0 ? 0 : calcularDiferencaEmDias(new Date(), new Date(item.vencimento))}
-                                            </Table.Cell>
-                                            <Table.Cell className="space-x-2 whitespace-nowrap">
+                                            </td>
+                                            <td className={`px-4 py-1 space-x-2 whitespace-nowrap ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-600" : 'text-blue-600'}`}>
                                                 <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                                                   // setOpenEditar(true),
-                                                    setModal({editar:true})
-                                                        setMensalidade({ ...item, valor_total: item.status === 'A' ? item.valor_principal : item.valor_total })
-                                                }} className={`hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-600" : 'text-blue-600'}`}>Editar</button>
+                                                    // setOpenEditar(true),
+                                                    setModal({ editar: true })
+                                                    setMensalidade({ ...item, valor_total: item.status === 'A' ? item.valor_principal : item.valor_total })
+                                                }} className={`hover:underline `}>Editar</button>
 
 
-                                            {item.status!=='P' && <button onClick={(event) => {
+                                                {item.status !== 'P' && <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                                                    if(dadosAssociado.situacao === 'INATIVO') return toast.warning('Contrato inativo, impossível baixar mensalidade')
+                                                    if (dadosAssociado.situacao === 'INATIVO') return toast.warning('Contrato inativo, impossível baixar mensalidade')
                                                     //setModalMens(true)
-                                                setModal({baixar:true})
+                                                    setModal({ baixar: true })
                                                     setMensalidade({ ...item, valor_total: item.status === 'A' || item.status === 'E' || item.status === 'R' ? item.valor_principal : item.valor_total, data_pgto: item.data_pgto ? item.data_pgto : new Date() })
-                                                }} className={`  hover:underline ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-600" : 'text-blue-600'}`}>Baixar</button>}
+                                                }} className={`  hover:underline`}>Baixar</button>}
 
-
-
-                                                
-<button type="button" className='text-blue-600 hover:underline' onClick={(e) => { e.stopPropagation(); setMensalidadeRecibo({ ...item, data_pgto: item.data_pgto ? item.data_pgto : new Date() }) }} >
+                                                <button type="button" className='hover:underline' onClick={(e) => { e.stopPropagation(); setMensalidadeRecibo({ ...item, data_pgto: item.data_pgto ? item.data_pgto : new Date() }) }} >
                                                     Recibo
 
                                                 </button>
-                                            </Table.Cell>
-                                        </Table.Row>
+                                            </td>
+                                        </tr>
 
                                     )
-
                             )
                         })}
-
-
-
-                    </Table.Body>
-
-                </Table>
+                    </tbody>
+                </table>
             </div>
 
-            {openModal.baixar && <ModalMensalidade 
-           mensalidade={{
-            associado:{...dadosAssociado,mensalidade:dadosAssociado.arrayMensalidade},
-            aut:mensalidadeSelect?.aut,
-            banco_dest:mensalidadeSelect?.banco_dest,
-            contrato:{situacao:dadosAssociado.situacao},
-            data_pgto:mensalidadeSelect?.data_pgto,
-            id_mensalidade_global:mensalidadeSelect?.id_mensalidade_global,
-            form_pagto:mensalidadeSelect?.form_pagto,
-            id_contrato:mensalidadeSelect?.id_contrato,
-            id_mensalidade:mensalidadeSelect?.id_mensalidade,
-            valor_metodo:mensalidadeSelect?.valor_metodo,
-            valor_total:mensalidadeSelect?.valor_total,
-            referencia:mensalidadeSelect?.referencia,
-            vencimento:mensalidadeSelect?.vencimento,
-            status:mensalidadeSelect?.status,
-            valor_principal:mensalidadeSelect?.valor_principal
-           }} 
-            handleAtualizar={async()=>{ await carregarDados(Number(dadosAssociado.id_global));setLinhasSelecionadas([])}}
-            openModal={openModal.baixar}
-             setOpenModal={()=>setModal({baixar:false})}
-              />
-             }
+            {openModal.baixar && <ModalMensalidade
+                mensalidade={{
+                    associado: { ...dadosAssociado, mensalidade: dadosAssociado.arrayMensalidade },
+                    aut: mensalidadeSelect?.aut,
+                    banco_dest: mensalidadeSelect?.banco_dest,
+                    contrato: { situacao: dadosAssociado.situacao },
+                    data_pgto: mensalidadeSelect?.data_pgto,
+                    id_mensalidade_global: mensalidadeSelect?.id_mensalidade_global,
+                    form_pagto: mensalidadeSelect?.form_pagto,
+                    id_contrato: mensalidadeSelect?.id_contrato,
+                    id_mensalidade: mensalidadeSelect?.id_mensalidade,
+                    valor_metodo: mensalidadeSelect?.valor_metodo,
+                    valor_total: mensalidadeSelect?.valor_total,
+                    referencia: mensalidadeSelect?.referencia,
+                    vencimento: mensalidadeSelect?.vencimento,
+                    status: mensalidadeSelect?.status,
+                    valor_principal: mensalidadeSelect?.valor_principal
+                }}
+                handleAtualizar={async () => { await carregarDados(Number(dadosAssociado.id_global)); setLinhasSelecionadas([]) }}
+                openModal={openModal.baixar}
+                setOpenModal={() => setModal({ baixar: false })}
+            />
+            }
 
-                {/*openModal.baixar &&   <ModalBaixaMensalidade
+            {/*openModal.baixar &&   <ModalBaixaMensalidade
 
 mensalidade={{
     associado:{...dadosAssociado,mensalidade:dadosAssociado.arrayMensalidade},
@@ -535,8 +528,8 @@ mensalidade={{
      setOpenModal={()=>setModal({baixar:false})}
 />*/}
 
-        
-        
+
+
         </div>
     )
 }
@@ -544,7 +537,7 @@ mensalidade={{
 
 function calcularDiferencaEmDias(data1: Date, data2: Date) {
     // Convertendo as datas para objetos Date
-   
+
     const timestamp1 = data1.getTime();
     const timestamp2 = data2.getTime();
 
