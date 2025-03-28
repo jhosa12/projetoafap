@@ -60,28 +60,34 @@ export function ModalDependentes({openModal,setModal,data}:DataProps){
     }
 
  async function addDependente(dados:DependentesProps){
+  try {
     const response = await toast.promise(
-        api.post('/novoDependente',{
-          id_global:dadosassociado?.id_global,
-          id_contrato_global:dadosassociado?.contrato?.id_contrato_global,
-            id_contrato:dadosassociado?.contrato?.id_contrato,
-            id_associado:dadosassociado?.id_associado,
-            nome:dados.nome.toUpperCase(),
-            data_nasc:dados.data_nasc,
-            grau_parentesco:dados.grau_parentesco,
-            data_adesao:dados.data_adesao,
-            cad_usu:usuario?.nome,
-            cad_dh:new Date(),
-            carencia:dados.carencia,
-            sexo:dados.sexo
-        }),
-        {
-            error:'Erro ao adicionar dependente',
-            pending:'Cadastrando Dependente',
-            success:'Adicionado com Sucesso!'
-        }
-    )
-    dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
+      api.post('/novoDependente',{
+        id_global:dadosassociado?.id_global,
+        id_contrato_global:dadosassociado?.contrato?.id_contrato_global,
+          id_contrato:dadosassociado?.contrato?.id_contrato,
+          id_associado:dadosassociado?.id_associado,
+          nome:dados.nome.toUpperCase(),
+          data_nasc:dados.data_nasc,
+          grau_parentesco:dados.grau_parentesco,
+          data_adesao:dados.data_adesao,
+          cad_usu:usuario?.nome,
+          cad_dh:new Date(),
+          carencia:dados.carencia,
+          sexo:dados.sexo
+      }),
+      {
+          error:'Erro ao adicionar dependente',
+          pending:'Cadastrando Dependente',
+          success:'Adicionado com Sucesso!'
+      }
+  )
+  dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
+    
+  } catch (error:any) {
+    toast.error(error?.response?.data.error??'Erro ao salvar dados')
+  }
+    
    
  }
 

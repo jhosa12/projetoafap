@@ -202,6 +202,20 @@ export function Dependentes(){
 
                                 </Table>
 
+                                <div className="inline-flex gap-2 text-xs">
+                                    <span>TOTAL: {dadosassociado?.dependentes?.filter(item=>!checkDependente?item.excluido===false||item.excluido===null:item.excluido===true).length}</span>
+
+
+                                    <span>LIMITE: {dadosassociado?.contrato?.planos?.limite_dep}</span>
+                                </div>
+                               
+
+
+
+
+
+
+
                               {modal.dependente &&  <ModalDependentes data={dadosDep??{}} openModal={modal.dependente} setModal={()=>setModal({dependente:false})}/>}
                                 <ModalExcluirDep nome={dadosDep?.nome??''} excluirDep={excluirDep} openModal={modal.excluir} setOpenModal={()=>setModal({excluir:false})}/>
 

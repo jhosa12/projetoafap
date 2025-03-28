@@ -101,7 +101,10 @@ export type ContratoProps = {
     motivo_inativo: string,
     dt_cancelamento: Date,
     obitos:Array<ObitoProps>,
-    impressoes:Array<ImpressoesProps>
+    impressoes:Array<ImpressoesProps>,
+    acrescimo:number|null,
+    desconto:number|null,
+    planos:{limite_dep:number|null}
 }
 
 export type AssociadoProps = {

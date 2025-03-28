@@ -24,11 +24,10 @@ export function TabAdministrativo({permissions,handlePermission}:DataProps){
                     <ToggleSwitch  sizing={'sm'} checked={permissions.includes('ADM1.1.1')} onChange={()=>handlePermission('ADM1.1.1')} label="Editar"/>
                     <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM1.1.2')} onChange={()=>handlePermission('ADM1.1.2')} label="Lançar/editar observações"/>
                     <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM1.1.3')} onChange={()=>handlePermission('ADM1.1.3')} label="Inativar/Ativar Contrato"/>
-              
-                       
+               
                   </Card>
-                  <Card  theme={themaCard}>
-                    <h1 className="text-sm font-semibold">Historico/Mensalidade</h1>
+                  <Card className="text-xs" theme={themaCard}>
+                    <h1 className="text-xs font-semibold">Historico/Mensalidade</h1>
                     <ToggleSwitch  sizing={'sm'} checked={permissions.includes('ADM1.2')} onChange={()=>handlePermission('ADM1.2')}  label="Visualizar"/>
                     <ToggleSwitch  sizing={'sm'} checked={permissions.includes('ADM1.2.1')} onChange={()=>handlePermission('ADM1.2.1')}  label="Adicionar Mensalidade"/>
                     <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM1.2.3')} onChange={()=>handlePermission('ADM1.2.3')}  label="Excluir Mensalidade"/>
@@ -39,6 +38,7 @@ export function TabAdministrativo({permissions,handlePermission}:DataProps){
                     <ToggleSwitch  sizing={'sm'} checked={permissions.includes('ADM1.2.8')} onChange={()=>handlePermission('ADM1.2.8')}  label="Alterar Vencimento"/>
                     <ToggleSwitch  sizing={'sm'} checked={permissions.includes('ADM1.2.9')} onChange={()=>handlePermission('ADM1.2.9')}  label="Alterar data cobrança"/>
                     <ToggleSwitch  sizing={'sm'} checked={permissions.includes('ADM1.2.10')} onChange={()=>handlePermission('ADM1.2.10')}  label="Exibir Pagas"/>
+                    <ToggleSwitch  sizing={'sm'} checked={permissions.includes('ADM1.2.11')} onChange={()=>handlePermission('ADM1.2.11')}  label="Manipular Acresc./Desc."/>
                        
                   </Card>
                   <Card  theme={themaCard}>
@@ -53,6 +53,7 @@ export function TabAdministrativo({permissions,handlePermission}:DataProps){
                     <h1 className="text-sm font-semibold">Óbitos</h1>
                     <ToggleSwitch  sizing={'sm'} checked={permissions.includes('ADM1.5')} onChange={()=>handlePermission('ADM1.5')}  label="Visualizar"/>
                   </Card>
+                  
                   </div>
       </Tabs.Item>
       <Tabs.Item active title="Caixa" >

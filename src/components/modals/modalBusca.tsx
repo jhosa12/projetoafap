@@ -169,7 +169,7 @@ export function ModalBusca({ setVisible, visible }: Props) {
                     <div className="flex flex-col  mb-1 text-xs ">
                         <p className="text-gray-600 mb-2">Selecione o Contrato:</p>
                         <ul className="overflow-y-auto space-y-2 mb-2">
-                            {array.map((item, index) => (
+                            {Array.isArray(array) && array?.map((item, index) => (
                                 <li key={index} onClick={() => { carregarDados(item.id_global), setVisible() }} className="inline-flex items-center justify-between w-full p-2 rounded-lg cursor-pointer border-gray-500   bg-gray-200 hover:bg-gray-300">
 
                                     <div className="block">

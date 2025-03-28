@@ -15,10 +15,15 @@ import { ModalExcluirMens } from '../../../modals/admContrato/historico/modalExc
 import { AcordoProps, MensalidadeProps } from '@/types/financeiro';
 import { ReciboMensalidade } from '@/Documents/associado/mensalidade/Recibo';
 import pageStyle from '@/utils/pageStyle';
-import { Button, ButtonGroup, Table } from 'flowbite-react';
+import { Button, ButtonGroup, Popover, Table } from 'flowbite-react';
 import { PopoverVencimento } from './popoverVencimento';
 import { PopoverReagendamento } from './popoverReagendamento';
 import ModalBaixaMensalidade from '@/pages/dashboard/formasPag';
+import { LuArrowDown, LuArrowDownUp, LuArrowUp } from 'react-icons/lu';
+import { Input } from '@/components/ui/input';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import useApiPost from '@/hooks/useApiPost';
+import useApiPut from '@/hooks/useApiPut';
 
 
 
@@ -46,7 +51,10 @@ interface DadosAssociadoGeral {
     id_associado: number,
     arrayMensalidade: Array<MensalidadeProps>,
     arrayAcordo: Array<AcordoProps>
-    valor_mensalidade: number
+    valor_mensalidade: number,
+    acrescimo:number|null,
+    decrescimo:number|null,
+    id_plano: number|null
 
 }
 
@@ -57,6 +65,7 @@ interface DadosProps {
     dados: SetAssociadoProps
     dadosAssociado: DadosAssociadoGeral
 }
+
 export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }: DadosProps) {
     const [checkMensal, setCheck] = useState(false)
     const [linhasSelecionadas, setLinhasSelecionadas] = useState<Array<Partial<MensalidadeProps>>>([]);
@@ -280,7 +289,15 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                     <Button type='button' onClick={imprimirCarne} color='light' size='xs'>  <IoPrint className='mr-1 h-4 w-4' /> Imprimir</Button>
 
                     <PopoverVencimento id_global={dadosAssociado.id_global} />
-
+                    <PopoverAcresDecres
+                            permissions={permissoes}
+                            acrescimo={dadosAssociado.acrescimo}
+                            decrescimo={dadosAssociado.decrescimo}
+                            id_global={dadosAssociado.id_global}
+                            id_plano={dadosAssociado.id_plano}
+                            id_contrato_global={dadosAssociado.id_contrato_global}
+                            atualizar={()=>carregarDados(Number(dadosAssociado.id_global))}
+                    />
 
                     <Button disabled={!permissoes.includes('ADM1.2.3')} onClick={() => setModal({ excluir: true })} type="button" color='light' size='xs'><MdDeleteForever className='mr-1 h-4 w-4' /> Excluir</Button>
                 </ButtonGroup>
@@ -549,5 +566,81 @@ function calcularDiferencaEmDias(data1: Date, data2: Date) {
 
     return diferencaEmDias;
 }
+
+
+
+
+
+
+interface ReqProps{
+    id_plano:number|null,
+    id_global:number|null,
+    id_contrato_global:number|null,
+    acrescimo:number|null,
+    decrescimo:number|null,
+   
+}
+interface PopoverProps extends ReqProps{
+    atualizar:()=>Promise<void>
+    permissions:Array<string>
+}
+
+
+
+
+const PopoverAcresDecres = ({
+    id_plano,
+    id_global,
+    id_contrato_global,
+    acrescimo,
+    decrescimo,
+    atualizar,
+    permissions
+}:PopoverProps)=>{
+    const {register,handleSubmit} = useForm<{acrescimo:number|null,decrescimo:number|null}>({
+        defaultValues:{acrescimo:acrescimo,decrescimo:decrescimo}
+    })
+    const {postData} = useApiPut<any,ReqProps>('/mensalidade/acrescimoDecrescimo')
+
+
+    const onSubmit:SubmitHandler<{acrescimo:number|null,decrescimo:number|null}> = async(data)=>{
+        const res = await postData({id_global,id_contrato_global,id_plano,acrescimo:Number(data.acrescimo),decrescimo:Number(data.decrescimo)})
+
+        await atualizar()
+     
+    }
+
+
+
+    return(
+        <Popover
+    
+         id="popover-basic"
+         content={(<form
+         onSubmit={handleSubmit(onSubmit)}
+         className='flex flex-col p-2 w-32 gap-2'
+         >
+            <div className='inline-flex items-center gap-1'>
+            <LuArrowUp color='green' size={20}/>
+            <Input className='h-7' type='number' step={0.01} {...register('acrescimo')} />
+            </div>
+
+            <div className='inline-flex items-center gap-1'>
+            <LuArrowDown color='red' size={20} />
+            <Input  className='h-7' {...register('decrescimo')} type='number' step={0.01}/>
+            </div>
+          
+
+          
+            <Button disabled={!permissions.includes('ADM1.2.11')} className='bg-black' size='xs' type='submit'>Aplicar</Button>
+         </form>)}
+         >
+            <Button className="rounded-none border-s-0 border-y"  onClick={() => {}} type="button" color='light' size='xs'><LuArrowDownUp className='mr-1 h-4 w-4' />Acres./Decres.</Button>
+        </Popover>
+    )
+}
+
+
+
 
 

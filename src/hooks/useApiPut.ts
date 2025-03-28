@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 
 
 
-const useApiPost = <T=any,P=any>(url:string):{
+const useApiPut = <T=any,P=any>(url:string):{
     data:T|null;
     loading:boolean;
     postData:(payload:P)=>Promise<void>
@@ -24,7 +24,7 @@ const useApiPost = <T=any,P=any>(url:string):{
     setLoading(true)
 
     try{
-        const response:AxiosResponse = await api.post(url,payload)
+        const response:AxiosResponse = await api.put(url,payload)
         setData(response.data)
       //console.log(response.data)
 
@@ -49,4 +49,4 @@ const useApiPost = <T=any,P=any>(url:string):{
 }
 
 
-export default useApiPost;
+export default useApiPut;

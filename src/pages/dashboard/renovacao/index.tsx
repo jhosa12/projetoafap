@@ -14,7 +14,6 @@ import { themeLight } from "@/components/tabs/admContrato/acordos/screen";
 
 
 
-
  interface MensalidadeProps {
     n_doc: string,
     parcela_n: number,

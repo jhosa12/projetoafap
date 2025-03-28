@@ -52,8 +52,8 @@ class DeclaracaoExclusao extends React.Component<DadosProps> {
                     <li className="p-2 mx-2 ">Grau de Parentesco: {grau_parentesco}</li>
                 </ul>
 
-                <p className="px-2 pt-2" style={{ textAlign: 'justify' }}> Declaro estar ciente de que, a partir desta solicitação, o(a) referido(a) dependente deixará de usufruir dos benefícios do plano funerário contratado, sendo esta decisão de minha total e livre vontade.</p>
-                <p className="px-2 pt-2" style={{ textAlign: 'justify' }}> Além disso, estou ciente de que, para reinclusão do(a) dependente ou inclusão de outro(s) dependente(s), será necessário formalizar novo pedido, de acordo com as condições estabelecidas pela [Nome da Funerária].</p>
+                <p className="px-2 pt-2" style={{ textAlign: 'justify' }}> Declaro estar ciente de que, a partir desta solicitação, o(a) referido(a) dependente deixará de usufruir dos benefícios do plano contratado, sendo esta decisão de minha total e livre vontade.</p>
+                <p className="px-2 pt-2" style={{ textAlign: 'justify' }}> Além disso, estou ciente de que, para reinclusão do(a) dependente ou inclusão de outro(s) dependente(s), será necessário formalizar novo pedido, de acordo com as condições estabelecidas pela [Nome da Empresa].</p>
                 <p className="px-2 pt-2" style={{ textAlign: 'justify' }}>Declaro, para os devidos fins, que as informações aqui prestadas são verdadeiras e que estou ciente das implicações desta solicitação.</p>
 
                 <div className="flex flex-row w-full p-2" style={{ marginTop: '70px' }}>
@@ -71,8 +71,8 @@ class DeclaracaoExclusao extends React.Component<DadosProps> {
                     <div className="flex flex-col w-1/2 p-2 justify-center items-center " >
                         <span className="flex w-full border-b-[1px]  border-black"></span>
 
-                        <span className="pt-2  text-center italic">Assinatura do Resposável da Empresa</span>
-                        <span className="pt-2  text-center italic">{''}</span>
+                        <span className="pt-2  text-center italic">Assinatura do Resposável pela Empresa</span>
+                        <span className="pt-2  text-center italic">{' .'}</span>
                     </div>
 
                 </div>

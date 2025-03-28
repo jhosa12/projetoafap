@@ -154,6 +154,9 @@ export default function AdmContrato() {
                                         id_contrato: dadosassociado?.contrato?.id_contrato ?? 0,
                                         valor_mensalidade: dadosassociado?.contrato?.valor_mensalidade ?? 0,
                                         situacao: dadosassociado?.contrato?.situacao ?? '',
+                                        id_plano: dadosassociado?.contrato?.id_plano ?? null,
+                                        acrescimo: dadosassociado?.contrato?.acrescimo ?? 0,
+                                        decrescimo: dadosassociado?.contrato?.desconto ?? 0
                                     }}
                                     setarDados={closeModa}
                                     usuario={{ id: usuario?.id, nome: usuario?.nome ?? '' }}
