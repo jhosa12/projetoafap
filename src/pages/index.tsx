@@ -14,7 +14,7 @@ export default function Home() {
  
     const {register,handleSubmit} = useForm<SignInProps>()
     const [loading,setLoading]= useState(false)
-    const {sign} =useContext(AuthContext)
+    const {signIn} =useContext(AuthContext)
        const handleSignUp:SubmitHandler<SignInProps> = async(data)=>{
             setLoading(true)
             
@@ -25,7 +25,7 @@ export default function Home() {
                 }
                
            
-           await sign(data)
+           await signIn(data)
             setLoading(false)
               }
               

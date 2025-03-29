@@ -1,27 +1,23 @@
 
 import { api } from "@/lib/axios/apiClient";
-import { useContext, useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { AuthContext } from "@/store/AuthContext";
 import { IoMdSearch } from "react-icons/io";
 import { MdClose } from "react-icons/md";
 import { HiOutlineSave } from "react-icons/hi";
 import { IoIosClose } from "react-icons/io";
-import { IoIosSave } from "react-icons/io";
-import InputMask from 'react-input-mask'
 import { ModalBusca } from "@/components/modals/modalBusca";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import PrintButtonContrato from "@/Documents/convalescenca/contrato/PrintButton";
-import PrintButtonComprovante from "@/Documents/convalescenca/comprovante/PrintButton";
-import { Router, useRouter } from "next/router";
 import DocumentTemplate from "@/Documents/convalescenca/contrato/DocumentTemplate";
 import ComprovanteDocTemplte from '@/Documents/convalescenca/comprovante/DocumentTemplate'
 import { useReactToPrint } from "react-to-print";
 import { IoPrint } from "react-icons/io5";
 import { IoTicket } from "react-icons/io5";
 import { TbAlertTriangle } from "react-icons/tb";
+import { DadosCadastro } from "@/types/associado";
 
 
 interface MensalidadeProps {
@@ -252,7 +248,7 @@ interface SelectProps {
 
 export default function ConvalescenciaNovo() {
     const [dataInputs, setDataInputs] = useState<Partial<ListaMaterial>>({})
-    const { usuario, listaConv, data, closeModa, setarListaConv } = useContext(AuthContext)
+    const { usuario } = useContext(AuthContext)
     const [usuarioMaterial, setUsuarioMaterial] = useState(true);
     const [material, setMaterialUsuario] = useState(false);
     const [estoque, setEstoque] = useState<Array<EstoqueProps>>([])
@@ -269,7 +265,14 @@ export default function ConvalescenciaNovo() {
     const [indexProd, setIndex] = useState<number>(0);
     const [modalContrato, setModalContrato] = useState(false)
     const [visible,setVisible] = useState(false)
+const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod: [] });
+const [data, closeModa] = useState<Partial<DadosCadastro>>({});
 
+
+    
+        const setarListaConv = useCallback((fields: Partial<ConvProps>) => {
+            setLista(prev => ({ ...prev, ...fields }));
+        }, []);
 
 
     const imprimirComprovante = useReactToPrint({

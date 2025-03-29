@@ -61,8 +61,6 @@ interface DadosAssociadoGeral {
 interface DadosProps {
     usuario: { id?: string, nome: string }
     carregarDados: (id: number) => Promise<void>
-    setarDados: (fields: Partial<SetAssociadoProps>) => void
-    dados: SetAssociadoProps
     dadosAssociado: DadosAssociadoGeral
 }
 

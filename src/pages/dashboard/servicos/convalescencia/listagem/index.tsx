@@ -1,6 +1,6 @@
 import { AuthContext } from "@/store/AuthContext";
 import { api } from "@/lib/axios/apiClient"
-import { FormEvent, useContext, useEffect, useState } from "react"
+import { FormEvent, useCallback, useContext, useEffect, useState } from "react"
 import { LuFolderEdit } from "react-icons/lu";
 import { MdDeleteOutline } from "react-icons/md";
 import { RiUserReceived2Line } from "react-icons/ri";
@@ -79,14 +79,19 @@ export default function Convalescente() {
     const [dropOpen, setDrop] = useState(false)
     const [criterio, setCriterio] = useState("Contrato")
     const [input, setInput] = useState('')
-    const { listaConv, setarListaConv, usuario } = useContext(AuthContext)
     const [excluir, setExcluir] = useState(false)
     const [aberto, setAberto] = useState(true)
     const [entregue, setEntregue] = useState(true)
     const [pendente, setPendente] = useState(true)
     const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 16;
+const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod: [] });
 
+
+    
+        const setarListaConv = useCallback((fields: Partial<ConvProps>) => {
+            setLista(prev => ({ ...prev, ...fields }));
+        }, []);
 
     const handlePageClick = (selectdItem: { selected: number }) => {
         setCurrentPage(selectdItem.selected)
@@ -155,7 +160,7 @@ export default function Convalescente() {
             }
         )
         listarConv()
-        setarListaConv({ id_conv: null })
+        setarListaConv({ id_conv: undefined })
         setExcluir(false)
 
     }
@@ -288,27 +293,27 @@ export default function Convalescente() {
                             cpf_cnpj: '',
                             data: undefined,
                             data_inc: undefined,
-                            descontos: null,
+                            descontos: undefined,
                             forma_pag: '',
                             hora_inc: undefined,
-                            id_associado: null,
-                            id_contrato: null,
+                            id_associado: undefined,
+                            id_contrato: undefined,
                             id_contrato_st: '',
-                            id_conv: null,
+                            id_conv: undefined,
                             logradouro: '',
                             logradouro_r: '',
                             nome: '',
-                            numero: null,
-                            numero_r: null,
+                            numero: undefined,
+                            numero_r: undefined,
                             obs: '',
                             status: '',
-                            subtotal: null,
+                            subtotal: undefined,
                             tipo_entrada: '',
-                            total: null,
+                            total: undefined,
                             uf: '',
                             uf_r: '',
                             usuario: '',
-                            editar: false
+                          //  editar: false
                         })}
                         className="inline-flex justify-center items-center text-white bg-green-600 p-1 px-2 rounded-lg"
                         href='/servicos/convalescencia/novoregistro'>
@@ -390,7 +395,7 @@ export default function Convalescente() {
                                         <div className="flex flex-row w-full gap-2">
                                             <Link
                                                 onClick={() => setarListaConv({
-                                                    ...item, convalescenca_prod: [...item.convalescenca_prod], editar: true
+                                                    ...item, convalescenca_prod: [...item.convalescenca_prod]
                                                 })}
                                                 data-tooltip-id="toolId"
                                                 data-tooltip-content={'Editar Dados'}

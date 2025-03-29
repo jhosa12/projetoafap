@@ -33,10 +33,10 @@ function PrivateLayout({ children }: { children: React.ReactNode }) {
 }
 
 function PrivateRouter({ Component, pageProps }: AppProps) {
-  const { usuario, setPermissoes,loadingInfo,signOut} = useAuth();
+  const { usuario,loadingInfo,signOut} = useAuth();
   const router = useRouter();
 
-  async function GetPermissions() {
+  /*async function GetPermissions() {
     try {
       if (usuario?.id) {
         const permissions = await api.post('/user/permissions', {
@@ -49,17 +49,17 @@ function PrivateRouter({ Component, pageProps }: AppProps) {
       signOut()
      
     }
-  }
+  }*/
 
   useEffect(() => {
     if (!isLoginPage(router.pathname)) {
       if (!usuario) {
         // Redireciona para a página inicial se o usuário não estiver autenticado
         signOut();
-      } else {
+      } /*else {
         // Carrega as permissões quando o usuário está autenticado
         GetPermissions();
-      }
+      }*/
     }
   }, [router.pathname, usuario]);
 

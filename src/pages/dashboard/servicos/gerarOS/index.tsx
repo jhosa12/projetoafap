@@ -23,6 +23,7 @@ import DocumentacaoOS from "@/components/obito/documentacao";
 import { ModalDependente } from "@/components/obito/modalDependentes";
 import { Button, Checkbox, Tabs } from "flowbite-react";
 import { FaCalendarAlt } from "react-icons/fa";
+import { DadosCadastro, ObitoProps } from "@/types/associado";
 
 
 
@@ -72,7 +73,7 @@ interface ListaProdutos {
 
 export default function GerarOS() {
 
-    const { usuario, setarServico, servico, signOut, data, closeModa, dadosassociado,limparDados, carregarDados } = useContext(AuthContext)
+    const { usuario, signOut,dadosassociado,limparDados, carregarDados } = useContext(AuthContext)
     const [listaProduto, setListaProdutos] = useState<Partial<ArrayProps>>({ descricao_item: "" });
     const [selectProdutos, setselectProdutos] = useState<Array<ListaProdutos>>([]);
     const [total, setTotal] = useState<number>();
@@ -83,8 +84,8 @@ export default function GerarOS() {
     const [particular, setParticular] = useState(false);
     const [indexTab, setIndex] = useState<number>(0)
     const [visible,setVisible] = useState(false)
-
-
+  const [servico, setarServico] = useState<Partial<ObitoProps>>({ hr_sepultamento: new Date(), end_hora_falecimento: new Date(), end_hora_informaram: new Date() });
+  const [data, closeModa] = useState<Partial<DadosCadastro>>({});
 
    const handleCheckParticular=()=>{
         if(!particular){

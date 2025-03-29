@@ -150,9 +150,10 @@ interface ArrayProdutoProps {
 
 
 export default function ListarObitos() {
-    const {servico,setarServico,usuario,signOut} =useContext(AuthContext)
+    const {usuario,signOut} =useContext(AuthContext)
     const [listaServicos, setServicos] = useState<Array<ObitoProps>>([])
     const[excluirObito,setExcluirObito]=useState(false)
+      const [servico, setarServico] = useState<Partial<ObitoProps>>({ hr_sepultamento: new Date(), end_hora_falecimento: new Date(), end_hora_informaram: new Date() });
 
 
 

@@ -1,6 +1,6 @@
 
 import { Avatar, Label } from "flowbite-react";
-import { AuthContext, signOut } from "@/store/AuthContext";
+import { AuthContext} from "@/store/AuthContext";
 import Router from 'next/router';
 
 import {
@@ -33,7 +33,7 @@ import { ModalAtivosInativos } from "../modals/modalAtivosInativos";
 export function 
 Header() {
 
-    const {usuario,empresas,selectEmp,setSelectEmp,permissoes,infoEmpresa} = useContext(AuthContext)
+    const {usuario,empresas,selectEmp,setSelectEmp,permissoes,infoEmpresa,signOut} = useContext(AuthContext)
     const [open,setOpen] = useState(false)
 
 

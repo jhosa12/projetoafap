@@ -24,7 +24,7 @@ import { AssociadoProps } from "@/types/associado";
 
 export default function AdmContrato() {
 
-    const { usuario, data, closeModa, dadosassociado, carregarDados, permissoes, limparDados, loading, infoEmpresa } = useContext(AuthContext)
+    const { usuario,dadosassociado, carregarDados, permissoes, limparDados, loading, infoEmpresa } = useContext(AuthContext)
     const [indexTab, setIndex] = useState<number>(0)
     const [modal, setModal] = useState<{ [key: string]: boolean }>({
         busca: false,
@@ -42,7 +42,7 @@ export default function AdmContrato() {
 
 
 
-    async function atualizarObs() {
+   /* async function atualizarObs() {
         try {
             const response = await toast.promise(
                 api.put('/atualizarObservacao', {
@@ -64,7 +64,7 @@ export default function AdmContrato() {
         }
 
 
-    }
+    }*/
 
 
 
@@ -116,11 +116,11 @@ export default function AdmContrato() {
 
               
                     <div className="flex  flex-row justify-start gap-2 items-center w-full mt-2 px-2 pb-1">
-                        <Button variant={'outline'} size={'sm'} onClick={() => setModal({ busca: true })} type="button" >
+                        <Button disabled={!infoEmpresa} variant={'outline'} size={'sm'} onClick={() => setModal({ busca: true })} type="button" >
                             <IoMdSearch size={18} />
                             Buscar Cliente
                         </Button>
-                        <Button variant={'outline'} size={'sm'} type="button" onClick={() => setModal({ cadastro: true })} >
+                        <Button disabled={!infoEmpresa}  variant={'outline'} size={'sm'} type="button" onClick={() => setModal({ cadastro: true })} >
                             <IoMdAdd size={18} />
                             Novo Associado
                         </Button>
@@ -136,7 +136,7 @@ export default function AdmContrato() {
                             <Tabs.Item active={indexTab === 1} disabled={!permissoes.includes('ADM1.2')} title="Histórico/Mensalidade" icon={HiMiniWallet}>
                                 {indexTab === 1 && <HistoricoMensalidade
                                     carregarDados={carregarDados}
-                                    dados={{ closeModalPlano: data.closeModalPlano ?? false, id_associado: dadosassociado?.id_associado ?? 0, mensalidade: data.mensalidade ?? {}, mensalidadeAnt: data.mensalidadeAnt ?? {} }}
+                                   
                                     dadosAssociado={{
                                         id_empresa: dadosassociado?.id_empresa ?? '',
                                         nome: dadosassociado?.nome ?? '',
@@ -158,7 +158,7 @@ export default function AdmContrato() {
                                         acrescimo: dadosassociado?.contrato?.acrescimo ?? 0,
                                         decrescimo: dadosassociado?.contrato?.desconto ?? 0
                                     }}
-                                    setarDados={closeModa}
+                                   
                                     usuario={{ id: usuario?.id, nome: usuario?.nome ?? '' }}
                                 />}
                             </Tabs.Item>

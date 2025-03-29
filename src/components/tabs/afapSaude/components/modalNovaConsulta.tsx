@@ -323,7 +323,7 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
 
             <div >
               <Label className="text-xs" htmlFor="identidade" value="Identidade" />
-              <TextInput sizing={'sm'} {...register('identidade')} className="focus:outline-none" id="identidade" placeholder="Identidade" required />
+              <TextInput sizing={'sm'} {...register('identidade')} className="focus:outline-none" id="identidade" placeholder="Identidade"/>
             </div>
 
 

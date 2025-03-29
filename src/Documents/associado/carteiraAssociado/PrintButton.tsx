@@ -32,8 +32,7 @@ interface DadosProps{
 
   export function PrintButton(){
   const componentRef = useRef<DocumentTemplate>(null);
-  const {listaConv,dadosassociado}=useContext(AuthContext)
-  const cadastrado = !!listaConv.id_conv
+
 
   return (
     <div>
