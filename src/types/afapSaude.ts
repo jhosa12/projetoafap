@@ -54,6 +54,7 @@ export interface ConsultaProps{
   peso:number,
   altura:number,
   temperatura:number,
+  externo:string,
   idade:number,
   identidade:string,
   observacao:string

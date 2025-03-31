@@ -1,5 +1,5 @@
 
-import { Label, Modal, Select, Table, TextInput } from "flowbite-react";
+import { Label, Modal, Table, TextInput } from "flowbite-react";
 import ReactInputMask from "react-input-mask";
 import { ChangeEvent, useState } from "react";
 import { api } from "@/lib/axios/apiClient";
@@ -16,6 +16,9 @@ import { ajustarData } from "@/utils/ajusteData";
 import { Button } from "@/components/ui/button";
 import { ConsultaProps, EventProps, ExamesData, MedicoProps } from "@/types/afapSaude";
 import { removerFusoDate } from "@/utils/removerFusoDate";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 
 
 interface DataProps {
@@ -49,13 +52,13 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
   //console.log(consulta)
 
 
-  const selectMed = (e: ChangeEvent<HTMLSelectElement>) => {
+  const selectMed = (e: string) => {
 
-    if (e.target.value) {
-      const evento = events.find(item => item.id_agmed === Number(e.target.value))
+    if (e) {
+      const evento = events.find(item => item.id_agmed === Number(e))
       const medico = medicos.find(item => item.id_med === evento?.id_med)
 
-      setValue('id_agmed', Number(e.target.value) ?? null)
+      setValue('id_agmed', Number(e) ?? null)
       setValue('data_prev', evento?.start ?? undefined)
 
       /* if (evento && medico)
@@ -70,9 +73,9 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
 
 
 
-  const handleMedico = (event: ChangeEvent<HTMLSelectElement>) => {
-    setValue('id_med', Number(event.target.value))
-    const medico = medicos.find(item => item.id_med === Number(event.target.value))
+  const handleMedico = (event: string) => {
+    setValue('id_med', Number(event))
+    const medico = medicos.find(item => item.id_med === Number(event))
     medico ? setValue('espec', `${medico?.nome}-(${medico?.espec})`) : setValue('espec', '')
     setValue('tipoDesc', '')
     setValue('vl_final', null)
@@ -217,7 +220,7 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
       return
     }
 
-    console.log(exame)
+    //console.log(exame)
     if (!exame) {
       toast.info('Selecione um exame')
       return;
@@ -264,20 +267,23 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
   }
 
   return (
-    <Modal show={openModal} size="5xl" popup onClose={() => setOpenModal(false)} >
+    <Modal theme={{content: {
+    base: "relative h-full w-full p-4 md:h-auto",
+    inner: "relative flex max-h-[94dvh] flex-col rounded-lg bg-white shadow dark:bg-gray-700"
+  },}} show={openModal} size="5xl" popup onClose={() => setOpenModal(false)} >
       <Modal.Header>
         <div className="inline-flex gap-4 ml-3 items-center text-sm">
-          Administrar Consulta
+          ADMINISTRAR CONSULTA
           {!consulta.id_consulta && <Button onClick={() => setvisible(!visible)} variant={'outline'} className="mr-auto " size="sm"><AiOutlineClockCircle className="mr-1 h-5 w-5" />Setar por consultas anteriores</Button>}
         </div>
       </Modal.Header>
-      <Modal.Body className="flex flex-col gap-4">
+      <Modal.Body>
 
         <form className="flex flex-col w-full" onSubmit={handleSubmit(handleOnSubmit)} >
-          <div className="grid grid-cols-6 gap-2 ">
+          <div className="grid grid-cols-5 gap-2 ">
             <div className="col-span-2 ">
               <Label className="text-xs" htmlFor="nome" value="Nome Paciente" />
-              <TextInput sizing={'sm'} {...register('nome')} className="focus:outline-none" id="nome" placeholder="Nome" required />
+              <Input  {...register('nome')} className="h-7" id="nome" placeholder="Nome" required />
             </div>
 
             <div >
@@ -289,7 +295,7 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
                 name="nascimento"
                 control={control}
                 render={({ field: { onChange, value } }) => (
-                  <DatePicker selected={value} onChange={onChange} dateFormat={"dd/MM/yyyy"} locale={pt} className="flex w-full  text-xs   border  rounded-lg   bg-gray-50 border-gray-300   " />
+                  <DatePicker selected={value} onChange={onChange} dateFormat={"dd/MM/yyyy"} locale={pt} className="flex w-full  text-sm h-7 border border-gray-300 shadow-sm rounded-md " />
                 )}
               />
 
@@ -304,7 +310,7 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
                 control={control}
                 name="celular"
                 render={({ field: { onChange, value } }) => (
-                  <ReactInputMask value={value} onChange={e => onChange(e.target.value)} id="celular" placeholder="Celular" className="px-2 py-2 focus:outline-none text-xs bg-gray-100 w-full rounded-lg border-[1px] border-gray-300" mask={'(99) 9 9999-9999'} />
+                  <ReactInputMask value={value} onChange={e => onChange(e.target.value)} id="celular" placeholder="Celular" className="px-2 py-2 focus:outline-none  w-full text-sm h-7 border border-gray-300 shadow-sm rounded-md " mask={'(99) 9 9999-9999'} />
                 )}
               />
 
@@ -316,14 +322,14 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
                 control={control}
                 name="cpf"
                 render={({ field: { onChange, value } }) => (
-                  <ReactInputMask value={value} onChange={e => onChange(e.target.value)} id="cpf" placeholder="CPF" className="px-2 py-2 text-xs focus:outline-none bg-gray-100 w-full rounded-lg border-[1px] border-gray-300" mask={'999.999.999-99'} />
+                  <ReactInputMask value={value} onChange={e => onChange(e.target.value)} id="cpf" placeholder="CPF" className="px-2 py-2 focus:outline-none  w-full text-sm h-7 border border-gray-300 shadow-sm rounded-md " mask={'999.999.999-99'} />
                 )}
               />
             </div>
 
             <div >
               <Label className="text-xs" htmlFor="identidade" value="Identidade" />
-              <TextInput sizing={'sm'} {...register('identidade')} className="focus:outline-none" id="identidade" placeholder="Identidade"/>
+              <Input  {...register('identidade')} className="focus:outline-none h-7" id="identidade" placeholder="Identidade"/>
             </div>
 
 
@@ -331,30 +337,64 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
 
               <Label className="text-xs" htmlFor="email" value="Nome Responsável (se for menor)" />
 
-              <TextInput sizing={'sm'} {...register('responsavel')} className="focus:outline-none" placeholder="Responsável, caso paciente seja menor de idade" />
+              <Input  {...register('responsavel')} className="focus:outline-none h-7" placeholder="Responsável, caso paciente seja menor de idade" />
             </div>
 
 
             <div >
 
               <Label className="text-xs" value="Parentesco" />
-
-              <Select sizing={'sm'} {...register('grau_parentesco')} className="focus:outline-none"  >
-                <option value={''} className="text-gray-200">PARENTESCO</option>
-                <option value={'CONJUGE'}>CONJUGE</option>
-                <option value={'PAI'}>PAI</option>
-                <option value={'MÃE'}>MÃE</option>
-                <option value={'FILHO'}>FILHO(A)</option>,
-                <option value={'IRMÃO(Ã)'}>IRMÃO(Ã)</option>
-                <option value={'PRIMO'}>PRIMO(A)</option>
-                <option value={'SOBRINHO(A)'}>SOBRINHO(A)</option>
-                <option value={'NORA'}>NORA</option>
-                <option value={'GENRO'}>GENRO</option>
-                <option value={'TIO(A)'}>TIO(A)</option>
-                <option value={'AVÔ(Ó)'}>AVÔ(Ó)</option>
-                <option value={'OUTROS'}>OUTROS</option>
-              </Select>
+                <Controller
+                control={control}
+                name="grau_parentesco"
+                render={({ field: { onChange, value } }) => (
+                  <Select value={value} onValueChange={onChange}  >
+                    <SelectTrigger className="h-7">
+                      <SelectValue placeholder="Parentesco" />
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem className="text-xs" value={'CONJUGE'}>CONJUGE</SelectItem>
+                          <SelectItem className="text-xs" value={'PAI'}>PAI</SelectItem>
+                          <SelectItem className="text-xs" value={'MÂE'}>MÂE</SelectItem>
+                          <SelectItem className="text-xs" value={'FILHO'}>FILHO(A)</SelectItem>
+                          <SelectItem className="text-xs" value={'IRMÂO(Ã)'}>IRMÂO(Ã)</SelectItem>
+                          <SelectItem className="text-xs" value={'PRIMO'}>PRIMO(A)</SelectItem>
+                          <SelectItem className="text-xs" value={'SOBRINHO(A)'}>SOBRINHO(A)</SelectItem>
+                          <SelectItem className="text-xs" value={'NORA'}>NORA</SelectItem>
+                          <SelectItem className="text-xs" value={'GENRO'}>GENRO</SelectItem>
+                          <SelectItem className="text-xs" value={'TIO(A)'}>TIO(A)</SelectItem>
+                          <SelectItem className="text-xs" value={'AVÔ(Ó)'}>AVÔ(Ó)</SelectItem>
+                          <SelectItem className="text-xs" value={'OUTRO'}>OUTRO</SelectItem>
+                     </SelectGroup>
+                      </SelectContent>
+                    </SelectTrigger>
+                  </Select>
+                )}
+                />
             </div>
+
+
+            <div >
+
+<Label className="text-xs" id="peso" value="Peso" />
+
+<Input  {...register('peso')} className="focus:outline-none h-7" id="peso" placeholder="Peso" />
+</div>
+
+
+<div >
+
+<Label className="text-xs" value="Altura" />
+
+<Input  {...register('altura')} className="focus:outline-none h-7" id="email" placeholder="Altura" />
+</div>
+
+<div >
+
+<Label className="text-xs" value="Temperatura" />
+
+<Input {...register('temperatura')} className="focus:outline-none h-7" id="email" placeholder="Temperatura" />
+</div>
 
 
 
@@ -365,68 +405,65 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
 
               <Label className="text-xs" value="Endereço" />
 
-              <TextInput sizing={'sm'} {...register('endereco')} className="focus:outline-none" id="email" placeholder="Endereço" />
+              <Input {...register('endereco')} className="focus:outline-none h-7" id="email" placeholder="Endereço" />
             </div>
             <div >
 
               <Label className="text-xs" value="Numero" />
 
-              <TextInput sizing={'sm'} {...register('numero')} className="focus:outline-none" id="email" placeholder="Numero" />
+              <Input {...register('numero')} className="focus:outline-none h-7" id="email" placeholder="Numero" />
             </div>
 
             <div >
 
               <Label className="text-xs" value="Bairro" />
 
-              <TextInput sizing={'sm'} {...register('bairro')} className="focus:outline-none" id="email" placeholder="Bairro" />
+              <Input {...register('bairro')} className="focus:outline-none h-7" id="email" placeholder="Bairro" />
             </div>
 
             <div >
 
               <Label className="text-xs" value="Cidade" />
 
-              <TextInput sizing={'sm'} {...register('cidade')} className="focus:outline-none" id="email" placeholder="Cidade" />
+              <Input {...register('cidade')} className="focus:outline-none h-7" id="email" placeholder="Cidade" />
             </div>
 
             <div className="col-span-2" >
 
               <Label className="text-xs" value="Complemento" />
 
-              <TextInput sizing={'sm'} {...register('complemento')} className="focus:outline-none" placeholder="Complemento" />
+              <Input {...register('complemento')} className="focus:outline-none h-7" placeholder="Complemento" />
             </div>
 
-            <div >
 
-<Label className="text-xs" value="Peso" />
-
-<TextInput sizing={'sm'} {...register('peso')} className="focus:outline-none" id="email" placeholder="Peso" />
-</div>
-
-
-<div >
-
-<Label className="text-xs" value="Altura" />
-
-<TextInput sizing={'sm'} {...register('altura')} className="focus:outline-none" id="email" placeholder="Altura" />
-</div>
-
-<div >
-
-<Label className="text-xs" value="Temperatura" />
-
-<TextInput sizing={'sm'} {...register('temperatura')} className="focus:outline-none" id="email" placeholder="Temperatura" />
-</div>
 
 
             <div  >
 
-              <Label className="text-xs" htmlFor="espec" value="Especialidade" />
+              <Label className="text-xs" htmlFor="espec" value="Especialista" />
 
-              <Select disabled={watch('procedimentos')?.length > 0} sizing={'sm'} {...register('id_med')} id='espec' onChange={e => handleMedico(e)} className="focus:outline-none" required >
-                <option value={''}></option>
-                {medicos.map((item, index) => (
-                  <option value={item.id_med} key={item.id_med}>{`${item.nome}-(${item.espec})`}</option>
-                ))}
+<Controller
+control={control}
+name="id_med"
+render={({ field: { onChange, value } }) => (
+  <Select disabled={watch('procedimentos')?.length > 0} value={String(value)} onValueChange={handleMedico}  >
+    <SelectTrigger className="h-7">
+      <SelectValue placeholder="Especialista" />
+      <SelectContent className="max-h-[250px]">
+        <SelectGroup>
+          
+          {medicos.map((item, index) => (
+            <SelectItem className="text-[11px]" value={String(item.id_med)} key={item.id_med}>{`${item.nome}`}</SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </SelectTrigger>
+  </Select>
+)}
+
+/>
+              <Select>
+                
               </Select>
             </div>
 
@@ -435,12 +472,35 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
 
               <Label className="text-xs" htmlFor="small" value="Consulta/Data" />
 
-              <Select id="small" value={watch('id_agmed') ?? ''} onChange={selectMed} sizing="sm" >
+              <Controller
+                control={control}
+                name='id_agmed'
+                render={({ field: { onChange, value } }) => (
+                  <Select value={String(value)} onValueChange={selectMed}>
+                    <SelectTrigger className="h-7">
+                      <SelectValue placeholder="Consulta/Data" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          
+                             {events?.map((item, index) => (
+                              item.id_med === Number(watch('id_med')) &&
+                               <SelectItem className="text-xs" key={item.id_agmed} value={String(item.id_agmed)}>{new Date(item.start).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
+                               </SelectItem>
+                            ))}
+                          
+
+                        </SelectGroup>
+                        </SelectContent>
+                  </Select>
+                )}
+/>
+             {/* <Select id="small" value={watch('id_agmed') ?? ''} onChange={selectMed} sizing="sm" >
                 <option value={''}></option>
                 {events?.map((item, index) => (
                   item.id_med === Number(watch('id_med')) && <option key={item.id_agmed} value={item.id_agmed ?? ''}>{new Date(item.start).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</option>
                 ))}
-              </Select>
+              </Select>*/}
             </div>
             <div >
 
@@ -459,7 +519,7 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
                     timeCaption="Time"
                     dateFormat="HH:mm"
                     timeFormat="HH:mm"
-                    className="flex py-2 text-black px-2 w-full rounded-lg border 0  bg-gray-50 text-xs border-gray-300 "
+                   className="flex w-full  text-sm h-7 border border-gray-300 shadow-sm rounded-md"
                   />
 
                 )}
@@ -476,23 +536,81 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
 
             <div >
               <Label className="text-xs" htmlFor="small" value="Buscar na residência ?" />
-              <Select  {...register('buscar')} sizing="sm" >
-                <option selected value={''}></option>
-                <option value={'SIM'}>SIM</option>
-                <option value={'NAO'}>NÃO</option>
-              </Select>
+
+<Controller
+control={control}
+name="buscar"
+render={({ field: { onChange, value } }) => (
+  <Select value={value} onValueChange={e => onChange(e)}  >
+    <SelectTrigger className="h-7">
+      <SelectValue placeholder="" />
+      <SelectContent>
+        <SelectGroup>
+          
+          <SelectItem className="text-xs" value={'SIM'}>SIM</SelectItem>
+          <SelectItem className="text-xs" value={'NAO'}>NÃO</SelectItem>
+        </SelectGroup>
+      </SelectContent>
+    </SelectTrigger>
+  </Select>
+)}
+/>
+
             </div>
 
 
             <div >
               <Label className="text-xs" htmlFor="small" value="Retorno ?" />
-              <Select  {...register('retorno')} sizing="sm" >
+
+              <Controller
+              control={control}
+              name="retorno"
+              render={({ field: { onChange, value } }) => (
+                <Select value={value} onValueChange={e => onChange(e)}  >
+                <SelectTrigger className="h-7">
+                  <SelectValue placeholder="" />
+                  <SelectContent>
+                    <SelectGroup>
+                      
+                      <SelectItem className="text-xs" value={'SIM'}>SIM</SelectItem>
+                      <SelectItem className="text-xs" value={'NAO'}>NÃO</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </SelectTrigger>
+              </Select>
+              )}
+              />
+             {/* <Select  {...register('retorno')} sizing="sm" >
                 <option selected value={''}></option>
                 <option value={'SIM'}>SIM</option>
                 <option value={'NAO'}>NÃO</option>
-              </Select>
+              </Select>*/}
             </div>
+            <div >
 
+
+              <Label className="text-xs" value="Demanda Externa" />
+              <Controller
+              control={control}
+              name="externo"
+              render={({ field: { onChange, value } }) => (
+                <Select value={value} onValueChange={e => onChange(e)}  >
+                <SelectTrigger className="h-7">
+                  <SelectValue placeholder="" />
+                  <SelectContent>
+                    <SelectGroup>   
+                      <SelectItem className="text-xs" value='ÓTICA DOS TRABALHADORES CEDRENSE'>ÓTICA DOS TRABALHADORES CEDRENSE</SelectItem>
+                      <SelectItem className="text-xs" value='ÓTICA POPULAR'>ÓTICA POPULAR</SelectItem>
+                      <SelectItem className="text-xs" value='LUZ ÓPTICA'>LUZ ÓPTICA</SelectItem>
+                      <SelectItem className="text-xs" value='CENTRO SUL'>CENTRO SUL</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </SelectTrigger>
+              </Select>
+              )}
+              />
+         
+            </div>
 
 
           </div>
@@ -503,27 +621,64 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
             <div className="w-1/4">
 
               <Label className="text-xs" value="Desconto" />
+              <Controller
+                control={control}
+                name="tipoDesc"
+                render={({ field: { onChange, value } }) => (
+                  <Select disabled={watch('procedimentos')?.length > 0} value={value} onValueChange={e => onChange(e)}  >
+                    <SelectTrigger className="h-7">
+                      <SelectValue placeholder="Desconto" />
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem className="text-xs" value={'PARTICULAR'}>PARTICULAR</SelectItem>
+                          <SelectItem className="text-xs" value={'FUNERARIA'}>FUNERÁRIA</SelectItem>
+                          <SelectItem className="text-xs" value={'PLANO'}>PLANO</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </SelectTrigger>
+                  </Select>
+                )}
+              />
 
-              <Select disabled={watch('procedimentos')?.length > 0} sizing={'sm'} {...register('tipoDesc')} onChange={e => handleDesconto(e)} className="focus:outline-none">
+            {/*  <Select disabled={watch('procedimentos')?.length > 0} sizing={'sm'} {...register('tipoDesc')} onChange={e => handleDesconto(e)} className="focus:outline-none">
                 <option value={''}></option>
                 <option value={'PARTICULAR'}>PARTICULAR</option>
 
                 <option value={'FUNERARIA'}>FUNERÁRIA</option>
                 <option value={'PLANO'}>PLANO</option>
-              </Select>
+              </Select>*/}
             </div>
             <div className="w-1/2">
 
               <Label htmlFor="procedimentos" className="text-xs" value="Procedimentos" />
+              <Controller
+              control={control}
+              name="id_selected"
+              render={({ field: { onChange, value } }) => (
+                <Select value={String(value)} onValueChange={e => onChange(e)}  >
+                <SelectTrigger className="h-7">
+                  <SelectValue placeholder="Procedimentos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      
+                      {medicos?.find(item => item.id_med === Number(watch('id_med')))?.exames.map((item, index) => (
+                        <SelectItem className="text-xs" value={String(item.id_exame)} key={item.id_exame}>{item.nome}</SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                  </Select>
+              )}
+              />
 
-              <Select  {...register('id_selected')} id="procedimentos" sizing={'sm'} className="focus:outline-none"  >
+             {/* <Select  {...register('id_selected')} id="procedimentos" sizing={'sm'} className="focus:outline-none"  >
                 <option value={''}></option>
                 {medicos.find(item => item.id_med === Number(watch('id_med')))?.exames.map((item, index) => (
                   <option value={item.id_exame} key={item.id_exame}>{item.nome}</option>
                 ))}
-              </Select>
+              </Select>*/}
             </div>
-            <Button onClick={handleAdicionarProcedimento} type="button" size={'sm'} className="mt-auto p-1">Adicionar</Button>
+            <Button onClick={handleAdicionarProcedimento} type="button" size={'sm'} className="mt-auto">Adicionar</Button>
 
           </div>
           <div className="overflow-x-auto ">
@@ -539,7 +694,7 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
 
               </Table.Head>
               <Table.Body className="divide-y">
-                {watch('procedimentos')?.map((item, index) => (
+                {Array.isArray(watch('procedimentos')) && watch('procedimentos')?.map((item, index) => (
                   <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                     <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                       {item.nome}

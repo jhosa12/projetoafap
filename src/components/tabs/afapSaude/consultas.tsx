@@ -259,7 +259,7 @@ const imprimirRecibo = useCallback(useReactToPrint({
 
 
 
-const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome,id_consultor}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string,nome?:string,id_consultor?:number})=>{
+const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome,id_consultor,externo}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string,nome?:string,id_consultor?:number,externo?:string})=>{
 
  const {dataIni,dataFim} =  ajustarData(startDate,endDate)
 
@@ -276,6 +276,7 @@ const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome,id_c
         endDate:dataFim,
         id_med:id_med?Number(id_med):undefined,
       status,
+      externo,
       buscar,
       nome,
       id_consultor
@@ -462,7 +463,7 @@ const handleDeletar = useCallback(async () => {
       <SelectContent className="shadow-none " >
         <SelectGroup className="shadow-none ">
          
-       {  status.map(item=>(<SelectItem className="text-xs" disabled={item==='AGENDADO'||item==='RECEBIDO'} key={item} value={item} >{item}</SelectItem>))}
+       {status.map(item=>(<SelectItem className="text-xs" disabled={item==='AGENDADO'||item==='RECEBIDO'} key={item} value={item} >{item}</SelectItem>))}
 
         
         </SelectGroup>
