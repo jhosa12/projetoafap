@@ -60,10 +60,10 @@ class ReciboRepasse extends React.Component<DadosProps> {
                         </Table.Head>
                         <Table.Body className="divide-y">
                             {dados?.filter((item) => item.retorno !== 'SIM').map((item, index) => {
-                                    totalUnitario = item.procedimentos.reduce((acc,atual)=>{
-                                        const value = exames.find((exame) => exame.id_exame === atual.id_exame)?.valorRepasse
-                                    return acc+= Number(value)
-                                },0)
+                                    totalUnitario = item?.procedimentos?.reduce((acc,atual)=>{
+                                        const value = exames?.find((exame) => exame.id_exame === atual.id_exame)?.valorRepasse
+                                    return acc+= Number(value)??0
+                                },0)??0
                                 total += totalUnitario
                              return  ( <Table.Row className="text-[10px]" key={index}>
                                     <Table.Cell className="whitespace-nowrap font-medium text-gray-900 ">{item.nome}</Table.Cell>
