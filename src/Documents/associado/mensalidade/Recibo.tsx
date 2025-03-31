@@ -1,7 +1,5 @@
-import { MensalidadeProps } from "@/types/financeiro";
+
 import {Component}  from 'react';
-import logo from "../../../public/novaLogo.png"
-import Image from "next/image";
 import BarCode from 'react-barcode';
 import { roboto_Mono } from "@/fonts/fonts";
 import { EmpresaProps } from "@/types/empresa";

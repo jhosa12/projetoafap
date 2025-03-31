@@ -87,13 +87,10 @@ setArray(novoArray)
             </span>
           </Dropdown.Item>
      
-          <Dropdown.Item>
-            <button
-              onClick={()=>deletarMedico(item.id_med)}
-              className="block   text-xs text-red-600 hover:bg-gray-100"
-            >
+          <Dropdown.Item >
+          
               Deletar
-            </button>
+          
           </Dropdown.Item>
         </Dropdown>
       </div>
