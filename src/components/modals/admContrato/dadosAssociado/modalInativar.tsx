@@ -89,7 +89,6 @@ export function ModalInativar({openModal,setModal}:DataProps){
   return(
 
     <Modal size="md" show={openModal} onClose={()=>setModal(false)} popup>
-
        <Modal.Header/>
    <Modal.Body>
   

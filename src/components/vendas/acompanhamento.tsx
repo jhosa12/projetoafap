@@ -97,7 +97,7 @@ export function Acompanhamento({ empresa, setores, usuario }: { empresa: string,
 
     function generateChartConfig(data: ChatProps[]): ChartConfig {
 
-        return data.reduce((config, item, index) => {
+        return data?.reduce((config, item, index) => {
 
             config[item.x] = {
                 label: item.x,
@@ -152,7 +152,7 @@ export function Acompanhamento({ empresa, setores, usuario }: { empresa: string,
 
     useEffect(() => {
         dadosVendas();
-    }, []);
+    }, [empresa]);
 
     // Função para adicionar uma nova meta
 

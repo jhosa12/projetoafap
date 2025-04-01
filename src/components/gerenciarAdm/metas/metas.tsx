@@ -35,8 +35,8 @@ export function GerenciarMetas({id_empresa,empresas,setores,planoContas}:DataPro
     const [modalFiltro,setModalFiltro] = useState(false)
     const [modalNovaMeta,setModalNovaMeta] = useState(false)
     const {data,postData,loading} = useApiPost<Array<MetasProps>,FormFiltro>("/vendas/filtroMetas")
-    const [startDate,setStartDate] = useState(new Date())
-    const [endDate,setEndDate] = useState(new Date())
+    const [startDate,setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
+    const [endDate,setEndDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth()+1, 0))
     const [meta,setMeta] = useState<Partial<MetasProps>>()
 
 
@@ -50,7 +50,7 @@ export function GerenciarMetas({id_empresa,empresas,setores,planoContas}:DataPro
                         date: data.date,
                         dateFimMeta: data.dateFimMeta,
                         valor: data.valor,
-                        descricao: `META SETOR ${data.setor}`,
+                        descricao: data.descricao,
                     }),
                     {
                         error: 'Erro ao salvar dados',
@@ -65,6 +65,11 @@ export function GerenciarMetas({id_empresa,empresas,setores,planoContas}:DataPro
             }
         };
 
+        useEffect(() => {
+            if (id_empresa) {
+                handleFiltro()
+            }}, [id_empresa])
+
     const handleFiltro = async () => {
         const {dataFim,dataIni} = ajustarData(startDate,endDate)
         const payload = {
@@ -76,7 +81,7 @@ export function GerenciarMetas({id_empresa,empresas,setores,planoContas}:DataPro
     }
     return(
 
-        <div className="flex flex-col w-full h-full px-4">
+        <div className="flex flex-col w-full px-4">
             {modalNovaMeta &&
              <ModalMetas
              handleNovaMeta={handleNovo}

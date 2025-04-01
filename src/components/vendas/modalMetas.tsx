@@ -1,15 +1,12 @@
 
-import { Button, Label, Modal, Radio, Select, Table, TextInput } from "flowbite-react"
+import { Button, Label, Modal, Radio, Select, TextInput } from "flowbite-react"
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { MetasProps, SetorProps } from "./acompanhamento";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { api } from "@/lib/axios/apiClient";
-import { toast } from "react-toastify";
-import { useContext } from "react";
 import { PlanoContasProps } from "@/pages/dashboard/financeiro";
-import { watch } from "fs";
+
 
 interface DataProps{
     planoContas?:Array<PlanoContasProps>
@@ -39,15 +36,9 @@ export function ModalMetas({show,setModalMetas,meta,arraySetores,arrayMetas,id_e
     })
     
 
-
-
-
     const handleOnSubmit:SubmitHandler<FormProps> = (data) => {
         meta.id_meta ? handleEdit(data) : handleNovaMeta(data)
     }
-
-
-
 
     const handleEdit= async(data:FormProps)=>{
 
