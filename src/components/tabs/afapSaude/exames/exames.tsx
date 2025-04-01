@@ -13,7 +13,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import { GiReturnArrow } from "react-icons/gi";
 import { FiltroExames } from "./filtro";
 import { ModalReceber } from "./modalReceber";
-import { ModalConfirmar } from "../components/modalConfirmar";
+import { ModalConfirmar } from "../../../modals/modalConfirmar";
 import { ajustarData } from "@/utils/ajusteData";
 import handleWhatsAppClick from "@/utils/openWhats";
 import { MdDelete } from "react-icons/md";

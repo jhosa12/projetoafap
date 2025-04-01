@@ -102,7 +102,7 @@ export function ModalInativar({openModal,setModal}:DataProps){
       dadosassociado?.contrato?.situacao==='ATIVO' &&    <>
           <div className="inline-flex gap-8 text-xs font-medium">
             <div className="flex items-center ">
-              <input type="checkbox" checked={motivo.financeiro} onClick={() => setMotivo({financeir:!motivo.financeiro})}  className="w-4 h-4 text-blue-600  rounded    bg-gray-300 border-gray-400" />
+              <input type="checkbox" checked={motivo.financeiro} onClick={() => setMotivo({financeiro:!motivo.financeiro})}  className="w-4 h-4 text-blue-600  rounded    bg-gray-300 border-gray-400" />
               <label className="ms-2   whitespace-nowrap ">FINANCEIRO</label>
             </div>
             <div className="flex items-center ">

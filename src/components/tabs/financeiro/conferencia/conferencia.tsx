@@ -9,7 +9,7 @@ import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
 import { useReactToPrint } from "react-to-print";
 import { ModalConferencia } from "./modalConferencia";
 import { IoMdTrash } from "react-icons/io";
-import { ModalConfirmar } from "@/components/tabs/afapSaude/components/modalConfirmar";
+import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 
 
 

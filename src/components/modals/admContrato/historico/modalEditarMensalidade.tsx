@@ -2,7 +2,7 @@
 
 import { GiReturnArrow } from "react-icons/gi";
 import { AuthContext } from "@/store/AuthContext";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/lib/axios/apiClient";
 import "react-datepicker/dist/react-datepicker.css";
@@ -12,6 +12,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { MensalidadeProps } from "@/types/financeiro";
 import { Button } from "@/components/ui/button";
+import { ModalConfirmar } from "../../modalConfirmar";
+import { Input } from "@/components/ui/input";
 
 
 
@@ -22,10 +24,13 @@ interface Props {
     mensalidade: Partial<MensalidadeProps>,
     setMensalidade: (mensalidade: Partial<MensalidadeProps>) => void
     
+    
 }
 
 export function ModalEditarMensalidade({ openModal, setOpenModal, mensalidade, setMensalidade }: Props) {
-    const { usuario, dadosassociado, permissoes, setarDadosAssociado,carregarDados } = useContext(AuthContext)
+    const { dadosassociado, permissoes, setarDadosAssociado,carregarDados } = useContext(AuthContext)
+    const [confirm,setConfirm] = useState(false)
+    const [motivoEstorno, setMotivoEstorno] = useState('')
 
 
 
@@ -60,11 +65,16 @@ export function ModalEditarMensalidade({ openModal, setOpenModal, mensalidade, s
             toast.warn('Impossivel estornar, a próxima mensalidade se encontra paga!')
             return
         }
+        if(!motivoEstorno){
+            toast.warn('Informe o motivo do estorno')
+            return
+        }
         try {
             const response = await toast.promise(
                 api.put('/mensalidade/estorno', {
                     id_mensalidade: mensalidade.id_mensalidade,
-                    id_mensalidade_global: mensalidade.id_mensalidade_global
+                    id_mensalidade_global: mensalidade.id_mensalidade_global,
+                    estorno_motivo: motivoEstorno
                 }),
 
                 {
@@ -137,11 +147,15 @@ export function ModalEditarMensalidade({ openModal, setOpenModal, mensalidade, s
 
                     
                 <div className={` col-span-4 inline-flex w-full ${mensalidade.status === "P" ? "justify-between" : "justify-end"}`}>
-                    {mensalidade.status === 'P' && <Button disabled={!permissoes.includes('ADM1.2.6')} color={'failure'} type="button" onClick={() => handleEstorno()} ><GiReturnArrow className="mr-2 h-5 w-5" /> ESTORNAR</Button>}
+                    {mensalidade.status === 'P' && <Button disabled={!permissoes.includes('ADM1.2.6')} color={'failure'} type="button" onClick={() => setConfirm(true)} ><GiReturnArrow className="mr-2 h-5 w-5" /> ESTORNAR</Button>}
                     <Button disabled={!permissoes.includes('ADM1.2.9') || mensalidade.status === 'P'} color={'success'} type="button" onClick={handleEditar} ><GiReturnArrow className="mr-2 h-5 w-5" />Gravar Alterações</Button>
                 </div>
 
                 </div>
+
+                <ModalConfirmar pergunta="Tem certeza que deseja estornar essa mensalidade?" openModal={confirm} setOpenModal={setConfirm} handleConfirmar={handleEstorno}>
+                    <Input value={motivoEstorno} onChange={e => setMotivoEstorno(e.target.value)} placeholder="MOTIVO"/>
+                </ModalConfirmar>
             </ModalBody>
 
         </Modal>

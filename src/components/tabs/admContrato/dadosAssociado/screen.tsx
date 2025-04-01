@@ -19,7 +19,7 @@ import { CartaNovoAssociado } from "@/Documents/associado/cartaNovoAssociado/car
 import { ProtocoloCancelamento } from "@/Documents/associado/protocoloCancelamento/ProtocoloCancelamento";
 import { api } from "@/lib/axios/apiClient";
 import { toast } from "react-toastify";
-import { ModalConfirmar } from "@/components/tabs/afapSaude/components/modalConfirmar";
+import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import { removerFusoDate } from "@/utils/removerFusoDate";
 
 interface DataProps {

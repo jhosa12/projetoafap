@@ -19,7 +19,7 @@ import pageStyle from "@/utils/pageStyle";
 import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
 import { ModalReceber } from "./exames/modalReceber";
 import { ajustarData } from "@/utils/ajusteData";
-import { ModalConfirmar } from "./components/modalConfirmar";
+import { ModalConfirmar } from "../../modals/modalConfirmar";
 import ListaConsultas from "@/Documents/afapSaude/listaConsultas";
 import { SlOptions } from "react-icons/sl";
 import {

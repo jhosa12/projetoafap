@@ -10,7 +10,7 @@ import { IoIosPrint } from "react-icons/io";
 import { useReactToPrint } from "react-to-print";
 import RelatorioLucroExames from "@/Documents/afapSaude/relatorioLucroExames";
 import pageStyle from "@/utils/pageStyle";
-import { ModalConfirmar } from "../components/modalConfirmar";
+import { ModalConfirmar } from "../../../modals/modalConfirmar";
 import { ExamesProps } from "@/types/afapSaude";
 
 interface DataProps{

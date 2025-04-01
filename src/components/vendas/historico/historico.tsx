@@ -2,7 +2,7 @@ import useApiGet from "@/hooks/useApiGet";
 import { Label, Modal,  Spinner, Table, TextInput } from "flowbite-react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ModalItem } from "./modalItem/modalItem";
-import { ModalConfirmar } from "@/components/tabs/afapSaude/components/modalConfirmar";
+import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import useApiPost from "@/hooks/useApiPost";
 import { Button } from "@/components/ui/button";
 import DatePicker, { registerLocale } from "react-datepicker";
