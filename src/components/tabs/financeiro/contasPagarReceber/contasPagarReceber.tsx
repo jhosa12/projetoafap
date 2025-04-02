@@ -8,14 +8,13 @@ import { useState } from "react";
 import { GiExpense } from "react-icons/gi";
 import { Badge } from "flowbite-react";
 import { IoCheckmarkDoneCircleSharp, IoSearch } from "react-icons/io5";
-import { IoIosAddCircle, IoIosClose } from "react-icons/io";
-import { TbAlertTriangle } from "react-icons/tb";
+import { IoIosAddCircle } from "react-icons/io";
 import { FaRepeat } from "react-icons/fa6";
 import { ModalNovaConta } from "./modalNovaConta";
-import { ModalExcluir } from "@/components/modals/modalExcluir";
 import { PlanoContasProps } from "@/pages/dashboard/financeiro";
 import { ModalRecPag } from "./modalRecPag";
 import { Button } from "@/components/ui/button";
+import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 
 export interface ContaProps {
     id_conta: number,
@@ -174,7 +173,13 @@ setTotal(totais)
         <ModalNovaConta handleEditarConta={handleEditarConta}  contasReq={contasReq} dadosConta={dadosConta ??{}} openModal={modalAdd} setDadosConta={setDadosConta} setOpenModal={setModalAdd}/>
 
 
-        <ModalExcluir handleExcluir={contaDelete} openModal={excluir} setOpenModal={setExcluir} />
+     
+        <ModalConfirmar
+        handleConfirmar={contaDelete}
+        openModal={excluir}
+        setOpenModal={setExcluir}
+        pergunta="Tem certeza que deseja excluir essa conta?"
+        />
         
         <ModalRecPag dadosConta={dadosConta} openModal={transacao} planoContas={planodeContas} setOpen={setTransacao}/>
          <div className="flex flex-col px-2  gap-2 w-full overflow-y-auto h-[calc(100vh-120px)] text-black rounded-lg ">

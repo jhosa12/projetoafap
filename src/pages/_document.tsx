@@ -1,10 +1,11 @@
 
-import { geist, source_Sans_3 } from '@/fonts/fonts'
+import { geist } from '@/fonts/fonts'
 import { Html, Head, Main, NextScript } from 'next/document'
+import {motion} from 'framer-motion'
 
 export default function Document() {
   return (
-    <Html lang="pt-BR" >
+    <Html translate='no' lang="pt-BR" >
 
       <Head  id="site-header">  
       <meta name="robots" content="noindex, nofollow" /> {/*nao mostrar o botão de indexar, para os mecanismos de busca dos navegadores*/}
@@ -15,7 +16,7 @@ export default function Document() {
           <link rel="icon" type="image/png" href="/logo40x24.png" sizes="45x25" />*/}
          
       </Head>
-      <body className={geist.className}>
+      <body translate='no' className={geist.className}>
         <Main />
         <NextScript />
       </body>

@@ -380,7 +380,9 @@ handleConfirmar={handleDeletar}
         <div style={{display:'none'}}>
           <Orcamento dados={exameSelected} usuario={usuario?.nome ??''} ref={currentPage} />
           <ReciboMensalidade
-                infoEmpresa={infoEmpresa}
+                 cidade_uf="CEDRO/CE"
+                 endereco="RUA VER. SALUSTIANO MOURAO, 394 - CENTRO"
+                 logoUrl="/afapsaude.png"
                 associado={exameSelected.nome_responsavel?exameSelected?.nome_responsavel:exameSelected?.nome}
                 contrato={exameSelected?.id_exame??null}
                 data_pgto={exameSelected?.data_realizado??null}

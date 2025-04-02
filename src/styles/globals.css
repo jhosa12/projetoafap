@@ -121,7 +121,7 @@ body{
 
   .rbc-event,
 .rbc-background-event {
-  z-index: 2;
+ /* z-index: 2;*/
   font-size: 10px;
   padding: 2px !important;
 }
@@ -135,7 +135,7 @@ body{
 
 }*/
 .rbc-event-label {
- display: flex;
+/*display: flex;*/
  padding-left: 10px;
  padding-top: 1px;
  font-size: 10px;
@@ -144,7 +144,7 @@ body{
 
 .rbc-events-container {
  
-  width: 100% !important;
+ /* width: 100% !important;*/
   display: flex;
   font-size: 10px;
   

@@ -2,7 +2,7 @@
 import { api } from "@/lib/axios/apiClient";
 import { MdDelete, MdOutlineAddCircle } from "react-icons/md";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { IoPrint, IoSearchSharp } from "react-icons/io5";
+import {  IoSearchSharp } from "react-icons/io5";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
@@ -10,10 +10,9 @@ import { ModalLancamentosCaixa } from "@/components/modals/caixa/modalLancamento
 import { AuthContext } from "@/store/AuthContext";
 import {  IoMdOptions } from "react-icons/io";
 import RelatorioSintetico from "@/Documents/caixa/RelatorioMovimentacao";
-import { Label, Modal, Spinner, Table, TextInput } from "flowbite-react";
+import {  Modal, Spinner, Table } from "flowbite-react";
 import {  HiPencil } from "react-icons/hi2";
 import { toast } from "react-toastify";
-import { ModalExcluir } from "@/components/modals/modalExcluir";
 import { ModalFechamento } from "../../../components/modals/caixa/modalFechamento";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ajustarData } from "@/utils/ajusteData";
@@ -39,6 +38,7 @@ import { SomaProps } from "@/components/tabs/financeiro/caixa/caixa";
 import pageStyle from "@/utils/pageStyle";
 import { ModalLancamento } from "@/components/modals/caixa/modalLancamento";
 import { BiCalendarMinus } from "react-icons/bi";
+import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 
   
 
@@ -455,7 +455,13 @@ return(
 {/*openModal.lancar && <ModalLancamento bancos={infoEmpresa?.bancos??[]} id_empresa={infoEmpresa?.id??''} handleFiltro={handleChamarFiltro}  mov={mov??{}} openModal={openModal.lancar} setOpenModal={()=>setModal({lancar:false})}  planos={data?.plano_de_contas??[]}  grupo={data?.grupo??[]}/>*/}
 {openModal.lancar &&<ModalLancamentosCaixa id_empresa={infoEmpresa?.id??''} handleFiltro={handleChamarFiltro} mov={mov??{}} openModal={openModal.lancar} setOpenModal={()=>setModal({lancar:false})}  planos={data?.plano_de_contas??[]}  grupo={data?.grupo??[]}/>}
 
-<ModalExcluir openModal={openModal.excluir} handleExcluir={handleExcluir} setOpenModal={()=>setModal({excluir:false})}/>
+
+  <ModalConfirmar
+   openModal={openModal.excluir}
+   handleConfirmar={handleExcluir} 
+   pergunta="Deseja excluir o lançamento?"
+   setOpenModal={()=>setModal({excluir:false})}
+   />
 
 {/*<ModalDadosMensalidade  handleChamarFiltro={handleChamarFiltro} setMensalidade={setMensalidade} mensalidade={mensalidade??{}} open={modalDados} setOpen={setModalDados}/>*/}
 

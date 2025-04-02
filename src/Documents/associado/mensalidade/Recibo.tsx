@@ -13,7 +13,9 @@ interface DataProps{
    referencia:string
    data_pgto:Date|null,
    referente:string,
-   infoEmpresa:EmpresaProps|null
+   logoUrl:string,
+   cidade_uf:string,
+   endereco:string
 }
 
 const array:Array<number> = [1,2]
@@ -29,16 +31,16 @@ render(){
         referencia,
         data_pgto,
         referente,
-        infoEmpresa
+        logoUrl,cidade_uf,endereco
     } = this.props;
 
 
     return(
         <div className={roboto_Mono.className} style={{display:'flex',flexDirection:'column',width:'100%',paddingInline:'20px',gap:'30px'}}>
            {array.map(()=>(
-             <div style={{display:'flex', flexDirection:'column',width:'100%', borderRadius:'10px',border:'1px solid gray',padding:'20px',gap:'10px'}}>
+             <div style={{display:'flex', flexDirection:'column',width:'100%', borderRadius:'10px',border:'1px solid gray',padding:'20px',gap:'10px',fontSize:'14px'}}>
              <div style={{display:'flex',flexDirection:'row',width:'100%',justifyContent:'space-between',alignItems:'end'}}>
-                  <h1 style={{fontSize:'30px',fontWeight:'bold',color:'gray'}}>RECIBO</h1>
+                  <h1 style={{fontSize:'20px',fontWeight:'bold',color:'gray'}}>RECIBO</h1>
                   <span >Nº:  {contrato}</span>
                   <span>Valor: {Number(valor).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>
              </div>
@@ -59,14 +61,14 @@ render(){
               
              </div>
              <div style={{display:'flex',flexDirection:'row',justifyContent:'center',alignItems:'center',width:'100%',gap:'10px',border:'2px solid gray',padding:'20px',borderRadius:'10px'}}>
-              <span>{infoEmpresa?.cidade_uf},</span>
+              <span>{cidade_uf},</span>
               <span>{data_pgto && new Date(data_pgto).toLocaleDateString('pt-BR',{timeZone:'UTC',day:'2-digit',month:'long',year:'numeric'})}</span>
              </div>
 
              <div style={{display:'flex',flexDirection:'row',width:'100%',justifyContent:'space-between',alignItems:'end'}}>
                   <div style={{fontSize:'12px',color:'gray',display:'flex',fontWeight:'bold',flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
-                     {infoEmpresa?.endereco} <br/>
-                      {infoEmpresa?.cidade_uf}
+                     {endereco} <br/>
+                      {cidade_uf}
                       </div>
 
                       {n_doc && <BarCode
@@ -78,7 +80,7 @@ render(){
                                       marginBottom={0}
                                       value={n_doc} />}
                       
- <img width={100} height={100} src={infoEmpresa?.logoUrl} alt="logo"/>
+ <img fetchPriority='high' width={80} height={60} src={logoUrl} alt="logo"/>
 
                 
              </div>

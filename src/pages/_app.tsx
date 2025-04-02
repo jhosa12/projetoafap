@@ -1,7 +1,6 @@
 import { ModalLoading } from '@/components/modals/loading/modalLoading';
 import { MenuLateral } from '@/components/layouts/menu';
 import { AuthProvider, useAuth } from '@/store/AuthContext';
-import { api } from '@/lib/axios/apiClient';
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import Error from 'next/error';
@@ -23,7 +22,7 @@ function isLoginPage(pathname: string) {
 
 function PrivateLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="w-full">
+    <div translate='no' className="w-full">
       <Header />
       
      <div> {children}</div>
@@ -83,7 +82,7 @@ function PrivateRouter({ Component, pageProps }: AppProps) {
 
 export default function App({ Component, pageProps,router }: AppProps) {
   return (
-    <StrictMode >
+    <StrictMode>
       <AuthProvider >
         
         <PrivateRouter router={router} Component={Component} pageProps={pageProps} />

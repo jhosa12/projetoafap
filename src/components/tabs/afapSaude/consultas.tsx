@@ -248,10 +248,7 @@ const imprimirRecibo = useCallback(useReactToPrint({
       return Promise.reject();
     }
 
-    if(data?.vl_final === 0||data?.vl_final === null){
-      toast.warning('Consulta sem valor definido!')
-      return Promise.reject();
-    }
+ 
     Promise.resolve();
   },
   onAfterPrint: () => {setData({}),setModal({printRecibo:false})}
@@ -555,18 +552,18 @@ const handleDeletar = useCallback(async () => {
 
 
               {modal.printRecibo && <ReciboMensalidade
-               infoEmpresa={infoEmpresa}
+                cidade_uf="CEDRO/CE"
+                endereco="RUA VER. SALUSTIANO MOURAO, 394 - CENTRO"
+                logoUrl="/afapsaude.png"
                 associado={data?.nome??''}
                 contrato={data?.id_consulta??null}
                 data_pgto={data?.dt_pgto??null}
                 n_doc=""
                 referencia=""
-                valor={data?.vl_final??0}
+                valor={Number(data?.procedimentos?.reduce((acc, curr) => acc + curr.valorFinal, 0)?? 0)}
                 vencimento={new Date()}
                 ref={currentRecibo}
                 referente={`Consulta Médica - ${data?.espec}`}
-
-               
                />}
 
              {modal.printListaConsultas &&  <ListaConsultas ref={currentConsultas} dados={consultas}/>}

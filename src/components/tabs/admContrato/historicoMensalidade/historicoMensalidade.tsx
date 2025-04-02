@@ -232,7 +232,9 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
 
             {mensalidadeRecibo?.id_mensalidade && <div style={{ display: 'none' }} >
                 <ReciboMensalidade
-                    infoEmpresa={infoEmpresa}
+                    cidade_uf={infoEmpresa?.cidade_uf??''}
+                    endereco={infoEmpresa?.endereco??''}
+                    logoUrl={infoEmpresa?.logoUrl??''}
                     ref={componentRecibo}
                     associado={dadosAssociado.nome}
                     contrato={dadosAssociado.id_contrato}
