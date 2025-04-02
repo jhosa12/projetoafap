@@ -90,6 +90,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
 
+    useEffect(()=>{
+        if(!usuario){signOut(), console.log('deslogou')}
+    },[usuario])
+
+
 
     useEffect(() => {
         if (selectEmp) {
