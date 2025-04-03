@@ -1,9 +1,8 @@
-import { IoIosClose } from "react-icons/io";
+
 import { MdSaveAlt } from "react-icons/md";
 import { RiAddCircleFill } from "react-icons/ri";
-import { TfiReload } from "react-icons/tfi";
 import { AuthContext} from "@/store/AuthContext";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { toast } from "react-toastify";
 import { api } from "@/lib/axios/apiClient";
 import DatePicker,{registerLocale} from "react-datepicker";
@@ -40,7 +39,7 @@ interface DataProps{
 
 export function ModalDependentes({openModal,setModal,data}:DataProps){
     const {usuario,dadosassociado,carregarDados}=useContext(AuthContext)
-    const {setValue,register,watch,handleSubmit,reset,control} = useForm<DependentesProps>({
+    const {register,handleSubmit,control} = useForm<DependentesProps>({
       defaultValues:data
     })
 
@@ -83,6 +82,8 @@ export function ModalDependentes({openModal,setModal,data}:DataProps){
       }
   )
   dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
+
+  setModal(false)
     
   } catch (error:any) {
     toast.error(error?.response?.data.error??'Erro ao salvar dados')
