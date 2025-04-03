@@ -41,21 +41,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "../../ui/button";
-import { ConsultaProps, EventProps, MedicoProps } from "@/types/afapSaude";
+import { ConsultaProps, EventProps, MedicoProps, statusConsultaArray } from "@/types/afapSaude";
 
 
 interface DataProps {
   medicos: Array<MedicoProps>,
-  consultas: Array<ConsultaProps>
-  setConsultas: (array: Array<ConsultaProps>) => void
   events: Array<EventProps>
  
 }
 
 export const valorInicial ={celular:'',cpf:'',data:new Date(),espec:'',exames:[],id_consulta:null,id_med:null,nome:'',tipoDesc:'',vl_consulta:0,vl_desc:0,vl_final:0}
-export const status = ["AGENDADO","AGUARDANDO DATA","CONFIRMADO","ATENDIDO","CANCELADO","RECEBIDO"]
 
-export default function Consultas({ medicos, consultas, setConsultas,events  }: DataProps) {
+
+export default function Consultas({ medicos,events  }: DataProps) {
 
 
  
@@ -63,6 +61,7 @@ export default function Consultas({ medicos, consultas, setConsultas,events  }: 
   const {usuario,infoEmpresa,consultores} = useContext(AuthContext)
   const [formPag,setFormPag] = useState<string>('')
   const [loading,setLoading] = useState<boolean>(false)
+  const [consultas,setConsultas] =useState<Array<ConsultaProps>>([])
   const [modal,setModal] = useState<{[key:string]:boolean}>({
       filtro:false,
       deletar:false,
@@ -256,7 +255,7 @@ const imprimirRecibo = useCallback(useReactToPrint({
 
 
 
-const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome,id_consultor,externo}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string,nome?:string,id_consultor?:number,externo?:string})=>{
+const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome,id_consultor,externo,signal}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string,nome?:string,id_consultor?:number,externo?:string,signal?:AbortSignal})=>{
 
  const {dataIni,dataFim} =  ajustarData(startDate,endDate)
 
@@ -277,6 +276,8 @@ const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome,id_c
       buscar,
       nome,
       id_consultor
+     },{
+       signal
      })
       
       setConsultas(response.data)
@@ -290,9 +291,14 @@ const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome,id_c
 
 
 useEffect(()=>{
-  buscarConsultas({startDate:new Date(),endDate:new Date(),status:undefined})  
+  const controller = new AbortController();
+    const signal = controller.signal;
+  buscarConsultas({startDate:new Date(),endDate:new Date(),status:undefined,signal}) 
+  
+  return () => {
+    controller.abort();
+  }
 },[])
-
 
 
 const handleReceberConsulta = useCallback(async ()=>{
@@ -359,7 +365,7 @@ const handleDeletar = useCallback(async () => {
     return
   }
 
-  
+
   if(data?.status === 'RECEBIDO'){
     toast.warning('Impossivel deletar. Consulta ja foi recebida!')
     return
@@ -460,7 +466,7 @@ const handleDeletar = useCallback(async () => {
       <SelectContent className="shadow-none " >
         <SelectGroup className="shadow-none ">
          
-       {status.map(item=>(<SelectItem className="text-xs" disabled={item==='AGENDADO'||item==='RECEBIDO'} key={item} value={item} >{item}</SelectItem>))}
+       {statusConsultaArray?.map(item=>(<SelectItem className="text-xs" disabled={item==='AGENDADO'||item==='RECEBIDO'} key={item} value={item} >{item}</SelectItem>))}
 
         
         </SelectGroup>

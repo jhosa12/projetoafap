@@ -1,6 +1,6 @@
 
 
-import {  useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/axios/apiClient";
 import { toast } from "react-toastify";
 import "react-datepicker/dist/react-datepicker.css";
@@ -12,12 +12,12 @@ import Calendario from "@/components/tabs/afapSaude/agendaMedico/calendario";
 import Consultas from "@/components/tabs/afapSaude/consultas";
 import { Tabs } from "flowbite-react";
 import { FaCalendarAlt } from "react-icons/fa";
-import {HiClipboardList } from "react-icons/hi";
+import { HiClipboardList } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
 import { BiSolidInjection } from "react-icons/bi";
 import Exames from "@/components/tabs/afapSaude/exames/exames";
 import Configuracoes from "@/components/tabs/afapSaude/configuracoes/configuracoes";
-import { ConsultaProps, ExamesProps, MedicoProps,EventProps } from "@/types/afapSaude";
+import { ConsultaProps, ExamesProps, MedicoProps, EventProps } from "@/types/afapSaude";
 
 
 // Configura o moment para usar o idioma português
@@ -32,23 +32,23 @@ import { ConsultaProps, ExamesProps, MedicoProps,EventProps } from "@/types/afap
 export default function AfapSaude() {
   const [medicos, setMedicos] = useState<Array<MedicoProps>>([])
   const [events, setEvents] = useState<Array<EventProps>>([])
- // const [dataEvent, setDataEvent] = useState<Partial<EventProps>>({})
+  // const [dataEvent, setDataEvent] = useState<Partial<EventProps>>({})
   const [menuIndex, setMenuIndex] = useState(0)
-  const [consultas,setConsultas] =useState<Array<ConsultaProps>>([])
-  const [exames,setExames] = useState<Array<ExamesProps>>([])
-  
+  // const [consultas,setConsultas] =useState<Array<ConsultaProps>>([])
+  const [exames, setExames] = useState<Array<ExamesProps>>([])
 
 
 
-  const buscarExames =useCallback(async ()=>{
+
+  const buscarExames = useCallback(async (signal?: AbortSignal) => {
     try {
-        const response  = await api.post("/afapSaude/exames")
-        setExames(response.data)
+      const response = await api.post("/afapSaude/exames", { signal })
+      setExames(response.data)
     } catch (error) {
-        console.log(error)
+      console.log(error)
     }
-},[]
-)
+  }, []
+  )
 
 
   const setArrayMedicos = (array: Array<MedicoProps>) => {
@@ -92,34 +92,43 @@ export default function AfapSaude() {
 
 
   useEffect(() => {
+    const controllers = {
+      medicos: new AbortController(),
+      agenda: new AbortController(),
+      exames: new AbortController(),
+    };
 
-   
-      getMedicos()
-      agenda()
-     
-      
-   
-    buscarExames()
-    
-  
+    getMedicos(controllers.medicos.signal)
+    agenda(controllers.agenda.signal)
+    buscarExames(controllers.exames.signal)
+
+
+    return () => {
+      controllers.medicos.abort();
+      controllers.agenda.abort();
+      controllers.exames.abort();
+    };
+
   }, [])
 
 
-  const agenda = useCallback(async  ()=> {
+  const agenda = useCallback(async (signal?: AbortSignal) => {
     try {
       const response = await api.post("/agenda/listaEventos", {
         tipo: 'td'
-      })
+      }, { signal })
 
-      const novoArray = response.data.map((item: EventProps) => { return { ...item, start: new Date(item.start), end: new Date(item.end) } })
-      setEvents(novoArray)
+      const novoArray = response?.data?.map((item: EventProps) => { return { ...item, start: new Date(item.start), end: new Date(item.end) } })
+      setEvents(novoArray ?? [])
     } catch (error) {
-      toast.error('ERRO NA REQUISIÇÃO')
+      console.log('ERRO NA REQUISIÇÃO 1')
     }
-  },[])
-  const getMedicos =useCallback( async() => {
+  }, [])
+
+
+  const getMedicos = useCallback(async (signal?: AbortSignal) => {
     try {
-      const response = await api.post("/medico/lista")
+      const response = await api.post("/medico/lista", { signal })
       const ordenarMedicos = (a: { nome: string }, b: { nome: string }) => {
         const nomeA = a.nome.replace(/^DR\.?\s|^DRA\.?\s/i, "").trim();
         const nomeB = b.nome.replace(/^DR\.?\s|^DRA\.?\s/i, "").trim();
@@ -128,14 +137,14 @@ export default function AfapSaude() {
 
       const medicosOrdenados = response.data.sort(ordenarMedicos);
       setMedicos(medicosOrdenados)
-     // console.log(response.data)
+      // console.log(response.data)
     } catch (error) {
-      toast.error('ERRO NA REQUISIÇÃO')
+      console.log('ERRO NA REQUISIÇÃO 2')
 
     }
 
-  },[]
-)
+  }, []
+  )
   /*    const handleNovoEvento = useCallback(({start,end}:{start:Date,end:Date})=>{
              setDataEvent({start,end})  
              toggleDrawer()
@@ -145,31 +154,41 @@ export default function AfapSaude() {
 
 
   return (
- 
-      <div className="flex flex-col  w-full text-white">
 
-        
-      <Tabs theme={{base: 'bg-white rounded-b-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-70px)]',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-3 py-1 text-[11px] font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
-        on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
-        off:"border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
-      }}}}}}} onActiveTabChange={event => setMenuIndex(event)} variant="underline">
+    <div className="flex flex-col  w-full text-white">
 
-<Tabs.Item  active={menuIndex === 0} title="AGENDA MÉDICA" icon={()=><FaCalendarAlt className="mr-2 h-3 w-4"/>}>
 
-     {menuIndex === 0 && <Calendario  events={events} medicos={medicos} setArrayEvent={setEvents} />}
-     
-      </Tabs.Item>
-      <Tabs.Item  active={menuIndex === 1}  title="CONSULTAS" icon={()=><HiClipboardList className="mr-2 h-4 w-4"/>}>
-     {menuIndex === 1 && <Consultas events={events.filter(item => new Date(item.end) >= new Date())} setConsultas={setConsultas}  consultas={consultas} medicos={medicos}/>}
-      </Tabs.Item>
-      <Tabs.Item  active={menuIndex === 2}  title="EXAMES" icon={()=><BiSolidInjection className="mr-2 h-4 w-4"/>}>
-    {menuIndex === 2 && <Exames exames={exames}/>}
-      </Tabs.Item>
-      <Tabs.Item  active={menuIndex === 3}  icon={()=><IoMdSettings className="mr-2 h-4 w-4"/>}  title="CONFIGURAR">
-     { menuIndex === 3 && <Configuracoes medicos={medicos} setMedicos={setArrayMedicos} setExames={setExames} exames={exames}/>}
-      </Tabs.Item>
-    </Tabs>
-      </div>
+      <Tabs theme={{
+        base: 'bg-white rounded-b-lg', tabpanel: 'bg-white rounded-b-lg h-[calc(100vh-70px)]', tablist: {
+          tabitem: {
+            base: "flex items-center  justify-center rounded-t-lg px-3 py-1 text-[11px] font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500", variant: {
+              underline: {
+                active: {
+                  on: "active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
+                  off: "border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
+                }
+              }
+            }
+          }
+        }
+      }} onActiveTabChange={event => setMenuIndex(event)} variant="underline">
+
+        <Tabs.Item active={menuIndex === 0} title="AGENDA MÉDICA" icon={() => <FaCalendarAlt className="mr-2 h-3 w-4" />}>
+
+          {menuIndex === 0 && <Calendario events={events} medicos={medicos} setArrayEvent={setEvents} />}
+
+        </Tabs.Item>
+        <Tabs.Item active={menuIndex === 1} title="CONSULTAS" icon={() => <HiClipboardList className="mr-2 h-4 w-4" />}>
+          {menuIndex === 1 && <Consultas events={events.filter(item => new Date(item.end) >= new Date())} medicos={medicos} />}
+        </Tabs.Item>
+        <Tabs.Item active={menuIndex === 2} title="EXAMES" icon={() => <BiSolidInjection className="mr-2 h-4 w-4" />}>
+          {menuIndex === 2 && <Exames exames={exames} />}
+        </Tabs.Item>
+        <Tabs.Item active={menuIndex === 3} icon={() => <IoMdSettings className="mr-2 h-4 w-4" />} title="CONFIGURAR">
+          {menuIndex === 3 && <Configuracoes medicos={medicos} setMedicos={setArrayMedicos} setExames={setExames} exames={exames} />}
+        </Tabs.Item>
+      </Tabs>
+    </div>
 
 
   )

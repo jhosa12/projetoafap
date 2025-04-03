@@ -91,7 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
     useEffect(()=>{
-        if(!usuario){signOut(), console.log('deslogou')}
+        if(!usuario)signOut()
     },[usuario])
 
 

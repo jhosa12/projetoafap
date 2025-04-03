@@ -121,7 +121,7 @@ export default function Calendario({ medicos,events, setArrayEvent }: DataProps)
   },[dataEvent.id_agmed,events])
  
 
-  useEffect(() => {
+ /* useEffect(() => {
 
     if (events.length > 0) {
       const novoArray = events.reduce((acumulador, atual) => {
@@ -132,7 +132,7 @@ export default function Calendario({ medicos,events, setArrayEvent }: DataProps)
     }
 
   }, [events])
-
+*/
 
   const components: any = {
     event: ({ event, index }: { event: EventProps, index: number }) => {

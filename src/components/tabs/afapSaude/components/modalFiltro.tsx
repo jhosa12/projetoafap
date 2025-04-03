@@ -5,9 +5,8 @@ import pt from 'date-fns/locale/pt-BR';
 import { Label, Modal, Select, Spinner, TextInput } from "flowbite-react";
 import { Button } from "@/components/ui/button";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { status } from "../consultas";
 import { ConsultoresProps } from "@/types/consultores";
-import { MedicoProps } from "@/types/afapSaude";
+import { MedicoProps, statusConsultaArray } from "@/types/afapSaude";
 registerLocale('pt-br', pt)
 
 interface DataProps {
@@ -17,7 +16,6 @@ interface DataProps {
   loading: boolean,
   medicos: Array<MedicoProps>
   consultores: Array<Partial<ConsultoresProps>>
-
 }
 
 
@@ -106,7 +104,7 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
               </div>
               <Select {...register('status')} sizing={'sm'}>
                 <option value={''}>Selecione o status</option>
-                {status.map((item, index) => (<option key={index} value={item}>{item}</option>))}
+                {statusConsultaArray?.map((item, index) => (<option key={index} value={item}>{item}</option>))}
               </Select>
             </div>
 

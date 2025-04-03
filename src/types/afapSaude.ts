@@ -1,4 +1,12 @@
 
+
+
+export type ConsultaStatus = "AGENDADO" | "AGUARDANDO DATA" | "CONFIRMADO" | "ATENDIDO" | "CANCELADO" | "RECEBIDO";
+
+export const statusConsultaArray = ["AGENDADO","AGUARDANDO DATA","CONFIRMADO","ATENDIDO","CANCELADO","RECEBIDO"]
+
+
+
 export interface ExamesData{
   id_exame:number,
   nome:string,

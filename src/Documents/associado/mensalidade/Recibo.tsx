@@ -49,7 +49,7 @@ render(){
               <span>{`Recebi(emos) de: ${associado}`}</span>
               {/*Mensalidade {n_doc} com referência {referencia}*/}
               <span>Referente a: {referente} </span>
-              <span style={{fontSize:'10px'}}>Declaro que, com este pagamento, a mensalidade acima mencionada encontra-se quitada,<br/> não havendo mais valores pendentes relativos ao referido mês.</span>
+              <span style={{fontSize:'10px'}}>Declaro que, com este pagamento, a divida acima mencionada encontra-se quitada,<br/> </span>
               </div>
               <div style={{display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',width:'25%',height:'100%'}}>
                   <span style={{fontSize:'9px',color:'gray'}}>CARIMBO</span>
