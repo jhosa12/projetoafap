@@ -49,16 +49,13 @@ interface DataProps {
   events: Array<EventProps>
  
 }
-
 export const valorInicial ={celular:'',cpf:'',data:new Date(),espec:'',exames:[],id_consulta:null,id_med:null,nome:'',tipoDesc:'',vl_consulta:0,vl_desc:0,vl_final:0}
 
 
 export default function Consultas({ medicos,events  }: DataProps) {
-
-
- 
+  
   const [data, setData] = useState<Partial<ConsultaProps>>()
-  const {usuario,infoEmpresa,consultores} = useContext(AuthContext)
+  const {usuario,consultores} = useContext(AuthContext)
   const [formPag,setFormPag] = useState<string>('')
   const [loading,setLoading] = useState<boolean>(false)
   const [consultas,setConsultas] =useState<Array<ConsultaProps>>([])

@@ -25,9 +25,9 @@ interface PlanoProps{
 
 
 export function ModalAlterarPlano({openModal,setOpenModal}:DataProps){
-    const {planos}=useContext(AuthContext)
+ 
     const {register,watch,setValue,handleSubmit} = useForm<PlanoProps>({})
-    const {dadosassociado,setarDadosAssociado} = useContext(AuthContext)
+    const {dadosassociado,setarDadosAssociado,planos} = useContext(AuthContext)
 
 const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
 
@@ -56,7 +56,7 @@ const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
                   success: 'Dados alterados com sucesso'
                 }
             )
-          dadosassociado?.contrato && setarDadosAssociado({...dadosassociado,contrato:{...dadosassociado?.contrato,id_plano:response.data.result.id_plano,plano:response.data.result.plano,valor_mensalidade:response.data.result.valor_mensalidade},mensalidade:response.data.mensAtualizadas})
+          dadosassociado?.contrato && setarDadosAssociado({...dadosassociado,contrato:{...dadosassociado?.contrato,id_plano:response.data.result.id_plano,plano:response.data.result.plano,valor_mensalidade:response.data.result.valor_mensalidade,planos:{limite_dep:response.data.result.planos.limite_dep}},mensalidade:response.data.mensAtualizadas})
           } catch (error) {
             console.log(error);
           }
