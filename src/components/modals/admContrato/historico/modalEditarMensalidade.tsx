@@ -3,7 +3,6 @@
 import { GiReturnArrow } from "react-icons/gi";
 import { AuthContext } from "@/store/AuthContext";
 import { useContext, useState } from "react";
-import { toast } from "react-toastify";
 import { api } from "@/lib/axios/apiClient";
 import "react-datepicker/dist/react-datepicker.css";
 import { Modal, ModalBody, ModalHeader, TextInput} from "flowbite-react";
@@ -14,6 +13,7 @@ import { MensalidadeProps } from "@/types/financeiro";
 import { Button } from "@/components/ui/button";
 import { ModalConfirmar } from "../../modalConfirmar";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 
 
@@ -36,8 +36,8 @@ export function ModalEditarMensalidade({ openModal, setOpenModal, mensalidade, s
 
 
     const handleEditar = async()=>{
-        try{
-            const response = await toast.promise(
+     
+            toast.promise(
                 api.put('/mensalidade/editar',{
                     id_mensalidade: mensalidade.id_mensalidade_global,
                     cobranca:mensalidade.cobranca,
@@ -46,14 +46,14 @@ export function ModalEditarMensalidade({ openModal, setOpenModal, mensalidade, s
                 }),
                 {
                     error: 'Erro na tentativa de edição, consulte o TI',
-                    pending: 'Realizando edição.....',
-                    success: 'Edição efetuada com sucesso!'
+                    loading: 'Realizando edição.....',
+                    success:()=> {
+                        dadosassociado?.id_global && carregarDados(dadosassociado?.id_global)
+                        return 'Edição efetuada com sucesso!'}
                 }
             )
-           dadosassociado?.id_global && carregarDados(dadosassociado?.id_global)
-        }catch(error){
-
-        }
+         
+      
     }
     const handleEstorno = async () => {
         const novoArray = [...(dadosassociado?.mensalidade || [])]
@@ -62,15 +62,15 @@ export function ModalEditarMensalidade({ openModal, setOpenModal, mensalidade, s
 
 
         if (mensalidadeProxima && mensalidadeProxima.status === 'P') {
-            toast.warn('Impossivel estornar, a próxima mensalidade se encontra paga!')
+            toast.warning('Impossivel estornar, a próxima mensalidade se encontra paga!')
             return
         }
         if(!motivoEstorno){
-            toast.warn('Informe o motivo do estorno')
+            toast.warning('Informe o motivo do estorno')
             return
         }
-        try {
-            const response = await toast.promise(
+     
+             toast.promise(
                 api.put('/mensalidade/estorno', {
                     id_mensalidade: mensalidade.id_mensalidade,
                     id_mensalidade_global: mensalidade.id_mensalidade_global,
@@ -79,20 +79,19 @@ export function ModalEditarMensalidade({ openModal, setOpenModal, mensalidade, s
 
                 {
                     error: 'Erro na tentativa de estorno, consulte o TI',
-                    pending: 'Realizando estorno.....',
-                    success: 'Estorno efetuado com sucesso!'
+                    loading: 'Realizando estorno.....',
+                    success:(response)=>{
+                        novoArray[index] = response.data
+                        setarDadosAssociado({ mensalidade: novoArray })
+                        setOpenModal(false)
+                        return 'Estorno efetuado com sucesso!'}
                 }
 
             )
 
-            novoArray[index] = response.data
-            setarDadosAssociado({ mensalidade: novoArray })
-            setOpenModal(false)
+          
 
 
-        } catch (error) {
-            console.log(error)
-        }
     }
 
 

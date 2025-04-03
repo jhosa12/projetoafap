@@ -23,7 +23,6 @@ export function ModalNovoUsuario({setarDadosUsuario,dadosUser,setModal,show,hand
   const [modalPass,setModalPass] = useState<boolean>(false)
     
    
-console.log(dadosUser)
 
     const handleFile = (e:ChangeEvent<HTMLInputElement>)=>{
         if(!e.target.files){

@@ -1,7 +1,6 @@
 
 import { api } from "@/lib/axios/apiClient"
 import {  useEffect, useState } from "react"
-import { toast } from "react-toastify"
 import { MdEdit } from "react-icons/md";
 import { IoIosAddCircle } from "react-icons/io";
 
@@ -17,6 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { ModalNovoUsuario } from "@/components/tabs/configuracoes/usuarios/modalNovoUsuario";
+import { toast } from "sonner";
 
 
 export interface UsuarioProps {
@@ -88,13 +88,13 @@ export default function Usuario() {
    
 
     try {
-      await toast.promise(
+     /* await toast.promise(
         api.post('/user',data),
         {error:'ERRO AO REALIZAR CADASTRO',
           pending:'CADASTRANDO NOVO FUNCIONÁRIO',
           success:'FUNCIONÁRIO CADASTRADO COM SUCESSO'
         }
-      )
+      )*/
       
     } catch (error) {
       console.log(error)
@@ -161,13 +161,30 @@ export default function Usuario() {
    
 
     try {
-      await toast.promise(
+
+      
+  toast.promise(
+       api.put('/user/editar',data),
+        {
+          loading:'ALTERANDO DADOS.....',
+          success:(res)=>{
+            return 'DADOS ALTERADOS COM SUCESSO'
+          },
+          error:(err)=>{
+            return 'ERRO AO REALIZAR ALTERAÇÃO'
+          }
+        }
+      )
+
+ 
+
+    /*  await toast.promise(
         api.put('/user/editar',data),
         {error:'ERRO AO REALIZAR ALTERAÇÃO',
           pending:'ALTERANDO DADOS',
           success:'DADOS ALTERADOS COM SUCESSO'
         }
-      )
+      )*/
       
     } catch (error) {
       console.log(error)

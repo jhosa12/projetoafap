@@ -1,6 +1,5 @@
 import { api } from "@/lib/axios/apiClient"
 import { MdDelete, MdModeEditOutline, MdSaveAlt } from "react-icons/md"
-import { toast } from "react-toastify"
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
@@ -15,6 +14,7 @@ import { PlanoContasProps } from "@/pages/dashboard/financeiro";
 import { ModalRecPag } from "./modalRecPag";
 import { Button } from "@/components/ui/button";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
+import { toast } from "sonner";
 
 export interface ContaProps {
     id_conta: number,
@@ -96,7 +96,7 @@ setTotal(totais)
 
 
     async function contaDelete() {
-        const response =   await toast.promise(
+      toast.promise(
             api.delete('/conta/deletar', {
               data: {
                 id_conta: dadosConta.id_conta
@@ -106,20 +106,23 @@ setTotal(totais)
             }),
             {
               error: 'Erro ao Deletar',
-              pending: 'Deletando Dados...',
-              success: 'Dados Deletados com sucesso'
+              loading: 'Deletando Dados...',
+              success:()=> {
+                const index = listaContas.findIndex(item=>item.id_conta===dadosConta.id_conta)
+                const novoArray = [...listaContas]
+                novoArray.splice(index,1);
+                setListaContas(novoArray)
+                
+                return 'Dados Deletados com sucesso'}
             }
           )
-          const index = listaContas.findIndex(item=>item.id_conta===dadosConta.id_conta)
-          const novoArray = [...listaContas]
-          novoArray.splice(index,1);
-          setListaContas(novoArray)
+          
       
         }
 
     async function contasReq() {
-        try {
-          const response =   await toast.promise(
+      
+           toast.promise(
             api.post('/conta/adicionar', {
               dataLanc: new Date(),
               dataprev: dadosConta.dataprev,
@@ -131,23 +134,18 @@ setTotal(totais)
             }),
             {
               error: 'Erro ao realizar requisição',
-              pending: 'Salvando Dados...',
-              success: 'Dados salvos com sucesso'
+              loading: 'Salvando Dados...',
+              success:()=>{ 
+                listarContasReq()
+                return 'Dados salvos com sucesso'}
             }
           )
-          listarContasReq()
-        } catch (error) {
-          toast.error('Erro')
-        }
-    
         
-    
       }
 
 
       const handleEditarConta  =async ()=>{
-                try {
-                    const response = await toast.promise(
+                toast.promise(
                         api.put('conta/editar',{
                             id_conta:dadosConta.id_conta,
                             dataprev:dadosConta.dataprev,
@@ -157,13 +155,11 @@ setTotal(totais)
                         }),
                         {
                             error:'Erro ao atualizar dados',
-                            pending:'Atualizando dados..',
+                            loading:'Atualizando dados..',
                             success:'Dados Atualizados com sucesso'
                         }
                     )
-                } catch (error) {
-                    toast.error('Erro na atualização')
-                }
+             
       }
 
 

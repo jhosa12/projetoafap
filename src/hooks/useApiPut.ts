@@ -2,7 +2,7 @@
 import { api } from "@/lib/axios/apiClient";
 import { AxiosError, AxiosResponse } from "axios";
 import { useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 
 

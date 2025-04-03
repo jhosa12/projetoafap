@@ -1,10 +1,11 @@
 import { api } from "@/lib/axios/apiClient";
 import { useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
+
 
 import { AuthContext } from "@/store/AuthContext";
 import { Alert } from "flowbite-react";
 import { HiEye, HiInformationCircle } from "react-icons/hi2";
+import { toast } from "sonner";
 
 interface NotifyProps{
     id_notificacao: number,
@@ -52,9 +53,10 @@ export default function Notificacoes(){
             const descricao= array[1].split(':')[1]
             const nome= array[2].split(':')[1]
             const valor = array[3].split(':')[1]
-            console.log(Number(valor))
-            try{
-             const lancamento = await toast.promise(
+            
+          
+          
+            toast.promise(
 
                     api.post('/novoLancamento',{
                     id_usuario:Number(id_origem),
@@ -70,21 +72,22 @@ export default function Notificacoes(){
                     }),
                     {
                         error:'Erro realizar Lançamento',
-                        pending:'Realizando Lançamento',
-                        success:'Lançado com sucesso!'
+                        loading:'Realizando Lançamento',
+                        success:async(lancamento)=>{
+                          if(lancamento){
+                            await api.put("/notification/update",
+                            {
+                                id_notificacao
+                            }
+                            )
+                        }
+                        listarNotificacoes()
+                          
+                          return 'Lançado com sucesso!'}
                     }
                 )
-                if(lancamento){
-                    await api.put("/notification/update",
-                    {
-                        id_notificacao
-                    }
-                    )
-                }
-                listarNotificacoes()
-            }catch(err){
-console.log(err)
-            }
+             
+          
      
    
         

@@ -2,7 +2,6 @@
 import { api } from "@/lib/axios/apiClient";
 import { Badge, Button, Popover, Table, TextInput } from "flowbite-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import { HiDocument } from "react-icons/hi2";
 import { HiFilter } from "react-icons/hi";
 import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
@@ -10,6 +9,7 @@ import { useReactToPrint } from "react-to-print";
 import { ModalConferencia } from "./modalConferencia";
 import { IoMdTrash } from "react-icons/io";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
+import { toast } from "sonner";
 
 
 
@@ -80,8 +80,7 @@ const listar =useCallback( async()=>{
 const handleAtualizar=useCallback(async()=>{
   const dataConferencia = new Date()
   dataConferencia.setTime(dataConferencia.getTime() - dataConferencia.getTimezoneOffset() * 60 * 1000);
-try {
-      const response =await toast.promise(
+toast.promise(
         api.post('/caixa/atualizarFechamento',{
           id_conf:dadosCaixa.id_conf,
           caixaCad:dadosCaixa.caixaCad,
@@ -91,38 +90,37 @@ try {
                 }),
                 {
                   error:'Erro ao atualizar dados',
-                  pending:'Atualizando....',
-                  success:'Dados atualizados com sucesso!'
+                  loading:'Atualizando....',
+                  success:(response)=>{
+                    const novo = [...caixa]
+                    const index = caixa.findIndex(it=>it.id_conf===dadosCaixa.id_conf)
+                    novo[index] = response.data
+                    console.log(response.data)
+                    setCaixa(novo)
+                    
+                    return'Dados atualizados com sucesso!'}
                 }
       )
-      const novo = [...caixa]
-      const index = caixa.findIndex(it=>it.id_conf===dadosCaixa.id_conf)
-      novo[index] = response.data
-      console.log(response.data)
-      setCaixa(novo)
-} catch (error) {
-  //console.log(error)
-}
+   
+
 },[dadosCaixa]
 
 )
 const handleExcluir = useCallback(async()=>{
-  try {
-    const response = await toast.promise(
+   toast.promise(
       api.delete(`/financeiro/deletarFechamento`,{
         data:{id_conf:dadosCaixa.id_conf}}),
       {
         error:'Erro ao excluir dados',
-        pending:'Excluindo....',
-        success:'Dados excluidos com sucesso!'
+        loading:'Excluindo....',
+        success:()=>{
+          listar()
+          setExcluir(true)
+          return 'Dados excluidos com sucesso!'}
       }
     )
   
-    listar()
-    setExcluir(true)
-  } catch (error) {
-    
-  }
+   
 },[dadosCaixa.id_conf])
 
 

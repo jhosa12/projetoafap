@@ -2,13 +2,14 @@
 import React, {  useContext, useEffect, useState } from 'react';
 import { MdDeleteForever, MdEdit, MdPrint} from 'react-icons/md';
 import { RiAddCircleFill } from 'react-icons/ri';
-import { toast } from 'react-toastify'
+
 import { AuthContext } from '@/store/AuthContext';
 import { Button, ButtonGroup } from 'flowbite-react';
 import { AcordoProps, MensalidadeProps } from '@/types/financeiro';
 import { ModalAcordos } from '../../../modals/admContrato/modalAcordos';
 import { FaFileArrowDown } from 'react-icons/fa6';
 import { FaPrint } from 'react-icons/fa';
+import { toast } from 'sonner';
 
 export const themeLight = {
     color:{

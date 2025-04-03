@@ -1,7 +1,6 @@
 
 
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import { api } from "@/lib/axios/apiClient";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,6 +10,7 @@ import { Button, Label, Modal, Select, Table, TextInput } from "flowbite-react";
 import { AcordoProps, MensalidadeProps } from "@/types/financeiro";
 import { ConsultoresProps } from "@/types/consultores";
 import { MdClose } from "react-icons/md";
+import { toast } from "sonner";
 
 
 
@@ -60,23 +60,24 @@ export function ModalAcordos({acordo,id_empresa,usuario,id_usuario,open,close,me
 
     const handleRemove = async(id_mensalidade_global:number)=>{
         if(acordo.id_acordo){
-            try{
-                const response = await toast.promise(
+         
+                 toast.promise(
                     api.put(`/acordo/removerMensalidade`,{id_mensalidade:id_mensalidade_global,id_acordo:null}),
                     {
-                        pending: 'Removendo...',
-                        success: 'Mensalidade removida com sucesso!',
+                        loading: 'Removendo...',
+                        success: async()=>{
+                            id_global && await carregarDados(id_global);
+                            const array = watch('mensalidade')||[];
+                            const newArray = array.filter(item => item.id_mensalidade_global !== id_mensalidade_global);
+                            setValue('mensalidade',newArray)
+                            
+                            return'Mensalidade removida com sucesso!'},
                         error: 'Erro ao remover mensalidade'
                     }
                 )
 
-                id_global && await carregarDados(id_global);
-                const array = watch('mensalidade')||[];
-                const newArray = array.filter(item => item.id_mensalidade_global !== id_mensalidade_global);
-                setValue('mensalidade',newArray)
-            }catch(err){
-                console.log(err)
-            }
+             
+        
     
           return;      
     }
@@ -110,22 +111,22 @@ const handleNovaRef = async()=>{
 
 
     if(acordo.id_acordo){
-        try{
-            const response = await toast.promise(
+     
+             toast.promise(
                 api.put(`/acordo/removerMensalidade`,{id_mensalidade:mensalidade?.id_mensalidade_global,id_acordo:acordo.id_acordo}),
                 {
-                    pending: 'Adicionando...',
-                    success: 'Mensalidade adicionada com sucesso!',
+                    loading: 'Adicionando...',
+                    success:async(response)=>{
+                        id_global && await carregarDados(id_global);
+                        const array = watch('mensalidade')||[];
+                        array.push(response.data);
+                        setValue('mensalidade',array)
+                        return'Mensalidade adicionada com sucesso!'},
                     error: 'Erro ao adicionar mensalidade'}
             )
 
-            id_global && await carregarDados(id_global);
-            const array = watch('mensalidade')||[];
-            array.push(response.data);
-            setValue('mensalidade',array)
-        }catch(err){
-            console.log(err)
-        }
+           
+      
 
       return;      
 }
@@ -164,9 +165,9 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
         const dt_prev = new Date(data.data_fim);
         dt_criacao.setTime(dt_criacao.getTime() - dt_criacao.getTimezoneOffset() * 60 * 1000);
         dt_prev.setTime(dt_prev.getTime() - dt_prev.getTimezoneOffset() * 60 * 1000);
-        try{
+     
         
-            const response = await toast.promise(
+          toast.promise(
                 api.post('/novoAcordo',{
                     usuario,
                     id_usuario,
@@ -188,17 +189,17 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
                 }),
                 {
                     error:'Erro na requisição',
-                    success:'Acordo criado com sucesso',
-                    pending:'Criando acordo'
+                    success:()=>{
+                        id_global && carregarDados(id_global);
+                        close()
+                        return 'Acordo criado com sucesso'},
+                    loading:'Criando acordo'
                 }
             )
           //  toast.success("Acordo criado com sucesso")
-          id_global && await carregarDados(id_global);
-          close()
+         
 
-        }catch(err){
-          //  console.log(err)
-        }
+     
     }
     
      
@@ -208,9 +209,8 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
       async function editarAcordo(data:AcordoProps){
           
 
-        try{
-        
-            const response = await toast.promise(
+     
+         toast.promise(
                 api.put('/editarAcordo',{
                id_acordo:data.id_acordo,
                id_usuario:id_usuario,
@@ -228,16 +228,13 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
                 }),
                 {
                 error:'Erro ao efetuar atualização',
-                pending:'Efetuando atualização',
+               loading:'Efetuando atualização',
                 success:'Atualização Efetuada com sucesso!'
                 }
             )
 
 
-        }catch(err){
-          //  console.log(err)
-            
-        }
+    
         
       }
      

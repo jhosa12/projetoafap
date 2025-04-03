@@ -1,7 +1,6 @@
 
 import { api } from "@/lib/axios/apiClient";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import { AuthContext } from "@/store/AuthContext";
 import { IoMdSearch } from "react-icons/io";
 import { MdClose } from "react-icons/md";
@@ -18,6 +17,7 @@ import { IoPrint } from "react-icons/io5";
 import { IoTicket } from "react-icons/io5";
 import { TbAlertTriangle } from "react-icons/tb";
 import { DadosCadastro } from "@/types/associado";
+import { toast } from "sonner";
 
 
 interface MensalidadeProps {
@@ -311,7 +311,7 @@ const [data, closeModa] = useState<Partial<DadosCadastro>>({});
             return;
         }
 
-        const response = await toast.promise(
+         toast.promise(
             api.post('/convalescente/novoProduto',
                 {
                     id_conv:listaConv.id_conv,
@@ -333,13 +333,16 @@ const [data, closeModa] = useState<Partial<DadosCadastro>>({});
             ),
             {
                 error: 'Erro ao Atualizar Dados',
-                pending: 'Atualizando Dados....',
-                success: 'Dados Atualizados com sucesso!'
+                loading: 'Atualizando Dados....',
+                success:(response)=> {
+                    const novoArray = [...listaMaterial]
+                    novoArray.push(response.data)
+                    setMaterial(novoArray)
+
+                    return 'Dados Atualizados com sucesso!'}
             }
         )
-        const novoArray = [...listaMaterial]
-        novoArray.push(response.data)
-        setMaterial(novoArray)
+       
 
     }
 
@@ -352,7 +355,7 @@ const [data, closeModa] = useState<Partial<DadosCadastro>>({});
             setMaterial(novoArray)
         }
 
-        const response = await toast.promise(
+         toast.promise(
             api.put('/convalescencia/receber', {
                 id_conv_prod: listaMaterial[indexProd].id_conv_prod,
                 id_estoque:status==='ABERTO'?listaMaterial[indexProd].id_estoque:undefined,
@@ -360,8 +363,13 @@ const [data, closeModa] = useState<Partial<DadosCadastro>>({});
             }),
             {
                 error: 'Erro ao Atualizar Dados',
-                pending: 'Atualizando Dados....',
-                success: 'Dados Atualizados com sucesso!'
+                loading: 'Atualizando Dados....',
+                success:(response)=> {
+                    const novoArray = [...listaMaterial]
+                    novoArray[indexProd] = response.data
+                    setMaterial(novoArray)
+                    
+                    return 'Dados Atualizados com sucesso!'}
 
             }
 
@@ -369,9 +377,7 @@ const [data, closeModa] = useState<Partial<DadosCadastro>>({});
 
         )
 
-        const novoArray = [...listaMaterial]
-        novoArray[indexProd] = response.data
-        setMaterial(novoArray)
+       
 
     }
 
@@ -429,9 +435,7 @@ const [data, closeModa] = useState<Partial<DadosCadastro>>({});
         //  }
 
         //const produto = {...listaConv.convalescenca_prod} ??{}
-
-        try {
-            const response = await toast.promise(
+ toast.promise(
 
                 api.put('/convalescencia/editar', {
 
@@ -473,17 +477,17 @@ const [data, closeModa] = useState<Partial<DadosCadastro>>({});
                 }),
                 {
                     error: 'Erro ao atualizar dados',
-                    pending: 'Atualizando Dados',
-                    success: 'Dados Atualizados com Sucesso'
+                    loading: 'Atualizando Dados',
+                    success:(response)=>{ 
+                        
+                        setarListaConv({ ...response.data })
+                        setMaterial(response.data.convalescenca_prod)
+                        return 'Dados Atualizados com Sucesso'}
                 }
             )
-            setarListaConv({ ...response.data })
-            setMaterial(response.data.convalescenca_prod)
+           
 
-        } catch (error) {
-            console.log(error)
-
-        }
+       
 
 
 
@@ -499,8 +503,7 @@ const [data, closeModa] = useState<Partial<DadosCadastro>>({});
         }
 
       
-        try {
-            const response = await toast.promise(
+       toast.promise(
                 api.post('/convalescencia/novo', {
                     id_contrato: dadosassociado?.contrato.id_contrato,
                     id_associado: dadosassociado?.id_associado,
@@ -538,15 +541,13 @@ const [data, closeModa] = useState<Partial<DadosCadastro>>({});
                 }),
                 {
                     error: 'Erro ao cadastrar',
-                    pending: 'Salvando Dados',
+                    loading: 'Salvando Dados',
                     success: 'Dados Registrados com Sucesso'
                 }
             )
 
 
-        } catch (error) {
-            console.log(error)
-        }
+        
 
     }
 
@@ -998,7 +999,7 @@ const [data, closeModa] = useState<Partial<DadosCadastro>>({});
                                                         setIndex(index)
                                                     }
                                                     else {
-                                                        toast.warn('SALVE AS ALTERAÇÕES')
+                                                        toast.warning('SALVE AS ALTERAÇÕES')
                                                         return;
                                                     }
                                                 }} className="text-blue-600 p-1  rounded-lg hover:text-white hover:bg-blue-600"><IoPrint size={18} /></button>
@@ -1015,7 +1016,7 @@ const [data, closeModa] = useState<Partial<DadosCadastro>>({});
                                                         setIndex(index)
                                                     }
                                                     else {
-                                                        toast.warn('SALVE AS ALTERAÇÕES')
+                                                        toast.warning('SALVE AS ALTERAÇÕES')
                                                         return;
                                                     }
 

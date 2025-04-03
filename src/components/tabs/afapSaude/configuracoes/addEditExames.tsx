@@ -2,7 +2,6 @@
 import { Button, Table } from "flowbite-react";
 import { ModalEditExames } from "../components/modalAddEditExames";
 import { useCallback, useContext, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import { api } from "@/lib/axios/apiClient";
 import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
 import { AuthContext } from "@/store/AuthContext";
@@ -12,6 +11,7 @@ import RelatorioLucroExames from "@/Documents/afapSaude/relatorioLucroExames";
 import pageStyle from "@/utils/pageStyle";
 import { ModalConfirmar } from "../../../modals/modalConfirmar";
 import { ExamesProps } from "@/types/afapSaude";
+import { toast } from "sonner";
 
 interface DataProps{
     exames:Array<ExamesProps>
@@ -40,23 +40,21 @@ const imprimirRelatorio = useCallback(useReactToPrint({
 
 const handleDeletarExame=async ()=>{
 
-    try {
-        const response = await toast.promise(
+    toast.promise(
             api.delete(`/afapSaude/exames/deletarExame/${data.id_exame}`),
             {error:'Erro ao deletar exame',
-                pending:'Deletando exame.....',
-                success:'Exame deletado com sucesso!'
+                loading:'Deletando exame.....',
+                success:()=>{
+                  const novoArray = [...exames]
+                  const index = novoArray.findIndex(item=>item.id_exame===data.id_exame)
+                  novoArray.splice(index,1)
+                  setExames(novoArray)
+                  setOpenDeletar(false)
+                  return 'Exame deletado com sucesso!'}
             }
         )
-        const novoArray = [...exames]
-        const index = novoArray.findIndex(item=>item.id_exame===data.id_exame)
-        novoArray.splice(index,1)
-        setExames(novoArray)
-        setOpenDeletar(false)
        
-    } catch (error) {
-        toast.warn('Consulte o TI')
-    }
+
 
 }
 

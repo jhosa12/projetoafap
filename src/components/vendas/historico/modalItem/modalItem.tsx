@@ -8,11 +8,11 @@ import { TabDependentes } from "./dependentes";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { api } from "@/lib/axios/apiClient";
-import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import useApiPost from "@/hooks/useApiPost";
 import { AssociadoProps, ContratoProps, DependentesProps } from "@/types/associado";
 import {  ParcelaData } from "@/utils/gerarArrayMensal";
+import { toast } from "sonner";
 
 
 interface DataProps{
@@ -83,21 +83,20 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
 
     const handleOnSubmit:SubmitHandler<LeadProps> = async(data) =>{
 
-        console.log(data)
-            try {
-                const res = await toast.promise(
+        toast.promise(
                     api.put("/lead/editarLead",{lead:data}),
                     {
-                        pending:"Editando Lead",
-                        success:"Lead editado com sucesso",
+                        loading:"Editando Lead",
+                        success:()=>{
+                            handleLoadLeads()
+                            onClose()
+                            
+                            return "Lead editado com sucesso"},
                         error:"Erro ao editar lead"
                     }
                 )
-                handleLoadLeads()
-                onClose()
-            } catch (error) {
-                console.log(error)
-            }
+               
+           
     }
 
 

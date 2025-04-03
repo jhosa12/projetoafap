@@ -12,7 +12,6 @@ import {  IoMdOptions } from "react-icons/io";
 import RelatorioSintetico from "@/Documents/caixa/RelatorioMovimentacao";
 import {  Modal, Spinner, Table } from "flowbite-react";
 import {  HiPencil } from "react-icons/hi2";
-import { toast } from "react-toastify";
 import { ModalFechamento } from "../../../components/modals/caixa/modalFechamento";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ajustarData } from "@/utils/ajusteData";
@@ -39,6 +38,7 @@ import pageStyle from "@/utils/pageStyle";
 import { ModalLancamento } from "@/components/modals/caixa/modalLancamento";
 import { BiCalendarMinus } from "react-icons/bi";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
+import { toast } from "sonner";
 
   
 
@@ -338,26 +338,25 @@ export default function CaixaMovimentar(){
 
   const  handleExcluir=useCallback(async()=>{
 
-    try {
-      await toast.promise(
+  toast.promise(
             api.delete(`/caixa/deletar/${infoEmpresa?.id}/${mov?.lanc_id}`),
             {
                 error:'Erro ao deletar lancamento',
-                pending:'Solicitando exclusão..',
-                success:'Deletado com sucesso'
+                loading:'Solicitando exclusão..',
+                success:()=>{
+                  const novo = [...(data?.lista||[])]
+                  const index = novo.findIndex(item=>item.lanc_id===mov?.lanc_id)
+                  novo.splice(index,1)
+                  setData({...data,lista:novo})
+                 // setLancamentos(novo)
+                 setModal({excluir:false})
+                  //setModalExc(false)
+                  
+                  return 'Deletado com sucesso'}
             }
         )   
-        const novo = [...(data?.lista||[])]
-        const index = novo.findIndex(item=>item.lanc_id===mov?.lanc_id)
-        novo.splice(index,1)
-        setData({...data,lista:novo})
-       // setLancamentos(novo)
-       setModal({excluir:false})
-        //setModalExc(false)
-      
-    } catch (error) {
-        console.log(error)
-    }
+   
+
 
   },[mov?.lanc_id,data?.lista,infoEmpresa?.id])
     

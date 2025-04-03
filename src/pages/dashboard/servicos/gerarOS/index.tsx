@@ -1,16 +1,11 @@
 
 import { api } from "@/lib/axios/apiClient";
-import { useContext, useEffect, useReducer, useState } from "react";
-import { toast } from "react-toastify";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { IoMdSearch, IoMdSettings } from "react-icons/io";
-import { MdAccessTimeFilled, MdClose } from "react-icons/md";
-import { HiClipboardList, HiOutlineSave } from "react-icons/hi";
-import { IoIosClose } from "react-icons/io";
-import { IoIosSave } from "react-icons/io";
-import InputMask from 'react-input-mask'
+import { MdAccessTimeFilled} from "react-icons/md";
+import { HiClipboardList } from "react-icons/hi";
 import { ModalBusca } from "@/components/modals/modalBusca";
-import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { DadosPlano } from "@/components/obito/dadosPlano";
 import { DadosFalecido } from "@/components/obito/dadosFalecido";
@@ -24,6 +19,7 @@ import { ModalDependente } from "@/components/obito/modalDependentes";
 import { Button, Checkbox, Tabs } from "flowbite-react";
 import { FaCalendarAlt } from "react-icons/fa";
 import { DadosCadastro, ObitoProps } from "@/types/associado";
+import { toast } from "sonner";
 
 
 
@@ -223,25 +219,27 @@ const handleCheckTitular=()=>{
             return;
         }
       
-        const response = await toast.promise(
+        toast.promise(
             api.post("/obitos/adicionarObito", {
                 ...servico, hr_velorio: newDate, obito_itens: servico.obito_itens, tipo_atendimento: particular ? 'PARTICULAR' : 'ASSOCIADO',falecido:titular?'TITULAR':dependente?'DEPENDENTE':undefined,
                 status: servico.listacheckida?.find(item => item.status === false) || servico.listacheckvolta?.find(item => item.status === false) ? 'PENDENTE' : 'FECHADO'
             }),
             {
                 error: 'Erro ao Realizar Cadastro',
-                pending: 'Cadastrando óbito',
-                success: 'Cadastrado com sucesso!'
+                loading: 'Cadastrando óbito',
+                success:(response)=>{
+                    setarServico({ ...servico, id_obitos: response.data })
+                   return  'Cadastrado com sucesso!'}
             }
         )
-        setarServico({ ...servico, id_obitos: response.data })
+      
     }
 
 
 
 
     async function editarObito() {
-        await toast.promise(
+        toast.promise(
             api.put('/obitos/editarObito', {
                 ...servico,
                 status: servico.listacheckida?.find(item => item.status === false) || servico.listacheckvolta?.find(item => item.status === false) ? 'PENDENTE' : 'FECHADO'
@@ -249,7 +247,7 @@ const handleCheckTitular=()=>{
             }),
             {
                 error: 'Erro ao atualizar os dados',
-                pending: 'Atualizando dados',
+                loading: 'Atualizando dados',
                 success: 'Dados atualizados com sucesso'
             }
         )
@@ -266,13 +264,14 @@ const handleCheckTitular=()=>{
         setarServico({ ...servico, listacheckvolta: response.data })
     }
     function deletarProduto(id_ob_itens: number) {
-        console.log(id_ob_itens)
-        const response = toast.promise(
+        
+        
+        toast.promise(
             api.delete(`/obitoItens/deletar/${String(id_ob_itens)}`),
             {
                 error:'Erro ao deletar dado',
                 success:'Dado deletado',
-                pending:'Deletando dado....'
+                loading:'Deletando dado....'
                 
             }
         )
@@ -313,8 +312,7 @@ const handleCheckTitular=()=>{
     async function lancarCaixa() {
         const descricoes = servico?.obito_itens?.map(item => `${item.descricao_item} QUANT.: ${item.quantidade}  VALOR: R$${item.valor_total}`);
         const descricaoCompleta = descricoes?.join(' / ')
-        try {
-            await toast.promise(
+       toast.promise(
                 api.post("/obitos/lancarCaixa", {
                     conta: "1.03.006",
                     data: new Date(),
@@ -329,17 +327,14 @@ const handleCheckTitular=()=>{
                 }),
                 {
                     error: 'Erro ao Confirmar Pagamento',
-                    pending: 'Realizando Recebimento em Caixa',
+                    loading: 'Realizando Recebimento em Caixa',
                     success: 'Recebido com sucesso'
                 }
             )
 
 
-        } catch (error) {
-            console.log(error)
-
-        }
-
+      
+    
     }
     return (
         <>

@@ -1,9 +1,9 @@
 import { api } from "@/lib/axios/apiClient"
 import { useState } from "react"
-import { toast } from "react-toastify"
 import { MdDelete } from "react-icons/md";
 import { RiSaveFill } from "react-icons/ri";
 import { IoMdAddCircle } from "react-icons/io";
+import { toast } from "sonner";
 
 interface ConvProps{
     id_conv: number,
@@ -53,37 +53,44 @@ const handleValor=(index:number,event:React.ChangeEvent<HTMLInputElement>)=>{
 
     const editarPlano = async(index:number)=>{
         const plano = arrayConv[index]
-        await toast.promise(
-            api.put('/gerenciarAdministrativo/editarplano',{
-               // id_plano:plano.id_plano,
-               // descricao:plano.descricao,
-               // limite_dep:plano.limite_dep,
-              //  valor:plano.valor
 
-            }),
-            {
-                error:'Erro ao editar plano',
-                pending:'Editando',
-                success:'Editado com sucesso'
-            }
+        toast.promise(
+            api.put('/gerenciarAdministrativo/editarplano',{
+                // id_plano:plano.id_plano,
+                // descricao:plano.descricao,
+                // limite_dep:plano.limite_dep,
+               //  valor:plano.valor
+ 
+             }),
+             {
+                 error:'Erro ao editar plano',
+                 loading:'Editando...',
+                 success:'Editado com sucesso'
+
+             }
         )
+    
 carregarDados()
     }
 
 const deletarPlano = async(id_plano:number)=>{
-    await toast.promise(
+
+    toast.promise(
         api.delete('/gerenciarAdministrativo/deletarplano',{
             data:{
                 id_plano,
             }
         }),
         {
-            error:'Erro ao deletar plano de conta',
-            pending:'Deletando',
-            success:'Deletado com sucesso!'
+            loading:'Deletando',
+            success:()=>{
+                carregarDados()
+                return'Deletado com sucesso!'},
+            error:'Erro ao deletar plano de conta'
         }
     )
-carregarDados()
+ 
+
     
 
 }
@@ -95,34 +102,25 @@ const adicionarPlano = async()=>{
         toast.info('Preencha todos os campos!')
         return;
     }
-    try{
-        await toast.promise(
-            api.post('/gerenciarAdministrativo/adicionarPlano',{
-                    limite_dep:limite,
-                    descricao:descricao.toUpperCase(),
-                    valor  
-            }),
-            {
-                error:'Erro ao adicionar Plano',
-                pending:'Adicionando...',
-                success:'Adicionado com sucesso!'
-            }
-        )
-
-    }catch(erro:any){
-        toast.warn(erro.response.data.error)
+  
+    toast.promise(
+        api.post('/gerenciarAdministrativo/adicionarPlano',{
+            limite_dep:limite,
+            descricao:descricao.toUpperCase(),
+            valor  
+    }),
+    {
+        loading:'Adicionando...',
+        success:()=>{
+            carregarDados()
+            return'Adicionado com sucesso!'
+        },
+        error:'Erro ao adicionar plano de conta'
+    }
+    )
+       
 
     }
-
-    carregarDados()
-
-}
-
-
-
-
-
-
 
 
 

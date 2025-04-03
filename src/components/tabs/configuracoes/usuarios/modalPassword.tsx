@@ -4,7 +4,8 @@
 import { api } from "@/lib/axios/apiClient";
 import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
 import { useRef, useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+
 
 
 
@@ -25,7 +26,7 @@ export function ModalPassword({openModal,setOpenModal,id_user}:DataProps) {
             toast.info('Senhas não coincidem')
             return
         }
-        try {
+  
             toast.promise(
                 api.put('/user/newPassword',{
                     id_user,
@@ -33,13 +34,11 @@ export function ModalPassword({openModal,setOpenModal,id_user}:DataProps) {
                     novaSenha
                 }),
                 {error:'Erro ao alterar senha',
-                    pending:'Realizando alteração',
+                    loading:'Realizando alteração',
                     success:'Alteração realizada com sucesso'
                 }
             )
-        } catch (error) {
-            
-        }
+       
     }
  
 

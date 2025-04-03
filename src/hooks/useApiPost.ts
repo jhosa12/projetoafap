@@ -1,8 +1,8 @@
 
 import { api } from "@/lib/axios/apiClient";
-import { AxiosError, AxiosResponse } from "axios";
+import {  AxiosResponse } from "axios";
 import { useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 
 
@@ -23,20 +23,26 @@ const useApiPost = <T=any,P=any>(url:string,signal?:AbortSignal):{
   const postData = async(payload:P)=>{
     setLoading(true)
 
-    try{
-        const response:AxiosResponse = await api.post(url,payload,{signal})
-        setData(response.data)
+   
+        toast.promise(
+          api.post(url,payload,{signal}),
+          {
+            loading: 'Salvando dados...',
+            success: (res)=>{
+              setData(res.data)
+              return'Dados salvos com sucesso'
+            },
+            error: 'Erro ao salvar dados'
+          }
+
+        )
+
+       
       //console.log(response.data)
 
-    }catch(error:any){
-        //setError(error as AxiosError)
-     // console.log(error)
-        toast.error(error?.response?.data.message??'Erro ao salvar dados')
-        throw new Error("Erro ao salvar dados")
-
-    }finally{
+    
         setLoading(false)
-    }
+    
   }
 
 

@@ -1,10 +1,9 @@
 import { ModalNovoConveniado } from "@/components/modals/comercial/modalNovoConveniado"
-import { ModalNovaConta } from "@/components/tabs/financeiro/contasPagarReceber/modalNovaConta"
 import { AuthContext } from "@/store/AuthContext"
 import { api } from "@/lib/axios/apiClient"
 import { Button, Card, Dropdown } from "flowbite-react"
 import { useContext, useEffect, useState } from "react"
-import { toast } from "react-toastify"
+import { toast } from "sonner"
 
 
 export interface ConveniadosProps {
@@ -29,16 +28,18 @@ export default function Conveniados() {
 
     const handleListarConveniados=async()=>{
 
-        const response = await toast.promise(
+       toast.promise(
             api.get('/conveniados/listar'),
             {
                 error:'Erro ao Requisitar Dados',
-                pending:'Listando dados.....',
-                success:'Dados Carregados'
+                loading:'Listando dados.....',
+                success:(response)=>{
+                  setConveniados(response.data)
+                  return 'Dados Carregados'}
             }
         )
 
-        setConveniados(response.data)
+        
     }
 
     useEffect(()=>{

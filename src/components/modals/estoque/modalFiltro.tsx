@@ -14,7 +14,6 @@ interface DataProps{
    
 }
 
-
 export function ModalFiltroMov({empresas,openModal,setOpenModal,handleFiltro}:DataProps){
     const [startDate,setStartDate] = useState<Date>(new Date())
     const [endDate,setEndDate] = useState(new Date())

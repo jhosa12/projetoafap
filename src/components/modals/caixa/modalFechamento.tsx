@@ -2,9 +2,9 @@
 import { api } from "@/lib/axios/apiClient";
 import { Button, FloatingLabel, Modal, ModalHeader } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import { LancamentosProps } from "../../../pages/dashboard/caixa";
 import { ajustarData } from "@/utils/ajusteData";
+import { toast } from "sonner";
 
 
 interface DataProps{

@@ -10,10 +10,10 @@ import { useReactToPrint } from "react-to-print";
 import RelatorioMov from "@/Documents/estoque/RelatorioMov";
 import { GrRevert } from "react-icons/gr";
 import { Tooltip } from "react-tooltip";
-import { toast } from "react-toastify";
 import { ModalConfirm } from "../../modals/estoque/modalConfirm";
 import pageStyle from "@/utils/pageStyle";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 
 interface DataProps {
@@ -56,29 +56,33 @@ export default function  HistoricoMov({ id_usuario, usuario,permissoes }: DataPr
     const handleEstorno = async () => {
         if (!dadosEstorno?.id_mov || !dadosEstorno.id_empresa || !dadosEstorno.id_produto) return;
 
-        try {
-            const response = await toast.promise(
-                api.put('/estoque/historico/estorno', {
-                    ...dadosEstorno,
-                    produtos: dadosEstorno?.produtos?.filter(p => p.id_produto !== dadosEstorno.id_produto)
-                }),
-                {
-                    pending: 'Estornando movimentação',
-                    success: 'Movimentação estornada com sucesso',
-                    error: 'Erro ao estornar movimentação'
-                }
-    
-            )
 
-            handleFiltro({ startDate: new Date(), endDate: new Date(), id_empresa: '' })
+
+        toast.promise(
+            api.put('/estoque/historico/estorno', {
+                ...dadosEstorno,
+                produtos: dadosEstorno?.produtos?.filter(p => p.id_produto !== dadosEstorno.id_produto)
+            }),
+            {
+                loading: 'Estornando movimentação...',
+                success:()=> {
+                    handleFiltro({ startDate: new Date(), endDate: new Date(), id_empresa: '' })
+                    return'Movimentação estornada com sucesso'
+                },
+                error: 'Erro ao estornar movimentação'
+            }
+
+        )
+
+        
+      
+
+          
           /*  if (response.data) {
                 setHistorico((prev) => prev.filter((h) => h.id_mov !== id_mov));
             }*/
 
-        } catch (error) {
-            console.log(error);
-            toast.error('Erro ao estornar movimentacao');
-        }
+      
     };
 
     useEffect(() => {

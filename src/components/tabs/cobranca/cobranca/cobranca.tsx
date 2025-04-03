@@ -1,6 +1,5 @@
 import { api } from "@/lib/axios/apiClient";
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import { toast } from "react-toastify";
 import Relatorio from '@/Documents/relatorioCobranca/DocumentTemplate';
 import { useReactToPrint } from "react-to-print";
 import { IoPrint } from "react-icons/io5";
@@ -15,6 +14,7 @@ import { ajustarData } from "@/utils/ajusteData";
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
 import { Button } from "@/components/ui/button";
 import pageStyle from "@/utils/pageStyle";
+import { toast } from "sonner";
 
 
 interface CobrancaProps {

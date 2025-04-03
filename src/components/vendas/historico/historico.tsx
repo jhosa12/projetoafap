@@ -11,7 +11,6 @@ import pt from 'date-fns/locale/pt-BR';
 import { Control, Controller, SubmitHandler, useForm, UseFormHandleSubmit, UseFormRegister } from "react-hook-form";
 import {MdCheckCircle, MdCreateNewFolder,MdFilter1, MdPrint } from "react-icons/md";
 import { Tooltip } from "react-tooltip";
-import { toast } from "react-toastify";
 import { AuthContext } from "@/store/AuthContext";
 import { gerarMensalidade, ParcelaData } from "@/utils/gerarArrayMensal";
 import {  ContratoProps, DependentesProps } from "@/types/associado";
@@ -23,6 +22,7 @@ import DocListaLeads from "@/Documents/vendas/DocListaLeads";
 import { useReactToPrint } from "react-to-print";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
 
 export interface ReqLeadsProps {
     id?: string,
@@ -571,8 +571,8 @@ interface ModalNovoContratoProps {
     id_contrato: number | undefined
     id_global: number | undefined
     carregarDados: Function
-
 }
+
 export const ModalNovoContrato = ({ id_contrato, loading, onClose, show, carregarDados, id_global }: ModalNovoContratoProps) => {
 
     return (
@@ -587,7 +587,7 @@ export const ModalNovoContrato = ({ id_contrato, loading, onClose, show, carrega
                         </div>
                         <h1 className="text-md font-semibold">Novo Contrato: {id_contrato?.toString()}</h1>
                         <div className="flex w-full justify-between">
-                            <Button onClick={() => { Router.push(`/admcontrato`); carregarDados(id_global) }} variant={'outline'}>Acessar Contrato</Button>
+                            <Button onClick={() => { Router.push(`/dashboard/admcontrato`); carregarDados(id_global) }} variant={'outline'}>Acessar Contrato</Button>
                             <Button variant={'destructive'} onClick={onClose}>Fechar</Button>
                         </div>
                     </div>

@@ -7,7 +7,7 @@ import { RiHistoryLine } from "react-icons/ri"
 import { Acompanhamento, SetorProps } from "@/components/vendas/acompanhamento"
 import { Historico } from "@/components/vendas/historico/historico"
 import useApiGet from "@/hooks/useApiGet"
-import { toast } from "react-toastify"
+import { toast } from "sonner"
 
 
 export interface FormProps {
@@ -37,7 +37,7 @@ export interface ProdutosProps {
 
 export default function Vendas() {
 
-  const { usuario, permissoes, selectEmp } = useContext(AuthContext);
+  const { usuario, selectEmp } = useContext(AuthContext);
   const [tab, setTab] = useState<number>(0)
   const {data,postData} = useApiGet<Array<SetorProps>,undefined>("/gerenciarAdministrativo/listarSetores")
 

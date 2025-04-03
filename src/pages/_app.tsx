@@ -6,8 +6,7 @@ import type { AppProps } from 'next/app';
 import Error from 'next/error';
 import { useRouter } from 'next/router';
 import { memo, StrictMode, useEffect } from 'react';
-import { ToastContainer, Zoom } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
 import { Toaster } from "@/components/ui/sonner";
 
 
@@ -86,14 +85,8 @@ export default function App({ Component, pageProps,router }: AppProps) {
       <AuthProvider >
         
         <PrivateRouter router={router} Component={Component} pageProps={pageProps} />
-        <ToastContainer
-          autoClose={4000}
-          theme="light"
-          closeOnClick
-          transition={Zoom}
-          toastStyle={{ color: 'black', backgroundColor: '#d5dad9' }}
-        />
-         <Toaster richColors position="top-center" />
+    
+         <Toaster theme='light' richColors position="top-center" toastOptions={{ duration: 3000 }} />
       </AuthProvider>
     </StrictMode>
   );

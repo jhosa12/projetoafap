@@ -4,8 +4,6 @@ import 'react-tabs/style/react-tabs.css';
 import { ModalBusca } from '../../../components/modals/modalBusca'
 import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../../store/AuthContext"
-import { toast } from "react-toastify";
-import { api } from "@/lib/axios/apiClient";
 import 'react-tooltip/dist/react-tooltip.css';
 import CarteirasDep from "../../../components/tabs/admContrato/carteiras/carteirasDep";
 import { HistoricoMensalidade } from "@/components/tabs/admContrato/historicoMensalidade/historicoMensalidade";

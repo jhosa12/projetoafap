@@ -4,7 +4,6 @@ import { useContext, useEffect, useRef, useState } from "react"
 import { MdDeleteForever, MdEdit } from "react-icons/md"
 import { RiAddCircleFill } from "react-icons/ri"
 import {  TbWheelchair } from "react-icons/tb"
-import { toast } from "react-toastify"
 import { Tooltip } from "react-tooltip"
 import { ModalDependentes } from "../../../modals/admContrato/dependentes/modalDependentes"
 import { ModalExcluirDep } from "../../../modals/admContrato/dependentes/modalExcluir"
@@ -14,6 +13,7 @@ import { useReactToPrint } from "react-to-print"
 import { DependentesProps } from "@/types/associado"
 import pageStyle from "@/utils/pageStyle"
 import { Button, ButtonGroup, Table } from "flowbite-react"
+import { toast } from "sonner"
 
 
 
@@ -70,8 +70,8 @@ export function Dependentes(){
             toast.warning("Informe um motivo!")
             return;
         }
-        try {
-            await toast.promise(
+      
+            toast.promise(
                 api.put('/excluirDependente', {
                     id_dependente_global: dadosDep.id_dependente_global,
                     id_dependente: Number(dadosDep.id_dependente),
@@ -80,24 +80,26 @@ export function Dependentes(){
                     exclusao_motivo: motivo
                 }),
                 {
-                    pending: `Efetuando`,
-                    success: `Dependente Exluido`,
+                    loading: `Efetuando`,
+                    success: ()=>{
+                        const novo = [...(dadosassociado?.dependentes??[])]
+                        const index = novo.findIndex(item=>item.id_dependente_global===dadosDep.id_dependente_global)
+                        novo.splice(index,1)
+                        setarDadosAssociado({...dadosassociado,dependentes:novo})
+                     //   await carregarDados()
+            
+                      // setModalExcDep(false)
+                       setModal({excluir:false})
+
+                       
+                        return `Dependente Exluido`},
                     error: `Erro ao Excluir`
                 }
             )
-            const novo = [...(dadosassociado?.dependentes??[])]
-            const index = novo.findIndex(item=>item.id_dependente_global===dadosDep.id_dependente_global)
-            novo.splice(index,1)
-            setarDadosAssociado({...dadosassociado,dependentes:novo})
-         //   await carregarDados()
-
-          // setModalExcDep(false)
-           setModal({excluir:false})
+        
             
 
-        } catch (err) {
-            console.log('Erro ao excluir')
-        }
+    
 
 
     }

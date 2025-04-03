@@ -4,11 +4,11 @@ import {Modal, Table } from "flowbite-react"
 import { useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { MdAdd, MdDelete, MdEdit } from "react-icons/md"
-import { toast } from "react-toastify"
 import { ModalConfirmar } from "../../../../modals/modalConfirmar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ExamesProps, MedicoProps } from "@/types/afapSaude"
+import { toast } from "sonner"
 
 
 interface DataProps {
@@ -43,50 +43,52 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,usuario,medico
                 ),
                 {
                     error:'Erro ao Cadastrar Exame',
-                    pending:'Realizando Cadastro.....',
-                    success:'Cadastro Realizado com sucesso!'
+                    loading:'Realizando Cadastro.....',
+                    success:(response)=>{
+                        const novoArray = [...medicos]
+                        const index = novoArray.findIndex(item=>item.id_med==medico.id_med)
+                     novoArray[index].exames = [...novoArray[index].exames,response.data]
+                         setArrray(novoArray)
+             
+             
+                         setMedico({...medico,exames:[...medico.exames??[],response.data]})
+                       //  reset()
+                        
+                       return 'Cadastro Realizado com sucesso!'}
                 }
             )
-            const novoArray = [...medicos]
-           const index = novoArray.findIndex(item=>item.id_med==medico.id_med)
-        novoArray[index].exames = [...novoArray[index].exames,response.data]
-            setArrray(novoArray)
-
-
-            setMedico({...medico,exames:[...medico.exames??[],response.data]})
-          //  reset()
+           
 
             
     
            // setExames([...exames,response.data])
         } catch (error) {
-                toast.warn('Consulte o TI')
+                toast.warning('Consulte o TI')
         }
     }
 
 
     const handleDeletarExame=async ()=>{
 
-        try {
-            const response = await toast.promise(
+         toast.promise(
                 api.delete(`/afapSaude/exames/deletarExame/${excluirId}`),
                 {error:'Erro ao deletar exame',
-                    pending:'Deletando exame.....',
-                    success:'Exame deletado com sucesso!'
+                    loading:'Deletando exame.....',
+                    success:()=>{
+                        const novoArray = [...medicos]
+                        const index = novoArray.findIndex(item=>item.id_med==medico.id_med)
+                        novoArray[index].exames = novoArray[index].exames.filter(item=>item.id_exame!==excluirId)
+                        setArrray(novoArray)
+                       // setExames(novoArray)
+                       setMedico({...medico,exames:novoArray[index].exames.filter(item=>item.id_exame!==excluirId)})
+            
+                       setOpenExcluir(false)
+                        return 'Exame deletado com sucesso!'}
                 }
             )
-            const novoArray = [...medicos]
-            const index = novoArray.findIndex(item=>item.id_med==medico.id_med)
-            novoArray[index].exames = novoArray[index].exames.filter(item=>item.id_exame!==excluirId)
-            setArrray(novoArray)
-           // setExames(novoArray)
-           setMedico({...medico,exames:novoArray[index].exames.filter(item=>item.id_exame!==excluirId)})
-
-           setOpenExcluir(false)
+            
            
-        } catch (error) {
-            toast.warn('Consulte o TI')
-        }
+      
     
     }
 
@@ -97,20 +99,15 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,usuario,medico
             toast.info('Preencha os campos obrigatórios!');
             return;
         }
-        try {
-            
-            const response = await toast.promise(
+      toast.promise(
                 api.put('/afapSaude/exames/editarExame',
                     data
                 ),
                 {
                     error:'Erro ao atualizar Exame',
-                    pending:'Atualizando.....',
-                    success:'Atualização realizada com sucesso!'
-                }
-            )
-    
-           // const novoArray =[...exames]
+                    loading:'Atualizando.....',
+                    success:(response)=>{
+                             // const novoArray =[...exames]
            // const index = novoArray.findIndex(item=>item.id_exame===data.id_exame)
           //  novoArray[index] = {...response.data}
            //setExames(novoArray)
@@ -123,10 +120,11 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,usuario,medico
           // setExames(novoArray)
           setMedico({...medico,exames:novoArray[index].exames})
             setOpenEditar(false)
+                        
+                       return 'Atualização realizada com sucesso!'}
+                }
+            )
     
-        } catch (error) {
-                toast.warn('Consulte o TI')
-        }
     }
 
 

@@ -11,8 +11,8 @@ import { ModalFiltroMetas } from "../modalFiltro";
 import { ajustarData } from "@/utils/ajusteData";
 import { EmpresaProps } from "@/types/empresa";
 import { MdEdit } from "react-icons/md";
-import { toast } from "react-toastify";
 import { api } from "@/lib/axios/apiClient";
+import { toast } from "sonner";
 
 interface FormFiltro{
     startDate:string|undefined,
@@ -41,8 +41,7 @@ export function MetasVendas({id_empresa,empresas,setores}:DataProps) {
 
 
      const handleNovo = async (data:FormProps) => {
-            try {
-             const response =   await toast.promise(
+            toast.promise(
                     api.post('/vendas/novaMeta', {
                         id_grupo: 1,
                         id_empresa,
@@ -53,15 +52,12 @@ export function MetasVendas({id_empresa,empresas,setores}:DataProps) {
                     }),
                     {
                         error: 'Erro ao salvar dados',
-                        pending: 'Salvando Dados....',
+                        loading: 'Salvando Dados....',
                         success: 'Dados Salvos com Sucesso',
                     }
                 );
               //  setMetas([...arrayMetas,response.data])
-            } catch (error) {
-                console.log(error)
-                toast.error('Erro ao salvar nova meta');
-            }
+          
         };
 
     const handleFiltro = async () => {

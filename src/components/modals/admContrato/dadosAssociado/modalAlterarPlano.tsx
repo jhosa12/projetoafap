@@ -1,12 +1,11 @@
 import { AuthContext } from "@/store/AuthContext"
 import { api } from "@/lib/axios/apiClient"
-import { AssociadoProps } from "@/types/associado"
 import { Button, Modal, Select } from "flowbite-react"
 import { useContext } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { HiOutlineExclamationCircle } from "react-icons/hi2"
-import { TbAlertTriangle } from "react-icons/tb"
-import { toast } from "react-toastify"
+import { toast } from "sonner"
+
 
 
 interface DataProps{
@@ -42,24 +41,29 @@ const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
 }
     const handleAlterarPlano:SubmitHandler<PlanoProps> = async(data)=>{
 
-          try {
-         const response =  await toast.promise(
-                api.put('/contrato/categoria/editar',{
-                  id_contrato_global:dadosassociado?.contrato?.id_contrato_global,
-                  id_plano:data.id_plano,
-                  plano:data.descricao,
-                  valor_mensalidade:data.valor
-                }),
-                {
-                  error: 'Erro ao alterar dados',
-                  pending: 'Alterando dados...',
-                  success: 'Dados alterados com sucesso'
-                }
-            )
-          dadosassociado?.contrato && setarDadosAssociado({...dadosassociado,contrato:{...dadosassociado?.contrato,id_plano:response.data.result.id_plano,plano:response.data.result.plano,valor_mensalidade:response.data.result.valor_mensalidade,planos:{limite_dep:response.data.result.planos.limite_dep}},mensalidade:response.data.mensAtualizadas})
-          } catch (error) {
-            console.log(error);
+
+        toast.promise(
+          api.put('/contrato/categoria/editar',{
+            id_contrato_global:dadosassociado?.contrato?.id_contrato_global,
+            id_plano:data.id_plano,
+            plano:data.descricao,
+            valor_mensalidade:data.valor
+          }),
+          {
+            error: 'Erro ao alterar dados',
+            loading: 'Alterando dados...',
+            success:(response)=>{
+              dadosassociado?.contrato && setarDadosAssociado({...dadosassociado,contrato:{...dadosassociado?.contrato,id_plano:response.data.result.id_plano,plano:response.data.result.plano,valor_mensalidade:response.data.result.valor_mensalidade,planos:{limite_dep:response.data.result.planos.limite_dep}},mensalidade:response.data.mensAtualizadas})
+
+              return 'Dados alterados com sucesso'
+            } 
           }
+        )
+
+
+     
+        
+          
     }
 
 

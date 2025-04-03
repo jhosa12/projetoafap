@@ -7,12 +7,12 @@ import { RiAddCircleFill } from "react-icons/ri";
 import { MdDeleteForever } from "react-icons/md";
 import { TbAlertTriangle } from "react-icons/tb";
 import { IoIosClose } from "react-icons/io";
-import { toast } from "react-toastify";
 import { LuFolderEdit } from "react-icons/lu";
 import { MdDeleteOutline } from "react-icons/md";
 import { IoMdCheckmarkCircle } from "react-icons/io";
 import { Button, Table } from "flowbite-react";
 import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
+import { toast } from "sonner";
 
 interface CheckListProps {
     id_check: number,
@@ -161,10 +161,10 @@ export default function ListarObitos() {
     async function deletarObito() {
 
         if(!servico.id_obitos){
-            toast.warn("Selecione o registro");
+            toast.warning("Selecione o registro");
             return;
         }
-        await toast.promise(
+       toast.promise(
             api.delete("/obitos/deletar",{
                 data:{
                     id_obitos:servico.id_obitos
@@ -176,12 +176,15 @@ export default function ListarObitos() {
            
             {
               error:'Erro ao excluir',
-              pending:'Deletando.....',
-              success:'Deletado com sucesso!'  
+              loading:'Deletando.....',
+              success:async()=>{
+                await  listar()
+                setExcluirObito(false)
+                
+                return 'Deletado com sucesso!'  }
             }
         )
-      await  listar()
-        setExcluirObito(false)
+     
         
     }
 

@@ -6,7 +6,6 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import { IoPrint } from 'react-icons/io5';
 import { MdDeleteForever } from 'react-icons/md';
 import { RiAddCircleFill } from 'react-icons/ri';
-import { toast } from 'react-toastify'
 import { AuthContext } from '@/store/AuthContext';
 import { ModalMensalidade } from '../../../modals/admContrato/historico/modalmensalidade';
 //import { Scanner } from './modalScanner';
@@ -24,6 +23,7 @@ import { Input } from '@/components/ui/input';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import useApiPost from '@/hooks/useApiPost';
 import useApiPut from '@/hooks/useApiPut';
+import { toast } from 'sonner';
 
 
 
@@ -140,14 +140,14 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
 
         linhasSelecionadas?.map((mensalidade) => {
             if (mensalidade.status === 'P') {
-                toast.warn('Mensalidade Paga! Para excluir solite ao gerente');
+                toast.warning('Mensalidade Paga! Para excluir solite ao gerente');
                 return;
             }
 
         })
 
 
-        try {
+     
             const response = await toast.promise(
                 api.delete('/mensalidade/delete', {
                     data: {
@@ -155,8 +155,12 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                     }
                 }),
                 {
-                    pending: `Efetuando`,
-                    success: `Excluida com sucesso`,
+                    loading: `Efetuando`,
+                    success: ()=>{
+                        
+                        setModal({ excluir: false })
+                        
+                        return`Excluida com sucesso`},
                     error: `Erro ao efetuar exlusão`
                 }
 
@@ -169,12 +173,10 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
             // setarDados({ mensalidade: {} })
             // setarDadosAssociado({mensalidade:mensalidades})
             // setOpenExcluir(false)
-            setModal({ excluir: false })
+         
             setLinhasSelecionadas([])
             // setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
-        } catch (err) {
-            console.log('Erro ao excluir')
-        }
+     
     }, [linhasSelecionadas, dadosAssociado.id_global]
 
     )
@@ -185,7 +187,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
         const ultimaMensalidade = dadosAssociado.arrayMensalidade && dadosAssociado?.arrayMensalidade[dadosAssociado?.arrayMensalidade?.length - 1]
         const vencimento = new Date(ultimaMensalidade?.vencimento ? ultimaMensalidade?.vencimento : '')
         const proxData = vencimento.setMonth(vencimento.getMonth() + 1)
-        try {
+       
             const response = await toast.promise(
                 api.post('/mensalidade/adicionar', {
                     id_contrato_global: dadosAssociado.id_contrato_global,
@@ -201,22 +203,22 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                     id_empresa: dadosAssociado?.id_empresa
                 }),
                 {
-                    pending: `Efetuando`,
-                    success: `Mensalidade Adicionada`,
-                    error: `Erro ao gerar mensalidade`
-                }
-
-            )
-            // carregarDados()
+                    loading: `Efetuando`,
+                    success:(response)=> {
+                                 // carregarDados()
             setLinhasSelecionadas([])
             //  setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
 
             setarDadosAssociado({ ...dadosAssociado, mensalidade: [...dadosAssociado.arrayMensalidade, response.data] })
+                        
+                        return `Mensalidade Adicionada`},
+                    error: `Erro ao gerar mensalidade`
+                }
 
-        } catch (err) {
-            toast.error('Erro ao Adicionar nova parcela')
-            //  console.log(err)
-        }
+            )
+       
+
+    
 
     }, [dadosAssociado]
     )

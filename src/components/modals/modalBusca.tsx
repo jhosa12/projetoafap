@@ -6,8 +6,8 @@ import { Modal } from "flowbite-react";
 import { HiSearch } from "react-icons/hi";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import { Select, SelectGroup, SelectItem, SelectContent, SelectTrigger, SelectValue } from "../ui/select";
+import { toast } from "sonner";
 
 
 

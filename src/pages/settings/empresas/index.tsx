@@ -1,20 +1,14 @@
 
 import { api } from "@/lib/axios/apiClient";
 import { EmpresaProps } from "@/types/empresa";
-import { Table } from "flowbite-react";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { HiMiniCog6Tooth } from "react-icons/hi2";
-import { IoIosAddCircle } from "react-icons/io";
-import { toast } from "react-toastify";
+import { useContext, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ModalEmpresa } from "@/components/tabs/configuracoes/empresas/modalEmpresa/modalEmpresa";
-import { Modal, Tabs } from "flowbite-react"
-
-import { roboto_Mono } from "@/fonts/fonts"
-import { Control, SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form"
+import { Tabs } from "flowbite-react"
+import {SubmitHandler, useForm } from "react-hook-form"
 import { AuthContext } from "@/store/AuthContext";
 import { TabInformacoes } from "@/components/tabs/configuracoes/empresas/modalEmpresa/tabInformacoes";
 import { TabContratoEmpresa } from "@/components/tabs/configuracoes/empresas/modalEmpresa/tabContrato";
+import { toast } from "sonner";
 
 
 
@@ -63,21 +57,17 @@ export default function Empresas() {
             formData.append('file',data.logo);
         }
 
-        try {
+   
 
-            console.log(formData)
-            const handleedit = await toast.promise(
+          toast.promise(
                 api.post('/empresa/editarEmpresa',formData),
                 {
-                    pending:'Editando Empresa',
+                   loading:'Editando Empresa',
                     success:'Empresa Editada com sucesso',
                     error:'Erro ao Editar Empresa'
                 }
             )
-        } catch (error) {
-           // console.log(error)
-            toast.error('Erro ao Editar Empresa')
-        }
+      
    
 
     }

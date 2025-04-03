@@ -14,9 +14,9 @@ import { format, parse, startOfWeek } from 'date-fns';
 import { AuthContext } from "@/store/AuthContext";
 import { getDay } from "date-fns";
 import { api } from "@/lib/axios/apiClient";
-import { toast } from "react-toastify";
 import { LuCalendarCheck, LuCalendarClock, LuCalendarX } from "react-icons/lu";
 import { EventProps, MedicoProps } from "@/types/afapSaude";
+import { toast } from "sonner";
 
 const locales = {
   'pt-BR':ptBR,
@@ -96,27 +96,28 @@ export default function Calendario({ medicos,events, setArrayEvent }: DataProps)
       return;
     }
 
-    try {
+ 
 
 
      
-        const response = await toast.promise(
+       toast.promise(
           api.delete(`/agenda/deletarEvento/${dataEvent.tipoAg}/${dataEvent.id_agmed}`),
           {
             error: 'Erro ao deletar dados',
-            pending: 'Apagando dados...',
-            success: 'Dados deletados com sucesso!'
+            loading: 'Apagando dados...',
+            success:()=> {
+              const novoArray = [...events]
+              const index = novoArray.findIndex(item => item.id_agmed === dataEvent.id_agmed)
+              novoArray.splice(index, 1)
+              setArrayEvent(novoArray)
+
+              return'Dados deletados com sucesso!'}
           }
         )
-        const novoArray = [...events]
-        const index = novoArray.findIndex(item => item.id_agmed === dataEvent.id_agmed)
-        novoArray.splice(index, 1)
-        setArrayEvent(novoArray)
+    
       
  
-    } catch (error) {
-      toast.error('erro na requisição')
-    }
+  
 
   },[dataEvent.id_agmed,events])
  

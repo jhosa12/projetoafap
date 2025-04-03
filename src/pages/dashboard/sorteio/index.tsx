@@ -1,14 +1,12 @@
 import React, {  useContext, useEffect, useState } from 'react';
 import {useSpring,animated, a}from 'react-spring'
-import { toast } from 'react-toastify';
 import { api } from '@/lib/axios/apiClient';
 import Confetti from 'react-confetti';
 import {useWindowSize} from 'react-use';
-import Image from 'next/image';
 import { Button } from 'flowbite-react';
 import { PremioProps } from './configuracoes';
-import logo from "../../../public/grupoAfap.jpg"
 import { AuthContext } from '@/store/AuthContext';
+import { toast } from 'sonner';
 
 interface DadosProps{
   id_empresa:string,
@@ -59,14 +57,16 @@ const ZerarSorteio = ()=>{
 
 
 async function listarPremios() {
-  const response = await toast.promise(
+  toast.promise(
        api.get('/sorteio/listarPremios'),
       {error:'Erro ao Requisitar Dados',
-          pending:'Listando dados.....',
-          success:'Dados Carregados'
+          loading:'Listando dados.....',
+          success:(response)=>{
+            setPremios(response.data)
+            return 'Dados Carregados'}
       }
   )
-  setPremios(response.data)
+ 
 }
 
   async function salvarGanhador() {

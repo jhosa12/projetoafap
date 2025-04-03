@@ -1,12 +1,12 @@
 import { useContext, useState } from "react"
 import { AuthContext } from "@/store/AuthContext";
-import { toast } from "react-toastify";
 import { api } from "@/lib/axios/apiClient";
 import { Button, Modal,  Tabs } from "flowbite-react";
 import { TabTitular } from "../../../tabs/admContrato/dadosAssociado/tabs/tabTitular";
 import { TabContrato } from "../../../tabs/admContrato/dadosAssociado/tabs/tabContrato";
 import { Control, SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
 import { AssociadoProps } from "@/types/associado";
+import { toast } from "sonner";
 
 interface ModalProps {
   openEdit: boolean
@@ -43,10 +43,10 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
 
 
   const handleAtualizarDados:SubmitHandler<AssociadoProps> = async(data)=>{
-    try {
+   
       const dataAtual = new Date();
       dataAtual.setTime(dataAtual.getTime() - dataAtual.getTimezoneOffset() * 60 * 1000);
-        const response = await toast.promise(
+         toast.promise(
             api.post('/atualizarAssociado',{
               id_global: data.id_global,
               nome: data.nome,
@@ -71,14 +71,14 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
             }),
             {
               error: 'Erro ao atualizar dados',
-              pending: 'Realizando Alteração....',
-              success: 'Alteração realizada com sucesso'
+             loading: 'Realizando Alteração....',
+              success:(response)=>{
+                setarDadosAssociado({...dadosassociado,...response.data})
+                return 'Alteração realizada com sucesso'}
             }
         )
-        setarDadosAssociado({...dadosassociado,...response.data})
-    } catch (error) {
-      console.log(error)
-    }
+     
+ 
   }
 
 

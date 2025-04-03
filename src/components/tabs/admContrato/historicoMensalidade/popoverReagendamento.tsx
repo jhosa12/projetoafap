@@ -5,10 +5,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { useContext, useState } from "react";
 import { api } from "@/lib/axios/apiClient";
-import { toast } from "react-toastify";
+
 import { AuthContext } from "@/store/AuthContext";
 import { IoIosTime } from 'react-icons/io';
 import { MensalidadeProps } from "@/types/financeiro";
+import { toast } from "sonner";
 interface DataProps{
    
     id_global:number|null,
@@ -33,8 +34,8 @@ export function PopoverReagendamento({id_global,mensalidades,id_usuario,setSelec
         if(!id_global){
             return
         }
-        try {
-            const response = await toast.promise(
+       
+          toast.promise(
                 api.put('/mensalidade/reagendamento', {
                     data:date,
                     mensalidades:mensalidades?.map(mensalidade=>mensalidade.id_mensalidade_global),
@@ -43,15 +44,16 @@ export function PopoverReagendamento({id_global,mensalidades,id_usuario,setSelec
                 }),
                 {
                     error: 'Erro na Requisição',
-                    pending: 'Realizando Reagendamento',
-                    success: 'Reagendamento realizado com sucesso'
+                    loading: 'Realizando Reagendamento',
+                    success:(response)=> {
+                        setSelecionadas([])
+                        setarDadosAssociado({mensalidade:response.data})
+                        
+                        return 'Reagendamento realizado com sucesso'}
                 }
             )
-           setSelecionadas([])
-            setarDadosAssociado({mensalidade:response.data})
-        } catch (error) {
-            console.error(error)
-        }
+       
+    
     }
 
 

@@ -1,11 +1,5 @@
 
-
-
-
-
-
 import { useState, useCallback, useRef, useEffect, useContext } from "react";
-import { toast } from "react-toastify";
 import { api } from "@/lib/axios/apiClient";
 import { AuthContext } from "@/store/AuthContext";
 import { useReactToPrint } from "react-to-print";
@@ -15,6 +9,7 @@ import { ConsultaProps, MedicoProps, EventProps } from "@/types/afapSaude";
 import ListaConsultas from "@/Documents/afapSaude/listaConsultas";
 import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
 import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
+import { toast } from "sonner";
 
 export const valorInicial = {
   celular: "",

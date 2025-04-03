@@ -1,17 +1,15 @@
-import { AuthContext } from "@/store/AuthContext";
+
 import { api } from "@/lib/axios/apiClient"
-import { FormEvent, useCallback, useContext, useEffect, useState } from "react"
+import {  useCallback,  useEffect, useState } from "react"
 import { LuFolderEdit } from "react-icons/lu";
 import { MdDeleteOutline } from "react-icons/md";
-import { RiUserReceived2Line } from "react-icons/ri";
 import { IoIosClose } from "react-icons/io";
-import { toast } from "react-toastify";
 import { TbAlertTriangle } from "react-icons/tb";
-import { IoMdCheckmarkCircle } from "react-icons/io";
 import { MdAdd } from "react-icons/md";
 import ReactPaginate from 'react-paginate';
 import { Tooltip } from 'react-tooltip';
 import Link from "next/link";
+import { toast } from "sonner";
 
 interface ConvProps {
     id_conv: number,
@@ -146,7 +144,7 @@ const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod:
     }
 
     async function deletarConv() {
-        await toast.promise(
+        toast.promise(
             api.delete("/convalescencia/deletar", {
                 data: {
                     id_conv: listaConv.id_conv
@@ -154,7 +152,7 @@ const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod:
             }),
             {
                 error: 'Erro ao deletar lançamento',
-                pending: 'Efetuando Exclusão',
+                loading: 'Efetuando Exclusão',
                 success: 'Excluido com sucesso!'
 
             }
@@ -167,7 +165,7 @@ const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod:
 
     async function receberDevolucao(id_conv: number) {
 
-        const response = await toast.promise(
+      toast.promise(
             api.put("/convalescencia/receber",
                 {
                     id_conv,
@@ -176,12 +174,12 @@ const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod:
             ),
             {
                 error: "Erro na Requisição",
-                pending: "Realizando Devolução",
+                loading: "Realizando Devolução",
                 success: "Produto devolvido com Sucesso"
             }
 
         )
-        console.log(response.data)
+       
 
 
         setInput('')

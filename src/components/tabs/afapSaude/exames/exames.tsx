@@ -2,7 +2,6 @@
 import { api } from "@/lib/axios/apiClient";
 import { Badge, Button, Table } from "flowbite-react";
 import {  useCallback, useContext, useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import {  HiMiniArrowDownOnSquare} from "react-icons/hi2";
 import {  HiAdjustments, HiDocumentAdd, HiPrinter } from "react-icons/hi";
 import { useReactToPrint } from "react-to-print";
@@ -21,6 +20,7 @@ import { BiMoneyWithdraw } from "react-icons/bi";
 import pageStyle from "@/utils/pageStyle";
 import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
 import { ExameRealizadoProps, ExamesData, ExamesProps } from "@/types/afapSaude";
+import { toast } from "sonner";
 
 
 
@@ -59,22 +59,22 @@ export default function Exames({exames}:DataProps) {
 
 
     if (!formPag){
-      toast.warn('Selecione a forma de pagamento')
+      toast.warning('Selecione a forma de pagamento')
       return}
 
     if(!exameSelected.id_exame){
-      toast.warn('Selecione um exame para receber consulta')
+      toast.warning('Selecione um exame para receber consulta')
       return
     }
     if(exameSelected.status==='RECEBIDO'){
-      toast.warn('Exame já recebido')
+      toast.warning('Exame já recebido')
       return
     }
 
-    try {
+
       const dataAtual = new Date()
       dataAtual.setHours(dataAtual.getHours() - dataAtual.getTimezoneOffset() / 60)
-      const response = await toast.promise(
+       toast.promise(
         api.put('/afapSaude/receberExame',{
           id_exame: exameSelected?.id_exame,
         id_usuario:usuario?.id,
@@ -87,14 +87,15 @@ export default function Exames({exames}:DataProps) {
         }),
         {
           error: 'Erro ao receber exame',
-          pending: 'Recebendo exame....',
-          success: 'exame recebido com sucesso!'
+          loading: 'Recebendo exame....',
+          success:()=>{
+            listarExamesRealizados({endDate:new Date(),nome:'',startDate:new Date(),status:''})
+            
+            return 'exame recebido com sucesso!'}
         }
       )
-     listarExamesRealizados({endDate:new Date(),nome:'',startDate:new Date(),status:''})
-    } catch (error) {
-      console.log(error)
-    }
+    
+ 
     },[exameSelected.id_exame,formPag])
 
 
@@ -133,22 +134,23 @@ export default function Exames({exames}:DataProps) {
 
   const handleDeletar = useCallback(async () => {
     if (!exameSelected?.id_exame) {
-      toast.warn('Selecione um exame para deletar');
+      toast.warning('Selecione um exame para deletar');
       return;
     }
-    try {
-      await toast.promise(
+
+     toast.promise(
         api.delete(`/afapSaude/deletarExame/${exameSelected?.id_exame}`),
         {
           error: 'Erro ao deletar exame',
-          pending: 'Deletando exame....',
-          success: 'Exame deletado com sucesso!'
+          loading: 'Deletando exame....',
+          success: ()=>{
+
+            setExames(examesRealizados.filter(item => item.id_exame !== exameSelected.id_exame))
+            return 'Exame deletado com sucesso!'}
         }
       )
-      setExames(examesRealizados.filter(item => item.id_exame !== exameSelected.id_exame))
-    } catch (error) {
-      console.log(error)
-    }
+    
+
     
   },[exameSelected.id_exame])
 
@@ -216,25 +218,24 @@ if(data.exames.length===0){
 
   
 
-    try {
-        const response =await toast.promise(
+toast.promise(
           api.post("/afapSaude/examesRealizados/novoExame",
             {...data,user:usuario?.nome,data_orcamento:dataAtual.toISOString(),data_realizado:undefined}
          ),
          {
           error:'Erro ao gerar novo exame',
-          pending:'Gerando novo exame.....',
-          success:'Exame gerado com sucesso!'
+          loading:'Gerando novo exame.....',
+          success:(response)=>{
+            setExames([...examesRealizados,response.data])
+            setExameSelected(valorInicial)
+            
+            return 'Exame gerado com sucesso!'}
          }
         )
 
-        setExames([...examesRealizados,response.data])
-        setExameSelected(valorInicial)
+      
   
-    } catch (error) {
-       console.log(error) 
-       toast.error('Erro ao gerar novo exame')
-    }
+ 
 }, [examesRealizados,exameSelected.id_exame]);
 
 
@@ -244,24 +245,24 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
     toast.error('Selecione um exame para editar')
     return
   }
-  try {
-    const response =await toast.promise(
+ toast.promise(
       api.put("/afapSaude/examesRealizados/editar",
         {...data}
      ),
      {
       error:'Erro ao editar exame',
-      pending:'Editando exame.....',
-      success:'Exame editado com sucesso!'
+      loading:'Editando exame.....',
+      success:(response)=> {
+        setExames([...examesRealizados.filter(item=>item.id_exame!==Number(data.id_exame)),response.data])
+        setExameSelected(valorInicial)
+        
+        
+        return 'Exame editado com sucesso!'}
      }
     )
 
-    setExames([...examesRealizados.filter(item=>item.id_exame!==Number(data.id_exame)),response.data])
-    setExameSelected(valorInicial)
-} catch (error) {
-   console.log(error) 
-   toast.error('Erro ao editar exame')
-}
+   
+
 },[exameSelected.id_exame])
 
 
@@ -271,7 +272,7 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
       api.delete(`/afapSaude/consultas/deletarCadastro/${data?.id_consulta}`),
       {
         error: 'Erro ao deletar dados',
-        pending: 'Deletando dados....',
+        loading: 'Deletando dados....',
         success: 'Dados deletados com sucesso!',
       }
     );

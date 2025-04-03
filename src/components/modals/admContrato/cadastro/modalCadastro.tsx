@@ -4,7 +4,6 @@ import { useContext } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { ResumoCadastro } from "@/components/modals/admContrato/cadastro/resumoCadastro";
 import { api } from "@/lib/axios/apiClient";
-import { toast } from "react-toastify";
 import { Modal } from "flowbite-react";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi2";
 import { HiInboxIn } from "react-icons/hi";
@@ -17,6 +16,7 @@ import { DadosTitular } from '@/components/tabs/admContrato/cadastro/dadosTitula
 import { DadosPlano } from '@/components/tabs/admContrato/cadastro/dadosPlano';
 import { DadosDependentes } from '@/components/tabs/admContrato/cadastro/dadosDependentes';
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 
 interface ParcelaData {
@@ -93,11 +93,11 @@ export default function ModalCadastro({isOpen,onClose}:ModalProps) {
 
 
     if(selectEmp === null){
-        toast.warn('Selecione uma empresa')
+        toast.warning('Selecione uma empresa')
         return
     }
-    try{
-      const response = await toast.promise(
+
+      toast.promise(
         api.post('/novoAssociado',{
             id_empresa:selectEmp,
             nome:data.name.toUpperCase(),
@@ -137,25 +137,24 @@ export default function ModalCadastro({isOpen,onClose}:ModalProps) {
             mensalidades:gerarMensalidade()
         }),
         {
-          pending: `Efetuando`,
-          success: `Cadastrado com sucesso`,
+          loading: `Efetuando`,
+          success:(response)=>{ 
+            setValue('contrato.id_contrato',response.data.id_contrato)
+            carregarDados(response.data.id_global)
+     
+            onClose(false)
+            return`Cadastrado com sucesso`},
           error: `Erro ao efetuar Cadastro`
          }
       )
 
 
       //console.log(response.data)
-     setValue('contrato.id_contrato',response.data.id_contrato)
-       carregarDados(response.data.id_global)
-
-       onClose(false)
+ 
        
      // closeModa({id_associado:response.data.novoassociado.id_associado,contrato:{...data.contrato,id_contrato:response.data.novoContrato.id_contrato}})
      
-    }catch(err){
-      console.log(err)
-      toast.error('Consulte o Administrador')
-    }
+    
   
    
     

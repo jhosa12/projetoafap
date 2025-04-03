@@ -2,7 +2,8 @@ import { api } from "@/lib/axios/apiClient";
 import { Button, Label, Select, Table, TextInput } from "flowbite-react";
 import { FormEvent,useEffect,useState } from "react"
 import { MdClose } from "react-icons/md";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+
 
 interface EstoqueProps{
     id_produto:number,
@@ -106,31 +107,26 @@ const quantidade =Number(obito_itens[index].quantidade)
 
 
 
-       try {
-        await toast.promise(
+       
+        toast.promise(
             api.delete(`/obitoItens/deletar/${String(id_ob_itens)}`),
             {
                 error:'Erro ao deletar dado',
-                success:'Dado deletado',
-                pending:'Deletando dado....'
+                success:()=>{
+                    atualizarEstoque({acao:false,id_estoque,quantidade})
+                    const novoArray = [...obito_itens]
+                   novoArray.splice(index,1)
+                    setarServico({obito_itens:novoArray})
+                    
+                   return 'Dado deletado'},
+                loading:'Deletando dado....'
                 
             }
         )
      
       
-       await atualizarEstoque({acao:false,id_estoque,quantidade})
-       const novoArray = [...obito_itens]
-      novoArray.splice(index,1)
-       setarServico({obito_itens:novoArray})
+     
         
-       } catch (error) {
-        toast.error('ERRO DESCONHECIDO')
-       }
-      
-
-      
-
-       
       
     }
     async function adionarObitoItens() {
@@ -139,11 +135,11 @@ const quantidade =Number(obito_itens[index].quantidade)
             return;
         }
         if(itens.total_estoque<itens.quantidade){
-            toast.warn('Estoque insuficiente')
+            toast.info('Estoque insuficiente')
             return;
         }
-        try {
-            const response = await toast.promise(
+     
+          toast.promise(
                 api.post('/obitos/adicionarProduto',{
                     id_obito,
                     descricao_item:itens.produto,
@@ -157,18 +153,18 @@ const quantidade =Number(obito_itens[index].quantidade)
                 }),
                 {   
                     error:'Erro ao Salvar Dados!',
-                    pending:'Salvando Dados....',
-                    success:'Dados Salvos com sucesso!'
+                    loading:'Salvando Dados....',
+                    success:(response)=>{
+                        const novoArray = [...obito_itens]
+                        novoArray.push(response.data)
+                        setarServico({obito_itens:novoArray})
+                        atualizarEstoque({acao:true,id_estoque:itens.id_estoque,quantidade:itens.quantidade})
+                        return'Dados Salvos com sucesso!'}
                 }
             )  
             
-            const novoArray = [...obito_itens]
-            novoArray.push(response.data)
-            setarServico({obito_itens:novoArray})
-            atualizarEstoque({acao:true,id_estoque:itens.id_estoque,quantidade:itens.quantidade})
-        } catch (error) {
-            toast.error('Erro ao salvar dados')
-        }
+         
+    
         
     }
     
@@ -177,26 +173,29 @@ const quantidade =Number(obito_itens[index].quantidade)
 
 
         try {
-            const response = await toast.promise(
+             toast.promise(
                 api.put('/estoque/reduzirProd',{
                     id_estoque:id_estoque,
                     quantidade:quantidade,
                     acao:acao
                 }),
                 {error:'Erro ao atualizar estoque',
-                    pending:'Atualizando estoque....',
-                    success:'Estoque atualizado'
+                    loading:'Atualizando estoque....',
+                    success:async()=> {  
+                        setItens({
+                            id_estoque:0,
+                            produto:'',
+                            quantidade:1,
+                            total_estoque:0,
+                            valor_custo:0,
+                            valor_total:0
+                        })
+                          await atualizarProdutos()
+                        return 'Estoque atualizado'}
                 }
             )
-            setItens({
-                id_estoque:0,
-                produto:'',
-                quantidade:1,
-                total_estoque:0,
-                valor_custo:0,
-                valor_total:0
-            })
-          await atualizarProdutos()
+         
+        
         
             
         } catch (error) {

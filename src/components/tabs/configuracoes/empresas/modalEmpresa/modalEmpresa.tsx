@@ -1,14 +1,12 @@
 import { Modal, Tabs } from "flowbite-react"
 import { TabInformacoes } from "./tabInformacoes"
-import { roboto_Mono } from "@/fonts/fonts"
 import { Control, SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form"
 import { EmpresaProps } from "@/types/empresa"
 import { Button } from "@/components/ui/button"
-import { useCallback } from "react"
 import { api } from "@/lib/axios/apiClient"
-import { toast } from "react-toastify"
 import { TabContrato } from "@/components/tabs/admContrato/dadosAssociado/tabs/tabContrato"
 import { TabContratoEmpresa } from "./tabContrato"
+import { toast } from "sonner"
 
 
 export interface FormEmpresaProps{
@@ -57,21 +55,18 @@ export function ModalEmpresa({open,onClose,empresa}:DataProps) {
             formData.append('file',data.logo);
         }
 
-        try {
+     
 
-            console.log(formData)
-            const handleedit = await toast.promise(
+          
+          toast.promise(
                 api.post('/empresa/editarEmpresa',formData),
                 {
-                    pending:'Editando Empresa',
+                    loading:'Editando Empresa',
                     success:'Empresa Editada com sucesso',
                     error:'Erro ao Editar Empresa'
                 }
             )
-        } catch (error) {
-           // console.log(error)
-            toast.error('Erro ao Editar Empresa')
-        }
+     
    
 
     }

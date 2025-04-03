@@ -1,6 +1,7 @@
 import { ConvProps } from "@/types/associado";
 import { MensalidadeProps } from "@/types/financeiro";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+
 
 
 
@@ -16,7 +17,7 @@ export const VerificarSituacao = ({situacao,mensalidades,convalescencia,carencia
         new Date() >= new Date(item.vencimento) && item.status === 'A' || item.status === 'R' ? (x = x + 1) : '';
     });
     if (x >= 1) {
-        toast.warn(`Possui ${x} mensalidades Vencidas`);
+        toast.warning(`Possui ${x} mensalidades Vencidas`);
     }
 
     if (convalescencia?.find(item => item.status === 'ABERTO')) {

@@ -3,7 +3,8 @@ import { api } from "@/lib/axios/apiClient"
 import { ExamesProps } from "@/types/afapSaude"
 import { Button, Label, Modal, Textarea, TextInput } from "flowbite-react"
 import { SubmitHandler, useForm } from "react-hook-form"
-import { toast } from "react-toastify"
+import { toast } from "sonner"
+
 
 
 
@@ -35,24 +36,20 @@ const handleAdicionarExame =async(data:ExamesProps)=>{
         toast.info('Preencha os campos obrigatórios!');
         return;
     }
-    try {
-        
-        const response = await toast.promise(
+     toast.promise(
             api.post('/afapSaude/exames/novoExame',
                 data
             ),
             {
                 error:'Erro ao Cadastrar Exame',
-                pending:'Realizando Cadastro.....',
-                success:'Cadastro Realizado com sucesso!'
-            }
-        )
-
+                loading:'Realizando Cadastro.....',
+                success:(response)=>{
+                    
         setExames([...exames,response.data])
         setOpenModal(false)
-    } catch (error) {
-            toast.warn('Consulte o TI')
-    }
+                  return 'Cadastro Realizado com sucesso!'}
+            }
+        )
 }
 
 
@@ -61,29 +58,27 @@ const handleEditarExame =async(data:ExamesProps)=>{
         toast.info('Preencha os campos obrigatórios!');
         return;
     }
-    try {
-        
-        const response = await toast.promise(
+
+
+    toast.promise(
             api.put('/afapSaude/exames/editarExame',
                 data
             ),
             {
                 error:'Erro ao atualizar Exame',
-                pending:'Atualizando.....',
-                success:'Atualização realizada com sucesso!'
+                loading:'Atualizando.....',
+                success:(response)=>{
+                  const novoArray =[...exames]
+                  const index = novoArray.findIndex(item=>item.id_exame===data.id_exame)
+                  novoArray[index] = {...response.data}
+                  setExames(novoArray)
+          
+                  setOpenModal(false)
+                  
+                  return 'Atualização realizada com sucesso!'}
             }
         )
 
-        const novoArray =[...exames]
-        const index = novoArray.findIndex(item=>item.id_exame===data.id_exame)
-        novoArray[index] = {...response.data}
-        setExames(novoArray)
-
-        setOpenModal(false)
-
-    } catch (error) {
-            toast.warn('Consulte o TI')
-    }
 }
 
 

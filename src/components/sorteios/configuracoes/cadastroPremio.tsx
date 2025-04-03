@@ -4,12 +4,12 @@ import { MdDelete } from "react-icons/md";
 import { MdModeEditOutline } from "react-icons/md";
 import { FaRepeat } from "react-icons/fa6";
 import { api } from "@/lib/axios/apiClient";
-import { toast } from "react-toastify";
 import  ModalPremio  from "../components/modalPremio";
 import { Button } from "flowbite-react";
 import { PremioProps } from "@/pages/dashboard/sorteio/configuracoes";
 import { AuthContext } from "@/store/AuthContext";
 import { ConveniadosProps } from "@/pages/dashboard/conveniados";
+import { toast } from "sonner";
 
 
 
@@ -24,14 +24,16 @@ export default function CadastroPremio(){
 
 
     async function listarPremios() {
-      const response = await toast.promise(
+      toast.promise(
            api.get('/sorteio/listarPremios'),
           {error:'Erro ao Requisitar Dados',
-              pending:'Listando dados.....',
-              success:'Dados Carregados'
+             loading:'Listando dados.....',
+              success:(response)=>{
+                setArrayPremios(response.data)
+                return 'Dados Carregados'}
           }
       )
-      setArrayPremios(response.data)
+   
   }
 
     const handleListarConveniados=async()=>{

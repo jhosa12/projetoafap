@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState, useCallback } from "react";
 import {  Tabs } from "flowbite-react";
 import { api } from "@/lib/axios/apiClient";
-import { toast } from "react-toastify";
 import { IoMdSettings } from "react-icons/io";
 import { AuthContext } from "@/store/AuthContext";
 import {Caixa} from "@/components/tabs/financeiro/caixa/caixa";
@@ -13,6 +12,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { MdAccessTimeFilled } from "react-icons/md";
 import { HiClipboardList } from "react-icons/hi";
 import { IoBarChart } from "react-icons/io5";
+import { toast } from "sonner";
 
 
 interface DataProps {

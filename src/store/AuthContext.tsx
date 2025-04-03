@@ -2,15 +2,15 @@ import { ReactNode, createContext, useCallback, useContext, useEffect, useState 
 import { api } from "../lib/axios/apiClient"
 import { destroyCookie } from "nookies"
 import Router from 'next/router';
-import { toast } from 'react-toastify';
 import { AssociadoProps} from '@/types/associado';
 import { SignInProps, UserProps } from '@/types/user';
 import { EmpresaProps } from '@/types/empresa';
 import { PlanosProps } from '@/types/planos';
 import { CidadesProps } from '@/types/cidades';
 import { ConsultoresProps } from '@/types/consultores';
-import useApiPost from '@/hooks/useApiPost';
 import { useAuthActions } from '@/hooks/useAuthActions';
+import useApiGet from '@/hooks/useApiGet';
+import { toast } from 'sonner';
 
 
 
@@ -66,7 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [consultores, setConsultores] = useState<Array<ConsultoresProps>>([]);
     const [selectEmp, setSelectEmp] = useState('')
     const [loading, setLoading] = useState(false)
-    const { data: infoEmpresa, loading: loadingInfo, postData: reqInfoEmpresa } = useApiPost<EmpresaProps, { id: string }>('/empresa/infoEmpresa')
+    const { data: infoEmpresa, loading: loadingInfo, postData: reqInfoEmpresa } = useApiGet<EmpresaProps, { id: string }>('/empresa/infoEmpresa')
     const { permissoes, signIn, usuario, signOut } = useAuthActions()
 
 

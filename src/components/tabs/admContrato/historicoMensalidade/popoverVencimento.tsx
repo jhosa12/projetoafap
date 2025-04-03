@@ -4,11 +4,9 @@ import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { useContext, useState } from "react";
-import { MensalidadeProps } from "@/types/financeiro";
 import { api } from "@/lib/axios/apiClient";
-import { toast } from "react-toastify";
-import { SetAssociadoProps } from "./historicoMensalidade";
 import { AuthContext } from "@/store/AuthContext";
+import { toast } from "sonner";
 
 interface DataProps{
     
@@ -31,24 +29,27 @@ const handleAlterarVencimento = async() => {
     }
 
 
-    try {
-        const response = await toast.promise(
+
+        toast.promise(
             api.put('/mensalidade/alterarVencimento',{
                 data_venc:date,
                 id_global
             }),
             {
                 error: 'Erro ao alterar vencimento',
-                pending: 'Alterando vencimento',
-                success: 'Vencimento alterado com sucesso'
+                loading: 'Alterando vencimento',
+                success:(response) => {
+                    
+                    setarDadosAssociado({mensalidade:response.data})
+                    
+                    
+                    return 'Vencimento alterado com sucesso'}
             }
         )
 
-      setarDadosAssociado({mensalidade:response.data})
+     
         
-    } catch (error) {
-        console.log(error)
-    }   
+  
 }
 
 

@@ -2,10 +2,10 @@
 import { Card,Dropdown } from "flowbite-react";
 import { IoAddOutline } from "react-icons/io5";
 import { useState } from "react";
-import { toast } from "react-toastify";
 import { api } from "@/lib/axios/apiClient";
 import { ModalMedico } from "./modalMedico";
 import { MedicoProps } from "@/types/afapSaude";
+import { toast } from "sonner";
 
 
 interface DataProps{
@@ -43,23 +43,22 @@ export default function AdmMedico({medicos,setArray}:DataProps){
 
 
 async function deletarMedico(id:number) {
-  
-try {
-const novo =  await toast.promise(
+ toast.promise(
   api.delete(`/agenda/deletarMedico/${id}`),
   {error:'Erro ao salvar dados',
-      pending:'Salvando novos dados...',
-      success:'Dados salvos com sucesso!'
-  }
-)
-
-const novoArray = [...medicos]
+      loading:'Salvando novos dados...',
+      success:()=>{
+        const novoArray = [...medicos]
 const index = novoArray.findIndex(item=>item.id_med===id)
 novoArray.splice(index,1)
 setArray(novoArray)
-} catch (error) {
-  toast.error('erro na requisição')
-}
+        return 'Dados salvos com sucesso!'
+      }
+  }
+)
+
+
+
 }
 
     return(

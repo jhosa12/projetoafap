@@ -4,7 +4,7 @@ import { api } from "@/lib/axios/apiClient"
 import { Modal, TextInput } from "flowbite-react"
 import { useContext, useState } from "react"
 import { TbAlertTriangle } from "react-icons/tb"
-import { toast } from "react-toastify"
+import { toast } from "sonner"
 
 
 
@@ -60,7 +60,7 @@ export function ModalInativar({openModal,setModal}:DataProps){
       return;
     }
 
-    const response = await toast.promise(
+   toast.promise(
       api.put('/contrato/inativar',
         {
           id_contrato:dadosassociado?.contrato?.id_contrato,
@@ -73,15 +73,18 @@ export function ModalInativar({openModal,setModal}:DataProps){
       ),
       {
         error: 'Erro ao Inativar/Ativar Contrato',
-        pending: 'Realizando Alteração....',
-        success: 'Alteração realizada com sucesso'
+        loading: 'Realizando Alteração....',
+        success:(response)=>{
+          setarDadosAssociado({...dadosassociado,contrato:{...dadosassociado?.contrato,...response.data}})
+          setModal(false)
+          
+          return 'Alteração realizada com sucesso'}
 
       }
     )
    // await carregarDados()
    
-    setarDadosAssociado({...dadosassociado,contrato:{...dadosassociado?.contrato,...response.data}})
-    setModal(false)
+   
 
   }
 

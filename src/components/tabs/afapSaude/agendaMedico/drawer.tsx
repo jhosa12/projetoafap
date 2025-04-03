@@ -3,12 +3,12 @@ import { Alert, Drawer, Dropdown } from "flowbite-react";
 import DatePicker from "react-datepicker";
 import pt from 'date-fns/locale/pt-BR';
 import { useContext } from "react";
-import { toast } from "react-toastify";
 import { api } from "@/lib/axios/apiClient";
 import 'react-datepicker/dist/react-datepicker.css';
 import { AuthContext } from "@/store/AuthContext";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { EventProps, MedicoProps } from "@/types/afapSaude";
+import { toast } from "sonner";
 
 
 interface DrawerProps {
@@ -66,10 +66,10 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
       
     }
 
-    try {
+
 
    
-        const evento = await toast.promise(
+        toast.promise(
           api.post("/agenda/novoEvento", {
 
             id_med: Number(data.id_med),
@@ -85,24 +85,25 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
           }),
           {
             error: 'Erro na requisição',
-            pending: 'Gerando Evento..',
-            success: 'Evento Gerado com sucesso'
-          }
-
-        )
-
+            loading: 'Gerando Evento..',
+            success:(evento)=>{ 
+                
         const novo = [...events]
         evento && novo.push(evento.data)
         const ed = novo.map(item => { return { ...item, start: item.start ? new Date(item.start) : new Date(), end: item.end ? new Date(item.end) : new Date() } })
         setArrayEvent(ed)
         toggleDrawer()
+              
+              return 'Evento Gerado com sucesso'}
+          }
+
+        )
+
 
       
 
       /*  */
-    } catch (error) {
-      toast.error('Erro ao gerar evento')
-    }
+ 
   }
 
   const editarEvento = async (data:EventProps) => {
@@ -119,8 +120,8 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
       toast.info('Preencha todos os campos obrigatorios!')
       return;
     }
-    try {
-      const evento = await toast.promise(
+  
+   toast.promise(
         api.put("/agenda/editarEvento", {
           id_agmed: Number(data.id_agmed),
           id_med: Number(data.id_med),
@@ -132,29 +133,27 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
         }),
         {
           error: 'Erro na requisição',
-          pending: 'Gerando Evento..',
-          success: 'Evento Gerado com sucesso'
+          loading: 'Gerando Evento..',
+          success:(evento)=> {
+            const novo = [...events]
+            const index = novo.findIndex(item => item.id_agmed === dataEvent.id_agmed)
+      
+         
+              novo[index] = { ...evento.data }
+              const ed = novo.map(item => { return { ...item, start: item.start ? new Date(item.start) : new Date(), end: item.end ? new Date(item.end) : new Date() } })
+              setArrayEvent(ed)
+          
+            toggleDrawer()
+            
+            return 'Evento Gerado com sucesso'}
         }
 
       )
 
 
 
-      const novo = [...events]
-      const index = novo.findIndex(item => item.id_agmed === dataEvent.id_agmed)
-
    
-        novo[index] = { ...evento.data }
-        const ed = novo.map(item => { return { ...item, start: item.start ? new Date(item.start) : new Date(), end: item.end ? new Date(item.end) : new Date() } })
-        setArrayEvent(ed)
-      
-     
-
-
-      toggleDrawer()
-    } catch (error) {
-      toast.error('Erro ao gerar evento')
-    }
+ 
   }
 
 

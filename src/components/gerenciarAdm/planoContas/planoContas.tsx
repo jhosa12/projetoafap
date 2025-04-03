@@ -1,6 +1,5 @@
 import { api } from "@/lib/axios/apiClient"
 import {  useEffect, useState } from "react"
-import { toast } from "react-toastify"
 import { IoIosAddCircle} from "react-icons/io";
 import InputMask from 'react-input-mask'
 import { PlanoContasProps } from "@/pages/dashboard/financeiro";
@@ -12,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
 
 
 
@@ -58,7 +58,8 @@ export function PlanoContas({carregarDados,arrayPlanoContas,arraygrupos,setarDad
 
     const editarPlanoConta = async(index:number)=>{
         const conta = arrayPlanoContas[index]
-        await toast.promise(
+
+        toast.promise(
             api.put('/gerenciarAdministrativo/editarplanoconta',{
                 conta:conta.conta,
                 id_grupo: conta.id_grupo,
@@ -70,37 +71,41 @@ export function PlanoContas({carregarDados,arrayPlanoContas,arraygrupos,setarDad
 
             }),
             {
-                error:'Erro ao editar plano de conta',
-                pending:'Editando',
-                success:'Editado com sucesso'
+                loading:'Editando...',
+                success:()=>{
+                    carregarDados()
+                    return'Editado com sucesso'
+                },
+                error:'Erro ao editar plano de conta'
             }
         )
-carregarDados()
     }
 
 const deletarPlanoConta = async(conta:string)=>{
-    await toast.promise(
+
+
+    toast.promise(
         api.delete('/gerenciarAdministrativo/deletarplanoconta',{
             data:{
                 conta,
             }
-        }),
-        {
-            error:'Erro ao deletar plano de conta',
-            pending:'Deletando',
-            success:'Deletado com sucesso!'
+        }),{
+            loading:'Deletando',
+            success:()=>{
+                carregarDados()
+                return'Deletado com sucesso!'
+            },
+            error:'Erro ao deletar plano de conta'
         }
     )
-carregarDados()
-    
-
 }
 
 
 
 const editarGrupo = async(index:number)=>{
     const grupo = arraygrupos[index]
-    await toast.promise(
+
+    toast.promise(
         api.put('/gerenciarAdministrativo/editarGrupo',{
            
             id_grupo: grupo.id_grupo,
@@ -110,55 +115,56 @@ const editarGrupo = async(index:number)=>{
 
         }),
         {
-            error:'Erro ao editar setor',
-            pending:'Editando',
-            success:'Editado com sucesso'
+            loading:'Editando',
+            success:()=>{
+                carregarDados()
+                return'Editado com sucesso'
+            },
+            error:'Erro ao editar setor'
         }
     )
-carregarDados()
 }
 
 const deletarGrupo = async(id_grupo:number)=>{
-await toast.promise(
-    api.delete('/gerenciarAdministrativo/deletarGrupo',{
-        data:{
-            id_grupo,
+
+    toast.promise(
+        api.delete('/gerenciarAdministrativo/deletarGrupo',{
+            data:{
+                id_grupo,
+            }
+        }),{
+            loading:'Deletando',
+            success:()=>{
+                carregarDados()
+                return'Deletado com sucesso!'
+            },
+            error:'Erro ao deletar setor'
         }
-    }),
-    {
-        error:'Erro ao deletar setor',
-        pending:'Deletando',
-        success:'Deletado com sucesso!'
-    }
-)
-carregarDados()
+    )
+
 }
 const adicionarGrupo = async()=>{
     if(!descricaoGrupo){
         toast.info('Preencha todos os campos!')
         return;
     }
-    try{
-      const response =   await toast.promise(
-            api.post('/gerenciarAdministrativo/adicionarGrupo',{
+    
+    toast.promise(
+        api.post('/gerenciarAdministrativo/adicionarGrupo',{
                
-                    descricao:descricaoGrupo.toUpperCase(),
-                    userId:3
-                
-            }),
-            {
-                error:'Erro ao adicionar setor',
-                pending:'Adicionando...',
-                success:'Adicionado com sucesso!'
-            }
-        )
-
-        setarDados(arrayPlanoContas,[...arraygrupos,response.data])
-
-    }catch(erro:any){
-        toast.error(erro.response.data.error)
+            descricao:descricaoGrupo.toUpperCase(),
+            userId:3
+        
+    }),{
+        loading:'Adicionando....',
+        success:(response)=>{
+            setarDados(arrayPlanoContas,[...arraygrupos,response.data])
+            return'Adicionado com sucesso'
+        }
 
     }
+    )
+ 
     
 }
 
@@ -171,35 +177,29 @@ const adicionarPlanoContas = async(data:NovoPlanoProps)=>{
     const dataAtual = new Date();
     dataAtual.setTime(dataAtual.getTime() - dataAtual.getTimezoneOffset() * 60 * 1000);
     const horaAtual = dataAtual.toLocaleTimeString('pt-BR', { hour12: false, timeZone: 'UTC' });
-    try{
-       const response =  await toast.promise(
+    
+        toast.promise(
             api.post('/gerenciarAdministrativo/adicionarPlanoContas',{
-                    conta:data.conta,
-                    descricao:data?.descricao?.toUpperCase(),
-                    tipo:data.tipo,
-                    perm_lanc:data.perm_lanc,
-                    data:dataAtual,
-                    hora:horaAtual
-                
-            }),
-            {
-                error:'Erro ao adicionar Conta',
-                pending:'Adicionando...',
-                success:'Adicionado com sucesso!'
-            }
+                conta:data.conta,
+                descricao:data?.descricao?.toUpperCase(),
+                tipo:data.tipo,
+                perm_lanc:data.perm_lanc,
+                data:dataAtual,
+                hora:horaAtual
+            
+        }),{
+            loading:'Adicionando....',
+            success:(response)=>{
+                carregarDados()
+                return'Adicionado com sucesso'
+            },
+            error:'Erro ao adicionar Conta'
+        }
         )
 
+
+
        // setarDados([...arrayPlanoContas,response.data],arraygrupos)
-            carregarDados()
-    }catch(erro:any){
-        toast.warn(erro?.response?.data?.message??'Erro ao salvar dados')
-
-    }
-
-  
-
-
-
 }
 
 

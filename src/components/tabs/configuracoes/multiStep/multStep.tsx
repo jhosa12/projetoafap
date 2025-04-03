@@ -4,13 +4,8 @@ import { FaCircleArrowRight } from "react-icons/fa6";
 import { FaCircleArrowLeft } from "react-icons/fa6";
 import { FormEvent, useEffect, useState } from 'react'
 import { IoIosClose } from "react-icons/io";
-import { useContext } from "react";
-import { AuthContext } from "@/store/AuthContext";
 import { MdSaveAlt } from "react-icons/md";
-import { api } from "@/lib/axios/apiClient";
-import { toast } from "react-toastify";
 import {ModalDadosFuncionario} from "../usuarios/modalDadosFuncionario";
-import{ ModalNovoUsuario} from "../usuarios/modalNovoUsuario";
 import {ModalPermissoes} from "../usuarios/modalPermissoes";
 
 interface PermissoesProps {

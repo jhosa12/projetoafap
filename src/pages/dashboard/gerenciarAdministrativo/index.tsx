@@ -11,9 +11,9 @@ import { BiSolidInjection } from "react-icons/bi";
 import { FaCalendarAlt } from "react-icons/fa";
 import { HiClipboardList } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
-import { toast } from "react-toastify";
 import { PlanoContasProps } from "../financeiro";
 import { Veiculos } from "@/components/gerenciarAdm/veiculos/veiculos";
+import { toast } from "sonner";
 
 interface MetasProps{
     id_meta:number,

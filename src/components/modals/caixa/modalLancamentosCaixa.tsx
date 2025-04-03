@@ -4,7 +4,6 @@ import { useContext, useEffect} from "react";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { toast } from "react-toastify";
 import { api } from "@/lib/axios/apiClient";
 import { Label, Modal, Select, TextInput } from "flowbite-react";
 import { LancamentosProps } from "@/pages/dashboard/caixa";
@@ -12,6 +11,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ajustarData } from "@/utils/ajusteData";
 import { Button } from "../../ui/button";
 import { removerFusoDate } from "@/utils/removerFusoDate";
+import { toast } from "sonner";
 
 
 
@@ -82,9 +82,8 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
       dt_lanc = newDate
     }
    
-   
-    try {
-      await toast.promise(
+  
+      toast.promise(
         api.put('/atualizarLancamento',{
         lanc_id:mov.lanc_id,
         num_seq:mov.num_seq,
@@ -97,17 +96,16 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
         tipo:data.tipo,
         empresa:id_empresa
         }),
-        {pending:'Atualizando.....',
+        {loading:'Atualizando.....',
         error:'Erro ao atualizar',
-        success:'Atualizado com sucesso!'
+        success:()=>{
+          handleFiltro()
+          setOpenModal(false)
+          return 'Atualizado com sucesso!'}
     }
     )
-    handleFiltro()
-    setOpenModal(false)
-    } catch (error) {
-      toast.warning('Consulte o TI')
-      
-    }
+ 
+ 
       
     
    }
@@ -128,18 +126,18 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
     //  }
 
        if(!data.descricao||!data.historico){
-            toast.warn('Preencha todos os campos obrigatórios')
+            toast.warning('Preencha todos os campos obrigatórios')
             return;
       }
       
       if(!data.conta){
-        toast.warn('Preencha todos os campos obrigatórios')
+        toast.warning('Preencha todos os campos obrigatórios')
         return;
   }
 
-        try {
+       
 
-        const response =   await toast.promise(
+        toast.promise(
             api.post('/novoLancamento',{
             id_usuario:usuario?.id,
             id_grupo:data.id_grupo?Number(data.id_grupo):undefined,
@@ -156,20 +154,18 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
             }),
             {
                 error:'Erro realizar Lançamento',
-                pending:'Realizando Lançamento',
-                success:'Lançado com sucesso!'
+                loading:'Realizando Lançamento',
+                success:()=>{
+                  handleFiltro()
+                  setOpenModal(false)
+                    return 'Lançado com sucesso!'}
             }
         )
         
-        handleFiltro()
-        setOpenModal(false)
+    
      //   listarLancamentos()
          // setLancamentos([...arrayLanc,response.data])
-        } catch (error) {
-
-          console.log(error)
-          
-        }
+     
   //  handleFiltro()
         
      }

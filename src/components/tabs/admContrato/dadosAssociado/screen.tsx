@@ -18,9 +18,9 @@ import { EmpresaProps } from "@/types/empresa";
 import { CartaNovoAssociado } from "@/Documents/associado/cartaNovoAssociado/cartaDocument";
 import { ProtocoloCancelamento } from "@/Documents/associado/protocoloCancelamento/ProtocoloCancelamento";
 import { api } from "@/lib/axios/apiClient";
-import { toast } from "react-toastify";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import { removerFusoDate } from "@/utils/removerFusoDate";
+import { toast } from "sonner";
 
 interface DataProps {
     dadosassociado:Partial<AssociadoProps> | AssociadoProps,

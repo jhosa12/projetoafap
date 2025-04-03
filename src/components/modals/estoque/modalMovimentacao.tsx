@@ -2,12 +2,12 @@ import { FormProps, ProdutosProps } from "@/pages/dashboard/estoque";
 import { Button, Card, Modal, Select, Table, Textarea} from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiTrash } from "react-icons/hi";
-import { toast } from "react-toastify";
 import { ModalQuant } from "../estoque/modalQuantidade";
 import { api } from "@/lib/axios/apiClient";
 import { ModalManual } from "./modalProdutoManual";
 import { ModalConfirm } from "./modalConfirm";
 import { EmpresaProps } from "@/types/empresa";
+import { toast } from "sonner";
 
 
 
@@ -131,8 +131,8 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
             toast.info('Selecione a empresa de destino')
             return
         }
-        try {
-            const response = await toast.promise(api.put("/estoque/movimentar", {
+       
+           toast.promise(api.put("/estoque/movimentar", {
                 descricao: descricao,
                 tipo,
                 // quantidade: number
@@ -157,17 +157,16 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
 
                 {
                     error: 'Erro ao movimentar',
-                    success: 'Movimentado com sucesso',
-                    pending: 'Movimentando...'
+                    success: async()=>{
+                        await reqDadosEstoq({ descricao: '', id_produto: null, grupo: '',id_empresa:undefined })
+                        setArrayMov([])
+                        setOpenModal(false)
+                    
+                    setModalConfirm(false)
+                        return 'Movimentado com sucesso'},
+                    loading: 'Movimentando...'
                 })
-            await reqDadosEstoq({ descricao: '', id_produto: null, grupo: '',id_empresa:undefined })
-            setArrayMov([])
-            setOpenModal(false)
-        } catch (error:any) {
-           // console.log(err)
-            toast.warning(error.response?.data?.error || 'Erro inesperado!');
-        }
-        setModalConfirm(false)
+          
     }
 useEffect(() => {
   let currentBarcode = '';

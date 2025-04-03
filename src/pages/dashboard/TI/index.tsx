@@ -1,10 +1,10 @@
 import { api } from "@/lib/axios/apiClient"
 import { useEffect, useState } from "react"
-import { toast } from "react-toastify"
 import { FaCheckCircle } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import { TbAlertTriangle } from "react-icons/tb";
 import { IoIosClose } from "react-icons/io";
+import { toast } from "sonner";
 interface IdeiasProps{
     id_ideia:number,
     descricao:string,
@@ -30,14 +30,14 @@ export default function TiArea(){
         toast.info('Descreva a sugestão!')
         return;
     }
-    const response =await toast.promise(
+     toast.promise(
         api.post('/criarIdeia',{
             descricao:descricao,
             status:"PENDENTE",
             data_post:new Date()
         }),
         {error:'Erro ao Lançar Sugestão',
-            pending:'Criando nova Sugestão/Ideia',
+        loading:'Criando nova Sugestão/Ideia',
             success:'Criado com sucesso!'
         }
     )
@@ -46,8 +46,7 @@ export default function TiArea(){
     
    }
    async function deletar(id_ideia:number){
-    try{
-        await toast.promise(
+   toast.promise(
             api.delete('/deletarIdeia',{
                 data:{
                     id_ideia
@@ -55,18 +54,19 @@ export default function TiArea(){
             }),
             {
                 error:'Erro ao deletar',
-                pending:'Efetuando',
-                success:'Deletado com sucesso'
+                loading:'Efetuando',
+                success:()=>{
+                     lista()
+                    return 'Deletado com sucesso'}
             }
         ) 
-    }catch(err){console.log(err)}
+ 
         
-        await lista()
+       
    }
 
    async function editar(id_ideia:number){
-    try{
-        await toast.promise(
+    toast.promise(
             api.put('/editarIdeia',{
                
                     id_ideia,
@@ -75,13 +75,16 @@ export default function TiArea(){
             }),
             {
                 error:'Erro ao editar',
-                pending:'Efetuando',
-                success:'Editado com sucesso'
+                loading:'Efetuando',
+                success:()=>{
+                    
+                    lista()
+                    
+                    return 'Editado com sucesso'}
             }
         ) 
-    }catch(err){console.log(err)}
-        
-        await lista()
+   
+    
    }
    
     return(

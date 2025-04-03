@@ -1,9 +1,10 @@
 
-import { AuthContext } from "@/store/AuthContext";
+
 import { Button, Modal, TextInput } from "flowbite-react";
-import { useContext, useState } from "react";
+import {  useState } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+
 
 
 interface DataProps {

@@ -1,5 +1,6 @@
-import { useCallback } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+
+
 
 const formatPhoneNumber = (phoneNumber: string) => {
     // Remove todos os caracteres que não sejam números
@@ -19,7 +20,7 @@ const handleWhatsAppClick = (celular: string|undefined)=>{
 
   
     if (!celular) {
-      toast.warn('Número inexistente');
+      toast.warning('Número inexistente');
       return;
     }
   

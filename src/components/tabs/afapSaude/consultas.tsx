@@ -3,7 +3,6 @@ import { api } from "@/lib/axios/apiClient";
 import {   Table } from "flowbite-react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ModalConsulta } from "./components/modalNovaConsulta";
-import { toast } from "react-toastify";
 import { HiDocument, HiMiniArrowDownOnSquare, HiPencil, HiPrinter } from "react-icons/hi2";
 import {   HiDocumentAdd, HiFilter } from "react-icons/hi";
 import { ModalFiltroConsultas } from "./components/modalFiltro";
@@ -42,6 +41,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "../../ui/button";
 import { ConsultaProps, EventProps, MedicoProps, statusConsultaArray } from "@/types/afapSaude";
+import { toast } from "sonner";
 
 
 interface DataProps {
@@ -96,25 +96,22 @@ const handleEstornarConsulta = async ()=>{
     toast.warning('Consulta ainda nao foi recebida')
     return
   }
-  try {
-    const response = await toast.promise(
+
+toast.promise(
       api.put('/afapSaude/estornarConsulta', {id_consulta:data?.id_consulta}),
       {
         error: 'Erro ao estornar consulta',
-        pending: 'Estornando consulta.....',
-        success: 'Consulta estornada com sucesso'
+        loading: 'Estornando consulta.....',
+        success: ()=>{
+          setModal({estornar:false})
+          setData(undefined)
+          return 'Consulta estornada com sucesso'}
       }
     )
 
-    setModal({estornar:false})
-    setData(undefined)
+
 
     
-  }catch(error){
-    console.log(error)
-   
-
-  }
   buscarConsultas({startDate:new Date(),endDate:new Date(),id_med:undefined,status:undefined})
 }
 
@@ -157,9 +154,9 @@ const handleAlterarStatus = async () => {
   }
 
    
-  try {
+
    //alert(data.status)
-      const evento = await toast.promise(
+   toast.promise(
  
           api.put("/afapSaude/consultas/Editarcadastro", {
               id_consulta: data?.id_consulta,
@@ -170,25 +167,23 @@ const handleAlterarStatus = async () => {
           }),
           {
               error: 'Erro na requisição',
-              pending: 'Alterando status..',
-              success: 'Status alterado com sucesso'
+              loading: 'Alterando status..',
+              success: (evento)=>{
+                const novo = [...consultas]
+                const index = consultas.findIndex(item => item.id_consulta === data?.id_consulta)
+                        novo[index] = { ...evento.data }
+                  
+                    setConsultas(novo)
+          
+                  //setOpenStatus(false)
+                  setModal({status:false})
+                  setData({})
+                return 'Status alterado com sucesso'}
           }
 
       )
-      const novo = [...consultas]
-      const index = consultas.findIndex(item => item.id_consulta === data?.id_consulta)
-              novo[index] = { ...evento.data }
-        
-          setConsultas(novo)
+    
 
-        //setOpenStatus(false)
-        setModal({status:false})
-        setData({})
-
-  } catch (error) {
-      toast.error('Erro ao gerar evento')
- 
-  }
 }
 
 
@@ -325,11 +320,11 @@ const handleReceberConsulta = useCallback(async ()=>{
     return
   }
 
-try {
+
   const dataAtual = new Date()
   dataAtual.setTime(dataAtual.getTime() - dataAtual.getTimezoneOffset() * 60 * 1000)
 
-  const response = await toast.promise(
+  toast.promise(
     api.put('/afapSaude/receberConsulta',{
       id_consulta: data?.id_consulta,
     id_usuario:usuario?.id,
@@ -341,16 +336,17 @@ try {
     }),
     {
       error: 'Erro ao receber consulta',
-      pending: 'Recebendo consulta....',
-      success: 'Consulta recebida com sucesso!'
+      loading: 'Recebendo consulta....',
+      success:()=>{
+        
+        buscarConsultas({startDate:new Date(),endDate:new Date(),status:undefined})
+        setData(valorInicial)
+        setModal({receber:false})
+        return 'Consulta recebida com sucesso!'}
     }
   )
-  buscarConsultas({startDate:new Date(),endDate:new Date(),status:undefined})
-  setData(valorInicial)
-  setModal({receber:false})
-} catch (error) {
-  console.log(error)
-}
+
+
 },[usuario,data?.id_consulta,consultas,data?.vl_final,formPag])
 
 
@@ -367,8 +363,8 @@ const handleDeletar = useCallback(async () => {
     toast.warning('Impossivel deletar. Consulta ja foi recebida!')
     return
   }
-  try {
-    const response = await toast.promise(
+
+    toast.promise(
       api.delete(`/afapSaude/consultas/deletarCadastro`,{
        data:{
         id_consulta:data?.id_consulta
@@ -376,18 +372,15 @@ const handleDeletar = useCallback(async () => {
       }),
       {
         error: 'Erro ao deletar dados',
-        pending: 'Deletando dados....',
-        success: 'Dados deletados com sucesso!',
+        loading: 'Deletando dados....',
+        success:()=> {
+          setConsultas(consultas.filter(atual => atual.id_consulta !== data?.id_consulta));
+          setModal({deletar:false})
+          setData(valorInicial);
+          return 'Dados deletados com sucesso!'},
       }
     );
-      setConsultas(consultas.filter(atual => atual.id_consulta !== data?.id_consulta));
- 
-  } catch (error) {
-    console.log(error);
-
-  }
-  setModal({deletar:false})
-  setData(valorInicial);
+    
 
 }, [consultas, data, setConsultas]);
 

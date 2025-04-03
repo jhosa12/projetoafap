@@ -3,7 +3,8 @@ import {  FormProps } from "@/pages/dashboard/estoque";
 import { api } from "@/lib/axios/apiClient";
 import { Button, Label, Modal, ModalHeader, Select, TextInput } from "flowbite-react";
 import { useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+
 
 
 
@@ -47,28 +48,30 @@ const novoProduto= async()=>{
     toast.warning('Preencha o campo Codigo')
     return
   }
-  try {
-    const response = await toast.promise(
+ toast.promise(
       api.post("/estoque/novoProduto",form),
 
       {
        error:'Erro ao adicionar produto',
-        pending:'Adicionando novo produto',
-        success:'Produto adicionado com sucesso!'
+        loading:'Adicionando novo produto',
+
+        success:async()=>{
+
+           
+   await reqDadosEstoq({descricao:'',grupo:'',id_produto:null,id_empresa:undefined})
+   await reqProdutos()
+  //  setEstoque([...estoque,response.data as EstoqueProps]);
+  setForm({alerta:0,descricao:'',grupo:'',cod_prod:''})
+
+          
+          return 'Produto adicionado com sucesso!'}
 
       }
 
     )
  
-   await reqDadosEstoq({descricao:'',grupo:'',id_produto:null,id_empresa:undefined})
-   await reqProdutos()
-  //  setEstoque([...estoque,response.data as EstoqueProps]);
-  setForm({alerta:0,descricao:'',grupo:'',cod_prod:''}) 
      
-  } catch (error:any) {
- 
-    toast.warning(error.response.data.error||'ERRO INESPERADO')
-  }
+  
 }
     return (
         <Modal show={openModal} onClose={()=>setOpenModal(false)} >

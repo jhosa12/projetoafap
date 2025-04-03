@@ -4,7 +4,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { HiFilter } from "react-icons/hi"
 import {  Checkbox, Label, Modal, TextInput } from "flowbite-react";
-import { IoIosArrowDown } from "react-icons/io";
 import { Controller, SubmitHandler, useForm} from "react-hook-form";
 import { ConsultoresProps } from "@/types/consultores";
 import { FormProps } from "./cobranca/cobranca";

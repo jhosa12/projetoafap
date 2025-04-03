@@ -3,10 +3,10 @@
 import { Button, Label, Modal, Select, Table, TextInput } from "flowbite-react";
 import ReactInputMask from "react-input-mask";
 import { ChangeEvent } from "react";
-import { toast } from "react-toastify";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import {  HiTrash } from "react-icons/hi2";
 import { ExameRealizadoProps, ExamesData, ExamesProps } from "@/types/afapSaude";
+import { toast } from "sonner";
 
 
 interface DataProps {

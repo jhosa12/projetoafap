@@ -1,9 +1,9 @@
 
-import { Label, Modal, Table, TextInput } from "flowbite-react";
+import { Label, Modal, Table
+} from "flowbite-react";
 import ReactInputMask from "react-input-mask";
 import { ChangeEvent, useState } from "react";
 import { api } from "@/lib/axios/apiClient";
-import { toast } from "react-toastify";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { valorInicial } from "../consultas";
 import { AiOutlineClockCircle } from "react-icons/ai";
@@ -18,6 +18,7 @@ import { ConsultaProps, EventProps, ExamesData, MedicoProps } from "@/types/afap
 import { removerFusoDate } from "@/utils/removerFusoDate";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
 
 
 
@@ -119,9 +120,7 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
       dataInit = dataIni
     }
 
-    try {
-
-      const response = await toast.promise(
+  toast.promise(
         api.put('/afapSaude/consultas/Editarcadastro', {
           ...data,
           data_prev: data?.id_agmed ? dataInit : null,
@@ -132,31 +131,32 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
         }),
         {
           error: 'Erro ao editar dados',
-          pending: 'Alterando dados .....',
-          success: 'Dados alterados com sucesso!'
+          loading: 'Alterando dados .....',
+          success:(response)=> {
+            const novo = [...consultas]
+            const index = consultas.findIndex(item => item.id_consulta === data?.id_consulta)
+            if (index !== -1) {
+              novo[index] = { ...novo[index], ...response.data }; // Mantém a referência original, apenas atualiza os valores
+            }
+      
+            const consultasOrdenadas = [...novo].sort((a, b) => {
+              const dataA = a.hora_prev ? new Date(a.hora_prev).getTime() : Infinity; // Se for null, vai para o final
+              const dataB = b.hora_prev ? new Date(b.hora_prev).getTime() : Infinity;
+      
+              return dataA - dataB;
+            });
+      
+            setConsultas(consultasOrdenadas)
+            //buscarConsultas({startDate:new Date(),endDate:new Date(),id_med:undefined,status:undefined,buscar:undefined})
+            setConsulta(valorInicial)
+            setOpenModal(false)
+            
+            return 'Dados alterados com sucesso!'}
         }
       )
 
-      const novo = [...consultas]
-      const index = consultas.findIndex(item => item.id_consulta === data?.id_consulta)
-      if (index !== -1) {
-        novo[index] = { ...novo[index], ...response.data }; // Mantém a referência original, apenas atualiza os valores
-      }
-
-      const consultasOrdenadas = [...novo].sort((a, b) => {
-        const dataA = a.hora_prev ? new Date(a.hora_prev).getTime() : Infinity; // Se for null, vai para o final
-        const dataB = b.hora_prev ? new Date(b.hora_prev).getTime() : Infinity;
-
-        return dataA - dataB;
-      });
-
-      setConsultas(consultasOrdenadas)
-      //buscarConsultas({startDate:new Date(),endDate:new Date(),id_med:undefined,status:undefined,buscar:undefined})
-      setConsulta(valorInicial)
-      setOpenModal(false)
-    } catch (error) {
-      toast.warning('Consulte o TI')
-    }
+    
+  
   }
 
 
@@ -173,9 +173,9 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
     //const { dataIni, dataFim } = ajustarData(data.data_prev, data.data_prev)
     const {newDate} = removerFusoDate(data.data_prev)
     const {newDate:nasc} =removerFusoDate(data.nascimento)
-    try {
-
-      const response = await toast.promise(
+    
+    
+    toast.promise(
 
         api.post("/afapSaude/consultas/cadastro", {
           ...data,
@@ -188,20 +188,20 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
         }),
         {
           error: 'Erro ao Cadastrar Dados',
-          pending: 'Cadastrando Consulta.....',
-          success: 'Consulta Cadastrada com sucesso'
+          loading: 'Cadastrando Consulta.....',
+          success:()=> {
+             buscarConsultas({ startDate: data.data_prev, endDate: data.data_prev, id_med: data.id_med??undefined, status: undefined, buscar: undefined })
+      setOpenModal(false)
+            
+            
+            return 'Consulta Cadastrada com sucesso'}
         }
       )
 
 
 
       // setConsultas([...consultas, response.data])
-      buscarConsultas({ startDate: data.data_prev, endDate: data.data_prev, id_med: data.id_med, status: undefined, buscar: undefined })
-      setOpenModal(false)
-
-    } catch (error) {
-      console.log(error)
-    }
+    
   }
 
 

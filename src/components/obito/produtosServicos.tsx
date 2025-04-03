@@ -2,7 +2,8 @@ import { api } from "@/lib/axios/apiClient";
 import { Button, Label, Select, Table, TextInput } from "flowbite-react";
 import { FormEvent } from "react";
 import { MdClose } from "react-icons/md"
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+
 
 interface ProdutosProps{
     id_produto: number | null,
@@ -65,8 +66,8 @@ export function ProdutosServicos({id_obito,listaProduto,setarProdutos,selectProd
             toast.info('Salve os dados do Obito para acrescentar produtos!');
             return;
         }
-        try {
-            const response = await toast.promise(
+     
+          toast.promise(
                 api.post('/obitos/adicionarProduto',{
                     id_obito,
                     descricao_item:listaProduto.descricao_item,
@@ -79,18 +80,16 @@ export function ProdutosServicos({id_obito,listaProduto,setarProdutos,selectProd
                 }),
                 {   
                     error:'Erro ao Salvar Dados!',
-                    pending:'Salvando Dados....',
-                    success:'Dados Salvos com sucesso!'
-                }
-            )  
-            
+                    loading:'Salvando Dados....',
+                    success:(response)=>{ 
             const novoArray = [...obito_itens]
             novoArray.push(response.data)
             setarServico({obito_itens:novoArray})
+                        return'Dados Salvos com sucesso!'}
+                }
+            )  
+            
 
-        } catch (error) {
-            toast.error('Erro ao salvar dados')
-        }
     }
 
   return (

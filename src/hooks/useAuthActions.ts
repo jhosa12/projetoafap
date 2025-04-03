@@ -5,7 +5,8 @@ import { decode } from "jsonwebtoken";
 import Router from 'next/router';
 import { destroyCookie, setCookie } from "nookies";
 import { useCallback, useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+
 
 
 interface DecodedToken {

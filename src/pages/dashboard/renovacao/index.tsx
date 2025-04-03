@@ -2,7 +2,6 @@ import { ModalFiltro } from "@/components/renovacao/modalFiltro";
 import { Button, ButtonGroup,Table} from "flowbite-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { api } from "@/lib/axios/apiClient";
-import { toast } from "react-toastify";
 import { useReactToPrint } from "react-to-print";
 import DocumentTemplate from "@/Documents/renovacao/impressao";
 import pageStyle from "@/utils/pageStyle";
@@ -11,6 +10,7 @@ import { IoPrint } from "react-icons/io5";
 import { FaFilter } from "react-icons/fa6";
 import { PopoverRenovar } from "@/components/renovacao/popOverRenovar";
 import { themeLight } from "@/components/tabs/admContrato/acordos/screen";
+import { toast } from "sonner";
 
 
 
@@ -130,25 +130,23 @@ MensImp.length>0 && imprimirCarne()
 
 const handleRenovacao = async()=>{
   
-    try {
-
-        const response = await toast.promise(
+   toast.promise(
             api.post('/renovacao',{
                 contratos:array?.map(item=>{ return {id_contrato:item.id_contrato,valor_mensalidade:item.planos.valor,id_associado:item.associado.id_associado,acrescimo:item.planos.acrescimo,dependentes:item.associado._count.dependentes,id_global:item.associado.id_global,id_contrato_global:item.id_contrato_global,id_empresa:item.id_empresa}}),
                 quantidade:parcelas
             }),
             {
                 error:'Erro na renovação',
-                pending:'Executando Renovação....Aguarde',
-                success:'Renovação realizada com sucesso!'
+                loading:'Executando Renovação....Aguarde',
+                success:(response)=>{
+                    
+                    return response.data}
             }
         )
 
-      toast.success(response.data)
+
         
-    } catch (error) {
-        console.log(error)
-    }
+    
 }
 
 

@@ -3,7 +3,6 @@ import { MdSaveAlt } from "react-icons/md";
 import { RiAddCircleFill } from "react-icons/ri";
 import { AuthContext} from "@/store/AuthContext";
 import { useContext } from "react";
-import { toast } from "react-toastify";
 import { api } from "@/lib/axios/apiClient";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,6 +10,7 @@ import pt from 'date-fns/locale/pt-BR';
 import { Button, Label, Modal, Select, TextInput } from "flowbite-react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { DependentesProps } from "@/types/associado";
+import { toast } from "sonner";
 
 registerLocale('pt', pt)
 
@@ -47,7 +47,7 @@ export function ModalDependentes({openModal,setModal,data}:DataProps){
     const handleApiFunction:SubmitHandler<DependentesProps> = async(dadosForm)=>{
       if (data.excluido) {
         // Se o dependente está excluído, você resgata ele.
-        await resgatarDep();
+       // await resgatarDep();
       } else if (data.id_dependente) {
         // Se já existe um dependente (tem ID), então você atualiza.
         await atualizarDependente(dadosForm);
@@ -60,7 +60,33 @@ export function ModalDependentes({openModal,setModal,data}:DataProps){
 
  async function addDependente(dados:DependentesProps){
   try {
-    const response = await toast.promise(
+
+
+toast.promise(
+  api.post('/novoDependente',{
+    id_global:dadosassociado?.id_global,
+    id_contrato_global:dadosassociado?.contrato?.id_contrato_global,
+      id_contrato:dadosassociado?.contrato?.id_contrato,
+      id_associado:dadosassociado?.id_associado,
+      nome:dados.nome.toUpperCase(),
+      data_nasc:dados.data_nasc,
+      grau_parentesco:dados.grau_parentesco,
+      data_adesao:dados.data_adesao,
+      cad_usu:usuario?.nome,
+      cad_dh:new Date(),
+      carencia:dados.carencia,
+      sexo:dados.sexo
+  }),
+  {
+    loading:'Cadastrando Dependente...',
+    success:'Adicionado com Sucesso!',
+    error:'Erro ao adicionar dependente'
+  }
+
+)
+
+
+   /* const response = await toast.promise(
       api.post('/novoDependente',{
         id_global:dadosassociado?.id_global,
         id_contrato_global:dadosassociado?.contrato?.id_contrato_global,
@@ -80,7 +106,7 @@ export function ModalDependentes({openModal,setModal,data}:DataProps){
           pending:'Cadastrando Dependente',
           success:'Adicionado com Sucesso!'
       }
-  )
+  )*/
   dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
 
   setModal(false)
@@ -93,7 +119,27 @@ export function ModalDependentes({openModal,setModal,data}:DataProps){
  }
 
  async function atualizarDependente(dados:DependentesProps){
-    const response = await toast.promise(
+
+  toast.promise(
+    api.put('/atualizarDependente',{
+      id_dependente_global:data.id_dependente_global,
+        id_dependente:data.id_dependente,
+        nome:dados.nome.toUpperCase(),
+        data_nasc:dados.data_nasc,
+        grau_parentesco:dados.grau_parentesco,
+        data_adesao:dados.data_adesao,
+        carencia:dados.carencia,
+        sexo:dados.sexo
+    }),
+    {
+        error:'Erro ao atualizar dependente',
+        loading:'Atualizando Dependente....',
+        success:'Atualizado com Sucesso!'
+    }
+  )
+
+
+   /* const response = await toast.promise(
         api.put('/atualizarDependente',{
           id_dependente_global:data.id_dependente_global,
             id_dependente:data.id_dependente,
@@ -109,11 +155,11 @@ export function ModalDependentes({openModal,setModal,data}:DataProps){
             pending:'Atualizando Dependente',
             success:'Atualizado com Sucesso!'
         }
-    )
+    )*/
     dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
  }
 
- async function resgatarDep(){
+ /*async function resgatarDep(){
 
     if(!data.id_dependente){
      toast.info("Selecione um dependente!")
@@ -138,7 +184,7 @@ export function ModalDependentes({openModal,setModal,data}:DataProps){
      }catch(err){
          console.log(err)
      }
-   }
+   }*/
     return(
 
 <Modal show={openModal} onClose={()=>setModal(false)} popup>

@@ -5,7 +5,6 @@ import { ChangeEvent, useContext, useEffect, useRef, useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { FaNotesMedical } from "react-icons/fa"
 import { IoIosSave } from "react-icons/io"
-import { toast } from "react-toastify"
 import { ModalProcedimentos } from "./modalProcedimentos"
 import { AuthContext } from "@/store/AuthContext"
 import { Input } from "@/components/ui/input"
@@ -20,6 +19,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { ajustarData } from "@/utils/ajusteData"
 import { ConsultaProps, MedicoProps } from "@/types/afapSaude"
+import { toast } from "sonner"
 
 
 interface DataProps {
@@ -126,21 +126,21 @@ export function ModalMedico({ openModal, setOpenModal, dataMedico, medicos, setA
         if (file) {
             data.append("file", file)
         }
-        try {
-            const novo = await toast.promise(
+      
+             toast.promise(
                 api.post("/agenda/novoMedico", data),
                 {
                     error: 'Erro ao salvar dados',
-                    pending: 'Salvando novos dados...',
-                    success: 'Dados salvos com sucesso!'
+                    loading: 'Salvando novos dados...',
+                    success:(novo)=> {
+                        setArray([...medicos, novo.data])
+                        setOpenModal(false)
+                        return 'Dados salvos com sucesso!'}
                 }
             )
 
-            setArray([...medicos, novo.data])
-            setOpenModal(false)
-        } catch (error) {
-            toast.error('Erro na requisição')
-        }
+          
+     
 
     }
 
@@ -160,23 +160,22 @@ export function ModalMedico({ openModal, setOpenModal, dataMedico, medicos, setA
         if (dados.file) {
             data.append("file", dados.file)
         }
-        try {
-            const novo = await toast.promise(
+        toast.promise(
                 api.put("/agenda/editarMedico", data),
                 {
                     error: 'Erro ao salvar dados',
-                    pending: 'Salvando novos dados...',
-                    success: 'Dados salvos com sucesso!'
+                    loading: 'Salvando novos dados...',
+                    success:(novo)=> {
+                        const novoArray = [...medicos]
+                        const index = novoArray.findIndex(item => item.id_med === dataMedico.id_med)
+                        novoArray[index] = { ...novo.data }
+                        setArray(novoArray)
+                        return 'Dados salvos com sucesso!'}
                 }
             )
 
-            const novoArray = [...medicos]
-            const index = novoArray.findIndex(item => item.id_med === dataMedico.id_med)
-            novoArray[index] = { ...novo.data }
-            setArray(novoArray)
-        } catch (error) {
-            toast.error('Erro na requisição')
-        }
+        
+       
     }
 
     return (

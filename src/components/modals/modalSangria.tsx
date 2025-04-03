@@ -4,11 +4,11 @@ import { FormEvent, useContext, useEffect, useState } from "react";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { toast } from "react-toastify";
 import { api } from "@/lib/axios/apiClient";
 import { BiTransfer } from "react-icons/bi";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { GiConfirmed } from "react-icons/gi";
+import { toast } from "sonner";
 
 interface ModalProps{
     closeModalSangria:()=>void;
@@ -45,7 +45,7 @@ export function ModalSangria({closeModalSangria,listarLancamentos}:ModalProps){
    async function userOrigem(e:FormEvent){
     e.preventDefault()
     if(!descricao || !valor || !datalanc){
-        toast.warn("Preencha todos os campos!")
+        toast.warning("Preencha todos os campos!")
         return;
     }
 try{
@@ -86,14 +86,14 @@ try{
 
      async function lancarMovimentacao() {
         if(!verificadoDestino || !verificadoOrigem){
-            toast.warn("Realize a etapa de autenticação!")
+            toast.warning("Realize a etapa de autenticação!")
             return;
         }
        // if(!descricao || !valor || !datalanc){
          //   toast.warn("Preencha todos os campos!")
          //   return;
      //   }
-        await toast.promise(
+        toast.promise(
             api.post('/novoLancamento',{
             id_usuario:Number(usuario?.id),
             datalanc:new Date(),
@@ -108,7 +108,7 @@ try{
             }),
             {
                 error:'Erro realizar Lançamento',
-                pending:'Realizando Lançamento',
+                loading:'Realizando Lançamento',
                 success:'Lançado com sucesso!'
             }
         )

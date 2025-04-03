@@ -1,12 +1,12 @@
 
 import { api } from "@/lib/axios/apiClient";
 import { MensalidadeProps } from "@/types/financeiro";
-
 import { AxiosError, AxiosResponse } from "axios";
-import { useContext, useState } from "react";
-import { toast } from "react-toastify";
+import {  useState } from "react";
+import { toast } from "sonner";
 
-export type ToastType = 'success' | 'error' | 'info' | 'warn'
+
+export type ToastType = 'success' | 'error' | 'info' | 'warning'
 
 interface PayloadProps {
     id_global:number|null,
@@ -48,7 +48,7 @@ interface PayloadProps {
       
        // setError(null)
 
-        const exibirToastERetornar = (mensagem:string, tipo:ToastType = "warn") => {
+        const exibirToastERetornar = (mensagem:string, tipo:ToastType = "warning") => {
             toast[tipo](mensagem);
             return ;
         };
@@ -79,29 +79,26 @@ interface PayloadProps {
         }
 
        
-        try{
-            const response:AxiosResponse = await toast.promise(
+        
+             toast.promise(
                 api.put(url,{...payload}),
                 {
                     error: 'Erro na Requisição',
-                    pending: 'Realizando Baixa',
-                    success: 'Baixa Realizada com sucesso'
+                    loading: 'Realizando Baixa',
+                    success:(response)=> {
+                        atualizar()
+                        setData(response.data)
+            
+                        setModal(false)
+                        return 'Baixa Realizada com sucesso'}
                 }
             )
             
            // setarDadosAssociado({mensalidade:response.data})
-            atualizar()
-            setData(response.data)
-
-            setModal(false)
+          
            
     
-        }catch(error:any){
-          //  setError(error as AxiosError)
-         // console.log(error)
-          toast.error(error.response?.data?.error??'Erro desconhecido')
-    
-        }
+       
       }
     
 

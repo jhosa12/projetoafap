@@ -1,10 +1,10 @@
 import { ConveniadosProps } from "@/pages/dashboard/conveniados"
 import { api } from "@/lib/axios/apiClient"
-import { Button, FileInput, FloatingLabel, Label, Modal, TextInput } from "flowbite-react"
-import { tmpdir } from "os"
-import { useEffect, useState } from "react"
+import { Button, FileInput, FloatingLabel, Label, Modal } from "flowbite-react"
+import {  useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
-import { toast } from "react-toastify"
+import { toast } from "sonner"
+
 
 interface DataProps{
     conveniados:Array<ConveniadosProps>,
@@ -60,19 +60,18 @@ export  function ModalNovoConveniado({openModal,setOpenModal,usuario,conveniado,
         file && formData.append("file",file);
      
   
-        try {
-            const response =await toast.promise(
+           toast.promise(
                 api.post('/conveniados/novoConveniado',formData),
                 {
                     error:'Erro ao Requisitar Dados',
-                    pending:'Listando dados.....',
-                    success:'Dados Carregados'
+                    loading:'Listando dados.....',
+                    success:(response)=>{
+                        setConveniados([...conveniados,response.data])
+                        return 'Dados Carregados'}
                 }
             )
-            setConveniados([...conveniados,response.data])
-        } catch (error) {
-            console.log(error)
-        }
+          
+    
     }
 
 
@@ -88,22 +87,22 @@ export  function ModalNovoConveniado({openModal,setOpenModal,usuario,conveniado,
         file && formData.append("file",file);
      
        
-        try {
-            const response =await toast.promise(
+        
+           toast.promise(
                 api.put('/conveniados/editarConveniado',formData),
                 {
                     error:'Erro ao Requisitar Dados',
-                    pending:'Listando dados.....',
-                    success:'Dados Carregados'
+                    loading:'Listando dados.....',
+                    success:(response)=>{
+                        const index = conveniados.findIndex(item=>item.id_conveniados===data.id_conveniados)
+                        conveniados[index]={...response.data}
+                        setConveniados([...conveniados])
+                        return'Dados Carregados'}
                 }
             )
-            const index = conveniados.findIndex(item=>item.id_conveniados===data.id_conveniados)
-            conveniados[index]={...response.data}
-            setConveniados([...conveniados])
+           
 
-        } catch (error) {
-            console.log(error)
-        }
+      
     }
 
 
