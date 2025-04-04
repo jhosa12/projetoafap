@@ -307,7 +307,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
 
 
             </div>
-            <div className="flex w-full overflow-auto mt-2 px-2 max-h-[calc(100vh-190px)]">
+            <div className="flex w-full overflow-auto mt-2 px-2 max-h-[calc(100vh-195px)]">
                 <table
                     className="block w-full overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse  ">
                     <thead className="sticky w-full top-0  text-xs   bg-white ">

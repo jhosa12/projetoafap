@@ -159,60 +159,144 @@ export function Acompanhamento({ empresa, setores, usuario }: { empresa: string,
 
     return (
 
-        <div className="flex flex-col w-full h-full bg-white overflow-y-auto">
+        <div className="flex flex-col w-full h-full bg-gradient-to-b from-white to-gray-50 overflow-y-auto">
 
             {modalVend && <ModalVendedor usuario={usuario} leads={reqData?.leads} show={modalVend} setModalVend={setModalVend} vendedor={vendedor} startDate={reqData.startFilter} endDate={reqData.endFilter} />}
 
-         
-
-                <div className="inline-flex w-full justify-between  py-2 px-6 rounded-lg text-black">
-                    <InfoBlock icon={<GoGoal size={20} />} title="META" value={reqData.metaAtual ? (reqData?.metaAtual * reqData?.consultores?.length).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '0,00'} />
-                    <InfoBlock icon={<FaPercentage size={20} />} title="PERCENTUAL" value={getPercentual(reqData?.grupos, reqData?.metaAtual, reqData?.consultores)} />
-                    <InfoBlock icon={<GiStairsGoal size={20} />} title="PRODUZIDO" value={`${getProduzido(reqData?.grupos)} (${reqData?.grupos?.reduce((acc, curr) => acc + Number(curr._count.dt_adesao), 0)})`} />
-                </div>
 
 
-                <div className="flex ml-auto mr-4 pb-1 gap-2 text-black">
-                    <Button variant={'outline'} onClick={() => setFiltro(true)} type="button" color='light' size='sm'><FaFilter />FILTRAR</Button>
-                    <Button variant={'outline'} size='sm'>  <IoPrint /> IMPRIMIR</Button>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
+                <InfoBlock icon={<GoGoal size={20} />} title="META" value={reqData.metaAtual ? (reqData?.metaAtual * reqData?.consultores?.length).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '0,00'} />
+                <InfoBlock
+                    icon={<FaPercentage size={20} />}
+                    title="PERCENTUAL"
+                    value={getPercentual(reqData?.grupos, reqData?.metaAtual, reqData?.consultores).value}
+                    statusColor={getPercentual(reqData?.grupos, reqData?.metaAtual, reqData?.consultores).color}
+                    progress={parseFloat(getPercentual(reqData?.grupos, reqData?.metaAtual, reqData?.consultores).value.replace('%', ''))}
+                />
+                <InfoBlock icon={<GiStairsGoal size={20} />} title="PRODUZIDO" value={`${getProduzido(reqData?.grupos)} (${reqData?.grupos?.reduce((acc, curr) => acc + Number(curr._count.dt_adesao), 0)})`} />
+            </div>
 
 
-                </div>
+            <div className="flex ml-auto mr-6 pb-4 gap-3 text-black">
+                <Button
+                    variant="outline"
+                    onClick={() => setFiltro(true)}
+                    aria-label="Aplicar filtros"
+                    aria-busy={loading}
+                    className="flex items-center gap-2 hover:bg-gray-100 transition-colors"
+                    size="sm"
+                >
+                    <FaFilter className="text-primary" />
+                    <span>FILTRAR</span>
+                </Button>
+                <Button
+                    variant={'outline'}
+                    className="flex items-center gap-2 hover:bg-gray-100 transition-colors"
+                    size='sm'>
+                    <IoPrint className="text-gray-600" />
+                    <span>IMPRIMIR</span>
+                </Button>
 
-                {reqData.grupos?.length > 0 &&
-                    <div className=' flex flex-col md:flex-row px-2 gap-6 pb-10'>
-                        <Card className='md:w-1/2' >
-                            <CardHeader className='text-sm font-semibold'/>
-                            <CardContent>
-                                <ConsultorList dados={reqData?.grupos} setModalVend={setModalVend} setVendedor={setVendedor} meta={reqData?.metaAtual ?? 0} />
-                            </CardContent>
-                        </Card>
-                            {chartData?.length > 0 && <BarChartInfo chartConfig={generateChartConfig(chartData)} chartData={chartData} periodo={perido} />}
-                    </div>}
 
-                {filtro && <ModalFiltroMetas filtrar={dadosVendas} loading={loading} arraySetores={setores} show={filtro} setFiltro={setFiltro} startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />}
-         
-                </div>
+            </div>
+
+            {reqData.grupos?.length > 0 &&
+                <div className='flex flex-col md:flex-row px-6 gap-6 pb-10'>
+                    <Card className='md:w-1/2 shadow-lg hover:shadow-xl transition-shadow duration-300'>
+                        <CardHeader className='text-lg font-semibold border-b pb-4'>
+                            <h3 className="text-gray-800">Consultores</h3>
+                        </CardHeader>
+                        <CardContent className="pt-4">
+                            <ConsultorList dados={reqData?.grupos} setModalVend={setModalVend} setVendedor={setVendedor} meta={reqData?.metaAtual ?? 0} />
+                        </CardContent>
+                    </Card>
+                    {chartData?.length > 0 && <BarChartInfo chartConfig={generateChartConfig(chartData)} chartData={chartData} periodo={perido} />}
+                </div>}
+
+            {filtro && <ModalFiltroMetas filtrar={dadosVendas} loading={loading} arraySetores={setores} show={filtro} setFiltro={setFiltro} startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />}
+
+        </div>
 
     );
 }
 
 
-const InfoBlock = ({ icon, title, value }: { icon: JSX.Element, title: string, value: string }) => (
-    <div className="flex flex-col p-2 px-4 shadow-md rounded-md">
+const InfoBlock = ({
+    icon,
+    title,
+    value,
+    statusColor,
+    progress,
+    loading
+}: {
+    icon: JSX.Element,
+    title: string,
+    value: string,
+    statusColor?: string,
+    progress?: number,
+    loading?: boolean
+}) => (
+    <div className="flex flex-col p-2 px-4 shadow-lg rounded-xl bg-white hover:shadow-xl transition-all duration-300 border border-gray-100">
+        <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+                <span className="p-2 bg-gray-50 rounded-lg text-gray-600">
+                    {!loading && icon}
+                    {loading && <div className="h-6 w-6 bg-gray-200 rounded animate-pulse" />}
+                </span>
+                <div className='text-sm font-semibold text-gray-700'>{title}</div>
+            </div>
+            {!loading && progress !== undefined && (
+                <div className={`text-sm font-medium ${statusColor}`}>
+                    {progress > 0 ? '↑' : '↓'} {Math.abs(Number(progress))}%
+                </div>
+            )}
+        </div>
 
-        <div className='text-[13px] font-semibold'>{title}</div>
-        <div className='text-xs '>{value}</div>
+        {!loading && progress !== undefined && (
+            <div className="mb-4">
+                <div className="w-full bg-gray-200/80 rounded-full h-3 shadow-inner overflow-hidden">
+                    <div
+                        className="h-full transition-all duration-700 ease-out"
+                        style={{
+                            width: `${Math.min(Number(progress), 100)}%`,
+                            backgroundColor: statusColor,
+                            borderRadius: 'inherit'
+                        }}
+                    />
+                </div>
 
+            </div>
+        )}
+
+      { progress === undefined && <div className={`text-base font-bold ${statusColor}`}>
+            {!loading ? value : <div className="h-8 w-32 bg-gray-300 rounded animate-pulse" />}
+        </div>}
     </div>
 );
 
 // Funções utilitárias para cálculos
-const getPercentual = (dados: VendasProps[], meta?: number, consultores?: ConsultoresProps[]) => {
-    const totalMeta = meta && consultores ? meta * consultores?.length : 0;
-    const totalProduzido = dados?.reduce((acc, curr) => acc + Number(curr._sum.valor_mensalidade), 0);
+const getPercentual = (
+    dados: VendasProps[],
+    meta?: number,
+    consultores?: ConsultoresProps[]
+) => {
+    const totalMeta = meta && consultores ? meta * consultores.length : 0;
+    const totalProduzido = dados?.reduce((acc, curr) => acc + Number(curr._sum.valor_mensalidade), 0) || 0;
     const percentual = totalMeta ? (totalProduzido / totalMeta) * 100 : 0;
-    return `${percentual.toFixed(2)}%`;
+
+    const getStatus = () => {
+        if (percentual >= 100) return { color: '#16a34a', icon: '🎯' };      // Verde-600
+        if (percentual >= 75) return { color: '#22c55e', icon: '↑' };       // Verde-500
+        if (percentual >= 50) return { color: '#f59e0b', icon: '→' };       // Amarelo-500
+        return { color: '#ef4444', icon: '↓' };                             // Vermelho-500
+    };
+
+    return {
+        value: `${percentual.toFixed(1)}%`,
+        progress: percentual,
+        ...getStatus()
+    };
 };
 
 const getProduzido = (dados: VendasProps[]) => {

@@ -54,7 +54,7 @@ const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
             loading: 'Alterando dados...',
             success:(response)=>{
               dadosassociado?.contrato && setarDadosAssociado({...dadosassociado,contrato:{...dadosassociado?.contrato,id_plano:response.data.result.id_plano,plano:response.data.result.plano,valor_mensalidade:response.data.result.valor_mensalidade,planos:{limite_dep:response.data.result.planos.limite_dep}},mensalidade:response.data.mensAtualizadas})
-
+              setOpenModal(false)
               return 'Dados alterados com sucesso'
             } 
           }
