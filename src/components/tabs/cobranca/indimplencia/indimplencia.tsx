@@ -8,11 +8,10 @@ import { HiFilter } from "react-icons/hi";
 import { Badge, Table } from "flowbite-react";
 import { ModalFiltroCobranca } from "@/components/tabs/cobranca/modalCobranca";
 import { SubmitHandler } from "react-hook-form";
-import { ConsultoresProps } from "@/types/consultores";
-import useApiPost from "@/hooks/useApiPost";
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
 import RelatorioInadimplencia from "@/Documents/relatorioCobranca/RelatorioIndimplencia";
 import { Button } from "@/components/ui/button";
+import useApiGet from "@/hooks/useApiGet";
 
 
 
@@ -98,7 +97,7 @@ export  function Inadimplencia() {
 
 
 
-  const {data,loading,postData}= useApiPost<Array<InadimplenciaProps>,ReqProps>('/cobranca/inadimplencia')
+  const {data,loading,postData}= useApiGet<Array<InadimplenciaProps>,ReqProps>('/cobranca/inadimplencia')
 
 
   const itemsPerPage = 19;

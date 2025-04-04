@@ -86,7 +86,7 @@ export default function App({ Component, pageProps,router }: AppProps) {
         
         <PrivateRouter router={router} Component={Component} pageProps={pageProps} />
     
-         <Toaster theme='light' richColors position="top-center" toastOptions={{ duration: 3000 }} />
+         <Toaster theme='system' visibleToasts={3} expand={true} richColors position="bottom-right" toastOptions={{ duration: 4000 }} />
       </AuthProvider>
     </StrictMode>
   );
