@@ -31,9 +31,7 @@ import { ConsultaProps, ExamesProps, MedicoProps, EventProps } from "@/types/afa
 export default function AfapSaude() {
   const [medicos, setMedicos] = useState<Array<MedicoProps>>([])
   const [events, setEvents] = useState<Array<EventProps>>([])
-  // const [dataEvent, setDataEvent] = useState<Partial<EventProps>>({})
   const [menuIndex, setMenuIndex] = useState(0)
-  // const [consultas,setConsultas] =useState<Array<ConsultaProps>>([])
   const [exames, setExames] = useState<Array<ExamesProps>>([])
 
 

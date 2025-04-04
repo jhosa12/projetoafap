@@ -14,6 +14,8 @@ interface DataProps{
 
 export function ModalConfirmar({openModal,setOpenModal,handleConfirmar,pergunta,children}:DataProps) {
 
+  
+
 
     return (
         <Modal className={roboto_Mono.className} show={openModal} size="lg" onClose={() => setOpenModal(false)} popup>

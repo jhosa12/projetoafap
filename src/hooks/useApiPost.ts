@@ -1,6 +1,5 @@
 
 import { api } from "@/lib/axios/apiClient";
-import {  AxiosResponse } from "axios";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -8,7 +7,7 @@ import { toast } from "sonner";
 
 
 
-const useApiPost = <T=any,P=any>(url:string,signal?:AbortSignal):{
+const useApiPost = <T=any,P=any,U=any>(url:string,signal?:AbortSignal,update?:()=>void):{
     data:T|null;
     loading:boolean;
     postData:(payload:P)=>Promise<void>
@@ -32,14 +31,16 @@ const useApiPost = <T=any,P=any>(url:string,signal?:AbortSignal):{
               setData(res.data)
               return'Dados salvos com sucesso'
             },
-            error: 'Erro ao salvar dados'
+            error:(error)=>{
+              console.log(error)
+              return  'Erro ao salvar dados'}
           }
 
         )
 
        
       //console.log(response.data)
-
+        update?.()
     
         setLoading(false)
     

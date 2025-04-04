@@ -159,3 +159,16 @@ export interface ExameRealizadoProps{
   status:string,
   user:string,
 }
+
+
+
+export interface FiltroConsultaProps {
+  startDate: Date | undefined,
+  endDate: Date | undefined,
+  id_med?: number,
+  status: string | undefined,
+  buscar?: string,
+  externo?: string,
+  nome?: string,
+  id_consultor?: number
+}

@@ -3,7 +3,7 @@ import { api } from "@/lib/axios/apiClient";
 import {   Table } from "flowbite-react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ModalConsulta } from "./components/modalNovaConsulta";
-import { HiDocument, HiMiniArrowDownOnSquare, HiPencil, HiPrinter } from "react-icons/hi2";
+import { HiMiniArrowDownOnSquare, HiPencil, HiPrinter } from "react-icons/hi2";
 import {   HiDocumentAdd, HiFilter } from "react-icons/hi";
 import { ModalFiltroConsultas } from "./components/modalFiltro";
 import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
@@ -40,8 +40,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "../../ui/button";
-import { ConsultaProps, EventProps, MedicoProps, statusConsultaArray } from "@/types/afapSaude";
+import { ConsultaProps, EventProps, FiltroConsultaProps, MedicoProps, statusConsultaArray } from "@/types/afapSaude";
 import { toast } from "sonner";
+import useApiPut from "@/hooks/useApiPut";
+import { useForm } from "react-hook-form";
 
 
 interface DataProps {
@@ -70,10 +72,60 @@ export default function Consultas({ medicos,events  }: DataProps) {
       printRecibo:false,
       printListaConsultas:false
   })
+
 const currentPage = useRef<FichaConsulta>(null)
 const currentRecibo = useRef<ReciboMensalidade>(null)
 const currentConsultas = useRef<ListaConsultas>(null)
 
+const {register,control,handleSubmit,watch,getValues} = useForm<FiltroConsultaProps>({
+  defaultValues: {
+    startDate: new Date(),
+    endDate: new Date(),
+    buscar:''
+  }
+})
+
+
+const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome,id_consultor,externo,signal}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string,nome?:string,id_consultor?:number,externo?:string,signal?:AbortSignal})=>{
+
+  const {dataIni,dataFim} =  ajustarData(startDate,endDate)
+ 
+   if ((startDate && endDate) && startDate > endDate) {
+     toast.warning('Data inicial não pode ser maior que a data final')
+     return
+   }
+ 
+ 
+   try {
+     setLoading(true)
+       const response = await api.post("/afapSaude/consultas",{
+         startDate:dataIni,
+         endDate:dataFim,
+         id_med:id_med?Number(id_med):undefined,
+       status,
+       externo,
+       buscar,
+       nome,
+       id_consultor
+      },{
+        signal
+      })
+       
+       setConsultas(response.data)
+       setModal({filtro:false})
+   
+   } catch (error) {
+       console.log(error)
+   }
+   setLoading(false)
+ }
+
+
+
+const {data:estorno,postData:handleEstorno} = useApiPut<
+any,
+{id_consulta:number}
+>('/afapSaude/estornarConsulta',()=>buscarConsultas({startDate:new Date(),endDate:new Date(),id_med:undefined,status:undefined}),()=>setModal({estornar:false}))
 
 
 useEffect(()=>{
@@ -97,27 +149,10 @@ const handleEstornarConsulta = async ()=>{
     return
   }
 
-toast.promise(
-      api.put('/afapSaude/estornarConsulta', {id_consulta:data?.id_consulta}),
-      {
-        error: 'Erro ao estornar consulta',
-        loading: 'Estornando consulta.....',
-        success: ()=>{
-          setModal({estornar:false})
-          setData(undefined)
-          return 'Consulta estornada com sucesso'}
-      }
-    )
+  handleEstorno({id_consulta:data.id_consulta})
 
-
-
-    
-  buscarConsultas({startDate:new Date(),endDate:new Date(),id_med:undefined,status:undefined})
+  buscarConsultas(getValues()) 
 }
-
-
-
-
 
 
 
@@ -152,10 +187,6 @@ const handleAlterarStatus = async () => {
       toast.warning('Cliente ainda não agendou data!')
       return;
   }
-
-   
-
-   //alert(data.status)
    toast.promise(
  
           api.put("/afapSaude/consultas/Editarcadastro", {
@@ -247,45 +278,13 @@ const imprimirRecibo = useCallback(useReactToPrint({
 
 
 
-const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome,id_consultor,externo,signal}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string,nome?:string,id_consultor?:number,externo?:string,signal?:AbortSignal})=>{
 
- const {dataIni,dataFim} =  ajustarData(startDate,endDate)
-
-  if ((startDate && endDate) && startDate > endDate) {
-    toast.warning('Data inicial não pode ser maior que a data final')
-    return
-  }
-
-
-  try {
-    setLoading(true)
-      const response = await api.post("/afapSaude/consultas",{
-        startDate:dataIni,
-        endDate:dataFim,
-        id_med:id_med?Number(id_med):undefined,
-      status,
-      externo,
-      buscar,
-      nome,
-      id_consultor
-     },{
-       signal
-     })
-      
-      setConsultas(response.data)
-      setModal({filtro:false})
-  
-  } catch (error) {
-      console.log(error)
-  }
-  setLoading(false)
-}
 
 
 useEffect(()=>{
   const controller = new AbortController();
     const signal = controller.signal;
-  buscarConsultas({startDate:new Date(),endDate:new Date(),status:undefined,signal}) 
+  buscarConsultas({...getValues(),signal}) 
   
   return () => {
     controller.abort();
@@ -339,7 +338,7 @@ const handleReceberConsulta = useCallback(async ()=>{
       loading: 'Recebendo consulta....',
       success:()=>{
         
-        buscarConsultas({startDate:new Date(),endDate:new Date(),status:undefined})
+        buscarConsultas(getValues())
         setData(valorInicial)
         setModal({receber:false})
         return 'Consulta recebida com sucesso!'}
@@ -518,7 +517,7 @@ const handleDeletar = useCallback(async () => {
         <ModalConfirmar openModal={modal.deletar} setOpenModal={()=>setModal({deletar:false})} handleConfirmar={handleDeletar} pergunta={'Realmente deseja deletar essa consulta?'} />
 
 
-     {modal.filtro && <ModalFiltroConsultas consultores={consultores} medicos={medicos} buscarConsultas={buscarConsultas} loading={loading} setFiltro={()=>setModal({filtro:false})} show={modal.filtro} />
+     { <ModalFiltroConsultas register={register} control={control} handle={handleSubmit} consultores={consultores} medicos={medicos} buscarConsultas={buscarConsultas} loading={loading} setFiltro={()=>setModal({filtro:false})} show={modal.filtro} />
 }
    {modal.receber &&   <ModalReceber formPag={formPag} setFormPag={setFormPag} handleReceberExame={handleReceberConsulta}  openModal={modal.receber} setOpenModal={()=>setModal({receber:false})} />}
 
@@ -567,12 +566,14 @@ const handleDeletar = useCallback(async () => {
       </div>
 
 
-
-
-
       <ModalConfirmar pergunta="Realmente deseja alterar o status?" handleConfirmar={handleAlterarStatus} openModal={modal.status} setOpenModal={()=>setModal({status:false})}/>
 
-      <ModalConfirmar pergunta="Realmente deseja Estornar a consulta?" handleConfirmar={handleEstornarConsulta} openModal={modal.estornar} setOpenModal={()=>setModal({estornar:false})}/>
+      <ModalConfirmar
+       pergunta="Realmente deseja Estornar a consulta?" 
+       handleConfirmar={handleEstornarConsulta} 
+       openModal={modal.estornar}
+       setOpenModal={()=>setModal({estornar:false})}
+       />
 
     </div>
   );

@@ -4,37 +4,30 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { Label, Modal, Select, Spinner, TextInput } from "flowbite-react";
 import { Button } from "@/components/ui/button";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Control, Controller, SubmitHandler, useForm, UseFormHandleSubmit, UseFormRegister } from "react-hook-form";
 import { ConsultoresProps } from "@/types/consultores";
-import { MedicoProps, statusConsultaArray } from "@/types/afapSaude";
+import { FiltroConsultaProps, MedicoProps, statusConsultaArray } from "@/types/afapSaude";
 registerLocale('pt-br', pt)
 
 interface DataProps {
   show: boolean,
   setFiltro: (open: boolean) => void,
-  buscarConsultas: ({ startDate, endDate, id_med }: { startDate: Date | undefined, endDate: Date | undefined, id_med?: number, status: string | undefined, buscar?: string, nome?: string, id_consultor?: number }) => Promise<void>,
+  buscarConsultas: ({ startDate, endDate, id_med,status,buscar,nome,id_consultor }: { startDate: Date | undefined, endDate: Date | undefined, id_med?: number, status: string | undefined, buscar?: string, nome?: string, id_consultor?: number }) => Promise<void>,
   loading: boolean,
   medicos: Array<MedicoProps>
   consultores: Array<Partial<ConsultoresProps>>
+  register:UseFormRegister<FiltroConsultaProps>
+  control:Control<FiltroConsultaProps,any>
+  handle:UseFormHandleSubmit<FiltroConsultaProps,undefined>
 }
 
 
-interface FiltroProps {
-  startDate: Date | undefined,
-  endDate: Date | undefined,
-  id_med?: number,
-  status: string | undefined,
-  buscar?: string,
-  externo?: string,
-  nome?: string,
-  id_consultor?: number
-}
 
-export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas, medicos, consultores }: DataProps) {
+export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas, medicos, consultores,control,register,handle }: DataProps) {
 
-  const { register, handleSubmit, control } = useForm<FiltroProps>()
 
-  const handleOnSubmit: SubmitHandler<FiltroProps> = (data: FiltroProps) => {
+
+  const handleOnSubmit: SubmitHandler<FiltroConsultaProps> = (data: FiltroConsultaProps) => {
 
     buscarConsultas({ ...data })
   }
@@ -49,7 +42,7 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
                    
                     </Modal.Header>*/}
       <Modal.Body>
-        <form onSubmit={handleSubmit(handleOnSubmit)} className='space-y-2 flex flex-col w-full'>
+        <form onSubmit={handle(handleOnSubmit)} className='space-y-2 flex flex-col w-full'>
           <div >
             <div className=" block">
               <Label className="text-xs" value="Especialista" />

@@ -1,6 +1,5 @@
 
 import { api } from "@/lib/axios/apiClient";
-import { AxiosError, AxiosResponse } from "axios";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -8,10 +7,10 @@ import { toast } from "sonner";
 
 
 
-const useApiPut = <T=any,P=any>(url:string):{
+const useApiPut = <T=any,P=any,U=any>(url:string,update?:()=>void,onClose?:()=>void):{
     data:T|null;
     loading:boolean;
-    postData:(payload:P)=>Promise<void>
+    postData:(payload:P,signal?:AbortSignal)=>Promise<void>
     setData:(data:T|null)=>void
 }=>{
   const [data, setData] = useState<T | null>(null);
@@ -20,23 +19,33 @@ const useApiPut = <T=any,P=any>(url:string):{
 
 
 
-  const postData = async(payload:P)=>{
+  const postData = async(payload:P,signal?:AbortSignal)=>{
     setLoading(true)
 
-    try{
-        const response:AxiosResponse = await api.put(url,payload)
-        setData(response.data)
+   
+        toast.promise(
+          api.put(url,payload,{signal}),
+          {
+            loading: 'Atualizando dados...',
+            success: (res)=>{
+              setData(res.data)
+              update?.()
+              onClose?.()
+              return'Dados atualizados com sucesso'
+            },
+            error:(error)=>{
+             
+              return  'Erro ao atualizar dados'}
+          }
+
+        )
+
+       
       //console.log(response.data)
-
-    }catch(error:any){
-        //setError(error as AxiosError)
-     // console.log(error)
-        toast.error(error?.response?.data.message??'Erro ao salvar dados')
-        throw new Error("Erro ao salvar dados")
-
-    }finally{
+       
+    
         setLoading(false)
-    }
+    
   }
 
 
