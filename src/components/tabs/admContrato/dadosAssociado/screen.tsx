@@ -23,20 +23,20 @@ import { removerFusoDate } from "@/utils/removerFusoDate";
 import { toast } from "sonner";
 
 interface DataProps {
-    dadosassociado:Partial<AssociadoProps> | AssociadoProps,
+    dadosassociado: Partial<AssociadoProps> | AssociadoProps,
     infoEmpresa: EmpresaProps | null
 }
 
 
 export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
-    const { usuario,permissoes,setarDadosAssociado } = useContext(AuthContext)
+    const { usuario, permissoes, setarDadosAssociado } = useContext(AuthContext)
     const [observacao, setObservacao] = useState('');
-    const [modal,setModal] =useState<{[key:string]:boolean}>({
-        editar:false,
-        observacao:false,
-        altPlano:false,
-        inativar:false,
-        impressao:false
+    const [modal, setModal] = useState<{ [key: string]: boolean }>({
+        editar: false,
+        observacao: false,
+        altPlano: false,
+        inativar: false,
+        impressao: false
     })
 
 
@@ -61,9 +61,9 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
     };
 
 
-    const chaveAtiva = printState 
-  ? Object.entries(printState).find(([_, valor]) => valor === true)?.[0] 
-  : null;
+    const chaveAtiva = printState
+        ? Object.entries(printState).find(([_, valor]) => valor === true)?.[0]
+        : null;
 
 
     const handlePrint = (doc: string) => {
@@ -77,7 +77,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
         pageStyle: pageStyle,
         documentTitle: "CANCELAMENTO",
         content: () => componentRefs.cancelamento.current,
-        onAfterPrint: () => setPrintState((prev) => ({  cancelamento: false })),
+        onAfterPrint: () => setPrintState((prev) => ({ cancelamento: false })),
     });
 
 
@@ -86,18 +86,18 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
         pageStyle: pageStyle,
         documentTitle: "CONTRATO",
         content: () => componentRefs.contrato.current,
-        onBeforeGetContent: async() => {
+        onBeforeGetContent: async () => {
             await handleRegisterImpressao('contrato');
         },
-        
+
     });
 
     const imprimirCarteira = useReactToPrint({
         pageStyle: pageStyle,
         documentTitle: "CARTEIRA",
         content: () => componentRefs.carteira.current,
-        onBeforeGetContent: async() => {
-           await handleRegisterImpressao('carteira');
+        onBeforeGetContent: async () => {
+            await handleRegisterImpressao('carteira');
         },
     });
 
@@ -105,8 +105,8 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
         pageStyle: pageStyle,
         documentTitle: "CARNÊ",
         content: () => componentRefs.carne.current,
-        onBeforeGetContent:async() => {
-           await handleRegisterImpressao('carne');
+        onBeforeGetContent: async () => {
+            await handleRegisterImpressao('carne');
         },
     });
 
@@ -114,10 +114,10 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
         pageStyle: pageStyle,
         documentTitle: "RESUMO",
         content: () => componentRefs.resumo.current,
-        onBeforeGetContent: async() => {
-           await handleRegisterImpressao('resumo');
-           
-           
+        onBeforeGetContent: async () => {
+            await handleRegisterImpressao('resumo');
+
+
         },
     });
 
@@ -126,7 +126,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
         pageStyle: pageStyle,
         documentTitle: "CARTA",
         content: () => componentRefs.carta.current,
-        onBeforeGetContent:async() => {
+        onBeforeGetContent: async () => {
             await handleRegisterImpressao('carta');
         },
     });
@@ -139,64 +139,65 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
        });
      }, [printState]);*/
 
-  const handleImpressao = useCallback(async() => {
-     
-            if (printState.contrato) imprimirContrato();
-            if (printState.carteira) imprimirCarteira();
-            if (printState.carne) imprimirCarne();
-            if (printState.resumo) imprimirResumo();
-            if (printState.carta) imprimirCarta();
-            if (printState.cancelamento) imprimirCancelamento();
-        
-      
-    },[printState])
+    const handleImpressao = useCallback(async () => {
 
-    
+        if (printState.contrato) imprimirContrato();
+        if (printState.carteira) imprimirCarteira();
+        if (printState.carne) imprimirCarne();
+        if (printState.resumo) imprimirResumo();
+        if (printState.carta) imprimirCarta();
+        if (printState.cancelamento) imprimirCancelamento();
+
+
+    }, [printState])
+
+
 
 
     const handleRegisterImpressao = useCallback(async (arquivo: string) => {
- 
-        const {newDate} = removerFusoDate(new Date())
-        const impressoes =[...( dadosassociado.contrato?.impressoes||[])];
+
+        const { newDate } = removerFusoDate(new Date())
+        const impressoes = [...(dadosassociado.contrato?.impressoes || [])];
         const index = impressoes.findIndex((imp) => imp.arquivo === arquivo);
         if (index === -1) {
             impressoes.push({ arquivo: arquivo, date: newDate, user: usuario?.nome });
-        }else {impressoes[index] = { ...impressoes[index], date: newDate,user: usuario?.nome };}
+        } else { impressoes[index] = { ...impressoes[index], date: newDate, user: usuario?.nome }; }
         try {
-         const response = await api.put('/contrato/impressoes', {id_contrato_global:dadosassociado?.contrato?.id_contrato_global,impressoes:impressoes})
-            setModal({impressao:false})
+            const response = await api.put('/contrato/impressoes', { id_contrato_global: dadosassociado?.contrato?.id_contrato_global, impressoes: impressoes })
+            setModal({ impressao: false })
             setPrintState({ [arquivo]: false });
-            setarDadosAssociado({contrato:{...dadosassociado?.contrato,impressoes:response.data.impressoes}})
+            setarDadosAssociado({ contrato: { ...dadosassociado?.contrato, impressoes: response.data.impressoes } })
         } catch (error) {
             //console.log(error)
             toast.error('Erro ao registrar impressão')
         }
-    },[dadosassociado,printState,usuario?.nome,infoEmpresa])
+    }, [dadosassociado, printState, usuario?.nome, infoEmpresa])
 
 
-  /*  function handleObservacao() {
-
-        const novaObservacao = observacao.trim(); // Remove espaços em branco
-
-        if (novaObservacao !== '') {
-            const anotacoesAntigas = dadosassociado && dadosassociado.contrato?.anotacoes || ''; // Definindo um valor padrão para anotacoesAntigas caso seja null ou undefined
-            closeModa({ contrato: { anotacoes: anotacoesAntigas + novaObservacao + ' ' + `[${usuario?.nome + ' ' + 'em' + ' ' + new Date().toLocaleDateString()}]` + '\n' } });
-            setObservacao('')
-        }
-   
-}*/
+    /*  function handleObservacao() {
+  
+          const novaObservacao = observacao.trim(); // Remove espaços em branco
+  
+          if (novaObservacao !== '') {
+              const anotacoesAntigas = dadosassociado && dadosassociado.contrato?.anotacoes || ''; // Definindo um valor padrão para anotacoesAntigas caso seja null ou undefined
+              closeModa({ contrato: { anotacoes: anotacoesAntigas + novaObservacao + ' ' + `[${usuario?.nome + ' ' + 'em' + ' ' + new Date().toLocaleDateString()}]` + '\n' } });
+              setObservacao('')
+          }
+     
+  }*/
 
     return (
-        <div className={`flex flex-col w-full  text-xs p-4 rounded-b-lg `}>
-                
-            {modal.editar && <ModalEditarDados dataForm={dadosassociado} setModalEdit={()=>setModal({editar:false})} openEdit={modal.editar} />}
+        <div className={`flex flex-col w-full text-xs p-4 rounded-b-lg overflow-x-hidden`}>
 
-{modal.altPlano && <ModalAlterarPlano openModal={modal.altPlano} setOpenModal={()=>setModal({altPlano:false})} />}
-{modal.inativar && <ModalInativar openModal={modal.inativar} setModal={()=>setModal({inativar:false})} />}
+            {modal.editar && <ModalEditarDados dataForm={dadosassociado} setModalEdit={() => setModal({ editar: false })} openEdit={modal.editar} />}
 
-    {modal.impressao &&<ModalConfirmar pergunta={`Realmente deseja imprimir o(a) ${chaveAtiva}?. Esteja ciente de que ao confirmar, os dados de data e usuario que realizou a impressão serão atualizados!`} openModal={modal.impressao} setOpenModal={()=>setModal({impressao:false})} handleConfirmar={handleImpressao}/>}
+            {modal.altPlano && <ModalAlterarPlano openModal={modal.altPlano} setOpenModal={() => setModal({ altPlano: false })} />}
+            {modal.inativar && <ModalInativar openModal={modal.inativar} setModal={() => setModal({ inativar: false })} />}
 
-            <div className="inline-flex w-full justify-between  gap-3 mb-3 pl-2 text-sm font-semibold  text-black">
+            {modal.impressao && <ModalConfirmar pergunta={`Realmente deseja imprimir o(a) ${chaveAtiva}?. Esteja ciente de que ao confirmar, os dados de data e usuario que realizou a impressão serão atualizados!`} openModal={modal.impressao} setOpenModal={() => setModal({ impressao: false })} handleConfirmar={handleImpressao} />}
+
+            <div className="flex flex-wrap w-full justify-between gap-2 mb-3 pl-2 text-sm font-semibold text-black">
+
                 <div className="inline-flex gap-3 items-center ">
                     {dadosassociado?.contrato?.id_contrato}-{dadosassociado?.nome}
                     <span>CATEGORIA:
@@ -205,7 +206,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
                     </span>
 
                     <Badge size={'sm'} color={dadosassociado.contrato?.situacao === 'ATIVO' ? 'success' : `failure`}>{dadosassociado?.contrato?.situacao}</Badge>
-                     
+
                     {dadosassociado?.contrato?.convalescencia?.map(item => (
                         <>
                             {item.convalescenca_prod?.map((dados, index) => (!item.id_dependente || item.id_dependente === null) && item.status === 'ABERTO' && <button data-tooltip-id="my-tooltip" data-tooltip-content={dados?.descricao ?? ''} className="text-yellow-500">
@@ -216,27 +217,27 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
 
                 </div>
                 <ButtonGroup outline >
-                    <Button className="text-black truncate " color={'gray'} size={'xs'} onClick={() => setModal({altPlano:true})}>Alterar Categoria</Button>
-                    <Button className="text-black truncate " disabled={!permissoes.includes('ADM1.1.3')} onClick={() => setModal({inativar:true})} color={'gray'} size={'xs'} >{dadosassociado?.contrato?.situacao === 'ATIVO' ? "Inativar Contrato" : "Ativar Contrato"}</Button>
+                    <Button className="text-black truncate " color={'gray'} size={'xs'} onClick={() => setModal({ altPlano: true })}>Alterar Categoria</Button>
+                    <Button className="text-black truncate " disabled={!permissoes.includes('ADM1.1.3')} onClick={() => setModal({ inativar: true })} color={'gray'} size={'xs'} >{dadosassociado?.contrato?.situacao === 'ATIVO' ? "Inativar Contrato" : "Ativar Contrato"}</Button>
 
 
                     <Dropdown label="" renderTrigger={() => <Button theme={{ color: { gray: "border border-gray-200 bg-white text-gray-900  enabled:hover:bg-gray-100 enabled:hover:text-cyan-700" }, pill: { off: 'rounded-r-lg' } }} className="text-black truncate" color={'gray'} size={'xs'} >Imprimir Documentos</Button>} >
-                        <Dropdown.Item className="text-xs" onClick={() => {handlePrint('carta'),setModal({...{},impressao:true})}}>
+                        <Dropdown.Item className="text-xs" onClick={() => { handlePrint('carta'), setModal({ ...{}, impressao: true }) }}>
                             Carta
                         </Dropdown.Item>
-                        <Dropdown.Item className="text-xs" onClick={() =>{ handlePrint('contrato'),setModal({...{},impressao:true})}}>
+                        <Dropdown.Item className="text-xs" onClick={() => { handlePrint('contrato'), setModal({ ...{}, impressao: true }) }}>
                             Contrato
                         </Dropdown.Item>
-                        <Dropdown.Item className="text-xs" onClick={() =>{ handlePrint('carne'),setModal({...{},impressao:true,})}}>
+                        <Dropdown.Item className="text-xs" onClick={() => { handlePrint('carne'), setModal({ ...{}, impressao: true, }) }}>
                             Carnê
                         </Dropdown.Item>
-                        <Dropdown.Item className="text-xs" onClick={() =>{ handlePrint('carteira'),setModal({impressao:true})}}>
+                        <Dropdown.Item className="text-xs" onClick={() => { handlePrint('carteira'), setModal({ impressao: true }) }}>
                             Carteiras
                         </Dropdown.Item>
-                        <Dropdown.Item className="text-xs" onClick={() =>{ handlePrint('resumo'),setModal({impressao:true})}}>
+                        <Dropdown.Item className="text-xs" onClick={() => { handlePrint('resumo'), setModal({ impressao: true }) }}>
                             Resumo de Contrato
                         </Dropdown.Item>
-                        <Dropdown.Item className="text-xs" onClick={() =>{ handlePrint('cancelamento'),setModal({impressao:true})}}>
+                        <Dropdown.Item className="text-xs" onClick={() => { handlePrint('cancelamento'), setModal({ impressao: true }) }}>
                             Cancelamento
                         </Dropdown.Item>
                     </Dropdown>
@@ -245,14 +246,14 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
                 </ButtonGroup>
 
             </div>
-       {  dadosassociado.contrato?.situacao === 'INATIVO' &&   <span className="text-[10px] text-red-500 font-medium">MOTIVO INATIVO:{dadosassociado.contrato?.dt_cancelamento && new Date(dadosassociado.contrato?.dt_cancelamento).toLocaleDateString('pt-BR', {timeZone: 'UTC', day: '2-digit', month: '2-digit', year: 'numeric' })}  - {dadosassociado.contrato?.motivo_inativo}</span>  }
-            <div className="flex w-full flex-row gap-2">
+            {dadosassociado.contrato?.situacao === 'INATIVO' && <span className="text-[10px] text-red-500 font-medium">MOTIVO INATIVO:{dadosassociado.contrato?.dt_cancelamento && new Date(dadosassociado.contrato?.dt_cancelamento).toLocaleDateString('pt-BR', { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: 'numeric' })}  - {dadosassociado.contrato?.motivo_inativo}</span>}
+            <div className="flex w-full flex-col sm:flex-row gap-2">
 
                 <Card onClick={() => {
 
 
-                    setModal({editar:true})
-                }} className="flex flex-col w-full text-black text-xs cursor-pointer">
+                    setModal({ editar: true })
+                }} className="w-full sm:w-1/2 text-xs cursor-pointer">
                     <h2 className="text-sm font-semibold mb-4  text-black">Dados Titular </h2>
 
                     <div className="mb-1 inline-flex justify-between  gap-2  tracking-tight  ">
@@ -274,8 +275,8 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
 
                 <Card onClick={() => {
 
-                    setModal({editar:true})
-                }} className="flex w-full text-black text-xs cursor-pointer">
+                    setModal({ editar: true })
+                }} className="w-full sm:w-1/2 text-xs cursor-pointer">
 
                     <h2 className="text-sm font-semibold mb-4 ">Dados do Plano</h2>
 
@@ -299,17 +300,17 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
 
             <div>
                 <div className="w-full  mt-2 border  rounded-lg  bg-gray-50 border-gray-300">
-                    <div className="flex gap-2 items-center justify-end px-2 py-1 border-b border-gray-300">
-                        <button onClick={() => setModal({observacao:!modal.observacao})} type="button" className="inline-flex items-center py-1 px-2  text-center text-gray-600 0 rounded-lg  hover:bg-blue-800">
+                    <div className="flex flex-wrap  gap-2 items-center  px-2 py-1 border-b border-gray-300">
+                        <button onClick={() => setModal({ observacao: !modal.observacao })} type="button" className="inline-flex items-center py-1 px-2  text-center text-gray-600 0 rounded-lg  hover:bg-blue-800">
                             {modal.observacao ? <IoMdEye data-tooltip-id="my-tooltip"
                                 data-tooltip-content="Ocultar Observações" size={20} /> : <IoMdEyeOff data-tooltip-id="my-tooltip"
                                     data-tooltip-content="Visualizar Observações" size={20} />}
                         </button>
 
-                        <input value={observacao ?? ''} onChange={e => setObservacao(e.target.value ?? '')} placeholder="Digite aqui todas as observações em relação ao plano" type="text" className="block w-full pt-1 pb-1 pl-2 pr-2  border rounded-lg  sm:text-sm bg-gray-100 border-gray-300 placeholder-gray-600 text-gray-600 focus:ring-blue-500 focus:border-blue-500" />
-                        <Button size={'xs'} disabled={!permissoes.includes('ADM1.1.2')} onClick={() =>{}
-                        //handleObservacao()
-                        
+                        <input value={observacao ?? ''} onChange={e => setObservacao(e.target.value ?? '')} placeholder="Digite aqui todas as observações em relação ao plano" type="text"  className="flex-grow min-w-0 rounded-sm bg-gray-100 text-gray-600 placeholder-gray-600 border border-gray-300 px-2 py-1 text-sm focus:ring-blue-500 focus:border-blue-500"/>
+                        <Button size={'xs'} disabled={!permissoes.includes('ADM1.1.2')} onClick={() => { }
+                            //handleObservacao()
+
                         }>
                             <BiSave size={20} />
                         </Button>
@@ -323,7 +324,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
                 </div>
             </div>
 
-            <ul className="flex gap-3 uppercase flex-wrap text-[11px] font-medium text-center  border-b   border-gray-300  ">
+            <ul className="flex flex-wrap gap-2 text-[11px] uppercase font-medium text-center border-b border-gray-300">
                 <li>Ultimas Impressões{"->"}</li>
                 {dadosassociado?.contrato?.impressoes?.map((item, index) => (
                     <li key={index}>{item.arquivo}: {item.date && new Date(item.date).toLocaleDateString('pt-BR')}-{item.user}</li>
@@ -400,10 +401,10 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
                     ref={componentRefs.carta}
                     contrato={dadosassociado?.contrato?.id_contrato ?? 0}
                     titular={dadosassociado?.nome ?? ''}
-                    
+
                 />}
 
-{printState.cancelamento && <ProtocoloCancelamento
+                {printState.cancelamento && <ProtocoloCancelamento
                     infoEmpresa={infoEmpresa}
                     ref={componentRefs.cancelamento}
                     contrato={dadosassociado?.contrato?.id_contrato ?? 0}

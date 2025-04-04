@@ -48,11 +48,11 @@ export function Header() {
 
   return (
     <header className="w-full border-b border-gray-200 bg-white px-3 py-2">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center w-full justify-between">
         {/* LOGO + Empresa */}
         <div className="flex items-center gap-3">
           <Image width={40} height={40} src="/improved_logo.png" alt="Logo" />
-          <div className="hidden sm:flex flex-col">
+          <div className="sm:flex flex-col">
             <Label value="AFAP Gestão - V 2.0" />
             <Select value={selectEmp} onValueChange={setSelectEmp}>
               <SelectTrigger className="w-[150px] h-6 text-xs">
