@@ -141,6 +141,7 @@ export interface EventProps {
 export interface ExameRealizadoProps{
   id_exame:number|null,
   id_selected:number|null,
+  exame:string,
   celular:string,
   endereco:string,
   numero:number|null,

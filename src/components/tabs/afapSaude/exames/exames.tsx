@@ -41,10 +41,10 @@ export interface FiltroForm {
 
 
 export default function Exames({exames}:DataProps) {
-  const valorInicial = {id_exame:null,celular:'',data_orcamento:new Date(),data_realizado:new Date(),exames:[],coleta:'',tipoDesc:'',cpf:'',data_nasc:new Date(),nome_responsavel:'',parentesco:'',nome:'',status:'',user:'',endereco:'',id_selected:null,numero:null,bairro:'',cidade:''}
+  const valorInicial = {id_exame:null,celular:'',data_orcamento:new Date(),data_realizado:new Date(),exames:[],coleta:'',tipoDesc:'',cpf:'',data_nasc:new Date(),nome_responsavel:'',parentesco:'',nome:'',status:'',user:'',endereco:'',id_selected:null,numero:null,bairro:'',cidade:'',exame:''}
     const [examesRealizados,setExames] = useState<Array<ExameRealizadoProps>>([])
     const [exameSelected, setExameSelected] = useState<ExameRealizadoProps>(valorInicial)
-  const {usuario,infoEmpresa} = useContext(AuthContext)
+  const {usuario} = useContext(AuthContext)
   const [openModal, setOpenModal] = useState(false)
   const currentPage = useRef<Orcamento>(null)
   const [filtro,setFiltro] = useState<boolean>(false)
@@ -228,6 +228,7 @@ toast.promise(
           success:(response)=>{
             setExames([...examesRealizados,response.data])
             setExameSelected(valorInicial)
+            setOpenModal(false)
             
             return 'Exame gerado com sucesso!'}
          }
@@ -255,7 +256,7 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
       success:(response)=> {
         setExames([...examesRealizados.filter(item=>item.id_exame!==Number(data.id_exame)),response.data])
         setExameSelected(valorInicial)
-        
+        setOpenModal(false)
         
         return 'Exame editado com sucesso!'}
      }

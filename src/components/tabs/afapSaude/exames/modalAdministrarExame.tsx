@@ -1,12 +1,14 @@
 
 
-import { Button, Label, Modal, Select, Table, TextInput } from "flowbite-react";
+import { Label, Modal, Select, Table, TextInput } from "flowbite-react";
 import ReactInputMask from "react-input-mask";
 import { ChangeEvent } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import {  HiTrash } from "react-icons/hi2";
 import { ExameRealizadoProps, ExamesData, ExamesProps } from "@/types/afapSaude";
 import { toast } from "sonner";
+import { Combobox } from "@/components/ui/combobox";
+import { Button } from "@/components/ui/button";
 
 
 interface DataProps {
@@ -32,7 +34,7 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
 
 
   const handleAdicionarExame = () => {
-    const exame = arraySelectExames.find(item => item.id_exame === Number(watch('id_selected')));
+    const exame = arraySelectExames.find(item => item.nome === watch('exame'));
 
 
     const tipo = watch('tipoDesc')
@@ -42,7 +44,7 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
       return
     }
 
-    console.log(exame)
+   // console.log(exame)
     if (!exame) {
       toast.info('Selecione um exame')
       return;
@@ -81,7 +83,7 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
       obs: exame.obs,
 
     }]);
-    console.log("Exame adicionado:", exame);
+    //console.log("Exame adicionado");
   };
 
 
@@ -113,7 +115,7 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
     <Modal show={openModal} size="4xl" dismissible onClose={() => setOpenModal()} >
       <Modal.Header>Administrar Exame</Modal.Header>
       <Modal.Body>
-        <form onSubmit={handleSubmit(handleOnSubmit)}>
+        <form className="flex flex-col w-full" onSubmit={handleSubmit(handleOnSubmit)}>
           <div className="grid grid-cols-4 gap-2 ">
             <div className="col-span-2 ">
               <Label className="text-xs" htmlFor="nome" value="Nome Paciente" />
@@ -220,23 +222,24 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
           <div>
 
 
-   
 
 
+           
 
-            <div className="inline-flex w-full gap-4 mb-1">
-              <div className="w-full">
-
-                <Label htmlFor="exame" className="text-xs" value="Exame" />
-
-                <Select id="exame" sizing={'sm'} {...register('id_selected')} className="focus:outline-none" required ={!registro.id_exame} >
-                  <option value={''}></option>
-                  {arraySelectExames?.map((item, index) => (
-                    <option value={item.id_exame} key={index}>{`${item.nome}`}</option>
-                  ))}
-                </Select>
-              </div>
-              <Button type="button" size={'xs'} onClick={handleAdicionarExame} className="mt-auto p-1">Adicionar</Button>
+            <div className="inline-flex w-full gap-4 py-4">
+            <Controller
+   name="exame"
+   control={control}
+   render={({ field: { onChange, value } }) => (
+    <Combobox
+    items={arraySelectExames.map((item) => ({ value: item.nome, label: item.nome }))}
+    value={value}
+    placeholder="Selecione um exame"
+    onChange={onChange}
+  />
+   )}
+   />
+              <Button type="button" size={'sm'} onClick={handleAdicionarExame} className="mt-auto p-1">Adicionar</Button>
 
             </div>
             <div className="overflow-x-auto ">
@@ -296,9 +299,9 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
 
               </Table>
             </div>
-            <Button className="ml-auto" type="submit">{registro?.id_exame ? 'Atualizar' : 'Cadastrar'}</Button>
-
+          
           </div>
+          <Button className="ml-auto" type="submit">{registro?.id_exame ? 'Atualizar' : 'Cadastrar'}</Button>
 
         </form>
       </Modal.Body>
