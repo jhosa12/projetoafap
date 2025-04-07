@@ -1,4 +1,4 @@
-import { Button, Label, Popover } from "flowbite-react"
+import {  Label, Popover } from "flowbite-react"
 import { IoCalendar } from "react-icons/io5"
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -10,6 +10,7 @@ import { AuthContext } from "@/store/AuthContext";
 import { IoIosTime } from 'react-icons/io';
 import { MensalidadeProps } from "@/types/financeiro";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 interface DataProps{
    
     id_global:number|null,
@@ -68,10 +69,10 @@ export function PopoverReagendamento({id_global,mensalidades,id_usuario,setSelec
         
     </div>
 
-    <Button onClick={handleReagendar} as={'button'} size="xs">Aplicar</Button>
+    <Button variant={'outline'} onClick={handleReagendar} type="button" size="sm">Aplicar</Button>
 
 </div>)}   >
-<Button  className="rounded-none border-s-0 border-y" color="light" size="xs">
+<Button variant='outline'  color="light" size="sm">
 <IoIosTime className="mr-1 h-4 w-4"/>
 Reagendar
 </Button>

@@ -1,5 +1,5 @@
 
-import DocumentTemplate from "@/Documents/associado/carteiraAssociado/DocumentTemplate";
+import DocumentTemplate from "@/Documents/associado/carteiraAssociado/CarteiraAssociado";
 import { ObitoProps } from "@/types/associado";
 import { Table } from "flowbite-react";
 import { IoPrint } from "react-icons/io5";

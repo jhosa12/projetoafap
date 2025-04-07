@@ -7,15 +7,12 @@ import { AuthContext } from "../../../store/AuthContext"
 import 'react-tooltip/dist/react-tooltip.css';
 import CarteirasDep from "../../../components/tabs/admContrato/carteiras/carteirasDep";
 import { HistoricoMensalidade } from "@/components/tabs/admContrato/historicoMensalidade/historicoMensalidade";
-import ObitosAssociado from "@/components/tabs/admContrato/obitos/obitos";
 import { Modal, Spinner } from "flowbite-react";
-import { HiIdentification, HiMiniInbox, HiMiniWallet, HiOutlineIdentification, HiUserCircle, HiUserGroup } from "react-icons/hi2";
+import {  HiOutlineIdentification, HiUserCircle } from "react-icons/hi2";
 import { DadosAssociado } from "@/components/tabs/admContrato/dadosAssociado/screen";
 import { Dependentes } from "@/components/tabs/admContrato/dependentes/dependentes";
 import ModalCadastro from "@/components/modals/admContrato/cadastro/modalCadastro";
-import { FaHandshake } from "react-icons/fa";
 import { VerificarSituacao } from "@/utils/admContrato/verificarSituacao";
-import { Acordos } from "@/components/tabs/admContrato/acordos/screen";
 import { Button } from "@/components/ui/button"
 import { AssociadoProps } from "@/types/associado";
 import { Select, SelectTrigger, SelectItem, SelectContent, SelectValue } from "@/components/ui/select"
@@ -26,12 +23,15 @@ import {
     TabsTrigger,
     TabsContent,
   } from "@/components/ui/tabs"
-import { Briefcase, User, Users, Wallet } from "lucide-react";
-import { PiIdentificationCardThin } from "react-icons/pi";
+import { User, Users, Wallet } from "lucide-react";
 import { UsuarioProps } from "@/pages/settings/usuario";
+import { UserProps } from "@/types/user";
+
+
+
 export default function AdmContrato() {
 
-    const { usuario,dadosassociado, carregarDados, permissoes, limparDados, loading, infoEmpresa } = useContext(AuthContext)
+    const { usuario,dadosassociado, carregarDados, permissoes, limparDados, loading, infoEmpresa,setarDadosAssociado } = useContext(AuthContext)
     const [indexTab, setIndex] = useState<number>(0)
     const [modal, setModal] = useState<{ [key: string]: boolean }>({
         busca: false,
@@ -149,88 +149,119 @@ export default function AdmContrato() {
                     </div>
                   
          
-        <Tabs defaultValue="dados" className="">
-        <TabsList className=" gap-2">
-          <TabsTrigger value="dados">
-            <User className="w-4 h-4 mr-2" />
-            Dados
-          </TabsTrigger>
-          <TabsTrigger value="mensalidade">
-            <Wallet className="w-4 h-4 mr-2" />
-            Mensalidades
-          </TabsTrigger>
-          <TabsTrigger value="dependentes">
-            <Users className="w-4 h-4 mr-2" />
-            Dependentes
-          </TabsTrigger>
+                    {isMobile ? (
+  // Renderiza um dropdown ou accordion para dispositivos móveis
+  <div className="relative">
+    <Select onValueChange={(value) => setTab(value)} defaultValue="dados">
+      <SelectTrigger>
+        <SelectValue placeholder="Selecione uma opção" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="dados">Dados Associado</SelectItem>
+        <SelectItem value="mensalidade">Mensalidades</SelectItem>
+        <SelectItem value="dependentes">Dependentes</SelectItem>
+        <SelectItem value="carteiras">Carteiras</SelectItem>
+      </SelectContent>
+    </Select>
+    {tab === "dados" && <DadosAssociado
+    dadosassociado = { dadosassociado}
+      infoEmpresa ={infoEmpresa}
+       permissoes ={permissoes}
+       setarDadosAssociado ={setarDadosAssociado}
+        usuario = {usuario ?? {} as UserProps} />}
+    {tab === "mensalidade" && <HistoricoMensalidade
+     {...{carregarDados, dadosassociado, infoEmpresa,usuario: usuario ?? {} as UserProps, permissoes, setarDadosAssociado}} 
+     />}
+    {tab === "dependentes" && <Dependentes
+     {...{dadosassociado, infoEmpresa, permissoes, setarDadosAssociado,usuario: usuario ?? {} as UserProps}} />}
+    {tab === "carteiras" && <CarteirasDep 
+      adesao={dadosassociado?.contrato?.dt_adesao ?? new Date()}
+      bairro={dadosassociado?.bairro ?? ''}
+      celular={dadosassociado?.celular1 ?? ''}
+      cidade={dadosassociado?.cidade ?? ''}
+      contrato={dadosassociado?.contrato?.id_contrato ?? 0}
+      cpf={dadosassociado?.cpfcnpj ?? ''}
+      endereco={dadosassociado?.endereco ?? ''}
+      numero={dadosassociado?.numero ?? 0}
+      plano={dadosassociado?.contrato?.plano ?? ''}
+      rg={dadosassociado?.rg ?? ''}
+      titular={dadosassociado?.nome ?? ''}
+      dependentes={dadosassociado?.dependentes ?? []}
+      infoEmpresa={infoEmpresa}
+      uf={dadosassociado?.uf ?? ''}
+    />}
+  </div>
+) : (
+  // Renderiza as tabs para telas maiores
+  <Tabs defaultValue="dados" className="overflow-x-auto whitespace-nowrap">
+    <TabsList className="gap-2">
+      <TabsTrigger value="dados">
+        <User className="w-4 h-4 mr-2" />
+        Dados
+      </TabsTrigger>
+      <TabsTrigger value="mensalidade">
+        <Wallet className="w-4 h-4 mr-2" />
+        Mensalidades
+      </TabsTrigger>
+      <TabsTrigger value="dependentes">
+        <Users className="w-4 h-4 mr-2" />
+        Dependentes
+      </TabsTrigger>
+      <TabsTrigger value="carteiras">
+        <HiOutlineIdentification className="w-5 h-5 mr-2" />
+        Carteiras
+      </TabsTrigger>
+    </TabsList>
 
-          <TabsTrigger value="carteiras">
-            <HiOutlineIdentification className="w-5 h-5 mr-2" />
-            Carteiras
-          </TabsTrigger>
-        </TabsList>
-  
-        <TabsContent value="dados">
-         <DadosAssociado
-         dadosassociado={dadosassociado}
-         infoEmpresa={infoEmpresa}
-         
-         />
-        </TabsContent>
-        <TabsContent value="mensalidade">
-          <HistoricoMensalidade
-          carregarDados={carregarDados}
-          dadosAssociado={
-            {
-                acrescimo: dadosassociado?.contrato?.acrescimo ?? 0,
-                decrescimo: dadosassociado?.contrato?.desconto ?? 0,
-                arrayAcordo: dadosassociado?.acordo ?? [],
-                arrayMensalidade: dadosassociado?.mensalidade ?? [],
-                bairro: dadosassociado?.bairro ?? '',
-                cidade: dadosassociado?.cidade ?? '',
-                endereco: dadosassociado?.endereco ?? '',
-                id_associado: dadosassociado?.id_associado ?? 0,
-                id_contrato: dadosassociado?.contrato?.id_contrato ?? 0,
-                id_global: dadosassociado?.id_global ?? 0,
-                id_contrato_global: dadosassociado?.contrato?.id_contrato_global ?? 0,
-                nome: dadosassociado?.nome ?? '',
-                numero: dadosassociado?.numero ?? 0,
-                plano: dadosassociado?.contrato?.plano ?? '',
-                situacao: dadosassociado?.contrato?.situacao ?? '',
-                uf: dadosassociado?.uf ?? '',
-                id_empresa: dadosassociado?.id_empresa ?? '',
-               id_plano: dadosassociado?.contrato?.id_plano ?? 0,
-               valor_mensalidade: dadosassociado?.contrato?.valor_mensalidade ?? 0
-            }
-          }
-          usuario={usuario ??{} as UsuarioProps}
+    <TabsContent value="dados">
+      <DadosAssociado
+        dadosassociado={dadosassociado}
+        infoEmpresa={infoEmpresa}
+        permissoes={permissoes}
+        setarDadosAssociado={setarDadosAssociado}
+        usuario={usuario ?? ({} as UserProps)}
+      />
+    </TabsContent>
+    <TabsContent value="mensalidade">
+      <HistoricoMensalidade
+        carregarDados={carregarDados}
+        dadosassociado={dadosassociado ?? {}}
+        infoEmpresa={infoEmpresa}
+        usuario={usuario ?? ({} as UsuarioProps)}
+        permissoes={permissoes}
+        setarDadosAssociado={setarDadosAssociado}
+      />
+    </TabsContent>
+    <TabsContent value="dependentes">
+      <Dependentes
+        dadosassociado={dadosassociado ?? ({} as AssociadoProps)}
+        infoEmpresa={infoEmpresa}
+        permissoes={permissoes}
+        setarDadosAssociado={setarDadosAssociado}
+        usuario={usuario ?? ({} as UserProps)}
+      />
+    </TabsContent>
+    <TabsContent value="carteiras">
+      <CarteirasDep
+        adesao={dadosassociado?.contrato?.dt_adesao ?? new Date()}
+        bairro={dadosassociado?.bairro ?? ''}
+        celular={dadosassociado?.celular1 ?? ''}
+        cidade={dadosassociado?.cidade ?? ''}
+        contrato={dadosassociado?.contrato?.id_contrato ?? 0}
+        cpf={dadosassociado?.cpfcnpj ?? ''}
+        endereco={dadosassociado?.endereco ?? ''}
+        numero={dadosassociado?.numero ?? 0}
+        plano={dadosassociado?.contrato?.plano ?? ''}
+        rg={dadosassociado?.rg ?? ''}
+        titular={dadosassociado?.nome ?? ''}
+        dependentes={dadosassociado?.dependentes ?? []}
+        infoEmpresa={infoEmpresa}
+        uf={dadosassociado?.uf ?? ''}
+      />
+    </TabsContent>
+  </Tabs>
+)}
 
-          />
-        </TabsContent>
-        <TabsContent value="dependentes">
-          <Dependentes/>
-        </TabsContent>
-
-        <TabsContent value="carteiras">
-          <CarteirasDep
-          adesao={dadosassociado?.contrato?.dt_adesao ?? new Date()}
-          bairro={dadosassociado?.bairro ?? ''}
-          celular={dadosassociado?.celular1 ?? ''}
-          cidade={dadosassociado?.cidade ?? ''}
-          contrato={dadosassociado?.contrato?.id_contrato ?? 0}
-          cpf={dadosassociado?.cpfcnpj ?? ''}
-          endereco={dadosassociado?.endereco ?? ''}
-          numero={dadosassociado?.numero ?? 0}
-          plano={dadosassociado?.contrato?.plano ?? ''}
-          rg={dadosassociado?.rg ?? ''}
-          titular={dadosassociado?.nome ?? ''}
-          dependentes={dadosassociado?.dependentes ?? []}
-          infoEmpresa={infoEmpresa}
-          uf={dadosassociado?.uf ?? ''}
-          />
-        </TabsContent>
-      </Tabs>
-     
 
       {/* Conteúdo das tabs */}
 
@@ -241,12 +272,3 @@ export default function AdmContrato() {
       
     )
 }
-
-
-
-
-/*export const getServerSideProps = canSRRAuth(async (ctx) => {
-    return {
-        props: {}
-    }
-})*/

@@ -1,6 +1,6 @@
-import { AuthContext} from "@/store/AuthContext"
+
 import { api } from "@/lib/axios/apiClient"
-import { useContext, useEffect, useRef, useState } from "react"
+import {  useEffect, useRef, useState } from "react"
 import { MdDeleteForever, MdEdit } from "react-icons/md"
 import { RiAddCircleFill } from "react-icons/ri"
 import {  TbWheelchair } from "react-icons/tb"
@@ -10,17 +10,26 @@ import { ModalExcluirDep } from "../../../modals/admContrato/dependentes/modalEx
 import DeclaracaoExclusao from "@/Documents/dependentes/DeclaracaoExclusao"
 import { IoPrint } from "react-icons/io5"
 import { useReactToPrint } from "react-to-print"
-import { DependentesProps } from "@/types/associado"
+import { AssociadoProps, DependentesProps } from "@/types/associado"
 import pageStyle from "@/utils/pageStyle"
 import { Button, ButtonGroup, Table } from "flowbite-react"
 import { toast } from "sonner"
+import { EmpresaProps } from "@/types/empresa"
+import { UserProps } from "@/types/user"
+import { Checkbox } from "@/components/ui/checkbox"
 
 
+interface DadosProps {
+    dadosassociado:Partial<AssociadoProps>,
+    setarDadosAssociado: (dados:Partial<AssociadoProps>)=>void,
+    infoEmpresa:EmpresaProps|null,
+    usuario:UserProps,
+    permissoes:Array<string>
+}
 
 
-export function Dependentes(){
+export function Dependentes({dadosassociado,infoEmpresa,setarDadosAssociado,usuario,permissoes}:DadosProps){
     const [checkDependente, setCheckDependente] = useState(false)
-    const {dadosassociado,usuario,setarDadosAssociado,permissoes,infoEmpresa} =useContext(AuthContext)
     const [dadosDep,setDadosDep] = useState<Partial<DependentesProps>>({} )
     const componentRef = useRef<DeclaracaoExclusao>(null)
     const [modal,setModal] = useState<{[key:string]:boolean}>({
@@ -108,13 +117,15 @@ export function Dependentes(){
     return(
         <div className="flex flex-col   max-h-[calc(100vh-200px)]  w-full  p-2 ">
                                 <div className="flex w-full mb-2 gap-2">
-
-                                <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
-                    <input disabled={!permissoes.includes('ADM1.3.1')} checked={checkDependente} onChange={() => setCheckDependente(!checkDependente)} type="checkbox" value="2" className="sr-only peer disabled:cursor-not-allowed" />
-                    <div className="  w-7 h-4 rounded-full peer bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[7px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
-                    <Tooltip className="z-30" id="id_dependente" />
-                    <span className="ms-3 text-xs font-medium">Exibir Excluidos</span>
-                </label>
+                                <div className="flex items-center">
+                    <Checkbox
+                        checked={checkDependente}
+                        onCheckedChange={() => setCheckDependente(!checkDependente)}
+                        disabled={!permissoes.includes("ADM1.2.10")}
+                        className="h-4 w-4" // Tamanho reduzido
+                    />
+                    <span className="ml-2 text-xs font-medium">Exibir Excluídos</span>
+                </div>
         
                                      <ButtonGroup>
 

@@ -3,7 +3,7 @@
 
 import React, { useContext, useRef } from 'react';
 import ReactToPrint from 'react-to-print';
-import DocumentTemplate from './DocumentTemplate';
+import DocumentTemplate from './CarteiraAssociado';
 import { LiaFileContractSolid } from "react-icons/lia";
 import { AuthContext } from '@/store/AuthContext';
 

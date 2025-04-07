@@ -8,7 +8,7 @@ import { EmpresaProps } from '@/types/empresa';
 
 
 interface MensalidadeProps {
-    id_contrato: number,
+    id_contrato: number|null,
     associado: string,
     n_doc: string,
     parcela_n: number,
@@ -29,7 +29,7 @@ interface DadosAssociado {
     numero: number,
     cidade: string
     uf: string,
-    id_contrato: number
+    id_contrato: number|null
 }
 interface DadosProps {
     dadosAssociado: DadosAssociado

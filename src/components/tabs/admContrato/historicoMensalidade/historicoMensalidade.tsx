@@ -2,28 +2,32 @@
 import ImpressaoCarne from '@/Documents/associado/mensalidade/ImpressaoCarne';
 import { api } from '@/lib/axios/apiClient';
 import { useReactToPrint } from 'react-to-print';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { IoPrint } from 'react-icons/io5';
 import { MdDeleteForever } from 'react-icons/md';
 import { RiAddCircleFill } from 'react-icons/ri';
-import { AuthContext } from '@/store/AuthContext';
 import { ModalMensalidade } from '../../../modals/admContrato/historico/modalmensalidade';
 //import { Scanner } from './modalScanner';
 import { ModalEditarMensalidade } from '../../../modals/admContrato/historico/modalEditarMensalidade';
 import { ModalExcluirMens } from '../../../modals/admContrato/historico/modalExcluirMens';
-import { AcordoProps, MensalidadeProps } from '@/types/financeiro';
+import { MensalidadeProps } from '@/types/financeiro';
 import { ReciboMensalidade } from '@/Documents/associado/mensalidade/Recibo';
 import pageStyle from '@/utils/pageStyle';
-import { Button, ButtonGroup, Popover, Table } from 'flowbite-react';
+import { Popover } from 'flowbite-react';
 import { PopoverVencimento } from './popoverVencimento';
 import { PopoverReagendamento } from './popoverReagendamento';
-import ModalBaixaMensalidade from '@/pages/dashboard/formasPag';
 import { LuArrowDown, LuArrowDownUp, LuArrowUp } from 'react-icons/lu';
 import { Input } from '@/components/ui/input';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import useApiPost from '@/hooks/useApiPost';
 import useApiPut from '@/hooks/useApiPut';
 import { toast } from 'sonner';
+import { usePrintDocsAssociado } from '@/hooks/usePrintDocsAssociado';
+import { EmpresaProps } from '@/types/empresa';
+import { AssociadoProps } from '@/types/associado';
+import { ModalConfirmar } from '@/components/modals/modalConfirmar';
+import { Button } from '@/components/ui/button';
+import { removerFusoDate } from '@/utils/removerFusoDate';
+import { Checkbox } from '@/components/ui/checkbox';
 
 
 
@@ -35,40 +39,20 @@ export interface SetAssociadoProps {
     closeModalPlano: boolean
 }
 
-interface DadosAssociadoGeral {
-    nome: string,
-    id_empresa: string,
-    endereco: string,
-    situacao: string,
-    plano: string
-    bairro: string,
-    numero: number,
-    cidade: string,
-    uf: string,
-    id_contrato_global: number | null,
-    id_global: number | null,
-    id_contrato: number,
-    id_associado: number,
-    arrayMensalidade: Array<MensalidadeProps>,
-    arrayAcordo: Array<AcordoProps>
-    valor_mensalidade: number,
-    acrescimo:number|null,
-    decrescimo:number|null,
-    id_plano: number|null
 
-}
 
 interface DadosProps {
     usuario: { id?: string, nome: string }
     carregarDados: (id: number) => Promise<void>
-    dadosAssociado: DadosAssociadoGeral
+    dadosassociado: Partial<AssociadoProps>,
+    setarDadosAssociado: (dados: Partial<AssociadoProps>) => void,
+    infoEmpresa: EmpresaProps | null,
+    permissoes: Array<string>,
 }
 
-export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }: DadosProps) {
+export function HistoricoMensalidade({ dadosassociado, carregarDados, usuario, infoEmpresa, setarDadosAssociado, permissoes }: DadosProps) {
     const [checkMensal, setCheck] = useState(false)
     const [linhasSelecionadas, setLinhasSelecionadas] = useState<Array<Partial<MensalidadeProps>>>([]);
-    const componentRef = useRef<ImpressaoCarne>(null);
-    const { setarDadosAssociado, permissoes, infoEmpresa } = useContext(AuthContext)
     const [mensalidadeSelect, setMensalidade] = useState<Partial<MensalidadeProps>>();
     const componentRecibo = useRef<ReciboMensalidade>(null)
     const [mensalidadeRecibo, setMensalidadeRecibo] = useState<Partial<MensalidadeProps>>()
@@ -76,9 +60,17 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
         excluir: false,
         baixar: false,
         editar: false,
-        recibo: false
+        recibo: false,
+        carne: false
     })
 
+    const { componentRefs, handlePrint, printState, handleImpressao } = usePrintDocsAssociado(
+        dadosassociado,
+        usuario.nome ?? '',
+        infoEmpresa?.id ?? '',
+        setarDadosAssociado,
+        () => setModal({ carne: false })
+    )
 
 
     const imprimirRecibo = useReactToPrint({
@@ -94,17 +86,6 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
     useEffect(() => {
         mensalidadeRecibo?.id_mensalidade_global && imprimirRecibo()
     }, [mensalidadeRecibo?.id_mensalidade_global])
-
-
-
-    const imprimirCarne = useReactToPrint({
-        pageStyle: pageStyle,
-        documentTitle: 'CARNÊ ASSOCIADO',
-        content: () => componentRef.current,
-        onBeforeGetContent: () => setModal({ recibo: true }),  // Ativa antes da impressão
-        onAfterPrint: () => setModal({ recibo: false }),        // Desativa após a impressão
-    })
-
 
 
 
@@ -147,80 +128,97 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
         })
 
 
-     
-            const response = await toast.promise(
-                api.delete('/mensalidade/delete', {
-                    data: {
-                        mensalidades: linhasSelecionadas
-                    }
-                }),
-                {
-                    loading: `Efetuando`,
-                    success: ()=>{
-                        
-                        setModal({ excluir: false })
-                        
-                        return`Excluida com sucesso`},
-                    error: `Erro ao efetuar exlusão`
+
+        const response = await toast.promise(
+            api.delete('/mensalidade/delete', {
+                data: {
+                    mensalidades: linhasSelecionadas
                 }
+            }),
+            {
+                loading: `Efetuando`,
+                success: () => {
 
-            )
+                    setModal({ excluir: false })
+
+                    return `Excluida com sucesso`
+                },
+                error: `Erro ao efetuar exlusão`
+            }
+
+        )
 
 
 
 
-            dadosAssociado.id_global && await carregarDados(dadosAssociado.id_global)
-            // setarDados({ mensalidade: {} })
-            // setarDadosAssociado({mensalidade:mensalidades})
-            // setOpenExcluir(false)
-         
-            setLinhasSelecionadas([])
-            // setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
-     
-    }, [linhasSelecionadas, dadosAssociado.id_global]
+        dadosassociado.id_global && await carregarDados(dadosassociado.id_global)
+        // setarDados({ mensalidade: {} })
+        // setarDadosAssociado({mensalidade:mensalidades})
+        // setOpenExcluir(false)
+
+        setLinhasSelecionadas([])
+        // setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
+
+    }, [linhasSelecionadas, dadosassociado.id_global]
 
     )
 
 
 
     const adicionarMensalidade = useCallback(async () => {
-        const ultimaMensalidade = dadosAssociado.arrayMensalidade && dadosAssociado?.arrayMensalidade[dadosAssociado?.arrayMensalidade?.length - 1]
+
+
+
+        if (!dadosassociado.id_global) {
+            toast.warning('Associado não encontrado')
+            return
+        }
+        const ultimaMensalidade = dadosassociado.mensalidade && dadosassociado?.mensalidade[dadosassociado?.mensalidade?.length - 1]
+
+
+        if (!ultimaMensalidade) {
+            toast.warning('Não há mensalidades registradas')
+        }
+
         const vencimento = new Date(ultimaMensalidade?.vencimento ? ultimaMensalidade?.vencimento : '')
         const proxData = vencimento.setMonth(vencimento.getMonth() + 1)
-       
-            const response = await toast.promise(
-                api.post('/mensalidade/adicionar', {
-                    id_contrato_global: dadosAssociado.id_contrato_global,
-                    id_global: dadosAssociado.id_global,
-                    id_contrato: dadosAssociado.id_contrato,
-                    id_associado: dadosAssociado.id_associado,
-                    status: 'A',
-                    valor_principal: dadosAssociado.valor_mensalidade,
-                    parcela_n: ultimaMensalidade?.parcela_n && ultimaMensalidade?.parcela_n + 1,
-                    vencimento: new Date(proxData),
-                    cobranca: new Date(proxData),
-                    referencia: `${String(new Date(proxData).getMonth() + 1).padStart(2, '0')}/${new Date(proxData).getFullYear() % 100}`,
-                    id_empresa: dadosAssociado?.id_empresa
+        const { newDate } = removerFusoDate(new Date(proxData))
+
+
+
+        toast.promise(
+            api.post('/mensalidade/adicionar', {
+                id_contrato_global: dadosassociado?.contrato?.id_contrato_global,
+                id_global: dadosassociado.id_global,
+                id_contrato: dadosassociado?.contrato?.id_contrato,
+                id_associado: dadosassociado.id_associado,
+                status: 'A',
+                valor_principal: dadosassociado.contrato?.valor_mensalidade,
+                parcela_n: ultimaMensalidade?.parcela_n && ultimaMensalidade?.parcela_n + 1,
+                vencimento: newDate,
+                cobranca: newDate,
+                referencia: new Date(proxData).toLocaleDateString('pt-BR', {
+                    month: '2-digit',
+                    year: '2-digit'
                 }),
-                {
-                    loading: `Efetuando`,
-                    success:(response)=> {
-                                 // carregarDados()
-            setLinhasSelecionadas([])
-            //  setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
+                id_empresa: dadosassociado?.id_empresa
+            }),
+            {
+                loading: `Efetuando`,
+                success: (response) => {
+                    // carregarDados()
+                    setLinhasSelecionadas([])
+                    //  setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
 
-            setarDadosAssociado({ ...dadosAssociado, mensalidade: [...dadosAssociado.arrayMensalidade, response.data] })
-                        
-                        return `Mensalidade Adicionada`},
-                    error: `Erro ao gerar mensalidade`
-                }
+                    setarDadosAssociado({ ...dadosassociado, mensalidade: [...(dadosassociado.mensalidade ?? []), response.data] })
 
-            )
-       
+                    return `Mensalidade Adicionada`
+                },
+                error: `Erro ao gerar mensalidade`
+            }
 
-    
-
-    }, [dadosAssociado]
+        )
+    }, [dadosassociado]
     )
 
 
@@ -234,12 +232,12 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
 
             {mensalidadeRecibo?.id_mensalidade && <div style={{ display: 'none' }} >
                 <ReciboMensalidade
-                    cidade_uf={infoEmpresa?.cidade_uf??''}
-                    endereco={infoEmpresa?.endereco??''}
-                    logoUrl={infoEmpresa?.logoUrl??''}
+                    cidade_uf={infoEmpresa?.cidade_uf ?? ''}
+                    endereco={infoEmpresa?.endereco ?? ''}
+                    logoUrl={infoEmpresa?.logoUrl ?? ''}
                     ref={componentRecibo}
-                    associado={dadosAssociado.nome}
-                    contrato={dadosAssociado.id_contrato}
+                    associado={dadosassociado.nome ?? ''}
+                    contrato={dadosassociado?.contrato?.id_contrato ?? null}
                     n_doc={mensalidadeRecibo?.n_doc ?? ''}
                     referencia={mensalidadeRecibo?.referencia ?? ''}
                     valor={mensalidadeRecibo?.valor_principal ?? 0}
@@ -249,21 +247,21 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                 />
             </div>}
 
-            {openModal.recibo &&
+            {printState.carne &&
                 <div style={{ display: 'none' }}>
                     <ImpressaoCarne
                         infoEmpresa={infoEmpresa}
-                        ref={componentRef}
-                        arrayMensalidade={linhasSelecionadas.length > 0 ? linhasSelecionadas : dadosAssociado.arrayMensalidade?.filter((item) => item.status !== 'P')}
+                        ref={componentRefs.carne}
+                        arrayMensalidade={linhasSelecionadas.length > 0 ? linhasSelecionadas : dadosassociado.mensalidade?.filter((item) => item.status !== 'P') ?? []}
                         dadosAssociado={{
-                            nome: dadosAssociado.nome,
-                            endereco: dadosAssociado.endereco,
-                            bairro: dadosAssociado.bairro,
-                            cidade: dadosAssociado.cidade,
-                            id_contrato: dadosAssociado.id_contrato,
-                            numero: Number(dadosAssociado.numero),
-                            uf: dadosAssociado.uf,
-                            plano: dadosAssociado.plano
+                            nome: dadosassociado.nome ?? '',
+                            endereco: dadosassociado.endereco ?? '',
+                            bairro: dadosassociado.bairro ?? '',
+                            cidade: dadosassociado.cidade ?? '',
+                            id_contrato: dadosassociado?.contrato?.id_contrato ?? null,
+                            numero: Number(dadosassociado.numero),
+                            uf: dadosassociado.uf ?? '',
+                            plano: dadosassociado?.contrato?.plano ?? ''
                         }}
                     />
 
@@ -277,32 +275,70 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
 
             {openModal.excluir && <ModalExcluirMens openModal={openModal.excluir} setOpenModal={() => setModal({ excluir: false })} handleExcluirMensalidade={excluirMesal} />}
 
+            {printState.carne && <ModalConfirmar pergunta={`Realmente deseja imprimir o(a) carnê ?. Esteja ciente de que ao confirmar, os dados de data e usuario que realizou a impressão serão atualizados!`} openModal={printState.carne} setOpenModal={() => handlePrint('carne')} handleConfirmar={handleImpressao} />}
+
             <div className="flex w-full  gap-2">
-                <label className="relative inline-flex w-[130px] justify-center  items-center mb-1 cursor-pointer">
-                    <input disabled={!permissoes.includes('ADM1.2.10')} checked={checkMensal} onChange={() => setCheck(!checkMensal)} type="checkbox" value="2" className="sr-only peer disabled:cursor-not-allowed" />
-                    <div className="  w-7 h-4 rounded-full peer bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[7px] after:start-[12px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
-                    <span className="ms-3 text-xs font-medium">Exibir Pagas</span>
-                </label>
-                <ButtonGroup>
-                    <Button disabled={!permissoes.includes('ADM1.2.1')} onClick={adicionarMensalidade} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' /> Adicionar</Button>
+                <div className="flex items-center">
+                    <Checkbox
+                        checked={checkMensal}
+                        onCheckedChange={() => setCheck(!checkMensal)}
+                        disabled={!permissoes.includes("ADM1.2.10")}
+                        className="h-4 w-4" // Tamanho reduzido
+                    />
+                    <span className="ml-2 text-xs font-medium">Exibir Pagas</span>
+                </div>
 
-                    <PopoverReagendamento setSelecionadas={setLinhasSelecionadas} id_usuario={usuario?.id} mensalidades={linhasSelecionadas} id_global={dadosAssociado.id_global} />
 
-                    <Button type='button' onClick={imprimirCarne} color='light' size='xs'>  <IoPrint className='mr-1 h-4 w-4' /> Imprimir</Button>
 
-                    <PopoverVencimento id_global={dadosAssociado.id_global} />
-                    <PopoverAcresDecres
-                            permissions={permissoes}
-                            acrescimo={dadosAssociado.acrescimo}
-                            decrescimo={dadosAssociado.decrescimo}
-                            id_global={dadosAssociado.id_global}
-                            id_plano={dadosAssociado.id_plano}
-                            id_contrato_global={dadosAssociado.id_contrato_global}
-                            atualizar={()=>carregarDados(Number(dadosAssociado.id_global))}
+
+
+                <div className="flex flex-col md:flex-row md:space-x-2 space-y-2 md:space-y-0">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={!permissoes.includes("ADM1.2.1")}
+                        onClick={adicionarMensalidade}
+                    >
+                        <RiAddCircleFill className="mr-1 h-4 w-4" /> Adicionar
+                    </Button>
+
+                    <PopoverReagendamento
+                        setSelecionadas={setLinhasSelecionadas}
+                        id_usuario={usuario?.id}
+                        mensalidades={linhasSelecionadas}
+                        id_global={dadosassociado.id_global ?? null}
                     />
 
-                    <Button disabled={!permissoes.includes('ADM1.2.3')} onClick={() => setModal({ excluir: true })} type="button" color='light' size='xs'><MdDeleteForever className='mr-1 h-4 w-4' /> Excluir</Button>
-                </ButtonGroup>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handlePrint("carne")}
+                    >
+                        <IoPrint className="mr-1 h-4 w-4" /> Imprimir
+                    </Button>
+
+                    <PopoverVencimento id_global={dadosassociado.id_global ?? null} />
+
+                    <PopoverAcresDecres
+                        permissions={permissoes}
+                        acrescimo={Number(dadosassociado.contrato?.acrescimo)}
+                        decrescimo={Number(dadosassociado?.contrato?.desconto)}
+                        id_global={dadosassociado.id_global ?? null}
+                        id_plano={dadosassociado.contrato?.id_plano ?? null}
+                        id_contrato_global={dadosassociado.contrato?.id_contrato_global ?? null}
+                        atualizar={() => carregarDados(Number(dadosassociado.id_global))}
+                    />
+
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={!permissoes.includes("ADM1.2.3")}
+                        onClick={() => setModal({ excluir: true })}
+                    >
+                        <MdDeleteForever className="mr-1 h-4 w-4" /> Excluir
+                    </Button>
+                </div>
+
 
 
 
@@ -356,7 +392,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                     <tbody className='divide-y ' >
 
 
-                        {Array.isArray(dadosAssociado?.arrayMensalidade) && dadosAssociado?.arrayMensalidade?.map((item, index) => {
+                        {Array.isArray(dadosassociado?.mensalidade) && dadosassociado?.mensalidade?.map((item, index) => {
 
 
                             return (
@@ -366,7 +402,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
 
                                         <tr key={index}
                                             onClick={() => toggleSelecionada(item)}
-                                            className={`  text-[10px] font-semibold text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && item.status === 'A' && "text-red-600"}  ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : ""}  ${item.status === 'P' && "text-blue-600"}   hover:bg-gray-300 hover:text-black hover:cursor-pointer }`}>
+                                            className={`  text-[10px] font-semibold text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento), item.status) >= 1 && item.status === 'A' && "text-red-600"}  ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : ""}  ${item.status === 'P' && "text-blue-600"}   hover:bg-gray-300 hover:text-black hover:cursor-pointer }`}>
                                             <th scope="row" className={`px-5 py-1  `}>
                                                 {item.parcela_n}
                                             </th>
@@ -403,7 +439,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                                             </td>
 
                                             <td className="px-4 py-1">
-                                                {calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) <= 0 ? 0 : calcularDiferencaEmDias(new Date(), new Date(item.vencimento))}
+                                                {calcularDiferencaEmDias(new Date(), new Date(item.vencimento), item.status)}
                                             </td>
                                             <td className={`inline-flex items-center px-4 py-1 space-x-2 whitespace-nowrap  ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-600" : 'text-blue-600'}`}>
 
@@ -415,7 +451,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                                                 }} className={`  hover:underline `}>Editar</button>
                                                 {item.status !== 'P' && <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                                                    if (dadosAssociado.situacao === 'INATIVO') return toast.warning('Contrato inativo, impossível baixar mensalidade')
+                                                    if (dadosassociado.contrato?.situacao === 'INATIVO') return toast.warning('Contrato inativo, impossível baixar mensalidade')
                                                     // setModalMens(true)
                                                     setModal({ baixar: true })
                                                     setMensalidade({ ...item, valor_total: item.status === 'A' || item.status === 'R' || item.status === 'R' ? item.valor_principal : item.valor_total, data_pgto: item.data_pgto ? item.data_pgto : new Date() })
@@ -430,7 +466,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                                     ) : item.status !== 'P' && (
                                         <tr key={index}
                                             onClick={() => toggleSelecionada(item)}
-                                            className={`font-semibold text-[10px]  text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) >= 1 && "text-red-600"}   ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : ""}   hover:bg-gray-300 hover:text-black hover:cursor-pointer  }`}>
+                                            className={`font-semibold text-[10px]  text-black ${calcularDiferencaEmDias(new Date(), new Date(item.vencimento), item.status) >= 1 && "text-red-600"}   ${linhasSelecionadas.some(linha => linha.id_mensalidade === item.id_mensalidade) ? "bg-gray-300" : ""}   hover:bg-gray-300 hover:text-black hover:cursor-pointer  }`}>
                                             <td className="px-5 py-1   ">
                                                 {item.parcela_n}
                                             </td>
@@ -466,7 +502,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                                                 {item.form_pagto}
                                             </td>
                                             <td className="px-4 py-1">
-                                                {calcularDiferencaEmDias(new Date(), new Date(item.vencimento)) <= 0 ? 0 : calcularDiferencaEmDias(new Date(), new Date(item.vencimento))}
+                                                {calcularDiferencaEmDias(new Date(), new Date(item.vencimento), item.status)}
                                             </td>
                                             <td className={`px-4 py-1 space-x-2 whitespace-nowrap ${new Date(item.vencimento) < new Date() && item.status === 'A' ? "text-red-600" : 'text-blue-600'}`}>
                                                 <button onClick={(event) => {
@@ -479,7 +515,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
 
                                                 {item.status !== 'P' && <button onClick={(event) => {
                                                     event.stopPropagation() // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                                                    if (dadosAssociado.situacao === 'INATIVO') return toast.warning('Contrato inativo, impossível baixar mensalidade')
+                                                    if (dadosassociado.contrato?.situacao === 'INATIVO') return toast.warning('Contrato inativo, impossível baixar mensalidade')
                                                     //setModalMens(true)
                                                     setModal({ baixar: true })
                                                     setMensalidade({ ...item, valor_total: item.status === 'A' || item.status === 'E' || item.status === 'R' ? item.valor_principal : item.valor_total, data_pgto: item.data_pgto ? item.data_pgto : new Date() })
@@ -501,10 +537,10 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
 
             {openModal.baixar && <ModalMensalidade
                 mensalidade={{
-                    associado: { ...dadosAssociado, mensalidade: dadosAssociado.arrayMensalidade },
+                    associado: { ...dadosassociado, mensalidade: dadosassociado.mensalidade },
                     aut: mensalidadeSelect?.aut,
                     banco_dest: mensalidadeSelect?.banco_dest,
-                    contrato: { situacao: dadosAssociado.situacao },
+                    contrato: { situacao: dadosassociado.contrato?.situacao ?? '' },
                     data_pgto: mensalidadeSelect?.data_pgto,
                     id_mensalidade_global: mensalidadeSelect?.id_mensalidade_global,
                     form_pagto: mensalidadeSelect?.form_pagto,
@@ -517,7 +553,7 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
                     status: mensalidadeSelect?.status,
                     valor_principal: mensalidadeSelect?.valor_principal
                 }}
-                handleAtualizar={async () => { await carregarDados(Number(dadosAssociado.id_global)); setLinhasSelecionadas([]) }}
+                handleAtualizar={async () => { await carregarDados(Number(dadosassociado.id_global)); setLinhasSelecionadas([]) }}
                 openModal={openModal.baixar}
                 setOpenModal={() => setModal({ baixar: false })}
             />
@@ -526,10 +562,10 @@ export function HistoricoMensalidade({ dadosAssociado, carregarDados, usuario }:
             {/*openModal.baixar &&   <ModalBaixaMensalidade
 
 mensalidade={{
-    associado:{...dadosAssociado,mensalidade:dadosAssociado.arrayMensalidade},
+    associado:{...dadosassociado,mensalidade:dadosassociado.arrayMensalidade},
     aut:mensalidadeSelect?.aut,
     banco_dest:mensalidadeSelect?.banco_dest,
-    contrato:{situacao:dadosAssociado.situacao},
+    contrato:{situacao:dadosassociado.situacao},
     data_pgto:mensalidadeSelect?.data_pgto,
     id_mensalidade_global:mensalidadeSelect?.id_mensalidade_global,
     form_pagto:mensalidadeSelect?.form_pagto,
@@ -542,7 +578,7 @@ mensalidade={{
     status:mensalidadeSelect?.status,
     valor_principal:mensalidadeSelect?.valor_principal
    }} 
-    handleAtualizar={async()=>{ await carregarDados(Number(dadosAssociado.id_global));setLinhasSelecionadas([])}}
+    handleAtualizar={async()=>{ await carregarDados(Number(dadosassociado.id_global));setLinhasSelecionadas([])}}
     openModal={openModal.baixar}
      setOpenModal={()=>setModal({baixar:false})}
 />*/}
@@ -554,8 +590,12 @@ mensalidade={{
 }
 
 
-function calcularDiferencaEmDias(data1: Date, data2: Date) {
+function calcularDiferencaEmDias(data1: Date, data2: Date, status: string) {
     // Convertendo as datas para objetos Date
+
+    if (status === 'P') {
+        return 0
+    }
 
     const timestamp1 = data1.getTime();
     const timestamp2 = data2.getTime();
@@ -566,25 +606,21 @@ function calcularDiferencaEmDias(data1: Date, data2: Date) {
     // Convertendo a diferença em dias (1 dia = 24 horas x 60 minutos x 60 segundos x 1000 milissegundos)
     const diferencaEmDias = Math.ceil(diferencaEmMilissegundos / (1000 * 60 * 60 * 24));
 
-    return diferencaEmDias;
+    return diferencaEmDias <= 0 ? 0 : diferencaEmDias;
 }
 
 
+interface ReqProps {
+    id_plano: number | null,
+    id_global: number | null,
+    id_contrato_global: number | null,
+    acrescimo: number | null,
+    decrescimo: number | null,
 
-
-
-
-interface ReqProps{
-    id_plano:number|null,
-    id_global:number|null,
-    id_contrato_global:number|null,
-    acrescimo:number|null,
-    decrescimo:number|null,
-   
 }
-interface PopoverProps extends ReqProps{
-    atualizar:()=>Promise<void>
-    permissions:Array<string>
+interface PopoverProps extends ReqProps {
+    atualizar: () => Promise<void>
+    permissions: Array<string>
 }
 
 
@@ -598,46 +634,46 @@ const PopoverAcresDecres = ({
     decrescimo,
     atualizar,
     permissions
-}:PopoverProps)=>{
-    const {register,handleSubmit} = useForm<{acrescimo:number|null,decrescimo:number|null}>({
-        defaultValues:{acrescimo:acrescimo,decrescimo:decrescimo}
+}: PopoverProps) => {
+    const { register, handleSubmit } = useForm<{ acrescimo: number | null, decrescimo: number | null }>({
+        defaultValues: { acrescimo: acrescimo, decrescimo: decrescimo }
     })
-    const {postData} = useApiPut<any,ReqProps>('/mensalidade/acrescimoDecrescimo')
+    const { postData } = useApiPut<any, ReqProps>('/mensalidade/acrescimoDecrescimo')
 
 
-    const onSubmit:SubmitHandler<{acrescimo:number|null,decrescimo:number|null}> = async(data)=>{
-        const res = await postData({id_global,id_contrato_global,id_plano,acrescimo:Number(data.acrescimo),decrescimo:Number(data.decrescimo)})
+    const onSubmit: SubmitHandler<{ acrescimo: number | null, decrescimo: number | null }> = async (data) => {
+        const res = await postData({ id_global, id_contrato_global, id_plano, acrescimo: Number(data.acrescimo), decrescimo: Number(data.decrescimo) })
 
         await atualizar()
-     
+
     }
 
 
 
-    return(
+    return (
         <Popover
-    
-         id="popover-basic"
-         content={(<form
-         onSubmit={handleSubmit(onSubmit)}
-         className='flex flex-col p-2 w-32 gap-2'
-         >
-            <div className='inline-flex items-center gap-1'>
-            <LuArrowUp color='green' size={20}/>
-            <Input className='h-7' type='number' step={0.01} {...register('acrescimo')} />
-            </div>
 
-            <div className='inline-flex items-center gap-1'>
-            <LuArrowDown color='red' size={20} />
-            <Input  className='h-7' {...register('decrescimo')} type='number' step={0.01}/>
-            </div>
-          
+            id="popover-basic"
+            content={(<form
+                onSubmit={handleSubmit(onSubmit)}
+                className='flex flex-col p-2 w-32 gap-2'
+            >
+                <div className='inline-flex items-center gap-1'>
+                    <LuArrowUp color='green' size={20} />
+                    <Input className='h-7' type='number' step={0.01} {...register('acrescimo')} />
+                </div>
 
-          
-            <Button disabled={!permissions.includes('ADM1.2.11')} className='bg-black' size='xs' type='submit'>Aplicar</Button>
-         </form>)}
-         >
-            <Button className="rounded-none border-s-0 border-y"  onClick={() => {}} type="button" color='light' size='xs'><LuArrowDownUp className='mr-1 h-4 w-4' />Acres./Decres.</Button>
+                <div className='inline-flex items-center gap-1'>
+                    <LuArrowDown color='red' size={20} />
+                    <Input className='h-7' {...register('decrescimo')} type='number' step={0.01} />
+                </div>
+
+
+
+                <Button disabled={!permissions.includes('ADM1.2.11')} variant={'outline'} size='sm' type='submit'>Aplicar</Button>
+            </form>)}
+        >
+            <Button variant={'outline'} onClick={() => { }} type="button" color='light' size='sm'><LuArrowDownUp className='mr-1 h-4 w-4' />Acres./Decres.</Button>
         </Popover>
     )
 }

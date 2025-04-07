@@ -1,4 +1,4 @@
-import { Button, Label, Popover } from "flowbite-react"
+import { Label, Popover } from "flowbite-react"
 import { IoCalendar } from "react-icons/io5"
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -7,6 +7,7 @@ import { useContext, useState } from "react";
 import { api } from "@/lib/axios/apiClient";
 import { AuthContext } from "@/store/AuthContext";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 interface DataProps{
     
@@ -64,10 +65,10 @@ const handleAlterarVencimento = async() => {
         
     </div>
 
-    <Button onClick={handleAlterarVencimento} as={'button'} size="xs">Aplicar</Button>
+    <Button variant={'outline'} onClick={handleAlterarVencimento} type="button" size="sm">Aplicar</Button>
 
 </div>)}   >
-<Button  className="rounded-none border-s-0 border-y" color="light" size="xs">
+<Button  variant={'outline'} color="light" size="sm">
 <IoCalendar className="mr-1 h-4 w-4"/>
 Alterar Vencimento
 </Button>

@@ -95,7 +95,7 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
         <Modal.Body>
           
            <form onSubmit={handleSubmit(handleAtualizarDados)}>
-        <Tabs  theme={{tablist:{tabitem:{base:"flex z-0 items-center justify-center rounded-t-lg p-2 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 ",variant:{fullWidth:{active:{off:'bg-gray-50',on:'bg-gray-100 text-black'}}}}}}} aria-label="Full width tabs" variant="fullWidth">
+        <Tabs  theme={{tablist:{tabitem:{base:"flex z-0 items-center justify-center rounded-t-lg p-2 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 ",variant:{fullWidth:{active:{off:'bg-gray-50',on:'bg-gray-100 text-black'}}}}}}}  variant="fullWidth">
         <Tabs.Item  title="Dados Titular" >
 
           <TabTitular control={control} register={register} setValue={setValue} watch={watch} trigger={trigger}/>

@@ -2,34 +2,35 @@ import { ModalEditarDados } from "@/components/modals/admContrato/dadosAssociado
 import { AuthContext } from "@/store/AuthContext";
 import { AssociadoProps } from "@/types/associado";
 import { Badge, Button, ButtonGroup, Card, Dropdown } from "flowbite-react";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useState } from "react";
 import { BiSave } from "react-icons/bi";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { TbWheelchair } from "react-icons/tb";
 import { ModalAlterarPlano } from "../../../modals/admContrato/dadosAssociado/modalAlterarPlano";
 import { ModalInativar } from "../../../modals/admContrato/dadosAssociado/modalInativar";
-import { useReactToPrint } from "react-to-print";
 import ImpressaoCarne from "@/Documents/associado/mensalidade/ImpressaoCarne";
 import ContratoResumo from "@/Documents/associado/contratoResumido/ContratoResumo";
-import pageStyle from "@/utils/pageStyle";
 import DocumentTemplate from "@/Documents/associado/contratoAdesão/DocumentTemplate";
-import Carteiras from "@/Documents/associado/carteiraAssociado/DocumentTemplate";
+import Carteiras from "@/Documents/associado/carteiraAssociado/CarteiraAssociado";
 import { EmpresaProps } from "@/types/empresa";
 import { CartaNovoAssociado } from "@/Documents/associado/cartaNovoAssociado/cartaDocument";
 import { ProtocoloCancelamento } from "@/Documents/associado/protocoloCancelamento/ProtocoloCancelamento";
-import { api } from "@/lib/axios/apiClient";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
-import { removerFusoDate } from "@/utils/removerFusoDate";
-import { toast } from "sonner";
+import { usePrintDocsAssociado } from "@/hooks/usePrintDocsAssociado";
+import { UserProps } from "@/types/user";
 
 interface DataProps {
     dadosassociado: Partial<AssociadoProps> | AssociadoProps,
     infoEmpresa: EmpresaProps | null
+    usuario:UserProps,
+    setarDadosAssociado:(dados:Partial<AssociadoProps>)=>void,
+    permissoes:Array<string>
 }
 
 
-export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
-    const { usuario, permissoes, setarDadosAssociado } = useContext(AuthContext)
+
+
+export function DadosAssociado({ dadosassociado, infoEmpresa,setarDadosAssociado,usuario,permissoes }: DataProps) {
     const [observacao, setObservacao] = useState('');
     const [modal, setModal] = useState<{ [key: string]: boolean }>({
         editar: false,
@@ -38,140 +39,13 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
         inativar: false,
         impressao: false
     })
+    const { chaveAtiva, handleImpressao, handlePrint, printState, componentRefs } = usePrintDocsAssociado(
+        dadosassociado, usuario?.nome ?? '',
+        infoEmpresa?.id ?? '',
+        setarDadosAssociado,
+        () => setModal({ impressao: false }))
 
 
-
-    const [printState, setPrintState] = useState<{ [key: string]: boolean }>({
-        carne: false,
-        contrato: false,
-        carteira: false,
-        resumo: false,
-        carta: false,
-        cancelamento: false
-    });
-
-
-    const componentRefs = {
-        contrato: useRef<DocumentTemplate>(null),
-        carteira: useRef<Carteiras>(null),
-        carne: useRef<ImpressaoCarne>(null),
-        resumo: useRef<ContratoResumo>(null),
-        carta: useRef<CartaNovoAssociado>(null),
-        cancelamento: useRef<ProtocoloCancelamento>(null)
-    };
-
-
-    const chaveAtiva = printState
-        ? Object.entries(printState).find(([_, valor]) => valor === true)?.[0]
-        : null;
-
-
-    const handlePrint = (doc: string) => {
-        setPrintState((prev) => ({ [doc]: true }));
-    };
-
-
-
-
-    const imprimirCancelamento = useReactToPrint({
-        pageStyle: pageStyle,
-        documentTitle: "CANCELAMENTO",
-        content: () => componentRefs.cancelamento.current,
-        onAfterPrint: () => setPrintState((prev) => ({ cancelamento: false })),
-    });
-
-
-
-    const imprimirContrato = useReactToPrint({
-        pageStyle: pageStyle,
-        documentTitle: "CONTRATO",
-        content: () => componentRefs.contrato.current,
-        onBeforeGetContent: async () => {
-            await handleRegisterImpressao('contrato');
-        },
-
-    });
-
-    const imprimirCarteira = useReactToPrint({
-        pageStyle: pageStyle,
-        documentTitle: "CARTEIRA",
-        content: () => componentRefs.carteira.current,
-        onBeforeGetContent: async () => {
-            await handleRegisterImpressao('carteira');
-        },
-    });
-
-    const imprimirCarne = useReactToPrint({
-        pageStyle: pageStyle,
-        documentTitle: "CARNÊ",
-        content: () => componentRefs.carne.current,
-        onBeforeGetContent: async () => {
-            await handleRegisterImpressao('carne');
-        },
-    });
-
-    const imprimirResumo = useReactToPrint({
-        pageStyle: pageStyle,
-        documentTitle: "RESUMO",
-        content: () => componentRefs.resumo.current,
-        onBeforeGetContent: async () => {
-            await handleRegisterImpressao('resumo');
-
-
-        },
-    });
-
-
-    const imprimirCarta = useReactToPrint({
-        pageStyle: pageStyle,
-        documentTitle: "CARTA",
-        content: () => componentRefs.carta.current,
-        onBeforeGetContent: async () => {
-            await handleRegisterImpressao('carta');
-        },
-    });
-
-    /* useEffect(() => {
-       Object.keys(printState).forEach((doc) => {
-         if (printState[doc]) {
-           imprimirDocumento(doc, componentRefs[doc as keyof typeof componentRefs]);
-         }
-       });
-     }, [printState]);*/
-
-    const handleImpressao = useCallback(async () => {
-
-        if (printState.contrato) imprimirContrato();
-        if (printState.carteira) imprimirCarteira();
-        if (printState.carne) imprimirCarne();
-        if (printState.resumo) imprimirResumo();
-        if (printState.carta) imprimirCarta();
-        if (printState.cancelamento) imprimirCancelamento();
-
-
-    }, [printState])
-
-
-
-
-    const handleRegisterImpressao = useCallback(async (arquivo: string) => {
-
-        const { newDate } = removerFusoDate(new Date())
-        const impressoes = [...(dadosassociado.contrato?.impressoes || [])];
-        const index = impressoes.findIndex((imp) => imp.arquivo === arquivo);
-        if (index === -1) {
-            impressoes.push({ arquivo: arquivo, date: newDate, user: usuario?.nome });
-        } else { impressoes[index] = { ...impressoes[index], date: newDate, user: usuario?.nome }; }
-        try {
-            const response = await api.put('/contrato/impressoes', { id_contrato_global: dadosassociado?.contrato?.id_contrato_global, impressoes: impressoes })
-            setModal({ impressao: false })
-            setPrintState({ [arquivo]: false });
-            setarDadosAssociado({ contrato: { ...dadosassociado?.contrato, impressoes: response.data.impressoes } })
-        } catch (error) {
-            //console.log(error)
-            toast.error('Erro ao registrar impressão')
-        }
-    }, [dadosassociado, printState, usuario?.nome, infoEmpresa])
 
 
     /*  function handleObservacao() {
@@ -307,7 +181,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa }: DataProps) {
                                     data-tooltip-content="Visualizar Observações" size={20} />}
                         </button>
 
-                        <input value={observacao ?? ''} onChange={e => setObservacao(e.target.value ?? '')} placeholder="Digite aqui todas as observações em relação ao plano" type="text"  className="flex-grow min-w-0 rounded-sm bg-gray-100 text-gray-600 placeholder-gray-600 border border-gray-300 px-2 py-1 text-sm focus:ring-blue-500 focus:border-blue-500"/>
+                        <input value={observacao ?? ''} onChange={e => setObservacao(e.target.value ?? '')} placeholder="Digite aqui todas as observações em relação ao plano" type="text" className="flex-grow min-w-0 rounded-sm bg-gray-100 text-gray-600 placeholder-gray-600 border border-gray-300 px-2 py-1 text-sm focus:ring-blue-500 focus:border-blue-500" />
                         <Button size={'xs'} disabled={!permissoes.includes('ADM1.1.2')} onClick={() => { }
                             //handleObservacao()
 

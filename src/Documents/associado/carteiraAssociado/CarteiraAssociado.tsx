@@ -59,7 +59,7 @@ interface DadosProps {
 }
 
 
-class DocumentTemplate extends React.Component<DadosProps> {
+class CarteiraAssociado extends React.Component<DadosProps> {
 
   render() {
     const { dependentes,
@@ -229,4 +229,4 @@ class DocumentTemplate extends React.Component<DadosProps> {
   }
 }
 
-export default DocumentTemplate;
+export default CarteiraAssociado;
