@@ -27,23 +27,13 @@ interface DataProps {
     permissoes:Array<string>
 }
 
-
-
-
 export function DadosAssociado({ dadosassociado, infoEmpresa,setarDadosAssociado,usuario,permissoes }: DataProps) {
     const [observacao, setObservacao] = useState('');
     const [modal, setModal] = useState<{ [key: string]: boolean }>({
         editar: false,
         observacao: false,
-        altPlano: false,
-        inativar: false,
-        impressao: false
     })
-    const { chaveAtiva, handleImpressao, handlePrint, printState, componentRefs } = usePrintDocsAssociado(
-        dadosassociado, usuario?.nome ?? '',
-        infoEmpresa?.id ?? '',
-        setarDadosAssociado,
-        () => setModal({ impressao: false }))
+
 
 
 
@@ -64,112 +54,51 @@ export function DadosAssociado({ dadosassociado, infoEmpresa,setarDadosAssociado
         <div className={`flex flex-col w-full text-xs p-4 rounded-b-lg overflow-x-hidden`}>
 
             {modal.editar && <ModalEditarDados dataForm={dadosassociado} setModalEdit={() => setModal({ editar: false })} openEdit={modal.editar} />}
-
-            {modal.altPlano && <ModalAlterarPlano openModal={modal.altPlano} setOpenModal={() => setModal({ altPlano: false })} />}
-            {modal.inativar && <ModalInativar openModal={modal.inativar} setModal={() => setModal({ inativar: false })} />}
-
-            {modal.impressao && <ModalConfirmar pergunta={`Realmente deseja imprimir o(a) ${chaveAtiva}?. Esteja ciente de que ao confirmar, os dados de data e usuario que realizou a impressão serão atualizados!`} openModal={modal.impressao} setOpenModal={() => setModal({ impressao: false })} handleConfirmar={handleImpressao} />}
-
-            <div className="flex flex-wrap w-full justify-between gap-2 mb-3 pl-2 text-sm font-semibold text-black">
-
-                <div className="inline-flex gap-3 items-center ">
-                    {dadosassociado?.contrato?.id_contrato}-{dadosassociado?.nome}
-                    <span>CATEGORIA:
-
-                        <span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato?.plano}</span>
-                    </span>
-
-                    <Badge size={'sm'} color={dadosassociado.contrato?.situacao === 'ATIVO' ? 'success' : `failure`}>{dadosassociado?.contrato?.situacao}</Badge>
-
-                    {dadosassociado?.contrato?.convalescencia?.map(item => (
-                        <>
-                            {item.convalescenca_prod?.map((dados, index) => (!item.id_dependente || item.id_dependente === null) && item.status === 'ABERTO' && <button data-tooltip-id="my-tooltip" data-tooltip-content={dados?.descricao ?? ''} className="text-yellow-500">
-                                <TbWheelchair size={20} />
-                            </button>)}
-                        </>
-                    ))}
-
-                </div>
-                <ButtonGroup outline >
-                    <Button className="text-black truncate " color={'gray'} size={'xs'} onClick={() => setModal({ altPlano: true })}>Alterar Categoria</Button>
-                    <Button className="text-black truncate " disabled={!permissoes.includes('ADM1.1.3')} onClick={() => setModal({ inativar: true })} color={'gray'} size={'xs'} >{dadosassociado?.contrato?.situacao === 'ATIVO' ? "Inativar Contrato" : "Ativar Contrato"}</Button>
-
-
-                    <Dropdown label="" renderTrigger={() => <Button theme={{ color: { gray: "border border-gray-200 bg-white text-gray-900  enabled:hover:bg-gray-100 enabled:hover:text-cyan-700" }, pill: { off: 'rounded-r-lg' } }} className="text-black truncate" color={'gray'} size={'xs'} >Imprimir Documentos</Button>} >
-                        <Dropdown.Item className="text-xs" onClick={() => { handlePrint('carta'), setModal({ ...{}, impressao: true }) }}>
-                            Carta
-                        </Dropdown.Item>
-                        <Dropdown.Item className="text-xs" onClick={() => { handlePrint('contrato'), setModal({ ...{}, impressao: true }) }}>
-                            Contrato
-                        </Dropdown.Item>
-                        <Dropdown.Item className="text-xs" onClick={() => { handlePrint('carne'), setModal({ ...{}, impressao: true, }) }}>
-                            Carnê
-                        </Dropdown.Item>
-                        <Dropdown.Item className="text-xs" onClick={() => { handlePrint('carteira'), setModal({ impressao: true }) }}>
-                            Carteiras
-                        </Dropdown.Item>
-                        <Dropdown.Item className="text-xs" onClick={() => { handlePrint('resumo'), setModal({ impressao: true }) }}>
-                            Resumo de Contrato
-                        </Dropdown.Item>
-                        <Dropdown.Item className="text-xs" onClick={() => { handlePrint('cancelamento'), setModal({ impressao: true }) }}>
-                            Cancelamento
-                        </Dropdown.Item>
-                    </Dropdown>
-
-
-                </ButtonGroup>
-
-            </div>
+                
             {dadosassociado.contrato?.situacao === 'INATIVO' && <span className="text-[10px] text-red-500 font-medium">MOTIVO INATIVO:{dadosassociado.contrato?.dt_cancelamento && new Date(dadosassociado.contrato?.dt_cancelamento).toLocaleDateString('pt-BR', { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: 'numeric' })}  - {dadosassociado.contrato?.motivo_inativo}</span>}
             <div className="flex w-full flex-col sm:flex-row gap-2">
 
-                <Card onClick={() => {
-
-
-                    setModal({ editar: true })
-                }} className="w-full sm:w-1/2 text-xs cursor-pointer">
-                    <h2 className="text-sm font-semibold mb-4  text-black">Dados Titular </h2>
-
-                    <div className="mb-1 inline-flex justify-between  gap-2  tracking-tight  ">
-                        <p className="mb-1  ">Endereço: {dadosassociado?.endereco}</p>
-                        <p className="mb-1  ">Nº: {dadosassociado?.numero}</p>
-                        <p className="mb-1 ">Bairro: {dadosassociado?.bairro}</p>
-                        <p className="mb-1 ">Cidade:{dadosassociado?.cidade}</p>
+            <Card 
+                    onClick={() => setModal({ editar: true })}
+                    className="w-full sm:w-1/2 uppercase text-xs cursor-pointer transition-transform duration-150 hover:shadow-xl hover:scale-105"
+                >
+                    <h2 className="text-sm font-bold mb-3 text-black border-b pb-1">Dados Pessoais</h2>
+                    <div className="space-y-1">
+                        <p><span className="font-medium">Endereço:</span> {dadosassociado?.endereco}</p>
+                        <p><span className="font-medium">Número:</span> {dadosassociado?.numero}</p>
+                        <p><span className="font-medium">Bairro:</span> {dadosassociado?.bairro}</p>
+                        <p><span className="font-medium">Cidade:</span> {dadosassociado?.cidade}</p>
                     </div>
-                    <div className="mb-1 flex flex-row justify-between gap-2  ">
-                        <p >Ponto ref: {dadosassociado?.guia_rua}</p>
-                        <span   >Celular1: {dadosassociado?.celular1} </span>
-                        <p className="mb-1 ">Celular2:{dadosassociado?.celular2}</p>
-
+                    <div className="mt-3 space-y-1">
+                        <p><span className="font-medium">Ponto de Referência:</span> {dadosassociado?.guia_rua}</p>
+                        <p><span className="font-medium">Celular1:</span> {dadosassociado?.celular1}</p>
+                        <p><span className="font-medium">Celular2:</span> {dadosassociado?.celular2}</p>
                     </div>
-
-
-
                 </Card>
 
-                <Card onClick={() => {
-
-                    setModal({ editar: true })
-                }} className="w-full sm:w-1/2 text-xs cursor-pointer">
-
-                    <h2 className="text-sm font-semibold mb-4 ">Dados do Plano</h2>
-
-                    <div className="mb-1 flex flex-row justify-between gap-2 ">
-
-                        <p className="mb-1 ">Categoria: {dadosassociado?.contrato?.plano}</p>
-                        <p className="mb-1 ">Valor: R$ {dadosassociado?.contrato?.valor_mensalidade}</p>
-                        <p className="mb-1 ">Adesão:  {dadosassociado.contrato?.dt_adesao && new Date(dadosassociado?.contrato?.dt_adesao).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</p>
-                        <p className="mb-1 ">Carência: {dadosassociado.contrato?.dt_carencia && new Date(dadosassociado?.contrato?.dt_carencia).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</p>
+                <Card 
+                    onClick={() => setModal({ editar: true })}
+                    className="w-full uppercase sm:w-1/2 text-xs cursor-pointer transition-transform duration-150 hover:shadow-xl hover:scale-105"
+                >
+                    <h2 className="text-sm font-bold mb-3 text-black border-b pb-1">Dados do Plano</h2>
+                    <div className="space-y-1">
+                        <p><span className="font-medium">Categoria:</span> {dadosassociado?.contrato?.plano}</p>
+                        <p><span className="font-medium">Valor:</span> R$ {dadosassociado?.contrato?.valor_mensalidade}</p>
+                        <p>
+                            <span className="font-medium">Adesão:</span> 
+                            {dadosassociado.contrato?.dt_adesao && new Date(dadosassociado.contrato.dt_adesao).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
+                        </p>
+                        <p>
+                            <span className="font-medium">Carência:</span> 
+                            {dadosassociado.contrato?.dt_carencia && new Date(dadosassociado.contrato.dt_carencia).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
+                        </p>
                     </div>
-                    <div className="mb-1 flex flex-row justify-between gap-2  tracking-tight  ">
-                        <p className="  ">Origem: {dadosassociado?.contrato?.origem}</p>
-                        <p className=" ">Consultor: {dadosassociado?.contrato?.consultor}</p>
-                        <p className=" ">Cobrador: {dadosassociado?.contrato?.cobrador}</p>
+                    <div className="mt-3 space-y-1">
+                        <p><span className="font-medium">Origem:</span> {dadosassociado?.contrato?.origem}</p>
+                        <p><span className="font-medium">Consultor:</span> {dadosassociado?.contrato?.consultor}</p>
+                        <p><span className="font-medium">Cobrador:</span> {dadosassociado?.contrato?.cobrador}</p>
                     </div>
-
-
-
-                </Card >
+                </Card>
             </div>
 
             <div>
@@ -206,90 +135,6 @@ export function DadosAssociado({ dadosassociado, infoEmpresa,setarDadosAssociado
             </ul>
 
 
-            <div style={{ display: 'none' }}>
-                {printState.contrato && <DocumentTemplate
-                    adesao={new Date(dadosassociado?.contrato?.dt_adesao ?? '')}
-                    bairro={dadosassociado?.bairro ?? ''}
-                    cidade={dadosassociado?.cidade ?? ''}
-                    complemento={dadosassociado?.guia_rua ?? ''}
-                    contrato={dadosassociado?.contrato?.id_contrato ?? 0}
-                    cpf={dadosassociado?.cpfcnpj ?? ''}
-                    dependentes={dadosassociado?.dependentes ?? []}
-                    endereco={dadosassociado?.endereco ?? ''}
-                    estado={dadosassociado?.uf ?? ''}
-                    nome={dadosassociado?.nome ?? ''}
-                    numero={String(dadosassociado?.numero) ?? ''}
-                    rg={dadosassociado?.rg ?? ''}
-                    telefone={dadosassociado?.celular1 ?? ''}
-                    infoEmpresa={infoEmpresa}
-                    ref={componentRefs.contrato} />}
-
-                {printState.carteira && <Carteiras
-                    infoEmpresa={infoEmpresa}
-                    adesao={dadosassociado.contrato?.dt_adesao ?? new Date()}
-                    cpf={dadosassociado.cpfcnpj ?? ''}
-                    rg={dadosassociado.rg ?? ""}
-
-                    dependentes={dadosassociado?.dependentes ?? []}
-                    plano={dadosassociado?.contrato?.plano ?? ''}
-                    ref={componentRefs.carteira}
-                    bairro={dadosassociado?.bairro ?? ''}
-                    cartTitular={true}
-                    celular={dadosassociado?.celular1 ?? ''}
-                    cidade={dadosassociado?.cidade ?? ''}
-                    contrato={dadosassociado?.contrato?.id_contrato ?? 0}
-                    dependentesTitular={dadosassociado?.dependentes ?? []}
-                    endereco={dadosassociado?.endereco ?? ''}
-                    numero={Number(dadosassociado?.numero)}
-                    titular={dadosassociado?.nome ?? ''}
-                    uf={dadosassociado?.uf ?? ''}
-                />}
-
-                {printState.carne && <ImpressaoCarne
-                    infoEmpresa={infoEmpresa}
-                    ref={componentRefs.carne}
-                    arrayMensalidade={dadosassociado?.mensalidade?.filter(mensalidade => mensalidade.status !== 'P') ?? []}
-                    dadosAssociado={
-                        {
-                            bairro: dadosassociado?.bairro ?? '',
-                            cidade: dadosassociado?.cidade ?? '',
-                            endereco: dadosassociado?.endereco ?? '',
-                            id_contrato: dadosassociado?.contrato?.id_contrato ?? 0,
-                            nome: dadosassociado?.nome ?? '',
-                            uf: dadosassociado?.uf ?? '',
-                            numero: Number(dadosassociado?.numero),
-                            plano: dadosassociado?.contrato?.plano ?? '',
-                        }
-                    }
-
-                />}
-
-                {printState.resumo && <ContratoResumo
-                    infoEmpresa={infoEmpresa}
-                    ref={componentRefs.resumo}
-                    dados={dadosassociado ?? {}}
-                />}
-
-                {printState.carta && <CartaNovoAssociado
-                    infoEmpresa={infoEmpresa}
-                    ref={componentRefs.carta}
-                    contrato={dadosassociado?.contrato?.id_contrato ?? 0}
-                    titular={dadosassociado?.nome ?? ''}
-
-                />}
-
-                {printState.cancelamento && <ProtocoloCancelamento
-                    infoEmpresa={infoEmpresa}
-                    ref={componentRefs.cancelamento}
-                    contrato={dadosassociado?.contrato?.id_contrato ?? 0}
-                    titular={dadosassociado?.nome ?? ''}
-                    bairro={dadosassociado?.bairro ?? ''}
-                    cidade={dadosassociado?.cidade ?? ''}
-                    endereco={dadosassociado?.endereco ?? ''}
-                    cpf={dadosassociado?.cpfcnpj ?? ''}
-                    usuario={usuario?.nome ?? ''}
-                />}
-            </div>
         </div>
     )
 }

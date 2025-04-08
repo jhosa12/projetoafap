@@ -343,10 +343,10 @@ export function HistoricoMensalidade({ dadosassociado, carregarDados, usuario, i
 
 
             </div>
-            <div className="flex w-full overflow-auto mt-2 px-2 max-h-[calc(100vh-195px)]">
+            <div className="flex w-full overflow-auto mt-2 px-2 max-h-[calc(100vh-240px)]">
                 <table
                     className="block w-full overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse  ">
-                    <thead className="sticky w-full top-0  text-xs   bg-white ">
+                    <thead className="sticky w-full top-0  text-xs  border-b-2 bg-white ">
                         <tr >
                             <th scope="col" className="px-6 py-1">
                                 NP

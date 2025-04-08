@@ -16,7 +16,6 @@ import { FaWhatsapp } from "react-icons/fa";
 import handleWhatsAppClick from "@/utils/openWhats";
 import pageStyle from "@/utils/pageStyle";
 import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
-import { ModalReceber } from "./exames/modalReceber";
 import { ajustarData } from "@/utils/ajusteData";
 import { ModalConfirmar } from "../../modals/modalConfirmar";
 import ListaConsultas from "@/Documents/afapSaude/listaConsultas";
@@ -519,9 +518,41 @@ const handleDeletar = useCallback(async () => {
 
      { <ModalFiltroConsultas register={register} control={control} handle={handleSubmit} consultores={consultores} medicos={medicos} buscarConsultas={buscarConsultas} loading={loading} setFiltro={()=>setModal({filtro:false})} show={modal.filtro} />
 }
-   {modal.receber &&   <ModalReceber formPag={formPag} setFormPag={setFormPag} handleReceberExame={handleReceberConsulta}  openModal={modal.receber} setOpenModal={()=>setModal({receber:false})} />}
+ 
 
+{modal.receber && <ModalConfirmar
+  pergunta="Realmente deseja receber essa consulta?"
+  handleConfirmar={handleReceberConsulta}
+  openModal={modal.receber}
+  setOpenModal={()=>setModal({receber:false})}
+>
 
+  <Select  value={formPag} onValueChange={(e) => { setFormPag(e)}} >
+      <SelectTrigger className={`  shadow-none font-semibold  focus:ring-0  `} >
+        <SelectValue placeholder="Selecione a forma de pagamento" />
+      </SelectTrigger>
+      <SelectContent className="shadow-none " >
+        <SelectGroup className="shadow-none ">
+         
+      <SelectItem className="text-xs" value="DINHEIRO"  >
+        DINHEIRO
+      </SelectItem>
+      <SelectItem className="text-xs" value="CARTAO"  >
+        CARTÃO
+      </SelectItem>
+      <SelectItem className="text-xs" value="PIX"  >
+        PIX
+      </SelectItem>
+      <SelectItem className="text-xs" value="TRANSFERENCIA"  >
+        TRANSFERÊNCIA
+      </SelectItem>
+
+        
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+        
+  </ModalConfirmar>}
 
       <div className="hidden" style={{display:'none'}}>
       { modal.printProntuario && <FichaConsulta 

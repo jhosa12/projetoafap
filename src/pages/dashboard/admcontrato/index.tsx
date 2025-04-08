@@ -7,7 +7,7 @@ import { AuthContext } from "../../../store/AuthContext"
 import 'react-tooltip/dist/react-tooltip.css';
 import CarteirasDep from "../../../components/tabs/admContrato/carteiras/carteirasDep";
 import { HistoricoMensalidade } from "@/components/tabs/admContrato/historicoMensalidade/historicoMensalidade";
-import { Modal, Spinner } from "flowbite-react";
+import { Badge, Dropdown, Modal, Spinner } from "flowbite-react";
 import {  HiOutlineIdentification, HiUserCircle } from "react-icons/hi2";
 import { DadosAssociado } from "@/components/tabs/admContrato/dadosAssociado/screen";
 import { Dependentes } from "@/components/tabs/admContrato/dependentes/dependentes";
@@ -26,31 +26,43 @@ import {
 import { User, Users, Wallet } from "lucide-react";
 import { UsuarioProps } from "@/pages/settings/usuario";
 import { UserProps } from "@/types/user";
+import { TbWheelchair } from "react-icons/tb";
+import { usePrintDocsAssociado } from "@/hooks/usePrintDocsAssociado";
+import DocumentTemplate from "@/Documents/associado/contratoAdesão/DocumentTemplate";
+import CarteiraAssociado from "@/Documents/associado/carteiraAssociado/CarteiraAssociado";
+import ImpressaoCarne from "@/Documents/associado/mensalidade/ImpressaoCarne";
+import ContratoResumo from "@/Documents/associado/contratoResumido/ContratoResumo";
+import { CartaNovoAssociado } from "@/Documents/associado/cartaNovoAssociado/cartaDocument";
+import { ProtocoloCancelamento } from "@/Documents/associado/protocoloCancelamento/ProtocoloCancelamento";
+import { ModalConfirmar } from "@/components/modals/modalConfirmar";
+import { ModalAlterarPlano } from "@/components/modals/admContrato/dadosAssociado/modalAlterarPlano";
+import { ModalInativar } from "@/components/modals/admContrato/dadosAssociado/modalInativar";
 
 
 
 export default function AdmContrato() {
 
     const { usuario,dadosassociado, carregarDados, permissoes, limparDados, loading, infoEmpresa,setarDadosAssociado } = useContext(AuthContext)
-    const [indexTab, setIndex] = useState<number>(0)
     const [modal, setModal] = useState<{ [key: string]: boolean }>({
         busca: false,
-        cadastro: false
+        cadastro: false,
+        altPlano: false,
+        inativar: false,
+        impressao: false
     })
+
+        const { chaveAtiva, handleImpressao, handlePrint, printState, componentRefs } = usePrintDocsAssociado(
+            dadosassociado, usuario?.nome ?? '',
+            infoEmpresa?.id ?? '',
+            setarDadosAssociado,
+            () => setModal({ impressao: false }))
 
 
 
     const isMobile = useMediaQuery("(max-width: 768px)")
     const [tab, setTab] = useState("dados")
   
-    const tabs = [
-      { value: "dados", label: "Dados Associado" },
-      { value: "historico", label: "Histórico" },
-      { value: "acordos", label: "Acordos" },
-      { value: "dependentes", label: "Dependentes" },
-      { value: "carteiras", label: "Carteiras" },
-      { value: "obitos", label: "Óbitos" },
-    ]
+   
 
     /*  useEffect(() => {
           async function listaCadastro() {
@@ -133,6 +145,10 @@ export default function AdmContrato() {
             }
                 {modal.busca && (<ModalBusca visible={modal.busca} setVisible={() => setModal({ busca: false })} />)}
                 {modal.cadastro && (<ModalCadastro onClose={() => setModal({ cadastro: false })} isOpen={modal.cadastro} />)}
+                {modal.impressao && <ModalConfirmar pergunta={`Realmente deseja imprimir o(a) ${chaveAtiva}?. Esteja ciente de que ao confirmar, os dados de data e usuario que realizou a impressão serão atualizados!`} openModal={modal.impressao} setOpenModal={() => setModal({ impressao: false })} handleConfirmar={handleImpressao} />}
+
+                {modal.altPlano && <ModalAlterarPlano openModal={modal.altPlano} setOpenModal={() => setModal({ altPlano: false })} />}
+                {modal.inativar && <ModalInativar openModal={modal.inativar} setModal={() => setModal({ inativar: false })} />}
 
 
               
@@ -148,7 +164,66 @@ export default function AdmContrato() {
 
                     </div>
                   
-         
+         {  dadosassociado.id_global &&  <div className="flex flex-wrap w-full justify-between gap-2 mb-1 pl-2 text-sm font-semibold text-black">
+          
+                      <div className="inline-flex gap-3 items-center">
+                              <span>
+                                  {dadosassociado?.contrato?.id_contrato} - {dadosassociado?.nome}
+                              </span>
+                              <span>
+                                  CATEGORIA:
+                                  <span className="pl-3 text-[#c5942b]">{dadosassociado?.contrato?.plano}</span>
+                              </span>
+                              <Badge size="sm" color={dadosassociado.contrato?.situacao === 'ATIVO' ? 'success' : 'failure'}>
+                                  {dadosassociado?.contrato?.situacao}
+                              </Badge>
+                              {dadosassociado?.contrato?.convalescencia?.map(item => (
+                                  <>
+                                      {item.convalescenca_prod?.map((dados, index) => (
+                                          (!item.id_dependente && item.status === 'ABERTO') && (
+                                              <button 
+                                                  key={index}
+                                                  data-tooltip-id="my-tooltip" 
+                                                  data-tooltip-content={dados?.descricao ?? ''} 
+                                                  className="text-yellow-500"
+                                              >
+                                                  <TbWheelchair size={20} />
+                                              </button>
+                                          )
+                                      ))}
+                                  </>
+                              ))}
+                          </div>
+                          <div className="inline-flex gap-2" >
+                              <Button  variant={'outline'} className=" truncate " color={'gray'} size={'sm'} onClick={() => setModal({ altPlano: true })}>Alterar Categoria</Button>
+                              <Button variant={'outline'} className="truncate " disabled={!permissoes.includes('ADM1.1.3')} onClick={() => setModal({ inativar: true })} color={'gray'} size={'sm'} >{dadosassociado?.contrato?.situacao === 'ATIVO' ? "Inativar Contrato" : "Ativar Contrato"}</Button>
+          
+          
+                              <Dropdown label="" renderTrigger={() => <Button variant={'outline'}  className=" truncate" color={'gray'} size={'sm'} >Imprimir Documentos</Button>} >
+                                  <Dropdown.Item className="text-xs" onClick={() => { handlePrint('carta'), setModal({ ...{}, impressao: true }) }}>
+                                      Carta
+                                  </Dropdown.Item>
+                                  <Dropdown.Item className="text-xs" onClick={() => { handlePrint('contrato'), setModal({ ...{}, impressao: true }) }}>
+                                      Contrato
+                                  </Dropdown.Item>
+                                  <Dropdown.Item className="text-xs" onClick={() => { handlePrint('carne'), setModal({ ...{}, impressao: true, }) }}>
+                                      Carnê
+                                  </Dropdown.Item>
+                                  <Dropdown.Item className="text-xs" onClick={() => { handlePrint('carteira'), setModal({ impressao: true }) }}>
+                                      Carteiras
+                                  </Dropdown.Item>
+                                  <Dropdown.Item className="text-xs" onClick={() => { handlePrint('resumo'), setModal({ impressao: true }) }}>
+                                      Resumo de Contrato
+                                  </Dropdown.Item>
+                                  <Dropdown.Item className="text-xs" onClick={() => { handlePrint('cancelamento'), setModal({ impressao: true }) }}>
+                                      Cancelamento
+                                  </Dropdown.Item>
+                              </Dropdown>
+          
+          
+                          </div>
+          
+                      </div>}
                     {isMobile ? (
   // Renderiza um dropdown ou accordion para dispositivos móveis
   <div className="relative">
@@ -263,7 +338,94 @@ export default function AdmContrato() {
 )}
 
 
-      {/* Conteúdo das tabs */}
+      {/* Documentos */}
+
+
+      
+      <div style={{ display: 'none' }}>
+                {printState.contrato && <DocumentTemplate
+                    adesao={new Date(dadosassociado?.contrato?.dt_adesao ?? '')}
+                    bairro={dadosassociado?.bairro ?? ''}
+                    cidade={dadosassociado?.cidade ?? ''}
+                    complemento={dadosassociado?.guia_rua ?? ''}
+                    contrato={dadosassociado?.contrato?.id_contrato ?? 0}
+                    cpf={dadosassociado?.cpfcnpj ?? ''}
+                    dependentes={dadosassociado?.dependentes ?? []}
+                    endereco={dadosassociado?.endereco ?? ''}
+                    estado={dadosassociado?.uf ?? ''}
+                    nome={dadosassociado?.nome ?? ''}
+                    numero={String(dadosassociado?.numero) ?? ''}
+                    rg={dadosassociado?.rg ?? ''}
+                    telefone={dadosassociado?.celular1 ?? ''}
+                    infoEmpresa={infoEmpresa}
+                    ref={componentRefs.contrato} />}
+
+                {printState.carteira && <CarteiraAssociado
+                    infoEmpresa={infoEmpresa}
+                    adesao={dadosassociado.contrato?.dt_adesao ?? new Date()}
+                    cpf={dadosassociado.cpfcnpj ?? ''}
+                    rg={dadosassociado.rg ?? ""}
+
+                    dependentes={dadosassociado?.dependentes ?? []}
+                    plano={dadosassociado?.contrato?.plano ?? ''}
+                    ref={componentRefs.carteira}
+                    bairro={dadosassociado?.bairro ?? ''}
+                    cartTitular={true}
+                    celular={dadosassociado?.celular1 ?? ''}
+                    cidade={dadosassociado?.cidade ?? ''}
+                    contrato={dadosassociado?.contrato?.id_contrato ?? 0}
+                    dependentesTitular={dadosassociado?.dependentes ?? []}
+                    endereco={dadosassociado?.endereco ?? ''}
+                    numero={Number(dadosassociado?.numero)}
+                    titular={dadosassociado?.nome ?? ''}
+                    uf={dadosassociado?.uf ?? ''}
+                />}
+
+                {printState.carne && <ImpressaoCarne
+                    infoEmpresa={infoEmpresa}
+                    ref={componentRefs.carne}
+                    arrayMensalidade={dadosassociado?.mensalidade?.filter(mensalidade => mensalidade.status !== 'P') ?? []}
+                    dadosAssociado={
+                        {
+                            bairro: dadosassociado?.bairro ?? '',
+                            cidade: dadosassociado?.cidade ?? '',
+                            endereco: dadosassociado?.endereco ?? '',
+                            id_contrato: dadosassociado?.contrato?.id_contrato ?? 0,
+                            nome: dadosassociado?.nome ?? '',
+                            uf: dadosassociado?.uf ?? '',
+                            numero: Number(dadosassociado?.numero),
+                            plano: dadosassociado?.contrato?.plano ?? '',
+                        }
+                    }
+
+                />}
+
+                {printState.resumo && <ContratoResumo
+                    infoEmpresa={infoEmpresa}
+                    ref={componentRefs.resumo}
+                    dados={dadosassociado ?? {}}
+                />}
+
+                {printState.carta && <CartaNovoAssociado
+                    infoEmpresa={infoEmpresa}
+                    ref={componentRefs.carta}
+                    contrato={dadosassociado?.contrato?.id_contrato ?? 0}
+                    titular={dadosassociado?.nome ?? ''}
+
+                />}
+
+                {printState.cancelamento && <ProtocoloCancelamento
+                    infoEmpresa={infoEmpresa}
+                    ref={componentRefs.cancelamento}
+                    contrato={dadosassociado?.contrato?.id_contrato ?? 0}
+                    titular={dadosassociado?.nome ?? ''}
+                    bairro={dadosassociado?.bairro ?? ''}
+                    cidade={dadosassociado?.cidade ?? ''}
+                    endereco={dadosassociado?.endereco ?? ''}
+                    cpf={dadosassociado?.cpfcnpj ?? ''}
+                    usuario={usuario?.nome ?? ''}
+                />}
+            </div>
 
      
                   

@@ -11,7 +11,6 @@ import Orcamento from "@/Documents/afapSaude/orcamento";
 import { FaWhatsapp } from "react-icons/fa";
 import { GiReturnArrow } from "react-icons/gi";
 import { FiltroExames } from "./filtro";
-import { ModalReceber } from "./modalReceber";
 import { ModalConfirmar } from "../../../modals/modalConfirmar";
 import { ajustarData } from "@/utils/ajusteData";
 import handleWhatsAppClick from "@/utils/openWhats";
@@ -21,6 +20,7 @@ import pageStyle from "@/utils/pageStyle";
 import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
 import { ExameRealizadoProps, ExamesData, ExamesProps } from "@/types/afapSaude";
 import { toast } from "sonner";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 
 
@@ -370,8 +370,39 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
 
        { openModal &&  <ModalAdministrarExame handleEditarExame={handleEditarExame}  handleNovoExame={handleNovoExame} arraySelectExames={exames} openModal={openModal} setOpenModal={()=>setOpenModal(false)} registro={exameSelected}/>}
 
-      { openModalReceber && <ModalReceber formPag={formPag} setFormPag={setFormPag} openModal={openModalReceber} setOpenModal={()=>setOpenModalReceber(false)} handleReceberExame={handleReceberExame} />
-}
+{openModalReceber && <ModalConfirmar
+  pergunta="Realmente deseja receber essa consulta?"
+  handleConfirmar={handleReceberExame}
+  openModal={openModalReceber}
+  setOpenModal={()=>setOpenModalReceber(false)}
+>
+
+  <Select  value={formPag} onValueChange={(e) => { setFormPag(e)}} >
+      <SelectTrigger className={`  shadow-none font-semibold  focus:ring-0  `}  >
+        <SelectValue placeholder="Select a status" />
+      </SelectTrigger>
+      <SelectContent className="shadow-none " >
+        <SelectGroup className="shadow-none ">
+         
+      <SelectItem className="text-xs" value="DINHEIRO"  >
+        DINHEIRO
+      </SelectItem>
+      <SelectItem className="text-xs" value="CARTAO"  >
+        CARTÃO
+      </SelectItem>
+      <SelectItem className="text-xs" value="PIX"  >
+        PIX
+      </SelectItem>
+      <SelectItem className="text-xs" value="TRANSFERENCIA"  >
+        TRANSFERÊNCIA
+      </SelectItem>
+
+        
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+        
+  </ModalConfirmar>}
 
 <ModalConfirmar 
 handleConfirmar={handleDeletar}
