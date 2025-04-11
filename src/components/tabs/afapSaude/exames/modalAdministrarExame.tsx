@@ -2,7 +2,7 @@
 
 import { Label, Modal, Select, Table, TextInput } from "flowbite-react";
 import ReactInputMask from "react-input-mask";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useCallback, useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import {  HiTrash } from "react-icons/hi2";
 import { ExameRealizadoProps, ExamesData, ExamesProps } from "@/types/afapSaude";
@@ -24,6 +24,36 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
   const { register, setValue, handleSubmit, watch, control } = useForm<ExameRealizadoProps>({
     defaultValues: {...registro}
   })
+
+
+  
+    const handleTipoDesconto = (tipo:string) => {
+       
+         const exames = watch('exames')
+      if(tipo){
+        const examesAtualizados =   exames?.map((item:ExamesData)=>{
+          const exame = arraySelectExames.find(exame => exame.id_exame === item.id_exame)
+            const vl_particular =Number(exame?.porcPart)
+            const desconto = tipo === 'PARTICULAR' ? 0 : tipo === 'FUNERARIA' ?
+            (vl_particular * (Number(exame?.porcFun) / 100)) : (vl_particular * (Number(exame?.porcPlan) / 100))
+      
+
+              item.valorFinal = vl_particular - desconto
+              item.desconto = desconto
+              return item
+          })
+
+          setValue('exames',examesAtualizados??[])
+          setValue('tipoDesc',tipo)
+
+      }
+
+
+
+
+
+    }
+
 
 
 
@@ -94,11 +124,7 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
   }
 
 
-  const handleDesconto = (event: ChangeEvent<HTMLSelectElement>) => {
-
-
-  }
-
+  
 
   /* const handleTableExames = (index:number)=>{
        const novoArray =[...data.exames]
@@ -208,7 +234,7 @@ export function ModalAdministrarExame({ openModal, setOpenModal, registro, array
 
               <Label htmlFor="desconto" className="text-xs" value="Desconto" />
 
-              <Select id="desconto" sizing={'sm'} {...register('tipoDesc')} onChange={e => handleDesconto(e)} className="focus:outline-none" required >
+              <Select id="desconto" sizing={'sm'} {...register('tipoDesc')} onChange={e => handleTipoDesconto(e.target.value)} className="focus:outline-none" required >
                 <option value={''}></option>
                 <option value={'PARTICULAR'}>PARTICULAR</option>
                 <option value={'FUNERARIA'}>FUNERÁRIA</option>

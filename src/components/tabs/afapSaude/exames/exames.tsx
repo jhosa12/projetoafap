@@ -381,8 +381,8 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
       <SelectTrigger className={`  shadow-none font-semibold  focus:ring-0  `}  >
         <SelectValue placeholder="Select a status" />
       </SelectTrigger>
-      <SelectContent className="shadow-none " >
-        <SelectGroup className="shadow-none ">
+      <SelectContent className="shadow-none" >
+        <SelectGroup className="shadow-none">
          
       <SelectItem className="text-xs" value="DINHEIRO"  >
         DINHEIRO

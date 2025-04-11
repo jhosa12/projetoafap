@@ -27,8 +27,7 @@ interface DadosProps {
     usuario:string|undefined,
     logo:string|undefined,
     periodo:{start:Date,end:Date}
-    tipo:string
-
+    tipo:string,
 }
 
 
@@ -48,16 +47,17 @@ class AtivosInativos extends React.Component<DadosProps> {
        <span>Usuário: {usuario}</span>
        <span>Data Expedição: {new Date().toLocaleDateString('pt-BR')}</span>
        <span>Periodo: {periodo.start && new Date(periodo.start).toLocaleDateString('pt-BR')} -  {periodo.end && new Date(periodo.end).toLocaleDateString('pt-BR')}</span>
-
+       <span>TOTAL: {dados.length}</span>
        </div>
 
 <div >
-       <Table theme={{root:{shadow:'none'}, body: { cell: { base: " px-1 py-1 text-[10px] text-black" } },head: { cell: { base: "px-1 py-1  text-[11px] text-black" } }}} >
+       <Table theme={{root:{shadow:'none'}, body: { cell: { base: "px-1 py-1 text-[10px] text-black" } },head: { cell: { base: "px-1 py-1  text-[11px] text-black" } }}} >
         <Table.Head style={{fontSize:'9px'}}>
        
             <Table.HeadCell>ASSOCIADO</Table.HeadCell>
             <Table.HeadCell>ENDEREÇO</Table.HeadCell>
             <Table.HeadCell>BAIRRO</Table.HeadCell>
+            <Table.HeadCell>CELULAR</Table.HeadCell>
             <Table.HeadCell>ADESÃO</Table.HeadCell>
             <Table.HeadCell>CANCEL.</Table.HeadCell>
        
@@ -68,21 +68,12 @@ class AtivosInativos extends React.Component<DadosProps> {
             <Table.Cell >{item.id_contrato} - {item?.associado.nome}</Table.Cell>
             <Table.Cell>{item?.associado.endereco}</Table.Cell>
             <Table.Cell >{item?.associado.bairro}</Table.Cell>
+            <Table.Cell >{item?.associado.celular1}</Table.Cell>
             <Table.Cell >{item?.dt_adesao?new Date(item.dt_adesao).toLocaleDateString('pt-BR',{timeZone:'UTC'}):''}</Table.Cell>
             <Table.Cell >{item?.dt_cancelamento?new Date(item.dt_cancelamento).toLocaleDateString('pt-BR',{timeZone:'UTC'}):''}</Table.Cell>
          
         </Table.Row>
           ))  }
-
-
-<Table.Row  className='font-bold text-[14px]' >
-<Table.Cell className='text-start' >TOTAL: {dados.length}</Table.Cell>
-            <Table.Cell >{}</Table.Cell>
-            <Table.Cell>{}</Table.Cell>
-            <Table.Cell >{}</Table.Cell>
-            <Table.Cell >{}</Table.Cell>
-           
-        </Table.Row>
         </Table.Body>
        </Table>
        </div>

@@ -14,6 +14,7 @@ import { useReactToPrint } from "react-to-print"
 import pageStyle from "@/utils/pageStyle"
 import { ajustarData } from "@/utils/ajusteData"
 import { Spinner } from "flowbite-react"
+import { DatePickerInput } from "../DatePickerInput"
 
 interface ModalProps {
     open: boolean
@@ -123,7 +124,10 @@ export const ModalAtivosInativos = ({ open, onClose, id_empresa, logo, usuario }
                                 control={control}
                                 name="startDate"
                                 render={({ field: { onChange, value } }) => (
-                                    <DatePicker selected={value} onChange={e => e && onChange(e)} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full shadow-sm uppercase  z-50 text-[11px] leading-[14px]   border  rounded-sm    border-gray-200 placeholder-gray-400  " />
+                              <DatePickerInput
+                                    onChange={onChange}
+                                    value={value}
+                              />
                                 )}
                             />
 
@@ -138,7 +142,10 @@ export const ModalAtivosInativos = ({ open, onClose, id_empresa, logo, usuario }
                                 control={control}
                                 name="endDate"
                                 render={({ field: { onChange, value } }) => (
-                                    <DatePicker selected={value} onChange={e => e && onChange(e)} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full shadow-sm uppercase  z-50 text-[11px] leading-[14px]   border  rounded-sm    border-gray-200 placeholder-gray-400  " />
+                                    <DatePickerInput
+                                    onChange={onChange}
+                                    value={value}
+                              />
                                 )}
                             />
 
@@ -152,7 +159,7 @@ export const ModalAtivosInativos = ({ open, onClose, id_empresa, logo, usuario }
 
 
                     {data && data?.length > 1 && <div style={{ display: 'none' }}>
-                        <AtivosInativos tipo={watch('tipo')} periodo={{ start: watch('startDate'), end: watch('endDate') }} logo={logo} ref={currentRef} dados={data ?? []} usuario={usuario} />
+                        <AtivosInativos  tipo={watch('tipo')} periodo={{ start: watch('startDate'), end: watch('endDate') }} logo={logo} ref={currentRef} dados={data ?? []} usuario={usuario} />
                     </div>}
                 </form>
             </DialogContent>
