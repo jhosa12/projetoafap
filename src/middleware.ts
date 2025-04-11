@@ -1,42 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
-import { api } from "./lib/axios/apiClient";
 
-
-export default async function middleware(req:NextRequest) {
+export default async function middleware(req: NextRequest) {
     const token = req.cookies.get('@nextauth.token')?.value;
-   // const protectRoutes = ['/admcontrato']
 
 
-   //const autorizated =await isValidate(token)
-    if(req.nextUrl.pathname !== '/' && !token) {
-        return NextResponse.redirect(new URL('/', req.url))
+
+    if (req.nextUrl.pathname !== '/' && !await isValidate(token)) {
+        return NextResponse.redirect(new URL('/', req.url));
     }
 }
 
 export const config = {
-matcher: ['/dashboard/:path*'],
-}
+    matcher: ['/dashboard/:path*'],
+};
 
-
-/*const isValidate = async (token:string|undefined) =>{
-
-    if(!token){
-        return false
+const isValidate = async (token: string | undefined) => {
+    if (!token) {
+        return false;
     }
 
     try {
- 
-
-     const response =   await api.get('/me', {
+        console.log('Validating token:', token);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
+            method: 'GET',
             headers: {
-                authorization: `Bearer ${token}`
-            }
-        })
-      
-        return true
-        
-    } catch (error) {
-        return false
-    }
+                Authorization: `Bearer ${token}`,
+            },
+        });
 
-}*/
+        if (!res.ok) {
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Error validating token:', error);
+        return false;
+    }
+};

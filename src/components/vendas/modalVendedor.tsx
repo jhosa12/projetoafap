@@ -10,6 +10,7 @@ import ResumoVendedor from "@/Documents/vendas/ResumoVendedor";
 import { useReactToPrint } from "react-to-print";
 import pageStyle from "@/utils/pageStyle";
 import { Button } from "../ui/button";
+import useApiGet from "@/hooks/useApiGet";
 
 interface DataProps{
     show:boolean,
@@ -47,7 +48,7 @@ interface ResumoVendedorProps{
 export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor,usuario}:DataProps){
 
 
-    const {data,postData,loading} = useApiPost<ResumoVendedorProps,{startDate:Date,endDate:Date,id_consultor:number|null,consultor:string}>("/vendas/resumoVendedor")
+    const {data,postData,loading} = useApiGet<ResumoVendedorProps,{startDate:Date,endDate:Date,id_consultor:number|null,consultor:string}>("/vendas/resumoVendedor")
     const componenteRef = useRef<ResumoVendedor>(null);
     const [print,setPrint] = useState(false)
 
@@ -56,7 +57,7 @@ export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor,usua
 
         postData({startDate,endDate,id_consultor:vendedor.id_consultor,consultor:vendedor.consultor})
 
-    },[])
+    },[vendedor.id_consultor])
 
 
     useEffect(()=>{

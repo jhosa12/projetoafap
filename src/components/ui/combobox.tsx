@@ -43,9 +43,9 @@ export function Combobox({
         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent  onClick={(e) => e.stopPropagation()} className=" p-0">
+      <PopoverContent  onClick={(e) => e.stopPropagation()} className=" p-0 pt-1">
         <Command className="max-h-64" >
-          <CommandInput placeholder={searchPlaceholder} />
+          <CommandInput className="h-8" placeholder={searchPlaceholder} />
           <CommandList >
             <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
             <CommandGroup >

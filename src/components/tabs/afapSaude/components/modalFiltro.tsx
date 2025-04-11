@@ -10,6 +10,7 @@ import { FiltroConsultaProps, MedicoProps, statusConsultaArray } from "@/types/a
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Combobox } from "@/components/ui/combobox";
+import { DatePickerInput } from "@/components/DatePickerInput";
 registerLocale('pt-br', pt)
 
 interface DataProps {
@@ -78,7 +79,7 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
 
             <Label className="text-xs" value="Nome Cliente" />
 
-            <Input  {...register('nome')} type="text" placeholder="Nome" />
+            <Input className="h-8"  {...register('nome')} type="text" placeholder="Nome" />
           </div>
 
 
@@ -94,7 +95,7 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
               control={control}
               render={({ field: { onChange, value } }) => (
                 <Select onValueChange={e=>onChange(Number(e))} value={String(value)}>
-                  <SelectTrigger >
+                  <SelectTrigger className="h-8" >
                     <SelectValue placeholder="Selecione o especialista" />
                   </SelectTrigger>
                   <SelectContent>
@@ -117,8 +118,8 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
               name="externo"
               control={control}
               render={({ field: { onChange, value } }) => (
-                <Select onValueChange={e=>onChange(Number(e))} value={String(value)}>
-                  <SelectTrigger >
+                <Select onValueChange={onChange} value={value}>
+                  <SelectTrigger className="h-8" >
                     <SelectValue placeholder="Selecione o consultor" />
                   </SelectTrigger>
                   <SelectContent>
@@ -147,8 +148,8 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
               defaultValue=""
               control={control}
               render={({ field: { onChange, value } }) => (
-                <Select onValueChange={e=>onChange(Number(e))} value={String(value)}>
-                  <SelectTrigger >
+                <Select onValueChange={onChange} value={value}>
+                  <SelectTrigger className="h-8" >
                     <SelectValue placeholder="Selecione o status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -176,8 +177,8 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
               defaultValue=""
               control={control}
               render={({ field: { onChange, value } }) => (
-                <Select onValueChange={e=>onChange(Number(e))} value={String(value)}>
-                  <SelectTrigger >
+                <Select onValueChange={onChange} value={value}>
+                  <SelectTrigger className="h-8" >
                     <SelectValue placeholder="" />
                   </SelectTrigger>
                  <SelectContent>
@@ -203,7 +204,7 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
                 name="startDate"
                 control={control}
                 render={({ field: { onChange, value } }) => (
-                  <DatePicker selected={value} onChange={onChange} dateFormat={"dd/MM/yyyy"} locale={pt} className="flex w-full  text-xs   border  rounded-lg   bg-gray-50 border-gray-300   " />
+                  <DatePickerInput value={value} onChange={onChange} required={false} disable={false} />
                 )}
               />
 
@@ -217,7 +218,7 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
                 name="endDate"
                 control={control}
                 render={({ field: { onChange, value } }) => (
-                  <DatePicker selected={value} onChange={onChange} dateFormat={"dd/MM/yyyy"} locale={pt} className="flex w-full  text-xs   border  rounded-lg   bg-gray-50 border-gray-300   " />
+                 <DatePickerInput value={value} onChange={onChange} required={false} disable={false} />
                 )}
               />
             </div>
