@@ -5,7 +5,7 @@ export default async function middleware(req: NextRequest) {
 
 
 
-    if (req.nextUrl.pathname !== '/' && !await isValidate(token)) {
+    if (req.nextUrl.pathname !== '/' && !token) {
         return NextResponse.redirect(new URL('/', req.url));
     }
 }
@@ -14,7 +14,7 @@ export const config = {
     matcher: ['/dashboard/:path*'],
 };
 
-const isValidate = async (token: string | undefined) => {
+/*const isValidate = async (token: string | undefined) => {
     if (!token) {
         return false;
     }
@@ -37,4 +37,4 @@ const isValidate = async (token: string | undefined) => {
         console.error('Error validating token:', error);
         return false;
     }
-};
+}*/
