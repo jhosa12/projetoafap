@@ -2,7 +2,7 @@ import {Inter, Roboto_Mono,Source_Sans_3,Geist} from 'next/font/google';
 import localFont from 'next/font/local';
 
 export const timesNewRoman = localFont({
-  src: '../../public/fonts/times.ttf', // Caminho do arquivo da fonte
+  src: './times/times.ttf', // Caminho do arquivo da fonte
   display: 'swap',
   weight: '400', // Ajuste conforme necessário
   style: 'normal',

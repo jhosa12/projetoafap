@@ -1,7 +1,11 @@
+'use client'
+
+
+
 import { ReactNode, createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { api } from "../lib/axios/apiClient"
 import { destroyCookie } from "nookies"
-import Router from 'next/router';
+import {useRouter} from 'next/navigation';
 import { AssociadoProps} from '@/types/associado';
 import { SignInProps, UserProps } from '@/types/user';
 import { EmpresaProps } from '@/types/empresa';
@@ -42,11 +46,11 @@ export const AuthContext = createContext({} as AuthContextData)
 
 
 export function signOut() {
-
+    const router = useRouter();
     try {
         destroyCookie(undefined, '@nextauth.token')
         delete api.defaults.headers['Authorization'];
-        Router.push('/')
+        router.push('/')
     } catch (err) {
         toast.error('Erro ao deslogar')
     }

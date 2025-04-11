@@ -1,13 +1,7 @@
-
-
-
-
-
-
-
+"use client"
 import { api } from "@/lib/axios/apiClient";
 import { AxiosError, AxiosResponse } from "axios";
-import {  useState } from "react";
+import { useState } from "react";
 
 
 

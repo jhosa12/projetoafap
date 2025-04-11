@@ -1,8 +1,8 @@
-
+'use client'
 import { api } from "@/lib/axios/apiClient";
 import { SignInProps, UserProps } from "@/types/user";
 import { decode } from "jsonwebtoken";
-import Router from 'next/router';
+import {useRouter} from 'next/navigation';
 import { destroyCookie, setCookie } from "nookies";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
@@ -18,6 +18,7 @@ interface DecodedToken {
 export function useAuthActions():{signIn: (credentials: SignInProps) => Promise<void>,signOut: () => void,usuario:UserProps|undefined,permissoes:Array<string>} {
     const [usuario,setUsuario] = useState<UserProps|undefined>();
     const [permissoes,setPermissoes] =useState<Array<string>>([])
+    const router = useRouter()
    
 
     const signIn = useCallback(async({user,password}:SignInProps)=>{
@@ -45,7 +46,7 @@ export function useAuthActions():{signIn: (credentials: SignInProps) => Promise<
           });
           api.defaults.headers['Authorization'] = `Bearer ${tokenAuth}`;
           setUsuario({ id, nome: nome.toUpperCase(), cargo, dir, image: image ?? '' });
-          Router.push("/dashboard/admcontrato");
+          router.push("/dashboard/admcontrato");
 
         } catch (error) {
             toast.error('Erro ao logar');
@@ -58,7 +59,7 @@ export function useAuthActions():{signIn: (credentials: SignInProps) => Promise<
           delete api.defaults.headers['Authorization'];
           setUsuario(undefined);
           setPermissoes([]);
-          Router.push('/');
+          router.push('/');
         } catch (error) {
           toast.error('Erro ao deslogar');
         }

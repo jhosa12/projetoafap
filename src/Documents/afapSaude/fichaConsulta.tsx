@@ -3,7 +3,6 @@
 import React from 'react';
 import { roboto_Mono } from "@/fonts/fonts";
 import { ExamesData } from '@/types/afapSaude';
-import { time } from 'console';
 interface DadosProps{
     nome:string, 
     cpf:string,
