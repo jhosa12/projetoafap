@@ -37,7 +37,7 @@ export function Combobox({
 
   return (
     <Popover  open={open} onOpenChange={setOpen}>
-      <PopoverTrigger className="max-w-80 w-full" asChild  >
+      <PopoverTrigger className="max-w-100 w-full" asChild  >
         <Button variant="outline" role="combobox" aria-expanded={open}  className=" justify-between text-xs truncate">
         <span className="truncate">{value ? items.find((item) => item.value === value)?.label : placeholder}</span>
         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

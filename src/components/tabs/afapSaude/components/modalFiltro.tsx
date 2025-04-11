@@ -2,11 +2,14 @@
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { Label, Modal, Select, Spinner, TextInput } from "flowbite-react";
+import { Label, Modal,  Spinner, } from "flowbite-react";
 import { Button } from "@/components/ui/button";
 import { Control, Controller, SubmitHandler, useForm, UseFormHandleSubmit, UseFormRegister } from "react-hook-form";
 import { ConsultoresProps } from "@/types/consultores";
 import { FiltroConsultaProps, MedicoProps, statusConsultaArray } from "@/types/afapSaude";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Combobox } from "@/components/ui/combobox";
 registerLocale('pt-br', pt)
 
 interface DataProps {
@@ -32,7 +35,7 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
     buscarConsultas({ ...data })
   }
   return (
-    <Modal dismissible popup size={'md'} show={show} onClose={() => setFiltro(false)}>
+    <Modal popup size={'md'} show={show} onClose={() => setFiltro(false)}>
       <Modal.Header />
       {/* <Modal.Header >
                     <div className='inline-flex items-center'>
@@ -47,10 +50,26 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
             <div className=" block">
               <Label className="text-xs" value="Especialista" />
             </div>
-            <Select {...register('id_med')} sizing={'sm'}>
+            <Controller
+              name="medico"
+              defaultValue={''}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Combobox
+                items={medicos.map(item => ({ value: item.nome, label: `${item.nome}-${item.espec}` }))}
+                onChange={onChange}
+                value={value??null}
+                placeholder="Selecione o especialista"
+                
+                />
+              
+              )}
+            />
+
+           {/* <Select {...register('id_med')} sizing={'sm'}>
               <option value={''}>Selecione</option>
               {medicos.map((item, index) => (<option key={index} value={item.id_med}>{item.nome}-{item.espec}</option>))}
-            </Select>
+            </Select>*/}
           </div>
 
 
@@ -59,7 +78,7 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
 
             <Label className="text-xs" value="Nome Cliente" />
 
-            <TextInput sizing="sm" {...register('nome')} type="text" placeholder="Nome" />
+            <Input  {...register('nome')} type="text" placeholder="Nome" />
           </div>
 
 
@@ -70,23 +89,50 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
               <div className="block">
                 <Label className="text-xs" value="Consultor" />
               </div>
-              <Select {...register('id_consultor')} sizing={'sm'}>
-                <option value={''}>Selecione o consultor</option>
-                {consultores.filter(item => item.funcao == 'PROMOTOR(A) DE VENDAS').map((item, index) => (<option key={item.id_consultor} value={item.id_consultor}>{item.nome}</option>))}
-              </Select>
+              <Controller
+              name="id_consultor"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Select onValueChange={e=>onChange(Number(e))} value={String(value)}>
+                  <SelectTrigger >
+                    <SelectValue placeholder="Selecione o especialista" />
+                  </SelectTrigger>
+                  <SelectContent>
+                 { consultores.filter(item => item.funcao == 'PROMOTOR(A) DE VENDAS').map((item, index)=> (
+                    <SelectItem className="text-xs" key={index} value={String(item.id_consultor)}>{item.nome}</SelectItem>
+                  ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+              
             </div>
 
             <div className="flex flex-col w-full" >
               <div className="block">
                 <Label className="text-xs" value="Externo" />
               </div>
-              <Select {...register('externo')} sizing={'sm'}>
-                <option value={''}>Selecione o consultor</option>
-                <option value='ÓTICA DOS TRABALHADORES CEDRENSE'>ÓTICA DOS TRABALHADORES CEDRENSE</option>
-                <option value='ÓTICA POPULAR'>ÓTICA POPULAR</option>
-                <option value='LUZ ÓPTICA'>LUZ ÓPTICA</option>
-                <option value='CENTRO SUL'>CENTRO SUL</option>
-              </Select>
+
+              <Controller
+              name="externo"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Select onValueChange={e=>onChange(Number(e))} value={String(value)}>
+                  <SelectTrigger >
+                    <SelectValue placeholder="Selecione o consultor" />
+                  </SelectTrigger>
+                  <SelectContent>
+                <SelectItem className="text-xs" value='ÓTICA DOS TRABALHADORES CEDRENSE'>ÓTICA DOS TRABALHADORES CEDRENSE</SelectItem>
+                <SelectItem className="text-xs" value='ÓTICA POPULAR'>ÓTICA POPULAR</SelectItem>
+                <SelectItem className="text-xs" value='LUZ ÓPTICA'>LUZ ÓPTICA</SelectItem>
+                <SelectItem className="text-xs" value='CENTRO SUL'>CENTRO SUL</SelectItem>
+                </SelectContent>
+                </Select>
+              )}
+            />
+
+
+           
             </div>
           </div>
           <div className="inline-flex w-full gap-2" >
@@ -95,10 +141,26 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
               <div className="block">
                 <Label className="text-xs" value="Status" />
               </div>
-              <Select {...register('status')} sizing={'sm'}>
-                <option value={''}>Selecione o status</option>
-                {statusConsultaArray?.map((item, index) => (<option key={index} value={item}>{item}</option>))}
-              </Select>
+
+              <Controller
+              name="status"
+              defaultValue=""
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Select onValueChange={e=>onChange(Number(e))} value={String(value)}>
+                  <SelectTrigger >
+                    <SelectValue placeholder="Selecione o status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                  {statusConsultaArray.map((item, index) => (
+                    <SelectItem className="text-xs" key={index} value={item}>{item}</SelectItem>
+                  ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+
+         
             </div>
 
 
@@ -109,22 +171,27 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
               <div className="block">
                 <Label className="text-xs" value="Buscar ?" />
               </div>
-              <Select {...register('buscar')} sizing={'sm'}>
-                <option value={''}>Selecione o status</option>
-                <option value={'SIM'}>SIM</option>
-                <option value={'NAO'}>NÃO</option>
-
-              </Select>
+              <Controller
+              name="buscar"
+              defaultValue=""
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Select onValueChange={e=>onChange(Number(e))} value={String(value)}>
+                  <SelectTrigger >
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                 <SelectContent>
+                 <SelectItem className="text-xs" value={'SIM'}>SIM</SelectItem>
+                 <SelectItem className="text-xs" value={'NAO'}>NÃO</SelectItem>
+                 </SelectContent>
+               
+                </Select>
+              )}
+            />
+          
             </div>
 
           </div>
-
-
-
-
-
-
-
 
           <div className='inline-flex gap-2'>
             <div >
@@ -158,7 +225,7 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
 
 
 
-          <Button variant={'outline'} className='ml-auto' type="submit" size={'sm'}>{loading && <Spinner color="gray" />}Aplicar Filtro</Button>
+          <Button  className='ml-auto' type="submit" size={'sm'}>{loading && <Spinner color="gray" />}Aplicar Filtro</Button>
 
         </form>
       </Modal.Body>

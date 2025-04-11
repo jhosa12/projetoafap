@@ -171,5 +171,6 @@ export interface FiltroConsultaProps {
   buscar?: string,
   externo?: string,
   nome?: string,
-  id_consultor?: number
+  id_consultor?: number,
+  medico?:string
 }

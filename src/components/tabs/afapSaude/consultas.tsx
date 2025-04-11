@@ -85,9 +85,11 @@ const {register,control,handleSubmit,watch,getValues} = useForm<FiltroConsultaPr
 })
 
 
-const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome,id_consultor,externo,signal}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string,nome?:string,id_consultor?:number,externo?:string,signal?:AbortSignal})=>{
+const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome,id_consultor,externo,signal,medico}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string,nome?:string,id_consultor?:number,externo?:string,signal?:AbortSignal,medico?:string})=>{
 
   const {dataIni,dataFim} =  ajustarData(startDate,endDate)
+let medicoId = medicos.find(item=>item.nome===medico)?.id_med
+
  
    if ((startDate && endDate) && startDate > endDate) {
      toast.warning('Data inicial não pode ser maior que a data final')
@@ -100,7 +102,7 @@ const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome,id_c
        const response = await api.post("/afapSaude/consultas",{
          startDate:dataIni,
          endDate:dataFim,
-         id_med:id_med?Number(id_med):undefined,
+         id_med:medicoId?Number(medicoId):undefined,
        status,
        externo,
        buscar,

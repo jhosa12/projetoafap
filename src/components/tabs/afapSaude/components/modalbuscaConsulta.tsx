@@ -1,7 +1,8 @@
 
+import { DialogContent,Dialog } from "@/components/ui/dialog"
+import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import useApiPost from "@/hooks/useApiPost"
 import { ConsultaProps } from "@/types/afapSaude"
-import { Dropdown, Modal, TextInput } from "flowbite-react"
 import { FormEvent, useState } from "react"
 import { UseFormReset } from "react-hook-form"
 import { MdArrowDropDown, MdKeyboardArrowRight } from "react-icons/md"
@@ -31,15 +32,17 @@ export const ModalBuscaConsulta = ({ setVisible,visible,reset}:DataProps) => {
     }
 
     return (
-        <Modal size="lg" dismissible show={visible} onClose={setVisible} popup>
-            <Modal.Header />
-            <Modal.Body>
+        <Dialog  open={visible} onOpenChange={setVisible} >
+            <DialogContent>
               <form onSubmit={handleOnSubmit} className="flex flex-col w-full">
                     <div className="inline-flex w-full">
-                        <Dropdown  renderTrigger={()=><button type="button" className="flex-shrink-0 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-s-lg  focus:outline-none  border-gray-300 border-[1px]  bg-gray-100  hover:bg-gray-300  ">{criterio?criterio:'CRITÉRIO'}<MdArrowDropDown size={18}/></button>}>
-                            <Dropdown.Item onClick={()=>setCriterio('NOME')}>NOME</Dropdown.Item>
-                            <Dropdown.Item onClick={()=>setCriterio('CPF')}>CPF</Dropdown.Item>
-                        </Dropdown>
+                        <DropdownMenu  >
+                        <DropdownMenuTrigger asChild>
+                        <button type="button" className="flex-shrink-0 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-s-lg  focus:outline-none  border-gray-300 border-[1px]  bg-gray-100  hover:bg-gray-300  ">{criterio?criterio:'CRITÉRIO'}<MdArrowDropDown size={18}/></button>
+                        </DropdownMenuTrigger>
+                            <DropdownMenuItem onClick={()=>setCriterio('NOME')}>NOME</DropdownMenuItem>
+                            <DropdownMenuItem onClick={()=>setCriterio('CPF')}>CPF</DropdownMenuItem>
+                        </DropdownMenu>
                        
                      <input onChange={(e)=>setInput(e.target.value)}  className="uppercase focus:outline-none border-gray-300 w-full focus:ring-0 border-[1px]  px-2.5   text-sm bg-gray-100 placeholder-gray-400 " />
 
@@ -64,8 +67,8 @@ export const ModalBuscaConsulta = ({ setVisible,visible,reset}:DataProps) => {
                    </ul>
 
               </form>
-            </Modal.Body>
+            </DialogContent>
 
-        </Modal>
+        </Dialog>
     )
 }
