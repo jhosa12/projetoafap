@@ -63,8 +63,6 @@ export default function ModalBaixaMensalidade({ handleAtualizar, mensalidade, op
   })
 
 
-
-
   const dispensa = watch('dispensa');
   const valorRestante = watch("valorRestante");
   const valorPago = watch("valorPago");

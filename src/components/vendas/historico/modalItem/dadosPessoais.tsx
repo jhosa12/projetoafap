@@ -17,15 +17,15 @@ export function TabDadosPessoais({control,register,setValue,trigger,watch,cidade
         <div className="grid grid-cols-4 gap-2">
             <div className="col-span-2 w-full flex flex-col">
                 <Label className="text-xs" value="Nome" />
-                <TextInput sizing={'sm'} {...register('nome')} type="text" placeholder="Nome" required/>
+                <TextInput sizing={'sm'} {...register('nome',{required:'Nome é Obrigatório'})} type="text" placeholder="Nome" />
             </div>
             <div className="w-full flex flex-col">
                 <Label className="text-xs" value="Endereço" />
-                <TextInput sizing={'sm'} {...register('endereco')} type="text" placeholder="Endereço" required/>
+                <TextInput sizing={'sm'} {...register('endereco',{required:'Endereço é Obrigatório'})} type="text" placeholder="Endereço" />
             </div>
             <div className="w-full flex flex-col">
                 <Label className="text-xs" value="Bairro" />
-                <TextInput sizing={'sm'} {...register('bairro')} type="text" placeholder="Bairro" required/>
+                <TextInput sizing={'sm'} {...register('bairro',{required:'Bairro é Obrigatório'})} type="text" placeholder="Bairro" />
             </div>
             <div className="w-full flex flex-col">
                 <Label className="text-xs" value="Número" />

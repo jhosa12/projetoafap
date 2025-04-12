@@ -81,7 +81,11 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
       const{newDate} =removerFusoDate(new Date(data.data))
       dt_lanc = newDate
     }
+    const valorString = data.valor?.toString()??'';
+    //const valorConvertido = parseFloat(valorString?.replace(',', '.'));
+    const valorConvertido = parseFloat(valorString?.replace('.', '').replace(',', '.'));
    
+    const valorConvertidoFinal = isNaN(valorConvertido) ? 0 : valorConvertido;
   
       toast.promise(
         api.put('/atualizarLancamento',{
@@ -90,7 +94,7 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
         conta:data.conta,
         descricao:data.descricao,
         historico:data.historico,
-        valor:data.valor,
+        valor:valorConvertidoFinal,
         usuario:usuario?.nome,
         data:dt_lanc,
         tipo:data.tipo,
@@ -112,9 +116,12 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
 
      async function lancarMovimentacao(data:LancamentosProps){ 
       const valorString = data.valor?.toString()??'';
-      const valorConvertido = parseFloat(valorString?.replace(',', '.'));
-          const {newDate:dt_lanc} = removerFusoDate(new Date(data.data))
-            const{newDate:dt_real} = removerFusoDate(new Date())
+      //const valorConvertido = parseFloat(valorString?.replace(',', '.'));
+      const valorConvertido = parseFloat(valorString?.replace('.', '').replace(',', '.'));
+      
+      const valorConvertidoFinal = isNaN(valorConvertido) ? 0 : valorConvertido;
+      const {newDate:dt_lanc} = removerFusoDate(new Date(data.data))
+      const{newDate:dt_real} = removerFusoDate(new Date())
 
       if(!id_empresa){
         toast.info('Selecione a empresa')
@@ -146,7 +153,7 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
             conta_n:data.conta_n,
             descricao:data.descricao,
             historico:data?.historico?.toUpperCase(),
-            valor:Number(valorConvertido),
+            valor:valorConvertidoFinal,
             usuario:usuario?.nome.toUpperCase(),
             data:dt_lanc, 
             tipo:data.tipo,
@@ -271,7 +278,7 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
         <div className=" block">
           <Label className="text-[12px]"  value="Valor" />
         </div>
-        <TextInput  sizing={'sm'} required   {...register('valor')}   />
+        <TextInput type="text" inputMode="decimal" sizing={'sm'} required   {...register('valor')}   />
       </div> 
 
 

@@ -51,7 +51,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa,setarDadosAssociado
   }*/
 
     return (
-        <div className={`flex flex-col w-full text-xs p-4 rounded-b-lg overflow-x-hidden`}>
+        <div className={`flex flex-col w-full text-xs p-4 rounded-b-lg overflow-y-auto  overflow-x-hidden`}>
 
             {modal.editar && <ModalEditarDados dataForm={dadosassociado} setModalEdit={() => setModal({ editar: false })} openEdit={modal.editar} />}
                 
@@ -60,7 +60,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa,setarDadosAssociado
 
             <Card 
                     onClick={() => setModal({ editar: true })}
-                    className="w-full sm:w-1/2 uppercase text-xs cursor-pointer transition-transform duration-150 hover:shadow-xl hover:scale-105"
+                    className="w-full sm:w-1/2 uppercase text-xs cursor-pointer  hover:shadow-xl"
                 >
                     <h2 className="text-sm font-bold mb-3 text-black border-b pb-1">Dados Pessoais</h2>
                     <div className="space-y-1">
@@ -78,7 +78,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa,setarDadosAssociado
 
                 <Card 
                     onClick={() => setModal({ editar: true })}
-                    className="w-full uppercase sm:w-1/2 text-xs cursor-pointer transition-transform duration-150 hover:shadow-xl hover:scale-105"
+                    className="w-full uppercase sm:w-1/2 text-xs cursor-pointer hover:shadow-xl"
                 >
                     <h2 className="text-sm font-bold mb-3 text-black border-b pb-1">Dados do Plano</h2>
                     <div className="space-y-1">

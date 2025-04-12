@@ -67,7 +67,7 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
     const {cidades,planos} = useContext(AuthContext)
 
 
-    const {register,control,setValue,handleSubmit,trigger,watch,reset} = useForm<LeadProps>(
+    const {register,control,setValue,handleSubmit,trigger,watch,reset,  formState: { errors }} = useForm<LeadProps>(
         {
             defaultValues:item
         }
@@ -81,7 +81,9 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
 
 
 
+
     const handleOnSubmit:SubmitHandler<LeadProps> = async(data) =>{
+ 
 
         toast.promise(
                     api.put("/lead/editarLead",{lead:data}),
@@ -108,9 +110,7 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
                 <form onSubmit={handleSubmit(handleOnSubmit)}>
                       <Tabs  theme={{tablist:{tabitem:{base:"flex z-0 items-center justify-center rounded-t-lg p-2 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 ",variant:{fullWidth:{active:{off:'bg-gray-50',on:'bg-gray-300 text-black'}}}}}}} aria-label="Full width tabs" variant="fullWidth">
                             <Tabs.Item active title="Dados Pessoais" >
-                    
                               <TabDadosPessoais cidades={cidades} control={control} register={register} setValue={setValue} watch={watch} trigger={trigger}/>
-                              
                             </Tabs.Item>
                           
                             <Tabs.Item title="Formulário" >
@@ -130,7 +130,19 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
 
                           <div className= "flex flex-row w-full justify-between mt-2">
 
-                         
+                          {Object.keys(errors).length > 0 && (
+  <div className="bg-red-100 text-red-700 p-4 rounded-md mb-4">
+    <ul className="list-disc pl-5 text-xs">
+      {errors.nome && <li>Nome é obrigatório (aba Dados Pessoais)</li>}
+      {errors.cpfcnpj && <li>CPF/CNPJ é obrigatório (aba Dados Pessoais)</li>}
+      {errors.endereco && <li>Endereço é obrigatório (aba Dados Pessoais)</li>}
+      {errors.bairro && <li>Bairro é obrigatório (aba Dados Pessoais)</li>}
+     
+
+      {/* Adicione aqui outros campos que quer rastrear */}
+    </ul>
+  </div>
+)}
 
                         <Button size={'sm'} type="submit" variant={'outline'} >Salvar</Button>
 
@@ -138,6 +150,7 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
                             </div> 
                           
                 </form>
+
             </Modal.Body>
         </Modal>
     )
