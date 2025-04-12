@@ -26,7 +26,7 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
 
   const { usuario } = useContext(AuthContext)
   const { register, handleSubmit, setValue,control,watch } = useForm<EventProps>({
-    defaultValues:dataEvent
+    defaultValues:{...dataEvent,end:dataEvent.id_agmed?dataEvent.end:dataEvent.start}
   }) 
 
 
@@ -60,11 +60,11 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
       toast.info('Data final deve ser maior que a data inicial')
       return;
     }
-    if(new Date(data.start).toLocaleDateString() !== new Date(data.end).toLocaleDateString()){
+   /* if(new Date(data.start).toLocaleDateString() !== new Date(data.end).toLocaleDateString()){
       toast.info('Data final deve ser igual a data inicial')
       return;
       
-    }
+    }*/
 
 
 
@@ -111,11 +111,11 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
       toast.info('Data final deve ser maior que a data inicial')
       return;
     }
-    if(new Date(data.start).toLocaleDateString() !== new Date(data.end).toLocaleDateString()){
+  /*  if(new Date(data.start).toLocaleDateString() !== new Date(data.end).toLocaleDateString()){
       toast.info('Data final deve ser igual a data inicial')
       return;
       
-    }
+    }*/
     if (!watch('status') || !dataEvent.id_med || !dataEvent.start || !dataEvent.end) {
       toast.info('Preencha todos os campos obrigatorios!')
       return;

@@ -63,7 +63,7 @@ export function TabDadosPessoais({control,register,setValue,trigger,watch,cidade
                 name="celular1"
                 control={control}
                 render={({ field: { onChange, value } }) => (
-                     <InputMask  onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'}  required className="flex  w-full  text-xs border  rounded-lg p-2 bg-gray-50 border-gray-300 placeholder-gray-400 " />
+                     <InputMask  onChange={e=>onChange(e.target.value)} value={value} mask={'(99) 9 9999-9999'} className="flex  w-full  text-xs border  rounded-lg p-2 bg-gray-50 border-gray-300 placeholder-gray-400 " />
                 )}
                 />
                
