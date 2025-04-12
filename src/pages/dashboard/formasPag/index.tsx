@@ -11,7 +11,6 @@ import { MdClose } from "react-icons/md";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { MensalidadeBaixaProps } from "../caixa";
 import useBaixaMensalidade from "@/hooks/useBaixaMensalidade";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -19,6 +18,7 @@ import pt from 'date-fns/locale/pt-BR';
 import { AuthContext } from "@/store/AuthContext";
 import { bancos, formasDePagamento } from "@/utils/bancosFormasPag";
 import { removerFusoDate } from "@/utils/removerFusoDate";
+import { MensalidadeBaixaProps } from "@/types/financeiro";
 
 
 export interface Pagamento {

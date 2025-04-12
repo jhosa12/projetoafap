@@ -9,7 +9,6 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { api } from "@/lib/axios/apiClient"
-import { LancamentosProps } from "@/pages/dashboard/caixa"
 import { Button, Card, Checkbox, Dropdown, Label, Select } from "flowbite-react"
 import { FiAlertTriangle } from "react-icons/fi";
 import { SubmitHandler, useForm } from "react-hook-form"
@@ -17,6 +16,7 @@ import { EmpresaProps } from "@/types/empresa"
 import { list } from "postcss"
 import ListarObitos from "@/pages/dashboard/servicos/listarObitos"
 import { ajustarData } from "@/utils/ajusteData"
+import { LancamentosProps } from "@/types/caixa"
 
 
 

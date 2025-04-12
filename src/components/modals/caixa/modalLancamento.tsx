@@ -1,4 +1,4 @@
-import { LancamentosProps } from "@/pages/dashboard/caixa"
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../ui/dialog"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { Label } from "flowbite-react"
@@ -18,6 +18,7 @@ import { api } from "@/lib/axios/apiClient";
 import { useCallback, useContext, useEffect } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { removerFusoDate } from "@/utils/removerFusoDate";
+import { LancamentosProps } from "@/types/caixa";
 
 
 
@@ -40,8 +41,6 @@ interface ModalProps{
  
     //setLancamentos:(array:Array<LancamentosProps>)=>void,
   //  listarLancamentos:()=>Promise<void>,
-  
-
 
 }
 

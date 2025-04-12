@@ -6,12 +6,12 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { api } from "@/lib/axios/apiClient";
 import { Label, Modal, Select, TextInput } from "flowbite-react";
-import { LancamentosProps } from "@/pages/dashboard/caixa";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ajustarData } from "@/utils/ajusteData";
 import { Button } from "../../ui/button";
 import { removerFusoDate } from "@/utils/removerFusoDate";
 import { toast } from "sonner";
+import { LancamentosProps } from "@/types/caixa";
 
 
 
