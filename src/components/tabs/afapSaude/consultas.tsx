@@ -76,7 +76,7 @@ const currentPage = useRef<FichaConsulta>(null)
 const currentRecibo = useRef<ReciboMensalidade>(null)
 const currentConsultas = useRef<ListaConsultas>(null)
 
-const {register,control,handleSubmit,watch,getValues} = useForm<FiltroConsultaProps>({
+const {register,control,handleSubmit,watch,getValues,reset} = useForm<FiltroConsultaProps>({
   defaultValues: {
     startDate: new Date(),
     endDate: new Date(),
@@ -518,7 +518,7 @@ const handleDeletar = useCallback(async () => {
         <ModalConfirmar openModal={modal.deletar} setOpenModal={()=>setModal({deletar:false})} handleConfirmar={handleDeletar} pergunta={'Realmente deseja deletar essa consulta?'} />
 
 
-     { <ModalFiltroConsultas register={register} control={control} handle={handleSubmit} consultores={consultores} medicos={medicos} buscarConsultas={buscarConsultas} loading={loading} setFiltro={()=>setModal({filtro:false})} show={modal.filtro} />
+     { <ModalFiltroConsultas reset={reset} register={register} control={control} handle={handleSubmit} consultores={consultores} medicos={medicos} buscarConsultas={buscarConsultas} loading={loading} setFiltro={()=>setModal({filtro:false})} show={modal.filtro} />
 }
  
 

@@ -1,6 +1,7 @@
 import { SomaProps } from "@/components/tabs/financeiro/caixa/caixa";
 import { roboto_Mono } from "@/fonts/fonts";
-import { LancamentosProps } from "@/pages/dashboard/caixa";
+import { LancamentosProps } from "@/types/caixa";
+
 
 
 

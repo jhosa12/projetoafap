@@ -55,6 +55,10 @@ export default function Exames({exames}:DataProps) {
 
 
 
+
+
+
+
   const handleReceberExame = useCallback(async ()=>{
 
 

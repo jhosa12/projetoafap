@@ -6,12 +6,13 @@ import logo from "../../../public/novaLogo.png"
 import React from 'react';
 
 import { Table } from "flowbite-react";
-import { LancamentosProps } from "@/pages/dashboard/caixa";
+
 import { SomaProps } from "@/components/tabs/financeiro/caixa/caixa";
 import Sintetico from "./sintetico";
 import { Analitico } from "./analitico";
 import { roboto_Mono } from "@/fonts/fonts";
 import { EmpresaProps } from "@/types/empresa";
+import { LancamentosProps } from "@/types/caixa";
 
 
 interface DadosProps {

@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { Label, Modal,  Spinner, } from "flowbite-react";
 import { Button } from "@/components/ui/button";
-import { Control, Controller, SubmitHandler, useForm, UseFormHandleSubmit, UseFormRegister } from "react-hook-form";
+import { Control, Controller, SubmitHandler, useForm, UseFormHandleSubmit, UseFormRegister, UseFormReset } from "react-hook-form";
 import { ConsultoresProps } from "@/types/consultores";
 import { FiltroConsultaProps, MedicoProps, statusConsultaArray } from "@/types/afapSaude";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -23,12 +23,17 @@ interface DataProps {
   register:UseFormRegister<FiltroConsultaProps>
   control:Control<FiltroConsultaProps,any>
   handle:UseFormHandleSubmit<FiltroConsultaProps,undefined>
+  reset:UseFormReset<FiltroConsultaProps>
 }
 
 
 
-export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas, medicos, consultores,control,register,handle }: DataProps) {
+export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas, medicos, consultores,control,register,handle, reset }: DataProps) {
 
+
+  const cleanParams = () => {
+    reset({ startDate: undefined, endDate: undefined, id_med: undefined, status: '', buscar: '', nome: '', id_consultor: undefined, externo: '', medico: '' })
+  }
 
 
   const handleOnSubmit: SubmitHandler<FiltroConsultaProps> = (data: FiltroConsultaProps) => {
@@ -86,7 +91,7 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
 
 
           <div className="inline-flex w-full gap-2" >
-            <div className="flex flex-col w-full" >
+            <div className="flex flex-col w-1/2" >
               <div className="block">
                 <Label className="text-xs" value="Consultor" />
               </div>
@@ -94,11 +99,15 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
               name="id_consultor"
               control={control}
               render={({ field: { onChange, value } }) => (
-                <Select onValueChange={e=>onChange(Number(e))} value={String(value)}>
-                  <SelectTrigger className="h-8" >
+                <Select  onValueChange={(val) => onChange(val === "none" ? undefined : Number(val))}
+                value={value ? String(value) : "none"}>
+                  <SelectTrigger className="h-8 truncate ">
                     <SelectValue placeholder="Selecione o especialista" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-60 overflow-y-auto">
+                  <SelectItem className="text-xs" value="none">
+            NENHUM
+          </SelectItem>
                  { consultores.filter(item => item.funcao == 'PROMOTOR(A) DE VENDAS').map((item, index)=> (
                     <SelectItem className="text-xs" key={index} value={String(item.id_consultor)}>{item.nome}</SelectItem>
                   ))}
@@ -109,7 +118,7 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
               
             </div>
 
-            <div className="flex flex-col w-full" >
+            <div className="flex flex-col w-1/2" >
               <div className="block">
                 <Label className="text-xs" value="Externo" />
               </div>
@@ -119,8 +128,8 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
               control={control}
               render={({ field: { onChange, value } }) => (
                 <Select onValueChange={onChange} value={value}>
-                  <SelectTrigger className="h-8" >
-                    <SelectValue placeholder="Selecione o consultor" />
+                  <SelectTrigger className="h-8 truncate " >
+                    <SelectValue className="truncate" placeholder="Selecione o consultor" />
                   </SelectTrigger>
                   <SelectContent>
                 <SelectItem className="text-xs" value='ÓTICA DOS TRABALHADORES CEDRENSE'>ÓTICA DOS TRABALHADORES CEDRENSE</SelectItem>
@@ -225,8 +234,12 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
           </div>
 
 
-
-          <Button  className='ml-auto' type="submit" size={'sm'}>{loading && <Spinner color="gray" />}Aplicar Filtro</Button>
+                <div className="inline-flex w-full pt-2 justify-between">
+                <Button type="button" variant="outline" size={'sm'} onClick={() => { cleanParams() }} >Limpar Parametros</Button>
+                <Button   type="submit" size={'sm'}>{loading && <Spinner color="gray" />}Aplicar Filtro</Button>
+              
+                </div>
+          
 
         </form>
       </Modal.Body>

@@ -19,7 +19,7 @@ import { ScreenCloseCaixa } from "@/components/caixa/screenCloseCaixa";
 import { ModalMensalidade } from "@/components/modals/admContrato/historico/modalmensalidade";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PlanoContasProps } from "../financeiro";
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -39,112 +39,12 @@ import { ModalLancamento } from "@/components/modals/caixa/modalLancamento";
 import { BiCalendarMinus } from "react-icons/bi";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import { toast } from "sonner";
+import { FormCaixaProps, LancamentosProps, ResponseCaixaProps } from "@/types/caixa";
+import { MensalidadeBaixaProps } from "@/types/financeiro";
 
   
 
 registerLocale('pt', pt)
-
-
-export interface LancamentosProps{
-    lanc_id:number,
-    forma_pagamento:string,
-    num_seq:number|null,
-    valorForma?:string
-    valor_restante?:number,
-    observacao?:string,
-    conta:string,
-    ccustos_id:number|null,
-    ccustos_desc:string,
-    descricao:string,
-    conta_n:string,
-    data:Date,
-    notafiscal:string,
-    historico:string,
-    tipo:string,
-    valor:number|null,
-    datalanc:Date,
-    usuario:string,
-    id_grupo:number|null,
-    pix_por:string,
-    banco:string,
-    empresa:string,
-    mensalidade:{ form_pagto:string}
-    lancamentoForma:Array<{id_forma?:number,forma:string,valor:number,banco?:string|undefined,observacao?:string|undefined}>|[],
-}
-interface GrupoPrps{
-    id_grupo:number,
-    descricao:string
-}
-
-export interface MensalidadeBaixaProps{
-    id_mensalidade:number,
-    id_global:number,
-    lancamentoForma:Array<{
-        valor:number,
-        forma:string,
-        banco?:string,
-        observacao?:string}>,
-    id_mensalidade_global:number,
-    aut:string,
-    valor_metodo:number,
-    recebido_por:string,
-    contrato:{situacao:string},
-    data_pgto:Date,
-    associado:Partial<{
-        nome:string,
-        endereco:string,
-        mensalidade:Array<Partial<{
-            id_mensalidade_global:number,
-            id_mensalidade:number,
-            referencia:string,
-            vencimento:Date,
-            valor_principal:number,
-            n_doc:string,
-            status:string
-        }>>
-    }>,
-    id_contrato:number,
-    referencia:string,
-    status:string,
-    valor_principal:number,
-    vencimento:Date,
-    valor_total:number,
-    pix_por:string,
-    form_pagto:string,
-    banco_dest:string,
-    motivo_bonus:string,
-    situacao:string
-}
-
-
-interface FormProps{
-    startDate:Date,
-    endDate:Date,
-    descricao:string    
-    id_empresa:string
-}
-
-
-export interface FechamentoProps{
-    id_conf:number,
-                caixaCad:{ pix:number,
-                    cedulas:number,
-                    cartao:number,
-                    transferencia:number},
-                data:Date,
-                empresa:string,
-                usuario:string,
-                observacao:string
-}
-
-interface ResponseCaixaProps{
-    lista:Array<LancamentosProps>|[],
-    dif:number|null,
-    plano_de_contas:Array<PlanoContasProps>,
-    grupo:Array<GrupoPrps>,
-    fechamento:FechamentoProps|null,
-    valorAnterior:number|null
-}
 
 
 export default function CaixaMovimentar(){
@@ -152,10 +52,7 @@ export default function CaixaMovimentar(){
     const [saldo,setSaldo]=useState(0);
     const {usuario,permissoes,infoEmpresa} = useContext(AuthContext);
     const [selectRelatorio,setSelectRelatorio] = useState<string|null>(null)
-    //const [openModal,setModal] = useState<boolean>(false);
-   // const [openModalExc,setModalExc] = useState<boolean>(false);
     const [loading,setLoading] = useState<boolean>(false);
-   // const [openFecModal,setFecModal]= useState<boolean>(false)
     const [mensalidade,setMensalidade] = useState<Partial<MensalidadeBaixaProps>>()
     const [modalDados,setModalDados] = useState<boolean>(false)
     const [despesas,setDespesas] = useState<number>(0)
@@ -167,7 +64,7 @@ export default function CaixaMovimentar(){
       excluir:false,
       fecharCaixa:false
     })
-    const {register,watch,handleSubmit,control}= useForm<FormProps>({
+    const {register,watch,handleSubmit,control}= useForm<FormCaixaProps>({
         defaultValues:{
             startDate:new Date(),
             endDate:new Date(),
@@ -344,12 +241,12 @@ export default function CaixaMovimentar(){
                 error:'Erro ao deletar lancamento',
                 loading:'Solicitando exclusão..',
                 success:()=>{
-                  const novo = [...(data?.lista||[])]
-                  const index = novo.findIndex(item=>item.lanc_id===mov?.lanc_id)
-                  novo.splice(index,1)
-                  setData({...data,lista:novo})
-                 // setLancamentos(novo)
-                 setModal({excluir:false})
+                 // const novo = [...(data?.lista||[])]
+                 // const index = novo.findIndex(item=>item.lanc_id===mov?.lanc_id)
+                //  novo.splice(index,1)
+                //  setData({...data,lista:novo})
+                  handleChamarFiltro() // Ensure this is awaited
+                  setModal({excluir:false})
                   //setModalExc(false)
                   
                   return 'Deletado com sucesso'}
@@ -366,7 +263,7 @@ export default function CaixaMovimentar(){
   }
    
 
-   const listarLancamentos:SubmitHandler<FormProps> = useCallback(async(data)=> {
+   const listarLancamentos:SubmitHandler<FormCaixaProps> = useCallback(async(data)=> {
 
         if(data.startDate>data.endDate){
             toast.info('Data final deve ser maior que a data inicial')
@@ -446,7 +343,7 @@ export default function CaixaMovimentar(){
        }
    
 
-    },[data])
+    },[data?.lista])
 
 return(
 <>

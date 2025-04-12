@@ -8,10 +8,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import useBaixaMensalidade from "@/hooks/useBaixaMensalidade";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { MensalidadeBaixaProps } from "@/pages/dashboard/caixa";
 import { Button, Checkbox, Modal, Select, TextInput } from "flowbite-react";
 import { removerFusoDate } from "@/utils/removerFusoDate";
 import { toast } from "sonner";
+import { MensalidadeBaixaProps } from "@/types/financeiro";
 
 interface Props{
     handleAtualizar:Function

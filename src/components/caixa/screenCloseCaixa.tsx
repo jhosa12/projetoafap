@@ -1,6 +1,7 @@
 
 //import FechamentoResumo from "@/documents/caixa/FechamentoCaixa";
-import { FechamentoProps } from "@/pages/dashboard/caixa";
+
+import { FechamentoProps } from "@/types/caixa";
 import pageStyle from "@/utils/pageStyle";
 import { Button } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
@@ -9,7 +10,7 @@ import { useReactToPrint } from "react-to-print";
 
 
 interface Props {
-  fechamento:FechamentoProps
+  fechamento:FechamentoProps|null
 }
 
 
