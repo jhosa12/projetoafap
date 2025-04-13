@@ -81,12 +81,12 @@ export default function Exames({exames}:DataProps) {
        toast.promise(
         api.put('/afapSaude/receberExame',{
           id_exame: exameSelected?.id_exame,
-        id_usuario:usuario?.id,
+       // id_usuario:usuario?.id,
         datalanc:dataAtual.toISOString(),
         descricao:"EXAME",
         historico:`EXAME.${exameSelected?.id_exame}-${exameSelected?.nome}-${exameSelected?.tipoDesc}`,
         valor:exameSelected?.exames?.reduce((acc, item) => acc + item.valorFinal, 0),
-        usuario:usuario?.nome,
+       // usuario:usuario?.nome,
         forma_pagamento:formPag
         }),
         {

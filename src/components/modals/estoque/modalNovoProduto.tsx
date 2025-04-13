@@ -19,7 +19,7 @@ interface DataProps{
 }
 
 interface FormDataProps{
-  id_usuario:number,
+ // id_usuario:number,
   cod_prod:string,
   descricao:string,
   grupo:string,

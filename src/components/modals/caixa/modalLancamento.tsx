@@ -41,7 +41,6 @@ interface ModalProps{
  
     //setLancamentos:(array:Array<LancamentosProps>)=>void,
   //  listarLancamentos:()=>Promise<void>,
-
 }
 
  export const ModalLancamento = ({grupo,handleFiltro,planos,id_empresa,openModal,setOpenModal,mov,bancos}:ModalProps) => {
@@ -165,7 +164,7 @@ useEffect(()=>{
 
         const response =   toast.promise(
             await api.post('/novoLancamento',{
-            id_usuario:usuario?.id,
+           // id_usuario:usuario?.id,
             id_grupo:data.id_grupo?Number(data.id_grupo):undefined,
             datalanc:dt_real,
             lancamentoForma:data.lancamentoForma,
@@ -174,7 +173,7 @@ useEffect(()=>{
             descricao:data.descricao,
             historico:data?.historico?.toUpperCase(),
             valor:valorConvertido,
-            usuario:usuario?.nome.toUpperCase(),
+           // usuario:usuario?.nome.toUpperCase(),
             data:dt_lanc, 
             tipo:data.tipo,
             empresa:id_empresa

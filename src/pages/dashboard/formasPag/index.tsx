@@ -89,7 +89,7 @@ export default function ModalBaixaMensalidade({ handleAtualizar, mensalidade, op
       await postData(
         {
           id_global: mensalidade?.id_global,
-          id_usuario: usuario?.id,
+         // id_usuario: usuario?.id,
           id_mensalidade_global: mensalidade?.id_mensalidade_global,
           id_mensalidade: mensalidade?.id_mensalidade,
           data_pgto: dataPgto,

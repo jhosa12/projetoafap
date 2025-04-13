@@ -11,7 +11,7 @@ interface NotifyProps{
     id_notificacao: number,
     titulo:string,
     descricao:string,
-    id_usuario: number,
+    //id_usuario: number,
     data: Date,
     status: string,
     id_destino:string,
@@ -39,7 +39,7 @@ export default function Notificacoes(){
      async function listarNotificacoes() {
         const response = await api.post('/notification/listar',
            { 
-                id_destino:String(usuario?.id)
+              //  id_destino:String(usuario?.id)
         }
         )
         setNotify(response.data)

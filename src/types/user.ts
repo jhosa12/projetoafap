@@ -4,7 +4,7 @@ export type SignInProps = {
 }
 
 export type UserProps = {
-    id: string,
+    //id: string,
     nome: string,
     cargo: string,
     dir: string,

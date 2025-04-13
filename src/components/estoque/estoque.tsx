@@ -73,7 +73,7 @@ export function Estoque({ empresas, selectProdutos, reqProdutos, permissoes }: D
         <RelatorioEstoque usuario={usuario?.nome ?? ''} ref={componentRef} dados={data ?? []} />
       </div>
 
-      {mov && <ModalMov permissoes={permissoes} setModalNovo={setOpenModal} reqDadosEstoq={postData} id_usuario={usuario?.id ?? ''} usuario={usuario?.nome ?? ''} empresas={empresas} produtos={selectProdutos ?? []} setOpenModal={setMov} />}
+      {mov && <ModalMov permissoes={permissoes} setModalNovo={setOpenModal} reqDadosEstoq={postData}   empresas={empresas} produtos={selectProdutos ?? []} setOpenModal={setMov} />}
       {openModal && <ModalNovoProduto reqProdutos={reqProdutos} reqDadosEstoq={postData} permissoes={permissoes} openModal={openModal} setOpenModal={setOpenModal} />}
 
       <div className="inline-flex w-full justify-end items-end gap-4 text-black">

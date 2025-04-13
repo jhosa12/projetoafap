@@ -278,7 +278,7 @@ export default function CaixaMovimentar(){
                 dataInicial:dataIni,
                 dataFinal:dataFim,
                 descricao:data.descricao,
-                id_user:usuario?.id
+               // id_user:usuario?.id
             })
 
        //console.log(response.data)
@@ -298,7 +298,7 @@ export default function CaixaMovimentar(){
 
          setLoading(false)
         
-    },[infoEmpresa?.id,usuario?.id])
+    },[infoEmpresa?.id,usuario])
 
 
 
@@ -605,7 +605,7 @@ setOpenModal={setModalDados}
 
 
 
-{openModal.fecharCaixa && <ModalFechamento listar={()=>listarLancamentos({endDate:watch('endDate'),startDate:watch('startDate'),id_empresa:infoEmpresa?.id??'',descricao:watch('descricao')})} dataCaixaEnd={watch('endDate')} dataCaixa={watch('startDate')}  id_empresa={infoEmpresa?.id??''} lancamentos={data?.lista??[]} id_usuario={usuario?.id??''} openModal={openModal.fecharCaixa} setOpenModal={()=>setModal({fecharCaixa:false})}/>}
+{openModal.fecharCaixa && <ModalFechamento listar={()=>listarLancamentos({endDate:watch('endDate'),startDate:watch('startDate'),id_empresa:infoEmpresa?.id??'',descricao:watch('descricao')})} dataCaixaEnd={watch('endDate')} dataCaixa={watch('startDate')}  id_empresa={infoEmpresa?.id??''} lancamentos={data?.lista??[]}  openModal={openModal.fecharCaixa} setOpenModal={()=>setModal({fecharCaixa:false})}/>}
 
 
 {/*openModalPrint && <ModalImpressao array={data?.lista??[]} openModal={openModalPrint} setOpenModal={setPrint} startDate={watch('startDate')} endDate={watch('endDate')} usuario={usuario?.nome??''}/>*/}

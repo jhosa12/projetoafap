@@ -146,7 +146,7 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
 
         toast.promise(
             api.post('/novoLancamento',{
-            id_usuario:usuario?.id,
+           // id_usuario:usuario?.id,
             id_grupo:data.id_grupo?Number(data.id_grupo):undefined,
             datalanc:dt_real,
             conta:data.conta,

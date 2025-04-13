@@ -45,7 +45,7 @@ export function useAuthActions():{signIn: (credentials: SignInProps) => Promise<
             //httpOnly: true
           });
           api.defaults.headers['Authorization'] = `Bearer ${tokenAuth}`;
-          setUsuario({ id, nome: nome.toUpperCase(), cargo, dir, image: image ?? '' });
+          setUsuario({ nome: nome.toUpperCase(), cargo, dir, image: image ?? '' });
           router.push("/dashboard/admcontrato");
 
         } catch (error) {

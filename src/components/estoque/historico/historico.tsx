@@ -17,8 +17,8 @@ import { toast } from "sonner";
 
 
 interface DataProps {
-    usuario: string,
-    id_usuario: string,
+   // usuario: string,
+  //  id_usuario: string,
     permissoes: Array<string>
 }
 
@@ -33,7 +33,7 @@ export interface HistoricoProps {
     usuario: string
 }
 
-export default function  HistoricoMov({ id_usuario, usuario,permissoes }: DataProps) {
+export default function  HistoricoMov({ permissoes }: DataProps) {
     const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
     const [openModal, setOpenModal] = useState<boolean>(false)
     const { empresas } = useContext(AuthContext)

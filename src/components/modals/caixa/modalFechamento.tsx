@@ -11,7 +11,7 @@ interface DataProps{
     openModal:boolean,
     listar:Function
     setOpenModal:(open:boolean)=>void,
-    id_usuario:string,
+   // id_usuario:string,
     id_empresa:string,
     lancamentos:Array<LancamentosProps>
     dataCaixa:Date
@@ -27,7 +27,7 @@ interface ValoresProps{
 }
 
 
-export function ModalFechamento({openModal,setOpenModal,id_usuario,lancamentos,id_empresa,dataCaixa,dataCaixaEnd,listar}:DataProps){
+export function ModalFechamento({openModal,setOpenModal,lancamentos,id_empresa,dataCaixa,dataCaixaEnd,listar}:DataProps){
     const [valores,setValores] = useState<ValoresProps>({cartao:0,cedulas:0,pix:0,transferencia:0})
     const [valoresCaixa,setValorCaixa] = useState<ValoresProps>({cartao:0,cedulas:0,pix:0,transferencia:0})
  // const [observacao,setObs] = useState<string>('')
@@ -82,7 +82,7 @@ useEffect(
 
         try {
             const response = await api.post('/caixa/fechar',{
-                id_usuario,
+               // id_usuario,
                 id_empresa,
                 caixaCad:valores,
                 data:data.toISOString(),

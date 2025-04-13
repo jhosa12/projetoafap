@@ -61,7 +61,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
              await postData(
                    {
                         id_global:data?.id_global,
-                        id_usuario: usuario?.id ,
+                       // id_usuario: usuario?.id ,
                         id_mensalidade_global: data?.id_mensalidade_global,
                         id_mensalidade: data?.id_mensalidade,
                         data_pgto: dataPgto,

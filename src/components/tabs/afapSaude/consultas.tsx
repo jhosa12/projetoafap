@@ -327,7 +327,7 @@ const handleReceberConsulta = useCallback(async ()=>{
   toast.promise(
     api.put('/afapSaude/receberConsulta',{
       id_consulta: data?.id_consulta,
-    id_usuario:usuario?.id,
+   // id_usuario:usuario?.id,
     datalancUTC:dataAtual.toISOString(),
     descricao:"CONSULTA",
     historico:`CONSULTA.${data?.id_consulta}-${data?.nome}-${data?.espec}`,
@@ -511,7 +511,7 @@ const handleDeletar = useCallback(async () => {
         </Table>
       </div>
 
-     {modal.editar && <ModalConsulta usuario={usuario?.nome} id_usuario={usuario?.id} events={events} setConsulta={setData} consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={modal.editar} setOpenModal={()=>setModal({editar:false})} buscarConsultas={buscarConsultas} />}
+     {modal.editar && <ModalConsulta events={events} setConsulta={setData} consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={modal.editar} setOpenModal={()=>setModal({editar:false})} buscarConsultas={buscarConsultas} />}
 
       
 

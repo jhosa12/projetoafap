@@ -20,7 +20,7 @@ export function MenuLateral(){
  useEffect(() => {
     
     getDadosFixos();
-    const socket = io("https://www.testeapiafap.shop", {
+   /* const socket = io("https://www.testeapiafap.shop", {
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
@@ -38,17 +38,17 @@ export function MenuLateral(){
 
     return () => {
       socket.off('nova-tarefa');
-    };
-  }, [usuario?.id]);
+    };*/
+  }, [usuario]);
 
 
 
-async function contagem() {
+/*async function contagem() {
  const cont = await api.post("/notification/contagem",{
    id_destino:String(usuario?.id)
  })
  setCount(cont.data)
-}
+}*/
 
   return (
  

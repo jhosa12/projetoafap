@@ -24,7 +24,7 @@ interface DrawerProps {
 
 export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, arrayMedicos, dataEvent, deletarEvento }: DrawerProps) {
 
-  const { usuario } = useContext(AuthContext)
+  
   const { register, handleSubmit, setValue,control,watch } = useForm<EventProps>({
     defaultValues:{...dataEvent,end:dataEvent.id_agmed?dataEvent.end:dataEvent.start}
   }) 
@@ -74,7 +74,7 @@ export function ModalDrawer({ events, setArrayEvent, isOpen, toggleDrawer, array
 
             id_med: Number(data.id_med),
             data: new Date(),
-            id_usuario: Number(usuario?.id),
+          //  id_usuario: Number(usuario?.id),
             start: data.start,
             end: data.end,
             title: data.title,

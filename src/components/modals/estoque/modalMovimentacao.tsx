@@ -17,8 +17,8 @@ interface DataProps {
     setOpenModal: (open: boolean) => void
     produtos: Array<ProdutosProps>
     empresas: Array<EmpresaProps>
-    usuario: string,
-    id_usuario: string,
+   // usuario: string,
+   // id_usuario: string,
     reqDadosEstoq: (dados: FormProps) => Promise<void>
     permissoes: Array<string>
     setModalNovo: (open: boolean) => void
@@ -31,7 +31,7 @@ interface MovProps {
     quant_atual: number
 }
 
-export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario, reqDadosEstoq, setModalNovo,permissoes }: DataProps) {
+export function ModalMov({ setOpenModal, produtos, empresas, reqDadosEstoq, setModalNovo,permissoes }: DataProps) {
 
     const [arrayMov, setArrayMov] = useState<Array<MovProps>>([])
     const [quantidadeManual, setQuantidadeManual] = useState<number>(0);
@@ -140,8 +140,8 @@ export function ModalMov({ setOpenModal, produtos, empresas, id_usuario, usuario
                 empresa: selectEmpresa.empresa,
                 // data: new Date(),
                 // status: '',
-                id_usuario: id_usuario,
-                usuario: usuario,
+               // id_usuario: id_usuario,
+              //  usuario: usuario,
                 produtos: arrayMov.map((produto) => {
                     const produtoMov = produtos.find(obj => obj.id_produto === produto.id_produto);
                     const estoqueAtual = produtoMov?.estoque.find(obj => obj.id_empresa === selectEmpresa.id_empresa)?.quantidade

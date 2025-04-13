@@ -95,14 +95,14 @@ try{
      //   }
         toast.promise(
             api.post('/novoLancamento',{
-            id_usuario:Number(usuario?.id),
+          //  id_usuario:Number(usuario?.id),
             datalanc:new Date(),
             conta:'1.02.003',
             conta_n:'1.02.003',
             descricao:"SANGRIA",
             historico:`${historico.toUpperCase()} RECEBIDO POR:${usuarioDestino}`,
             valor:valor,
-            usuario:usuario?.nome.toUpperCase(),
+            //usuario:usuario?.nome.toUpperCase(),
             data:new Date(datalanc),
             tipo:"DESPESA"
             }),

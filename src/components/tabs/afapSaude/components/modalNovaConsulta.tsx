@@ -32,12 +32,12 @@ interface DataProps {
   setConsultas: (array: Array<ConsultaProps>) => void
   setConsulta: (consulta: Partial<ConsultaProps>) => void
   events: Array<EventProps>
-  usuario?: string
-  id_usuario?: string
+ // usuario?: string
+ // id_usuario?: string
 
 }
 
-export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, buscarConsultas, consultas, setConsulta, events, id_usuario, usuario, setConsultas }: DataProps) {
+export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, buscarConsultas, consultas, setConsulta, events, setConsultas }: DataProps) {
   const [visible, setvisible] = useState(false)
   const { register, setValue, handleSubmit, watch, control, reset } = useForm<ConsultaProps>({ defaultValues: consulta })
 
@@ -182,9 +182,9 @@ export function ModalConsulta({ openModal, setOpenModal, medicos, consulta, busc
           data: new Date(),
           nascimento: nasc,
           data_prev: newDate,
-          user: usuario,
+        //  user: usuario,
           numero: data.numero ? Number(data.numero) : undefined,
-          id_usuario: id_usuario
+         // id_usuario: id_usuario
         }),
         {
           error: 'Erro ao Cadastrar Dados',

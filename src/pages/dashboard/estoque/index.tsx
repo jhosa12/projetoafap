@@ -36,7 +36,7 @@ export interface ProdutosProps{
 export default function AdministrarEstoque(){
   
     const [arrayConv,setArrayConv]= useState<Array<EstoqueProps>>([]) 
-    const {usuario,empresas,permissoes} = useContext(AuthContext);
+    const {empresas,permissoes} = useContext(AuthContext);
     const [tab,setTab] = useState<number>(0)
     const {postData,data}  = useApi<Array<ProdutosProps>,undefined>("/estoque/selectProdutos")
 
@@ -80,7 +80,7 @@ export default function AdministrarEstoque(){
       <Tabs.Item  active={tab===1} title="Histórico de Movimentação" icon={RiHistoryLine}>
      {tab===1 &&
      <Suspense fallback={<div>Carregando...</div>}>
-       <HistoricoMov permissoes={permissoes}  id_usuario={usuario?.id??''} usuario={usuario?.nome??''} />
+       <HistoricoMov permissoes={permissoes}  />
      </Suspense>
      
       
