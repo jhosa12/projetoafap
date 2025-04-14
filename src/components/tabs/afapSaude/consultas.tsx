@@ -95,8 +95,7 @@ let medicoId = medicos.find(item=>item.nome===medico)?.id_med
      toast.warning('Data inicial não pode ser maior que a data final')
      return
    }
- 
- 
+  
    try {
      setLoading(true)
        const response = await api.post("/afapSaude/consultas",{

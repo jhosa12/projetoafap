@@ -20,7 +20,7 @@ interface DataProps{
 }
 
 
-export function PopoverReagendamento({id_global,mensalidades,id_usuario,setSelecionadas}:DataProps) {
+export function PopoverReagendamento({id_global,mensalidades,setSelecionadas}:DataProps) {
     const [date, setDate] = useState(new Date());
     const {setarDadosAssociado} = useContext(AuthContext)
 
@@ -41,7 +41,7 @@ export function PopoverReagendamento({id_global,mensalidades,id_usuario,setSelec
                     data:date,
                     mensalidades:mensalidades?.map(mensalidade=>mensalidade.id_mensalidade_global),
                     id_global,
-                    usuario:id_usuario
+                    //usuario:id_usuario
                 }),
                 {
                     error: 'Erro na Requisição',

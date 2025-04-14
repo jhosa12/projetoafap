@@ -304,7 +304,6 @@ export function HistoricoMensalidade({ dadosassociado, carregarDados, usuario, i
 
                     <PopoverReagendamento
                         setSelecionadas={setLinhasSelecionadas}
-                        id_usuario={usuario?.id}
                         mensalidades={linhasSelecionadas}
                         id_global={dadosassociado.id_global ?? null}
                     />
