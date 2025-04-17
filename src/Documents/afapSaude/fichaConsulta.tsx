@@ -3,6 +3,7 @@
 import React from 'react';
 import { roboto_Mono } from "@/fonts/fonts";
 import { ExamesData } from '@/types/afapSaude';
+import { calcularIdade } from '@/utils/calcIdade';
 interface DadosProps{
     nome:string, 
     cpf:string,
@@ -43,34 +44,7 @@ class FichaConsulta extends React.Component<DadosProps> {
 
 
 
-         const calcularIdade = (date:Date)=>{
-
-
-          if(!date)return ''
-            const hoje = new Date();
-            const nasc = new Date(date)
-            const anoAtual = hoje.getFullYear();
-            const mesAtual = hoje.getMonth();
-            const diaAtual = hoje.getDate();
-            const anoNascimento = nasc.getFullYear();
-            const mesNascimento = nasc.getMonth();
-            const diaNascimento = nasc.getDate();
-
-
-
-
-            let idade = 0;
-             idade = anoAtual - anoNascimento;
-
-
-            if (mesNascimento > mesAtual || (mesNascimento === mesAtual && diaNascimento > diaAtual)) {
-                // Se o aniversariante ainda não fez aniversário este ano, calcular a idade com base no aniversário do próximo ano
-                
-                idade--
-            }
-            return idade
-
-         }
+        
 
         const options:Intl.DateTimeFormatOptions = {
             weekday: 'long', // Dia da semana por extenso

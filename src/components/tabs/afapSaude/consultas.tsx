@@ -1,6 +1,6 @@
 
 import { api } from "@/lib/axios/apiClient";
-import {   Table } from "flowbite-react";
+import {  Table } from "flowbite-react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ModalConsulta } from "./components/modalNovaConsulta";
 import { HiMiniArrowDownOnSquare, HiPencil, HiPrinter } from "react-icons/hi2";
@@ -404,6 +404,8 @@ const handleDeletar = useCallback(async () => {
    
    
       <Button  variant={'outline'}  size={'sm'} onClick={() => setModal({filtro: true})}>  <HiFilter className=" h-4 w-4" /> Filtro</Button>
+
+    
       </div>
 
       <span className="text-xs font-medium">Total de consultas: {consultas.length}</span>
@@ -510,7 +512,7 @@ const handleDeletar = useCallback(async () => {
         </Table>
       </div>
 
-     {modal.editar && <ModalConsulta events={events} setConsulta={setData} consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={modal.editar} setOpenModal={()=>setModal({editar:false})} buscarConsultas={buscarConsultas} />}
+     {modal.editar && <ModalConsulta events={events} setConsulta={setData} consultas={consultas} consulta={data ??{}} setConsultas={setConsultas}  medicos={medicos} openModal={modal.editar} setOpenModal={()=>setModal({editar:false})} buscarConsultas={()=>buscarConsultas({startDate:watch('startDate'),endDate:watch('endDate'),id_med: watch('id_med'),status:watch('status'),buscar:watch('buscar')})} />}
 
       
 

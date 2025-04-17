@@ -1,10 +1,51 @@
 
 
 
+
 export type ConsultaStatus = "AGENDADO" | "AGUARDANDO DATA" | "CONFIRMADO" | "ATENDIDO" | "CANCELADO" | "RECEBIDO";
 
 export const statusConsultaArray = ["AGENDADO","AGUARDANDO DATA","CONFIRMADO","ATENDIDO","CANCELADO","RECEBIDO"]
 
+export interface ClienteFormProps {
+  id_client?: number;
+  nome: string;
+  endereco?: string;
+  bairro?: string;
+  numero?: number|null;
+  cidade?: string;
+  uf?: string;
+  cep?: string;
+  telefone?: string;
+  celular?: string;
+  email?: string;
+  data_nasc?: Date;       // Para DatePicker
+  cpf?: string;
+  identidade?: string;
+  obs?: string;
+
+  // Esses dois geralmente não vão pro form direto, mas se usar, define as interfaces também
+  consultas?: ConsultaProps[];         // Pode ser tipo: ConsultaProps[]
+  retornoConsulta?: any[];   // Pode ser tipo: RetornoConsultaProps[]
+}
+
+export interface ClientePayload {
+  id_cliente?: number;
+  nome: string;
+  endereco?: string;
+  bairro?: string;
+  numero?: number|null;
+  cidade?: string;
+  uf?: string;
+  cep?: string;
+  telefone?: string;
+  celular?: string;
+  email?: string;
+  data_nasc?: string; // convertido antes de enviar
+  cpf?: string;
+  identidade?: string;
+  obs?: string;
+  data_cadastro?:string
+}
 
 
 export interface ExamesData{
@@ -37,6 +78,7 @@ export interface ConsultaProps{
   id_med:number|null,
   complemento:string,
   dt_pgto:Date|null,
+  id_client?:number|null,
   user:string,
   procedimentos:Array<ExamesData>,
   nome:string,
@@ -50,10 +92,10 @@ export interface ConsultaProps{
   vl_final:number|null,
   data:Date,
   exames:Array<ExamesData>,
-  nascimento:Date,
+  nascimento?:Date,
   endereco:string,
   bairro:string,
-  numero:number,
+  numero:number|null,
   cidade:string,
   responsavel:string,
   grau_parentesco:string,
@@ -90,32 +132,7 @@ export interface MedicoProps {
 
 }
 
-export interface ClientProps {
-  data_prev:Date|undefined,
-  id_agcli: number,
-  user:string,
-  espec: string,
-  medico: string,
-  id_agmed: number|null,
-  id_med: number,
-  id_usuario: number
-  data: Date
-  start: Date,
-  end: Date,
-  title: string
-  status: string,
-  endereco: string,
-  numero:number,
-  bairro:string
-  cidade:string
-  complemento:string,
-  buscar:string
-  obs: string,
-  nome: string,
-  hora_prev:Date,
-  celular: string,
-  tipoAg: string
-}
+
 export interface EventProps {
 
   id_agcli: number,

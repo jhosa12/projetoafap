@@ -1,8 +1,5 @@
 
 
-
-
-
 export function ajustarData(startDate: Date|undefined,endDate?: Date): {dataIni:string|undefined,dataFim:string|undefined} {
   let  dataIn:Date|undefined = startDate && new Date(startDate)
    let dataOut:Date|undefined =endDate && new Date(endDate)
