@@ -3,10 +3,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/axios/apiClient";
 import "react-datepicker/dist/react-datepicker.css";
-//import {  momentLocalizer } from 'react-big-calendar'
-//import moment from 'moment'
+
 import "react-big-calendar/lib/css/react-big-calendar.css"
-import 'moment/locale/pt-br'; // Importa o idioma português para o moment
+import 'moment/locale/pt-br';
 import Calendario from "@/components/tabs/afapSaude/agendaMedico/calendario";
 import Consultas from "@/components/tabs/afapSaude/consultas";
 import { Tabs } from "flowbite-react";
@@ -16,17 +15,7 @@ import { IoMdSettings } from "react-icons/io";
 import { BiSolidInjection } from "react-icons/bi";
 import Exames from "@/components/tabs/afapSaude/exames/exames";
 import Configuracoes from "@/components/tabs/afapSaude/configuracoes/configuracoes";
-import { ConsultaProps, ExamesProps, MedicoProps, EventProps } from "@/types/afapSaude";
-
-
-// Configura o moment para usar o idioma português
-//moment.locale('pt-br');
-//const localizer = momentLocalizer(moment)
-
-
-
-
-
+import {  ExamesProps, MedicoProps, EventProps } from "@/types/afapSaude";
 
 export default function AfapSaude() {
   const [medicos, setMedicos] = useState<Array<MedicoProps>>([])
@@ -142,12 +131,6 @@ export default function AfapSaude() {
 
   }, []
   )
-  /*    const handleNovoEvento = useCallback(({start,end}:{start:Date,end:Date})=>{
-             setDataEvent({start,end})  
-             toggleDrawer()
-      },[setEvents])*/
-
-
 
 
   return (
@@ -186,7 +169,5 @@ export default function AfapSaude() {
         </Tabs.Item>
       </Tabs>
     </div>
-
-
   )
 }

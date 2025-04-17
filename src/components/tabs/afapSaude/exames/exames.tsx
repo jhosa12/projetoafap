@@ -1,26 +1,28 @@
 
 import { api } from "@/lib/axios/apiClient";
-import { Badge, Button, Table } from "flowbite-react";
-import {  useCallback, useContext, useEffect, useRef, useState } from "react";
-import {  HiMiniArrowDownOnSquare} from "react-icons/hi2";
-import {  HiAdjustments, HiDocumentAdd, HiPrinter } from "react-icons/hi";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { AuthContext } from "@/store/AuthContext";
 import { ModalAdministrarExame } from "./modalAdministrarExame";
 import Orcamento from "@/Documents/afapSaude/orcamento";
-import { FaWhatsapp } from "react-icons/fa";
-import { GiReturnArrow } from "react-icons/gi";
-import { FiltroExames } from "./filtro";
+import { FiltroExames } from "../../../afapSaude/exames/filtro";
 import { ModalConfirmar } from "../../../modals/modalConfirmar";
 import { ajustarData } from "@/utils/ajusteData";
 import handleWhatsAppClick from "@/utils/openWhats";
-import { MdDelete } from "react-icons/md";
-import { BiMoneyWithdraw } from "react-icons/bi";
 import pageStyle from "@/utils/pageStyle";
 import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
 import { ExameRealizadoProps, ExamesData, ExamesProps } from "@/types/afapSaude";
 import { toast } from "sonner";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ExamesToolbar } from "@/components/afapSaude/exames/ExamesToolbar";
+import { ExamesTable } from "@/components/afapSaude/exames/ExamesTable";
 
 
 
@@ -30,17 +32,17 @@ interface DataProps{
 }
 
 
-export interface FiltroForm {
-  startDate:Date|undefined
-  endDate:Date|undefined
-  nome:string|undefined
-  status:string|undefined
+interface FiltroForm {
+  endDate?: Date;
+  nome?: string;
+  startDate?: Date;
+  status: string;
 }
 
 
 
 
-export default function Exames({exames}:DataProps) {
+export default function Exames({ exames }: DataProps) {
   const valorInicial = {id_exame:null,celular:'',data_orcamento:new Date(),data_realizado:new Date(),exames:[],coleta:'',tipoDesc:'',cpf:'',data_nasc:new Date(),nome_responsavel:'',parentesco:'',nome:'',status:'',user:'',endereco:'',id_selected:null,numero:null,bairro:'',cidade:'',exame:''}
     const [examesRealizados,setExames] = useState<Array<ExameRealizadoProps>>([])
     const [exameSelected, setExameSelected] = useState<ExameRealizadoProps>(valorInicial)
@@ -293,84 +295,37 @@ const handleEditarExame = useCallback(async(data:ExameRealizadoProps)=>{
   
 
   return (
-    <div className="flex flex-col p-2 gap-2">
-      <div className="ml-auto inline-flex gap-4">
-      <FiltroExames filtroExames={listarExamesRealizados}  loading={false}  openModal={filtro} setOpenModal={()=>setFiltro(!filtro) }/>
-        
+    <div className="flex flex-col p-4 space-y-4">
+      <div className="flex w-full justify-between items-center gap-4 flex-wrap">
+        <FiltroExames
+          filtroExames={listarExamesRealizados}
+          loading={false}
+          openModal={filtro}
+          setOpenModal={() => setFiltro(!filtro)}
+        />
 
-        <Button.Group >
-      <Button className="text-blue-500" onClick={() =>{ setOpenModal(true),setExameSelected(valorInicial)}} size={'xs'} color="gray">
-        <HiDocumentAdd className="mr-2 h-4 w-4" />
-        Adicionar
-      </Button>
-      <Button onClick={()=>setOpenModal(true)} size={'xs'} color="gray">
-        <HiAdjustments  className="mr-2 h-4 w-4" />
-        Editar
-      </Button>
-      <Button onClick={imprimirOrcamento} size={'xs'} color="gray">
-        <HiPrinter className="mr-2 h-4 w-4" />
-         Orçamento
-      </Button>
-
-      <Button onClick={imprimirRecibo} size={'xs'} color="gray">
-        <BiMoneyWithdraw className="mr-2 h-4 w-4" />
-         Recibo
-      </Button>
-      <Button className="text-green-400" onClick={()=>setOpenModalReceber(true)} size={'xs'} color="gray">
-        <HiMiniArrowDownOnSquare className="mr-2 h-4 w-4" />
-        Receber
-      </Button>
-      <Button size="xs" className="text-yellow-300" color="gray" type="button"  ><GiReturnArrow className="mr-2 h-4 w-4"/> Estornar</Button>
-      <Button onClick={()=>handleWhatsAppClick(exameSelected?.celular)} size={'xs'} color="gray">
-      <FaWhatsapp className="mr-2 h-4 w-4" />
-        Abrir Conversa
-      </Button>
-      <Button className="text-red-500" onClick={()=>setOpenModalDeletar(true)} size={'xs'} color="gray">
-        <MdDelete className="mr-2 h-4 w-4" />
-        Excluir
-      </Button>
-    </Button.Group>
-
+        <ExamesToolbar
+          onAdd={() => {
+            setOpenModal(true);
+            setExameSelected(valorInicial);
+          }}
+          onEdit={() => setOpenModal(true)}
+          onPrintBudget={imprimirOrcamento}
+          onPrintReceipt={imprimirRecibo}
+          onReceive={() => setOpenModalReceber(true)}
+          onRevert={() => {}}
+          onWhatsApp={() => handleWhatsAppClick(exameSelected?.celular)}
+          onDelete={() => setOpenModalDeletar(true)}
+        />
       </div>
 
-      <div className="overflow-x-auto h-[calc(100vh-155px)]">
-        <Table  theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 text-black py-1 text-xs" } },head:{cell:{base:"px-4 text-black py-1 text-xs uppercase"}} }}  >
-
-          <Table.Head>
-            <Table.HeadCell>Nome</Table.HeadCell>
-            <Table.HeadCell>Celular</Table.HeadCell>
-            <Table.HeadCell>Data Orçamento</Table.HeadCell>
-            <Table.HeadCell>Data Pag.</Table.HeadCell>
-            <Table.HeadCell>Desconto</Table.HeadCell>
-            <Table.HeadCell>Total</Table.HeadCell>
-            <Table.HeadCell>Status</Table.HeadCell>
-        
-          </Table.Head>
-          <Table.Body className="divide-y">
-            {examesRealizados.map((item, index) => (
-              <Table.Row   onClick={() => setExameSelected(item)} key={item.id_exame} className={`bg-white hover:cursor-pointer ${exameSelected?.id_exame === item.id_exame ? 'bg-gray-300' : ''  } `}>
-                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  {item.nome}
-                </Table.Cell>
-                <Table.Cell>{item.celular}</Table.Cell>
-                <Table.Cell>{item.data_orcamento &&new Date(item.data_orcamento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
-                <Table.Cell>{item.data_realizado && new Date(item.data_realizado).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</Table.Cell>
-                <Table.Cell>{item.tipoDesc}</Table.Cell>
-                <Table.Cell>{Number(item.exames.reduce((total, exame) => total + exame.valorFinal, 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
-                
-                <Table.Cell>
-                
-              <Badge className="flex justify-center" color={item.status==='ORÇAMENTO'?'yellow':'green'}>{item.status}</Badge>
-                </Table.Cell>
-             
-
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
+      <div className="overflow-x-auto h-[calc(100vh-200px)]">
+        <ExamesTable
+          exames={examesRealizados}
+          selectedExame={exameSelected}
+          onSelectExame={setExameSelected}
+        />
       </div>
-
-
 
        { openModal &&  <ModalAdministrarExame handleEditarExame={handleEditarExame}  handleNovoExame={handleNovoExame} arraySelectExames={exames} openModal={openModal} setOpenModal={()=>setOpenModal(false)} registro={exameSelected}/>}
 
@@ -418,7 +373,7 @@ handleConfirmar={handleDeletar}
           <Orcamento dados={exameSelected} usuario={usuario?.nome ??''} ref={currentPage} />
           <ReciboMensalidade
                  cidade_uf="CEDRO/CE"
-                 endereco="RUA VER. SALUSTIANO MOURAO, 394 - CENTRO"
+                 endereco="RUA VER. SALUSTIANO MOURA, 394 - CENTRO"
                  logoUrl="/afapsaude.png"
                 associado={exameSelected.nome_responsavel?exameSelected?.nome_responsavel:exameSelected?.nome}
                 contrato={exameSelected?.id_exame??null}

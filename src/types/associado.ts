@@ -2,6 +2,8 @@ import { CidadesProps } from "./cidades"
 import { AcordoProps, MensalidadeProps } from "./financeiro"
 import { PlanosProps } from "./planos"
 
+export const arrayUF =["AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"]
+
 export type DadosCadastro = {
     id_empresa:string
     empresa:string

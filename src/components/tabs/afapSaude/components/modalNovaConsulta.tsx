@@ -14,6 +14,7 @@ import { removerFusoDate } from "@/utils/removerFusoDate";
 import { toast } from "sonner";
 import TabsConsulta from "../tabsConsulta/TabsConsulta";
 import { ClienteModal } from "./modalNovoCliente";
+import { ErrorIndicator } from "@/components/errorIndicator";
 
 interface DataProps {
   openModal: boolean;
@@ -172,18 +173,7 @@ export function ModalConsulta({
           <Button variant={"default"} className="ml-auto" type="submit">
             {consulta?.id_consulta ? "Atualizar" : "Cadastrar"}
           </Button>
-          {Object.keys(errors).length > 0 && (
-            <ul className="bg-red-100 p-2 inline-flex gap-2 flex-wrap rounded-sm border border-red-300">
-              {Object.entries(errors).map(([field, error]) => {
-                const msg = (error as { message?: string })?.message;
-                return msg ? (
-                  <li key={field} className="text-red-600 text-xs">
-                    {msg}
-                  </li>
-                ) : null;
-              })}
-            </ul>
-          )}
+         <ErrorIndicator errors={errors}/>
         </form>
       </Modal.Body>
     

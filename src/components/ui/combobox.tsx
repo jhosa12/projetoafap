@@ -39,13 +39,16 @@ export function Combobox({
     <Popover  open={open} onOpenChange={setOpen}>
       <PopoverTrigger className="max-w-100 w-full" asChild  >
         <Button variant="outline" role="combobox" aria-expanded={open}  className=" justify-between text-xs truncate">
-        <span className="truncate">{value ? items.find((item) => item.value === value)?.label : placeholder}</span>
+        <span className="truncate">{value ? value : placeholder}</span>
         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent  onClick={(e) => e.stopPropagation()} className=" p-0 pt-1">
-        <Command className="max-h-64" >
-          <CommandInput className="h-8" placeholder={searchPlaceholder} />
+      <PopoverContent 
+    className="p-0 pt-1" 
+ 
+    >
+        <Command  className="max-h-64" >
+          <CommandInput  className="h-8" placeholder={searchPlaceholder} />
           <CommandList >
             <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
             <CommandGroup >

@@ -1,12 +1,21 @@
 import { useContext, useState } from "react"
 import { AuthContext } from "@/store/AuthContext";
 import { api } from "@/lib/axios/apiClient";
-import { Button, Modal,  Tabs } from "flowbite-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { TabTitular } from "../../../tabs/admContrato/dadosAssociado/tabs/tabTitular";
 import { TabContrato } from "../../../tabs/admContrato/dadosAssociado/tabs/tabContrato";
 import { Control, SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
 import { AssociadoProps } from "@/types/associado";
 import { toast } from "sonner";
+import { ErrorIndicator } from "@/components/errorIndicator";
 
 interface ModalProps {
   openEdit: boolean
@@ -23,8 +32,10 @@ export interface UseFormAssociadoProps{
 }
 
 export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps) {
+
+
   const { usuario,setarDadosAssociado,permissoes,dadosassociado} = useContext(AuthContext)
-  const {register,handleSubmit,watch,setValue,trigger,control} = useForm<AssociadoProps>({
+  const {register,handleSubmit,watch,setValue,trigger,control,formState:{errors}} = useForm<AssociadoProps>({
     defaultValues:{...dataForm,contrato:{...dataForm?.contrato,dt_adesao:dataForm.contrato?.dt_adesao ? new Date(new Date(dataForm.contrato?.dt_adesao).getUTCFullYear(),new Date(dataForm.contrato?.dt_adesao).getUTCMonth(),new Date(dataForm.contrato?.dt_adesao).getUTCDate(),new Date(dataForm.contrato?.dt_adesao).getUTCHours()) : undefined,
       data_vencimento:dataForm.contrato?.data_vencimento ? new Date(new Date(dataForm.contrato?.data_vencimento).getUTCFullYear(),new Date(dataForm.contrato?.data_vencimento).getUTCMonth(),new Date(dataForm.contrato?.data_vencimento).getUTCDate(),new Date(dataForm.contrato?.data_vencimento).getUTCHours()) : undefined,
 
@@ -34,12 +45,6 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
     },
   }
   })
-
-
-
-
-  
-
 
 
   const handleAtualizarDados:SubmitHandler<AssociadoProps> = async(data)=>{
@@ -82,48 +87,55 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
   }
 
 
-
-
   return (
+    <Dialog  open={openEdit} onOpenChange={setModalEdit}>
+      <DialogContent className="max-w-5xl">
+        <DialogHeader>
+          <DialogTitle>Editar Dados</DialogTitle>
+          <DialogDescription>
+            Atualize as informações do titular e contrato.
+          </DialogDescription>
+        </DialogHeader>
 
+        <form onSubmit={handleSubmit(handleAtualizarDados)} className="mt-4">
+          <Tabs aria-modal defaultValue="titular" className="w-full">
+            <TabsList className="grid grid-cols-2 w-full">
+              <TabsTrigger value="titular">Dados Titular</TabsTrigger>
+              <TabsTrigger value="contrato">Dados Contrato</TabsTrigger>
+            </TabsList>
 
-    
+            <TabsContent forceMount className="hidden data-[state=active]:flex flex-col gap-4" value="titular">
+              <TabTitular
+                control={control}
+                register={register}
+                setValue={setValue}
+                watch={watch}
+                trigger={trigger}
+              />
+            </TabsContent>
 
-       <Modal popup size={'5xl'} show={openEdit} onClose={()=>setModalEdit(false)}  >
-        <Modal.Header/>
-        
-        <Modal.Body>
-          
-           <form onSubmit={handleSubmit(handleAtualizarDados)}>
-        <Tabs  theme={{tablist:{tabitem:{base:"flex z-0 items-center justify-center rounded-t-lg p-2 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 ",variant:{fullWidth:{active:{off:'bg-gray-50',on:'bg-gray-100 text-black'}}}}}}}  variant="fullWidth">
-        <Tabs.Item  title="Dados Titular" >
+            <TabsContent forceMount className="hidden data-[state=active]:flex flex-col gap-4" value="contrato">
+              <TabContrato
+                control={control}
+                register={register}
+                setValue={setValue}
+                watch={watch}
+                trigger={trigger}
+              />
+            </TabsContent>
+          </Tabs>
 
-          <TabTitular control={control} register={register} setValue={setValue} watch={watch} trigger={trigger}/>
-          
-        </Tabs.Item>
-        <Tabs.Item title="Dados Contrato" >
-
-       <TabContrato control={control} register={register} setValue={setValue} watch={watch} trigger={trigger}/> 
-       
-        </Tabs.Item>
-    
-      
-      
-      </Tabs>
-  
-              
-          <div className="inline-flex w-full justify-end p-2 gap-4">
-        
-         
-            <Button type="submit" disabled={!permissoes.includes('ADM1.1.1')} >Salvar</Button>
-
+          <div className="flex w-full justify-between gap-4 mt-6">
+            <ErrorIndicator errors={errors}/>
+            <Button
+              type="submit"
+              disabled={!permissoes.includes("ADM1.1.1")}
+            >
+              Salvar
+            </Button>
           </div>
-          </form>
-          </Modal.Body>
-
-
-       
-          </Modal>
-
-  )
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
 }
