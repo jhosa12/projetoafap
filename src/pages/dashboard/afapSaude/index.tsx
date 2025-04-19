@@ -3,7 +3,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/axios/apiClient";
 import "react-datepicker/dist/react-datepicker.css";
-
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br';
 import Calendario from "@/components/tabs/afapSaude/agendaMedico/calendario";
@@ -13,9 +12,9 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { HiClipboardList } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
 import { BiSolidInjection } from "react-icons/bi";
-import Exames from "@/components/tabs/afapSaude/exames/exames";
 import Configuracoes from "@/components/tabs/afapSaude/configuracoes/configuracoes";
 import {  ExamesProps, MedicoProps, EventProps } from "@/types/afapSaude";
+import Exames from "@/components/afapSaude/exames/exames";
 
 export default function AfapSaude() {
   const [medicos, setMedicos] = useState<Array<MedicoProps>>([])
