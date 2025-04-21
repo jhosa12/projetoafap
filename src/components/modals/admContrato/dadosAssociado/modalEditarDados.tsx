@@ -97,7 +97,7 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(handleAtualizarDados)} className="mt-4">
+        <form onSubmit={handleSubmit(handleAtualizarDados)} >
           <Tabs aria-modal defaultValue="titular" className="w-full">
             <TabsList className="grid grid-cols-2 w-full">
               <TabsTrigger value="titular">Dados Titular</TabsTrigger>
@@ -125,7 +125,7 @@ export function ModalEditarDados({ openEdit,setModalEdit,dataForm }: ModalProps)
             </TabsContent>
           </Tabs>
 
-          <div className="flex w-full justify-between gap-4 mt-6">
+          <div className="flex w-full justify-end gap-4 mt-6">
             <ErrorIndicator errors={errors}/>
             <Button
               type="submit"

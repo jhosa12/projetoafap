@@ -11,12 +11,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Combobox } from "@/components/ui/combobox";
 import { DatePickerInput } from "@/components/DatePickerInput";
+import { MultiSelect } from "@/components/multi-select";
 registerLocale('pt-br', pt)
 
 interface DataProps {
   show: boolean,
   setFiltro: (open: boolean) => void,
-  buscarConsultas: ({ startDate, endDate, id_med,status,buscar,nome,id_consultor }: { startDate: Date | undefined, endDate: Date | undefined, id_med?: number, status: string | undefined, buscar?: string, nome?: string, id_consultor?: number }) => Promise<void>,
+  buscarConsultas: ({ startDate, endDate, id_med,status,buscar,nome,id_consultor }: { startDate: Date | undefined, endDate: Date | undefined, id_med?: number, status: string[] | undefined, buscar?: string, nome?: string, id_consultor?: number }) => Promise<void>,
   loading: boolean,
   medicos: Array<MedicoProps>
   consultores: Array<Partial<ConsultoresProps>>
@@ -32,7 +33,7 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
 
 
   const cleanParams = () => {
-    reset({ startDate: undefined, endDate: undefined, id_med: undefined, status: '', buscar: '', nome: '', id_consultor: undefined, externo: '', medico: '' })
+    reset({ startDate: undefined, endDate: undefined, id_med: undefined, status: [], buscar: '', nome: '', id_consultor: undefined, externo: '', medico: '' })
   }
 
 
@@ -154,10 +155,21 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
 
               <Controller
               name="status"
-              defaultValue=""
+              defaultValue={[]}	
               control={control}
               render={({ field: { onChange, value } }) => (
-                <Select onValueChange={onChange} value={value}>
+                  <MultiSelect
+                  options={statusConsultaArray.map(item => ({ value: item, label: item }))}
+                  value={value}
+                  defaultValue={value}
+                  onValueChange={onChange}
+                  placeholder="Selecione o status"
+                 className="min-h-8"
+                  />
+                
+              )}
+            />
+     {/*  <Select onValueChange={onChange} value={value}>
                   <SelectTrigger className="h-8" >
                     <SelectValue placeholder="Selecione o status" />
                   </SelectTrigger>
@@ -166,10 +178,7 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
                     <SelectItem className="text-xs" key={index} value={item}>{item}</SelectItem>
                   ))}
                   </SelectContent>
-                </Select>
-              )}
-            />
-
+                </Select>*/}
          
             </div>
 

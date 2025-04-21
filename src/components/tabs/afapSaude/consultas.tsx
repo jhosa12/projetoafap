@@ -85,7 +85,7 @@ const {register,control,handleSubmit,watch,getValues,reset} = useForm<FiltroCons
 })
 
 
-const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome,id_consultor,externo,signal,medico}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string|undefined,buscar?:string,nome?:string,id_consultor?:number,externo?:string,signal?:AbortSignal,medico?:string})=>{
+const buscarConsultas = async ({startDate,endDate,id_med,status,buscar,nome,id_consultor,externo,signal,medico}:{startDate:Date|undefined,endDate:Date|undefined,id_med?:number,status:string[]|undefined,buscar?:string,nome?:string,id_consultor?:number,externo?:string,signal?:AbortSignal,medico?:string})=>{
 
   const {dataIni,dataFim} =  ajustarData(startDate,endDate)
 let medicoId = medicos.find(item=>item.nome===medico)?.id_med
@@ -519,8 +519,8 @@ const handleDeletar = useCallback(async () => {
         <ModalConfirmar openModal={modal.deletar} setOpenModal={()=>setModal({deletar:false})} handleConfirmar={handleDeletar} pergunta={'Realmente deseja deletar essa consulta?'} />
 
 
-     { <ModalFiltroConsultas reset={reset} register={register} control={control} handle={handleSubmit} consultores={consultores} medicos={medicos} buscarConsultas={buscarConsultas} loading={loading} setFiltro={()=>setModal({filtro:false})} show={modal.filtro} />
-}
+    <ModalFiltroConsultas reset={reset} register={register} control={control} handle={handleSubmit} consultores={consultores} medicos={medicos} buscarConsultas={buscarConsultas} loading={loading} setFiltro={()=>setModal({filtro:false})} show={modal.filtro} />
+
  
 
 {modal.receber && <ModalConfirmar

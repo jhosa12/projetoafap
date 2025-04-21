@@ -29,7 +29,7 @@ export function TabContrato({ register,watch, control }: UseFormAssociadoProps) 
         <Input disabled className="text-xs" {...register('contrato.id_contrato',{required:'Contrato é obrigatório'})} type="number" />
       </div>
 
-      <div className="col-span-1">
+      <div className="flex flex-col justify-end">
         <Label className="text-xs">Vencimento</Label>
         <Controller
           name="contrato.data_vencimento"
@@ -41,14 +41,14 @@ export function TabContrato({ register,watch, control }: UseFormAssociadoProps) 
               selected={value??null}
               onChange={e => e && onChange(e)}
               dateFormat="dd/MM/yyyy"
-              locale="pt"
+              locale={pt}
               className="h-9 w-full rounded-md shadow-sm px-2 border text-sm border-gray-200 "
             />
           )}
         />
       </div>
 
-      <div className="col-span-1">
+      <div className="flex flex-col justify-end">
         <Label className="text-xs">Adesão</Label>
         <Controller
           name="contrato.dt_adesao"
@@ -57,16 +57,17 @@ export function TabContrato({ register,watch, control }: UseFormAssociadoProps) 
           render={({ field: { onChange, value } }) => (
             <DatePicker
               selected={value}
-              onChange={e => e && onChange(e)}
+              onChange={e => onChange(e)}
               dateFormat="dd/MM/yyyy"
               locale="pt"
+             
              className="h-9 w-full rounded-md shadow-sm px-2 border text-sm border-gray-200 "
             />
           )}
         />
       </div>
 
-      <div className="col-span-1">
+      <div className="flex flex-col justify-end">
         <Label className="text-xs">Carência</Label>
         <Controller
           name="contrato.dt_carencia"
