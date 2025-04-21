@@ -3,7 +3,7 @@
 
 import { useCallback, useContext, useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
+import { Calendar, dateFnsLocalizer, ToolbarProps } from 'react-big-calendar'
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br'; // Importa o idioma português para o moment
 import { ModalDrawer } from "@/components/tabs/afapSaude/agendaMedico/drawer";
@@ -17,6 +17,8 @@ import { api } from "@/lib/axios/apiClient";
 import { LuCalendarCheck, LuCalendarClock, LuCalendarX } from "react-icons/lu";
 import { EventProps, MedicoProps } from "@/types/afapSaude";
 import { toast } from "sonner";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ChevronDown } from "lucide-react";
 
 const locales = {
   'pt-BR':ptBR,
@@ -75,10 +77,15 @@ export default function Calendario({ medicos,events, setArrayEvent }: DataProps)
 
   const [isOpen, setIsOpen] = useState(false);
   const [modalDelete, setModalDel] = useState(false)
-  const {usuario} = useContext(AuthContext)
   const [dataEvent, setDataEvent] = useState<Partial<EventProps>>({})
+  const [selectedDoctor, setSelectedDoctor] = useState<number>();
 
 
+
+
+  const filteredEvents = selectedDoctor && selectedDoctor !== null
+    ? events.filter(event => event.id_med === selectedDoctor)
+    : events
   
  const deletarEvento = useCallback(async function () {
     if (!dataEvent.id_agmed) {
@@ -146,7 +153,50 @@ export default function Calendario({ medicos,events, setArrayEvent }: DataProps)
             {event.title}
         </Alert>
       )
-    }
+    },
+    toolbar:(props:ToolbarProps)=>(
+      <div className="rbc-toolbar flex items-center flex-wrap gap-4 px-2 justify-between">
+      {/* Bloco de navegação (esquerda) */}
+      <div className="flex items-center space-x-2 flex-1 text-xs">
+        <button onClick={() => props.onNavigate('PREV')}>Anterior</button>
+        <button onClick={() => props.onNavigate('TODAY')}>Hoje</button>
+        <button onClick={() => props.onNavigate('NEXT')}>Próximo</button>
+      </div>
+    
+      {/* Bloco do seletor (centro) */}
+      <div className="w-64 text-xs">
+  <select
+    className="w-full h-9 appearance-none border border-gray-300 py-1 rounded-md px-4  pr-10 bg-white text-gray-700 focus:outline-none text-xs "
+    defaultValue={''}
+    onChange={(e) => setSelectedDoctor(parseInt(e.target.value))}
+    value={selectedDoctor}
+  >
+    <option value={''}>
+      Todos os Especialistas
+    </option>
+    {medicos.map((medico) => (
+      <option key={medico.id_med} value={medico.id_med}>
+        {medico.nome}
+      </option>
+    ))}
+  </select>
+
+  {/* Ícone da seta */}
+ 
+</div>
+
+    
+      {/* Bloco de visualizações (direita) */}
+      <div className="flex items-center space-x-2 flex-1 justify-end text-xs">
+        <span className="uppercase font-semibold">{props.label}</span>
+        <button onClick={() => props.onView('agenda')}>Agenda</button>
+        <button onClick={() => props.onView('month')}>Mês</button>
+        <button onClick={() => props.onView('week')}>Semana</button>
+        <button onClick={() => props.onView('day')}>Dia</button>
+      </div>
+    </div>
+    
+    )
   }
 
   
@@ -156,7 +206,6 @@ export default function Calendario({ medicos,events, setArrayEvent }: DataProps)
   const handleEventClick = (event: Partial<EventProps>) => {
     setDataEvent({ ...event })
     toggleDrawer()
-    
   } 
 
 const toggleDrawer = () => {
@@ -178,7 +227,7 @@ const toggleDrawer = () => {
       {isOpen &&  <ModalDrawer deletarEvento={deletarEvento} setArrayEvent={setArrayEvent} events={events} dataEvent={dataEvent}  arrayMedicos={medicos} isOpen={isOpen} toggleDrawer={toggleDrawer} />}
         <Calendar
           localizer={localizer}
-          events={events.filter((item) => item.tipoAg !== 'tp')}
+          events={filteredEvents}
           components={components}
           onSelectEvent={handleEventClick}
           eventPropGetter={eventPropGetter}
@@ -188,6 +237,7 @@ const toggleDrawer = () => {
           onSelectSlot={handleNovoEvento}
           selected={true}
           style={{ height: 'calc(100vh - 90px)'}}
+          views={['month', 'week', 'day', 'agenda']}
           messages={{
             next: "Próximo",
             previous: "Anterior",
@@ -200,6 +250,7 @@ const toggleDrawer = () => {
             time: "Hora",
             event: "Evento"
           }}
+         
         />
 
         <Modal show={modalDelete} size="md" onClose={() => setModalDel(false)} popup>
