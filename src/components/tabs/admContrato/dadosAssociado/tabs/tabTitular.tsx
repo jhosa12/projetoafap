@@ -1,7 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import InputMask from 'react-input-mask';
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
@@ -10,6 +9,9 @@ import { useContext } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { Controller } from "react-hook-form";
 import { arrayUF } from "@/types/associado";
+import { CepMaskInput } from "@/components/CepMaskInput";
+import { CPFInput } from "@/components/CpfMaskInput";
+import { PhoneMaskInput } from "@/components/PhoneMaskInput";
 
 export function TabTitular({ register, setValue, watch, control }: UseFormAssociadoProps) {
   const { cidades } = useContext(AuthContext);
@@ -64,18 +66,9 @@ export function TabTitular({ register, setValue, watch, control }: UseFormAssoci
       {/* CEP */}
       <div className="col-span-1">
         <Label className="text-xs">CEP</Label>
-        <Controller
-          name="cep"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <InputMask
-              mask="99999-999"
-              value={value}
-              onChange={e => onChange(e.target.value)}
-              className="h-9 w-full rounded-md shadow-sm px-2 border text-sm border-gray-200 "
-            />
-          )}
-        />
+      
+          <CepMaskInput register={register} controlName="cep" />
+       
       </div>
 
       {/* Endereço */}
@@ -157,18 +150,9 @@ export function TabTitular({ register, setValue, watch, control }: UseFormAssoci
       {/* CPF */}
       <div className="col-span-1">
         <Label className="text-xs">CPF</Label>
-        <Controller
-          name="cpfcnpj"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <InputMask
-              mask="999.999.999-99"
-              value={value}
-              onChange={e => onChange(e.target.value)}
-              className="h-9 w-full rounded-md shadow-sm px-2 border text-sm border-gray-200 "
-            />
-          )}
-        />
+       
+           <CPFInput register={register} controlName="cpfcnpj" />
+         
       </div>
 
       {/* Naturalidade */}
@@ -180,52 +164,25 @@ export function TabTitular({ register, setValue, watch, control }: UseFormAssoci
       {/* Celular1 */}
       <div className="col-span-1">
         <Label className="text-xs">Celular1</Label>
-        <Controller
-          name="celular1"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <InputMask
-              mask="(99) 9 9999-9999"
-              value={value}
-              onChange={e => onChange(e.target.value)}
-              className="h-9 w-full rounded-md shadow-sm px-2 border text-sm border-gray-200 "
-            />
-          )}
-        />
+       
+         <PhoneMaskInput register={register} controlName="celular1" />
+       
       </div>
 
       {/* Celular2 */}
       <div className="col-span-1">
         <Label className="text-xs">Celular2</Label>
-        <Controller
-          name="celular2"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <InputMask
-              mask="(99) 9 9999-9999"
-              value={value}
-              onChange={e => onChange(e.target.value)}
-              className="h-9 w-full rounded-md shadow-sm px-2 border text-sm border-gray-200 "
-            />
-          )}
-        />
+       
+            <PhoneMaskInput register={register} controlName="celular2" />
+        
       </div>
 
       {/* Telefone */}
       <div className="col-span-1">
         <Label className="text-xs">Telefone</Label>
-        <Controller
-          name="telefone"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <InputMask
-              mask="(99) 9 9999-9999"
-              value={value}
-              onChange={e => onChange(e.target.value)}
-              className="h-9 w-full rounded-md shadow-sm px-2 border text-sm border-gray-200 "
-            />
-          )}
-        />
+       
+            <PhoneMaskInput register={register} controlName="telefone" />
+        
       </div>
 
       {/* Email */}

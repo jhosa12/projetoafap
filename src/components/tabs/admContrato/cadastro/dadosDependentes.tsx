@@ -1,19 +1,13 @@
-import {  useContext, useEffect, useState } from "react"
-import { FormWrapper } from "../../../organizador"
-import InputMask from 'react-input-mask'
-import { TiDeleteOutline } from "react-icons/ti";
-import { TiDelete } from "react-icons/ti";
-import { MdAdd, MdAddCircle, MdDeleteForever } from "react-icons/md";
-import { MdEditSquare } from "react-icons/md";
-import { AuthContext } from "@/store/AuthContext";
+import {  useState } from "react"
+import {  MdAddCircle, MdDeleteForever } from "react-icons/md";
 import DatePicker,{registerLocale, setDefaultLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { Label, Modal, Select, Table, TextInput } from "flowbite-react";
 import { ChildrenProps } from "@/components/modals/admContrato/cadastro/modalCadastro";
 import { Control, Controller, useForm, UseFormRegister, UseFormSetValue } from "react-hook-form";
-import { watch } from "fs";
 import { Button } from "@/components/ui/button";
+import { PhoneMaskInput } from "@/components/PhoneMaskInput";
 registerLocale('pt', pt)
 
 interface UserProps{
@@ -187,13 +181,10 @@ interface DepProps {
              <div className="mb-1 block">
              <Label className="text-xs"  value="Celular" />
            </div>
-           <Controller
-           name="celular"
-           control={control}
-           render={({ field:{onChange,value} }) => (
-            <InputMask  value={value} onChange={e=>onChange(e.target.value)} mask={'(99) 9 9999-9999'} type="text"  className="flex uppercase w-full text-xs pr-2 pl-2  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
-           )}
-           />
+          
+            <PhoneMaskInput controlName="celular" register={register} />
+           
+           
            
              </div>
                

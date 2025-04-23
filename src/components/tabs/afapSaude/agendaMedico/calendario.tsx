@@ -166,7 +166,7 @@ export default function Calendario({ medicos,events, setArrayEvent }: DataProps)
       {/* Bloco do seletor (centro) */}
       <div className="w-64 text-xs">
   <select
-    className="w-full h-9 appearance-none border border-gray-300 py-1 rounded-md px-4  pr-10 bg-white text-gray-700 focus:outline-none text-xs "
+    className="w-full h-8 appearance-none border border-gray-300 py-1 rounded-md px-4  pr-10 bg-white text-gray-700 focus:outline-none text-xs "
     defaultValue={''}
     onChange={(e) => setSelectedDoctor(parseInt(e.target.value))}
     value={selectedDoctor}

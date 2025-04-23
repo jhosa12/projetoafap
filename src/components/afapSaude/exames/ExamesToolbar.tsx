@@ -37,7 +37,7 @@ export function ExamesToolbar({
   onDelete,
 }: ExamesToolbarProps) {
   return (
-    <div className="flex justify-between  gap-2 mb-4 flex-wrap">
+    <div className="flex justify-between  gap-2 mb-2 flex-wrap">
       <div className="flex gap-2">
         <Button
           variant="outline"

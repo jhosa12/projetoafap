@@ -5,10 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Filter } from "lucide-react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, Control, UseFormReset, UseFormHandleSubmit } from "react-hook-form";
 import { DatePickerInput } from '@/components/DatePickerInput';
 
-interface FiltroForm {
+export interface FiltroForm {
   endDate?: Date;
   nome?: string;
   startDate?: Date;
@@ -20,22 +20,21 @@ interface FiltroExamesProps {
   loading: boolean;
   openModal: boolean;
   setOpenModal: () => void;
+  control:Control<FiltroForm,any>
+  reset:UseFormReset<FiltroForm>
+  handleSubmit:UseFormHandleSubmit<FiltroForm>
 }
 
 export function FiltroExames({ 
   filtroExames, 
   loading, 
   openModal, 
-  setOpenModal 
+  setOpenModal,
+  control,
+  handleSubmit,
+  reset
 }: FiltroExamesProps) {
-  const { control, handleSubmit, reset } = useForm<FiltroForm>({
-    defaultValues: {
-      endDate: new Date(),
-      nome: undefined,
-      startDate: new Date(),
-      status: ''
-    }
-  });
+
 
   const onSubmit = async (data: FiltroForm) => {
     await filtroExames(data);
@@ -51,7 +50,7 @@ export function FiltroExames({
           onClick={() => reset()}
           className="text-black"
         >
-          <Filter className="mr-2 h-4 w-4" />
+          <Filter  />
           Filtro
         </Button>
       </DialogTrigger>

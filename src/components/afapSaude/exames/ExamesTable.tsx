@@ -23,7 +23,7 @@ import {
     return (
       <div className="border-b-[1px]">
         <Table>
-          <TableHeader>
+          <TableHeader className="text-black">
             <TableRow className="uppercase text-xs text-black">
               <TableHead>Nome</TableHead>
               <TableHead>Celular</TableHead>
@@ -39,7 +39,7 @@ import {
               <TableRow
                 key={item.id_exame}
                 className={`cursor-pointer text-black text-xs hover:bg-muted/50 ${
-                  selectedExame?.id_exame === item.id_exame ? "bg-muted" : ""
+                  selectedExame?.id_exame === item.id_exame ? "bg-gray-300" : ""
                 }`}
                 onClick={() => onSelectExame(item)}
               >

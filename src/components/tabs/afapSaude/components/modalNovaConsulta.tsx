@@ -1,5 +1,4 @@
 import {Modal} from "flowbite-react";
-import { useState } from "react";
 import { api } from "@/lib/axios/apiClient";
 import {  SubmitHandler, useForm } from "react-hook-form";
 import { valorInicial } from "../consultas";
@@ -13,7 +12,6 @@ import {
 import { removerFusoDate } from "@/utils/removerFusoDate";
 import { toast } from "sonner";
 import TabsConsulta from "../tabsConsulta/TabsConsulta";
-import { ClienteModal } from "./modalNovoCliente";
 import { ErrorIndicator } from "@/components/errorIndicator";
 
 interface DataProps {
@@ -42,7 +40,7 @@ export function ModalConsulta({
   setConsultas,
 }: DataProps) {
   
-  const [visible, setvisible] = useState(false);
+  
   const {
     register,
     setValue,
@@ -60,8 +58,10 @@ export function ModalConsulta({
 
   const handleEditarConsulta = async (data: ConsultaProps) => {
     let dataInit = undefined;
-    if (data?.id_agmed && data?.id_agmed !== consulta.id_agmed) {
-      const { dataIni, dataFim } = ajustarData(data.data_prev, undefined);
+    alert(data.data_prev)
+    if (data?.id_agmed) {
+     const dataNova = events.find((item) => item.id_agmed === data?.id_agmed)?.start;
+      const { dataIni, dataFim } = ajustarData(dataNova, undefined);
       dataInit = dataIni;
     }
 

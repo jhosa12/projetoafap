@@ -1,6 +1,5 @@
 
 import { FormWrapper } from "../../../organizador";
-import InputMask from 'react-input-mask';
 import DatePicker from 'react-datepicker'
 import pt from "date-fns/locale/pt";
 import { useContext } from "react";
@@ -8,6 +7,9 @@ import { AuthContext } from "@/store/AuthContext";
 import { Label, Select, TextInput } from "flowbite-react";
 import { Controller, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { ChildrenProps } from "@/components/modals/admContrato/cadastro/modalCadastro";
+import { CepMaskInput } from "@/components/CepMaskInput";
+import { CPFInput } from "@/components/CpfMaskInput";
+import { PhoneMaskInput } from "@/components/PhoneMaskInput";
 
 
 
@@ -91,7 +93,7 @@ export function DadosTitular({register,setValue,watch,control}:ChildrenProps){
         <div >
           <Label className="text-xs" htmlFor="cep" value="CEP" />
         </div>
-          <InputMask value={watch('cep')} onChange={e=>setValue('cep',e.target.value)} mask={'99999-999'} type="text" required className="flex uppercase w-full  text-xs  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
+          <CepMaskInput controlName={'cep'}  register={register}/>
           </div>
           <div className="col-span-2">
           <div >
@@ -185,7 +187,10 @@ export function DadosTitular({register,setValue,watch,control}:ChildrenProps){
           <div >
           <Label className="text-xs"  value="CPF" />
         </div>
-          <InputMask mask={'999.999.999-99'}  value={watch('cpf')} onChange={e=>setValue('cpf',e.target.value)} autoComplete="off" type="text" required className="flex uppercase w-full text-xs border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
+       
+          <CPFInput  register={register} controlName={'cpf'}/>
+        
+        
           </div>
 
 
@@ -209,19 +214,26 @@ export function DadosTitular({register,setValue,watch,control}:ChildrenProps){
           <div >
           <Label className="text-xs"  value="Celular 1" />
         </div>
-          <InputMask value={watch('celular1')} onChange={e=>setValue('celular1',e.target.value)} mask={'(99) 9 9999-9999'} type="text" required className="flex uppercase w-full  text-xs  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400 "/>
+
+        
+                     <PhoneMaskInput register={register} controlName={'celular1'} />
+                 
           </div>
           <div className="col-span-1">
           <div >
           <Label className="text-xs"  value="Celular 2" />
         </div>
-          <InputMask value={watch('celular2')} onChange={e=>setValue('celular2',e.target.value)} mask={'(99) 9 9999-9999'} type="text"  className="flex uppercase w-full  text-xs  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400  "/>
+   
+            <PhoneMaskInput register={register} controlName={'celular2'}/>
+         
           </div>
           <div className="col-span-1">
           <div >
           <Label className="text-xs"  value="Telefone" />
         </div>
-          <InputMask value={watch('telefone')} onChange={e=>setValue('telefone',e.target.value)} mask={'(99) 9 9999-9999'} type="text"  className="flex uppercase w-full  text-xs  border  rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400  "/>
+     
+            <PhoneMaskInput register={register} controlName={'telefone'}/>
+         
           </div>
         </div>
         </div>

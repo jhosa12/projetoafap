@@ -2,15 +2,16 @@ import { Label } from "@/components/ui/label";
 import { TabsConsultaProps } from "./TabsConsulta";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { AiOutlineClockCircle } from "react-icons/ai";
 import { Controller } from "react-hook-form";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import ReactInputMask from "react-input-mask";
 import { useState } from "react";
 import BuscarClienteModal from "@/components/modals/afapSaude/modalBuscaClientes";
 import { calcularIdade } from "@/utils/calcIdade";
+import { PhoneMaskInput } from "@/components/PhoneMaskInput";
+import { CPFInput } from "@/components/CpfMaskInput";
+import { withMaskitoRegister } from "@/utils/with-maskito-register";
 
 
 const tiposBusca = [
@@ -64,7 +65,7 @@ export default function TabDadosPaciente({ register, control, watch, setValue }:
             control={control}
             name="celular"
             render={({ field: { onChange, value } }) => (
-              <ReactInputMask value={value} onChange={e => onChange(e.target.value)} id="celular" placeholder="Celular" className="px-2 h-9 focus:outline-none  w-full text-sm  border border-gray-200 shadow-sm rounded-md " mask={'(99) 9 9999-9999'} />
+              <PhoneMaskInput controlName="celular" register={register} />
             )}
           />
 
@@ -76,7 +77,7 @@ export default function TabDadosPaciente({ register, control, watch, setValue }:
             control={control}
             name="cpf"
             render={({ field: { onChange, value } }) => (
-              <ReactInputMask value={value} onChange={e => onChange(e.target.value)} id="cpf" placeholder="CPF" className="flex px-2 h-9 focus:outline-none  w-full text-sm  border border-gray-200 shadow-sm rounded-md " mask={'999.999.999-99'} />
+              <CPFInput controlName="cpf" register={register} />
             )}
           />
         </div>

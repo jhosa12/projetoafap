@@ -1,5 +1,27 @@
-import { Label, Modal, Select, Table, TextInput } from "flowbite-react";
-import ReactInputMask from "react-input-mask";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { ChangeEvent, useCallback, useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { HiTrash } from "react-icons/hi2";
@@ -10,7 +32,9 @@ import {
 } from "@/types/afapSaude";
 import { toast } from "sonner";
 import { Combobox } from "@/components/ui/combobox";
-import { Button } from "@/components/ui/button";
+import { PhoneMaskInput } from "@/components/PhoneMaskInput";
+import { CPFInput } from "@/components/CpfMaskInput";
+import { X } from "lucide-react";
 
 interface DataProps {
   openModal: boolean;
@@ -134,166 +158,151 @@ export function ModalAdministrarExame({
    }*/
 
   return (
-    <Modal
-      show={openModal}
-      size="4xl"
-      dismissible
-      onClose={() => setOpenModal()}
-    >
-      <Modal.Header>Administrar Exame</Modal.Header>
-      <Modal.Body>
+    <Dialog open={openModal} onOpenChange={setOpenModal}>
+      <DialogContent className="max-w-4xl">
+        <DialogHeader>
+          <DialogTitle>Administrar Exame</DialogTitle>
+        </DialogHeader>
         <form
           className="flex flex-col w-full"
           onSubmit={handleSubmit(handleOnSubmit)}
         >
           <div className="grid grid-cols-4 gap-2 ">
-            <div className="col-span-2 ">
-              <Label className="text-xs" htmlFor="nome" value="Nome Paciente" />
-              <TextInput
-                sizing={"sm"}
-                {...register("nome")}
-                className="focus:outline-none"
+            <div className="col-span-2">
+              <Label className="text-xs" htmlFor="nome">
+                Nome Paciente
+              </Label>
+              <Input
                 id="nome"
                 placeholder="Nome"
                 required
+                {...register("nome")}
               />
             </div>
-
-            <div className="w-full">
-              <Label className="text-xs" htmlFor="celular" value="Celular" />
-
-              <Controller
-                control={control}
-                name="celular"
-                render={({ field: { onChange, value } }) => (
-                  <ReactInputMask
-                    value={value}
-                    onChange={(e) => onChange(e.target.value)}
-                    id="celular"
-                    placeholder="Celular"
-                    className="px-2 py-2 focus:outline-none text-xs bg-gray-100 w-full rounded-lg border-[1px] border-gray-300"
-                    mask={"(99) 9 9999-9999"}
-                  />
-                )}
-              />
+            <div>
+              <Label className="text-xs" htmlFor="celular">
+                Celular
+              </Label>
+           
+                  <PhoneMaskInput controlName="celular" register={register} />
+                
+            
             </div>
-
-            <div className="w-full">
-              <Label className="text-xs" htmlFor="cpf" value="CPF" />
-
-              <Controller
-                control={control}
-                name="cpf"
-                render={({ field: { onChange, value } }) => (
-                  <ReactInputMask
-                    value={value}
-                    onChange={(e) => onChange(e.target.value)}
-                    id="cpf"
-                    placeholder="CPF"
-                    className="px-2 py-2 text-xs focus:outline-none bg-gray-100 w-full rounded-lg border-[1px] border-gray-300"
-                    mask={"999.999.999-99"}
-                  />
-                )}
-              />
+            <div>
+              <Label className="text-xs" htmlFor="cpf">
+                CPF
+              </Label>
+              
+                  <CPFInput  register={register} controlName="cpf" />
+                
+              
             </div>
-
-            <div className="col-span-3 ">
-              <Label
-                className="text-xs"
-                htmlFor="endereco"
-                value="Endereço Completo"
-              />
-
-              <TextInput
+            <div className="col-span-3">
+              <Label className="text-xs" htmlFor="endereco">
+                Endereço Completo
+              </Label>
+              <Input
                 id="endereco"
                 required={watch("coleta") === "DOMICILIO"}
-                sizing={"sm"}
-                {...register("endereco")}
-                className="focus:outline-none"
                 placeholder="Endereço"
+                {...register("endereco")}
               />
             </div>
-
-            <div className="col-span-1 ">
-              <Label className="text-xs" htmlFor="coleta" value="Coleta" />
-              <Select
-                sizing={"sm"}
-                {...register("coleta")}
-                id="coleta"
-                className="focus:outline-none"
-                required
-              >
-                <option value={""}></option>
-                <option value={"CLINICA"}>CLÍNICA</option>
-                <option value={"DOMICILIO"}>DOMICÍLIO</option>
-              </Select>
-            </div>
-
-            <div className="col-span-2 ">
-              <Label
-                className="text-xs"
-                htmlFor="responsavel"
-                value="Nome Responsável (se for menor)"
+            <div>
+              <Label className="text-xs" htmlFor="coleta">
+                Coleta
+              </Label>
+              <Controller
+                control={control}
+                name="coleta"
+                defaultValue=""
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger id="coleta">
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="CLINICA">CLÍNICA</SelectItem>
+                      <SelectItem value="DOMICILIO">DOMICÍLIO</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
               />
-
-              <TextInput
+            </div>
+            <div className="col-span-2">
+              <Label className="text-xs" htmlFor="responsavel">
+                Nome Responsável (se for menor)
+              </Label>
+              <Input
                 id="responsavel"
-                sizing={"sm"}
-                {...register("nome_responsavel")}
-                className="focus:outline-none"
                 placeholder="Responsável, caso paciente seja menor de idade"
+                {...register("nome_responsavel")}
               />
             </div>
-
-            <div className="w-full">
-              <Label
-                className="text-xs"
-                htmlFor="parentesco"
-                value="Parentesco"
+            <div>
+              <Label className="text-xs" htmlFor="parentesco">
+                Parentesco
+              </Label>
+              <Controller
+                control={control}
+                name="parentesco"
+                defaultValue=""
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger id="parentesco">
+                      <SelectValue placeholder="PARENTESCO" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      
+                      <SelectItem value="CONJUGE">CONJUGE</SelectItem>
+                      <SelectItem value="PAI">PAI</SelectItem>
+                      <SelectItem value="MÃE">MÃE</SelectItem>
+                      <SelectItem value="FILHO">FILHO(A)</SelectItem>
+                      <SelectItem value="IRMÃO(Ã)">IRMÃO(Ã)</SelectItem>
+                      <SelectItem value="PRIMO">PRIMO(A)</SelectItem>
+                      <SelectItem value="SOBRINHO(A)">SOBRINHO(A)</SelectItem>
+                      <SelectItem value="NORA">NORA</SelectItem>
+                      <SelectItem value="GENRO">GENRO</SelectItem>
+                      <SelectItem value="TIO(A)">TIO(A)</SelectItem>
+                      <SelectItem value="AVÔ(Ó)">AVÔ(Ó)</SelectItem>
+                      <SelectItem value="OUTROS">OUTROS</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
               />
-
-              <Select
-                id="parentesco"
-                sizing={"sm"}
-                {...register("parentesco")}
-                className="focus:outline-none"
-              >
-                <option selected className="text-gray-200">
-                  PARENTESCO
-                </option>
-                <option value={"CONJUGE"}>CONJUGE</option>
-                <option value={"PAI"}>PAI</option>
-                <option value={"MÃE"}>MÃE</option>
-                <option value={"FILHO"}>FILHO(A)</option>,
-                <option value={"IRMÃO(Ã)"}>IRMÃO(Ã)</option>
-                <option value={"PRIMO"}>PRIMO(A)</option>
-                <option value={"SOBRINHO(A)"}>SOBRINHO(A)</option>
-                <option value={"NORA"}>NORA</option>
-                <option value={"GENRO"}>GENRO</option>
-                <option value={"TIO(A)"}>TIO(A)</option>
-                <option value={"AVÔ(Ó)"}>AVÔ(Ó)</option>
-                <option value={"OUTROS"}>OUTROS</option>
-              </Select>
             </div>
-
-            <div className="w-full">
-              <Label htmlFor="desconto" className="text-xs" value="Desconto" />
-
-              <Select
-                id="desconto"
-                sizing={"sm"}
-                {...register("tipoDesc")}
-                onChange={(e) => handleTipoDesconto(e.target.value)}
-                className="focus:outline-none"
-                required
-              >
-                <option value={""}></option>
-                <option value={"PARTICULAR"}>PARTICULAR</option>
-                <option value={"FUNERARIA"}>FUNERÁRIA</option>
-                <option value={"PLANO DESCONTO"}>PLANO DESCONTO</option>
-              </Select>
+            <div>
+              <Label className="text-xs" htmlFor="desconto">
+                Desconto
+              </Label>
+              <Controller
+                control={control}
+                name="tipoDesc"
+                defaultValue=""
+                render={({ field }) => (
+                  <Select
+                    onValueChange={(v) => {
+                      field.onChange(v);
+                      handleTipoDesconto(v);
+                    }}
+                    value={field.value}
+                  >
+                    <SelectTrigger id="desconto">
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="PARTICULAR">PARTICULAR</SelectItem>
+                      <SelectItem value="FUNERARIA">FUNERÁRIA</SelectItem>
+                      <SelectItem value="PLANO DESCONTO">
+                        PLANO DESCONTO
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
             </div>
           </div>
+          {/* Seção do Combobox e tabela de exames */}
           <div>
             <div className="inline-flex w-full gap-4 py-4">
               <Controller
@@ -313,122 +322,109 @@ export function ModalAdministrarExame({
               />
               <Button
                 type="button"
-                size={"sm"}
+                size="sm"
                 onClick={handleAdicionarExame}
                 className="mt-auto p-1"
               >
                 Adicionar
               </Button>
             </div>
-            <div className="overflow-x-auto ">
-              <Table
-                theme={{
-                  body: {
-                    cell: {
-                      base: "px-6 text-black py-2 group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg text-xs",
-                    },
-                  },
-                  head: {
-                    cell: {
-                      base: "bg-gray-50 px-6 py-1 group-first/head:first:rounded-tl-lg group-first/head:last:rounded-tr-lg ",
-                    },
-                  },
-                }}
-              >
-                <Table.Head>
-                  <Table.HeadCell>Exame</Table.HeadCell>
-                  <Table.HeadCell>Valor Exame</Table.HeadCell>
-                  <Table.HeadCell>Desconto</Table.HeadCell>
-                  <Table.HeadCell>Valor Final</Table.HeadCell>
-                  <Table.HeadCell>
-                    <span className="sr-only">Edit</span>
-                  </Table.HeadCell>
-                </Table.Head>
-                <Table.Body className="divide-y">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Exame</TableHead>
+                    <TableHead>Valor Exame</TableHead>
+                    <TableHead>Desconto</TableHead>
+                    <TableHead>Valor Final</TableHead>
+                    <TableHead>
+                      <span className="sr-only">Edit</span>
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {watch("exames")?.map((item, index) => (
-                    <Table.Row
-                      key={index}
-                      className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                    >
-                      <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                    <TableRow key={index} className="bg-white">
+                      <TableCell className="whitespace-nowrap font-medium text-gray-900">
                         {item.nome}
-                      </Table.Cell>
-                      <Table.Cell>
+                      </TableCell>
+                      <TableCell>
                         {Number(item.valorExame ?? 0).toLocaleString("pt-BR", {
                           style: "currency",
                           currency: "BRL",
                         })}
-                      </Table.Cell>
-                      <Table.Cell>
+                      </TableCell>
+                      <TableCell>
                         {Number(item.desconto ?? 0).toLocaleString("pt-BR", {
                           style: "currency",
                           currency: "BRL",
                         })}
-                      </Table.Cell>
-                      <Table.Cell>
+                      </TableCell>
+                      <TableCell>
                         {Number(item.valorFinal ?? 0).toLocaleString("pt-BR", {
                           style: "currency",
                           currency: "BRL",
                         })}
-                      </Table.Cell>
-                      <Table.Cell>
+                      </TableCell>
+                      <TableCell>
                         <button
                           type="button"
                           onClick={() => handleDelExameTable(item.id_exame)}
-                          className="font-medium text-gray-500 hover:text-red-600 "
+                          className="font-medium text-gray-500 hover:text-red-600"
                         >
-                          <HiTrash size={16} />
+                          <X size={16} />
                         </button>
-                      </Table.Cell>
-                    </Table.Row>
+                      </TableCell>
+                    </TableRow>
                   ))}
-
-                  <Table.Row className="font-semibold">
-                    <Table.Cell>TOTAL</Table.Cell>
-
-                    <Table.Cell>
+                  <TableRow className="font-semibold">
+                    <TableCell>TOTAL</TableCell>
+                    <TableCell>
                       {Number(
-                        watch("exames")?.reduce((acumulador, atual) => {
-                          acumulador += Number(atual.valorExame);
-                          return acumulador;
-                        }, 0)
+                        watch("exames")?.reduce(
+                          (acumulador, atual) =>
+                            (acumulador += Number(atual.valorExame)),
+                          0
+                        )
                       ).toLocaleString("pt-BR", {
                         style: "currency",
                         currency: "BRL",
                       })}
-                    </Table.Cell>
-                    <Table.Cell>
+                    </TableCell>
+                    <TableCell>
                       {Number(
-                        watch("exames")?.reduce((acumulador, atual) => {
-                          acumulador += Number(atual.desconto);
-                          return acumulador;
-                        }, 0)
-                      ).toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      })}{" "}
-                    </Table.Cell>
-                    <Table.Cell>
-                      {Number(
-                        watch("exames")?.reduce((acumulador, atual) => {
-                          acumulador += Number(atual.valorFinal);
-                          return acumulador;
-                        }, 0)
+                        watch("exames")?.reduce(
+                          (acumulador, atual) =>
+                            (acumulador += Number(atual.desconto)),
+                          0
+                        )
                       ).toLocaleString("pt-BR", {
                         style: "currency",
                         currency: "BRL",
                       })}
-                    </Table.Cell>
-                  </Table.Row>
-                </Table.Body>
+                    </TableCell>
+                    <TableCell>
+                      {Number(
+                        watch("exames")?.reduce(
+                          (acumulador, atual) =>
+                            (acumulador += Number(atual.valorFinal)),
+                          0
+                        )
+                      ).toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
               </Table>
             </div>
           </div>
-          <Button className="ml-auto" type="submit">
+          <Button className="ml-auto mt-6" type="submit">
             {registro?.id_exame ? "Atualizar" : "Cadastrar"}
           </Button>
         </form>
-      </Modal.Body>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   );
 }
