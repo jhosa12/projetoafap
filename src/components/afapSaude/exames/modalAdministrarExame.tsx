@@ -34,7 +34,7 @@ import { toast } from "sonner";
 import { Combobox } from "@/components/ui/combobox";
 import { PhoneMaskInput } from "@/components/PhoneMaskInput";
 import { CPFInput } from "@/components/CpfMaskInput";
-import { X } from "lucide-react";
+import { Focus, X } from "lucide-react";
 
 interface DataProps {
   openModal: boolean;
@@ -158,8 +158,9 @@ export function ModalAdministrarExame({
    }*/
 
   return (
-    <Dialog open={openModal} onOpenChange={setOpenModal}>
-      <DialogContent className="max-w-4xl">
+    <Dialog   open={openModal} onOpenChange={setOpenModal}>
+      <DialogContent  className="max-w-4xl ">
+       
         <DialogHeader>
           <DialogTitle>Administrar Exame</DialogTitle>
         </DialogHeader>
@@ -329,10 +330,10 @@ export function ModalAdministrarExame({
                 Adicionar
               </Button>
             </div>
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
+            <div className="overflow-auto max-h-[calc(100vh-500px)]">
+              <Table >
+                <TableHeader   >
+                  <TableRow  className="sticky top-0 bg-white z-10">
                     <TableHead>Exame</TableHead>
                     <TableHead>Valor Exame</TableHead>
                     <TableHead>Desconto</TableHead>
@@ -344,7 +345,7 @@ export function ModalAdministrarExame({
                 </TableHeader>
                 <TableBody>
                   {watch("exames")?.map((item, index) => (
-                    <TableRow key={index} className="bg-white">
+                    <TableRow key={index} className="bg-white text-xs">
                       <TableCell className="whitespace-nowrap font-medium text-gray-900">
                         {item.nome}
                       </TableCell>
@@ -377,7 +378,7 @@ export function ModalAdministrarExame({
                       </TableCell>
                     </TableRow>
                   ))}
-                  <TableRow className="font-semibold">
+                  <TableRow className="font-semibold text-xs">
                     <TableCell>TOTAL</TableCell>
                     <TableCell>
                       {Number(
@@ -424,6 +425,7 @@ export function ModalAdministrarExame({
             {registro?.id_exame ? "Atualizar" : "Cadastrar"}
           </Button>
         </form>
+        
       </DialogContent>
     </Dialog>
   );

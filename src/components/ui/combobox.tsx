@@ -1,22 +1,15 @@
-
-
-
-
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+// importe os primitives em vez do wrapper ShadCN:
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+  Root as PopoverRoot,
+  Trigger as PopoverTrigger,
+  Content as PopoverContent,
+} from "@radix-ui/react-popover";
+import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command";
+import { Button } from "@/components/ui/button";
+import { Check, ChevronsUpDown } from "lucide-react";
 
 interface ComboboxProps {
   items: { value: string; label: string }[];
@@ -26,43 +19,39 @@ interface ComboboxProps {
   searchPlaceholder?: string;
 }
 
-export function Combobox({
-  items,
-  value,
-  onChange,
-  placeholder = "Selecione uma opção...",
-  searchPlaceholder = "Buscar...",
-}: ComboboxProps) {
+export function Combobox({ items, value, onChange, placeholder='Selecione um item', searchPlaceholder }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
-
   return (
-    <Popover  open={open} onOpenChange={setOpen}>
-      <PopoverTrigger className="max-w-100 w-full" asChild  >
-        <Button variant="outline" role="combobox" aria-expanded={open}  className=" justify-between text-xs truncate">
-        <span className="truncate">{value ? value : placeholder}</span>
-        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+    <PopoverRoot open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild className=" w-full">
+        <Button className=" justify-between text-xs truncate" variant="outline" role="combobox" aria-expanded={open}>
+        <span className="truncate">{value ? items.find((item) => item.value === value)?.label : placeholder}</span>
+          <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent 
-    className="p-0 pt-1" 
- 
-    >
-        <Command  className="max-h-64" >
-          <CommandInput  className="h-8" placeholder={searchPlaceholder} />
-          <CommandList >
+
+      {/* Note que aqui é o Radix.Content, sem Portal */}
+      <PopoverContent
+        sideOffset={4}
+        onOpenAutoFocus={e => e.preventDefault()}
+        className="p-0 pt-1  z-20"
+      >
+        <Command className="max-h-64">
+          <CommandInput className="h-8" autoFocus placeholder={searchPlaceholder} />
+          <CommandList>
             <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
-            <CommandGroup >
-              {items.map((item) => (
+            <CommandGroup>
+              {items.map(item => (
                 <CommandItem
                 className="text-xs"
                   key={item.value}
-                  value={String(item.value)}
+                  value={item.value}
                   onSelect={() => {
                     onChange(item.value === value ? null : item.value);
                     setOpen(false);
                   }}
                 >
-                  <Check className={cn("mr-2 h-4 w-4", value === item.value ? "opacity-100" : "opacity-0")} />
+                  <Check className={value === item.value ? "opacity-100" : "opacity-0"} />
                   {item.label}
                 </CommandItem>
               ))}
@@ -70,6 +59,6 @@ export function Combobox({
           </CommandList>
         </Command>
       </PopoverContent>
-    </Popover>
+    </PopoverRoot>
   );
 }
