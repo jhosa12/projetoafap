@@ -12,9 +12,13 @@ import { arrayUF } from "@/types/associado";
 import { CepMaskInput } from "@/components/CepMaskInput";
 import { CPFInput } from "@/components/CpfMaskInput";
 import { PhoneMaskInput } from "@/components/PhoneMaskInput";
+import { Combobox } from "@/components/ui/combobox";
 
 export function TabTitular({ register, setValue, watch, control }: UseFormAssociadoProps) {
   const { cidades } = useContext(AuthContext);
+
+
+  const cidadesFiltered = cidades?.filter((cid) => cid.uf === watch('uf'))
 
   return (
     <div className="grid grid-cols-5 gap-2">
@@ -125,18 +129,11 @@ export function TabTitular({ register, setValue, watch, control }: UseFormAssoci
           name="cidade"
           rules={{required:'Cidade é obrigatório'}}
           render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value}>
-              <SelectTrigger className="text-xs">
-                <SelectValue placeholder="Selecione" />
-              </SelectTrigger>
-              <SelectContent>
-                {cidades?.filter(c => c.uf === watch("uf")).map(c => (
-                  <SelectItem key={c.id_cidade} value={c.cidade}>
-                    {c.cidade}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Combobox
+            items={cidadesFiltered?.map((cidade) => ({ value: cidade.cidade, label: cidade.cidade })) || []}
+            onChange={field.onChange}
+            value={field.value}
+          />
           )}
         />
       </div>
@@ -151,7 +148,7 @@ export function TabTitular({ register, setValue, watch, control }: UseFormAssoci
       <div className="col-span-1">
         <Label className="text-xs">CPF</Label>
        
-           <CPFInput register={register} controlName="cpfcnpj" />
+           <CPFInput required register={register} controlName="cpfcnpj" />
          
       </div>
 

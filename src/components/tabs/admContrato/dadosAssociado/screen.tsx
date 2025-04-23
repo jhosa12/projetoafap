@@ -51,7 +51,7 @@ export function DadosAssociado({ dadosassociado, infoEmpresa,setarDadosAssociado
   }*/
 
     return (
-        <div className={`flex flex-col w-full text-xs p-4 rounded-b-lg overflow-y-auto  overflow-x-hidden`}>
+        <div className={`flex flex-col w-full max-h-[calc(100vh-195px)] text-xs p-4 rounded-b-lg overflow-y-auto  overflow-x-hidden`}>
 
             {modal.editar && <ModalEditarDados dataForm={dadosassociado} setModalEdit={() => setModal({ editar: false })} openEdit={modal.editar} />}
                 

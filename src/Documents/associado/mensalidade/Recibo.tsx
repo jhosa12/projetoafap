@@ -2,7 +2,6 @@
 import { Component } from 'react';
 import BarCode from 'react-barcode';
 import { roboto_Mono } from "@/fonts/fonts";
-import { EmpresaProps } from "@/types/empresa";
 import Image from 'next/image';
 
 interface DataProps {
@@ -81,12 +80,13 @@ export class ReciboMensalidade extends Component<DataProps> {
                                 marginBottom={0}
                                 value={n_doc} />}
 
-                            <Image
+                            <img
+                                fetchPriority='high'
                                 src={logoUrl}
                                 alt="logo"
                                 width={80}
                                 height={60}
-                                fetchPriority="high"
+                               
                             />
 
 

@@ -29,12 +29,14 @@ export function CPFInput<T extends FieldValues,>({
  
   className,
   register,
-  controlName
+  controlName,
+  required = false
 }: {
  
   className?: string;
   register:UseFormRegister<T>,
-  controlName:Path<T>
+  controlName:Path<T>,
+  required?:boolean
 }) {
 
  const ref = useMaskito({
@@ -48,7 +50,7 @@ export function CPFInput<T extends FieldValues,>({
   return (
     <Input
      
-      {...withMaskitoRegister(register(controlName), ref)}
+      {...withMaskitoRegister(register(controlName,required ? {required:'CPF é Obrigatório'} : {}), ref)}
       className={combinedClassName}
     />
   );

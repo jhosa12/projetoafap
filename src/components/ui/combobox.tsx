@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 // importe os primitives em vez do wrapper ShadCN:
 import {
   Root as PopoverRoot,
@@ -10,6 +9,7 @@ import {
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { Check, ChevronsUpDown } from "lucide-react";
+import { useState } from "react";
 
 interface ComboboxProps {
   items: { value: string; label: string }[];
@@ -20,12 +20,12 @@ interface ComboboxProps {
 }
 
 export function Combobox({ items, value, onChange, placeholder='Selecione um item', searchPlaceholder }: ComboboxProps) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   return (
     <PopoverRoot open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild className=" w-full">
         <Button className=" justify-between text-xs truncate" variant="outline" role="combobox" aria-expanded={open}>
-        <span className="truncate">{value ? items.find((item) => item.value === value)?.label : placeholder}</span>
+        <span className="truncate">{value ? value: placeholder}</span>
           <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
         </Button>
       </PopoverTrigger>

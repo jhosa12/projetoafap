@@ -58,7 +58,7 @@ export function ModalConsulta({
 
   const handleEditarConsulta = async (data: ConsultaProps) => {
     let dataInit = undefined;
-    alert(data.data_prev)
+
     if (data?.id_agmed) {
      const dataNova = events.find((item) => item.id_agmed === data?.id_agmed)?.start;
       const { dataIni, dataFim } = ajustarData(dataNova, undefined);
