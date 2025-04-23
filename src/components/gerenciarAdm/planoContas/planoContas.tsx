@@ -1,7 +1,6 @@
 import { api } from "@/lib/axios/apiClient"
 import {  useEffect, useState } from "react"
 import { IoIosAddCircle} from "react-icons/io";
-import InputMask from 'react-input-mask'
 import { PlanoContasProps } from "@/pages/dashboard/financeiro";
 import { construirHierarquia, NodoConta } from "@/utils/listaContas";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -423,8 +422,8 @@ export const ModalAdicionar = ({open,onClose,adicionar}:ModalProps) =>{
                 <DialogTitle>ADICIONAR CONTA</DialogTitle>
             </DialogHeader>
                 <form onSubmit={handleSubmit(handleOnSubmit)} className="flex flex-col gap-4">
-                <InputMask mask={'9.99.999'}  {...register('conta')} placeholder="CONTA" autoComplete="off" type="text" required className="h-8 pb-1 pt-1 pr-2 pl-2 text-sm border  rounded-md   border-gray-200 placeholder-gray-500  "/>
-      
+              {/*  <InputMask mask={'9.99.999'}  {...register('conta')} placeholder="CONTA" autoComplete="off" type="text" required className="h-8 pb-1 pt-1 pr-2 pl-2 text-sm border  rounded-md   border-gray-200 placeholder-gray-500  "/>*/
+      }
                     <Input {...register('descricao')} className="h-8" placeholder="DESCRIÇÃO"/>
 
                     <Controller
