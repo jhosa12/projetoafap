@@ -27,8 +27,10 @@ import { FiltroExames } from "./filtro";
 import { ModalAdministrarExame } from "./modalAdministrarExame";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import useApiPut from "@/hooks/useApiPut";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { useExamesHandlers } from "@/hooks/useExameHandlers";
+import { FilterIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface DataProps {
   exames: Array<ExamesProps>;
@@ -113,7 +115,7 @@ export default function Exames({ exames }: DataProps) {
         Promise.resolve();
       },
     }),
-    [exameSelected?.id_exame]
+    [exameSelected]
   );
 
   const imprimirRecibo = useCallback(
@@ -132,7 +134,7 @@ export default function Exames({ exames }: DataProps) {
         Promise.resolve();
       },
     }),
-    [exameSelected?.id_exame]
+    [exameSelected]
   );
 
  
@@ -170,16 +172,39 @@ export default function Exames({ exames }: DataProps) {
 
   return (
     <div className="flex flex-col px-4 space-y-2">
+
+{modal.administrar && (
+        <ModalAdministrarExame
+          handleEditarExame={handleEditarExame}
+          handleNovoExame={handleNovoExame}
+          arraySelectExames={exames}
+          openModal={modal.administrar}
+          setOpenModal={() => setModal({administrar:false})}
+          registro={exameSelected}
+        />
+      )}
       <div className="flex w-full justify-between items-center gap-2 flex-wrap">
-        <FiltroExames
+
+     
+        <Button
+          variant="outline" 
+          size="sm"
+          onClick={()=>setModal({filtro:true})}
+          className="text-black"
+        >
+          <FilterIcon  />
+          Filtro
+        </Button>
+    
+        {modal.filtro && <FiltroExames
           filtroExames={listarExamesRealizados}
           loading={false}
           openModal={modal.filtro}
-          setOpenModal={() => setModal({filtro:!modal.filtro})}
+          setOpenModal={() => setModal({filtro:false})}
           control={control}
           handleSubmit={handleSubmit}
           reset={reset}
-        />
+        />}
 
         <ExamesToolbar
           onAdd={() => {
@@ -198,24 +223,23 @@ export default function Exames({ exames }: DataProps) {
 
       <div className="overflow-x-auto h-[calc(100vh-200px)]">
         <ExamesTable
+         onAdd={() => setModal({administrar:true})}
+         onEdit={() => setModal({administrar:true})}
+         onPrintBudget={imprimirOrcamento}
+         onPrintReceipt={imprimirRecibo}
+         onReceive={() => setModal({receber:true})}
+         onRevert={() => setModal({estornar:true})}
+         onWhatsApp={() => handleWhatsAppClick(exameSelected?.celular)}
+         onDelete={() => setModal({deletar:true})}
           exames={examesRealizados}
           selectedExame={exameSelected}
           onSelectExame={setExameSelected}
         />
       </div>
 
-      {modal.administrar && (
-        <ModalAdministrarExame
-          handleEditarExame={handleEditarExame}
-          handleNovoExame={handleNovoExame}
-          arraySelectExames={exames}
-          openModal={modal.administrar}
-          setOpenModal={() => setModal({administrar:false})}
-          registro={exameSelected}
-        />
-      )}
+   
 
-      {modal.receber && (
+      {modal.receber &&  (
         <ModalConfirmar
           pergunta="Realmente deseja receber esse exame?"
           handleConfirmar={handleReceberExame}

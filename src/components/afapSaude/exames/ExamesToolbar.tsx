@@ -1,10 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import {
   HiMiniArrowDownOnSquare,
   HiPrinter,
@@ -46,46 +41,10 @@ export function ExamesToolbar({
           onClick={onAdd}
         >
           <HiDocumentAdd  />
-          <span className="hidden sm:inline">Adicionar</span>
+          <span className=" sm:inline">Adicionar</span>
         </Button>
 
-        <DropdownMenu >
-          <DropdownMenuTrigger asChild>
-            <Button className="text-black" variant="outline" size="sm">
-              Ações
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={onEdit}>
-              <HiAdjustments className="mr-2 h-4 w-4" />
-              Editar
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={onPrintBudget}>
-              <HiPrinter className="mr-2 h-4 w-4" />
-              Orçamento
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={onPrintReceipt}>
-              <BiMoneyWithdraw className="mr-2 h-4 w-4" />
-              Recibo
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={onReceive} className="text-green-600">
-              <HiMiniArrowDownOnSquare className="mr-2 h-4 w-4" />
-              Receber
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={onRevert} className="text-yellow-600">
-              <GiReturnArrow className="mr-2 h-4 w-4" />
-              Estornar
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={onWhatsApp} className="text-green-500">
-              <FaWhatsapp className="mr-2 h-4 w-4" />
-              WhatsApp
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={onDelete} className="text-red-500">
-              <MdDelete className="mr-2 h-4 w-4" />
-              Excluir
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+      
       </div>
     </div>
   );

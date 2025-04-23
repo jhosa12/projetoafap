@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -22,9 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ChangeEvent, useCallback, useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { HiTrash } from "react-icons/hi2";
 import {
   ExameRealizadoProps,
   ExamesData,
@@ -159,10 +158,13 @@ export function ModalAdministrarExame({
 
   return (
     <Dialog   open={openModal} onOpenChange={setOpenModal}>
-      <DialogContent  className="max-w-4xl ">
+      <DialogContent className="max-w-4xl ">
        
         <DialogHeader>
           <DialogTitle>Administrar Exame</DialogTitle>
+          <DialogDescription>
+            {registro.id_exame ? "Editar Exame" : "Novo Exame"}
+          </DialogDescription>
         </DialogHeader>
         <form
           className="flex flex-col w-full"
@@ -263,6 +265,7 @@ export function ModalAdministrarExame({
                       <SelectItem value="PRIMO">PRIMO(A)</SelectItem>
                       <SelectItem value="SOBRINHO(A)">SOBRINHO(A)</SelectItem>
                       <SelectItem value="NORA">NORA</SelectItem>
+                      <SelectItem value="NETO(A)">NETO(A)</SelectItem>
                       <SelectItem value="GENRO">GENRO</SelectItem>
                       <SelectItem value="TIO(A)">TIO(A)</SelectItem>
                       <SelectItem value="AVÔ(Ó)">AVÔ(Ó)</SelectItem>
@@ -333,7 +336,7 @@ export function ModalAdministrarExame({
             <div className="overflow-auto max-h-[calc(100vh-500px)]">
               <Table >
                 <TableHeader   >
-                  <TableRow  className="sticky top-0 bg-white z-10">
+                  <TableRow  >
                     <TableHead>Exame</TableHead>
                     <TableHead>Valor Exame</TableHead>
                     <TableHead>Desconto</TableHead>
