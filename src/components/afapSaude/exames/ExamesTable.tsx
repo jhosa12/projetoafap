@@ -1,9 +1,7 @@
 import {
-    Table,
     TableBody,
     TableCell,
     TableHead,
-    TableHeader,
     TableRow,
   } from "@/components/ui/table";
   import { Badge } from "@/components/ui/badge";
@@ -51,27 +49,28 @@ import { SlOptions } from "react-icons/sl";
     onWhatsApp,
   }: ExamesTableProps) {
     return (
-      <div className="border-b-[1px]">
-        <Table>
-          <TableHeader className="text-black">
+      
+        <table className="w-full">
+          <thead className="sticky top-0 z-10 bg-white">
             <TableRow className="uppercase text-xs text-black">
-              <TableHead>Nome</TableHead>
-              <TableHead>Celular</TableHead>
-              <TableHead>Data Orçamento</TableHead>
-              <TableHead>Data Pag.</TableHead>
-              <TableHead>Desconto</TableHead>
-              <TableHead>Total</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead className="text-black">Nome</TableHead>
+              <TableHead className="text-black">Celular</TableHead>
+              <TableHead className="text-black">Data Orçamento</TableHead>
+              <TableHead className="text-black">Data Pag.</TableHead>
+              <TableHead className="text-black">Desconto</TableHead>
+              <TableHead className="text-black">Total</TableHead>
+              <TableHead className="text-black">Status</TableHead>
+              <TableHead className="text-black">Ações</TableHead>
             </TableRow>
-          </TableHeader>
+          </thead>
           <TableBody>
             {exames.map((item) => (
               <TableRow
                 key={item.id_exame}
-                className={`cursor-pointer text-black text-xs hover:bg-muted/50`}
+                className={`cursor-pointer text-black text-[11px] hover:bg-muted/50`}
                 onClick={() => onSelectExame(item)}
               >
-                <TableCell className="font-medium text-black">{item.nome}</TableCell>
+                <TableCell className="font-medium text-black ">{item.nome}</TableCell>
                 <TableCell>{item.celular}</TableCell>
                 <TableCell>
                   {item.data_orcamento &&
@@ -143,8 +142,8 @@ import { SlOptions } from "react-icons/sl";
               </TableRow>
             ))}
           </TableBody>
-        </Table>
-      </div>
+        </table>
+      
     );
   }
   

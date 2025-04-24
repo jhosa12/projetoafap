@@ -7,11 +7,7 @@ import { ajustarData } from "@/utils/ajusteData";
 import handleWhatsAppClick from "@/utils/openWhats";
 import pageStyle from "@/utils/pageStyle";
 import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
-import {
-  ExameRealizadoProps,
-  ExamesData,
-  ExamesProps,
-} from "@/types/afapSaude";
+import { ExameRealizadoProps, ExamesProps } from "@/types/afapSaude";
 import { toast } from "sonner";
 import {
   Select,
@@ -26,8 +22,7 @@ import { ExamesTable } from "@/components/afapSaude/exames/ExamesTable";
 import { FiltroExames } from "./filtro";
 import { ModalAdministrarExame } from "./modalAdministrarExame";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
-import useApiPut from "@/hooks/useApiPut";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useExamesHandlers } from "@/hooks/useExameHandlers";
 import { FilterIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -74,34 +69,40 @@ export default function Exames({ exames }: DataProps) {
   const { usuario } = useContext(AuthContext);
   const currentPage = useRef<Orcamento>(null);
   const currentRecibo = useRef<ReciboMensalidade>(null);
-  const { control, handleSubmit, reset,getValues } = useForm<FiltroForm>({
+  const { control, handleSubmit, reset, getValues } = useForm<FiltroForm>({
     defaultValues: {
       endDate: new Date(),
       nome: undefined,
       startDate: new Date(),
-      status: ''
-    }
+      status: "",
+    },
   });
 
-  const [modal,setModal] = useState<{[key:string]:boolean}>({
-    receber:false,
-    deletar:false,
-    filtro:false,
-    estornar:false,
-    administrar:false
-  })
+  const [modal, setModal] = useState<{ [key: string]: boolean }>({
+    receber: false,
+    deletar: false,
+    filtro: false,
+    estornar: false,
+    administrar: false,
+  });
 
-  const {handleDeletar,handleEditarExame,handleNovoExame,handleReceberExame,onRevert,formPag,setFormPag} = useExamesHandlers({
+  const {
+    handleDeletar,
+    handleEditarExame,
+    handleNovoExame,
+    handleReceberExame,
+    onRevert,
+    formPag,
+    setFormPag,
+  } = useExamesHandlers({
     exameSelected,
     examesRealizados,
     setExames,
     listarExamesRealizados: () => listarExamesRealizados(getValues()),
     setModal,
     setExameSelected,
-    valorInicial
-  })
-
-
+    valorInicial,
+  });
 
   const imprimirOrcamento = useCallback(
     useReactToPrint({
@@ -137,8 +138,6 @@ export default function Exames({ exames }: DataProps) {
     [exameSelected]
   );
 
- 
-
   useEffect(() => {
     listarExamesRealizados(getValues());
   }, []);
@@ -151,8 +150,6 @@ export default function Exames({ exames }: DataProps) {
       }
 
       const { dataFim, dataIni } = ajustarData(startDate, endDate);
-
-   
 
       try {
         const response = await api.post("/afapSaude/examesRealizados/listar", {
@@ -169,82 +166,78 @@ export default function Exames({ exames }: DataProps) {
     []
   );
 
-
   return (
     <div className="flex flex-col px-4 space-y-2">
-
-{modal.administrar && (
+      {modal.administrar && (
         <ModalAdministrarExame
           handleEditarExame={handleEditarExame}
           handleNovoExame={handleNovoExame}
           arraySelectExames={exames}
           openModal={modal.administrar}
-          setOpenModal={() => setModal({administrar:false})}
+          setOpenModal={() => setModal({ administrar: false })}
           registro={exameSelected}
         />
       )}
       <div className="flex w-full justify-between items-center gap-2 flex-wrap">
-
-     
         <Button
-          variant="outline" 
+          variant="outline"
           size="sm"
-          onClick={()=>setModal({filtro:true})}
+          onClick={() => setModal({ filtro: true })}
           className="text-black"
         >
-          <FilterIcon  />
+          <FilterIcon />
           Filtro
         </Button>
-    
-        {modal.filtro && <FiltroExames
-          filtroExames={listarExamesRealizados}
-          loading={false}
-          openModal={modal.filtro}
-          setOpenModal={() => setModal({filtro:false})}
-          control={control}
-          handleSubmit={handleSubmit}
-          reset={reset}
-        />}
+
+        {modal.filtro && (
+          <FiltroExames
+            filtroExames={listarExamesRealizados}
+            loading={false}
+            openModal={modal.filtro}
+            setOpenModal={() => setModal({ filtro: false })}
+            control={control}
+            handleSubmit={handleSubmit}
+            reset={reset}
+          />
+        )}
 
         <ExamesToolbar
           onAdd={() => {
-            setModal({administrar:true});
+            setModal({ administrar: true });
             setExameSelected(valorInicial);
           }}
-          onEdit={() => setModal({administrar:true})}
+          onEdit={() => setModal({ administrar: true })}
           onPrintBudget={imprimirOrcamento}
           onPrintReceipt={imprimirRecibo}
-          onReceive={() => setModal({receber:true})}
-          onRevert={() => setModal({estornar:true})}
+          onReceive={() => setModal({ receber: true })}
+          onRevert={() => setModal({ estornar: true })}
           onWhatsApp={() => handleWhatsAppClick(exameSelected?.celular)}
-          onDelete={() => setModal({deletar:true})}
+          onDelete={() => setModal({ deletar: true })}
         />
       </div>
 
-      <div className="overflow-x-auto h-[calc(100vh-200px)]">
+      <div className="overflow-auto  max-h-[calc(100vh-150px)]">
         <ExamesTable
-         onAdd={() => setModal({administrar:true})}
-         onEdit={() => setModal({administrar:true})}
-         onPrintBudget={imprimirOrcamento}
-         onPrintReceipt={imprimirRecibo}
-         onReceive={() => setModal({receber:true})}
-         onRevert={() => setModal({estornar:true})}
-         onWhatsApp={() => handleWhatsAppClick(exameSelected?.celular)}
-         onDelete={() => setModal({deletar:true})}
+          onAdd={() => setModal({ administrar: true })}
+          onEdit={() => setModal({ administrar: true })}
+          onPrintBudget={imprimirOrcamento}
+          onPrintReceipt={imprimirRecibo}
+          onReceive={() => setModal({ receber: true })}
+          onRevert={() => setModal({ estornar: true })}
+          onWhatsApp={() => handleWhatsAppClick(exameSelected?.celular)}
+          onDelete={() => setModal({ deletar: true })}
           exames={examesRealizados}
           selectedExame={exameSelected}
           onSelectExame={setExameSelected}
         />
       </div>
 
-   
-
-      {modal.receber &&  (
+      {modal.receber && (
         <ModalConfirmar
           pergunta="Realmente deseja receber esse exame?"
           handleConfirmar={handleReceberExame}
           openModal={modal.receber}
-          setOpenModal={() => setModal({ receber: false })} 
+          setOpenModal={() => setModal({ receber: false })}
         >
           <Select
             value={formPag}
@@ -281,18 +274,15 @@ export default function Exames({ exames }: DataProps) {
         handleConfirmar={handleDeletar}
         openModal={modal.deletar}
         pergunta="Tem certeza que deseja excluir esse exame?"
-        setOpenModal={()=>setModal({deletar:false})}
+        setOpenModal={() => setModal({ deletar: false })}
       />
 
-<ModalConfirmar
+      <ModalConfirmar
         handleConfirmar={onRevert}
         openModal={modal.estornar}
         pergunta="Tem certeza que deseja estornar esse exame?"
-        setOpenModal={()=>setModal({estornar:false})}
+        setOpenModal={() => setModal({ estornar: false })}
       />
-
-
-
 
       <div style={{ display: "none" }}>
         <Orcamento
