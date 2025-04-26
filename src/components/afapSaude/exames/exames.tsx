@@ -48,7 +48,7 @@ export default function Exames({ exames }: DataProps) {
     coleta: "",
     tipoDesc: "",
     cpf: "",
-    data_nasc: new Date(),
+    data_nasc: undefined,
     nome_responsavel: "",
     parentesco: "",
     nome: "",
@@ -60,6 +60,10 @@ export default function Exames({ exames }: DataProps) {
     bairro: "",
     cidade: "",
     exame: "",
+    data_prev: undefined
+    
+
+
   };
   const [examesRealizados, setExames] = useState<Array<ExameRealizadoProps>>(
     []

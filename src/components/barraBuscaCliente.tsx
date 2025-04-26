@@ -14,9 +14,10 @@ import { LucideSearch } from "lucide-react"
 
 interface BarraBuscaClienteProps {
   onBuscar: (tipoBusca: string, termo: string) => Promise<void>
+  arrayParams:Array<{value:string,label:string}>
 }
 
-export function BarraBuscaCliente({ onBuscar }: BarraBuscaClienteProps) {
+export function BarraBuscaCliente({ onBuscar,arrayParams }: BarraBuscaClienteProps) {
   const [tipoBusca, setTipoBusca] = useState("nome")
   const [termo, setTermo] = useState("")
 
@@ -29,10 +30,7 @@ export function BarraBuscaCliente({ onBuscar }: BarraBuscaClienteProps) {
           <SelectValue placeholder="Tipo" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="nome">Nome</SelectItem>
-          <SelectItem value="cpf">CPF</SelectItem>
-          <SelectItem value="endereco">Endereço</SelectItem>
-          <SelectItem value="bairro">Bairro</SelectItem>
+         {arrayParams.map((item)=>(<SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>))}
         </SelectContent>
       </Select>
 

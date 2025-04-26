@@ -14,7 +14,7 @@ import { CPFInput } from "@/components/CpfMaskInput";
 import { withMaskitoRegister } from "@/utils/with-maskito-register";
 
 
-const tiposBusca = [
+const arrayParams = [
   { value: "nome", label: "Nome" },
   { value: "cpf", label: "CPF" },
   { value: "endereco", label: "Endereço" },
@@ -204,9 +204,7 @@ export default function TabDadosPaciente({ register, control, watch, setValue }:
 
         </div>
 
-        <BuscarClienteModal setValue={setValue} open={modalBusca} setOpen={setBusca} tiposBusca={tiposBusca} onBuscar={async (tipoBusca, termo) => {
-          setBusca(false)
-        }}/>
+        <BuscarClienteModal setValue={setValue} open={modalBusca} setOpen={setBusca} tiposBusca={arrayParams} />
         </>
     );
   }

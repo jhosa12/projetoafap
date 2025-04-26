@@ -75,14 +75,11 @@ body{
 
 
 .rbc-header{
-    color: white;
-    height: 26px;
-    justify-content: center;
-    align-items: center;
-    background: #203460;
+    
+    background: #e7e9ed;
 }
 .rbc-header.rbc-today {
-   background-color:rgb(12, 47, 121) !important;
+   background-color: #41a6f3;
 
 
 }

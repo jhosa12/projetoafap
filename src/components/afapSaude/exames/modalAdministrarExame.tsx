@@ -34,6 +34,7 @@ import { Combobox } from "@/components/ui/combobox";
 import { PhoneMaskInput } from "@/components/PhoneMaskInput";
 import { CPFInput } from "@/components/CpfMaskInput";
 import { Focus, X } from "lucide-react";
+import { DatePickerInput } from "@/components/DatePickerInput";
 
 interface DataProps {
   openModal: boolean;
@@ -182,6 +183,21 @@ export function ModalAdministrarExame({
                 {...register("nome")}
               />
             </div>
+
+            <div className="col-span-1 flex flex-col justify-end gap-1">
+              <Label className="text-xs" htmlFor="nome">
+                Nascimento
+              </Label>
+              <Controller
+                control={control}
+                name="data_nasc"
+                render={({ field: { onChange, value } }) => (
+                  <DatePickerInput className="h-9" value={value} onChange={onChange} />
+                )}
+              />
+           
+            </div>
+            
             <div>
               <Label className="text-xs" htmlFor="celular">
                 Celular
@@ -200,15 +216,38 @@ export function ModalAdministrarExame({
                 
               
             </div>
-            <div className="col-span-3">
+            <div className="col-span-1">
               <Label className="text-xs" htmlFor="endereco">
-                Endereço Completo
+                Endereço
               </Label>
               <Input
                 id="endereco"
                 required={watch("coleta") === "DOMICILIO"}
                 placeholder="Endereço"
                 {...register("endereco")}
+              />
+            </div>
+
+            <div className="col-span-1">
+              <Label className="text-xs" htmlFor="numero">
+                Número
+              </Label>
+              <Input
+                id="numero"
+                type="number"
+                placeholder="Numero"
+                {...register("numero", { valueAsNumber: true })}
+              />
+            </div>
+
+            <div className="col-span-1">
+              <Label className="text-xs" htmlFor="bairro">
+                Bairro
+              </Label>
+              <Input
+                id="bairro"
+                placeholder="Bairro"
+                {...register("bairro")}
               />
             </div>
             <div>
@@ -305,6 +344,21 @@ export function ModalAdministrarExame({
                 )}
               />
             </div>
+
+            <div className="col-span-1 flex flex-col justify-end gap-1">
+              <Label className="text-xs" htmlFor="data_prev">
+                Data Prevista
+              </Label>
+              <Controller
+                control={control}
+                name="data_prev"
+                render={({ field: { onChange, value } }) => (
+                  <DatePickerInput className="h-9" value={value} onChange={onChange} />
+                )}
+              />
+           
+            </div>
+
           </div>
           {/* Seção do Combobox e tabela de exames */}
           <div>

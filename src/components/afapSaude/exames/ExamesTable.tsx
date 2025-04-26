@@ -59,6 +59,7 @@ import { SlOptions } from "react-icons/sl";
               <TableHead className="text-black">Data Pag.</TableHead>
               <TableHead className="text-black">Desconto</TableHead>
               <TableHead className="text-black">Total</TableHead>
+              <TableHead className="text-black">Usuario</TableHead>
               <TableHead className="text-black">Status</TableHead>
               <TableHead className="text-black">Ações</TableHead>
             </TableRow>
@@ -90,6 +91,7 @@ import { SlOptions } from "react-icons/sl";
                     item.exames.reduce((total, exame) => total + exame.valorFinal, 0)
                   ).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                 </TableCell>
+                <TableCell>{item.user}</TableCell>
                 <TableCell>
                   <Badge
                     variant={item.status === "ORÇAMENTO" ? "warning" : "success"}

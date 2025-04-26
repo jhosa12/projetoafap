@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import useApiPut from '@/hooks/useApiPut';
 import { ExameRealizadoProps } from '@/types/afapSaude';
 import { FiltroForm } from '@/components/afapSaude/exames/filtro';
+import { removerFusoDate } from '@/utils/removerFusoDate';
 
 interface UseExamesHandlersParams {
   exameSelected: ExameRealizadoProps;
@@ -46,13 +47,13 @@ export function useExamesHandlers({
       toast.warning("Exame já recebido");
       return;
     }
-    const dataAtual = new Date();
-    dataAtual.setHours(dataAtual.getHours() - dataAtual.getTimezoneOffset() / 60);
+    const {newDate:dataAtual} = removerFusoDate(new Date());
+   
 
     toast.promise(
       api.put("/afapSaude/receberExame", {
         id_exame: exameSelected.id_exame,
-        datalanc: dataAtual.toISOString(),
+        datalanc: dataAtual,
         descricao: "EXAME",
         historico: `EXAME.${exameSelected.id_exame}-${exameSelected.nome}-${exameSelected.tipoDesc}`,
         valor: exameSelected.exames.reduce((acc, item) => acc + item.valorFinal, 0),
@@ -97,15 +98,17 @@ export function useExamesHandlers({
         toast.error("Adicione ao menos um exame!");
         return;
       }
-      const dataAtual = new Date();
-      dataAtual.setHours(dataAtual.getHours() - dataAtual.getTimezoneOffset() / 60);
+      const {newDate:dataAtual} = removerFusoDate(new Date());
+      const {newDate:dataPrev} = removerFusoDate(data.data_prev);
+    
 
       toast.promise(
         api.post("/afapSaude/examesRealizados/novoExame", {
           ...data,
          // user: data.usuario,
-          data_orcamento: dataAtual.toISOString(),
+          data_orcamento: dataAtual,
           data_realizado: undefined,
+          data_prev: dataPrev,
         }),
         {
           loading: "Gerando novo exame...",
@@ -128,8 +131,9 @@ export function useExamesHandlers({
         toast.error("Selecione um exame para editar");
         return;
       }
+      const {newDate:dataPrev} = removerFusoDate(data.data_prev ? new Date(data.data_prev):undefined);
       toast.promise(
-        api.put("/afapSaude/examesRealizados/editar", data),
+        api.put("/afapSaude/examesRealizados/editar",{ ...data,data_prev: dataPrev }),
         {
           loading: "Editando exame...",
           success: response => {

@@ -7,7 +7,6 @@ import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br';
 import Calendario from "@/components/tabs/afapSaude/agendaMedico/calendario";
 import Consultas from "@/components/tabs/afapSaude/consultas";
-import { Tabs } from "flowbite-react";
 import { FaCalendarAlt } from "react-icons/fa";
 import { HiClipboardList } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
@@ -15,6 +14,12 @@ import { BiSolidInjection } from "react-icons/bi";
 import Configuracoes from "@/components/tabs/afapSaude/configuracoes/configuracoes";
 import {  ExamesProps, MedicoProps, EventProps } from "@/types/afapSaude";
 import Exames from "@/components/afapSaude/exames/exames";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "@/components/ui/tabs";
 
 export default function AfapSaude() {
   const [medicos, setMedicos] = useState<Array<MedicoProps>>([])
@@ -134,39 +139,43 @@ export default function AfapSaude() {
 
   return (
 
-    <div className="flex flex-col  w-full text-white">
+   
+    <Tabs defaultValue="agenda" >
+      <TabsList className="bg-white">
+        <TabsTrigger className="text-xs" value="agenda" >
+          <FaCalendarAlt className="h-4 w-4 mr-2" />
+          AGENDA MÉDICA
+        </TabsTrigger>
+        <TabsTrigger className="text-xs" value="consultas" >
+          <HiClipboardList className="h-4 w-4 mr-2" />
+          CONSULTAS
+        </TabsTrigger>
+        <TabsTrigger className="text-xs" value="exames" >
+          <BiSolidInjection className="h-4 w-4 mr-2" />
+          EXAMES
+        </TabsTrigger>
+        <TabsTrigger className="text-xs" value="configurar" >
+          <IoMdSettings className="h-4 w-4 mr-2" />
+          CONFIGURAR
+        </TabsTrigger>
+      </TabsList>
 
+      <TabsContent value="agenda" >
+        <Calendario events={events} medicos={medicos} setArrayEvent={setEvents} />
+      </TabsContent>
 
-      <Tabs theme={{
-        base: 'bg-white rounded-b-lg', tabpanel: 'bg-white rounded-b-lg h-[calc(100vh-70px)]', tablist: {
-          tabitem: {
-            base: "flex items-center  justify-center rounded-t-lg px-3 py-1 text-[11px] font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500", variant: {
-              underline: {
-                active: {
-                  on: "active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
-                  off: "border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
-                }
-              }
-            }
-          }
-        }
-      }} onActiveTabChange={event => setMenuIndex(event)} variant="underline">
+      <TabsContent value="consultas" className="px-4 ">
+        <Consultas events={events.filter(item => new Date(item.end) >= new Date())} medicos={medicos} />
+      </TabsContent>
 
-        <Tabs.Item active={menuIndex === 0} title="AGENDA MÉDICA" icon={() => <FaCalendarAlt className="mr-2 h-3 w-4" />}>
+      <TabsContent value="exames" className="px-4 ">
+        <Exames exames={exames} />
+      </TabsContent>
 
-          {menuIndex === 0 && <Calendario events={events} medicos={medicos} setArrayEvent={setEvents} />}
+      <TabsContent value="configurar" className="px-4 ">
+        <Configuracoes medicos={medicos} setMedicos={setArrayMedicos} setExames={setExames} exames={exames} />
+      </TabsContent>
+    </Tabs>
 
-        </Tabs.Item>
-        <Tabs.Item active={menuIndex === 1} title="CONSULTAS" icon={() => <HiClipboardList className="mr-2 h-4 w-4" />}>
-          {menuIndex === 1 && <Consultas events={events.filter(item => new Date(item.end) >= new Date())} medicos={medicos} />}
-        </Tabs.Item>
-        <Tabs.Item active={menuIndex === 2} title="EXAMES" icon={() => <BiSolidInjection className="mr-2 h-4 w-4" />}>
-          {menuIndex === 2 && <Exames exames={exames} />}
-        </Tabs.Item>
-        <Tabs.Item active={menuIndex === 3} icon={() => <IoMdSettings className="mr-2 h-4 w-4" />} title="CONFIGURAR">
-          {menuIndex === 3 && <Configuracoes medicos={medicos} setMedicos={setArrayMedicos} setExames={setExames} exames={exames} />}
-        </Tabs.Item>
-      </Tabs>
-    </div>
   )
 }

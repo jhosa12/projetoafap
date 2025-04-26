@@ -221,10 +221,10 @@ const toggleDrawer = () => {
 
   return (
    
-      <div >
+      <div>
 
   
-      {isOpen &&  <ModalDrawer deletarEvento={deletarEvento} setArrayEvent={setArrayEvent} events={events} dataEvent={dataEvent}  arrayMedicos={medicos} isOpen={isOpen} toggleDrawer={toggleDrawer} />}
+      <ModalDrawer deletarEvento={deletarEvento} setArrayEvent={setArrayEvent} events={events} dataEvent={dataEvent}  arrayMedicos={medicos} isOpen={isOpen} toggleDrawer={toggleDrawer} />
         <Calendar
           localizer={localizer}
           events={filteredEvents}
@@ -236,7 +236,7 @@ const toggleDrawer = () => {
           selectable
           onSelectSlot={handleNovoEvento}
           selected={true}
-          style={{ height: 'calc(100vh - 90px)'}}
+          style={{ height: 'calc(100vh - 106px)'}}
           views={['month', 'week', 'day', 'agenda']}
           messages={{
             next: "Próximo",

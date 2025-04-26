@@ -19,7 +19,7 @@ import { UseFormSetValue } from 'react-hook-form'
 
 
 interface ModalBuscaClientesProps {
-    onBuscar: (tipoBusca: string, termo: string) => Promise<void>
+   // onBuscar: (tipoBusca: string, termo: string) => Promise<void>
     tiposBusca: Array<{ value: string; label: string }>
     open:boolean,
     setOpen:(open:boolean) => void,
@@ -71,7 +71,8 @@ export default function BuscarClienteModal({tiposBusca,open,setOpen,setValue}: M
           </DialogDescription>
         </DialogHeader>
        
-        <BarraBuscaCliente onBuscar={onBuscar}/>
+        <BarraBuscaCliente arrayParams={tiposBusca} onBuscar={onBuscar}/>
+        
         <ul className='space-y-2'>
           {data?.map((item,index)=>
             <li onClick={()=>handleSelectItem(item)} className='bg-gray-200 p-2 hover:bg-gray-300 rounded-sm cursor-pointer'>

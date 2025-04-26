@@ -8,6 +8,8 @@ import { MdKeyboardArrowRight } from "react-icons/md";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Select, SelectGroup, SelectItem, SelectContent, SelectTrigger, SelectValue } from "../ui/select";
 import { toast } from "sonner";
+import { BarraBuscaCliente } from "../barraBuscaCliente";
+import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 
 
 
@@ -40,6 +42,8 @@ interface FormProps {
     criterio: string
 }
 
+const arrayParams = [{ value: "Contrato", label: "Contrato" }, { value: "Titular", label: "Titular" }, { value: "Dependente", label: "Dependente" }, { value: "Endereço", label: "Endereço" },{ value: "Bairro", label: "Bairro" }]
+
 export function ModalBusca({ setVisible, visible }: Props) {
     const { carregarDados, selectEmp } = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
@@ -56,50 +60,50 @@ export function ModalBusca({ setVisible, visible }: Props) {
 
 
 
-    const buscar: SubmitHandler<FormProps> = async (data) => {
+    const buscar = async (tipoBusca:string,termo:string) => {
         let response: any
 
 
         try {
 
             setLoading(true)
-            if (data.criterio === "Contrato") {
-                if (isNaN(Number(data.input))) {
+            if (tipoBusca === "Contrato") {
+                if (isNaN(Number(termo))) {
                     toast.info("Digite apenas números")
                     return
                 }
                 response = await api.post('/buscar', {
 
-                    id_contrato: Number(data.input),
+                    id_contrato: Number(termo),
                     id_empresa: selectEmp
                 })
 
 
             }
-            else if (data.criterio === "Titular") {
+            else if (tipoBusca === "Titular") {
                 response = await api.post('/buscar', {
-                    nome: data.input.toUpperCase().trim(),
+                    nome: termo.toUpperCase().trim(),
                     id_empresa: selectEmp
                 })
 
             }
-            else if (data.criterio === "Dependente") {
+            else if (tipoBusca === "Dependente") {
                 response = await api.post('/buscar', {
-                    dependente: data.input.toUpperCase().trim(),
+                    dependente: termo.toUpperCase().trim(),
                     id_empresa: selectEmp
                 })
 
             }
-            else if (data.criterio === "Endereço") {
+            else if (tipoBusca === "Endereço") {
                 response = await api.post('/buscar', {
-                    endereco: data.input.toUpperCase().trim(),
+                    endereco: termo.toUpperCase().trim(),
                     id_empresa: selectEmp
                 })
 
             }
-            else if (data.criterio === "Bairro") {
+            else if (tipoBusca === "Bairro") {
                 response = await api.post('/buscar', {
-                    bairro: data.input.toUpperCase().trim(),
+                    bairro: termo.toUpperCase().trim(),
                     id_empresa: selectEmp
                 })
 
@@ -117,11 +121,16 @@ export function ModalBusca({ setVisible, visible }: Props) {
     }
 
     return (
-        <Modal size={'2xl'} show={visible} onClose={setVisible}>
+        <Dialog  open={visible} onOpenChange={setVisible}>
 
-            <Modal.Header autoFocus={false} className="flex w-full">
-
-                <form onSubmit={handleSubmit(buscar)} className="flex w-full">
+            <DialogContent autoFocus={false} className="sm:max-w-[625px]">
+           <DialogHeader>
+                  <DialogTitle>Buscar Cliente</DialogTitle>
+                  <DialogDescription>
+                    Selecione o tipo de busca e insira o termo desejado.
+                  </DialogDescription>
+                </DialogHeader>
+               {/* <form onSubmit={handleSubmit(buscar)} className="flex w-full">
                     <Controller
                         control={control}
                         name="criterio"
@@ -158,17 +167,21 @@ export function ModalBusca({ setVisible, visible }: Props) {
                     </div>
 
 
-                </form>
+                </form>*/}
+                <BarraBuscaCliente
+                    onBuscar={buscar}
+                    arrayParams={arrayParams}
+                
+                />
+
+         
 
 
-            </Modal.Header>
-            <Modal.Body>
 
-
-                {loading ? ((<div className="flex flex-col h-full justify-center items-center p-2"><AiOutlineLoading3Quarters color='blue' size={40} className="animate-spin" /></div>)) : (
+                {loading ? ((<div className="flex flex-col   justify-center items-center p-2"><AiOutlineLoading3Quarters color='blue' size={40} className="animate-spin" /></div>)) : (
                     <div className="flex flex-col  mb-1 text-xs ">
                         <p className="text-gray-600 mb-2">Selecione o Contrato:</p>
-                        <ul className="overflow-y-auto space-y-2 mb-2">
+                        <ul className="overflow-y-auto max-h-[calc(100vh-250px)] space-y-2 mb-2">
                             {Array.isArray(array) && array?.map((item, index) => (
                                 <li key={index} onClick={() => { carregarDados(item.id_global), setVisible() }} className="inline-flex items-center justify-between w-full p-2 rounded-lg cursor-pointer border-gray-500   bg-gray-200 hover:bg-gray-300">
 
@@ -190,8 +203,8 @@ export function ModalBusca({ setVisible, visible }: Props) {
                 )}
 
 
-            </Modal.Body>
-        </Modal>
+</DialogContent>
+        </Dialog>
 
 
 
