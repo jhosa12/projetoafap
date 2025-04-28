@@ -507,7 +507,7 @@ const handleCheckTitular=()=>{
 
                 </div>
 
-                {visible && (<ModalBusca  visible={visible} setVisible={()=>setVisible(false)}/>)}
+                {/*visible && (<ModalBusca  visible={visible} setVisible={()=>setVisible(false)}/>)*/}
 
 
             </div>
