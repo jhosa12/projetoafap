@@ -1,7 +1,7 @@
 import {Modal} from "flowbite-react";
 import { api } from "@/lib/axios/apiClient";
 import {  SubmitHandler, useForm } from "react-hook-form";
-import { valorInicial } from "../consultas";
+import { valorInicial } from "./consultas";
 import { ajustarData } from "@/utils/ajusteData";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,8 +11,11 @@ import {
 } from "@/types/afapSaude";
 import { removerFusoDate } from "@/utils/removerFusoDate";
 import { toast } from "sonner";
-import TabsConsulta from "../tabsConsulta/TabsConsulta";
+import TabsConsulta from "./tabsConsulta/TabsConsulta";
 import { ErrorIndicator } from "@/components/errorIndicator";
+import { useState } from "react";
+import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";
+import { error } from "console";
 
 interface DataProps {
   openModal: boolean;
@@ -40,7 +43,7 @@ export function ModalConsulta({
   setConsultas,
 }: DataProps) {
   
-  
+  const [search, setSearch] = useState(false);
   const {
     register,
     setValue,
@@ -50,6 +53,8 @@ export function ModalConsulta({
     reset,
     formState: { errors },
   } = useForm<ConsultaProps>({ defaultValues: consulta });
+
+ 
 
 
   const handleOnSubmit: SubmitHandler<ConsultaProps> = (data) => {
@@ -137,6 +142,36 @@ export function ModalConsulta({
     );
   };
 
+
+
+
+
+  const handleSearchPlano = async (id: number) => {
+    toast.promise(
+      api.post('/afapSaude/plano/busca',{id_plano:id}),
+      {
+        error: (error: any) => error?.response?.data?.error ?? 'Erro ao buscar plano',
+        loading: 'Buscando plano....',
+        success: (response) => {
+
+          setValue('id_contrato',response.data.id_contrato)
+          setValue('nome_associado',response.data.nome_associado)
+          setValue('id_global',response.data.id_global)
+          setValue('id_empContrato',response.data.id_empContrato)
+
+          setValue('tipoDesc','PLANO')
+
+          return 'Plano localizado'
+          
+        }
+      }
+    )
+  };
+
+
+
+
+
   return (
     <Modal
       theme={{
@@ -165,6 +200,7 @@ export function ModalConsulta({
           <TabsConsulta
             events={events}
             medicos={medicos}
+            setSearch={setSearch}
             register={register}
             control={control}
             watch={watch}
@@ -177,6 +213,14 @@ export function ModalConsulta({
         </form>
       </Modal.Body>
     
+      <ModalBusca
+
+carregarDados={handleSearchPlano}
+selectEmp="63b930b9-503b-4fb1-9a60-7d2d0f5c85b8"
+setVisible={()=>setSearch(false)}
+visible={search}
+
+/>
     </Modal>
   );
 }

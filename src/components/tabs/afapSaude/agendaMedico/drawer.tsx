@@ -300,6 +300,7 @@ export function ModalDrawer({
                 <Button
                   variant="outline"
                   className="flex-1"
+                  type="button"
                   onClick={toggleDrawer}
                 >
                   Cancelar

@@ -1,10 +1,10 @@
 import { api } from "@/lib/axios/apiClient";
 import { Table } from "flowbite-react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { ModalConsulta } from "./components/modalNovaConsulta";
+
 import { HiMiniArrowDownOnSquare, HiPencil, HiPrinter } from "react-icons/hi2";
 import { HiDocumentAdd, HiFilter } from "react-icons/hi";
-import { ModalFiltroConsultas } from "./components/modalFiltro";
+
 import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
 import { useReactToPrint } from "react-to-print";
 import { MdDelete, MdEdit } from "react-icons/md";
@@ -46,6 +46,8 @@ import {
 import { toast } from "sonner";
 import useApiPut from "@/hooks/useApiPut";
 import { useForm } from "react-hook-form";
+import { ModalConsulta } from "@/components/afapSaude/consultas/modalNovaConsulta";
+import { ModalFiltroConsultas } from "@/components/afapSaude/consultas/modalFiltro";
 
 interface DataProps {
   medicos: Array<MedicoProps>;
@@ -452,7 +454,7 @@ export default function Consultas({ medicos, events }: DataProps) {
         </span>
       </div>
 
-      <div className="overflow-y-auto h-[calc(100vh-140px)] ">
+      <div className="overflow-y-auto h-[calc(100vh-145px)] ">
         <Table
           theme={{
             root: { shadow: "none" },

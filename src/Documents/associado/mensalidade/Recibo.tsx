@@ -37,7 +37,7 @@ export class ReciboMensalidade extends Component<DataProps> {
 
         return (
             <div className={roboto_Mono.className} style={{ display: 'flex', flexDirection: 'column', width: '100%', paddingInline: '20px', gap: '30px' }}>
-                {array.map(() => (
+               
                     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', borderRadius: '10px', border: '1px solid gray', padding: '20px', gap: '10px', fontSize: '14px' }}>
                         <div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'end' }}>
                             <h1 style={{ fontSize: '20px', fontWeight: 'bold', color: 'gray' }}>RECIBO</h1>
@@ -93,7 +93,7 @@ export class ReciboMensalidade extends Component<DataProps> {
                         </div>
 
                     </div>
-                ))}
+             
 
             </div>
         )

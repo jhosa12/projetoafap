@@ -35,6 +35,7 @@ import { PhoneMaskInput } from "@/components/PhoneMaskInput";
 import { CPFInput } from "@/components/CpfMaskInput";
 import { Focus, X } from "lucide-react";
 import { DatePickerInput } from "@/components/DatePickerInput";
+import { parentescos } from "@/utils/arrayParentesco";
 
 interface DataProps {
   openModal: boolean;
@@ -264,8 +265,8 @@ export function ModalAdministrarExame({
                       <SelectValue placeholder="Selecione" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="CLINICA">CLÍNICA</SelectItem>
-                      <SelectItem value="DOMICILIO">DOMICÍLIO</SelectItem>
+                      <SelectItem className="text-xs" value="CLINICA">CLÍNICA</SelectItem>
+                      <SelectItem  className="text-xs" value="DOMICILIO">DOMICÍLIO</SelectItem>
                     </SelectContent>
                   </Select>
                 )}
@@ -294,21 +295,12 @@ export function ModalAdministrarExame({
                     <SelectTrigger id="parentesco">
                       <SelectValue placeholder="PARENTESCO" />
                     </SelectTrigger>
-                    <SelectContent>
-                      
-                      <SelectItem value="CONJUGE">CONJUGE</SelectItem>
-                      <SelectItem value="PAI">PAI</SelectItem>
-                      <SelectItem value="MÃE">MÃE</SelectItem>
-                      <SelectItem value="FILHO">FILHO(A)</SelectItem>
-                      <SelectItem value="IRMÃO(Ã)">IRMÃO(Ã)</SelectItem>
-                      <SelectItem value="PRIMO">PRIMO(A)</SelectItem>
-                      <SelectItem value="SOBRINHO(A)">SOBRINHO(A)</SelectItem>
-                      <SelectItem value="NORA">NORA</SelectItem>
-                      <SelectItem value="NETO(A)">NETO(A)</SelectItem>
-                      <SelectItem value="GENRO">GENRO</SelectItem>
-                      <SelectItem value="TIO(A)">TIO(A)</SelectItem>
-                      <SelectItem value="AVÔ(Ó)">AVÔ(Ó)</SelectItem>
-                      <SelectItem value="OUTROS">OUTROS</SelectItem>
+                    <SelectContent className="max-h-60">
+                      {parentescos.map((parentesco) => (
+                        <SelectItem className='text-xs' key={parentesco.value} value={parentesco.value}>
+                          {parentesco.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 )}
@@ -334,9 +326,9 @@ export function ModalAdministrarExame({
                       <SelectValue placeholder="Selecione" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="PARTICULAR">PARTICULAR</SelectItem>
-                      <SelectItem value="FUNERARIA">FUNERÁRIA</SelectItem>
-                      <SelectItem value="PLANO DESCONTO">
+                      <SelectItem className="text-xs" value="PARTICULAR">PARTICULAR</SelectItem>
+                      <SelectItem className="text-xs" value="FUNERARIA">FUNERÁRIA</SelectItem>
+                      <SelectItem className="text-xs" value="PLANO DESCONTO">
                         PLANO DESCONTO
                       </SelectItem>
                     </SelectContent>

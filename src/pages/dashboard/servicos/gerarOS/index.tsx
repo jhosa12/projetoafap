@@ -5,7 +5,7 @@ import { AuthContext } from "@/store/AuthContext";
 import { IoMdSearch, IoMdSettings } from "react-icons/io";
 import { MdAccessTimeFilled} from "react-icons/md";
 import { HiClipboardList } from "react-icons/hi";
-import { ModalBusca } from "@/components/modals/modalBusca";
+import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";
 import "react-datepicker/dist/react-datepicker.css";
 import { DadosPlano } from "@/components/obito/dadosPlano";
 import { DadosFalecido } from "@/components/obito/dadosFalecido";

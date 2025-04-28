@@ -1,7 +1,4 @@
 
-
-
-
 import { HiTrash } from "react-icons/hi";
 import { TabsConsultaProps } from "./TabsConsulta";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -11,17 +8,37 @@ import { Label } from "@/components/ui/label";
 import { ExamesData, MedicoProps } from "@/types/afapSaude";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Dispatch, SetStateAction } from "react";
 
 
 
 interface TabProcedimentoProps extends TabsConsultaProps{
     medicos:Array<MedicoProps>
+    setSearch:Dispatch<SetStateAction<boolean>>
 }
 
 
-export default function TabProcedimentos({ watch, setValue,control,medicos }: TabProcedimentoProps) {
- 
+export default function TabProcedimentos({ watch, setValue,control,medicos,setSearch }: TabProcedimentoProps) {
 
+  let valorTotalFinal =0
+  let totalDesc = 0
+  let totalPart = 0
+
+
+  const handleChangeDesconto = (value:string) => {
+    if (value === 'PLANO'){
+      setSearch(true)
+      setValue('tipoDesc','')
+      return
+    }
+    setValue('tipoDesc',value)
+    setValue('id_contrato',null)
+    setValue('id_global',null)
+    setValue('nome_associado','')
+    setValue('id_empContrato','')
+
+
+   }
 
 
       const handleAdicionarProcedimento = () => {
@@ -39,7 +56,7 @@ export default function TabProcedimentos({ watch, setValue,control,medicos }: Ta
           return
         }
     
-        //console.log(exame)
+      
         if (!exame) {
           toast.info('Selecione um exame')
           return;
@@ -75,7 +92,7 @@ export default function TabProcedimentos({ watch, setValue,control,medicos }: Ta
           obs: exame.obs,
     
         }]);
-        console.log("Exame adicionado:", exame);
+       // console.log("Exame adicionado:", exame);
       };
 
 
@@ -87,8 +104,17 @@ export default function TabProcedimentos({ watch, setValue,control,medicos }: Ta
 
   return (
     <div className="w-full space-y-2">
-    <div className="inline-flex gap-4 mb-1 mt-2 w-full">
 
+{watch('id_contrato') && 
+        <div className="flex flex-row font-medium border-b border-b-gray-300 gap-2 text-xs ">
+         
+          
+            <span>CONTRATO:</span>  
+            {watch('id_contrato')} -
+            {watch('nome_associado')}
+        </div>
+      }
+    <div className="inline-flex gap-4 mb-1 mt-2 w-full">
     <div className="w-1/4">
 
       <Label className="text-xs">Desconto</Label>
@@ -96,8 +122,8 @@ export default function TabProcedimentos({ watch, setValue,control,medicos }: Ta
         control={control}
         name="tipoDesc"
         render={({ field: { onChange, value } }) => (
-          <Select disabled={watch('procedimentos')?.length > 0} value={value} onValueChange={e => onChange(e)}  >
-            <SelectTrigger className="">
+          <Select disabled={watch('procedimentos')?.length > 0} value={value} onValueChange={e => {handleChangeDesconto(e)}}  >
+            <SelectTrigger >
               <SelectValue placeholder="Desconto" />
               <SelectContent>
                 <SelectGroup>
@@ -142,7 +168,7 @@ export default function TabProcedimentos({ watch, setValue,control,medicos }: Ta
 
   </div>
   <div className="overflow-x-auto ">
-    <Table theme={{ root: { shadow: 'none' }, body: { cell: { base: "px-3 text-black py-1  font-medium" } }, head: { cell: { base: "px-3 text-black py-0  bg-gray-200" } } }}  >
+    <Table theme={{ root: { shadow: 'none' }, body: { cell: { base: "px-3 text-black py-1 text-xs font-medium" } }, head: { cell: { base: "px-3 text-black text-xs py-1  bg-gray-200" } } }}  >
       <Table.Head>
         <Table.HeadCell>Procedimento</Table.HeadCell>
         <Table.HeadCell>Valor Procedimento</Table.HeadCell>
@@ -154,7 +180,11 @@ export default function TabProcedimentos({ watch, setValue,control,medicos }: Ta
 
       </Table.Head>
       <Table.Body className="divide-y">
-        {Array.isArray(watch('procedimentos')) && watch('procedimentos')?.map((item, index) => (
+        {Array.isArray(watch('procedimentos')) && watch('procedimentos')?.map((item, index) => {
+            valorTotalFinal +=item.valorFinal
+            totalDesc+=item.desconto
+            totalPart+=item.valorExame
+          return(
           <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
             <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
               {item.nome}
@@ -172,19 +202,16 @@ export default function TabProcedimentos({ watch, setValue,control,medicos }: Ta
           </Table.Row>
 
 
-        ))}
+        )})}
 
         <Table.Row >
           <Table.Cell className="whitespace-nowrap  font-semibold ">
-            Total
+            TOTAL
           </Table.Cell>
 
-          <Table.Cell>{ }</Table.Cell>
-          <Table.Cell>{ }</Table.Cell>
-          <Table.Cell className="font-semibold">{Number(watch('procedimentos')?.reduce((acumulador, atual) => {
-            acumulador += Number(atual.valorFinal)
-            return acumulador
-          }, 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
+          <Table.Cell>{Number(totalPart).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
+          <Table.Cell>{Number(totalDesc).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
+          <Table.Cell className="font-semibold">{Number(valorTotalFinal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
         </Table.Row>
 
 
@@ -192,6 +219,15 @@ export default function TabProcedimentos({ watch, setValue,control,medicos }: Ta
 
     </Table>
   </div>
+
+
+
+
+
+
+
+
+
 
     </div>  
 

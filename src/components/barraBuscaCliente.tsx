@@ -18,13 +18,18 @@ interface BarraBuscaClienteProps {
 }
 
 export function BarraBuscaCliente({ onBuscar,arrayParams }: BarraBuscaClienteProps) {
-  const [tipoBusca, setTipoBusca] = useState("nome")
+  const [tipoBusca, setTipoBusca] = useState(arrayParams[0].value)
   const [termo, setTermo] = useState("")
 
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onBuscar(tipoBusca, termo)
+  }
+  
 
   return (
-    <div className="flex w-full max-w-xl">
+    <form onSubmit={handleSubmit} className="flex w-full max-w-xl">
       <Select required value={tipoBusca} onValueChange={setTipoBusca}>
         <SelectTrigger  className="rounded-r-none w-32">
           <SelectValue placeholder="Tipo" />
@@ -44,12 +49,12 @@ export function BarraBuscaCliente({ onBuscar,arrayParams }: BarraBuscaClientePro
       />
 
       <Button
-        onClick={() => onBuscar(tipoBusca, termo)}
+        type="submit"
         className="rounded-l-none"
         variant="default"
       >
         <LucideSearch className="w-4 h-4" />
       </Button>
-    </div>
+    </form>
   )
 }

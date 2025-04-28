@@ -88,7 +88,7 @@ class Orcamento extends React.Component<DadosProps> {
                             total += Number(item?.valorFinal)
                             totaldesconto += Number(item?.desconto)
                              return  ( <Table.Row className="text-xs" key={index}>
-                                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 ">{item.nome}</Table.Cell>
+                                    <Table.Cell className=" font-medium text-gray-900 ">{item.nome}</Table.Cell>
                                     <Table.Cell>{Number(item.valorFinal+item.desconto).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
                                     <Table.Cell>{Number(item.desconto).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
                                     <Table.Cell>{Number(item.valorFinal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>

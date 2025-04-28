@@ -1,12 +1,11 @@
 
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useContext } from "react";
 import { api } from "@/lib/axios/apiClient";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import 'moment/locale/pt-br';
 import Calendario from "@/components/tabs/afapSaude/agendaMedico/calendario";
-import Consultas from "@/components/tabs/afapSaude/consultas";
 import { FaCalendarAlt } from "react-icons/fa";
 import { HiClipboardList } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
@@ -20,12 +19,21 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs";
+import Consultas from "@/components/afapSaude/consultas/consultas";
+import { AuthContext } from "@/store/AuthContext";
 
 export default function AfapSaude() {
   const [medicos, setMedicos] = useState<Array<MedicoProps>>([])
   const [events, setEvents] = useState<Array<EventProps>>([])
-  const [menuIndex, setMenuIndex] = useState(0)
+ // const [menuIndex, setMenuIndex] = useState(0)
   const [exames, setExames] = useState<Array<ExamesProps>>([])
+  const {usuario,signOut} = useContext(AuthContext)
+
+
+
+  useEffect(() => {
+    if (!usuario?.nome) signOut()
+  }, [usuario])
 
 
 

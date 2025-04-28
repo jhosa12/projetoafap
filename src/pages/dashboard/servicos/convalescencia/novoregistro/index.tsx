@@ -6,7 +6,7 @@ import { IoMdSearch } from "react-icons/io";
 import { MdClose } from "react-icons/md";
 import { HiOutlineSave } from "react-icons/hi";
 import { IoIosClose } from "react-icons/io";
-import { ModalBusca } from "@/components/modals/modalBusca";
+import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';

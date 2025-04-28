@@ -51,9 +51,9 @@ export function DadosAssociado({ dadosassociado, infoEmpresa,setarDadosAssociado
   }*/
 
     return (
-        <div className={`flex flex-col w-full max-h-[calc(100vh-195px)] text-xs p-4 rounded-b-lg overflow-y-auto  overflow-x-hidden`}>
+        <div className={`flex flex-col w-full max-h-[calc(100vh-185px)] text-xs p-4 rounded-b-lg overflow-y-auto  overflow-x-hidden`}>
 
-            {modal.editar && <ModalEditarDados dataForm={dadosassociado} setModalEdit={() => setModal({ editar: false })} openEdit={modal.editar} />}
+            <ModalEditarDados dataForm={dadosassociado} setModalEdit={() => setModal({ editar: false })} openEdit={modal.editar} />
                 
             {dadosassociado.contrato?.situacao === 'INATIVO' && <span className="text-[10px] text-red-500 font-medium">MOTIVO INATIVO:{dadosassociado.contrato?.dt_cancelamento && new Date(dadosassociado.contrato?.dt_cancelamento).toLocaleDateString('pt-BR', { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: 'numeric' })}  - {dadosassociado.contrato?.motivo_inativo}</span>}
             <div className="flex w-full flex-col sm:flex-row gap-2">

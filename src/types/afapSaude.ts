@@ -76,6 +76,10 @@ export interface ExamesProps{
 export interface ConsultaProps{
   id_consulta:number|null,
   id_med:number|null,
+  id_global:number|null,
+  id_contrato:number|null,
+  id_empContrato?:string,
+  nome_associado:string
   complemento:string,
   dt_pgto:Date|null,
   id_client?:number|null,

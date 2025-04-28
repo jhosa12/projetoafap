@@ -6,10 +6,10 @@ import { Modal } from "flowbite-react";
 import { HiSearch } from "react-icons/hi";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Select, SelectGroup, SelectItem, SelectContent, SelectTrigger, SelectValue } from "../ui/select";
+import { Select, SelectGroup, SelectItem, SelectContent, SelectTrigger, SelectValue } from "../../ui/select";
 import { toast } from "sonner";
-import { BarraBuscaCliente } from "../barraBuscaCliente";
-import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
+import { BarraBuscaCliente } from "../../barraBuscaCliente";
+import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../ui/dialog";
 
 
 
@@ -36,29 +36,17 @@ interface DadosProps {
 interface Props {
     visible: boolean,
     setVisible: () => void
-}
-interface FormProps {
-    input: string
-    criterio: string
+    carregarDados: (id: number) => Promise<void>
+    selectEmp: string
 }
 
 const arrayParams = [{ value: "Contrato", label: "Contrato" }, { value: "Titular", label: "Titular" }, { value: "Dependente", label: "Dependente" }, { value: "Endereço", label: "Endereço" },{ value: "Bairro", label: "Bairro" }]
 
-export function ModalBusca({ setVisible, visible }: Props) {
-    const { carregarDados, selectEmp } = useContext(AuthContext)
+export function ModalBusca({ setVisible, visible,carregarDados,selectEmp }: Props) {
+   // const { carregarDados, selectEmp } = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
     const [array, setarray] = useState<DadosProps[]>([])
-    const { register, handleSubmit, control } = useForm<FormProps>({
-        defaultValues: {
-            criterio: "Contrato"
-        }
-    })
-
-
-
-
-
-
+ 
 
     const buscar = async (tipoBusca:string,termo:string) => {
         let response: any
@@ -183,7 +171,7 @@ export function ModalBusca({ setVisible, visible }: Props) {
                         <p className="text-gray-600 mb-2">Selecione o Contrato:</p>
                         <ul className="overflow-y-auto max-h-[calc(100vh-250px)] space-y-2 mb-2">
                             {Array.isArray(array) && array?.map((item, index) => (
-                                <li key={index} onClick={() => { carregarDados(item.id_global), setVisible() }} className="inline-flex items-center justify-between w-full p-2 rounded-lg cursor-pointer border-gray-500   bg-gray-200 hover:bg-gray-300">
+                                <li key={index} onClick={() => { carregarDados(Number(item.id_global)), setVisible() }} className="inline-flex items-center justify-between w-full p-2 rounded-lg cursor-pointer border-gray-500   bg-gray-200 hover:bg-gray-300">
 
                                     <div className="block">
                                         <div className="w-full  font-semibold"><span className="pr-2">{item?.contrato?.id_contrato}</span>{item.nome}<span className="flex flex-col gap-1">{item?.dependentes?.map((i, id) => (<span>DEPENDENTE: {i.nome}</span>))}</span></div>

@@ -1,7 +1,7 @@
 
 import { IoMdAdd, IoMdSearch } from "react-icons/io";
 import 'react-tabs/style/react-tabs.css';
-import { ModalBusca } from '../../../components/modals/modalBusca'
+import { ModalBusca } from '../../../components/modals/modalBusca/modalBusca'
 import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../../store/AuthContext"
 import 'react-tooltip/dist/react-tooltip.css';
@@ -143,7 +143,7 @@ export default function AdmContrato() {
                 </Modal.Body>
             </Modal>
             }
-                {modal.busca && (<ModalBusca visible={modal.busca} setVisible={() => setModal({ busca: false })} />)}
+                {modal.busca && (<ModalBusca carregarDados={carregarDados} selectEmp={infoEmpresa?.id ?? ''} visible={modal.busca} setVisible={() => setModal({ busca: false })} />)}
                 {modal.cadastro && (<ModalCadastro onClose={() => setModal({ cadastro: false })} isOpen={modal.cadastro} />)}
                 {modal.impressao && <ModalConfirmar pergunta={`Realmente deseja imprimir o(a) ${chaveAtiva}?. Esteja ciente de que ao confirmar, os dados de data e usuario que realizou a impressão serão atualizados!`} openModal={modal.impressao} setOpenModal={() => setModal({ impressao: false })} handleConfirmar={handleImpressao} />}
 

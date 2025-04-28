@@ -14,7 +14,10 @@ export const VerificarSituacao = ({situacao,mensalidades,convalescencia,carencia
     let x = 0;
 
     Array.isArray(mensalidades) &&  mensalidades?.map((item, index) => {
-        new Date() >= new Date(item.vencimento) && item.status === 'A' || item.status === 'R' ? (x = x + 1) : '';
+        if (new Date(item.vencimento) <= new Date()
+    && ['A','R'].includes(item.status)) {
+  x++;
+}
     });
     if (x >= 1) {
         toast.warning(`Possui ${x} mensalidades Vencidas`);
