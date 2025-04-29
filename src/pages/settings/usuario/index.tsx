@@ -85,6 +85,15 @@ export default function Usuario() {
     if(dadosUser.file){
       data.append( 'file',dadosUser.file);
     }
+
+
+    toast.promise(
+      api.post('/user',data),
+      {error:'ERRO AO REALIZAR CADASTRO',
+        loading:'CADASTRANDO NOVO FUNCIONÁRIO',
+        success:'FUNCIONÁRIO CADASTRADO COM SUCESSO'
+      }
+    )
    
 
     try {
