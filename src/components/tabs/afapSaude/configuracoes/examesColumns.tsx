@@ -20,7 +20,7 @@ export function getExamesColumns({ onEdit, onDelete }: ActionsProps): ColumnDef<
       header: "Valor Bruto",
       cell: ({ row }) => {
         const value = row.getValue("valorBruto") as number;
-        return value.toLocaleString("pt-BR", {
+        return Number(value)?.toLocaleString("pt-BR", {
           style: "currency",
           currency: "BRL",
         });
@@ -31,7 +31,7 @@ export function getExamesColumns({ onEdit, onDelete }: ActionsProps): ColumnDef<
       header: "Valor Particular",
       cell: ({ row }) => {
         const value = row.getValue("porcPart") as number;
-        return value.toLocaleString("pt-BR", {
+        return Number(value)?.toLocaleString("pt-BR", {
           style: "currency",
           currency: "BRL",
         });
