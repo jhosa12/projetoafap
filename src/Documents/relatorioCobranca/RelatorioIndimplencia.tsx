@@ -1,5 +1,5 @@
 
-import { InadimplenciaProps } from '@/components/tabs/cobranca/indimplencia/indimplencia';
+import { InadimplenciaProps } from '@/types/cobranca';
 import { Table } from 'flowbite-react';
 import React from 'react';
 
