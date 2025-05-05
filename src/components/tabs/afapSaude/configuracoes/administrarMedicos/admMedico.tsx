@@ -11,7 +11,6 @@ import { toast } from "sonner";
 interface DataProps{
     medicos:Array<MedicoProps>
     setArray:(array:Array<MedicoProps>)=>void
-   
 }
 export default function AdmMedico({medicos,setArray}:DataProps){
 

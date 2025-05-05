@@ -60,7 +60,7 @@ class FichaConsulta extends React.Component<DadosProps> {
       <div style={{display:'flex',width:'100%',alignItems:'center',justifyContent:'center',gap:'20px'}} >
 
      
-          <img width={70} height={70} src={"/afapsaude.png"} alt="logo" />
+          <img fetchPriority='high' width={70} height={70} src={"/afapsaude.jpg"} alt="logo" />
           <h1 style={{fontWeight:'bold',fontSize:'20px'}}>PRONTUÁRIO MÉDICO N° {id_consulta}</h1>
         
          </div>

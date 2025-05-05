@@ -454,18 +454,19 @@ export default function Consultas({ medicos, events }: DataProps) {
         </span>
       </div>
 
-      <div className="overflow-y-auto h-[calc(100vh-145px)] ">
+      <div className="overflow-y-auto h-[calc(100vh-145px)]">
         <Table
           theme={{
             root: { shadow: "none" },
             body: {
-              cell: { base: "px-2 text-black py-0 text-[10px] font-medium" },
+              cell: { base: "px-1 text-black py-0 text-[10px] font-medium" },
             },
-            head: { cell: { base: "px-2 text-black py-0 text-[11px]" } },
+            head: { cell: { base: "px-1 text-black py-0 text-[11px]" } },
           }}
         >
           <Table.Head className="sticky top-0 bg-white z-10 border-b-2">
             <Table.HeadCell>Nome</Table.HeadCell>
+            <Table.HeadCell>Fone</Table.HeadCell>
             <Table.HeadCell>Especialidade</Table.HeadCell>
             <Table.HeadCell>Data</Table.HeadCell>
             <Table.HeadCell>Data Prev.</Table.HeadCell>
@@ -480,10 +481,13 @@ export default function Consultas({ medicos, events }: DataProps) {
             {consultas.map((item, index) => (
               <Table.Row
                 key={item.id_consulta}
-                className={`font-medium bg-white hover:cursor-pointer `}
+                className={`font-medium bg-white hover:cursor-pointer`}
               >
-                <Table.Cell className="whitespace-nowrap  ">
+                <Table.Cell className="whitespace-nowrap">
                   {item.nome}
+                </Table.Cell>
+                <Table.Cell className="whitespace-nowrap">
+                  {item.celular}
                 </Table.Cell>
                 <Table.Cell>{item.espec}</Table.Cell>
                 <Table.Cell>
@@ -543,8 +547,8 @@ export default function Consultas({ medicos, events }: DataProps) {
                     >
                       <SelectValue placeholder="Select a status" />
                     </SelectTrigger>
-                    <SelectContent className="shadow-none ">
-                      <SelectGroup className="shadow-none ">
+                    <SelectContent className="shadow-none">
+                      <SelectGroup className="shadow-none">
                         {statusConsultaArray?.map((item) => (
                           <SelectItem
                             className="text-xs"
@@ -685,7 +689,7 @@ export default function Consultas({ medicos, events }: DataProps) {
             }}
           >
             <SelectTrigger
-              className={`  shadow-none font-semibold  focus:ring-0  `}
+              className={`shadow-none font-semibold  focus:ring-0`}
             >
               <SelectValue placeholder="Selecione a forma de pagamento" />
             </SelectTrigger>
@@ -739,7 +743,7 @@ export default function Consultas({ medicos, events }: DataProps) {
           <ReciboMensalidade
             cidade_uf="CEDRO/CE"
             endereco="RUA VER. SALUSTIANO MOURAO, 394 - CENTRO"
-            logoUrl="/afapsaude.png"
+            logoUrl="/afapsaude.jpg"
             associado={data?.nome ?? ""}
             contrato={data?.id_consulta ?? null}
             data_pgto={data?.dt_pgto ?? null}

@@ -1,5 +1,5 @@
 
-
+import { Dispatch, SetStateAction } from "react";
 
 
 export type ConsultaStatus = "AGENDADO" | "AGUARDANDO DATA" | "CONFIRMADO" | "ATENDIDO" | "CANCELADO" | "RECEBIDO";
@@ -195,4 +195,34 @@ export interface FiltroConsultaProps {
   nome?: string,
   id_consultor?: number,
   medico?:string
+}
+
+export type CalendarView = "month" | "week" | "day" | "agenda";
+
+export interface SidebarProps {
+  view: CalendarView;
+  setView: Dispatch<SetStateAction<CalendarView>>;
+  date: Date;
+  onNavigate: (date: Date) => void;
+  onAddEvent: () => void;
+  hideControls?: boolean;
+  medicos: Array<MedicoProps>;
+  selectedDoctor:number|undefined,
+  setSelectedDoctor:Dispatch<SetStateAction<number|undefined>>,
+
+}
+
+
+
+
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  allDay?: boolean;
+  desc?: string;
+  location?: string;
+  category?: "work" | "personal" | "important" | "other";
+  color?: string;
 }

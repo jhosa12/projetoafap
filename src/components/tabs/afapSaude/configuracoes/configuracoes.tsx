@@ -1,46 +1,67 @@
-import { Tabs } from "flowbite-react";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"; // ajuste o caminho se necessário
 import { HiAdjustments, HiClipboardList } from "react-icons/hi";
 import { HiUserCircle } from "react-icons/hi2";
-import {MdMedicalServices } from "react-icons/md";
+import { MdMedicalServices } from "react-icons/md";
 import { AddEditExames } from "./addEditExames";
 import AdmMedico from "./administrarMedicos/admMedico";
 import { ExamesProps, MedicoProps } from "@/types/afapSaude";
+import { FaHouseMedicalCircleCheck } from "react-icons/fa6";
+import RoomManagement from "@/components/afapSaude/config/rooms/RoomManagement";
 
-
-interface DataProps{
-    exames:Array<ExamesProps>
-    setExames:(array:Array<ExamesProps>)=>void
-    medicos:Array<MedicoProps>
-    setMedicos:(arr:Array<MedicoProps>)=>void
+interface DataProps {
+  exames: Array<ExamesProps>;
+  setExames: (array: Array<ExamesProps>) => void;
+  medicos: Array<MedicoProps>;
+  setMedicos: (arr: Array<MedicoProps>) => void;
 }
 
-export default function Configuracoes({exames,setExames,medicos,setMedicos}:DataProps){
+export default function Configuracoes({
+  exames,
+  setExames,
+  medicos,
+  setMedicos,
+}: DataProps) {
+  return (
+    <div className="w-full overflow-x-auto">
+      <Tabs defaultValue="exames" className="w-full justify-between">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="exames" className="flex items-center gap-2">
+            <HiUserCircle className="h-4 w-4" />
+            Exames
+          </TabsTrigger>
+          <TabsTrigger value="medicos" className="flex items-center gap-2">
+            <MdMedicalServices className="h-4 w-4" />
+            Administrar Médicos
+          </TabsTrigger>
+          <TabsTrigger value="salas" className="flex items-center gap-2">
+            <FaHouseMedicalCircleCheck  className="h-4 w-4" />
+            Salas
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="flex items-center gap-2">
+            <HiAdjustments className="h-4 w-4" />
+            Settings
+          </TabsTrigger>
+        </TabsList>
 
-
-    return(
-        <div className="overflow-x-auto">
-      <Tabs
-     theme={{tablist:{tabitem:{base:"flex z-0 items-center justify-center rounded-t-lg p-2 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-600 ",variant:{fullWidth:{active:{off:'bg-gray-50 text-black',on:'bg-gray-300 text-black'}}}}}}} aria-label="Full width tabs" variant="fullWidth">
-      
-     
-        <Tabs.Item active title="Exames" icon={()=><HiUserCircle  className="mr-2 h-3 w-3"/>}>
-         <AddEditExames exames={exames} setExames={setExames}/>
-        </Tabs.Item>
-        <Tabs.Item title="Administrar Médicos" icon={()=><MdMedicalServices className="mr-2 h-3 w-3"/>}>
-         <AdmMedico medicos={medicos} setArray={setMedicos}/>
-        </Tabs.Item>
-        <Tabs.Item title="Settings" icon={()=><HiAdjustments className="mr-2 h-3 w-3"/>}>
-          This is <span className="font-medium text-white">Settings tab's associated content</span>.
-          Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to
-          control the content visibility and styling.
-        </Tabs.Item>
-        <Tabs.Item title="Contacts" icon={()=><HiClipboardList className="mr-2 h-3 w-3"/>}>
-          This is <span className="font-medium text-white">Contacts tab's associated content</span>.
-          Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to
-          control the content visibility and styling.
-        </Tabs.Item>
-      
+        <TabsContent value="exames">
+          <AddEditExames exames={exames} setExames={setExames} />
+        </TabsContent>
+        <TabsContent value="medicos">
+          <AdmMedico medicos={medicos} setArray={setMedicos} />
+        </TabsContent>
+       
+        <TabsContent value="salas">
+          <RoomManagement />
+        </TabsContent>
+        <TabsContent value="settings">
+          <span className="font-medium text-white">Settings</span>
+        </TabsContent>
       </Tabs>
     </div>
-    )
+  );
 }

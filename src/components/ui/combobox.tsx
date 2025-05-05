@@ -17,15 +17,17 @@ interface ComboboxProps {
   onChange: (value: string | null) => void;
   placeholder?: string;
   searchPlaceholder?: string;
+  className?: string;
 }
 
-export function Combobox({ items, value, onChange, placeholder='Selecione um item', searchPlaceholder }: ComboboxProps) {
+export function Combobox({ items, value, onChange, placeholder='Selecione um item', searchPlaceholder,className='w-full' }: ComboboxProps) {
   const [open, setOpen] = useState(false);
+  const selectedItem = items.find(item => item.value === value);
   return (
     <PopoverRoot open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild className=" w-full">
         <Button className=" justify-between text-xs truncate" variant="outline" role="combobox" aria-expanded={open}>
-        <span className="truncate">{value ? value: placeholder}</span>
+        <span className="truncate">{selectedItem ? selectedItem?.label : placeholder}</span>
           <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -36,8 +38,8 @@ export function Combobox({ items, value, onChange, placeholder='Selecione um ite
         onOpenAutoFocus={e => e.preventDefault()}
         className="p-0 pt-1  z-20"
       >
-        <Command className="max-h-64">
-          <CommandInput className="h-8" autoFocus placeholder={searchPlaceholder} />
+        <Command className={className}>
+          <CommandInput   className="h-8 border-0 focus:ring-0 focus:border-0 focus:outline-none"  placeholder={searchPlaceholder} />
           <CommandList>
             <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
             <CommandGroup>
@@ -45,7 +47,7 @@ export function Combobox({ items, value, onChange, placeholder='Selecione um ite
                 <CommandItem
                 className="text-xs"
                   key={item.value}
-                  value={item.value}
+                  value={item.label}
                   onSelect={() => {
                     onChange(item.value === value ? null : item.value);
                     setOpen(false);

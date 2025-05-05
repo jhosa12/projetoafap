@@ -9,6 +9,7 @@ import { ExamesData, MedicoProps } from "@/types/afapSaude";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Dispatch, SetStateAction } from "react";
+import { Combobox } from "@/components/ui/combobox";
 
 
 
@@ -146,19 +147,26 @@ export default function TabProcedimentos({ watch, setValue,control,medicos,setSe
       control={control}
       name="id_selected"
       render={({ field: { onChange, value } }) => (
-        <Select value={String(value)} onValueChange={e => onChange(e)}  >
-        <SelectTrigger className="">
-          <SelectValue placeholder="Procedimentos" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
+        <Combobox
+        items={medicos.find(item => item.id_med === Number(watch('id_med')))?.exames.map(item=>{return {label: item.nome, value: (item.id_exame).toString()}})??[]}
+        value={String(value)}
+        onChange={onChange}
+        placeholder="Procedimentos"
+        />
+      
+        // <Select value={String(value)} onValueChange={e => onChange(e)}  >
+        // <SelectTrigger className="">
+        //   <SelectValue placeholder="Procedimentos" />
+        //   </SelectTrigger>
+        //   <SelectContent>
+        //     <SelectGroup>
               
-              {medicos?.find(item => item.id_med === Number(watch('id_med')))?.exames.map((item, index) => (
-                <SelectItem className="text-xs" value={String(item.id_exame)} key={item.id_exame}>{item.nome}</SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-          </Select>
+        //       {medicos?.find(item => item.id_med === Number(watch('id_med')))?.exames.map((item, index) => (
+        //         <SelectItem className="text-xs" value={String(item.id_exame)} key={item.id_exame}>{item.nome}</SelectItem>
+        //       ))}
+        //     </SelectGroup>
+        //   </SelectContent>
+        //   </Select>
       )}
       />
 
@@ -186,7 +194,7 @@ export default function TabProcedimentos({ watch, setValue,control,medicos,setSe
             totalPart+=item.valorExame
           return(
           <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
-            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+            <Table.Cell className="max-w-xs truncate font-medium text-gray-900 ">
               {item.nome}
             </Table.Cell>
             <Table.Cell>{Number(item.valorExame ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>

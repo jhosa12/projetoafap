@@ -76,7 +76,19 @@ const config: Config = {
   				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
-  			}
+  			},
+			  calendar: {
+				primary: '#4A90E2',        // Azul vibrante
+				secondary: '#357ABD',      // Azul médio
+				tertiary: '#2C5FA5',       // Azul mais escuro
+				soft: {
+					purple: '#D6E4FF',     // Azul muito claro com fundo lavanda
+					blue: '#CCE0FF',       // Azul pastel suave
+					peach: '#B3D1FF',      // Azul com leve tom quente (substituindo o pêssego)
+					green: '#A3C9F9',      // Azul esverdeado claro
+					yellow: '#E0F0FF'      // Azul muito pálido, quase branco-azulado
+				}
+			}
   		},
   		fontFamily: {
   			roboto: [

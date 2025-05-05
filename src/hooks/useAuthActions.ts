@@ -55,11 +55,12 @@ export function useAuthActions():{signIn: (credentials: SignInProps) => Promise<
 
     const signOut = useCallback(() => {
         try {
+          router.push('/');
           destroyCookie(undefined, '@nextauth.token');
           delete api.defaults.headers['Authorization'];
           setUsuario(undefined);
           setPermissoes([]);
-          router.push('/');
+         
         } catch (error) {
           toast.error('Erro ao deslogar');
         }

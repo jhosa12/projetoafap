@@ -48,9 +48,10 @@ export const AuthContext = createContext({} as AuthContextData)
 export function signOut() {
     const router = useRouter();
     try {
+        router.push('/')
         destroyCookie(undefined, '@nextauth.token')
         delete api.defaults.headers['Authorization'];
-        router.push('/')
+     
     } catch (err) {
         toast.error('Erro ao deslogar')
     }

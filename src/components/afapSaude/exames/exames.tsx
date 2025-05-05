@@ -183,6 +183,7 @@ export default function Exames({ exames }: DataProps) {
         />
       )}
       <div className="flex w-full justify-between items-center gap-2 flex-wrap">
+        <div className="flex  gap-2 flex-wrap">
         <Button
           variant="outline"
           size="sm"
@@ -218,6 +219,14 @@ export default function Exames({ exames }: DataProps) {
           onWhatsApp={() => handleWhatsAppClick(exameSelected?.celular)}
           onDelete={() => setModal({ deletar: true })}
         />
+
+        </div>
+
+        
+        <span className="text-xs font-medium">
+          QUANTIDADE: {examesRealizados.length}
+        </span>
+      
       </div>
 
       <div className="overflow-auto  max-h-[calc(100vh-150px)]">

@@ -74,23 +74,26 @@ body{
 }
 
 
-.rbc-header{
-    
-    background: #e7e9ed;
+
+
+.rbc-calendar {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+
+}
+.rbc-header {
+ 
+  padding: 10px 5px;
+  font-weight: 600;
+  background-color: #f8fafc;
+  color: #334155;
+  text-transform: uppercase;
 }
 .rbc-header.rbc-today {
    background-color: #41a6f3;
 
 
 }
-
-.rbc-calendar {
-    background-color: #fff;
-    color: #000;
-    font-size: 12px;
-    border-radius: 8px;
-    padding: 4px;
-  }
 
   .rbc-btn-group button {
     font-size: 12px; /* Ajuste o tamanho do texto aqui */
@@ -102,9 +105,11 @@ body{
   }
   
   .rbc-toolbar {
-    
-    font-size: 10px;
-    color: #333;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   }
   
   .rbc-event {

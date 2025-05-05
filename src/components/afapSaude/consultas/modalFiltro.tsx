@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Combobox } from "@/components/ui/combobox";
 import { DatePickerInput } from "@/components/DatePickerInput";
-import { MultiSelect } from "@/components/multi-select";
+import { MultiSelects } from "@/components/ui/multiSelect";
 registerLocale('pt-br', pt)
 
 interface DataProps {
@@ -158,14 +158,17 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
               defaultValue={[]}	
               control={control}
               render={({ field: { onChange, value } }) => (
-                  <MultiSelect
-                  options={statusConsultaArray.map(item => ({ value: item, label: item }))}
-                  value={value}
-                  defaultValue={value}
-                  onValueChange={onChange}
-                  placeholder="Selecione o status"
-                 className="min-h-8"
+                  <MultiSelects
+                 options={statusConsultaArray.map(item => ({ value: item, label: item }))}
+                 onChange={onChange}
+                 selected={value??[]}
+                 badgeClassName="text-[11px]"
+                 emptyMessage="Nenhum status selecionado"
+                 maxDisplayItems={2}
+                 className="min-h-7"
+                 placeholder="Selecione o status"
                   />
+                
                 
               )}
             />
@@ -181,10 +184,6 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
                 </Select>*/}
          
             </div>
-
-
-
-
 
             <div className="flex flex-col w-full" >
               <div className="block">
