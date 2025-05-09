@@ -9,6 +9,7 @@ export function DatePickerInput({
   disable = false,
   className,
    dateFormat='dd/MM/yyyy',
+   required=false,  
   ...rest
  
 }: {
@@ -17,6 +18,7 @@ export function DatePickerInput({
   disable?: boolean;
   className?: string;
   dateFormat?: string;
+  required?:boolean
 
 }) {
 
