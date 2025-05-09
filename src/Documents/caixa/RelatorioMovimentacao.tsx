@@ -83,25 +83,7 @@ class RelatorioMovimentacao extends React.Component<DadosProps> {
 
         {tipoRelatorio === 'ANALITICO' && <Analitico array={this.props.array} soma={soma} />}
 
-        {/*<div className="p-2">
-       <Table>
-        <Table.Head>
-            <Table.HeadCell>CÉDULA</Table.HeadCell>
-            <Table.HeadCell>PIX</Table.HeadCell>
-            <Table.HeadCell>CARTÃO</Table.HeadCell>
-            <Table.HeadCell>TRANSFERÊNCIA</Table.HeadCell>
-        </Table.Head>
-        <Table.Body>
-            <Table.Row>
-                <Table.Cell>{Number(soma.dinheiro).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
-                <Table.Cell>{Number().toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
-                <Table.Cell>{Number().toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
-                <Table.Cell>{Number().toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</Table.Cell>
-
-            </Table.Row>
-        </Table.Body>
-       </Table>
-       </div>*/}
+     
 
 
        
@@ -110,10 +92,7 @@ class RelatorioMovimentacao extends React.Component<DadosProps> {
     
 
         <div className="flex flex-col items-center gap-5">
-          {/*   <div className="flex flex-col items-center">
-        <div style={{width:160,height:75,borderWidth:'1px',borderColor:'black'}}></div>
-        <span style={{fontStyle:'italic'}}>Carimbo</span>
-        </div>*/}
+      
           <div className="flex flex-col items-center">
             <span>___________________________________________________</span>
             <span style={{ fontStyle: 'italic' }}>Assinatura</span>

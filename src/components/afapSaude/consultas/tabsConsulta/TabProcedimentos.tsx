@@ -26,7 +26,20 @@ export default function TabProcedimentos({ watch, setValue,control,medicos,setSe
   let totalPart = 0
 
 
+
+  const verificarStatus = () => {
+    const status = watch('status')
+    if(status === 'RECEBIDO') {
+      toast.warning('Consulta ja foi recebida')
+      return true
+    }
+    return false
+  }
+
+
   const handleChangeDesconto = (value:string) => {
+    if(verificarStatus()) return
+
     if (value === 'PLANO'){
       setSearch(true)
       setValue('tipoDesc','')
@@ -43,6 +56,8 @@ export default function TabProcedimentos({ watch, setValue,control,medicos,setSe
 
 
       const handleAdicionarProcedimento = () => {
+        if(verificarStatus()) return
+     
         const medico = medicos?.find(item => item.id_med === Number(watch('id_med')));
         const exame = medico?.exames?.find(item => item.id_exame === Number(watch('id_selected')));
     
@@ -99,6 +114,7 @@ export default function TabProcedimentos({ watch, setValue,control,medicos,setSe
 
 
       const handleDelProcdimentoTable = (id_exame: number) => {
+        if(verificarStatus()) return
         setValue('procedimentos', watch('procedimentos').filter(item => item.id_exame !== id_exame))
       }
  
@@ -227,25 +243,7 @@ export default function TabProcedimentos({ watch, setValue,control,medicos,setSe
 
     </Table>
   </div>
-
-
-
-
-
-
-
-
-
-
     </div>  
-
-
-
-
-
-
-
-
 
   );
 }

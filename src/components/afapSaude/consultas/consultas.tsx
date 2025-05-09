@@ -744,7 +744,7 @@ export default function Consultas({ medicos, events }: DataProps) {
           <ReciboMensalidade
             cidade_uf="CEDRO/CE"
             endereco="RUA VER. SALUSTIANO MOURAO, 394 - CENTRO"
-            logoUrl="/afapsaude.jpg"
+            logoUrl="/afapsaudelogo.jpg"
             associado={data?.nome ?? ""}
             contrato={data?.id_consulta ?? null}
             data_pgto={data?.dt_pgto ?? null}

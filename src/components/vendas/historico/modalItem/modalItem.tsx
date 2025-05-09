@@ -69,12 +69,12 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
 
     const {register,control,setValue,handleSubmit,trigger,watch,reset,  formState: { errors }} = useForm<LeadProps>(
         {
-            defaultValues:item
+            defaultValues:{...item,adesao:item.data}
         }
     )
 
     useEffect(()=>{
-        reset(item)
+        reset({...item,adesao:item.data})
     },[item])
 
 

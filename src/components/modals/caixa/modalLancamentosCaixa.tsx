@@ -5,14 +5,25 @@ import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { api } from "@/lib/axios/apiClient";
-import { Label, Modal, Select, TextInput } from "flowbite-react";
+import {  Modal, TextInput } from "flowbite-react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { ajustarData } from "@/utils/ajusteData";
-import { Button } from "../../ui/button";
 import { removerFusoDate } from "@/utils/removerFusoDate";
 import { toast } from "sonner";
 import { LancamentosProps } from "@/types/caixa";
-
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button"
+import { DatePickerInput } from "@/components/DatePickerInput";
+import { Combobox } from "@/components/ui/combobox";
+import { normalizarValor } from "@/utils/normalizarValor";
 
 
 interface ModalProps{
@@ -48,7 +59,32 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
         defaultValues:{...mov,datalanc:mov.datalanc??new Date()}
       }
     )
-   
+
+    const conta = watch('conta')
+
+    
+
+
+    useEffect(()=>{
+
+
+      if(conta){
+        const find = planos.find(item=>item.conta===conta)
+        setValue('descricao',find?.descricao??'')
+        setValue('tipo',find?.tipo??'')
+        setValue('conta',find?.conta??'')
+        
+      }else{
+        setValue('descricao','')
+        setValue('tipo','')
+        setValue('conta','')
+      }
+
+
+    },[conta])
+
+
+
     useEffect(()=>{
    setValue('conta',mov.conta??'')
     setValue('descricao',mov.descricao??'')
@@ -81,9 +117,9 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
       const{newDate} =removerFusoDate(new Date(data.data))
       dt_lanc = newDate
     }
-    const valorString = data.valor?.toString()??'';
+   // const valorString = data.valor?.toString()??'';
     //const valorConvertido = parseFloat(valorString?.replace(',', '.'));
-    const valorConvertido = parseFloat(valorString?.replace('.', '').replace(',', '.'));
+    const valorConvertido =  normalizarValor(data.valor?.toString()??'');
    
     const valorConvertidoFinal = isNaN(valorConvertido) ? 0 : valorConvertido;
   
@@ -115,9 +151,9 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
    }
 
      async function lancarMovimentacao(data:LancamentosProps){ 
-      const valorString = data.valor?.toString()??'';
+     // const valorString = data.valor?.toString()??'';
       //const valorConvertido = parseFloat(valorString?.replace(',', '.'));
-      const valorConvertido = parseFloat(valorString?.replace('.', '').replace(',', '.'));
+      const valorConvertido = normalizarValor(data.valor?.toString()??'');
       
       const valorConvertidoFinal = isNaN(valorConvertido) ? 0 : valorConvertido;
       const {newDate:dt_lanc} = removerFusoDate(new Date(data.data))
@@ -179,122 +215,122 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
 
     return(
    
-  <Modal size={'2xl'} show={openModal} popup onClose={()=>setOpenModal(false)}>
-    <Modal.Header/>
-    <Modal.Body>
-      <h1 className="text-base font-semibold mb-2">LANÇAMENTO</h1>
-        <form className="text-[10px]" onSubmit={handleSubmit(handleSubmitForm)}> 
-
-<div className="inline-flex gap-4 w-full text-black ">
-  
-<div >
-        <div className=" block">
-          <Label className="text-[12px]"  value="Data" />
+  <Dialog  open={openModal} onOpenChange={setOpenModal}>
+  <DialogContent  className="max-w-3xl">
+    <DialogHeader>
+      <DialogTitle>LANÇAMENTO</DialogTitle>
+      <DialogDescription>Realizar Lançamento</DialogDescription>
+    </DialogHeader>
+    <form className="text-[10px]" onSubmit={handleSubmit(handleSubmitForm)}>
+      <div className="inline-flex gap-4 w-full text-black">
+            <div>
+          <Label className="text-[12px]">Setor</Label>
+          <Select
+            onValueChange={(val) => setValue("id_grupo", Number(val))}
+            value={watch("id_grupo")?.toString() || ""}
+          >
+            <SelectTrigger className=" text-xs">
+              <SelectValue placeholder="Selecione" />
+            </SelectTrigger>
+            <SelectContent>
+           
+              {grupo?.map((item, index) => (
+                <SelectItem key={index} value={item?.id_grupo?.toString()??'YY'}>
+                  {item.descricao.toUpperCase()}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-        <Controller
-        control={control}
-        name="data"
-        render={({ field:{onChange,value} }) => (
-          <DatePicker  onChange={e=>e && onChange(e)}  selected={value}  dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
-        )}
 
-        />
-      
+        <div className="flex flex-col">
+          <Label className="text-[12px]">Data</Label>
+          <Controller
+            control={control}
+            name="data"
+          
+            render={({ field: { onChange, value } }) => (
+              <DatePickerInput
+                onChange={onChange}
+                value={value}
+                dateFormat={"dd/MM/yyyy"}
+                locale={pt}
+                required
+                className="h-9"
+               
+              />
+            )}
+          />
+        </div>
+
+    
       </div>
 
-
-
-      <div  >
-        <div className=" block">
-          <Label className="text-[12px]"  value="Setor" />
+      <div className="p-2 grid mt-2 gap-2 grid-flow-row-dense grid-cols-4 text-black">
+        <div className="col-span-1">
+          <Label className="text-[12px]">Conta</Label>
+          <Input disabled required className=" text-xs " {...register("conta")} />
         </div>
-        <Select {...register('id_grupo')} sizing={'sm'}    >
-                    <option value={''}></option>
-        {grupo?.map((item,index)=>
-            
-            (
-                <option key={index} value={Number(item.id_grupo)}>{item.descricao.toUpperCase()}</option>
-            )
-        )}
-                  </Select >
-      </div> 
 
+        <div className="col-span-2">
+          <Label className="text-[12px]">Descrição</Label>
 
+          <Controller
+            control={control}
+            name="conta"
+            render={({ field: { onChange, value } }) => (
+               <Combobox
+                 
+                 value={value}
+                 onChange={onChange}
+                 items={planos.filter((item) => item.perm_lanc === "S").map((item) => ({ label: item.descricao, value: item.conta }))}
+                className=""
+               />
 
-
-</div>
-
-        <div className="p-2   grid mt-2 gap-2 grid-flow-row-dense grid-cols-4 text-black">
-
-
-        <div className=" col-span-1 " >
-        <div className=" block">
-          <Label className="text-[12px]"  value="Conta" />
+            )}
+          />
+      
         </div>
-        <TextInput disabled sizing={'sm'} required type="text" {...register('conta')}     />
-      </div> 
-   
 
-
-      <div className=" col-span-2" >
-        <div className=" block">
-          <Label className="text-[12px]"  value="Descrição" />
+        <div className="col-span-1">
+          <Label className="text-[12px]">Tipo</Label>
+          <Input
+            disabled
+            required
+            className=" text-xs"
+            value={watch("tipo")}
+          />
         </div>
-        <Select  value={watch('conta')}    onChange={e=>{
-        const tipo = planos.find((item)=>item.conta===e.target.value)
-       
-     if(tipo){ setValue('descricao',tipo.descricao)
-        setValue('tipo',tipo.tipo)
-        setValue('conta',e.target.value)}
-        }} sizing={'sm'}    >
-      <option value={''}></option>
-        {planos?.map((item,index)=>
-            
-            (
-              item.perm_lanc==='S' &&  <option className="text-black text-[10px]" key={index} value={item.conta}>{item.descricao.toUpperCase()}</option>
-            )
-        )}
 
-                  </Select >
-      </div> 
-
-      <div className="col-span-1 " >
-        <div className=" block">
-          <Label className="text-[12px]"  value="Tipo" />
+        <div className="col-span-3">
+          <Label className="text-[12px]">Histórico</Label>
+          <Input
+            required
+            className=" text-xs"
+            value={watch("historico")?.toUpperCase()}
+            {...register("historico")}
+          />
         </div>
-        <TextInput disabled sizing={'sm'} required type="text" value={watch('tipo')}     />
-      </div> 
 
-
-      <div className="col-span-3 " >
-        <div className=" block">
-          <Label className="text-[12px]"  value="Histórico" />
+        <div className="col-span-1">
+          <Label className="text-[12px]">Valor</Label>
+          <Input
+            type="text"
+            inputMode="decimal"
+            required
+            className=" text-xs"
+            {...register("valor", { setValueAs: String })}
+          />
         </div>
-        <TextInput  sizing={'sm'} required type="text" value={watch('historico')?.toUpperCase()} {...register('historico')}    />
-      </div> 
 
-
-      <div className="col-span-1 " >
-        <div className=" block">
-          <Label className="text-[12px]"  value="Valor" />
+        <div className="gap-2 col-span-4 mt-2 flex flex-row justify-end">
+          <Button type="submit" variant="outline" size="sm">
+            {mov.lanc_id ? "Alterar" : "Cadastrar"}
+          </Button>
         </div>
-        <TextInput type="text" inputMode="decimal" sizing={'sm'} required   {...register('valor')}   />
-      </div> 
-
-
-<div className=" gap-2 col-span-4 mt-2 flex flex-row justify-end">
-
-
-<Button variant={'outline'} size={'sm'}   type="submit" >
-  {mov.lanc_id ? 'Alterar':'Cadastrar'}
-</Button>
- 
-
-</div>
-    </div>
-
-</form>
-</Modal.Body>
-</Modal>
+      </div>
+    </form>
+  </DialogContent>
+</Dialog>
 )
 }

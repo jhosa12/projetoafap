@@ -97,27 +97,6 @@ export default function TabDadosClienteExame({control,register,watch}:TabsFormEx
                 {...register("bairro")}
               />
             </div>
-            <div>
-              <Label className="text-xs" htmlFor="coleta">
-                Coleta
-              </Label>
-              <Controller
-                control={control}
-                name="coleta"
-                defaultValue=""
-                render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger id="coleta">
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem className="text-xs" value="CLINICA">CLÍNICA</SelectItem>
-                      <SelectItem  className="text-xs" value="DOMICILIO">DOMICÍLIO</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </div>
             <div className="col-span-2">
               <Label className="text-xs" htmlFor="responsavel">
                 Nome Responsável (se for menor)

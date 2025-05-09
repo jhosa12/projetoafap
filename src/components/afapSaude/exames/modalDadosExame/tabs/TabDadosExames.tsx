@@ -1,5 +1,5 @@
 import { Label } from "@/components/ui/label";
-import { ComponentTabExameProps, TabsFormExameProps } from "./TabsExame";
+import { ComponentTabExameProps } from "./TabsExame";
 import { Controller } from "react-hook-form";
 import {
   Select,
@@ -30,6 +30,7 @@ export default function TabDadosExames({
   watch,
   setValue,
 }: ComponentTabExameProps) {
+
   const handleTipoDesconto = (tipo: string) => {
     const exames = watch("exames");
     if (tipo) {
@@ -122,10 +123,61 @@ export default function TabDadosExames({
   return (
     <div className="flex flex-col gap-4">
 
-<div className="grid grid-cols-3 gap-4">
+<div className="grid grid-cols-2 gap-4">
+     
+
      
 
       <div>
+        <Label className="text-xs" htmlFor="coleta">
+          Coleta
+        </Label>
+        <Controller
+          control={control}
+          name="coleta"
+          defaultValue=""
+          render={({ field }) => (
+            <Select onValueChange={field.onChange} value={field.value}>
+              <SelectTrigger id="coleta">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem className="text-xs" value="CLINICA">
+                  CLÍNICA
+                </SelectItem>
+                <SelectItem className="text-xs" value="DOMICILIO">
+                  DOMICÍLIO
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+        />
+      </div>
+
+      <div className="flex flex-col justify-end gap-1">
+        <Label className="text-xs" htmlFor="data_prev">
+          Data/Hora Prevista
+        </Label>
+        <Controller
+          control={control}
+          name="data_prev"
+          render={({ field: { onChange, value } }) => (
+            <DatePickerInput
+              className="h-9 z-50 "
+              dateFormat="Pp"
+              showTimeSelect
+              value={value}
+              onChange={onChange}
+            
+            />
+          )}
+        />
+      </div>
+      </div>
+
+      <div>
+        <div className="inline-flex w-full items-center gap-4 py-4">
+           <div>
         <Label className="text-xs" htmlFor="desconto">
           Desconto
         </Label>
@@ -159,54 +211,11 @@ export default function TabDadosExames({
           )}
         />
       </div>
-
-      <div>
-        <Label className="text-xs" htmlFor="coleta">
-          Coleta
+      <div className=" w-full">
+          <Label className="text-xs" htmlFor="desconto">
+          Exames
         </Label>
-        <Controller
-          control={control}
-          name="coleta"
-          defaultValue=""
-          render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value}>
-              <SelectTrigger id="coleta">
-                <SelectValue placeholder="Selecione" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem className="text-xs" value="CLINICA">
-                  CLÍNICA
-                </SelectItem>
-                <SelectItem className="text-xs" value="DOMICILIO">
-                  DOMICÍLIO
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          )}
-        />
-      </div>
-
-      <div className="col-span-1 flex flex-col justify-end gap-1">
-        <Label className="text-xs" htmlFor="data_prev">
-          Data Prevista
-        </Label>
-        <Controller
-          control={control}
-          name="data_prev"
-          render={({ field: { onChange, value } }) => (
-            <DatePickerInput
-              className="h-9"
-              value={value}
-              onChange={onChange}
-            />
-          )}
-        />
-      </div>
-      </div>
-
-      <div>
-        <div className="inline-flex w-full items-center gap-4 py-4">
-          <Controller
+           <Controller
             name="exame"
             control={control}
             render={({ field: { onChange, value } }) => (
@@ -221,19 +230,22 @@ export default function TabDadosExames({
               />
             )}
           />
+      </div>
+         
           <Button
             type="button"
             size="sm"
+            className="mt-auto"
             onClick={handleAdicionarExame}
            
           >
             <HiPlus />
           </Button>
         </div>
-        <div className="overflow-auto max-h-[calc(100vh-500px)]">
+        <div className="relative overflow-auto w-full max-h-[calc(100vh-450px)]">
           <Table>
             <TableHeader>
-              <TableRow>
+              
                 <TableHead>Exame</TableHead>
                 <TableHead>Valor Exame</TableHead>
                 <TableHead>Desconto</TableHead>
@@ -241,11 +253,11 @@ export default function TabDadosExames({
                 <TableHead>
                   <span className="sr-only">Edit</span>
                 </TableHead>
-              </TableRow>
+              
             </TableHeader>
-            <TableBody>
+            <TableBody >
               {watch("exames")?.map((item, index) => (
-                <TableRow key={index} className="bg-white text-xs">
+                <TableRow key={index} className="bg-white text-[10px] font-medium">
                   <TableCell className="whitespace-nowrap font-medium text-gray-900">
                     {item.nome}
                   </TableCell>

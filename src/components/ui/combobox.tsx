@@ -24,8 +24,8 @@ export function Combobox({ items, value, onChange, placeholder='Selecione um ite
   const [open, setOpen] = useState(false);
   const selectedItem = items.find(item => item.value === value);
   return (
-    <PopoverRoot open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild className=" w-full">
+    <PopoverRoot  open={open} onOpenChange={setOpen}>
+      <PopoverTrigger  asChild className=" w-full">
         <Button className=" justify-between text-xs truncate" variant="outline" role="combobox" aria-expanded={open}>
         <span className="truncate">{selectedItem ? selectedItem?.label : placeholder}</span>
           <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
@@ -34,11 +34,14 @@ export function Combobox({ items, value, onChange, placeholder='Selecione um ite
 
       {/* Note que aqui é o Radix.Content, sem Portal */}
       <PopoverContent
+      onFocusOutside={e=>e.preventDefault()}
         sideOffset={4}
-        onOpenAutoFocus={e => e.preventDefault()}
+        //onInteractOutside={e => e.preventDefault()}
+       // onOpenAutoFocus={e => e.preventDefault()}
+        onCloseAutoFocus={e => e.preventDefault()}
         className="p-0 pt-1  z-20"
       >
-        <Command className={`shadow-sm border border-gray-200 ${className}`}>
+        <Command  className={`shadow-sm border border-gray-200 ${className}`}>
           <CommandInput   className="h-8 border-0 focus:ring-0 focus:border-0 focus:outline-none"  placeholder={searchPlaceholder} />
           <CommandList>
             <CommandEmpty>Nenhum item encontrado.</CommandEmpty>

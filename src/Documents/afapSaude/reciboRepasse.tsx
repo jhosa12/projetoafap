@@ -6,7 +6,7 @@ import React from 'react';
 import { Table } from "flowbite-react";
 import { roboto_Mono } from "@/fonts/fonts";
 import { ConsultaProps, ExamesProps } from '@/types/afapSaude';
-import { url } from 'inspector';
+
 
 interface DadosProps {
     dados: Array<ConsultaProps>,
@@ -37,7 +37,7 @@ class ReciboRepasse extends React.Component<DadosProps> {
         return (
             <div className={`${roboto_Mono.className} flex flex-col w-full  gap-3 `}>
                 <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', justifyContent: 'center', gap: '5px' }} >
-                    <img fetchPriority='high' className='w-[120px] h-[120px]'  src={'/afapsaude.png'} alt="logo" />
+                    <img fetchPriority='high' className='w-[120px] h-[120px]'  src={'/afapsaudelogo.png'} alt="logo" />
                     <h1 style={{ fontWeight: 'bold', fontSize: '20px' }}>RECIBO DE REPASSE - CONSULTAS/PROCEDIMENTOS</h1>
                 </div>
                 

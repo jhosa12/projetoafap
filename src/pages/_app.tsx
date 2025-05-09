@@ -21,7 +21,7 @@ function isLoginPage(pathname: string) {
 
 function PrivateLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div translate='no' className="w-full">
+    <div translate='no'  className="w-full">
       <Header />
       
      <div> {children}</div>
