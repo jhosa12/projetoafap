@@ -1,19 +1,23 @@
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-datepicker";
+import DatePicker, { ReactDatePickerProps } from "react-datepicker";
 import pt from "date-fns/locale/pt";
+
 
 export function DatePickerInput({
   value,
   onChange,
   disable = false,
-  required = false,
-  className
+  className,
+   dateFormat='dd/MM/yyyy',
+  ...rest
+ 
 }: {
   value: Date | null | undefined;
   onChange: (v: Date | undefined) => void;
   disable?: boolean;
-  required?: boolean;
   className?: string;
+  dateFormat?: string;
+
 }) {
 
 
@@ -23,12 +27,12 @@ const combinedClassName = [ "h-8 w-full rounded-md shadow-sm px-2 border text-sm
     <DatePicker
       showIcon
       isClearable={true}
-      required={required}
+     {...rest}
       disabled={disable}
       locale={pt}
       selected={value ? new Date(value) : null}
       onChange={(date) => onChange(date as Date)}
-      dateFormat="dd/MM/yyyy"
+      dateFormat={dateFormat}
       className={combinedClassName}
     />
   );

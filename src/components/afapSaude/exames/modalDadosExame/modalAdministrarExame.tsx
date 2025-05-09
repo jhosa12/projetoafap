@@ -33,9 +33,10 @@ import { toast } from "sonner";
 import { Combobox } from "@/components/ui/combobox";
 import { PhoneMaskInput } from "@/components/PhoneMaskInput";
 import { CPFInput } from "@/components/CpfMaskInput";
-import { Focus, X } from "lucide-react";
+import {  X } from "lucide-react";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { parentescos } from "@/utils/arrayParentesco";
+import TabsExames from "./tabs/TabsExame";
 
 interface DataProps {
   openModal: boolean;
@@ -172,7 +173,7 @@ export function ModalAdministrarExame({
           className="flex flex-col w-full"
           onSubmit={handleSubmit(handleOnSubmit)}
         >
-          <div className="grid grid-cols-4 gap-2 ">
+          {/* <div className="grid grid-cols-4 gap-2 ">
             <div className="col-span-2">
               <Label className="text-xs" htmlFor="nome">
                 Nome Paciente
@@ -352,7 +353,7 @@ export function ModalAdministrarExame({
             </div>
 
           </div>
-          {/* Seção do Combobox e tabela de exames */}
+       
           <div>
             <div className="inline-flex w-full gap-4 py-4">
               <Controller
@@ -469,7 +470,8 @@ export function ModalAdministrarExame({
                 </TableBody>
               </Table>
             </div>
-          </div>
+          </div> */}
+          <TabsExames register={register} control={control} watch={watch} setValue={setValue} exames={arraySelectExames} />
           <Button className="ml-auto mt-6" type="submit">
             {registro?.id_exame ? "Atualizar" : "Cadastrar"}
           </Button>

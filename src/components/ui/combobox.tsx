@@ -38,7 +38,7 @@ export function Combobox({ items, value, onChange, placeholder='Selecione um ite
         onOpenAutoFocus={e => e.preventDefault()}
         className="p-0 pt-1  z-20"
       >
-        <Command className={className}>
+        <Command className={`shadow-sm border border-gray-200 ${className}`}>
           <CommandInput   className="h-8 border-0 focus:ring-0 focus:border-0 focus:outline-none"  placeholder={searchPlaceholder} />
           <CommandList>
             <CommandEmpty>Nenhum item encontrado.</CommandEmpty>

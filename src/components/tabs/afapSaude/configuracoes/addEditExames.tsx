@@ -1,17 +1,8 @@
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+
 import { ModalEditExames } from "../components/modalAddEditExames";
 import { useCallback, useContext, useRef, useState } from "react";
 import { api } from "@/lib/axios/apiClient";
-import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
-import { AuthContext } from "@/store/AuthContext";
 import { IoIosPrint } from "react-icons/io";
 import { useReactToPrint } from "react-to-print";
 import RelatorioLucroExames from "@/Documents/afapSaude/relatorioLucroExames";
@@ -44,7 +35,6 @@ export function AddEditExames({ exames, setExames }: DataProps) {
 
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [data, setData] = useState<ExamesProps>(resetValues);
-  const { usuario } = useContext(AuthContext);
   const currentPage = useRef<RelatorioLucroExames>(null);
   const [openDeletar, setOpenDeletar] = useState<boolean>(false);
 
@@ -110,59 +100,7 @@ export function AddEditExames({ exames, setExames }: DataProps) {
             </Button>
           </div>
         </DataTable>
-        {/* <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Exame</TableHead>
-              <TableHead>Valor Bruto</TableHead>
-              <TableHead>Valor Particular</TableHead>
-              <TableHead>Desconto Funerária</TableHead>
-              <TableHead>Desconto Plano</TableHead>
-              <TableHead className="text-right">Ações</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody className="text-xs">
-            {exames.map((item) => (
-              <TableRow key={item.id_exame}>
-                <TableCell className="font-medium">{item.nome}</TableCell>
-                <TableCell>
-                  {Number(item.valorBruto).toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })}
-                </TableCell>
-                <TableCell>
-                  {Number(item.porcPart).toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })}
-                </TableCell>
-                <TableCell>{item.porcFun}%</TableCell>
-                <TableCell>{item.porcPlan}%</TableCell>
-                <TableCell className="space-x-4 text-right">
-                  <button
-                    onClick={() => {
-                      setData({ ...item, data: new Date() });
-                      setOpenModal(true);
-                    }}
-                    className="text-gray-500 hover:text-cyan-600"
-                  >
-                    <HiPencil size={16} />
-                  </button>
-                  <button
-                    onClick={() => {
-                      setData({ ...item });
-                      setOpenDeletar(true);
-                    }}
-                    className="text-gray-500 hover:text-red-600"
-                  >
-                    <HiOutlineTrash size={16} />
-                  </button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table> */}
+        
   
 
       {openModal && (

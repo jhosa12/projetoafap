@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction } from "react";
 
 export type ConsultaStatus = "AGENDADO" | "AGUARDANDO DATA" | "CONFIRMADO" | "ATENDIDO" | "CANCELADO" | "RECEBIDO";
 
-export const statusConsultaArray = ["AGENDADO","AGUARDANDO DATA","CONFIRMADO","ATENDIDO","CANCELADO","RECEBIDO"]
+export const statusConsultaArray = ["AGENDADO","AGUARDANDO DATA","CONFIRMADO","ATENDIDO","CANCELADO","RECEBIDO","VENDA OCULOS"]
 
 export interface ClienteFormProps {
   id_client?: number;

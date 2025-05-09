@@ -355,6 +355,10 @@ export default function Consultas({ medicos, events }: DataProps) {
     dataAtual.setTime(
       dataAtual.getTime() - dataAtual.getTimezoneOffset() * 60 * 1000
     );
+   const valorPg= data?.procedimentos?.reduce(
+      (total, item) => total + item.valorFinal,
+      0
+    )
 
     toast.promise(
       api.put("/afapSaude/receberConsulta", {
@@ -363,10 +367,7 @@ export default function Consultas({ medicos, events }: DataProps) {
         datalancUTC: dataAtual.toISOString(),
         descricao: "CONSULTA",
         historico: `CONSULTA.${data?.id_consulta}-${data?.nome}-${data?.espec}`,
-        valor: data?.procedimentos?.reduce(
-          (total, item) => total + item.valorFinal,
-          0
-        ),
+        valor: valorPg, 
         usuario: usuario?.nome,
       }),
       {
@@ -380,7 +381,7 @@ export default function Consultas({ medicos, events }: DataProps) {
         },
       }
     );
-  }, [usuario, data?.id_consulta, consultas, data?.vl_final, formPag]);
+  }, [usuario , consultas, data, formPag,data?.procedimentos]);
 
   const handleDeletar = useCallback(async () => {
     if (!data?.id_consulta) {
