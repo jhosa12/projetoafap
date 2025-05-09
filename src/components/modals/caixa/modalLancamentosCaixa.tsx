@@ -319,7 +319,7 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
             inputMode="decimal"
             required
             className=" text-xs"
-            {...register("valor", { setValueAs: String })}
+            {...register("valor")}
           />
         </div>
 
