@@ -37,7 +37,7 @@ export interface ProdutosProps {
 
 export default function Vendas() {
 
-  const { usuario, selectEmp } = useContext(AuthContext);
+  const { usuario, infoEmpresa} = useContext(AuthContext);
   const [tab, setTab] = useState<number>(0)
   const {data,postData} = useApiGet<Array<SetorProps>,undefined>("/gerenciarAdministrativo/listarSetores")
 
@@ -69,7 +69,7 @@ export default function Vendas() {
       }}}}}}} variant="underline" onActiveTabChange={e => setTab(e)}>
 
           <Tabs.Item active={tab === 0} title="ACOMPANHAMENTO" icon={()=><FaStore className="mr-2 h-4 w-4"/>}>
-           { tab === 0 && <Acompanhamento usuario={usuario?.nome??''} setores={data??[]} empresa={selectEmp} />}
+           { tab === 0 && <Acompanhamento logoUrl={infoEmpresa?.logoUrl??''} usuario={usuario?.nome??''} setores={data??[]} empresa={infoEmpresa?.id??''} />}
 
           </Tabs.Item>
           <Tabs.Item active={tab === 1} title="HISTÓRICO" icon={()=><RiHistoryLine className="mr-2 h-4 w-4"/>}>

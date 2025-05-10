@@ -1,5 +1,5 @@
 
-import Image from "next/image";
+
 import React from 'react';
 import { Table } from "flowbite-react";
 import { AdesaoProps } from "@/components/vendas/modalVendedor";
@@ -9,7 +9,8 @@ interface DadosProps {
    startDate:Date,
    endDate:Date,
    vendedor:string,
-   usuario:string
+   usuario:string,
+   logoUrl:string
 
 }
 
@@ -17,7 +18,7 @@ interface DadosProps {
 class ResumoVendedor extends React.Component<DadosProps> {
 
     render() {
-        const { adesoes,endDate,startDate,vendedor,usuario } = this.props;
+        const { adesoes,endDate,startDate,vendedor,usuario,logoUrl } = this.props;
       
       /*  const options: Intl.DateTimeFormatOptions = {
             weekday: 'long', // Dia da semana por extenso
@@ -33,7 +34,7 @@ class ResumoVendedor extends React.Component<DadosProps> {
 
                   <span className="text-xs ml-auto ">{usuario}-{new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</span>
                 <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', justifyContent: 'center', gap: '10px' }} >
-                  <img src={'/afapsaude.jpg'} alt="logo" width={120} height={120} />
+                  <img fetchPriority='high' src={logoUrl} alt="logo" width={120} height={120} />
                     <h1 style={{ fontWeight: 'normal', fontSize: '20px' }}>RESUMO DE VENDAS</h1>
                 </div>
               

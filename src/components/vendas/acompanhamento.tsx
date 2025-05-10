@@ -70,7 +70,8 @@ interface ResponseProps {
     leads: Array<ConsultorLeads>;
     metaAtual: number,
     startFilter: Date,
-    endFilter: Date
+    endFilter: Date,
+
 }
 
 
@@ -83,7 +84,7 @@ export interface ChatProps {
 
 
 
-export function Acompanhamento({ empresa, setores, usuario }: { empresa: string, setores: SetorProps[], usuario: string }) {
+export function Acompanhamento({ empresa, setores, usuario,logoUrl }: { empresa: string, setores: SetorProps[], usuario: string,logoUrl:string }) {
 
     const [startDate, setStartDate] = useState<Date>(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
     const [endDate, setEndDate] = useState<Date>(new Date());
@@ -161,7 +162,7 @@ export function Acompanhamento({ empresa, setores, usuario }: { empresa: string,
 
         <div className="flex flex-col w-full h-full bg-gradient-to-b from-white to-gray-50 overflow-y-auto">
 
-            {modalVend && <ModalVendedor usuario={usuario} leads={reqData?.leads} show={modalVend} setModalVend={setModalVend} vendedor={vendedor} startDate={reqData.startFilter} endDate={reqData.endFilter} />}
+            {modalVend && <ModalVendedor logoUrl={logoUrl} usuario={usuario} leads={reqData?.leads} show={modalVend} setModalVend={setModalVend} vendedor={vendedor} startDate={reqData.startFilter} endDate={reqData.endFilter} />}
 
 
 

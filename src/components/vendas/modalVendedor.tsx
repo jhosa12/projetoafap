@@ -19,7 +19,8 @@ interface DataProps{
     startDate:Date,
     endDate:Date,
     leads:Array<ConsultorLeads>
-    usuario:string
+    usuario:string,
+    logoUrl:string
 }
 
 
@@ -45,7 +46,7 @@ interface ResumoVendedorProps{
 }
 
 
-export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor,usuario}:DataProps){
+export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor,usuario,logoUrl}:DataProps){
 
 
     const {data,postData,loading} = useApiGet<ResumoVendedorProps,{startDate:Date,endDate:Date,id_consultor:number|null,consultor:string}>("/vendas/resumoVendedor")
@@ -77,7 +78,7 @@ export function ModalVendedor({endDate,setModalVend,show,startDate,vendedor,usua
         <>
 
         <div style={{display:'none'}}>
-          {print &&  <ResumoVendedor usuario={usuario} endDate={endDate} startDate={startDate} vendedor={vendedor.consultor} adesoes={data?.adesoes??[]} ref={componenteRef} />}
+          {print &&  <ResumoVendedor logoUrl={logoUrl} usuario={usuario} endDate={endDate} startDate={startDate} vendedor={vendedor.consultor} adesoes={data?.adesoes??[]} ref={componenteRef} />}
         </div>
         <Modal dismissible size={'3xl'} show={show} onClose={() => setModalVend(false)}>
         <Modal.Header >
