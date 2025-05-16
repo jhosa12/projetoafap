@@ -17,7 +17,7 @@ import {  ContratoProps, DependentesProps } from "@/types/associado";
 import Router from "next/router";
 import { ajustarData } from "@/utils/ajusteData";
 import { ModalLoading } from "@/components/modals/loading/modalLoading";
-import { MultiSelect } from "@/components/multi-select";
+import { MultiSelect } from "@/components/ui/multi-select";
 import DocListaLeads from "@/Documents/vendas/DocListaLeads";
 import { useReactToPrint } from "react-to-print";
 import { Input } from "@/components/ui/input";

@@ -7,7 +7,7 @@ import {  Checkbox, Label, Modal, TextInput } from "flowbite-react";
 import { Controller, SubmitHandler, useForm} from "react-hook-form";
 import { ConsultoresProps } from "@/types/consultores";
 import { FormProps } from "./cobranca/cobranca";
-import { MultiSelect } from "../../multi-select";
+import { MultiSelect } from "../../ui/multi-select";
 import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { Button } from "../../ui/button";

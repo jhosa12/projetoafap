@@ -1,4 +1,4 @@
-import { Modal, Tabs } from "flowbite-react";
+import {Tabs } from "flowbite-react";
 import { LeadProps } from "../historico";
 import { Control, SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
 import { TabDadosPessoais } from "./dadosPessoais";
@@ -140,7 +140,7 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
 
    {<ErrorIndicator errors={errors} />}
 
-                        <Button size={'sm'} type="submit" variant={'outline'} >Salvar</Button>
+                        <Button className="ml-auto" size={'sm'} type="submit" >Salvar</Button>
 
 
                             </div> 

@@ -15,10 +15,10 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  Root as PopoverRoot,
+  Trigger as PopoverTrigger,
+  Content as PopoverContent,
+} from "@radix-ui/react-popover";
 import {
   Command,
   CommandEmpty,
@@ -191,7 +191,7 @@ export const MultiSelect = React.forwardRef<
     };
 
     return (
-      <Popover
+      <PopoverRoot
         open={isPopoverOpen}
         onOpenChange={setIsPopoverOpen}
         modal={modalPopover}
@@ -281,11 +281,11 @@ export const MultiSelect = React.forwardRef<
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-auto p-0"
+          className="w-auto p-0 z-50"
           align="start"
           onEscapeKeyDown={() => setIsPopoverOpen(false)}
         >
-          <Command>
+          <Command className="z-50">
             <CommandInput
               placeholder="Search..."
               onKeyDown={handleInputKeyDown}
@@ -373,7 +373,7 @@ export const MultiSelect = React.forwardRef<
             onClick={() => setIsAnimating(!isAnimating)}
           />
         )}
-      </Popover>
+      </PopoverRoot>
     );
   }
 );
