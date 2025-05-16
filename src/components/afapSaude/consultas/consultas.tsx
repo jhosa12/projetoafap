@@ -319,8 +319,11 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
   );
 
   useEffect(() => {
+
+
     const controller = new AbortController();
     const signal = controller.signal;
+    if(consultas.length>0)return
     buscarConsultas({ ...getValues(), signal });
 
     return () => {

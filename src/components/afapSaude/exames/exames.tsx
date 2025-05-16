@@ -143,6 +143,7 @@ export default function Exames({ exames }: DataProps) {
   );
 
   useEffect(() => {
+    if(examesRealizados.length > 0) return
     listarExamesRealizados(getValues());
   }, []);
 

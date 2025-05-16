@@ -22,7 +22,7 @@ class ContratoResumo extends React.Component<DadosProps> {
     return (
       <div className='flex flex-col w-full  ' style={{fontSize:'12px'}}>
         <div className="flex  w-full justify-center items-center mt-4">
-          <img className="flex w-44 h-16  " src={infoEmpresa?.logoUrl} alt="" />
+          <img width={150} height={150} src={infoEmpresa?.logoUrl} alt="" />
         </div>
         <h1 className=' text-lg text-center font-semibold mt-2'>RESUMO DE CONTRATO</h1>
         <h2 style={{display:'flex',width:'100%',padding:1,backgroundColor:'gray',color:'white',fontSize:'15px',paddingLeft:'16px'}} >DADOS DO CONTRATO</h2>
