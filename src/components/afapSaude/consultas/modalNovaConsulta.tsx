@@ -30,8 +30,7 @@ interface DataProps {
   setConsultas: (array: Array<ConsultaProps>) => void;
   setConsulta: (consulta: Partial<ConsultaProps>) => void;
   events: Array<EventProps>;
-  // usuario?: string
-  // id_usuario?: string
+  
 }
 
 export function ModalConsulta({

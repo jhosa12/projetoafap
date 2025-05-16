@@ -14,7 +14,8 @@ import { AssociadoProps, ContratoProps, DependentesProps } from "@/types/associa
 import {  ParcelaData } from "@/utils/gerarArrayMensal";
 import { toast } from "sonner";
 import { ErrorIndicator } from "@/components/errorIndicator";
-import { Dialog } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+
 
 
 interface DataProps{
@@ -107,8 +108,13 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
 
     return(
         <Dialog  open={open} onOpenChange={()=>onClose()}>
-          <Modal.Header />
-            <Modal.Body>
+
+
+            <DialogContent className="sm:max-w-5xl ">
+                <DialogHeader/>
+         
+         
+            
                 <form onSubmit={handleSubmit(handleOnSubmit)}>
                       <Tabs  theme={{tablist:{tabitem:{base:"flex z-0 items-center justify-center rounded-t-lg p-2 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 ",variant:{fullWidth:{active:{off:'bg-gray-50',on:'bg-gray-300 text-black'}}}}}}} aria-label="Full width tabs" variant="fullWidth">
                             <Tabs.Item active title="Dados Pessoais" >
@@ -141,7 +147,9 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
                           
                 </form>
 
-            </Modal.Body>
+                   </DialogContent>
+
+            
         </Dialog>
     )
 }

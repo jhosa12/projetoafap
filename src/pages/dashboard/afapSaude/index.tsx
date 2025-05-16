@@ -168,7 +168,7 @@ export default function AfapSaude() {
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent forceMount className="hidden data-[state=active]:flex flex-col gap-4" value="agenda" >
+      <TabsContent  className="px-2" value="agenda" >
         <Calendario events={events} medicos={medicos} setArrayEvent={setEvents} />
       </TabsContent>
 
@@ -180,7 +180,7 @@ export default function AfapSaude() {
         <Exames exames={exames} />
       </TabsContent>
 
-      <TabsContent forceMount className="hidden data-[state=active]:flex flex-col gap-4" value="configurar" >
+      <TabsContent className="px-4" value="configurar" >
         <Configuracoes medicos={medicos} setMedicos={setArrayMedicos} setExames={setExames} exames={exames} />
       </TabsContent>
     </Tabs>

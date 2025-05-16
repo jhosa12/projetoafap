@@ -28,13 +28,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "../../ui/button";
 import {
   ConsultaProps,
@@ -69,13 +62,14 @@ export const valorInicial = {
   vl_final: 0,
 };
 
+
+
 export default function Consultas({ medicos, events }: DataProps) {
   const [data, setData] = useState<Partial<ConsultaProps>>();
   const { usuario, consultores } = useContext(AuthContext);
   const [formPag, setFormPag] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [consultas, setConsultas] = useState<Array<ConsultaProps>>([]);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [modal, setModal] = useState<{ [key: string]: boolean }>({
     filtro: false,
     deletar: false,
@@ -112,18 +106,9 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
     externo,
     signal,
     medico,
-  }: {
-    startDate: Date | undefined;
-    endDate: Date | undefined;
-    id_med?: number;
-    status: string[] | undefined;
-    buscar?: string;
-    nome?: string;
-    id_consultor?: number;
-    externo?: string;
-    signal?: AbortSignal;
-    medico?: string;
-  }) => {
+    especialidade
+  
+  }: FiltroConsultaProps) => {
     const { dataIni, dataFim } = ajustarData(startDate, endDate);
     let medicoId = medicos.find((item) => item.nome === medico)?.id_med;
 
@@ -145,6 +130,7 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
           buscar,
           nome,
           id_consultor,
+          especialidade
         },
         {
           signal,
@@ -423,7 +409,7 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
   return (
     <div className="flex flex-col p-2 gap-2">
 
-        <ModalConsulta
+      {modal.editar &&  <ModalConsulta
           events={events}
           setConsulta={setData}
           consultas={consultas}
@@ -433,15 +419,9 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
           openModal={modal.editar}
           setOpenModal={() => setModal({ editar: false })}
           buscarConsultas={() =>
-            buscarConsultas({
-              startDate: watch("startDate"),
-              endDate: watch("endDate"),
-              id_med: watch("id_med"),
-              status: watch("status"),
-              buscar: watch("buscar"),
-            })
+            buscarConsultas(getValues())
           }
-        />
+        />}
 
 
       <div className=" inline-flex w-full justify-between text-black items-center">

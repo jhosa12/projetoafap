@@ -37,6 +37,8 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
     reset({ startDate: undefined, endDate: undefined, id_med: undefined, status: [], buscar: '', nome: '', id_consultor: undefined, externo: '', medico: '' })
   }
 
+  const arrayEspecialidades = Array.from(new Set(medicos.map(item => item.espec)))
+
 
   const handleOnSubmit: SubmitHandler<FiltroConsultaProps> = (data: FiltroConsultaProps) => {
 
@@ -47,7 +49,7 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
     
       <DialogContent>
          <DialogHeader/>
-        <form onSubmit={handle(handleOnSubmit)} className='space-y-2 flex flex-col w-full'>
+        <form onSubmit={handle(handleOnSubmit)} className=' grid grid-cols-2 w-full gap-4'>
           <div >
             <div className=" block">
               <Label className="text-xs" value="Especialista" />
@@ -68,16 +70,33 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
               
               )}
             />
+          </div>
 
-           {/* <Select {...register('id_med')} sizing={'sm'}>
-              <option value={''}>Selecione</option>
-              {medicos.map((item, index) => (<option key={index} value={item.id_med}>{item.nome}-{item.espec}</option>))}
-            </Select>*/}
+             <div >
+            <div className=" block">
+              <Label className="text-xs" value="Especialidade" />
+            </div>
+            <Controller
+              name="especialidade"
+              defaultValue={''}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Combobox
+                items={arrayEspecialidades.map(item => ({ value: item, label:item }))}
+                onChange={onChange}
+                value={value??null}
+                placeholder="Selecione o especialista"
+              
+                
+                />
+              
+              )}
+            />
           </div>
 
 
 
-          <div >
+          <div className="col-span-2" >
 
             <Label className="text-xs" value="Nome Cliente" />
 
@@ -87,8 +106,8 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
 
 
 
-          <div className="inline-flex w-full gap-2" >
-            <div className="flex flex-col w-1/2" >
+         
+            <div  >
               <div className="block">
                 <Label className="text-xs" value="Consultor" />
               </div>
@@ -115,7 +134,7 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
               
             </div>
 
-            <div className="flex flex-col w-1/2" >
+            <div  >
               <div className="block">
                 <Label className="text-xs" value="Externo" />
               </div>
@@ -141,8 +160,8 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
 
            
             </div>
-          </div>
-          <div className="inline-flex w-full gap-2" >
+         
+        
 
             <div className="flex flex-col w-full" >
               <div className="block">
@@ -167,21 +186,10 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
                 
                 
               )}
-            />
-     {/*  <Select onValueChange={onChange} value={value}>
-                  <SelectTrigger className="h-8" >
-                    <SelectValue placeholder="Selecione o status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                  {statusConsultaArray.map((item, index) => (
-                    <SelectItem className="text-xs" key={index} value={item}>{item}</SelectItem>
-                  ))}
-                  </SelectContent>
-                </Select>*/}
-         
+            />  
             </div>
 
-            <div className="flex flex-col w-full" >
+            <div  >
               <div className="block">
                 <Label className="text-xs" value="Buscar ?" />
               </div>
@@ -191,7 +199,7 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
               control={control}
               render={({ field: { onChange, value } }) => (
                 <Select onValueChange={onChange} value={value}>
-                  <SelectTrigger className="h-8" >
+                  <SelectTrigger className="h-8 w-full" >
                     <SelectValue placeholder="" />
                   </SelectTrigger>
                  <SelectContent>
@@ -205,9 +213,9 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
           
             </div>
 
-          </div>
+         
 
-          <div className='inline-flex gap-2'>
+        
             <div >
               <div className="block">
                 <Label className="text-xs" value="Data inicio" />
@@ -235,10 +243,10 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
                 )}
               />
             </div>
-          </div>
+       
 
 
-                <div className="inline-flex w-full pt-2 justify-between">
+                <div className="col-span-2 flex justify-between">
                 <Button type="button" variant="outline" size={'sm'} onClick={() => { cleanParams() }} >Limpar Parametros</Button>
                 <Button   type="submit" size={'sm'}>{loading && <Spinner color="gray" />}Aplicar Filtro</Button>
               

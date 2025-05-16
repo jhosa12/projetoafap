@@ -195,6 +195,8 @@ export interface FiltroConsultaProps {
   nome?: string,
   id_consultor?: number,
   medico?:string
+  signal?: AbortSignal;
+  especialidade?:string
 }
 
 export type CalendarView = "month" | "week" | "day" | "agenda";

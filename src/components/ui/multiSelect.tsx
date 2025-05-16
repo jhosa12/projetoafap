@@ -37,7 +37,7 @@ interface MultiSelectProps {
 
 export function MultiSelects({
   options,
-  selected,
+  selected=[],
   onChange,
   placeholder = "Select options...",
   className,
@@ -51,7 +51,7 @@ export function MultiSelects({
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleUnselect = (value: string) => {
-    onChange(selected.filter((item) => item !== value));
+    onChange(selected?.filter((item) => item !== value));
   };
 
   const handleClearAll = () => {
@@ -64,8 +64,8 @@ export function MultiSelects({
     if (option?.disabled) return;
 
     onChange(
-      selected.includes(value)
-        ? selected.filter((item) => item !== value)
+      selected?.includes(value)
+        ? selected?.filter((item) => item !== value)
         : [...selected, value]
     );
   };
@@ -77,7 +77,7 @@ export function MultiSelects({
   }, [open]);
 
   const selectedOptions = options.filter((option) =>
-    selected.includes(option.value)
+    selected?.includes(option.value)
   );
 
   const displayedItems = selectedOptions.slice(0, maxDisplayItems);
@@ -94,7 +94,7 @@ export function MultiSelects({
             aria-expanded={open}
             className={cn(
               "w-full min-h-10 justify-between",
-              selected.length > 0 ? "h-auto" : "",
+              selected?.length > 0 ? "h-auto" : "",
               className
             )}
             onClick={() => setOpen(!open)}
