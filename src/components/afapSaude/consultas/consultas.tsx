@@ -2,7 +2,7 @@ import { api } from "@/lib/axios/apiClient";
 import { Table } from "flowbite-react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
-import { HiMiniArrowDownOnSquare, HiPencil, HiPrinter } from "react-icons/hi2";
+import { HiPrinter } from "react-icons/hi2";
 import { HiDocumentAdd, HiFilter } from "react-icons/hi";
 
 import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
@@ -48,6 +48,7 @@ import useApiPut from "@/hooks/useApiPut";
 import { useForm } from "react-hook-form";
 import { ModalConsulta } from "@/components/afapSaude/consultas/modalNovaConsulta";
 import { ModalFiltroConsultas } from "@/components/afapSaude/consultas/modalFiltro";
+import { DropdownAcoesConsulta } from "./DropdownAcoesConsulta";
 
 interface DataProps {
   medicos: Array<MedicoProps>;
@@ -74,6 +75,7 @@ export default function Consultas({ medicos, events }: DataProps) {
   const [formPag, setFormPag] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [consultas, setConsultas] = useState<Array<ConsultaProps>>([]);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [modal, setModal] = useState<{ [key: string]: boolean }>({
     filtro: false,
     deletar: false,
@@ -86,9 +88,9 @@ export default function Consultas({ medicos, events }: DataProps) {
     printListaConsultas: false,
   });
 
-  const currentPage = useRef<FichaConsulta>(null);
-  const currentRecibo = useRef<ReciboMensalidade>(null);
-  const currentConsultas = useRef<ListaConsultas>(null);
+const currentPage = useRef<HTMLDivElement|null>(null)
+ const currentRecibo = useRef<HTMLDivElement|null>(null)
+const currentConsultas = useRef<HTMLDivElement|null>(null)
 
   const { register, control, handleSubmit, watch, getValues, reset } =
     useForm<FiltroConsultaProps>({
@@ -417,6 +419,28 @@ export default function Consultas({ medicos, events }: DataProps) {
 
   return (
     <div className="flex flex-col p-2 gap-2">
+
+        <ModalConsulta
+          events={events}
+          setConsulta={setData}
+          consultas={consultas}
+          consulta={data ?? {}}
+          setConsultas={setConsultas}
+          medicos={medicos}
+          openModal={modal.editar}
+          setOpenModal={() => setModal({ editar: false })}
+          buscarConsultas={() =>
+            buscarConsultas({
+              startDate: watch("startDate"),
+              endDate: watch("endDate"),
+              id_med: watch("id_med"),
+              status: watch("status"),
+              buscar: watch("buscar"),
+            })
+          }
+        />
+
+
       <div className=" inline-flex w-full justify-between text-black items-center">
         <div className="inline-flex gap-4">
           <Button
@@ -483,6 +507,10 @@ export default function Consultas({ medicos, events }: DataProps) {
               <Table.Row
                 key={item.id_consulta}
                 className={`font-medium bg-white hover:cursor-pointer`}
+                  onClick={e => {
+                 
+                            setData(item), setModal({ editar: true });
+                          }}
               >
                 <Table.Cell className="whitespace-nowrap">
                   {item.nome}
@@ -568,65 +596,12 @@ export default function Consultas({ medicos, events }: DataProps) {
                 </Table.Cell>
 
                 <Table.Cell onClick={(e) => e.stopPropagation()}>
-                  <DropdownMenu onOpenChange={(open) => open && setData(item)}>
-                    <DropdownMenuTrigger asChild>
-                      <button>
-                        <SlOptions size={17} />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-36 shadow-none">
-                      <DropdownMenuGroup>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            setModal({ editar: true });
-                          }}
-                        >
-                          <MdEdit />
-                          Editar
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            setModal({ printProntuario: true });
-                          }}
-                        >
-                          <HiPrinter className=" h-3 w-3" />
-                          Prontuário
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            setModal({ printRecibo: true });
-                          }}
-                        >
-                          <BiMoneyWithdraw className=" h-3 w-3" />
-                          Recibo
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => setModal({ receber: true })}
-                        >
-                          <HiMiniArrowDownOnSquare className="h-3 w-3" />
-                          Receber
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => setModal({ estornar: true })}
-                        >
-                          <GiReturnArrow className="h-3 w-3" />
-                          Estornar
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => handleWhatsAppClick(item?.celular)}
-                        >
-                          <FaWhatsapp className=" h-3 w-3" />
-                          Contato
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => setModal({ deletar: true })}
-                        >
-                          <MdDelete />
-                          Excluir
-                        </DropdownMenuItem>
-                      </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <DropdownAcoesConsulta
+                    item={item}
+                    setData={setData}
+                    setModal={setModal}
+                    handleWhatsAppClick={handleWhatsAppClick}
+                  />
                 </Table.Cell>
               </Table.Row>
             ))}
@@ -634,30 +609,12 @@ export default function Consultas({ medicos, events }: DataProps) {
         </Table>
       </div>
 
-      {modal.editar && (
-        <ModalConsulta
-          events={events}
-          setConsulta={setData}
-          consultas={consultas}
-          consulta={data ?? {}}
-          setConsultas={setConsultas}
-          medicos={medicos}
-          openModal={modal.editar}
-          setOpenModal={() => setModal({ editar: false })}
-          buscarConsultas={() =>
-            buscarConsultas({
-              startDate: watch("startDate"),
-              endDate: watch("endDate"),
-              id_med: watch("id_med"),
-              status: watch("status"),
-              buscar: watch("buscar"),
-            })
-          }
-        />
-      )}
+      
+      
+      
 
       <ModalConfirmar
-        openModal={modal.deletar}
+        openModal={modal.deletar??false}
         setOpenModal={() => setModal({ deletar: false })}
         handleConfirmar={handleDeletar}
         pergunta={"Realmente deseja deletar essa consulta?"}
@@ -673,14 +630,14 @@ export default function Consultas({ medicos, events }: DataProps) {
         buscarConsultas={buscarConsultas}
         loading={loading}
         setFiltro={() => setModal({ filtro: false })}
-        show={modal.filtro}
+        show={modal.filtro??false}
       />
 
       {modal.receber && (
         <ModalConfirmar
           pergunta="Realmente deseja receber essa consulta?"
           handleConfirmar={handleReceberConsulta}
-          openModal={modal.receber}
+          openModal={modal.receber ??false}
           setOpenModal={() => setModal({ receber: false })}
         >
           <Select
@@ -716,7 +673,7 @@ export default function Consultas({ medicos, events }: DataProps) {
 
       <div className="hidden" style={{ display: "none" }}>
         {modal.printProntuario && (
-          <FichaConsulta
+            <FichaConsulta
             ref={currentPage}
             especialista={
               medicos.find((item) => item.id_med === data?.id_med)?.nome ?? ""
@@ -737,11 +694,13 @@ export default function Consultas({ medicos, events }: DataProps) {
             procedimentos={data?.procedimentos}
             celular={data?.celular ?? ""}
             parentesco={data?.grau_parentesco ?? ""}
-          />
+          /> 
         )}
 
         {modal.printRecibo && (
+          
           <ReciboMensalidade
+           ref={currentRecibo}
             cidade_uf="CEDRO/CE"
             endereco="RUA VER. SALUSTIANO MOURAO, 394 - CENTRO"
             logoUrl="/afapsaudelogo.jpg"
@@ -757,13 +716,14 @@ export default function Consultas({ medicos, events }: DataProps) {
               ) ?? 0
             )}
             vencimento={new Date()}
-            ref={currentRecibo}
             referente={`Consulta Médica - ${data?.espec}`}
           />
         )}
 
         {modal.printListaConsultas && (
-          <ListaConsultas ref={currentConsultas} dados={consultas} />
+       
+                     <ListaConsultas ref={currentConsultas} dados={consultas}/>
+              
         )}
       </div>
 

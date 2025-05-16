@@ -32,6 +32,7 @@ import {
 import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ModalAtivosInativos } from "../modals/modalAtivosInativos";
+import LinkNavigate from "../Link";
 
 export function Header() {
   const {
@@ -90,35 +91,35 @@ export function Header() {
                 <h3 className="font-bold mb-2">Menu</h3>
 
                 <span className="font-semibold text-gray-500">Administrativo</span>
-                <Link href="/dashboard/admcontrato">Administrar Contrato</Link>
-                <Link href="/dashboard/estoque">Estoque</Link>
-                <Link href="/dashboard/caixa">Caixa</Link>
-                <Link href="/dashboard/renovacao">Renovação</Link>
-                <Link href="/dashboard/cobranca">Cobrança</Link>
-                <Link href="/dashboard/gerenciarAdministrativo">Gerenciar</Link>
-                <Link href="/dashboard/financeiro">Financeiro</Link>
-                <Link href="/dashboard/sorteio">Sorteios</Link>
-                <Link href="/dashboard/sorteio/configuracoes">Configurações de Sorteio</Link>
+                <LinkNavigate href="/dashboard/admcontrato">Administrar Contrato</LinkNavigate>
+                <LinkNavigate href="/dashboard/estoque">Estoque</LinkNavigate>
+                <LinkNavigate href="/dashboard/caixa">Caixa</LinkNavigate>
+                <LinkNavigate href="/dashboard/renovacao">Renovação</LinkNavigate>
+                <LinkNavigate href="/dashboard/cobranca">Cobrança</LinkNavigate>
+                <LinkNavigate href="/dashboard/gerenciarAdministrativo">Gerenciar</LinkNavigate>
+                <LinkNavigate href="/dashboard/financeiro">Financeiro</LinkNavigate>
+                <LinkNavigate href="/dashboard/sorteio">Sorteios</LinkNavigate>
+                <LinkNavigate href="/dashboard/sorteio/configuracoes">Configurações de Sorteio</LinkNavigate>
 
                 <span className="font-semibold text-gray-500 mt-4">Comercial</span>
-                <Link href="/dashboard/vendas">Vendas</Link>
+                <LinkNavigate href="/dashboard/vendas">Vendas</LinkNavigate>
                 <button onClick={() => setOpen(true)}>Ativos/Inativos</button>
-                <Link href="/dashboard/conveniados">Conveniados</Link>
-                <Link href="/chart">Gráficos</Link>
+                <LinkNavigate href="/dashboard/conveniados">Conveniados</LinkNavigate>
+                <LinkNavigate href="/chart">Gráficos</LinkNavigate>
 
                 {permissoes.includes("EMP4e61a06f-dee3-4c74-8b31-aca0d771dbff") && (
-                  <Link href="/dashboard/afapSaude">Afap Saúde</Link>
+                  <LinkNavigate href="/dashboard/afapSaude">Afap Saúde</LinkNavigate>
                 )}
 
                 <span className="font-semibold text-gray-500 mt-4">Serviços</span>
-                <Link href="/dashboard/servicos/listarObitos">Óbitos</Link>
-                <Link href="/dashboard/servicos/convalescencia/listagem">Convalescentes</Link>
+                <LinkNavigate href="/dashboard/servicos/listarObitos">Óbitos</LinkNavigate>
+                <LinkNavigate href="/dashboard/servicos/convalescencia/listagem">Convalescentes</LinkNavigate>
 
                 {permissoes.includes("CFG1") && (
                   <>
                     <span className="font-semibold text-gray-500 mt-4">Configurações</span>
-                    <Link href="/settings/usuario">Usuários</Link>
-                    <Link href="/settings/empresas">Empresa</Link>
+                    <LinkNavigate href="/settings/usuario">Usuários</LinkNavigate>
+                    <LinkNavigate href="/settings/empresas">Empresa</LinkNavigate>
                   </>
                 )}
               </div>
@@ -133,19 +134,19 @@ export function Header() {
               <MenubarTrigger>Administrativo</MenubarTrigger>
               <MenubarContent>
                 <MenubarItem>
-                  <Link href="/dashboard/admcontrato">Administrar Contrato</Link>
+                  <LinkNavigate href="/dashboard/admcontrato">Administrar Contrato</LinkNavigate>
                 </MenubarItem>
-                <MenubarItem><Link href="/dashboard/estoque">Estoque</Link></MenubarItem>
-                <MenubarItem><Link href="/dashboard/caixa">Caixa</Link></MenubarItem>
-                <MenubarItem><Link href="/dashboard/renovacao">Renovação</Link></MenubarItem>
-                <MenubarItem><Link href="/dashboard/cobranca">Cobrança</Link></MenubarItem>
-                <MenubarItem><Link href="/dashboard/gerenciarAdministrativo">Gerenciar</Link></MenubarItem>
-                <MenubarItem><Link href="/dashboard/financeiro">Financeiro</Link></MenubarItem>
+                <MenubarItem><LinkNavigate href="/dashboard/estoque">Estoque</LinkNavigate></MenubarItem>
+                <MenubarItem><LinkNavigate href="/dashboard/caixa">Caixa</LinkNavigate></MenubarItem>
+                <MenubarItem><LinkNavigate href="/dashboard/renovacao">Renovação</LinkNavigate></MenubarItem>
+                <MenubarItem><LinkNavigate href="/dashboard/cobranca">Cobrança</LinkNavigate></MenubarItem>
+                <MenubarItem><LinkNavigate href="/dashboard/gerenciarAdministrativo">Gerenciar</LinkNavigate></MenubarItem>
+                <MenubarItem><LinkNavigate href="/dashboard/financeiro">Financeiro</LinkNavigate></MenubarItem>
                 <MenubarSub>
                   <MenubarSubTrigger>Sorteios</MenubarSubTrigger>
                   <MenubarSubContent>
-                    <MenubarItem><Link href="/dashboard/sorteio">Sorteios</Link></MenubarItem>
-                    <MenubarItem><Link href="/dashboard/sorteio/configuracoes">Configurar Parâmetros</Link></MenubarItem>
+                    <MenubarItem><LinkNavigate href="/dashboard/sorteio">Sorteios</LinkNavigate></MenubarItem>
+                    <MenubarItem><LinkNavigate href="/dashboard/sorteio/configuracoes">Configurar Parâmetros</LinkNavigate></MenubarItem>
                   </MenubarSubContent>
                 </MenubarSub>
               </MenubarContent>
@@ -154,12 +155,12 @@ export function Header() {
             <MenubarMenu>
               <MenubarTrigger>Comercial</MenubarTrigger>
               <MenubarContent>
-                <MenubarItem><Link href="/dashboard/vendas">Vendas</Link></MenubarItem>
-                <MenubarItem onClick={() => setOpen(true)}>
-                  <span>Ativos/Inativos</span>
+                <MenubarItem><LinkNavigate href="/dashboard/vendas">Vendas</LinkNavigate></MenubarItem>
+                <MenubarItem className="cursor-pointer" onClick={() => setOpen(true)}>
+                  Ativos/Inativos
                 </MenubarItem>
-                <MenubarItem><Link href="/dashboard/conveniados">Conveniados</Link></MenubarItem>
-                <MenubarItem><Link href="/chart">Gráficos</Link></MenubarItem>
+                <MenubarItem><LinkNavigate href="/dashboard/conveniados">Conveniados</LinkNavigate></MenubarItem>
+                <MenubarItem><LinkNavigate href="/chart">Gráficos</LinkNavigate></MenubarItem>
               </MenubarContent>
             </MenubarMenu>
 
@@ -178,16 +179,16 @@ export function Header() {
             <MenubarMenu>
               <MenubarTrigger>Serviços</MenubarTrigger>
               <MenubarContent>
-                <MenubarItem><Link href="/dashboard/servicos/listarObitos">Óbitos</Link></MenubarItem>
-                <MenubarItem><Link href="/dashboard/servicos/convalescencia/listagem">Convalescentes</Link></MenubarItem>
+                <MenubarItem><LinkNavigate href="/dashboard/servicos/listarObitos">Óbitos</LinkNavigate></MenubarItem>
+                <MenubarItem><LinkNavigate href="/dashboard/servicos/convalescencia/listagem">Convalescentes</LinkNavigate></MenubarItem>
               </MenubarContent>
             </MenubarMenu>
 
             <MenubarMenu>
               <MenubarTrigger>Configurações</MenubarTrigger>
               <MenubarContent>
-                <MenubarItem disabled={!permissoes.includes("CFG1")}><Link href="/settings/usuario">Usuários</Link></MenubarItem>
-                <MenubarItem disabled={!permissoes.includes("CFG1")}><Link href="/settings/empresas">Empresa</Link></MenubarItem>
+                <MenubarItem disabled={!permissoes.includes("CFG1")}><LinkNavigate href="/settings/usuario">Usuários</LinkNavigate></MenubarItem>
+                <MenubarItem disabled={!permissoes.includes("CFG1")}><LinkNavigate href="/settings/empresas">Empresa</LinkNavigate></MenubarItem>
               </MenubarContent>
             </MenubarMenu>
           </Menubar>
@@ -210,7 +211,7 @@ export function Header() {
       </div>
 
       {/* Modal */}
-      {open && (
+      
         <ModalAtivosInativos
           usuario={usuario?.nome}
           logo={infoEmpresa?.logoUrl}
@@ -218,7 +219,7 @@ export function Header() {
           onClose={() => setOpen(false)}
           id_empresa={selectEmp}
         />
-      )}
+      
     </header>
   );
 }

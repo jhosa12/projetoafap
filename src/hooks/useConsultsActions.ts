@@ -68,9 +68,9 @@ export const useConsultasActions = ({ medicos, consultas, setConsultas }: UseCon
     printListaConsultas: false,
   });
 
-  const currentPage = useRef<FichaConsulta>(null);
-  const currentRecibo = useRef<ReciboMensalidade>(null);
-  const currentConsultas = useRef<ListaConsultas>(null);
+  const currentPage = useRef<HTMLDivElement|null>(null);
+  const currentRecibo = useRef<HTMLDivElement|null>(null);
+  const currentConsultas = useRef<HTMLDivElement|null>(null);
 
   useEffect(() => {
     modal.printProntuario && imprimirFicha();

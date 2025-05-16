@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 
-import { ModalEditExames } from "../components/modalAddEditExames";
+import { ModalEditExames } from "./modalAddEditExames";
 import { useCallback, useContext, useRef, useState } from "react";
 import { api } from "@/lib/axios/apiClient";
 import { IoIosPrint } from "react-icons/io";
@@ -116,7 +116,7 @@ export function AddEditExames({ exames, setExames }: DataProps) {
         <ModalConfirmar
           pergunta="Tem certeza que deseja deletar esse exame?"
           handleConfirmar={handleDeletarExame}
-          setOpenModal={setOpenDeletar}
+          setOpenModal={()=>setOpenDeletar(false)}
           openModal={openDeletar}
         />
       )}

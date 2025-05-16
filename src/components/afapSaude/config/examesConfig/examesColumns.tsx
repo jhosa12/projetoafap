@@ -66,7 +66,7 @@ export function getExamesColumns({ onEdit, onDelete }: ActionsProps): ColumnDef<
             <Button
               variant="destructive"
               size="icon"
-              onClick={() => onDelete(exame)}
+              onClick={() =>{}}
               className="h-6 w-6"
             >
               <HiOutlineTrash className="h-3 w-3" />

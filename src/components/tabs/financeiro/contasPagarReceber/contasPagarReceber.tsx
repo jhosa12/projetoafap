@@ -173,7 +173,7 @@ setTotal(totais)
         <ModalConfirmar
         handleConfirmar={contaDelete}
         openModal={excluir}
-        setOpenModal={setExcluir}
+        setOpenModal={()=>setExcluir(false)}
         pergunta="Tem certeza que deseja excluir essa conta?"
         />
         

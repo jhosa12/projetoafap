@@ -11,10 +11,10 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  Root as PopoverRoot,
+  Trigger as PopoverTrigger,
+  Content as PopoverContent,
+} from "@radix-ui/react-popover";
 import { Button } from "@/components/ui/button";
 
 export type Option = {
@@ -84,7 +84,7 @@ export function MultiSelects({
   const remainingCount = selectedOptions.length - maxDisplayItems;
 
   return (
-    <Popover  open={open} onOpenChange={setOpen}>
+    <PopoverRoot  open={open} onOpenChange={setOpen}>
       <div className="relative">
         <PopoverTrigger asChild>
           <Button
@@ -212,6 +212,6 @@ export function MultiSelects({
           </Command>
         </PopoverContent>
       </div>
-    </Popover>
+    </PopoverRoot>
   );
 }

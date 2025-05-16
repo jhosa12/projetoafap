@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Combobox } from "@/components/ui/combobox";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { MultiSelects } from "@/components/ui/multiSelect";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 registerLocale('pt-br', pt)
 
 interface DataProps {
@@ -42,16 +43,10 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
     buscarConsultas({ ...data })
   }
   return (
-    <Modal popup size={'md'} show={show} onClose={() => setFiltro(false)}>
-      <Modal.Header />
-      {/* <Modal.Header >
-                    <div className='inline-flex items-center'>
-                    <HiFilter color='gray' size={30}/>
-                    Filtro
-                    </div>
-                   
-                    </Modal.Header>*/}
-      <Modal.Body>
+    <Dialog  open={show} onOpenChange={() => setFiltro(false)}>
+    
+      <DialogContent>
+         <DialogHeader/>
         <form onSubmit={handle(handleOnSubmit)} className='space-y-2 flex flex-col w-full'>
           <div >
             <div className=" block">
@@ -67,6 +62,7 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
                 onChange={onChange}
                 value={value??null}
                 placeholder="Selecione o especialista"
+              
                 
                 />
               
@@ -250,8 +246,8 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
           
 
         </form>
-      </Modal.Body>
-    </Modal>
+      </DialogContent>
+    </Dialog>
 
   )
 

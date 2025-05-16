@@ -1,9 +1,6 @@
 import { Button } from "@/components/ui/button";
 
-import {
-  HiMiniArrowDownOnSquare,
-  HiPrinter,
-} from "react-icons/hi2";
+import { HiMiniArrowDownOnSquare, HiPrinter } from "react-icons/hi2";
 import { FaWhatsapp } from "react-icons/fa";
 import { GiReturnArrow } from "react-icons/gi";
 import { MdDelete } from "react-icons/md";
@@ -40,11 +37,9 @@ export function ExamesToolbar({
           className="text-blue-500"
           onClick={onAdd}
         >
-          <HiDocumentAdd  />
+          <HiDocumentAdd />
           <span className=" sm:inline">Adicionar</span>
         </Button>
-
-      
       </div>
     </div>
   );

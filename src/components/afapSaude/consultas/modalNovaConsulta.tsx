@@ -1,21 +1,24 @@
-import {Modal} from "flowbite-react";
+import { Modal } from "flowbite-react";
 import { api } from "@/lib/axios/apiClient";
-import {  SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { valorInicial } from "./consultas";
 import { ajustarData } from "@/utils/ajusteData";
 import { Button } from "@/components/ui/button";
-import {
-  ConsultaProps,
-  EventProps,
-  MedicoProps,
-} from "@/types/afapSaude";
+import { ConsultaProps, EventProps, MedicoProps } from "@/types/afapSaude";
 import { removerFusoDate } from "@/utils/removerFusoDate";
 import { toast } from "sonner";
 import TabsConsulta from "./tabsConsulta/TabsConsulta";
 import { ErrorIndicator } from "@/components/errorIndicator";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";
 import { error } from "console";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface DataProps {
   openModal: boolean;
@@ -23,7 +26,7 @@ interface DataProps {
   medicos: Array<MedicoProps>;
   consultas: Array<ConsultaProps>;
   consulta: Partial<ConsultaProps>;
-  buscarConsultas: ()=>void
+  buscarConsultas: () => void;
   setConsultas: (array: Array<ConsultaProps>) => void;
   setConsulta: (consulta: Partial<ConsultaProps>) => void;
   events: Array<EventProps>;
@@ -42,7 +45,6 @@ export function ModalConsulta({
   events,
   setConsultas,
 }: DataProps) {
-  
   const [search, setSearch] = useState(false);
   const {
     register,
@@ -52,10 +54,11 @@ export function ModalConsulta({
     control,
     reset,
     formState: { errors },
-  } = useForm<ConsultaProps>({ defaultValues: consulta });
+  } = useForm<ConsultaProps>();
 
- 
-
+  useEffect(() => {
+    reset(consulta);
+  }, [consulta, reset]);
 
   const handleOnSubmit: SubmitHandler<ConsultaProps> = (data) => {
     data.id_consulta ? handleEditarConsulta(data) : handleCadastrar(data);
@@ -65,7 +68,9 @@ export function ModalConsulta({
     let dataInit = undefined;
 
     if (data?.id_agmed) {
-     const dataNova = events.find((item) => item.id_agmed === data?.id_agmed)?.start;
+      const dataNova = events.find(
+        (item) => item.id_agmed === data?.id_agmed
+      )?.start;
       const { dataIni, dataFim } = ajustarData(dataNova, undefined);
       dataInit = dataIni;
     }
@@ -118,7 +123,7 @@ export function ModalConsulta({
   const handleCadastrar = async (data: ConsultaProps) => {
     //const { dataIni, dataFim } = ajustarData(data.data_prev, data.data_prev)
     const { newDate } = removerFusoDate(data.data_prev);
-    const { newDate:dataAtual } = removerFusoDate(new Date());
+    const { newDate: dataAtual } = removerFusoDate(new Date());
     const { newDate: nasc } = removerFusoDate(data.nascimento);
 
     toast.promise(
@@ -142,57 +147,37 @@ export function ModalConsulta({
     );
   };
 
-
-
-
-
   const handleSearchPlano = async (id: number) => {
-    toast.promise(
-      api.post('/afapSaude/plano/busca',{id_plano:id}),
-      {
-        error: (error: any) => error?.response?.data?.error ?? 'Erro ao buscar plano',
-        loading: 'Buscando plano....',
-        success: (response) => {
+    toast.promise(api.post("/afapSaude/plano/busca", { id_plano: id }), {
+      error: (error: any) =>
+        error?.response?.data?.error ?? "Erro ao buscar plano",
+      loading: "Buscando plano....",
+      success: (response) => {
+        setValue("id_contrato", response.data.id_contrato);
+        setValue("nome_associado", response.data.nome_associado);
+        setValue("id_global", response.data.id_global);
+        setValue("id_empContrato", response.data.id_empContrato);
 
-          setValue('id_contrato',response.data.id_contrato)
-          setValue('nome_associado',response.data.nome_associado)
-          setValue('id_global',response.data.id_global)
-          setValue('id_empContrato',response.data.id_empContrato)
+        setValue("tipoDesc", "PLANO");
 
-          setValue('tipoDesc','PLANO')
-
-          return 'Plano localizado'
-          
-        }
-      }
-    )
+        return "Plano localizado";
+      },
+    });
   };
 
-
-
-
-
   return (
-    <Modal
-      theme={{
-        content: {
-          base: "relative h-full w-full p-4 md:h-auto",
-          inner:
-            "relative flex max-h-[94dvh] flex-col rounded-lg bg-white shadow dark:bg-gray-700",
-        },
-      }}
-      show={openModal}
-      size="5xl"
-      popup
-      onClose={() => setOpenModal(false)}
-    >
-      <Modal.Header>
-        <div className="inline-flex gap-4 ml-3 items-center text-sm">
-          ADMINISTRAR CONSULTA
-         {/* <ClienteModal />*/}
-        </div>
-      </Modal.Header>
-      <Modal.Body>
+    <Dialog open={openModal} onOpenChange={() => setOpenModal(false)}>
+      <DialogContent className="sm:max-w-[calc(100vw-20rem)]">
+        <DialogHeader>
+          <DialogTitle>
+            ADMINISTRAR CONSULTA
+            {/* <ClienteModal />*/}
+          </DialogTitle>
+          <DialogDescription>
+            {consulta?.id_consulta ? "Editar" : "Cadastrar"}
+          </DialogDescription>
+        </DialogHeader>
+
         <form
           className="flex flex-col w-full gap-2"
           onSubmit={handleSubmit(handleOnSubmit)}
@@ -209,18 +194,16 @@ export function ModalConsulta({
           <Button variant={"default"} className="ml-auto" type="submit">
             {consulta?.id_consulta ? "Atualizar" : "Cadastrar"}
           </Button>
-         <ErrorIndicator errors={errors}/>
+          <ErrorIndicator errors={errors} />
         </form>
-      </Modal.Body>
-    
-      <ModalBusca
 
-carregarDados={handleSearchPlano}
-selectEmp="63b930b9-503b-4fb1-9a60-7d2d0f5c85b8"
-setVisible={()=>setSearch(false)}
-visible={search}
-
-/>
-    </Modal>
+        <ModalBusca
+          carregarDados={handleSearchPlano}
+          selectEmp="63b930b9-503b-4fb1-9a60-7d2d0f5c85b8"
+          setVisible={() => setSearch(false)}
+          visible={search}
+        />
+      </DialogContent>
+    </Dialog>
   );
 }

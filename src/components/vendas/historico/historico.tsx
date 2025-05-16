@@ -23,6 +23,9 @@ import { useReactToPrint } from "react-to-print";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { DatePickerInput } from "@/components/DatePickerInput";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
 
 export interface ReqLeadsProps {
     id?: string,
@@ -469,9 +472,12 @@ export const ModalFiltro = ({ onClose, show, handleOnSubmit, register, control, 
 
 
     return (
-        <Modal size="sm" popup show={show} onClose={onClose}>
-            <Modal.Header />
-            <Modal.Body>
+        <Dialog  open={show} onOpenChange={onClose}>
+            <DialogContent >
+                <DialogHeader>
+                    <DialogTitle></DialogTitle>
+                </DialogHeader>
+           
                 <form onSubmit={handleSubmit(handleOnSubmit)} className="flex flex-col gap-2 mt-1" >
 
 
@@ -536,7 +542,11 @@ export const ModalFiltro = ({ onClose, show, handleOnSubmit, register, control, 
                                 control={control}
                                 name='startDate'
                                 render={({ field: { onChange, value } }) => (
-                                    <DatePicker selected={value ? new Date(value) : null} onChange={e => onChange(e)} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+                                     <DatePickerInput
+                                    value={value? new Date(value): undefined}
+                                    onChange={onChange}
+                                    className="h-9"
+                                    />
                                 )}
                             />
 
@@ -549,7 +559,11 @@ export const ModalFiltro = ({ onClose, show, handleOnSubmit, register, control, 
                                 control={control}
                                 name='endDate'
                                 render={({ field: { onChange, value } }) => (
-                                    <DatePicker selected={value ? new Date(value) : null} onChange={e => onChange(e)} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+                                    <DatePickerInput
+                                    value={value? new Date(value): undefined}
+                                    onChange={onChange}
+                                     className="h-9"
+                                    />
                                 )}
                             />
 
@@ -557,9 +571,9 @@ export const ModalFiltro = ({ onClose, show, handleOnSubmit, register, control, 
                     </div>
                     <Button className="mt-2" type="submit">{loading ? <Spinner size="sm" /> : 'Aplicar'}</Button>
                 </form>
-            </Modal.Body>
-
-        </Modal>
+           
+            </DialogContent>
+        </Dialog>
     )
 }
 

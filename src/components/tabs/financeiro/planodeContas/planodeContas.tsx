@@ -1,11 +1,11 @@
 import { GruposProps, PlanoContasProps } from "@/pages/dashboard/financeiro"
-import { useCallback, useContext, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { BiTransferAlt } from "react-icons/bi"
 import { FaBalanceScale } from "react-icons/fa"
 import { GiExpense, GiReceiveMoney } from "react-icons/gi"
 import { IoIosArrowDown } from "react-icons/io"
 import { IoSearch } from "react-icons/io5"
-import DatePicker, { registerLocale } from "react-datepicker";
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { api } from "@/lib/axios/apiClient"
@@ -13,8 +13,6 @@ import { Button, Card, Checkbox, Dropdown, Label, Select } from "flowbite-react"
 import { FiAlertTriangle } from "react-icons/fi";
 import { SubmitHandler, useForm } from "react-hook-form"
 import { EmpresaProps } from "@/types/empresa"
-import { list } from "postcss"
-import ListarObitos from "@/pages/dashboard/servicos/listarObitos"
 import { ajustarData } from "@/utils/ajusteData"
 import { LancamentosProps } from "@/types/caixa"
 

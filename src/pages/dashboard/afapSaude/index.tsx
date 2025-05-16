@@ -10,7 +10,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { HiClipboardList } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
 import { BiSolidInjection } from "react-icons/bi";
-import Configuracoes from "@/components/tabs/afapSaude/configuracoes/configuracoes";
+import Configuracoes from "@/components/afapSaude/config/configuracoes";
 import {  ExamesProps, MedicoProps, EventProps } from "@/types/afapSaude";
 import Exames from "@/components/afapSaude/exames/exames";
 import {

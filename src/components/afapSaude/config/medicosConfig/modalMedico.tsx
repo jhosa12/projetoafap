@@ -1,6 +1,16 @@
 
 import { api } from "@/lib/axios/apiClient"
-import { FileInput, Label, Modal, Popover, Select, Textarea } from "flowbite-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { ChangeEvent, useContext, useEffect, useRef, useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { FaNotesMedical } from "react-icons/fa"
@@ -180,102 +190,122 @@ export function ModalMedico({ openModal, setOpenModal, dataMedico, medicos, setA
 
     return (
         <>
-            <Modal
-                show={openModal}
-                onClose={() => setOpenModal(false)}
-                size={'2xl'}
-                popup>
-                <Modal.Header className="flex text-white items-start justify-between bg-gray-800 rounded-t border-b  px-2 py-1 border-gray-60">
-                    <span className="text-white text-base">Administrar Médico</span>
-                </Modal.Header>
-                <Modal.Body>
-                    <form onSubmit={handleSubmit(handleOnSubmit)} className="flex flex-col space-y-2 px-2 pt-2  ">
-                        <div className="flex flex-row gap-2">
-                            <Button type="submit" size="sm" variant={'outline'}>
-                                <IoIosSave className="h-3 w-3" />
-                                {dataMedico.id_med ? 'Atualizar' : 'Salvar'}
-                            </Button>
-                            <Button onClick={() => setModalProcedimentos(true)} type="button" size="sm" variant={'outline'}>
-                                <FaNotesMedical className="h-3 w-3" />
-                                Procedimentos
-                            </Button>
+             <Dialog open={openModal} onOpenChange={setOpenModal}>
+      <DialogContent className="max-w-2xl ">
+        <DialogHeader>
+          <DialogTitle >
+            Administrar Médico
+          </DialogTitle>
+        </DialogHeader>
 
-                            <Popover content={(<div className="flex flex-col p-2 gap-2" >
+        <form onSubmit={handleSubmit(handleOnSubmit)} className="flex flex-col space-y-2 px-2 pt-2">
+          <div className="flex flex-row gap-2">
+            <Button type="submit" size="sm" variant="outline">
+              <IoIosSave className="h-3 w-3 mr-1" />
+              {dataMedico.id_med ? "Atualizar" : "Salvar"}
+            </Button>
 
-                                <div className="flex flex-col w-[200px]">
-                                    <Label className="text-xs">Procedimento</Label>
-                                    <Select value={id_exame} onChange={e => { e && setIdExame((e.target.value)) }} sizing="sm" className="text-xs">
-                                        <option value="">TODOS</option>
-                                        {dataMedico?.exames?.map(proc => (
-                                            <option className="truncate" key={proc.id_exame} value={proc.id_exame}>{proc.nome}</option>
-                                        ))}
-                                    </Select>
+            <Button onClick={() => setModalProcedimentos(true)} type="button" size="sm" variant="outline">
+              <FaNotesMedical className="h-3 w-3 mr-1" />
+              Procedimentos
+            </Button>
 
-                                </div>
-                                <div className="flex flex-col">
-                                    <Label className="text-xs">Data da Consulta</Label>
-                                    <DatePicker className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " dateFormat={"dd/MM/yyyy"} onChange={e => { e && setDate(e) }} selected={date} locale={pt} />
+            <Popover modal={true}>
+              <PopoverTrigger asChild>
+                <Button type="button" size="sm" variant="outline">
+                  <BiMoneyWithdraw className="h-3 w-3 mr-1" />
+                  Recibo de repasse
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[220px] space-y-4 p-2">
+                <div className="flex flex-col gap-2">
+                  <Label className="text-xs">Procedimento</Label>
+                  <Select onValueChange={value => setIdExame(value)} defaultValue={id_exame}>
+                    <SelectTrigger className="text-xs h-8">
+                      <SelectValue placeholder="TODOS" />
+                    </SelectTrigger>
+                    <SelectContent>
+                     
+                      {dataMedico?.exames?.map(proc => (
+                        <SelectItem key={proc.id_exame} value={String(proc.id_exame)}>
+                          {proc.nome}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                                </div>
-                                <Button disabled={loading} onClick={handleRecibo} type="button" size="sm">{loading ? 'Carregando...' : 'Aplicar'}</Button>
-                            </div>)}   >
-                                <Button type="button" size="sm" variant={'outline'}>
-                                    <BiMoneyWithdraw className="h-3 w-3" />
-                                    Recibo de repasse
-                                </Button>
-                            </Popover>
+                <div className="flex flex-col">
+                  <Label className="text-xs">Data da Consulta</Label>
+                  <DatePicker
+                    className="flex w-full uppercase text-xs border rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400"
+                    dateFormat="dd/MM/yyyy"
+                    onChange={(e) => e && setDate(e)}
+                    selected={date}
+                    locale={pt}
+                  />
+                </div>
 
-                        </div>
+                <Button disabled={loading} onClick={handleRecibo} type="button" size="sm">
+                  {loading ? "Carregando..." : "Aplicar"}
+                </Button>
+              </PopoverContent>
+            </Popover>
+          </div>
 
-                        <Label
-                            htmlFor="dropzone-file"
-                            className="flex relative w-full cursor-pointer mt-2 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-                        >
-                            <svg
-                                className="absolute  z-5 mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 20 16"
-                            >
-                                <path
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                                />
-                            </svg>
-                            {!watch('imageUrl') && !watch('tmpUrl') && <div className="flex flex-col items-center justify-center pt-6">
-                                <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG(MAX. 500x350px)</p>
-                            </div>}
-                            <FileInput onChange={handleFile} id="dropzone-file" className="hidden" />
-                            {(watch('imageUrl') || watch('tmpUrl')) && <img className="w-full h-28 object-center rounded-lg" src={watch('imageUrl') ? `${process.env.NEXT_PUBLIC_API_URL}/file/${watch('imageUrl')}` : watch('tmpUrl')} alt="fotoUser"  ></img>}
-                        </Label>
+          {/* Upload de imagem */}
+          <Label
+            htmlFor="dropzone-file"
+            className="flex relative w-full cursor-pointer mt-2 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100"
+          >
+            <svg
+              className="absolute z-5 mb-4 h-8 w-8 text-gray-500"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 16"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+              />
+            </svg>
 
-                        <Input {...register('nome')} placeholder="Nome do Médico" />
+            {!watch("imageUrl") && !watch("tmpUrl") && (
+              <div className="flex flex-col items-center justify-center pt-6">
+                <p className="text-xs text-gray-500">SVG, PNG, JPG (MAX. 500x350px)</p>
+              </div>
+            )}
+            <input onChange={handleFile} id="dropzone-file" type="file" className="hidden" />
+            {(watch("imageUrl") || watch("tmpUrl")) && (
+              <img
+                className="w-full h-28 object-center rounded-lg"
+                src={
+                  watch("imageUrl")
+                    ? `${process.env.NEXT_PUBLIC_API_URL}/file/${watch("imageUrl")}`
+                    : watch("tmpUrl")
+                }
+                alt="fotoUser"
+              />
+            )}
+          </Label>
 
-                        <Input {...register('espec')} placeholder="Especialidade" />
-                        {/* <FloatingLabel sizing="sm" label="Nome do Médico" variant="outlined" {...register('nome')}  />
-      <FloatingLabel sizing="sm" label="Especialidade" variant="outlined" {...register('espec')} />*/}
-
-
-                        {/*     <FloatingLabel sizing="sm" label="Valor Plano" variant="outlined" type="number" {...register('plano')} />
-
-        <FloatingLabel sizing="sm" label="Valor Funerária" variant="outlined" type="number" {...register('funeraria')} />
-
-        <FloatingLabel sizing="sm" label="Valor Particular" variant="outlined" type="number" {...register('particular')} />*/}
-
-
-                        <Input {...register('time')} placeholder="Intervalo médio entre consultas em minutos" />
-                        { /*  <FloatingLabel sizing="sm" label="Intervalo médio entre consultas em minutos" variant="outlined" type="number" {...register('time')}/>*/}
-
-                        <Textarea className="min-h-[40px] h-auto text-xs bg-white rounded-sm"  {...register('sobre')} rows={3} placeholder="Descreva suas atividades" />
-
-
-                    </form>
-                </Modal.Body>
-            </Modal>
+          {/* Inputs padrão */}
+          <Input {...register("nome")} placeholder="Nome do Médico" />
+          <Input {...register("espec")} placeholder="Especialidade" />
+          <Input {...register("time")} placeholder="Intervalo médio entre consultas em minutos" />
+          <Textarea
+            {...register("sobre")}
+            rows={3}
+            placeholder="Descreva suas atividades"
+            className="min-h-[40px] h-auto text-xs bg-white rounded-sm"
+          />
+        </form>
+      </DialogContent>
+    </Dialog>
 
             {openProcedimentos && <ModalProcedimentos setMedico={setDataMedico} medicos={medicos} setArrray={setArray} usuario={usuario?.nome} medico={dataMedico} openModal={openProcedimentos} setOpenModal={setModalProcedimentos} />}
 

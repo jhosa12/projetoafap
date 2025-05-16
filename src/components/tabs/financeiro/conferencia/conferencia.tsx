@@ -56,13 +56,13 @@ useEffect(
 )
 
 
-const currentPage = useRef<FichaConsulta>(null)
+//const currentPage = useRef<FichaConsulta>(null)
 
 
 
-const imprimirFicha = useReactToPrint({
-  content:()=>currentPage.current
-})
+// const imprimirFicha = useReactToPrint({
+//   content:()=>currentPage.current
+// })
 
 const listar =useCallback( async()=>{
       try {
@@ -192,7 +192,7 @@ const handleExcluir = useCallback(async()=>{
         handleConfirmar={handleExcluir}
         pergunta={"Tem certeza que deseja excluir esse caixa?"}
         openModal={openExcluir}
-         setOpenModal={setExcluir}
+         setOpenModal={()=>setExcluir(false)}
      />
 
     </div>

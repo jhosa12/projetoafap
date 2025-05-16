@@ -1,14 +1,30 @@
 
 import { api } from "@/lib/axios/apiClient"
-import {Modal, Table } from "flowbite-react"
+
 import { useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { MdAdd, MdDelete, MdEdit } from "react-icons/md"
-import { ModalConfirmar } from "../../../../modals/modalConfirmar"
-import { Button } from "@/components/ui/button"
+import { ModalConfirmar } from "../../../modals/modalConfirmar"
+
 import { Input } from "@/components/ui/input"
 import { ExamesProps, MedicoProps } from "@/types/afapSaude"
 import { toast } from "sonner"
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 
 interface DataProps {
@@ -127,74 +143,94 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,usuario,medico
     
     }
 
-
-
-
-
     return (
         <>
-        <Modal show={openModal} size="3xl" onClose={() => setOpenModal(false)} popup>
-        <Modal.Header className="text-xs">{medico.nome}</Modal.Header>
-        <Modal.Body >
-            <div  className="space-y-2">
-      
-            <Button onClick={()=>{setProced({} as ExamesProps);setOpenEditar(true)}} variant={'outline'} size="sm"><MdAdd/>Adicionar</Button>
-            <Table theme={{root:{shadow:'none'},body:{cell:{base:"px-4 py-1"}},head:{cell:{base:"px-4 py-1 border-b-2"}}}}>
-                <Table.Head>
-                    <Table.HeadCell>
-                        Procedimento
-                    </Table.HeadCell>
-                    <Table.HeadCell>
-                        Particular
-                    </Table.HeadCell>
-                    <Table.HeadCell>
-                        Funerária
-                    </Table.HeadCell>
-                    <Table.HeadCell>
-                        Plano
-                    </Table.HeadCell>
-                    <Table.HeadCell>
-                       Ações
-                    </Table.HeadCell>
-                </Table.Head>
-                <Table.Body className="divide-y">
-                    {medico?.exames?.map((item,index)=>(
-                             <Table.Row className="text-xs font-medium text-black">
-                             <Table.Cell>
-                                 {item.nome}
-                             </Table.Cell>
-                             <Table.Cell>
-                                 {Number(item.porcPart).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-                             </Table.Cell>
-                             <Table.Cell>
-                                 {Number(item.porcFun).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-                             </Table.Cell>
-                             <Table.Cell>
-                                {Number(item.porcPlan).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-                             </Table.Cell>
-                             <Table.Cell className="inline-flex gap-2">
-                                <button onClick={()=>{setExcluirId(item.id_exame);setOpenExcluir(true)}} type="button" className="hover:text-red-500">
-                                <MdDelete size={16}/>
-                                </button>
+       <Dialog open={openModal} onOpenChange={setOpenModal}>
+      <DialogContent className="max-w-4xl ">
+        <DialogHeader>
+          <DialogTitle className="text-xs">{medico.nome}</DialogTitle>
+        </DialogHeader>
 
-                                <button onClick={()=>{setProced(item);setOpenEditar(true)}} type="button" className="hover:text-blue-500">
-                                <MdEdit size={16}/>
-                                </button>
-                             </Table.Cell>
-                         </Table.Row>
-                    ))}
-                   
-                </Table.Body>
-            </Table>
+        <div className="space-y-2 px-4 py-2">
+          <Button
+            onClick={() => {
+              setProced({} as ExamesProps)
+              setOpenEditar(true)
+            }}
+            variant="outline"
+            size="sm"
+          >
+            <MdAdd className="mr-1" />
+            Adicionar
+          </Button>
 
-            </div>
-        </Modal.Body>
-
-        </Modal>
+          <Table>
+            <TableHeader>
+              <TableRow className="text-xs">
+                <TableHead className="px-4 py-1 border-b-2">Procedimento</TableHead>
+                <TableHead className="px-4 py-1 border-b-2">Particular</TableHead>
+                <TableHead className="px-4 py-1 border-b-2">Funerária</TableHead>
+                <TableHead className="px-4 py-1 border-b-2">Plano</TableHead>
+                <TableHead className="px-4 py-1 border-b-2">Ações</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {medico?.exames?.map((item, index) => (
+                <TableRow key={item.id_exame} className="text-xs font-medium text-black">
+                  <TableCell className="px-4 py-1">{item.nome}</TableCell>
+                  <TableCell className="px-4 py-1">
+                    {Number(item.porcPart).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </TableCell>
+                  <TableCell className="px-4 py-1">
+                    {Number(item.porcFun).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </TableCell>
+                  <TableCell className="px-4 py-1">
+                    {Number(item.porcPlan).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </TableCell>
+                  <TableCell className="px-4 py-1">
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          setExcluirId(item.id_exame)
+                          setOpenExcluir(true)
+                        }}
+                        type="button"
+                        className="hover:text-red-500"
+                      >
+                        <MdDelete size={16} />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setProced(item)
+                          setOpenEditar(true)
+                        }}
+                        type="button"
+                        className="hover:text-blue-500"
+                      >
+                        <MdEdit size={16} />
+                      </button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </DialogContent>
+    </Dialog>
     
         <ModalConfirmar
          openModal={openExcluir}
-          setOpenModal={setOpenExcluir}
+          setOpenModal={()=>setOpenExcluir(false)}
           pergunta="Tem certeza que deseja excluir o procedimento?"
           handleConfirmar={handleDeletarExame}
            />
@@ -233,9 +269,10 @@ export const ModalEditarProced = ({onClose,open,proced,handleNovo,handleEditar}:
 
 
       return ( 
-      <Modal size="md" show={open} onClose={onClose} popup>
-            <Modal.Header/>
-            <Modal.Body>
+      <Dialog  open={open} onOpenChange={onClose} >
+           
+            <DialogContent>
+                 <DialogHeader/>
                 <form onSubmit={handleSubmit(handleOnSubmit)} className="grid grid-cols-2 gap-4">
                     <div className="col-span-2" >
                         <label className="text-xs"  htmlFor="nome">Procedimento</label>
@@ -268,6 +305,6 @@ export const ModalEditarProced = ({onClose,open,proced,handleNovo,handleEditar}:
                     
                 </form>
 
-            </Modal.Body>
-        </Modal>)
+            </DialogContent>
+        </Dialog>)
 }

@@ -2,7 +2,6 @@
 import { HiTrash } from "react-icons/hi";
 import { TabsConsultaProps } from "./TabsConsulta";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {  Table } from "flowbite-react";
 import { Controller } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { ExamesData, MedicoProps } from "@/types/afapSaude";
@@ -10,7 +9,14 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Dispatch, SetStateAction } from "react";
 import { Combobox } from "@/components/ui/combobox";
-
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 
 interface TabProcedimentoProps extends TabsConsultaProps{
@@ -68,7 +74,7 @@ export default function TabProcedimentos({ watch, setValue,control,medicos,setSe
         }
     
         if (!tipo) {
-          toast.info('Selecione um tipo de desconto')
+          toast.warning('Selecione um tipo de desconto')
           return
         }
     
@@ -168,6 +174,7 @@ export default function TabProcedimentos({ watch, setValue,control,medicos,setSe
         value={String(value)}
         onChange={onChange}
         placeholder="Procedimentos"
+        searchPlaceholder="Procedimento"
         />
       
         // <Select value={String(value)} onValueChange={e => onChange(e)}  >
@@ -192,56 +199,63 @@ export default function TabProcedimentos({ watch, setValue,control,medicos,setSe
 
   </div>
   <div className="overflow-x-auto ">
-    <Table theme={{ root: { shadow: 'none' }, body: { cell: { base: "px-3 text-black py-1 text-xs font-medium" } }, head: { cell: { base: "px-3 text-black text-xs py-1  bg-gray-200" } } }}  >
-      <Table.Head>
-        <Table.HeadCell>Procedimento</Table.HeadCell>
-        <Table.HeadCell>Valor Procedimento</Table.HeadCell>
-        <Table.HeadCell>Desconto</Table.HeadCell>
-        <Table.HeadCell>Valor Final</Table.HeadCell>
-        <Table.HeadCell>
-          <span className="sr-only">Edit</span>
-        </Table.HeadCell>
-
-      </Table.Head>
-      <Table.Body className="divide-y">
-        {Array.isArray(watch('procedimentos')) && watch('procedimentos')?.map((item, index) => {
-            valorTotalFinal +=item.valorFinal
-            totalDesc+=item.desconto
-            totalPart+=item.valorExame
-          return(
-          <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
-            <Table.Cell className="max-w-xs truncate font-medium text-gray-900 ">
-              {item.nome}
-            </Table.Cell>
-            <Table.Cell>{Number(item.valorExame ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
-            <Table.Cell>{Number(item.desconto ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
-            <Table.Cell>{Number(item.valorFinal ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
-            <Table.Cell>
-
-              <button type="button" onClick={() => handleDelProcdimentoTable(item.id_exame)} className="font-medium text-gray-500 hover:text-red-600 ">
-                <HiTrash size={16} />
-              </button>
-            </Table.Cell>
-
-          </Table.Row>
-
-
-        )})}
-
-        <Table.Row >
-          <Table.Cell className="whitespace-nowrap  font-semibold ">
-            TOTAL
-          </Table.Cell>
-
-          <Table.Cell>{Number(totalPart).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
-          <Table.Cell>{Number(totalDesc).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
-          <Table.Cell className="font-semibold">{Number(valorTotalFinal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Table.Cell>
-        </Table.Row>
-
-
-      </Table.Body>
-
-    </Table>
+    <Table className="shadow-none text-xs">
+  <TableHeader>
+    <TableRow className="bg-gray-100 text-black">
+      <TableHead className="px-3 py-1">Procedimento</TableHead>
+      <TableHead className="px-3 py-1">Valor Procedimento</TableHead>
+      <TableHead className="px-3 py-1">Desconto</TableHead>
+      <TableHead className="px-3 py-1">Valor Final</TableHead>
+      <TableHead className="px-3 py-1">
+        <span className="sr-only">Edit</span>
+      </TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    {Array.isArray(watch('procedimentos')) && watch('procedimentos')?.map((item, index) => {
+      valorTotalFinal += item.valorFinal;
+      totalDesc += item.desconto;
+      totalPart += item.valorExame;
+      return (
+        <TableRow key={index} className="bg-white dark:bg-gray-800 dark:border-gray-700">
+          <TableCell className="px-3 py-1 font-medium text-gray-900 max-w-xs truncate">
+            {item.nome}
+          </TableCell>
+          <TableCell className="px-3 py-1">
+            {Number(item.valorExame ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+          </TableCell>
+          <TableCell className="px-3 py-1">
+            {Number(item.desconto ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+          </TableCell>
+          <TableCell className="px-3 py-1">
+            {Number(item.valorFinal ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+          </TableCell>
+          <TableCell className="px-3 py-1">
+            <button
+              type="button"
+              onClick={() => handleDelProcdimentoTable(item.id_exame)}
+              className="font-medium text-gray-500 hover:text-red-600"
+            >
+              <HiTrash size={16} />
+            </button>
+          </TableCell>
+        </TableRow>
+      );
+    })}
+    <TableRow className="font-semibold">
+      <TableCell className="px-3 py-1">TOTAL</TableCell>
+      <TableCell className="px-3 py-1">
+        {Number(totalPart).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+      </TableCell>
+      <TableCell className="px-3 py-1">
+        {Number(totalDesc).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+      </TableCell>
+      <TableCell className="px-3 py-1">
+        {Number(valorTotalFinal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+      </TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
   </div>
     </div>  
 

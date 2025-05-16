@@ -152,7 +152,7 @@ export function ModalEditarMensalidade({ openModal, setOpenModal, mensalidade, s
 
                 </div>
 
-                <ModalConfirmar pergunta="Tem certeza que deseja estornar essa mensalidade?" openModal={confirm} setOpenModal={setConfirm} handleConfirmar={handleEstorno}>
+                <ModalConfirmar pergunta="Tem certeza que deseja estornar essa mensalidade?" openModal={confirm} setOpenModal={()=>setConfirm(false)} handleConfirmar={handleEstorno}>
                     <Input value={motivoEstorno} onChange={e => setMotivoEstorno(e.target.value)} placeholder="MOTIVO"/>
                 </ModalConfirmar>
             </ModalBody>

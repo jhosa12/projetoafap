@@ -28,6 +28,7 @@ import { ModalConfirmar } from '@/components/modals/modalConfirmar';
 import { Button } from '@/components/ui/button';
 import { removerFusoDate } from '@/utils/removerFusoDate';
 import { Checkbox } from '@/components/ui/checkbox';
+import { HtmlContext } from 'next/dist/server/route-modules/pages/vendored/contexts/entrypoints';
 
 
 
@@ -54,7 +55,7 @@ export function HistoricoMensalidade({ dadosassociado, carregarDados, usuario, i
     const [checkMensal, setCheck] = useState(false)
     const [linhasSelecionadas, setLinhasSelecionadas] = useState<Array<Partial<MensalidadeProps>>>([]);
     const [mensalidadeSelect, setMensalidade] = useState<Partial<MensalidadeProps>>();
-    const componentRecibo = useRef<ReciboMensalidade>(null)
+    const componentRecibo = useRef<HTMLDivElement|null>(null)
     const [mensalidadeRecibo, setMensalidadeRecibo] = useState<Partial<MensalidadeProps>>()
     const [openModal, setModal] = useState<{ [key: string]: boolean }>({
         excluir: false,
@@ -230,12 +231,11 @@ export function HistoricoMensalidade({ dadosassociado, carregarDados, usuario, i
 
 
 
-            {mensalidadeRecibo?.id_mensalidade && <div style={{ display: 'none' }} >
+            {mensalidadeRecibo?.id_mensalidade && <div ref={componentRecibo} >
                 <ReciboMensalidade
                     cidade_uf={infoEmpresa?.cidade_uf ?? ''}
                     endereco={infoEmpresa?.endereco ?? ''}
                     logoUrl={infoEmpresa?.logoUrl ?? ''}
-                    ref={componentRecibo}
                     associado={dadosassociado.nome ?? ''}
                     contrato={dadosassociado?.contrato?.id_contrato ?? null}
                     n_doc={mensalidadeRecibo?.n_doc ?? ''}

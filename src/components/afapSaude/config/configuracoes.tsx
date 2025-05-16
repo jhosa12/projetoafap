@@ -7,11 +7,13 @@ import {
 import { HiAdjustments, HiClipboardList } from "react-icons/hi";
 import { HiUserCircle } from "react-icons/hi2";
 import { MdMedicalServices } from "react-icons/md";
-import { AddEditExames } from "./addEditExames";
-import AdmMedico from "./administrarMedicos/admMedico";
+import { AddEditExames } from "./examesConfig/addEditExames";
+import AdmMedico from "./medicosConfig/admMedico";
 import { ExamesProps, MedicoProps } from "@/types/afapSaude";
 import { FaHouseMedicalCircleCheck } from "react-icons/fa6";
 import RoomManagement from "@/components/afapSaude/config/rooms/RoomManagement";
+import { Button } from "@/components/ui/button";
+import DropDownConfigs from "./DropDownConfigs";
 
 interface DataProps {
   exames: Array<ExamesProps>;
@@ -36,15 +38,15 @@ export default function Configuracoes({
           </TabsTrigger>
           <TabsTrigger value="medicos" className="flex items-center gap-2">
             <MdMedicalServices className="h-4 w-4" />
-            Administrar Médicos
+            Administrar Médicos/Especialidades
           </TabsTrigger>
-          <TabsTrigger value="salas" className="flex items-center gap-2">
+          <TabsTrigger  value="salas" className="flex items-center gap-2">
             <FaHouseMedicalCircleCheck  className="h-4 w-4" />
             Salas
           </TabsTrigger>
-          <TabsTrigger value="settings" className="flex items-center gap-2">
-            <HiAdjustments className="h-4 w-4" />
-            Settings
+          <TabsTrigger asChild value="settings" className="flex items-center gap-2">
+           <DropDownConfigs />
+            
           </TabsTrigger>
         </TabsList>
 
@@ -58,9 +60,7 @@ export default function Configuracoes({
         <TabsContent value="salas">
           <RoomManagement />
         </TabsContent>
-        <TabsContent value="settings">
-          <span className="font-medium text-white">Settings</span>
-        </TabsContent>
+       
       </Tabs>
     </div>
   );

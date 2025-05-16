@@ -13,6 +13,8 @@ import useApiPost from "@/hooks/useApiPost";
 import { AssociadoProps, ContratoProps, DependentesProps } from "@/types/associado";
 import {  ParcelaData } from "@/utils/gerarArrayMensal";
 import { toast } from "sonner";
+import { ErrorIndicator } from "@/components/errorIndicator";
+import { Dialog } from "@/components/ui/dialog";
 
 
 interface DataProps{
@@ -104,7 +106,7 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
 
 
     return(
-        <Modal size="5xl" popup show={open} onClose={()=>onClose()}>
+        <Dialog  open={open} onOpenChange={()=>onClose()}>
           <Modal.Header />
             <Modal.Body>
                 <form onSubmit={handleSubmit(handleOnSubmit)}>
@@ -130,19 +132,7 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
 
                           <div className= "flex flex-row w-full justify-between mt-2">
 
-                          {Object.keys(errors).length > 0 && (
-  <div className="bg-red-100 text-red-700 p-4 rounded-md mb-4">
-    <ul className="list-disc pl-5 text-xs">
-      {errors.nome && <li>Nome é obrigatório (aba Dados Pessoais)</li>}
-      {errors.cpfcnpj && <li>CPF/CNPJ é obrigatório (aba Dados Pessoais)</li>}
-      {errors.endereco && <li>Endereço é obrigatório (aba Dados Pessoais)</li>}
-      {errors.bairro && <li>Bairro é obrigatório (aba Dados Pessoais)</li>}
-     
-
-      {/* Adicione aqui outros campos que quer rastrear */}
-    </ul>
-  </div>
-)}
+   {<ErrorIndicator errors={errors} />}
 
                         <Button size={'sm'} type="submit" variant={'outline'} >Salvar</Button>
 
@@ -152,6 +142,6 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
                 </form>
 
             </Modal.Body>
-        </Modal>
+        </Dialog>
     )
 }

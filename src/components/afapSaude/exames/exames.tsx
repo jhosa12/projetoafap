@@ -72,7 +72,7 @@ export default function Exames({ exames }: DataProps) {
     useState<ExameRealizadoProps>(valorInicial);
   const { usuario } = useContext(AuthContext);
   const currentPage = useRef<Orcamento>(null);
-  const currentRecibo = useRef<ReciboMensalidade>(null);
+  const currentRecibo = useRef<HTMLDivElement|null>(null);
   const { control, handleSubmit, reset, getValues } = useForm<FiltroForm>({
     defaultValues: {
       endDate: new Date(),
@@ -303,7 +303,8 @@ export default function Exames({ exames }: DataProps) {
           usuario={usuario?.nome ?? ""}
           ref={currentPage}
         />
-        <ReciboMensalidade
+        
+       <ReciboMensalidade
           cidade_uf="CEDRO/CE"
           endereco="RUA VER. SALUSTIANO MOURA, 394 - CENTRO"
           logoUrl="/afapsaude.png"
@@ -324,6 +325,8 @@ export default function Exames({ exames }: DataProps) {
           ref={currentRecibo}
           referente={`Exames`}
         />
+        
+       
       </div>
     </div>
   );

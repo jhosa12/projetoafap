@@ -9,23 +9,11 @@ interface DadosProps {
 }
 
 
-class ListaConsultas extends React.Component<DadosProps> {
-
-    render() {
-        const { dados } = this.props;
-
-
-        const options: Intl.DateTimeFormatOptions = {
-            weekday: 'long', // Dia da semana por extenso
-            year: 'numeric', // Ano completo
-            month: 'long', // Mês por extenso
-            day: 'numeric' // Dia do mês
-        };
-        const dataAtual = new Date();
-        const dt = dataAtual.toLocaleDateString('pt-BR', options)
+const ListaConsultas = React.forwardRef<HTMLDivElement, DadosProps>((
+    { dados }: DadosProps, ref) => {
 
         return (
-            <div className='flex flex-col w-full gap-3 p-4'>
+            <div ref={ref} className='flex flex-col w-full gap-3 p-4'>
                {/* <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', justifyContent: 'center', gap: '10px' }} >
                     <Image width={120} height={120} src={logo} alt="logo" />
                     <h1 style={{ fontWeight: 'bold', fontSize: '18px' }}>RELATORIO DE CONSULTAS</h1>
@@ -78,6 +66,6 @@ class ListaConsultas extends React.Component<DadosProps> {
             </div>
         );
     }
-}
+)
 
 export default ListaConsultas;

@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { EventProps, MedicoProps } from "@/types/afapSaude";
 import BuscarClienteModal from "@/components/modals/afapSaude/modalBuscaClientes";
+import { Combobox } from "@/components/ui/combobox";
 
 interface TabConsultaProps extends TabsConsultaProps{
 
@@ -69,19 +70,15 @@ control={control}
 name="id_med"
 rules={{required:'Especialista é obrigatório'}}
 render={({ field: { onChange, value } }) => (
-<Select disabled={watch('procedimentos')?.length > 0} value={String(value)} onValueChange={handleMedico}  >
-<SelectTrigger className="">
-<SelectValue placeholder="Especialista" />
-<SelectContent className="max-h-[250px]">
-<SelectGroup>
 
-{medicos.map((item, index) => (
-<SelectItem className="text-[11px]" value={String(item.id_med)} key={item.id_med}>{`${item.nome}`}</SelectItem>
-))}
-</SelectGroup>
-</SelectContent>
-</SelectTrigger>
-</Select>
+  <Combobox
+items={medicos?.map(item => ({ value: String(item.id_med), label: `${item.nome}-${item.espec}` }))??[]}
+onChange={e=>handleMedico(e ??'')}
+value={String(value)}
+placeholder="Especialista"
+searchPlaceholder="Buscar especialista"
+/>
+
 )}
 
 />

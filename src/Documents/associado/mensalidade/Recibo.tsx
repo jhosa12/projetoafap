@@ -1,5 +1,5 @@
 
-import { Component } from 'react';
+import { Component, forwardRef } from 'react';
 import BarCode from 'react-barcode';
 import { roboto_Mono } from "@/fonts/fonts";
 import Image from 'next/image';
@@ -19,24 +19,21 @@ interface DataProps {
 }
 
 const array: Array<number> = [1, 2]
-export class ReciboMensalidade extends Component<DataProps> {
-
-    render() {
-
-        const { valor,
-            associado,
-            contrato,
-            n_doc,
-            vencimento,
-            referencia,
-            data_pgto,
-            referente,
-            logoUrl, cidade_uf, endereco
-        } = this.props;
+export const ReciboMensalidade = forwardRef<HTMLDivElement, DataProps>(({
+    valor,
+    associado,
+    contrato,
+    n_doc,
+    vencimento,
+    referencia,
+    data_pgto,
+    referente,
+    logoUrl, cidade_uf, endereco
+}: DataProps, ref) => {
 
 
         return (
-            <div className={roboto_Mono.className} style={{ display: 'flex', flexDirection: 'column', width: '100%', paddingInline: '20px', gap: '30px' }}>
+            <div ref={ref} className={roboto_Mono.className} style={{ display: 'flex', flexDirection: 'column', width: '100%', paddingInline: '20px', gap: '30px' }}>
                
                     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', borderRadius: '10px', border: '1px solid gray', padding: '20px', gap: '10px', fontSize: '14px' }}>
                         <div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'end' }}>
@@ -97,7 +94,4 @@ export class ReciboMensalidade extends Component<DataProps> {
 
             </div>
         )
-    }
-
-
-}
+    })

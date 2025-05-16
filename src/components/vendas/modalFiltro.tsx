@@ -3,9 +3,18 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { HiFilter } from "react-icons/hi"
-import { Button, Label, Modal, Select } from "flowbite-react";
-import { MetasProps, SetorProps } from "./acompanhamento";
-
+import { } from "flowbite-react";
+import { SetorProps } from "./acompanhamento";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 interface DataProps{
     show:boolean,
     setFiltro:(open:boolean)=>void,
@@ -21,58 +30,76 @@ interface DataProps{
 export function ModalFiltroMetas({arraySetores,filtrar,endDate,loading,setEndDate,setFiltro,setStartDate,show,startDate}:DataProps){
 
     return(
-        <Modal dismissible size={'sm'} show={show} onClose={() => setFiltro(false)}>
-                <Modal.Header >
-                    <div className='inline-flex items-center'>
-                    <HiFilter color='gray' size={30}/>
-                    Filtro
-                    </div>
-                   
-                    </Modal.Header>
-                <Modal.Body>
-                 <div className='space-y-2'>
-                        <div>
-                            <div className="mb-1 block">
-                                <Label htmlFor="email1" value="Setor" />
-                            </div>
+      <Dialog open={show} onOpenChange={setFiltro}>
+  <DialogContent className="max-w-sm">
+    <DialogHeader>
+      <DialogTitle>
+      
+          Filtro
+        
+      </DialogTitle>
+    </DialogHeader>
 
-                            <Select sizing={'sm'} value={''} onChange={e => {
-                                const item = arraySetores.find(item => item.id_grupo === Number(e.target.value))
-                               
+    <div className="space-y-3 mt-4">
+      {/* Select Setor */}
+      <div>
+        <Label className="mb-1 block">Setor</Label>
+        <Select>
+          <SelectTrigger>
+            <SelectValue placeholder="Selecione um setor" />
+          </SelectTrigger>
+          <SelectContent>
+            {
+                arraySetores.map((item,index)=>
+                <SelectItem key={index} value={String(item.id_grupo)}>{item.descricao}</SelectItem>)
+            }
+          </SelectContent>
+        </Select>
+    
+      </div>
 
-                            }}>
-                                <option value={0}>SETOR (TODOS)</option>
-
-                                {arraySetores?.map((item, index) => (
-                                    <option className="text-xs" key={index} value={item.id_grupo}>
-                                        {item.descricao}
-                                    </option>
-
-                                ))}
-                            </Select>
-                        </div>
-
-                       <div className='inline-flex gap-2'>
-                         <div >
-                        <div className="mb-1 block">
-          <Label  value="Data inicio" />
+      {/* Data de início e fim */}
+      <div className="inline-flex gap-2">
+        <div>
+          <Label className="mb-1 block">Data início</Label>
+          <DatePicker
+            selected={startDate}
+            onChange={(e) => {
+              e && setStartDate(e);
+            }}
+            dateFormat={"dd/MM/yyyy"}
+            locale={pt}
+            required
+            className="h-9 w-full rounded-md shadow-sm px-2 border text-sm border-gray-200"
+          />
         </div>
-                            <DatePicker selected={startDate} onChange={e => { e && setStartDate(e) }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
-                        </div>
-                        <div  >
-                        <div className="mb-1 block">
-          <Label  value="Data Fim" />
+
+        <div>
+          <Label className="mb-1 block">Data Fim</Label>
+          <DatePicker
+            selected={endDate}
+            onChange={(e) => {
+              e && setEndDate(e);
+            }}
+            dateFormat={"dd/MM/yyyy"}
+            locale={pt}
+            required
+            className="h-9 w-full rounded-md shadow-sm px-2 border text-sm border-gray-200"
+          />
         </div>
-                            <DatePicker selected={endDate} onChange={e => { e && setEndDate(e) }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase  text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
-                        </div>
-                        </div>
+      </div>
 
-                        <Button  isProcessing={loading} className='cursor-pointer' as={'span'} onClick={()=>filtrar()} size={'sm'}>Aplicar Filtro</Button>
-                        
-
-                        </div>
-                </Modal.Body>
-            </Modal>
+      {/* Botão aplicar filtro */}
+      <Button
+        className="cursor-pointer text-sm"
+        onClick={() => filtrar()}
+        disabled={loading}
+      >
+        {loading ? "Aplicando..." : "Aplicar Filtro"}
+      </Button>
+    </div>
+  </DialogContent>
+</Dialog>
 
     )
 
