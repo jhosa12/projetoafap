@@ -35,7 +35,7 @@ export function AddEditExames({ exames, setExames }: DataProps) {
 
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [data, setData] = useState<ExamesProps>(resetValues);
-  const currentPage = useRef<RelatorioLucroExames>(null);
+  const currentPage = useRef<HTMLDivElement|null>(null);
   const [openDeletar, setOpenDeletar] = useState<boolean>(false);
 
   const imprimirRelatorio = useCallback(

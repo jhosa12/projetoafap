@@ -2,7 +2,7 @@
 'use client'
 
 
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { Table } from "flowbite-react";
 import { roboto_Mono } from "@/fonts/fonts";
 import { ExameRealizadoProps } from '@/types/afapSaude';
@@ -13,11 +13,13 @@ interface DadosProps {
 
 }
 
+const Orcamento = forwardRef<HTMLDivElement, DadosProps>((
+{dados,usuario}:DadosProps,ref
+)=>{
 
-class Orcamento extends React.Component<DadosProps> {
 
-    render() {
-        const { dados,usuario } = this.props;
+    
+       
         let total = 0;
         let totaldesconto = 0;
         const options: Intl.DateTimeFormatOptions = {
@@ -25,14 +27,14 @@ class Orcamento extends React.Component<DadosProps> {
             year: 'numeric', // Ano completo
             month: 'long', // Mês por extenso
             day: 'numeric' // Dia do mês
+        
         };
-
     
-       const dataAtual = new Date();
+     //  const dataAtual = new Date();
       //  const dt = dataAtual.toLocaleDateString('pt-BR', options)
 
         return (
-            <div className={`${roboto_Mono.className} flex flex-col gap-3 p-2`}>
+            <div ref={ref} className={`${roboto_Mono.className} flex flex-col gap-3 p-2`}>
                 <div style={{ display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'end', justifyContent: 'center', gap: '10px' }} >
                     <img fetchPriority='high' width={60} height={60} src={'/afapsaudelogo.jpg'} alt="logoEmp" />
                     <h1 style={{ fontWeight: 'bold', fontSize: '20px' }}>ORÇAMENTO - EXAMES LABORATORIAIS</h1>
@@ -132,11 +134,11 @@ class Orcamento extends React.Component<DadosProps> {
                     </div>
 
 
-                    <span style={{position:'absolute',top:'0px',right:'10px',fontSize:'14px'}}>{usuario} {dataAtual.toLocaleDateString('pt-BR')}</span>
+                    <span style={{position:'absolute',top:'0px',right:'10px',fontSize:'14px'}}>{usuario} {new Date().toLocaleDateString('pt-BR')}</span>
 
             </div>
         );
     }
-}
+)
 
 export default Orcamento;

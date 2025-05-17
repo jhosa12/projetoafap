@@ -1,3 +1,6 @@
+'use client'
+
+
 import React, { forwardRef } from "react";
 import { roboto_Mono } from "@/fonts/fonts";
 import { ExamesData } from "@/types/afapSaude";

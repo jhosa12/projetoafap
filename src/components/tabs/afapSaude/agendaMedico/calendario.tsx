@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { Calendar, dateFnsLocalizer, ToolbarProps } from "react-big-calendar";
+import { Calendar, dateFnsLocalizer, ToolbarProps, View } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "moment/locale/pt-br"; // Importa o idioma português para o moment
 import { ModalDrawer } from "@/components/tabs/afapSaude/agendaMedico/drawer";
@@ -12,7 +12,7 @@ import { AuthContext } from "@/store/AuthContext";
 import { getDay } from "date-fns";
 import { api } from "@/lib/axios/apiClient";
 import { LuCalendarCheck, LuCalendarClock, LuCalendarX } from "react-icons/lu";
-import { CalendarEvent as CalendarEventProps, CalendarView, EventProps, MedicoProps } from "@/types/afapSaude";
+import { CalendarEvent as CalendarEventProps,  EventProps, MedicoProps } from "@/types/afapSaude";
 import { toast } from "sonner";
 import Sidebar from "@/components/afapSaude/calendar/SideBar";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -80,7 +80,7 @@ export default function Calendario({
   const [modalDelete, setModalDel] = useState(false);
   const [dataEvent, setDataEvent] = useState<Partial<EventProps>>({});
   const [selectedDoctor, setSelectedDoctor] = useState<number>();
-  const [view, setView] = useState<CalendarView>("month");
+  const [view, setView] = useState<View>("month");
   const [date, setDate] = useState<Date>(new Date());
   const [selectedEvent, setSelectedEvent] = useState<CalendarEventProps | null>(null);
 
@@ -164,36 +164,7 @@ export default function Calendario({
 
   const components: any = {
     event: ({ event, index }: { event: EventProps; index: number }) => {
-      // const data = new Date();
-      // const eventDate = new Date(event.end);
-      // const verifyDate = data > eventDate;
-      // return (
-      //   <Alert
-      //     theme={{
-      //       color: colors,
-      //       rounded: "rounded-sm",
-      //       base: "flex  p-2 text-[11px]",
-      //       icon: "mr-1 inline h-4 w-4 flex-shrink-0",
-      //     }}
-      //     className="text-[11px]"
-      //     color={
-      //       event.status === "CANCELADO"
-      //         ? "failure"
-      //         : verifyDate
-      //         ? "success"
-      //         : "warning"
-      //     }
-      //     icon={
-      //       event.status === "CANCELADO"
-      //         ? LuCalendarX
-      //         : verifyDate
-      //         ? LuCalendarCheck
-      //         : LuCalendarClock
-      //     }
-      //   >
-      //     {event.title}
-      //   </Alert>
-      // );
+     
      return <CalendarEvent event={event} index={index} />
     },
     toolbar:(props: ToolbarProps)=>(
@@ -277,44 +248,7 @@ export default function Calendario({
       </div>
     </div>
     )
-   /* toolbar: (props: ToolbarProps) => (
-      <div className="rbc-toolbar flex items-center flex-wrap gap-4 px-2 justify-between">
-        
-        <div className="flex items-center space-x-2 flex-1 text-xs">
-          <button onClick={() => props.onNavigate("PREV")}>Anterior</button>
-          <button onClick={() => props.onNavigate("TODAY")}>Hoje</button>
-          <button onClick={() => props.onNavigate("NEXT")}>Próximo</button>
-        </div>
 
-       
-        <div className="w-64 text-xs">
-          <select
-            className="w-full h-8 appearance-none border border-gray-300 py-1 rounded-md px-4  pr-10 bg-white text-gray-700 focus:outline-none text-xs "
-            defaultValue={""}
-            onChange={(e) => setSelectedDoctor(parseInt(e.target.value))}
-            value={selectedDoctor}
-          >
-            <option value={""}>Todos os Especialistas</option>
-            {medicos.map((medico) => (
-              <option key={medico.id_med} value={medico.id_med}>
-                {medico.nome}
-              </option>
-            ))}
-          </select>
-
-        
-        </div>
-
-       
-        <div className="flex items-center space-x-2 flex-1 justify-end text-xs">
-          <span className="uppercase font-semibold">{props.label}</span>
-          <button onClick={() => props.onView("agenda")}>Agenda</button>
-          <button onClick={() => props.onView("month")}>Mês</button>
-          <button onClick={() => props.onView("week")}>Semana</button>
-          <button onClick={() => props.onView("day")}>Dia</button>
-        </div>
-      </div>
-    ),*/
   };
 
   const handleEventClick = (event: Partial<EventProps>) => {
@@ -372,11 +306,14 @@ export default function Calendario({
      <div className="flex-1 flex flex-col px-2 py-1 overflow-hidden">
         <div className="flex overflow-auto bg-white rounded-lg p-1">
         <Calendar
+        defaultDate={date}
         localizer={localizer}
         events={filteredEvents}
         components={components}
+         onView={(newView) => setView(newView)}
         view={view}
         date={date}
+        onNavigate={handleNavigate}
         onSelectEvent={handleEventClick}
         eventPropGetter={eventPropGetter}
         startAccessor="start"

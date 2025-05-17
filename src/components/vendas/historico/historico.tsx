@@ -553,7 +553,7 @@ export function Historico() {
       )}
 
       <div style={{ display: "none" }}>
-        modal.print && <DocListaLeads ref={componenteRef} leads={data ?? []} />
+        {modal.print && <DocListaLeads ref={componenteRef} leads={data ?? []} />}
       </div>
     </div>
   );

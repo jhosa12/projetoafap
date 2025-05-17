@@ -85,7 +85,7 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
     },[item])
 
 
-
+    const cidadeCE = cidades.filter(item=>item.uf === 'CE')
 
 
 
@@ -128,7 +128,7 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
 
     <TabsContent value="dados-pessoais">
       <TabDadosPessoais
-        cidades={cidades}
+        cidades={cidadeCE}
         control={control}
         register={register}
         setValue={setValue}

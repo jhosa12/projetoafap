@@ -1,7 +1,7 @@
-
+'use client'
 import Image from "next/image";
 import logo from "../../../public/afapsaude.png"
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { Table } from "flowbite-react";
 import { ExamesProps } from "@/types/afapSaude";
 interface DadosProps {
@@ -10,26 +10,16 @@ interface DadosProps {
 }
 
 
-class RelatorioLucroExames extends React.Component<DadosProps> {
-
-    render() {
-        const { dados } = this.props;
+const RelatorioLucroExames = forwardRef<HTMLDivElement, DadosProps>((
+{dados}:DadosProps,ref
+)=>{
         let totalParticular = 0;
         let totalFuneraria = 0;
         let totalPlano = 0;
         let totalBruto= 0;
 
-        const options: Intl.DateTimeFormatOptions = {
-            weekday: 'long', // Dia da semana por extenso
-            year: 'numeric', // Ano completo
-            month: 'long', // Mês por extenso
-            day: 'numeric' // Dia do mês
-        };
-        const dataAtual = new Date();
-        const dt = dataAtual.toLocaleDateString('pt-BR', options)
-
         return (
-            <div className='flex flex-col w-full gap-3 p-4'>
+            <div ref={ref} className='flex flex-col w-full gap-3 p-4'>
                 <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', justifyContent: 'center', gap: '10px' }} >
                     <Image width={120} height={120} src={logo} alt="logo" />
                     <h1 style={{ fontWeight: 'bold', fontSize: '25px' }}>RELATORIO LUCRO POR EXAMES</h1>
@@ -90,6 +80,6 @@ class RelatorioLucroExames extends React.Component<DadosProps> {
             </div>
         );
     }
-}
+)
 
 export default RelatorioLucroExames;

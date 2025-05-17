@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 interface TabDadosPessoaisProps extends UseFormLeadProps{cidades:Array<CidadesProps>}
 
 
@@ -44,19 +45,17 @@ export function TabDadosPessoais({control,register,setValue,trigger,watch,cidade
 
                 <Controller
                 name="cidade"
+                rules={{required:'Cidade é Obrigatório'}}
                 control={control}
                 render={({ field }) => (
-                    <Select>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Cidade" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {cidades?.filter((cid) => cid.uf === 'CE')?.map((cidade) => (
-                                <SelectItem key={cidade.id_cidade} value={cidade.cidade}>{cidade.cidade}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    
+                               <Combobox
+                               items={cidades?.map((cidade) => ({ value: cidade.cidade, label: cidade.cidade })) || []}
+                               onChange={field.onChange}
+                               value={field.value}
+                             />
                 )}
+                
                 />      
             </div>
 

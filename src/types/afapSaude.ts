@@ -1,5 +1,6 @@
 
 import { Dispatch, SetStateAction } from "react";
+import { View } from "react-big-calendar";
 
 
 export type ConsultaStatus = "AGENDADO" | "AGUARDANDO DATA" | "CONFIRMADO" | "ATENDIDO" | "CANCELADO" | "RECEBIDO";
@@ -199,11 +200,11 @@ export interface FiltroConsultaProps {
   especialidade?:string
 }
 
-export type CalendarView = "month" | "week" | "day" | "agenda";
+
 
 export interface SidebarProps {
-  view: CalendarView;
-  setView: Dispatch<SetStateAction<CalendarView>>;
+  view: View;
+  setView: Dispatch<SetStateAction<View>>;
   date: Date;
   onNavigate: (date: Date) => void;
   onAddEvent: () => void;

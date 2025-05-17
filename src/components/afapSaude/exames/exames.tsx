@@ -71,7 +71,7 @@ export default function Exames({ exames }: DataProps) {
   const [exameSelected, setExameSelected] =
     useState<ExameRealizadoProps>(valorInicial);
   const { usuario } = useContext(AuthContext);
-  const currentPage = useRef<Orcamento>(null);
+  const currentPage = useRef<HTMLDivElement|null>(null);
   const currentRecibo = useRef<HTMLDivElement|null>(null);
   const { control, handleSubmit, reset, getValues } = useForm<FiltroForm>({
     defaultValues: {
@@ -300,9 +300,10 @@ export default function Exames({ exames }: DataProps) {
 
       <div style={{ display: "none" }}>
         <Orcamento
+          ref={currentPage}
           dados={exameSelected}
           usuario={usuario?.nome ?? ""}
-          ref={currentPage}
+       
         />
         
        <ReciboMensalidade
