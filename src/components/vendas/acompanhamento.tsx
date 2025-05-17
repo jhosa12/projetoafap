@@ -161,7 +161,7 @@ export function Acompanhamento({
   return (
     <div className="flex flex-col w-full h-full bg-gradient-to-b from-white to-gray-50 overflow-y-auto">
       
-        <ModalVendedor
+     { modalVend &&  <ModalVendedor
           logoUrl={logoUrl}
           usuario={usuario}
           leads={reqData?.leads}
@@ -170,7 +170,7 @@ export function Acompanhamento({
           vendedor={vendedor}
           startDate={reqData.startFilter}
           endDate={reqData.endFilter}
-        />
+        />}
     
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
         <InfoBlock

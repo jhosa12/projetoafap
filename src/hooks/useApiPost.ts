@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 
 
-const useApiPost = <T=any,P=any,U=any>(url:string,signal?:AbortSignal,update?:()=>void):{
+const useApiPost = <T=any,P=any,U=any>(url:string,signal?:AbortSignal,update?:()=>void,successAction?:()=>void,errorAction?:()=>void):{
     data:T|null;
     loading:boolean;
     postData:(payload:P)=>Promise<void>
@@ -29,10 +29,12 @@ const useApiPost = <T=any,P=any,U=any>(url:string,signal?:AbortSignal,update?:()
             loading: 'Salvando dados...',
             success: (res)=>{
               setData(res.data)
+              successAction?.()
               return'Dados salvos com sucesso'
             },
+            
             error:(error)=>{
-              console.log(error)
+              errorAction?.()
               return  'Erro ao salvar dados'}
           }
 

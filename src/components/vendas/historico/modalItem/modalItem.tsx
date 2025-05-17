@@ -1,4 +1,4 @@
-import {Tabs } from "flowbite-react";
+
 import { LeadProps } from "../historico";
 import { Control, SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
 import { TabDadosPessoais } from "./dadosPessoais";
@@ -9,13 +9,17 @@ import { useContext, useEffect } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { api } from "@/lib/axios/apiClient";
 import { Button } from "@/components/ui/button";
-import useApiPost from "@/hooks/useApiPost";
-import { AssociadoProps, ContratoProps, DependentesProps } from "@/types/associado";
+import { ContratoProps, DependentesProps } from "@/types/associado";
 import {  ParcelaData } from "@/utils/gerarArrayMensal";
 import { toast } from "sonner";
 import { ErrorIndicator } from "@/components/errorIndicator";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
-
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "@/components/ui/tabs"; 
 
 
 interface DataProps{
@@ -112,40 +116,66 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
 
             <DialogContent className="sm:max-w-5xl ">
                 <DialogHeader/>
-         
-         
             
                 <form onSubmit={handleSubmit(handleOnSubmit)}>
-                      <Tabs  theme={{tablist:{tabitem:{base:"flex z-0 items-center justify-center rounded-t-lg p-2 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 ",variant:{fullWidth:{active:{off:'bg-gray-50',on:'bg-gray-300 text-black'}}}}}}} aria-label="Full width tabs" variant="fullWidth">
-                            <Tabs.Item active title="Dados Pessoais" >
-                              <TabDadosPessoais cidades={cidades} control={control} register={register} setValue={setValue} watch={watch} trigger={trigger}/>
-                            </Tabs.Item>
-                          
-                            <Tabs.Item title="Formulário" >
-                            <TabFormulario control={control} register={register} setValue={setValue} watch={watch} trigger={trigger}/>
-                            </Tabs.Item>
+  <Tabs defaultValue="dados-pessoais" className="w-full">
+    <TabsList className="grid w-full grid-cols-4">
+      <TabsTrigger value="dados-pessoais">Dados Pessoais</TabsTrigger>
+      <TabsTrigger value="formulario">Formulário</TabsTrigger>
+      <TabsTrigger value="plano">Plano</TabsTrigger>
+      <TabsTrigger value="dependentes">Dependentes</TabsTrigger>
+    </TabsList>
 
-                            <Tabs.Item   title="Plano" >
-                            <TabPlano planos={planos} control={control} register={register} setValue={setValue} watch={watch} trigger={trigger}/>
-                            </Tabs.Item>
+    <TabsContent value="dados-pessoais">
+      <TabDadosPessoais
+        cidades={cidades}
+        control={control}
+        register={register}
+        setValue={setValue}
+        watch={watch}
+        trigger={trigger}
+      />
+    </TabsContent>
 
-                            <Tabs.Item title="Dependentes" >
-                                <TabDependentes control={control} register={register} setValue={setValue} watch={watch} trigger={trigger}/>
-                            </Tabs.Item>
-                        
-                          </Tabs> 
+    <TabsContent value="formulario">
+      <TabFormulario
+        control={control}
+        register={register}
+        setValue={setValue}
+        watch={watch}
+        trigger={trigger}
+      />
+    </TabsContent>
 
+    <TabsContent value="plano">
+      <TabPlano
+        planos={planos}
+        control={control}
+        register={register}
+        setValue={setValue}
+        watch={watch}
+        trigger={trigger}
+      />
+    </TabsContent>
 
-                          <div className= "flex flex-row w-full justify-between mt-2">
+    <TabsContent value="dependentes">
+      <TabDependentes
+        control={control}
+        register={register}
+        setValue={setValue}
+        watch={watch}
+        trigger={trigger}
+      />
+    </TabsContent>
+  </Tabs>
 
-   {<ErrorIndicator errors={errors} />}
-
-                        <Button className="ml-auto" size={'sm'} type="submit" >Salvar</Button>
-
-
-                            </div> 
-                          
-                </form>
+  <div className="flex flex-row w-full justify-between mt-2">
+    <ErrorIndicator errors={errors} />
+    <Button className="ml-auto" size="sm" type="submit">
+      Salvar
+    </Button>
+  </div>
+</form>
 
                    </DialogContent>
 

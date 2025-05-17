@@ -8,6 +8,8 @@ import { Acompanhamento, SetorProps } from "@/components/vendas/acompanhamento"
 import { Historico } from "@/components/vendas/historico/historico"
 import useApiGet from "@/hooks/useApiGet"
 import { toast } from "sonner"
+import { CidadeSelectVirtualizada } from "@/components/ui/virtualize"
+import { useForm } from "react-hook-form"
 
 
 export interface FormProps {
@@ -37,9 +39,11 @@ export interface ProdutosProps {
 
 export default function Vendas() {
 
-  const { usuario, infoEmpresa} = useContext(AuthContext);
+  const { usuario, infoEmpresa,cidades} = useContext(AuthContext);
   const [tab, setTab] = useState<number>(0)
   const {data,postData} = useApiGet<Array<SetorProps>,undefined>("/gerenciarAdministrativo/listarSetores")
+
+ 
 
   const listarSetores = useCallback(async()=>{
 
@@ -62,7 +66,7 @@ export default function Vendas() {
       <Head>
         <title>Vendas</title>
       </Head>
-
+      
         <Tabs theme={{base: 'bg-white rounded-b-lg',tabpanel:'w-full bg-white rounded-b-lg h-[calc(100vh-100px)]',tablist:{tabitem:{base: "flex items-center  justify-center px-4 py-3 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 ",variant:{underline:{active:{
         on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
         off:"border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
