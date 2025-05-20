@@ -583,7 +583,9 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
                     item={item}
                     setData={setData}
                     setModal={setModal}
-                    handleWhatsAppClick={handleWhatsAppClick}
+                    handleWhatsAppClick={()=>handleWhatsAppClick({
+                      phone:item.celular
+                    })}
                   />
                 </Table.Cell>
               </Table.Row>

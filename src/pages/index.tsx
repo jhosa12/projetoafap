@@ -3,10 +3,10 @@ import { AiOutlineLoading3Quarters, AiOutlineUser, AiOutlineLock } from "react-i
 import Image from "next/image";
 import logo from "../../public/novaLogo.png"
 import { SubmitHandler, useForm } from "react-hook-form";
-import {  TextInput } from "flowbite-react";
 import { Button } from "@/components/ui/button"
 import { SignInProps } from "@/types/user"
 import { AuthContext } from "@/store/AuthContext";
+import { Input } from "@/components/ui/input";
 
 export default function Home() {
     const { register, handleSubmit, formState: { errors } } = useForm<SignInProps>()
@@ -58,9 +58,9 @@ export default function Home() {
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <AiOutlineUser className="h-5 w-5 text-gray-400" />
                                     </div>
-                                    <TextInput
+                                    <Input
                                         id="user"
-                                        sizing="md"
+                                        
                                         autoComplete="off"
                                         placeholder="Digite seu usuário"
                                         required
@@ -77,9 +77,9 @@ export default function Home() {
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <AiOutlineLock className="h-5 w-5 text-gray-400" />
                                     </div>
-                                    <TextInput
+                                    <Input
                                         id="password"
-                                        sizing="md"
+                                        
                                         type="password"
                                         autoComplete="new-password"
                                         placeholder="Digite sua senha"

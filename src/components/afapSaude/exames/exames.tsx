@@ -217,7 +217,7 @@ export default function Exames({ exames }: DataProps) {
           onPrintReceipt={imprimirRecibo}
           onReceive={() => setModal({ receber: true })}
           onRevert={() => setModal({ estornar: true })}
-          onWhatsApp={() => handleWhatsAppClick(exameSelected?.celular)}
+          onWhatsApp={() => handleWhatsAppClick({phone:exameSelected?.celular})}
           onDelete={() => setModal({ deletar: true })}
         />
 
@@ -238,7 +238,7 @@ export default function Exames({ exames }: DataProps) {
           onPrintReceipt={imprimirRecibo}
           onReceive={() => setModal({ receber: true })}
           onRevert={() => setModal({ estornar: true })}
-          onWhatsApp={() => handleWhatsAppClick(exameSelected?.celular)}
+          onWhatsApp={() => handleWhatsAppClick({phone:exameSelected?.celular})}
           onDelete={() => setModal({ deletar: true })}
           exames={examesRealizados}
           selectedExame={exameSelected}

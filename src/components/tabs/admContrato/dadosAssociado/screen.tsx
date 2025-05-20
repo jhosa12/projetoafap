@@ -18,6 +18,7 @@ import { ProtocoloCancelamento } from "@/Documents/associado/protocoloCancelamen
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import { usePrintDocsAssociado } from "@/hooks/usePrintDocsAssociado";
 import { UserProps } from "@/types/user";
+import { ButtonWhatsApp } from "@/components/ButtonWhatsappOpen";
 
 interface DataProps {
     dadosassociado: Partial<AssociadoProps> | AssociadoProps,
@@ -62,7 +63,11 @@ export function DadosAssociado({ dadosassociado, infoEmpresa,setarDadosAssociado
                     onClick={() => setModal({ editar: true })}
                     className="w-full sm:w-1/2 uppercase text-xs cursor-pointer  hover:shadow-xl"
                 >
-                    <h2 className="text-sm font-bold mb-3 text-black border-b pb-1">Dados Pessoais</h2>
+                    <div className="flex justify-between  border-b pb-1 mb-3">
+                        <h2 className="text-sm font-bold  text-black">Dados Pessoais</h2>
+                        <ButtonWhatsApp fone={dadosassociado?.celular1}/>
+                    </div>
+                    
                     <div className="space-y-1">
                         <p><span className="font-medium">Endereço:</span> {dadosassociado?.endereco}</p>
                         <p><span className="font-medium">Número:</span> {dadosassociado?.numero}</p>

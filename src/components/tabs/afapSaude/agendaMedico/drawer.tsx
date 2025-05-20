@@ -25,6 +25,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { EventProps, MedicoProps } from "@/types/afapSaude";
 import { toast } from "sonner";
 import { useEffect } from "react";
+import { Combobox } from "@/components/ui/combobox";
 
 interface DrawerProps {
   isOpen: boolean;
@@ -45,7 +46,7 @@ export function ModalDrawer({
   dataEvent,
   deletarEvento,
 }: DrawerProps) {
-  const { register, handleSubmit, setValue, control, watch,reset } =
+  const { register, handleSubmit, setValue, control, watch, reset } =
     useForm<EventProps>({
       defaultValues: {
         ...dataEvent,
@@ -53,15 +54,15 @@ export function ModalDrawer({
       },
     });
 
-    useEffect(() => {
-      if (dataEvent) {
-        reset({
-          ...dataEvent,
-          end: dataEvent.id_agmed ? dataEvent.end : dataEvent.start,
-          start: dataEvent.start ? dataEvent.start : undefined,
-        });
-      }
-    }, [dataEvent, reset]);
+  useEffect(() => {
+    if (dataEvent) {
+      reset({
+        ...dataEvent,
+        end: dataEvent.id_agmed ? dataEvent.end : dataEvent.start,
+        start: dataEvent.start ? dataEvent.start : undefined,
+      });
+    }
+  }, [dataEvent, reset]);
 
   const handleEvento: SubmitHandler<EventProps> = (data) => {
     if (data.id_agcli || data.id_agmed) editarEvento(data);
@@ -162,7 +163,9 @@ export function ModalDrawer({
         <SheetHeader className="flex items-center justify-between">
           <div className="inline-flex items-center gap-2">
             <MdEvent size={32} />
-            <SheetTitle>Novo Evento</SheetTitle>
+            <SheetTitle>
+              {dataEvent.id_agmed ? "Editar Evento" : "Novo Evento"}
+            </SheetTitle>
           </div>
         </SheetHeader>
 
@@ -175,11 +178,18 @@ export function ModalDrawer({
             <Label htmlFor="medico">Especialista</Label>
             <Controller
               control={control}
+              rules={{ required: true }}
               name="id_med"
               render={({ field }) => (
-                <Select
+                <Combobox
+                  placeholder="Selecione um médico"
+                  searchPlaceholder="Pesquisar..."
+                  items={arrayMedicos.map((item) => ({
+                    value: item.id_med.toString(),
+                    label: `${item.nome} - (${item.espec})`,
+                  }))}
                   value={String(field.value)}
-                  onValueChange={(value) => {
+                  onChange={(value) => {
                     const sel = arrayMedicos.find(
                       (m) => m.id_med.toString() === value
                     );
@@ -188,30 +198,42 @@ export function ModalDrawer({
                       setValue("title", `${sel.nome}-(${sel.espec})`);
                     }
                   }}
-                >
-                  <SelectTrigger id="medico" className="w-full">
-                    <SelectValue placeholder="Selecione o especialista" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {arrayMedicos.map((item) => (
-                        <SelectItem
-                          key={item.id_med}
-                          value={item.id_med.toString()}
-                        >
-                          <div className="inline-flex items-center gap-2">
-                            <img
-                              src={`${process.env.NEXT_PUBLIC_API_URL}/file/${item.imageUrl}`}
-                              alt={item.nome}
-                              className="w-6 h-6 rounded-full"
-                            />
-                            {item.nome} ({item.espec})
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                />
+                // <Select
+                //   value={String(field.value)}
+                //   onValueChange={(value) => {
+                //     const sel = arrayMedicos.find(
+                //       (m) => m.id_med.toString() === value
+                //     );
+                //     if (sel) {
+                //       setValue("id_med", sel.id_med);
+                //       setValue("title", `${sel.nome}-(${sel.espec})`);
+                //     }
+                //   }}
+                // >
+                //   <SelectTrigger id="medico" className="w-full">
+                //     <SelectValue placeholder="Selecione o especialista" />
+                //   </SelectTrigger>
+                //   <SelectContent>
+                //     <SelectGroup>
+                //       {arrayMedicos.map((item) => (
+                //         <SelectItem
+                //           key={item.id_med}
+                //           value={item.id_med.toString()}
+                //         >
+                //           <div className="inline-flex items-center gap-2">
+                //             <img
+                //               src={`${process.env.NEXT_PUBLIC_API_URL}/file/${item.imageUrl}`}
+                //               alt={item.nome}
+                //               className="w-6 h-6 rounded-full"
+                //             />
+                //             {item.nome} ({item.espec})
+                //           </div>
+                //         </SelectItem>
+                //       ))}
+                //     </SelectGroup>
+                //   </SelectContent>
+                // </Select>
               )}
             />
           </div>
@@ -306,7 +328,7 @@ export function ModalDrawer({
                   Cancelar
                 </Button>
                 <Button type="submit" className="flex-1">
-                 { dataEvent.id_agmed ? 'Editar Evento' : 'Salvar Evento'}
+                  {dataEvent.id_agmed ? "Editar Evento" : "Salvar Evento"}
                 </Button>
               </>
             )}

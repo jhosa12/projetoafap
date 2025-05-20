@@ -1,6 +1,11 @@
 import { toast } from "sonner";
 
 
+interface SendParams {
+        phone: string;
+        message?: string;
+    }
+
 
 const formatPhoneNumber = (phoneNumber: string) => {
     // Remove todos os caracteres que não sejam números
@@ -16,18 +21,18 @@ const formatPhoneNumber = (phoneNumber: string) => {
     }
 };
 
-const handleWhatsAppClick = (celular: string|undefined)=>{
+const handleWhatsAppClick = ({phone,message:messageSend = ''}:SendParams)=>{
 
   
-    if (!celular) {
+    if (!phone) {
       toast.warning('Número inexistente');
       return;
     }
   
   
-    const formattedNumber = formatPhoneNumber(celular);
+    const formattedNumber = formatPhoneNumber(phone);
     if (formattedNumber) {
-        const message = encodeURIComponent("Olá, gostaria de agendar uma consulta ?");
+        const message = encodeURIComponent(messageSend);
         const whatsappURL = `whatsapp://send?phone=${formattedNumber}&text=${message}`;
         window.open(whatsappURL);
     }
