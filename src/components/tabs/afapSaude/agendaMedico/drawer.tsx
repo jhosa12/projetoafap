@@ -26,6 +26,7 @@ import { EventProps, MedicoProps } from "@/types/afapSaude";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { Combobox } from "@/components/ui/combobox";
+import useVerifyPermission from "@/hooks/useVerifyPermission";
 
 interface DrawerProps {
   isOpen: boolean;
@@ -53,6 +54,8 @@ export function ModalDrawer({
         end: dataEvent.id_agmed ? dataEvent.end : dataEvent.start,
       },
     });
+
+    const {verify} =useVerifyPermission()
 
   useEffect(() => {
     if (dataEvent) {
@@ -304,34 +307,22 @@ export function ModalDrawer({
 
           {/* Botões */}
           <div className="flex gap-4 mt-4">
-            {dataEvent.id_agcli && dataEvent.id_agmed ? (
-              <>
-                <Button
-                  variant="destructive"
-                  className="flex-1"
-                  onClick={deletarEvento}
-                >
-                  Deletar
-                </Button>
-                <Button type="submit" variant="outline" className="flex-1">
-                  Editar Evento
-                </Button>
-              </>
-            ) : (
-              <>
+          
+            
+          
+        
                 <Button
                   variant="outline"
                   className="flex-1"
                   type="button"
                   onClick={toggleDrawer}
+
                 >
                   Cancelar
                 </Button>
-                <Button type="submit" className="flex-1">
+                <Button disabled={dataEvent.id_agmed?verify('AFS1.2'):verify('AFS1.1')} type="submit" className="flex-1">
                   {dataEvent.id_agmed ? "Editar Evento" : "Salvar Evento"}
                 </Button>
-              </>
-            )}
           </div>
         </form>
       </SheetContent>

@@ -6,14 +6,13 @@ import { api } from "@/lib/axios/apiClient";
 import { ModalMedico } from "./modalMedico";
 import { MedicoProps } from "@/types/afapSaude";
 import { toast } from "sonner";
-import { Dropdown } from "flowbite-react";
 import { DropDownMedicoActions } from "./DropDownMedicoActions";
 
 interface DataProps {
   medicos: Array<MedicoProps>;
   setArray: (array: Array<MedicoProps>) => void;
 }
-export default function AdmMedico({ medicos, setArray }: DataProps) {
+export default function AdmMedico({ medicos, setArray}: DataProps) {
   const [openModal, setOpenModal] = useState(false);
   const [dataMedico, setDataMedico] = useState<Partial<MedicoProps>>({});
 

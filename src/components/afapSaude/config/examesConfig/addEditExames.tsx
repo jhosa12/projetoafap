@@ -12,6 +12,7 @@ import { ExamesProps } from "@/types/afapSaude";
 import { toast } from "sonner";
 import { DataTable } from "../../../ui/data-table";
 import {  getExamesColumns } from "./examesColumns";
+import useVerifyPermission from "@/hooks/useVerifyPermission";
 
 interface DataProps {
   exames: Array<ExamesProps>;
@@ -37,6 +38,7 @@ export function AddEditExames({ exames, setExames }: DataProps) {
   const [data, setData] = useState<ExamesProps>(resetValues);
   const currentPage = useRef<HTMLDivElement|null>(null);
   const [openDeletar, setOpenDeletar] = useState<boolean>(false);
+  const {verify} = useVerifyPermission()
 
   const imprimirRelatorio = useCallback(
     useReactToPrint({
@@ -80,11 +82,13 @@ export function AddEditExames({ exames, setExames }: DataProps) {
               setData({ ...exame });
               setOpenDeletar(true);
             },
+            verify
           })}
           data={exames}
         >
           <div className="flex  gap-2 px-2">
             <Button
+              disabled={verify('AFS4.1.1')}
               variant="outline"
               size="sm"
               onClick={() => {

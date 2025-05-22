@@ -1,38 +1,42 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
 
-
-
-
-import { Card, Tabs, ToggleSwitch } from "flowbite-react";
-import { themaTab } from "../permisssoes";
-
-
-interface DataProps{
-    permissions:Array<string>,
-    handlePermission:(permission:string)=>void
+interface DataProps {
+  permissions: Array<string>;
+  handlePermission: (permission: string) => void;
 }
 
+export function TabConfiguracoes({ permissions, handlePermission }: DataProps) {
+  const [activeTab, setActiveTab] = useState("config");
 
+  return (
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <TabsList className="mb-4">
+        <TabsTrigger value="config">Configurações</TabsTrigger>
+      </TabsList>
 
-export function TabConfiguracoes({permissions,handlePermission}:DataProps){
-    
-    return(
-        <Tabs   theme={themaTab} aria-label="Tabs with icons" variant="underline">
-                  <Tabs.Item active title="Configurações" >
-                    
-                  <div className="grid grid-cols-4 gap-2" >
-                  <Card  theme={{root:{children:"flex h-full flex-col  gap-2 p-4"}}}>
-                    <h1 className="text-sm font-semibold">Tela Principal</h1>
-                    <ToggleSwitch  sizing={'sm'} checked={permissions.includes('CFG1')} onChange={()=>handlePermission('CFG1')}  label="Acesso"/>
-                  
-              
-                       
-                  </Card>
-            
-                  </div>
-      </Tabs.Item>
-     
-        </Tabs>
-    )
+      <TabsContent value="config">
+        <div className="grid grid-cols-4 gap-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Tela Principal</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="CFG1"
+                  checked={permissions.includes("CFG1")}
+                  onCheckedChange={() => handlePermission("CFG1")}
+                />
+                <Label htmlFor="CFG1" className="text-sm">Acesso</Label>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </TabsContent>
+    </Tabs>
+  );
 }
-
-

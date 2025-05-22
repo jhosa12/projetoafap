@@ -20,6 +20,7 @@ interface DataProps {
   setExames: (array: Array<ExamesProps>) => void;
   medicos: Array<MedicoProps>;
   setMedicos: (arr: Array<MedicoProps>) => void;
+ 
 }
 
 export default function Configuracoes({

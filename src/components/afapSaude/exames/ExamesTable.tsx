@@ -33,9 +33,11 @@ import { SlOptions } from "react-icons/sl";
     onRevert: () => void;
     onWhatsApp: () => void;
     onDelete: () => void;
+    verifyPermission: (permission: string) => boolean;
   }
   
   export function ExamesTable({
+    verifyPermission,
     exames,
     selectedExame,
     onSelectExame,
@@ -122,11 +124,11 @@ import { SlOptions } from "react-icons/sl";
               <BiMoneyWithdraw className="mr-2 h-4 w-4" />
               Recibo
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={onReceive} className="text-green-600">
+            <DropdownMenuItem disabled={verifyPermission("AFS2.4")} onClick={onReceive} className="text-green-600">
               <HiMiniArrowDownOnSquare className="mr-2 h-4 w-4" />
               Receber
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={onRevert} className="text-yellow-600">
+            <DropdownMenuItem disabled={verifyPermission("AFS2.5")} onClick={onRevert} className="text-yellow-600">
               <GiReturnArrow className="mr-2 h-4 w-4" />
               Estornar
             </DropdownMenuItem>
@@ -134,7 +136,9 @@ import { SlOptions } from "react-icons/sl";
               <FaWhatsapp className="mr-2 h-4 w-4" />
               WhatsApp
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={onDelete} className="text-red-500">
+            <DropdownMenuItem 
+            disabled={verifyPermission("AFS2.3")}
+            onClick={onDelete} className="text-red-500">
               <MdDelete className="mr-2 h-4 w-4" />
               Excluir
             </DropdownMenuItem>

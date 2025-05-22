@@ -17,7 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ExamesToolbar } from "@/components/afapSaude/exames/ExamesToolbar";
 import { ExamesTable } from "@/components/afapSaude/exames/ExamesTable";
 import { FiltroExames } from "./filtro";
 import { ModalAdministrarExame } from "./modalDadosExame/modalAdministrarExame";
@@ -26,9 +25,12 @@ import { useForm } from "react-hook-form";
 import { useExamesHandlers } from "@/hooks/useExameHandlers";
 import { FilterIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { HiDocumentAdd } from "react-icons/hi";
+import { verify } from "crypto";
 
 interface DataProps {
   exames: Array<ExamesProps>;
+  verifyPermission: (permission: string) => boolean;
 }
 
 interface FiltroForm {
@@ -38,7 +40,7 @@ interface FiltroForm {
   status: string;
 }
 
-export default function Exames({ exames }: DataProps) {
+export default function Exames({ exames,verifyPermission }: DataProps) {
   const valorInicial = {
     id_exame: null,
     celular: "",
@@ -175,6 +177,7 @@ export default function Exames({ exames }: DataProps) {
     <div className="flex flex-col px-4 space-y-2">
       {modal.administrar && (
         <ModalAdministrarExame
+          verifyPermission={verifyPermission}
           handleEditarExame={handleEditarExame}
           handleNovoExame={handleNovoExame}
           arraySelectExames={exames}
@@ -207,19 +210,16 @@ export default function Exames({ exames }: DataProps) {
           />
         )}
 
-        <ExamesToolbar
-          onAdd={() => {
-            setModal({ administrar: true });
-            setExameSelected(valorInicial);
-          }}
-          onEdit={() => setModal({ administrar: true })}
-          onPrintBudget={imprimirOrcamento}
-          onPrintReceipt={imprimirRecibo}
-          onReceive={() => setModal({ receber: true })}
-          onRevert={() => setModal({ estornar: true })}
-          onWhatsApp={() => handleWhatsAppClick({phone:exameSelected?.celular})}
-          onDelete={() => setModal({ deletar: true })}
-        />
+         <Button
+         disabled={verifyPermission('AFS2.1')}
+          variant="outline"
+          size="sm"
+          onClick={()=>{setModal({ administrar: true });
+            setExameSelected(valorInicial);}}
+        >
+          <HiDocumentAdd />
+          <span className=" sm:inline">Adicionar</span>
+        </Button>
 
         </div>
 
@@ -243,6 +243,7 @@ export default function Exames({ exames }: DataProps) {
           exames={examesRealizados}
           selectedExame={exameSelected}
           onSelectExame={setExameSelected}
+          verifyPermission={verifyPermission}
         />
       </div>
 

@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button"; // shadcn button
 type ActionsProps = {
   onEdit: (exame: ExamesProps) => void;
   onDelete: (exame: ExamesProps) => void;
+  verify:(permission:string)=>boolean
 };
 
-export function getExamesColumns({ onEdit, onDelete }: ActionsProps): ColumnDef<ExamesProps>[] {
+export function getExamesColumns({ onEdit, onDelete,verify }: ActionsProps): ColumnDef<ExamesProps>[] {
   return [
     {
       accessorKey: "nome",
@@ -56,10 +57,11 @@ export function getExamesColumns({ onEdit, onDelete }: ActionsProps): ColumnDef<
         return (
           <div className="flex gap-2">
             <Button
+              disabled={verify('AFS4.1.2')}
               variant="outline"
               size="icon"
               onClick={() => onEdit(exame)}
-              className="h-6 w-6"
+              className="h-6 w-6 "
             >
               <HiPencil className="h-3 w-3" />
             </Button>

@@ -20,12 +20,14 @@ interface DropdownAcoesConsultaProps {
   setData: (data: ConsultaProps) => void;
   setModal: (modal: { [key: string]: boolean }) => void;
   handleWhatsAppClick: (telefone: string) => void;
+  verifyPermissions: (permission: string) => boolean
 }
 
 export const DropdownAcoesConsulta: React.FC<DropdownAcoesConsultaProps> = ({
   item,
   setData,
   setModal,
+  verifyPermissions,
   handleWhatsAppClick,
 }) => {
   return (
@@ -38,6 +40,7 @@ export const DropdownAcoesConsulta: React.FC<DropdownAcoesConsultaProps> = ({
       <DropdownMenuContent className="w-36 shadow-none">
         <DropdownMenuGroup>
           <DropdownMenuItem
+           
             onClick={() => {
               setData(item);
               setModal({ editar: true });
@@ -47,6 +50,7 @@ export const DropdownAcoesConsulta: React.FC<DropdownAcoesConsultaProps> = ({
             Editar
           </DropdownMenuItem>
           <DropdownMenuItem
+            disabled={verifyPermissions("AFS3.4")}
             onClick={() => {
               setData(item);
               setModal({ printProntuario: true });
@@ -65,6 +69,7 @@ export const DropdownAcoesConsulta: React.FC<DropdownAcoesConsultaProps> = ({
             Recibo
           </DropdownMenuItem>
           <DropdownMenuItem
+            disabled={verifyPermissions("AFS3.5")}
             onClick={() => {
               setData(item);
               setModal({ receber: true });
@@ -74,6 +79,7 @@ export const DropdownAcoesConsulta: React.FC<DropdownAcoesConsultaProps> = ({
             Receber
           </DropdownMenuItem>
           <DropdownMenuItem
+          disabled={verifyPermissions("AFS3.6")}
             onClick={() => {
               setData(item);
               setModal({ estornar: true });
@@ -89,6 +95,7 @@ export const DropdownAcoesConsulta: React.FC<DropdownAcoesConsultaProps> = ({
             Contato
           </DropdownMenuItem>
           <DropdownMenuItem
+          disabled={verifyPermissions("AFS3.3")}
             onClick={() => {
               setData(item);
               setModal({ deletar: true });

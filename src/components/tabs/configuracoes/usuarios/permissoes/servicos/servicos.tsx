@@ -1,47 +1,50 @@
-
-
-
-
-import { Card, Tabs, ToggleSwitch } from "flowbite-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { themaTab } from "../permisssoes";
 
-interface DataProps{
-    permissions:Array<string>,
-    handlePermission:(permission:string)=>void
+interface DataProps {
+  permissions: Array<string>;
+  handlePermission: (permission: string) => void;
 }
 
+export function TabServicos({ permissions, handlePermission }: DataProps) {
+  const [activeTab, setActiveTab] = useState("obitos");
 
+  const renderCheckbox = (id: string, label: string) => (
+    <div key={id} className="flex items-center gap-2">
+      <Checkbox
+        id={id}
+        checked={permissions.includes(id)}
+        onCheckedChange={() => handlePermission(id)}
+      />
+      <Label htmlFor={id} className="text-sm">{label}</Label>
+    </div>
+  );
 
+  return (
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <TabsList className="mb-4">
+        <TabsTrigger value="obitos">Óbitos</TabsTrigger>
+      </TabsList>
 
-export function TabServicos({permissions,handlePermission}:DataProps){
-
-
-
-
-   
-
-    return(
-        <Tabs   theme={themaTab} aria-label="Tabs with icons" variant="underline">
-                  <Tabs.Item active title="Óbitos" >
-                    
-                  <div className="grid grid-cols-4 gap-2" >
-                  <Card  theme={{root:{children:"flex h-full flex-col  gap-2 p-4"}}}>
-                    <h1 className="text-sm font-semibold">Acompanhamento</h1>
-                    <ToggleSwitch  sizing={'sm'} checked={permissions.includes('SVS1')} onChange={()=>handlePermission('SVS1')} label="Visualizar"/>
-                    <ToggleSwitch sizing={'sm'} checked={permissions.includes('SVS1.1')} onChange={()=>handlePermission('SVS1.1')} label="Adicionar"/>
-                    <ToggleSwitch  sizing={'sm'} checked={permissions.includes('SVS1.2')} onChange={()=>handlePermission('SVS1.2')} label="Editar"/>
-                    
-                      <ToggleSwitch sizing={'sm'} checked={permissions.includes('SVS1.3')} onChange={()=>handlePermission('SVS1.3')} label="Excluir"/>
-                      <ToggleSwitch  sizing={'sm'} checked={permissions.includes('SVS1.4')} onChange={()=>handlePermission('SVS1.4')} label="Filtro"/>
-                       
-                  </Card>
-            
-                  </div>
-      </Tabs.Item>
-     
-        </Tabs>
-    )
+      <TabsContent value="obitos">
+        <div className="grid grid-cols-4 gap-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Acompanhamento</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {renderCheckbox("SVS1", "Visualizar")}
+              {renderCheckbox("SVS1.1", "Adicionar")}
+              {renderCheckbox("SVS1.2", "Editar")}
+              {renderCheckbox("SVS1.3", "Excluir")}
+              {renderCheckbox("SVS1.4", "Filtro")}
+            </CardContent>
+          </Card>
+        </div>
+      </TabsContent>
+    </Tabs>
+  );
 }
-
-

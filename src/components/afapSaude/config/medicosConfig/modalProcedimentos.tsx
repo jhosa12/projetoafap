@@ -25,6 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import useVerifyPermission from "@/hooks/useVerifyPermission"
 
 
 interface DataProps {
@@ -45,6 +46,7 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,usuario,medico
     const [excluirId, setExcluirId] = useState<number|null>(null)
     const [openEditar, setOpenEditar] = useState(false)
     const [proced, setProced] = useState<ExamesProps>({} as ExamesProps)
+    const {verify} = useVerifyPermission()
 
     const handleAdicionarExame =async(data:ExamesProps)=>{
         if(!data.nome||!data.porcFun||!data.porcPlan){
@@ -153,6 +155,7 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,usuario,medico
 
         <div className="space-y-2 px-4 py-2">
           <Button
+            disabled={verify('AFS4.2.4')}
             onClick={() => {
               setProced({} as ExamesProps)
               setOpenEditar(true)
@@ -199,22 +202,24 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,usuario,medico
                   <TableCell className="px-4 py-1">
                     <div className="flex gap-2">
                       <button
+                        disabled={verify('AFS4.2.6')}
                         onClick={() => {
                           setExcluirId(item.id_exame)
                           setOpenExcluir(true)
                         }}
                         type="button"
-                        className="hover:text-red-500"
+                        className="hover:text-red-500 disabled:cursor-not-allowed"
                       >
                         <MdDelete size={16} />
                       </button>
                       <button
+                       disabled={verify('AFS4.2.5')}
                         onClick={() => {
                           setProced(item)
                           setOpenEditar(true)
                         }}
                         type="button"
-                        className="hover:text-blue-500"
+                        className="hover:text-blue-500 disabled:cursor-not-allowed"
                       >
                         <MdEdit size={16} />
                       </button>
@@ -236,11 +241,13 @@ export function ModalProcedimentos({openModal,setOpenModal,medico,usuario,medico
            />
 
        {openEditar && <ModalEditarProced
+       verify={verify}
         handleEditar={handleEditarExame}
          handleNovo={handleAdicionarExame}
           open={openEditar}
            onClose={()=>setOpenEditar(false)}
            proced={proced}/>}
+           
         </>
     )
 }
@@ -253,10 +260,11 @@ interface ProcedProps{
     proced:ExamesProps,
     handleNovo:(data:ExamesProps)=>Promise<void>
     handleEditar:(data:ExamesProps)=>Promise<void>
+    verify:(permission:string)=>boolean
 }
 
-export const ModalEditarProced = ({onClose,open,proced,handleNovo,handleEditar}:ProcedProps)=>{
-    const {register,handleSubmit,watch,reset} = useForm<ExamesProps>({
+export const ModalEditarProced = ({onClose,open,proced,handleNovo,handleEditar,verify}:ProcedProps)=>{
+    const {register,handleSubmit} = useForm<ExamesProps>({
         defaultValues:proced
     })
 
@@ -301,7 +309,7 @@ export const ModalEditarProced = ({onClose,open,proced,handleNovo,handleEditar}:
                     </div>
                
                
-                <Button className="col-span-2" type="submit" size="sm">{proced.id_exame?'EDITAR':'ADICIONAR'}</Button>
+                <Button  className="col-span-2" type="submit" size="sm">{proced.id_exame?'EDITAR':'ADICIONAR'}</Button>
                     
                 </form>
 

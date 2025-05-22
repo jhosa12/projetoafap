@@ -46,6 +46,7 @@ import { DropdownAcoesConsulta } from "./DropdownAcoesConsulta";
 interface DataProps {
   medicos: Array<MedicoProps>;
   events: Array<EventProps>;
+  verifyPermission: (permission: string) => boolean;
 }
 export const valorInicial = {
   celular: "",
@@ -64,7 +65,7 @@ export const valorInicial = {
 
 
 
-export default function Consultas({ medicos, events }: DataProps) {
+export default function Consultas({ medicos, events, verifyPermission }: DataProps) {
   const [data, setData] = useState<Partial<ConsultaProps>>();
   const { usuario, consultores } = useContext(AuthContext);
   const [formPag, setFormPag] = useState<string>("");
@@ -81,6 +82,8 @@ export default function Consultas({ medicos, events }: DataProps) {
     printRecibo: false,
     printListaConsultas: false,
   });
+
+  
 
 const currentPage = useRef<HTMLDivElement|null>(null)
  const currentRecibo = useRef<HTMLDivElement|null>(null)
@@ -410,6 +413,7 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
     <div className="flex flex-col p-2 gap-2">
 
       {modal.editar &&  <ModalConsulta
+          verifyPermission={verifyPermission}
           events={events}
           setConsulta={setData}
           consultas={consultas}
@@ -427,6 +431,7 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
       <div className=" inline-flex w-full justify-between text-black items-center">
         <div className="inline-flex gap-4">
           <Button
+          disabled={verifyPermission('AFS3.1')}
             variant={"outline"}
             onClick={() => {
               setData({}), setModal({ editar: true });
@@ -473,6 +478,7 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
           }}
         >
           <Table.Head className="sticky top-0 bg-white z-10 border-b-2">
+            <Table.HeadCell>ID</Table.HeadCell>
             <Table.HeadCell>Nome</Table.HeadCell>
             <Table.HeadCell>Fone</Table.HeadCell>
             <Table.HeadCell>Especialidade</Table.HeadCell>
@@ -491,11 +497,14 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
                 key={item.id_consulta}
                 className={`font-medium bg-white hover:cursor-pointer`}
                   onClick={e => {
-                 
+                            
                             setData(item), setModal({ editar: true });
                           }}
               >
-                <Table.Cell className="whitespace-nowrap">
+                    <Table.Cell >
+                  {item.id_consulta}
+                </Table.Cell>
+                <Table.Cell >
                   {item.nome}
                 </Table.Cell>
                 <Table.Cell className="whitespace-nowrap">
@@ -580,6 +589,7 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
 
                 <Table.Cell onClick={(e) => e.stopPropagation()}>
                   <DropdownAcoesConsulta
+                    verifyPermissions={verifyPermission}
                     item={item}
                     setData={setData}
                     setModal={setModal}

@@ -36,7 +36,7 @@ const Orcamento = forwardRef<HTMLDivElement, DadosProps>((
         return (
             <div ref={ref} className={`${roboto_Mono.className} flex flex-col gap-3 p-2`}>
                 <div style={{ display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'end', justifyContent: 'center', gap: '10px' }} >
-                    <img fetchPriority='high' width={60} height={60} src={'/afapsaudelogo.jpg'} alt="logoEmp" />
+                    <img  {...{ fetchpriority: 'high' } as any} width={60} height={60} src={'/afapsaudelogo.jpg'} alt="logoEmp" />
                     <h1 style={{ fontWeight: 'bold', fontSize: '20px' }}>ORÇAMENTO - EXAMES LABORATORIAIS</h1>
                 </div>
                 <div  style={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'space-between', gap: '5px',border:'1px solid #cdd3dd',borderRadius:'5px',fontSize:'13px' }}>

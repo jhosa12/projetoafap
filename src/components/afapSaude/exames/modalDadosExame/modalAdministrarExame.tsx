@@ -45,6 +45,7 @@ interface DataProps {
   arraySelectExames: ExamesProps[];
   handleNovoExame: (data: ExameRealizadoProps) => Promise<void>;
   handleEditarExame: (data: ExameRealizadoProps) => Promise<void>;
+  verifyPermission:(permission:string)=>boolean
 }
 export function ModalAdministrarExame({
   openModal,
@@ -53,6 +54,7 @@ export function ModalAdministrarExame({
   arraySelectExames,
   handleNovoExame,
   handleEditarExame,
+  verifyPermission
 }: DataProps) {
   const { register, setValue, handleSubmit, watch, control } =
     useForm<ExameRealizadoProps>({
@@ -385,7 +387,10 @@ export function ModalAdministrarExame({
             </div>
           </div> */}
           <TabsExames register={register} control={control} watch={watch} setValue={setValue} exames={arraySelectExames} />
-          <Button className="ml-auto mt-6" type="submit">
+          <Button 
+          disabled={verifyPermission(registro?.id_exame ? 'AFS2.2' : 'AFS2.1')}
+          className="ml-auto mt-6"
+           type="submit">
             {registro?.id_exame ? "Atualizar" : "Cadastrar"}
           </Button>
         </form>

@@ -72,6 +72,7 @@ rules={{required:'Especialista é obrigatório'}}
 render={({ field: { onChange, value } }) => (
 
   <Combobox
+  disabled={watch('status')==='RECEBIDO'|| watch('status')==='ATENDIDO'}
 items={medicos?.map(item => ({ value: String(item.id_med), label: `${item.nome}-${item.espec}` }))??[]}
 onChange={e=>handleMedico(e ??'')}
 value={String(value)}
@@ -94,7 +95,7 @@ searchPlaceholder="Buscar especialista"
   control={control}
   name='id_agmed'
   render={({ field: { onChange, value } }) => (
-    <Select value={String(value)} onValueChange={selectMed}>
+    <Select disabled={watch('status')==='RECEBIDO'|| watch('status')==='ATENDIDO'} value={String(value)} onValueChange={selectMed}>
       <SelectTrigger className="">
         <SelectValue placeholder="Consulta/Data" />
         </SelectTrigger>

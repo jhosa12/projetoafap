@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/tabs";
 import Consultas from "@/components/afapSaude/consultas/consultas";
 import { AuthContext } from "@/store/AuthContext";
+import useVerifyPermission from "@/hooks/useVerifyPermission";
 
 export default function AfapSaude() {
   const [medicos, setMedicos] = useState<Array<MedicoProps>>([])
@@ -28,6 +29,7 @@ export default function AfapSaude() {
  // const [menuIndex, setMenuIndex] = useState(0)
   const [exames, setExames] = useState<Array<ExamesProps>>([])
   const {usuario,signOut} = useContext(AuthContext)
+  const {verify}=useVerifyPermission()
 
 
 
@@ -154,15 +156,15 @@ export default function AfapSaude() {
           <FaCalendarAlt className="h-4 w-4 mr-2" />
           AGENDA MÉDICA
         </TabsTrigger>
-        <TabsTrigger className="text-xs" value="consultas" >
+        <TabsTrigger disabled={verify('AFS3.0')} className="text-xs" value="consultas" >
           <HiClipboardList className="h-4 w-4 mr-2" />
           CONSULTAS
         </TabsTrigger>
-        <TabsTrigger className="text-xs" value="exames" >
+        <TabsTrigger disabled={verify('AFS2.0')} className="text-xs" value="exames" >
           <BiSolidInjection className="h-4 w-4 mr-2" />
           EXAMES
         </TabsTrigger>
-        <TabsTrigger className="text-xs" value="configurar" >
+        <TabsTrigger disabled={verify('AFS4.0')} className="text-xs" value="configurar" >
           <IoMdSettings className="h-4 w-4 mr-2" />
           CONFIGURAR
         </TabsTrigger>
@@ -173,15 +175,15 @@ export default function AfapSaude() {
       </TabsContent>
 
       <TabsContent forceMount className="hidden data-[state=active]:flex flex-col gap-4" value="consultas" >
-        <Consultas events={events.filter(item => new Date(item.end) >= new Date())} medicos={medicos} />
+        <Consultas verifyPermission={verify} events={events.filter(item => new Date(item.end) >= new Date())} medicos={medicos} />
       </TabsContent>
 
       <TabsContent forceMount className="hidden data-[state=active]:flex flex-col gap-4" value="exames" >
-        <Exames exames={exames} />
+        <Exames verifyPermission={verify} exames={exames} />
       </TabsContent>
 
       <TabsContent className="px-4" value="configurar" >
-        <Configuracoes medicos={medicos} setMedicos={setArrayMedicos} setExames={setExames} exames={exames} />
+        <Configuracoes  medicos={medicos} setMedicos={setArrayMedicos} setExames={setExames} exames={exames} />
       </TabsContent>
     </Tabs>
 

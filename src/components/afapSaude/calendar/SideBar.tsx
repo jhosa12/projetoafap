@@ -14,6 +14,7 @@ import { ptBR } from "date-fns/locale";
 import { SidebarProps } from "@/types/afapSaude";
 import { Select, SelectContent, SelectTrigger, SelectValue,SelectItem  } from "@/components/ui/select";
 import { Combobox } from "@/components/ui/combobox";
+import useVerifyPermission from "@/hooks/useVerifyPermission";
 
 
 const Sidebar: React.FC<SidebarProps> = ({ 
@@ -27,6 +28,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   setSelectedDoctor,
   medicos,
 }) => {
+
+  const {verify} = useVerifyPermission()
   return (
     <div className="w-full md:w-80 px-4 py-2 bg-white border-r animate-slide-in max-h-[calc(100vh-7rem)] overflow-y-auto">
       <div className="space-y-6">
@@ -47,6 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                           
                           />
           <Button 
+            disabled={verify('AFS1.1')}
             onClick={()=>onAddEvent()} 
             className="w-full bg-calendar-primary hover:bg-calendar-secondary text-white flex items-center justify-center gap-2"
           >

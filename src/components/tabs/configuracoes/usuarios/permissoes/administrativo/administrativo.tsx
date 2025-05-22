@@ -1,214 +1,176 @@
-
-
-import { Card, Checkbox, Label, Tabs, ToggleSwitch, Tooltip } from "flowbite-react";
-import { themaCard, themaTab } from "../permisssoes";
-
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useState } from "react";
 
 interface DataProps {
-  permissions: Array<string>,
-  handlePermission: (permission: string) => void
+  permissions: Array<string>;
+  handlePermission: (permission: string) => void;
 }
 
+const TABS = [
+  { key: "contrato", title: "Adm Contrato" },
+  { key: "caixa", title: "Caixa" },
+  { key: "cobranca", title: "Cobrança" },
+  { key: "gerenciar", title: "Gerenciar" },
+  { key: "convalescencia", title: "Convalescencia" },
+];
 
 export function TabAdministrativo({ permissions, handlePermission }: DataProps) {
+  const [activeTab, setActiveTab] = useState("contrato");
 
+  const renderCheckbox = (id: string, label: string) => (
+    <div key={id} className="flex items-center gap-2">
+      <Checkbox
+        id={id}
+        checked={permissions.includes(id)}
+        onCheckedChange={() => handlePermission(id)}
+      />
+      <label htmlFor={id} className="text-sm">{label}</label>
+    </div>
+  );
 
   return (
-    <Tabs theme={themaTab} aria-label="Tabs with icons" variant="underline">
-      <Tabs.Item active title="Adm Contrato" >
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <TabsList className="mb-4">
+        {TABS.map(tab => (
+          <TabsTrigger key={tab.key} value={tab.key}>{tab.title}</TabsTrigger>
+        ))}
+      </TabsList>
 
-        <div className="grid grid-cols-4 gap-2" >
+      {/* ADM Contrato */}
+      <TabsContent value="contrato">
+        <div className="grid grid-cols-4 gap-2">
+          <Card className="p-2">
+            <CardHeader>
+              <CardTitle className="text-xs">Dados Associado</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              {["ADM1.1.1", "ADM1.1.2", "ADM1.1.3"].map((id, i) =>
+                renderCheckbox(id, ["Editar", "Lançar/Editar Obs.", "Inativar/Ativar"][i])
+              )}
+            </CardContent>
+          </Card>
 
-          <Card theme={themaCard} className="p-2">
-            <h1 className="text-xs font-semibold">Dados Associado</h1>
-            <div className=" space-y-1">
+          <Card className="p-2">
+            <CardHeader>
+              <CardTitle className="text-xs">Historico/Mensal.</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1">
               {[
-                { id: "ADM1.1.1", label: "Editar" },
-                { id: "ADM1.1.2", label: "Lançar/Editar Obs." },
-                { id: "ADM1.1.3", label: "Inativar/Ativar" },
-              ].map((perm) => (
-                <div className="flex items-center gap-2">
-                  <Checkbox id={perm.id} key={perm.id} checked={permissions.includes(perm.id)}
-                    onChange={() => handlePermission(perm.id)} />
-                  <Label htmlFor={perm.id}>  {perm.label}</Label>
-                </div>
-              ))}
-            </div>
+                "ADM1.2", "ADM1.2.1", "ADM1.2.3", "ADM1.2.5", "ADM1.2.6", "ADM1.2.2",
+                "ADM1.2.7", "ADM1.2.8", "ADM1.2.9", "ADM1.2.10", "ADM1.2.11"
+              ].map((id, i) =>
+                renderCheckbox(id, [
+                  "Visualizar", "Adicionar Mensalidade", "Excluir Mensalidade", "Baixar",
+                  "Estornar", "Adicionar Acordos", "Baixa Retroativa", "Alterar Vencimento",
+                  "Alterar data cobrança", "Exibir Pagas", "Manipular Acresc./Desc."
+                ][i])
+              )}
+            </CardContent>
           </Card>
 
-
-
-          <Card theme={themaCard} className="p-2">
-            <h1 className="text-xs font-semibold">Historico/Mensal.</h1>
-            <div className=" space-y-1">
-              {[
-                { id: "ADM1.2", label: "Visualizar" },
-                { id: "ADM1.2.1", label: "Adicionar Mensalidade" },
-                { id: "ADM1.2.3", label: "Excluir Mensalidade" },
-                { id: "ADM1.2.5", label: "Baixar" },
-                { id: "ADM1.2.6", label: "Estornar" },
-                { id: "ADM1.2.2", label: "Adicionar Acordos" },
-                { id: "ADM1.2.7", label: "Baixa Retroativa" },
-                { id: "ADM1.2.8", label: "Alterar Vencimento" },
-                { id: "ADM1.2.9", label: "Alterar data cobrança" },
-                { id: "ADM1.2.10", label: "Exibir Pagas" },
-                { id: "ADM1.2.11", label: "Manipular Acresc./Desc." },
-              ].map((perm) => (
-                <div className="flex items-center gap-2">
-                  <Checkbox id={perm.id} key={perm.id} checked={permissions.includes(perm.id)}
-                    onChange={() => handlePermission(perm.id)} />
-                  <Label className="whitespace-nowrap truncate" htmlFor={perm.id}>  {perm.label}</Label>
-                </div>
-              ))}
-            </div>
+          <Card className="p-2">
+            <CardHeader>
+              <CardTitle className="text-xs">Dependentes</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              {["ADM1.3", "ADM1.3.1", "ADM1.3.3", "ADM1.3.2", "ADM1.3.4"].map((id, i) =>
+                renderCheckbox(id, ["Visualizar", "Exibir Excluidos", "Excluir", "Adicionar", "Editar"][i])
+              )}
+            </CardContent>
           </Card>
 
-
-          <Card theme={themaCard} className="p-2">
-            <h1 className="text-xs font-semibold">Dependentes</h1>
-            <div className=" space-y-1">
-              {[
-                { id: "ADM1.3", label: "Visualizar" },
-                { id: "ADM1.3.1", label: "Exibir Excluidos" },
-                { id: "ADM1.3.3", label: "Excluir" },
-                { id: "ADM1.3.2", label: "Adicionar" },
-                { id: "ADM1.3.4", label: "Editar" },
-              ].map((perm) => (
-                <div className="flex items-center gap-2">
-                  <Checkbox id={perm.id} key={perm.id} checked={permissions.includes(perm.id)}
-                    onChange={() => handlePermission(perm.id)} />
-                  <Label htmlFor={perm.id}>  {perm.label}</Label>
-                </div>
-              ))}
-            </div>
-          </Card>
-
-          <Card theme={themaCard} className="p-2">
-            <h1 className="text-xs font-semibold">Óbitos</h1>
-            <div className=" space-y-1">
-              {[
-                { id: "ADM1.5", label: "Visualizar" },
-
-              ].map((perm) => (
-                <div className="flex items-center gap-2">
-                  <Checkbox id={perm.id} key={perm.id} checked={permissions.includes(perm.id)}
-                    onChange={() => handlePermission(perm.id)} />
-                  <Label htmlFor={perm.id}>  {perm.label}</Label>
-                </div>
-              ))}
-            </div>
-          </Card>
-
-
-
-
-
-        </div>
-      </Tabs.Item>
-      <Tabs.Item active title="Caixa" >
-
-        <div className="grid grid-cols-4 gap-2" >
-          <Card className="p-2" theme={themaCard}>
-            <h1 className="text-xs font-semibold">Movimentação</h1>
-            <div className="space-y-1">{[
-              { id: 'ADM2.1.1', label: "Adicionar" },
-              { id: 'ADM2.1.3', label: "Editar" },
-              { id: 'ADM2.1.4', label: "Excluir" },
-              { id: 'ADM2.1.5', label: "Vizualizar Valores" },
-              { id: 'ADM2.1.6', label: "Caixa geral" },
-            ].map((perm) => (
-              <div className="flex items-center gap-2">
-                <Checkbox id={perm.id} key={perm.id} checked={permissions.includes(perm.id)}
-                  onChange={() => handlePermission(perm.id)} />
-                <Label className="whitespace-nowrap truncate" htmlFor={perm.id}>  {perm.label}</Label>
-              </div>
-            ))}
-            </div>
-          </Card>
-
-          <Card theme={themaCard} className="p-2">
-            <h1 className="text-xs font-semibold">Relatórios</h1>
-            <div className="space-y-1">
-              {[
-                { id: "ADM2.2", label: "Visualizar" },
-
-              ].map((perm) => (
-                <div className="flex items-center gap-2">
-                  <Checkbox id={perm.id} key={perm.id} checked={permissions.includes(perm.id)}
-                    onChange={() => handlePermission(perm.id)} />
-                  <Label htmlFor={perm.id}>  {perm.label}</Label>
-                </div>
-              ))}
-            </div>
-          </Card>
-
-
-
-        </div>
-      </Tabs.Item>
-      <Tabs.Item active title="Cobrança" >
-        <div className="grid grid-cols-4 gap-2" >
-          <Card theme={themaCard}>
-            <h1 className="text-sm font-semibold">Lista Cobrança</h1>
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM3.2')} onChange={() => handlePermission('ADM3.2')} label="Imprimir" />
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM3.1')} onChange={() => handlePermission('ADM3.1')} label="Filtrar" />
-
+          <Card className="p-2">
+            <CardHeader>
+              <CardTitle className="text-xs">Óbitos</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              {renderCheckbox("ADM1.5", "Visualizar")}
+            </CardContent>
           </Card>
         </div>
-      </Tabs.Item>
-      <Tabs.Item active title="Gerenciar" >
-        <div className="grid grid-cols-4 gap-2" >
-          <Card theme={themaCard}>
-            <h1 className="text-sm font-semibold">Plano de contas</h1>
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM4.1')} onChange={() => handlePermission('ADM4.1')} label="Visualizar" />
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM4.1.1')} onChange={() => handlePermission('ADM4.1.1')} label="Adicionar" />
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM4.1.2')} onChange={() => handlePermission('ADM4.1.2')} label="Editar" />
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM4.1.3')} onChange={() => handlePermission('ADM4.1.3')} label="Excluir" />
+      </TabsContent>
 
+      {/* Caixa */}
+      <TabsContent value="caixa">
+        <div className="grid grid-cols-4 gap-2">
+          <Card className="p-2">
+            <CardHeader>
+              <CardTitle className="text-xs">Movimentação</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              {["ADM2.1.1", "ADM2.1.3", "ADM2.1.4", "ADM2.1.5", "ADM2.1.6"].map((id, i) =>
+                renderCheckbox(id, ["Adicionar", "Editar", "Excluir", "Vizualizar Valores", "Caixa geral"][i])
+              )}
+            </CardContent>
           </Card>
-          <Card theme={themaCard}>
-            <h1 className="text-sm font-semibold">Metas</h1>
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM4.2')} onChange={() => handlePermission('ADM4.2')} label="Visualizar" />
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM4.2.1')} onChange={() => handlePermission('ADM4.2.1')} label="Adicionar" />
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM4.2.2')} onChange={() => handlePermission('ADM4.2.2')} label="Editar" />
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM4.2.3')} onChange={() => handlePermission('ADM4.2.3')} label="Excluir" />
 
-          </Card>
-          <Card theme={themaCard}>
-
-            <h1 className="text-sm font-semibold">Convalescencia</h1>
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM4.3')} onChange={() => handlePermission('ADM4.3')} label="Visualizar" />
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM4.3.1')} onChange={() => handlePermission('ADM4.3.1')} label="Adicionar" />
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM4.3.2')} onChange={() => handlePermission('ADM4.3.2')} label="Editar" />
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM4.3.3')} onChange={() => handlePermission('ADM4.3.3')} label="Excluir" />
-
-          </Card>
-          <Card theme={themaCard}>
-            <h1 className="text-sm font-semibold">Planos</h1>
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM4.4')} onChange={() => handlePermission('ADM4.4')} label="Visualizar" />
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM4.4.1')} onChange={() => handlePermission('ADM4.4.1')} label="Adicionar" />
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM4.4.2')} onChange={() => handlePermission('ADM4.4.2')} label="Editar" />
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM4.4.3')} onChange={() => handlePermission('ADM4.4.3')} label="Excluir" />
-
+          <Card className="p-2">
+            <CardHeader>
+              <CardTitle className="text-xs">Relatórios</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              {renderCheckbox("ADM2.2", "Visualizar")}
+            </CardContent>
           </Card>
         </div>
-      </Tabs.Item>
-      <Tabs.Item active title="Convalescencia" >
-        <div className="grid grid-cols-4 gap-2" >
-          <Card theme={themaCard}>
-            <h1 className="text-sm font-semibold">Convalescencia</h1>
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM5')} onChange={() => handlePermission('ADM5')} label="Visualizar" />
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM5.1')} onChange={() => handlePermission('ADM5.1')} label="Adicionar" />
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM5.2')} onChange={() => handlePermission('ADM5.2')} label="Editar" />
-            <ToggleSwitch sizing={'sm'} checked={permissions.includes('ADM5.3')} onChange={() => handlePermission('ADM5.3')} label="Excluir" />
+      </TabsContent>
 
+      {/* Cobrança */}
+      <TabsContent value="cobranca">
+        <div className="grid grid-cols-4 gap-2">
+          <Card className="p-2">
+            <CardHeader>
+              <CardTitle className="text-sm">Lista Cobrança</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              {["ADM3.2", "ADM3.1"].map((id, i) =>
+                renderCheckbox(id, ["Imprimir", "Filtrar"][i])
+              )}
+            </CardContent>
           </Card>
         </div>
-      </Tabs.Item>
+      </TabsContent>
 
+      {/* Gerenciar */}
+      <TabsContent value="gerenciar">
+        <div className="grid grid-cols-4 gap-2">
+          {[
+            { title: "Plano de contas", base: "ADM4.1" },
+            { title: "Metas", base: "ADM4.2" },
+            { title: "Convalescencia", base: "ADM4.3" },
+            { title: "Planos", base: "ADM4.4" }
+          ].map(({ title, base }) => (
+            <Card key={base} className="p-2">
+              <CardHeader>
+                <CardTitle className="text-sm">{title}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-1">
+                {[base, `${base}.1`, `${base}.2`, `${base}.3`].map((id, i) =>
+                  renderCheckbox(id, ["Visualizar", "Adicionar", "Editar", "Excluir"][i])
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </TabsContent>
+
+      {/* Convalescencia */}
+      <TabsContent value="convalescencia">
+        <div className="grid grid-cols-4 gap-2">
+          <Card className="p-2">
+            <CardHeader>
+              <CardTitle className="text-sm">Convalescencia</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              {["ADM5", "ADM5.1", "ADM5.2", "ADM5.3"].map((id, i) =>
+                renderCheckbox(id, ["Visualizar", "Adicionar", "Editar", "Excluir"][i])
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </TabsContent>
     </Tabs>
-  )
+  );
 }
-
-

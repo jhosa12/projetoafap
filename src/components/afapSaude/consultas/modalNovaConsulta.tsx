@@ -30,6 +30,7 @@ interface DataProps {
   setConsultas: (array: Array<ConsultaProps>) => void;
   setConsulta: (consulta: Partial<ConsultaProps>) => void;
   events: Array<EventProps>;
+  verifyPermission: (permission: string) => boolean
   
 }
 
@@ -43,6 +44,7 @@ export function ModalConsulta({
   setConsulta,
   events,
   setConsultas,
+  verifyPermission
 }: DataProps) {
   const [search, setSearch] = useState(false);
   const {
@@ -190,7 +192,7 @@ export function ModalConsulta({
             watch={watch}
             setValue={setValue}
           />
-          <Button variant={"default"} className="ml-auto" type="submit">
+          <Button  disabled={verifyPermission(consulta?.id_consulta ? "AFS3.2" : "AFS3.1")} variant={"default"} className="ml-auto" type="submit">
             {consulta?.id_consulta ? "Atualizar" : "Cadastrar"}
           </Button>
           <ErrorIndicator errors={errors} />

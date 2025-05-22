@@ -1,25 +1,38 @@
-import { Card, ToggleSwitch } from "flowbite-react"
-import { themaCard } from "../permisssoes"
-import { useContext } from "react"
-import { AuthContext } from "@/store/AuthContext"
+import { useContext } from "react";
+import { AuthContext } from "@/store/AuthContext";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 
-
-interface DataProps{
-    permissions:Array<string>
-    handlePermission:(permission:string)=>void
+interface DataProps {
+  permissions: Array<string>;
+  handlePermission: (permission: string) => void;
 }
 
-export function PermissoesEmpresas({permissions,handlePermission}:DataProps){
-    const {empresas} = useContext(AuthContext)
+export function PermissoesEmpresas({ permissions, handlePermission }: DataProps) {
+  const { empresas } = useContext(AuthContext);
 
-
-    return(
-        <Card theme={themaCard}>
-            <h1 className="text-sm font-semibold">Empresas</h1>
-
-            {empresas.map(empresa=>{return(<ToggleSwitch  sizing={'sm'} checked={permissions.includes(`EMP${empresa.id}`)} onChange={()=>handlePermission(`EMP${empresa.id}`)} label={empresa.nome}/>)})}
-            
-        </Card>
-     
-    )
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-sm font-semibold">Empresas</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-2">
+        {empresas.map((empresa: { id: string; nome: string }) => {
+          const permKey = `EMP${empresa.id}`;
+          return (
+            <div key={permKey} className="flex items-center space-x-2">
+              <Checkbox
+                id={permKey}
+                checked={permissions.includes(permKey)}
+                onCheckedChange={() => handlePermission(permKey)}
+              />
+              <label htmlFor={permKey} className="text-sm">
+                {empresa.nome}
+              </label>
+            </div>
+          );
+        })}
+      </CardContent>
+    </Card>
+  );
 }

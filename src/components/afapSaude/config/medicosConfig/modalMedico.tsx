@@ -30,6 +30,7 @@ import pt from 'date-fns/locale/pt-BR';
 import { ajustarData } from "@/utils/ajusteData"
 import { ConsultaProps, MedicoProps } from "@/types/afapSaude"
 import { toast } from "sonner"
+import useVerifyPermission from "@/hooks/useVerifyPermission"
 
 
 interface DataProps {
@@ -59,6 +60,8 @@ export function ModalMedico({ openModal, setOpenModal, dataMedico, medicos, setA
     const [date, setDate] = useState(new Date())
     const [id_exame,setIdExame] = useState('')
     const currentRef = useRef<ReciboRepasse>(null)
+    const [popoverOpen, setPopoverOpen] = useState(false);
+    const {verify} = useVerifyPermission()
 
 
     const imprimirRecibo = useReactToPrint({
@@ -200,7 +203,7 @@ export function ModalMedico({ openModal, setOpenModal, dataMedico, medicos, setA
 
         <form onSubmit={handleSubmit(handleOnSubmit)} className="flex flex-col space-y-2 px-2 pt-2">
           <div className="flex flex-row gap-2">
-            <Button type="submit" size="sm" variant="outline">
+            <Button disabled={verify(dataMedico.id_med?'AFS4.2.2':'AFS4.2.1')} type="submit" size="sm" variant="outline">
               <IoIosSave className="h-3 w-3 mr-1" />
               {dataMedico.id_med ? "Atualizar" : "Salvar"}
             </Button>
@@ -210,14 +213,14 @@ export function ModalMedico({ openModal, setOpenModal, dataMedico, medicos, setA
               Procedimentos
             </Button>
 
-            <Popover modal={true}>
+            <Popover open={popoverOpen} onOpenChange={setPopoverOpen} modal={true}>
               <PopoverTrigger asChild>
-                <Button type="button" size="sm" variant="outline">
+                <Button onClick={()=>setPopoverOpen(true)} disabled={verify('AFS4.2.7')} type="button" size="sm" variant="outline">
                   <BiMoneyWithdraw className="h-3 w-3 mr-1" />
                   Recibo de repasse
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-[220px] space-y-4 p-2">
+              <PopoverContent  className="w-[220px] space-y-4 p-2">
                 <div className="flex flex-col gap-2">
                   <Label className="text-xs">Procedimento</Label>
                   <Select onValueChange={value => setIdExame(value)} defaultValue={id_exame}>
@@ -246,7 +249,7 @@ export function ModalMedico({ openModal, setOpenModal, dataMedico, medicos, setA
                   />
                 </div>
 
-                <Button disabled={loading} onClick={handleRecibo} type="button" size="sm">
+                <Button disabled={loading} onClick={()=>{handleRecibo(), setPopoverOpen(false)}} type="button" size="sm">
                   {loading ? "Carregando..." : "Aplicar"}
                 </Button>
               </PopoverContent>
