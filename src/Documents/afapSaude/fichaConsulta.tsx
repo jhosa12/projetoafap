@@ -5,6 +5,7 @@ import React, { forwardRef } from "react";
 import { roboto_Mono } from "@/fonts/fonts";
 import { ExamesData } from "@/types/afapSaude";
 import { calcularIdade } from "@/utils/calcIdade";
+import Image from "next/image";
 interface DadosProps {
   nome: string;
   cpf: string;
@@ -53,11 +54,12 @@ const FichaConsulta = forwardRef<HTMLDivElement, DadosProps>((
             gap: "20px",
           }}
         >
-          <img
+          <Image
             width={70}
             height={70}
             src={"/afapsaudelogo.jpg"}
             alt="lg"
+            fetchPriority="high"
           />
           <h1 style={{ fontWeight: "bold", fontSize: "20px" }}>
             PRONTUÁRIO MÉDICO N° {id_consulta}

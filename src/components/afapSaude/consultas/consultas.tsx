@@ -725,14 +725,14 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
       <ModalConfirmar
         pergunta="Realmente deseja alterar o status?"
         handleConfirmar={handleAlterarStatus}
-        openModal={modal.status}
+        openModal={modal.status??false}
         setOpenModal={() => setModal({ status: false })}
       />
 
       <ModalConfirmar
         pergunta="Realmente deseja Estornar a consulta?"
         handleConfirmar={handleEstornarConsulta}
-        openModal={modal.estornar}
+        openModal={modal.estornar??false}
         setOpenModal={() => setModal({ estornar: false })}
       />
     </div>

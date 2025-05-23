@@ -19,6 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import ModalBuscaConsulta from "./ModalBuscaConsulta";
 
 interface DataProps {
   openModal: boolean;
@@ -170,13 +171,20 @@ export function ModalConsulta({
     <Dialog open={openModal} onOpenChange={() => setOpenModal(false)}>
       <DialogContent className="sm:max-w-[calc(100vw-20rem)]">
         <DialogHeader>
-          <DialogTitle>
+          <div className="inline-flex gap-8 items-center">
+          <DialogTitle >
             ADMINISTRAR CONSULTA
             {/* <ClienteModal />*/}
           </DialogTitle>
+            {!consulta.id_consulta && <ModalBuscaConsulta reset={reset}/>}
+          </div>
+          
           <DialogDescription>
             {consulta?.id_consulta ? "Editar" : "Cadastrar"}
+            
           </DialogDescription>
+
+          
         </DialogHeader>
 
         <form
