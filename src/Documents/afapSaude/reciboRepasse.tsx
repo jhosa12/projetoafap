@@ -1,11 +1,12 @@
 
 'use client'
 
-
-import React from 'react';
+import logo from "../../../public/afapsaudelogo.jpg"
+import React, { forwardRef } from 'react';
 import { Table } from "flowbite-react";
 import { roboto_Mono } from "@/fonts/fonts";
 import { ConsultaProps, ExamesProps } from '@/types/afapSaude';
+import Image from "next/image";
 
 
 interface DadosProps {
@@ -16,11 +17,13 @@ interface DadosProps {
     exames:Array<ExamesProps>
 }
 
+const ReciboRepasse = forwardRef<HTMLDivElement, DadosProps>((
+{dados,usuario,medico,especialidade,exames}:DadosProps,ref
+)=>{
 
-class ReciboRepasse extends React.Component<DadosProps> {
+    if(!logo)return null
 
-    render() {
-        const { dados,usuario,medico,especialidade,exames } = this.props;
+        
         let total = 0;
         let totalUnitario = 0;
         const options: Intl.DateTimeFormatOptions = {
@@ -35,9 +38,9 @@ class ReciboRepasse extends React.Component<DadosProps> {
       //  const dt = dataAtual.toLocaleDateString('pt-BR', options)
 
         return (
-            <div className={`${roboto_Mono.className} flex flex-col w-full  gap-3 `}>
+            <div ref={ref} className={`${roboto_Mono.className} flex flex-col w-full  gap-3 `}>
                 <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', justifyContent: 'center', gap: '5px' }} >
-                    <img fetchPriority='high' className='w-[120px] h-[120px]'  src={'/afapsaudelogo.png'} alt="logo" />
+                    <Image fetchPriority='high' className='w-[120px] h-[120px]'  src={logo} alt="logo" />
                     <h1 style={{ fontWeight: 'bold', fontSize: '20px' }}>RECIBO DE REPASSE - CONSULTAS/PROCEDIMENTOS</h1>
                 </div>
                 
@@ -116,6 +119,6 @@ class ReciboRepasse extends React.Component<DadosProps> {
             </div>
         );
     }
-}
 
+)
 export default ReciboRepasse;

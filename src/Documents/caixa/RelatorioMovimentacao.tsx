@@ -3,9 +3,7 @@ import logo from "../../../public/novaLogo.png"
 
 // DocumentTemplate.js
 
-import React from 'react';
-
-import { Table } from "flowbite-react";
+import React, { forwardRef } from 'react';
 
 import { SomaProps } from "@/components/tabs/financeiro/caixa/caixa";
 import Sintetico from "./sintetico";
@@ -25,51 +23,13 @@ interface DadosProps {
   infoEmpresa:EmpresaProps|null
 }
 
-class RelatorioMovimentacao extends React.Component<DadosProps> {
-
-
-  /* gerarRelatorioSintetico = ():{cedula:number,pix:number,cartao:number,transferencia:number} => {
-         const {array} = this.props;
-         let totais ={
-           cedula:0,
-           pix:0,
-           cartao:0,
-           transferencia:0
-         }
- 
-         array.forEach(lancamento => {
-           const valor = Number(lancamento?.valor)
-           switch (lancamento.mensalidade?.form_pagto) {
-             case 'DINHEIRO':
-               totais.cedula += valor;
-               break;
-             case 'PIX':
-               totais.pix += valor;
-               break;
-             case 'CARTAO':
-               totais.cartao += valor;
-               break;
-             case 'TRANSFERENCIA':
-               totais.transferencia += valor;
-               break;
-             default:
-               break;
-           }
-         });
-     
-         return totais;
-   }*/
-
-
-
-  render() {
-    const { startDate, endDate, usuario, soma, tipoRelatorio,infoEmpresa } = this.props;
-
-
+const RelatorioMovimentacao = forwardRef<HTMLDivElement, DadosProps>((
+{tipoRelatorio,usuario,soma,array,startDate,endDate,infoEmpresa}:DadosProps,ref
+)=>{
     return (
-      <div className={roboto_Mono.className} style={{display: 'flex', flexDirection: 'column',padding:8,gap:20}} >
+      <div ref={ref} className={roboto_Mono.className} style={{display: 'flex', flexDirection: 'column',padding:8,gap:20}} >
         <div className="flex  w-full justify-center ">
-          <img width={150} height={150} src={infoEmpresa?.logoUrl} alt="logo" />
+          <img width={150} height={150} src={infoEmpresa?.logoUrl??''} alt="logo" />
         </div>
         <h1 style={{ fontWeight: 'bold', fontSize: '24px', textAlign: 'center' }}>Relatório de Movimentação de Caixa</h1>
         <div style={{fontSize:'14px'}} className="flex flex-col gap-1 ">
@@ -81,7 +41,7 @@ class RelatorioMovimentacao extends React.Component<DadosProps> {
 
         {tipoRelatorio === 'SINTETICO' && <Sintetico soma={soma} />}
 
-        {tipoRelatorio === 'ANALITICO' && <Analitico array={this.props.array} soma={soma} />}
+        {tipoRelatorio === 'ANALITICO' && <Analitico array={array} soma={soma} />}
 
      
 
@@ -104,6 +64,6 @@ class RelatorioMovimentacao extends React.Component<DadosProps> {
       </div>
     );
   }
-}
+)
 
 export default RelatorioMovimentacao;

@@ -666,7 +666,7 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
         </ModalConfirmar>
       )}
 
-      <div className="hidden" style={{ display: "none" }}>
+      <div className="hidden" >
         {modal.printProntuario && (
             <FichaConsulta
             ref={currentPage}

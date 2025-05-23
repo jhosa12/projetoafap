@@ -1,7 +1,7 @@
 
 'use client'
 
-
+import logo from "../../../public/afapsaudelogo.jpg"
 import React, { forwardRef } from 'react';
 import { Table } from "flowbite-react";
 import { roboto_Mono } from "@/fonts/fonts";
@@ -18,18 +18,22 @@ const Orcamento = forwardRef<HTMLDivElement, DadosProps>((
 {dados,usuario}:DadosProps,ref
 )=>{
 
+    if(!logo){
+        return null
+    }
+
 
     
        
         let total = 0;
         let totaldesconto = 0;
-        const options: Intl.DateTimeFormatOptions = {
-            weekday: 'long', // Dia da semana por extenso
-            year: 'numeric', // Ano completo
-            month: 'long', // Mês por extenso
-            day: 'numeric' // Dia do mês
+        // const options: Intl.DateTimeFormatOptions = {
+        //     weekday: 'long', // Dia da semana por extenso
+        //     year: 'numeric', // Ano completo
+        //     month: 'long', // Mês por extenso
+        //     day: 'numeric' // Dia do mês
         
-        };
+        // };
     
      //  const dataAtual = new Date();
       //  const dt = dataAtual.toLocaleDateString('pt-BR', options)
@@ -37,7 +41,7 @@ const Orcamento = forwardRef<HTMLDivElement, DadosProps>((
         return (
             <div ref={ref} className={`${roboto_Mono.className} flex flex-col gap-3 p-2`}>
                 <div style={{ display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'end', justifyContent: 'center', gap: '10px' }} >
-                    <Image fetchPriority='high'   width={60} height={60} src={'/afapsaudelogo.jpg'} alt="logoEmp" />
+                    <Image    width={60} height={60} src={logo} alt="logoEmp" />
                     <h1 style={{ fontWeight: 'bold', fontSize: '20px' }}>ORÇAMENTO - EXAMES LABORATORIAIS</h1>
                 </div>
                 <div  style={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'space-between', gap: '5px',border:'1px solid #cdd3dd',borderRadius:'5px',fontSize:'13px' }}>
@@ -45,6 +49,7 @@ const Orcamento = forwardRef<HTMLDivElement, DadosProps>((
                     <div style={{ display: 'flex', flexDirection: 'column', width: '100%',gap: '10px',padding:'10px' }}>
                         <div style={{ justifyContent: 'space-between', display: 'flex', flexDirection: 'row' }}>
                         <span>Nome: {dados.nome}</span>
+                        <span>Nasc.: {dados.data_nasc && new Date(dados.data_nasc).toLocaleDateString('pt-BR')}</span>
                         <span>Celular: {dados.celular}</span>
                         </div>
                         <div style={{ justifyContent: 'space-between', display: 'flex', flexDirection: 'row' }}>

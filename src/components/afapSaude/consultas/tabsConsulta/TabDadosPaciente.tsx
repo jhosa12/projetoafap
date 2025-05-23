@@ -31,7 +31,7 @@ export default function TabDadosPaciente({ register, control, watch, setValue }:
 
     return (
         <>
-        s
+  
         <div className="grid grid-cols-4 gap-4 ">
         <div className="col-span-2 ">
           <Label className="text-xs" htmlFor="nome" >Nome Paciente</Label>

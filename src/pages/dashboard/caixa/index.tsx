@@ -19,18 +19,7 @@ import { ModalMensalidade } from "@/components/modals/admContrato/historico/moda
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { useReactToPrint } from "react-to-print";
 import { SomaProps } from "@/components/tabs/financeiro/caixa/caixa";
 import pageStyle from "@/utils/pageStyle";
@@ -44,6 +33,7 @@ import {
   ResponseCaixaProps,
 } from "@/types/caixa";
 import { MensalidadeBaixaProps } from "@/types/financeiro";
+import ActionsCaixa from "@/components/caixa/ActionsCaixa";
 
 registerLocale("pt", pt);
 
@@ -57,7 +47,6 @@ export default function CaixaMovimentar() {
     useState<Partial<MensalidadeBaixaProps>>();
   const [modalDados, setModalDados] = useState<boolean>(false);
   const [despesas, setDespesas] = useState<number>(0);
-  const currentPage = useRef<RelatorioSintetico>(null);
   const [data, setData] = useState<Partial<ResponseCaixaProps>>();
   const [valorForma, setValorForma] = useState<Record<string, number>>();
   const [openModal, setModal] = useState<{ [key: string]: boolean }>({
@@ -73,21 +62,7 @@ export default function CaixaMovimentar() {
     },
   });
 
-  useEffect(() => {
-    if (selectRelatorio) {
-      ImprimirRelatorio();
-    }
-  }, [selectRelatorio]);
 
-  const ImprimirRelatorio = useReactToPrint({
-    pageStyle: pageStyle,
-    content: () => currentPage.current,
-    onAfterPrint: () => {},
-    onBeforeGetContent: () => {
-      setSelectRelatorio(null);
-    },
-    //  removeAfterPrint:false
-  });
 
   // useEffect(() => {
 
@@ -184,53 +159,7 @@ export default function CaixaMovimentar() {
     handleChamarFiltro();
   }, [infoEmpresa?.id]);
 
-  const handleGerirRelatorio = useCallback(() => {
-    return data?.lista?.reduce(
-      (acumulador, atual) => {
-        const valor = Number(atual.valor);
-
-        if (atual.tipo === "RECEITA")
-          switch (atual?.mensalidade?.form_pagto) {
-            case "PIX":
-              acumulador.pix += valor;
-              break;
-            case "BOLETO":
-              acumulador.boleto += valor;
-              break;
-            case "CARTAO":
-            case "CARTÃO CREDITO":
-            case "CARTÃO DEBITO":
-              acumulador.cartao += valor;
-              break;
-            case "DINHEIRO":
-            case "":
-              acumulador.dinheiro += valor;
-              break;
-            default:
-              break; // Adicione uma ação padrão se necessário
-          }
-
-        if (atual.tipo === "DESPESA") {
-          acumulador.despesas += valor;
-        }
-        if (atual.tipo === "RECEITA") {
-          acumulador.total += valor;
-        }
-
-        return acumulador;
-      },
-      {
-        pix: 0,
-        boleto: 0,
-        cartao: 0,
-        dinheiro: 0,
-        deposito: 0,
-        total: 0,
-        transferencia: 0,
-        despesas: 0,
-      } as SomaProps
-    );
-  }, [selectRelatorio, data?.lista]);
+ 
 
   const handleExcluir = useCallback(async () => {
     toast.promise(
@@ -529,57 +458,8 @@ export default function CaixaMovimentar() {
               <MdOutlineLaunch  />
               Lançar
             </Button>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  disabled={
-                    !permissoes.includes("ADM2.1.1") || !!data?.fechamento
-                  }
-                  color={"success"}
-                  size={"sm"}
-                >
-                  <IoMdOptions />
-                  Ações
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent onCloseAutoFocus={(e) => e.preventDefault()}>
-                <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  asChild
-                  disabled={
-                    !permissoes.includes("ADM2.1.1") || !!data?.fechamento
-                  }
-                ></DropdownMenuItem>
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>
-                    Relatorio de Caixa
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuPortal>
-                    <DropdownMenuSubContent>
-                      <DropdownMenuItem
-                        onClick={() => setSelectRelatorio("ANALITICO")}
-                      >
-                        Analitico
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => setSelectRelatorio("SINTETICO")}
-                      >
-                        Sintético
-                      </DropdownMenuItem>
-                    </DropdownMenuSubContent>
-                  </DropdownMenuPortal>
-                </DropdownMenuSub>
-
-                <DropdownMenuItem
-                  onClick={() => setModal({ fecharCaixa: true })}
-                >
-                  Fechar Caixa
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                <ActionsCaixa infoEmpresa={infoEmpresa} id_empresa={infoEmpresa?.id??''} data={data} setSelectRelatorio={setSelectRelatorio} />
+           
           </form>
         </div>
         {!!data?.fechamento ? (
@@ -780,9 +660,9 @@ export default function CaixaMovimentar() {
           grupo={data?.grupo ?? []}
         />
       )}
-
+{/* 
       <div style={{ display: "none" }}>
-        {/* Renderiza o componente de fechamento apenas uma vez */}
+      
         {selectRelatorio && (
           <RelatorioSintetico
             infoEmpresa={infoEmpresa}
@@ -795,7 +675,7 @@ export default function CaixaMovimentar() {
             ref={currentPage}
           />
         )}
-      </div>
+      </div> */}
     </>
   );
 }

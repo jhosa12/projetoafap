@@ -59,7 +59,7 @@ export function ModalMedico({ openModal, setOpenModal, dataMedico, medicos, setA
     const { postData, data, setData, loading } = useApiPost<Array<ConsultaProps>, ReqReciboProps>('/reciboRepasse')
     const [date, setDate] = useState(new Date())
     const [id_exame,setIdExame] = useState('')
-    const currentRef = useRef<ReciboRepasse>(null)
+    const currentRef = useRef<HTMLDivElement|null>(null)
     const [popoverOpen, setPopoverOpen] = useState(false);
     const {verify} = useVerifyPermission()
 

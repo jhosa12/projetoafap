@@ -1,6 +1,6 @@
 'use client'
 
-
+import logo from "../../../public/afapsaudelogo.jpg"
 import React, { forwardRef } from "react";
 import { roboto_Mono } from "@/fonts/fonts";
 import { ExamesData } from "@/types/afapSaude";
@@ -43,6 +43,11 @@ const FichaConsulta = forwardRef<HTMLDivElement, DadosProps>((
 )=>{
 
 
+  if(!logo){
+    return null
+  }
+
+
     return (
       <div ref={ref} className={` ${roboto_Mono.className} flex flex-col w-full gap-3 `}>
         <div
@@ -57,7 +62,7 @@ const FichaConsulta = forwardRef<HTMLDivElement, DadosProps>((
           <Image
             width={70}
             height={70}
-            src={"/afapsaudelogo.jpg"}
+            src={logo}
             alt="lg"
             fetchPriority="high"
           />
