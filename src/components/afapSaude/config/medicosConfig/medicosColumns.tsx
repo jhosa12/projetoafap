@@ -21,13 +21,13 @@ export function getMedicosColumns({ onEdit, onDelete,verify,onProced }: ActionsP
       cell: ({ row }) => {
         const medico = row.original;
         return (
-          <div className="flex gap-2">
+         
             <img
-              src={medico.imageUrl}
+             src={`${process.env.NEXT_PUBLIC_API_URL}/file/${medico.imageUrl}`}
               alt={medico.imageUrl}
               className="h-6 w-6 rounded-full"
             />
-          </div>
+         
         );
       }
     },
