@@ -54,7 +54,7 @@ interface ReqReciboProps {
 
 
 export function ModalMedico({ openModal, setOpenModal, dataMedico, medicos, setArray, setDataMedico }: DataProps) {
-    const [openProcedimentos, setModalProcedimentos] = useState(false);
+ 
     const { usuario } = useContext(AuthContext)
     const { postData, data, setData, loading } = useApiPost<Array<ConsultaProps>, ReqReciboProps>('/reciboRepasse')
     const [date, setDate] = useState(new Date())
@@ -208,10 +208,7 @@ export function ModalMedico({ openModal, setOpenModal, dataMedico, medicos, setA
               {dataMedico.id_med ? "Atualizar" : "Salvar"}
             </Button>
 
-            <Button onClick={() => setModalProcedimentos(true)} type="button" size="sm" variant="outline">
-              <FaNotesMedical className="h-3 w-3 mr-1" />
-              Procedimentos
-            </Button>
+          
 
             <Popover open={popoverOpen} onOpenChange={setPopoverOpen} modal={true}>
               <PopoverTrigger asChild>
@@ -310,9 +307,7 @@ export function ModalMedico({ openModal, setOpenModal, dataMedico, medicos, setA
       </DialogContent>
     </Dialog>
 
-            {openProcedimentos && <ModalProcedimentos setMedico={setDataMedico} medicos={medicos} setArrray={setArray} usuario={usuario?.nome} medico={dataMedico} openModal={openProcedimentos} setOpenModal={setModalProcedimentos} />}
-
-
+      
             <div style={{ display: 'none' }}>
                 <ReciboRepasse
                     ref={currentRef}

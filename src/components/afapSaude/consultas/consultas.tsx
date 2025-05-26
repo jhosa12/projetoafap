@@ -243,6 +243,9 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
     useReactToPrint({
       pageStyle: pageStyle,
       content: () => currentPage.current,
+      onBeforeGetContent: async () => {
+    await new Promise(resolve => setTimeout(resolve, 500));
+  },
       onAfterPrint: () => {
         setData({}), setModal({ printProntuario: false });
       },
