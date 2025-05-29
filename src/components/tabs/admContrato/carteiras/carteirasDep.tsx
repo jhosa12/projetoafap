@@ -3,7 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import DocumentTemplate from "@/Documents/associado/carteiraAssociado/CarteiraAssociado";
 import { DependentesProps } from "@/types/associado";
 import { EmpresaProps } from "@/types/empresa";
-import pageStyle from "@/utils/pageStyle";
+import { pageStyle } from "@/utils/pageStyle";
 import { Table } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { IoPrint } from "react-icons/io5";

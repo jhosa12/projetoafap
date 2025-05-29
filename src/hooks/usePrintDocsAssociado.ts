@@ -8,7 +8,7 @@ import { ProtocoloCancelamento } from "@/Documents/associado/protocoloCancelamen
 import { api } from "@/lib/axios/apiClient";
 import { AuthContext } from "@/store/AuthContext";
 import { AssociadoProps } from "@/types/associado";
-import pageStyle from "@/utils/pageStyle";
+import { pageStyle } from "@/utils/pageStyle";
 import { removerFusoDate } from "@/utils/removerFusoDate";
 import { useCallback, useContext, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";

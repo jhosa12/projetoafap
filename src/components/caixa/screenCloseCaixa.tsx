@@ -2,7 +2,6 @@
 //import FechamentoResumo from "@/documents/caixa/FechamentoCaixa";
 
 import { FechamentoProps } from "@/types/caixa";
-import pageStyle from "@/utils/pageStyle";
 import { Button } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { HiCheckCircle } from "react-icons/hi2";

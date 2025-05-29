@@ -1,41 +1,58 @@
 
-
-import { useEffect, useState, useCallback, useContext } from "react";
+import {
+  Sidebar,
+  SidebarProvider,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { api } from "@/lib/axios/apiClient";
-import "react-datepicker/dist/react-datepicker.css";
-import "react-big-calendar/lib/css/react-big-calendar.css"
-import 'moment/locale/pt-br';
-import Calendario from "@/components/tabs/afapSaude/agendaMedico/calendario";
-import { FaCalendarAlt } from "react-icons/fa";
-import { HiClipboardList } from "react-icons/hi";
-import { IoMdSettings } from "react-icons/io";
-import { BiSolidInjection } from "react-icons/bi";
+import Consultas from "@/components/afapSaude/consultas/consultas";
 import Configuracoes from "@/components/afapSaude/config/configuracoes";
-import {  ExamesProps, MedicoProps, EventProps } from "@/types/afapSaude";
 import Exames from "@/components/afapSaude/exames/exames";
+import Calendario from "@/components/tabs/afapSaude/agendaMedico/calendario";
+import { EventProps, ExamesProps, MedicoProps } from "@/types/afapSaude";
+import { AuthContext } from "@/store/AuthContext";
+import useVerifyPermission from "@/hooks/useVerifyPermission";
+import { AlertTriangle, CalendarDays, ClipboardList, Cog, LogIn, Settings, Syringe } from "lucide-react";
+import { Avatar } from "flowbite-react";
+import Link from "next/link";
+import { EmpresaProps } from "@/types/empresa";
+import { useGetEmpresasSaude } from "@/utils/getEmpresas";
 import {
   Tabs,
   TabsList,
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs";
-import Consultas from "@/components/afapSaude/consultas/consultas";
-import { AuthContext } from "@/store/AuthContext";
-import useVerifyPermission from "@/hooks/useVerifyPermission";
+import { FaCalendarAlt } from "react-icons/fa";
+import { HiClipboardList } from "react-icons/hi";
+import { BiSolidInjection } from "react-icons/bi";
+import { IoMdSettings } from "react-icons/io";
 
-export default function AfapSaude() {
-  const [medicos, setMedicos] = useState<Array<MedicoProps>>([])
+export default function AppLayout() {
+   const [medicos, setMedicos] = useState<Array<MedicoProps>>([])
   const [events, setEvents] = useState<Array<EventProps>>([])
- // const [menuIndex, setMenuIndex] = useState(0)
   const [exames, setExames] = useState<Array<ExamesProps>>([])
   const {usuario,signOut} = useContext(AuthContext)
   const {verify}=useVerifyPermission()
+  const {infoEmpresa} = useContext(AuthContext)
 
-
-
-  useEffect(() => {
+    useEffect(() => {
     if (!usuario?.nome) signOut()
   }, [usuario])
+
+
+
+
+
+
+
 
 
 
@@ -55,40 +72,18 @@ export default function AfapSaude() {
     setMedicos(array)
   }
 
-  const components: any = {
-    event: ({ event }: { event: EventProps }) => {
-      if (event.status === 'C') return <div className="flex rounded-md flex-col  items-center text-white   h-full pt-1 bg-red-600">
-        <span className="whitespace-nowrap">{event.title}</span>
-
-      </div>
-      if (event.status === 'AD') return <div className="flex flex-col rounded-md  items-center text-white   h-full pt-1 bg-yellow-500">
-        <span>{event.title}</span>
-      </div>
-
-      else return <div className="flex flex-col  items-center rounded-md  text-white   h-full pt-1 bg-green-600">
-        <span>{event.title}</span>
-      </div>
-    }
-  }
 
 
-  /*const setarDataEvento = (fields: Partial<EventProps>) => {
-    setDataEvent((prev: Partial<EventProps>) => {
+     useEffect(()=>{
+     
+      const agendaController =new AbortController()
 
-      if (prev) {
-        return { ...prev, ...fields }
-      }
-      else return { ...fields }
+        agenda(agendaController.signal)
 
-    })
-  }*/
-
-
-
-
-  /*   const toggleDrawer = () => {
-       setIsOpen(!isOpen);
-     };*/
+        return () => {
+          agendaController.abort();
+        }
+     },[infoEmpresa?.id])
 
 
   useEffect(() => {
@@ -99,7 +94,7 @@ export default function AfapSaude() {
     };
 
     getMedicos(controllers.medicos.signal)
-    agenda(controllers.agenda.signal)
+  
     buscarExames(controllers.exames.signal)
 
 
@@ -115,15 +110,15 @@ export default function AfapSaude() {
   const agenda = useCallback(async (signal?: AbortSignal) => {
     try {
       const response = await api.post("/agenda/listaEventos", {
-        tipo: 'td'
+        id_empresa:infoEmpresa?.id
       }, { signal })
 
       const novoArray = response?.data?.map((item: EventProps) => { return { ...item, start: new Date(item.start), end: new Date(item.end) } })
       setEvents(novoArray ?? [])
     } catch (error) {
-      console.log('ERRO NA REQUISIÇÃO 1')
+      console.log('ERRO NA REQUISIÇÃO')
     }
-  }, [])
+  },[infoEmpresa?.id])
 
 
   const getMedicos = useCallback(async (signal?: AbortSignal) => {
@@ -147,45 +142,91 @@ export default function AfapSaude() {
   )
 
 
+  const nomeNormalizado = infoEmpresa?.nome.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+
+if (!nomeNormalizado?.includes("SAUDE")) {
   return (
+    <div className="flex flex-col items-center justify-center h-screen text-center px-4">
+    <AlertTriangle size={48} className="text-yellow-500 mb-4" />
+      <h1 className="text-xl font-bold text-gray-800">Empresa não é do ramo da saúde</h1>
+      <p className="text-sm text-gray-600 mt-2">
+        Por favor, selecione uma empresa do segmento de saúde para visualizar os dados.
+      </p>
+    </div>
+  );
+}
 
-   
-    <Tabs defaultValue="agenda" >
-      <TabsList className="bg-white">
-        <TabsTrigger className="text-xs" value="agenda" >
-          <FaCalendarAlt className="h-4 w-4 mr-2" />
-          AGENDA MÉDICA
-        </TabsTrigger>
-        <TabsTrigger disabled={verify('AFS3.0')} className="text-xs" value="consultas" >
-          <HiClipboardList className="h-4 w-4 mr-2" />
-          CONSULTAS
-        </TabsTrigger>
-        <TabsTrigger disabled={verify('AFS2.0')} className="text-xs" value="exames" >
-          <BiSolidInjection className="h-4 w-4 mr-2" />
-          EXAMES
-        </TabsTrigger>
-        <TabsTrigger disabled={verify('AFS4.0')} className="text-xs" value="configurar" >
-          <IoMdSettings className="h-4 w-4 mr-2" />
-          CONFIGURAR
-        </TabsTrigger>
-      </TabsList>
+  return (
+   <div className="flex-1 px-4 py-1 overflow-auto">
+    <Tabs defaultValue="agenda" className="h-full flex flex-col" >
+      <div className="flex flex-row justify-between">
+      <TabsList className="bg-blue-50 border-blue-200 p-1 mb-1 inline-flex w-fit">
+  <TabsTrigger
+    className="flex text-xs items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm"
+    value="agenda"
+  >
+    <CalendarDays className="h-4 w-4" />
+    AGENDA MÉDICA
+  </TabsTrigger>
 
+  <TabsTrigger
+    disabled={verify('AFS3.0')}
+    className="flex text-xs items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm"
+    value="consultas"
+  >
+    <ClipboardList className="h-4 w-4" />
+    CONSULTAS
+  </TabsTrigger>
+
+  <TabsTrigger
+    disabled={verify('AFS2.0')}
+    className="flex text-xs items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm"
+    value="exames"
+  >
+    <Syringe className="h-4 w-4" />
+    EXAMES
+  </TabsTrigger>
+
+  <TabsTrigger
+    disabled={verify('AFS4.0')}
+    className="flex text-xs items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm"
+    value="configurar"
+  >
+    <Settings className="h-4 w-4" />
+    CONFIGURAR
+  </TabsTrigger>
+</TabsList>
+      <div className="text-right">
+          <p className="text-[13px] font-medium text-slate-800">{infoEmpresa?.cidade_uf}</p>
+          <p className="text-xs font-semibold text-green-500">🟢 Sistema Ativo</p>
+        </div>
+</div>
       <TabsContent  className="px-2" value="agenda" >
-        <Calendario events={events} medicos={medicos} setArrayEvent={setEvents} />
+        <Calendario localEmpresa={infoEmpresa?.cidade_uf??''} id_empresa={infoEmpresa?.id??''} nomeEmpresa={infoEmpresa?.nome??''} events={events} medicos={medicos} setArrayEvent={setEvents} />
       </TabsContent>
 
       <TabsContent forceMount className="hidden data-[state=active]:flex flex-col gap-4" value="consultas" >
-        <Consultas verifyPermission={verify} events={events.filter(item => new Date(item.end) >= new Date())} medicos={medicos} />
+        <Consultas empresa={infoEmpresa} verifyPermission={verify} events={events.filter(item => new Date(item.end) >= new Date())} medicos={medicos} />
       </TabsContent>
 
       <TabsContent forceMount className="hidden data-[state=active]:flex flex-col gap-4" value="exames" >
-        <Exames verifyPermission={verify} exames={exames} />
+        <Exames empresa={infoEmpresa} verifyPermission={verify} exames={exames} />
       </TabsContent>
 
       <TabsContent className="px-4" value="configurar" >
         <Configuracoes  medicos={medicos} setMedicos={setArrayMedicos} setExames={setExames} exames={exames} />
       </TabsContent>
     </Tabs>
-
+    
+</div>
   )
-}
+}   
+
+
+
+ 
+
+  
+
+   
+ 

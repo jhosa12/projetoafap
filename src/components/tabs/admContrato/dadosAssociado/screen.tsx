@@ -1,22 +1,10 @@
 import { ModalEditarDados } from "@/components/modals/admContrato/dadosAssociado/modalEditarDados";
-import { AuthContext } from "@/store/AuthContext";
 import { AssociadoProps } from "@/types/associado";
-import { Badge, Button, ButtonGroup, Card, Dropdown } from "flowbite-react";
-import { useContext, useState } from "react";
+import { Badge, Button,  Card, Dropdown } from "flowbite-react";
+import { useState } from "react";
 import { BiSave } from "react-icons/bi";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
-import { TbWheelchair } from "react-icons/tb";
-import { ModalAlterarPlano } from "../../../modals/admContrato/dadosAssociado/modalAlterarPlano";
-import { ModalInativar } from "../../../modals/admContrato/dadosAssociado/modalInativar";
-import ImpressaoCarne from "@/Documents/associado/mensalidade/ImpressaoCarne";
-import ContratoResumo from "@/Documents/associado/contratoResumido/ContratoResumo";
-import DocumentTemplate from "@/Documents/associado/contratoAdesão/DocumentTemplate";
-import Carteiras from "@/Documents/associado/carteiraAssociado/CarteiraAssociado";
 import { EmpresaProps } from "@/types/empresa";
-import { CartaNovoAssociado } from "@/Documents/associado/cartaNovoAssociado/cartaDocument";
-import { ProtocoloCancelamento } from "@/Documents/associado/protocoloCancelamento/ProtocoloCancelamento";
-import { ModalConfirmar } from "@/components/modals/modalConfirmar";
-import { usePrintDocsAssociado } from "@/hooks/usePrintDocsAssociado";
 import { UserProps } from "@/types/user";
 import { ButtonWhatsApp } from "@/components/ButtonWhatsappOpen";
 

@@ -4,7 +4,6 @@ import { api } from '@/lib/axios/apiClient';
 import { toast } from 'sonner';
 import useApiPut from '@/hooks/useApiPut';
 import { ExameRealizadoProps } from '@/types/afapSaude';
-import { FiltroForm } from '@/components/afapSaude/exames/filtro';
 import { removerFusoDate } from '@/utils/removerFusoDate';
 
 interface UseExamesHandlersParams {
@@ -15,6 +14,7 @@ interface UseExamesHandlersParams {
   setModal: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
   setExameSelected: React.Dispatch<React.SetStateAction<ExameRealizadoProps>>;
   valorInicial: ExameRealizadoProps;
+  id_empresa:string
 }
 
 export function useExamesHandlers({
@@ -25,6 +25,7 @@ export function useExamesHandlers({
   setModal,
   setExameSelected,
   valorInicial,
+  id_empresa
 }: UseExamesHandlersParams) {
   const [formPag, setFormPag] = useState<string>("");
 
@@ -58,6 +59,7 @@ export function useExamesHandlers({
         historico: `EXAME.${exameSelected.id_exame}-${exameSelected.nome}-${exameSelected.tipoDesc}`,
         valor: exameSelected.exames.reduce((acc, item) => acc + item.valorFinal, 0),
         forma_pagamento: formPag,
+        id_empresa:exameSelected.id_empresa
       }),
       {
         loading: "Recebendo exame...",
@@ -109,6 +111,7 @@ export function useExamesHandlers({
           data_orcamento: dataAtual,
           data_realizado: undefined,
           data_prev: dataPrev,
+          id_empresa:id_empresa
         }),
         {
           loading: "Gerando novo exame...",

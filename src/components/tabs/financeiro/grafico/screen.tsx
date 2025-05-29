@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { ajustarData } from "@/utils/ajusteData";
 import { Control, Controller, SubmitHandler, useForm, UseFormHandleSubmit, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { ModalLoading } from "@/components/modals/loading/modalLoading";
+import Grafico from "@/components/graficos/primeirografico";
+import { GraficoMensalidades } from "@/components/graficos/Grafico";
 
 
 
@@ -313,17 +315,14 @@ useEffect(()=>{
 
   return (<>
   {loading?<ModalLoading show={loading}/>:
-    <div className="flex flex-col  py-2 px-4  text-black w-full overflow-y-auto h-[calc(100vh-120px)]">
+    <div className="flex flex-col  py-2 px-4  text-black w-full">
 <ModalFiltroGraf handleSubmit={handleSubmit} loading={loading} control={control} register={register} setValue={setValue} watch={watch} handleOnSubmit={filtroMensalidade} onClose={()=>setOpen(false)} show={open} />
         <Button onClick={()=>setOpen(true)} variant={'outline'} size={'sm'} className="ml-auto" type="button">Filtrar</Button>
 
-    <div className="flex flex-col justify-center h-full">
+  
        
-      {Array.isArray(arrayGraf) && arrayGraf?.length > 0 && <GraficoMensalidade
-        dados={arrayGraf}
-      //completo={true}
-      />}
-    </div>
+      <GraficoMensalidades mensalidades={data?.mensalidade??[]}/>
+  
 
   </div>}
   </>
@@ -445,4 +444,37 @@ export const ModalFiltroGraf = ({onClose,show,handleSubmit,register,setValue,loa
       </Modal.Body>
     </Modal>
   )
+}
+
+
+
+
+
+
+
+
+export function agruparMensalidadesPorMes(mensalidades: MensalidadeProps[]) {
+  const dadosPorMes: Record<string, { valorTotal: number; quantidade: number }> = {};
+
+  mensalidades.forEach(({ data, _sum, _count }) => {
+    const dt = new Date(data);
+    const mesAno = `${dt.getMonth() + 1}-${dt.getFullYear()}`; // Ex: "5-2025"
+
+    if (!dadosPorMes[mesAno]) {
+      dadosPorMes[mesAno] = { valorTotal: 0, quantidade: 0 };
+    }
+
+    dadosPorMes[mesAno].valorTotal +=Number( _sum.valor);
+    dadosPorMes[mesAno].quantidade +=Number( _count.data);
+  });
+
+  // Transformar em array para o gráfico
+  return Object.entries(dadosPorMes).map(([mesAno, { valorTotal, quantidade }]) => {
+    const [mes, ano] = mesAno.split('-');
+    return {
+      mesAno: `${Number(mes).toString().padStart(2, '0')}/${ano}`,
+      valorTotal,
+      quantidade,
+    };
+  });
 }

@@ -11,10 +11,10 @@ import { Button } from "../ui/button"
 import useApiPost from "@/hooks/useApiPost"
 import { AtivosInativos } from "@/Documents/ativosInativos/ListaAtivosInativos"
 import { useReactToPrint } from "react-to-print"
-import pageStyle from "@/utils/pageStyle"
 import { ajustarData } from "@/utils/ajusteData"
 import { Spinner } from "flowbite-react"
 import { DatePickerInput } from "../DatePickerInput"
+import { pageStyle } from "@/utils/pageStyle"
 
 interface ModalProps {
     open: boolean

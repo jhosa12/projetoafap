@@ -4,13 +4,14 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { api } from "@/lib/axios/apiClient";
 import { useReactToPrint } from "react-to-print";
 import DocumentTemplate from "@/Documents/renovacao/impressao";
-import pageStyle from "@/utils/pageStyle";
+
 import { AuthContext } from "@/store/AuthContext";
 import { IoPrint } from "react-icons/io5";
 import { FaFilter } from "react-icons/fa6";
 import { PopoverRenovar } from "@/components/renovacao/popOverRenovar";
 import { themeLight } from "@/components/tabs/admContrato/acordos/screen";
 import { toast } from "sonner";
+import { pageStyle } from "@/utils/pageStyle";
 
 
 

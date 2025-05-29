@@ -13,8 +13,8 @@ import { ConsultoresProps } from "@/types/consultores";
 import { ajustarData } from "@/utils/ajusteData";
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
 import { Button } from "@/components/ui/button";
-import pageStyle from "@/utils/pageStyle";
 import { toast } from "sonner";
+import { pageStyle } from "@/utils/pageStyle";
 
 
 interface CobrancaProps {

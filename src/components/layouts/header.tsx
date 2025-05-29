@@ -4,10 +4,9 @@ import { useContext, useState } from "react";
 import { Avatar, Label } from "flowbite-react";
 import { AuthContext } from "@/store/AuthContext";
 import Router from "next/router";
-import Link from "next/link";
 import Image from "next/image";
 
-import { Bell, LogIn, Menu } from "lucide-react";
+import { LogIn, Menu } from "lucide-react";
 
 import {
   Menubar,
@@ -33,8 +32,9 @@ import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ModalAtivosInativos } from "../modals/modalAtivosInativos";
 import LinkNavigate from "../Link";
+import { FaBell } from "react-icons/fa";
 
-export function Header() {
+export function Header({path}:{path?:string}) {
   const {
     usuario,
     empresas,
@@ -48,33 +48,37 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="w-full border-b border-gray-200 bg-white px-3 py-2">
+    <header className="w-full border-b border-gray-200 bg-white px-3 py-1">
       <div className="flex items-center w-full justify-between">
         {/* LOGO + Empresa */}
         <div className="flex items-center gap-3">
           <Image width={40} height={40} src="/improved_logo.png" alt="Logo" />
           <div className="sm:flex flex-col">
-            <Label value="AFAP Gestão - V 2.0" />
+            <Label className="text-xs" value="AFAP Gestão - V 2.0" />
             <Select value={selectEmp} onValueChange={setSelectEmp}>
-              <SelectTrigger className="w-[150px] h-6 text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {empresas
-                    ?.filter((emp) => permissoes.includes(`EMP${emp.id}`))
-                    .map((emp) => (
-                      <SelectItem
-                        key={emp.id}
-                        value={emp.id}
-                        className="text-xs"
-                      >
-                        {emp.nome}
-                      </SelectItem>
-                    ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+                <SelectTrigger className="w-[150px] h-5 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {empresas
+                      ?.filter((emp) => permissoes.includes(`EMP${emp.id}`))
+                      .map((emp) => (
+                        <SelectItem
+                          key={emp.id}
+                          value={emp.id}
+                          className="text-xs"
+                        >
+                          {emp.nome}
+                        </SelectItem>
+                      ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
+          
+              
+              
           </div>
         </div>
 
@@ -98,6 +102,7 @@ export function Header() {
                 <LinkNavigate href="/dashboard/cobranca">Cobrança</LinkNavigate>
                 <LinkNavigate href="/dashboard/gerenciarAdministrativo">Gerenciar</LinkNavigate>
                 <LinkNavigate href="/dashboard/financeiro">Financeiro</LinkNavigate>
+                 <LinkNavigate href="/dashboard/analyze">DashBoard</LinkNavigate>
                 <LinkNavigate href="/dashboard/sorteio">Sorteios</LinkNavigate>
                 <LinkNavigate href="/dashboard/sorteio/configuracoes">Configurações de Sorteio</LinkNavigate>
 
@@ -142,6 +147,7 @@ export function Header() {
                 <MenubarItem><LinkNavigate href="/dashboard/cobranca">Cobrança</LinkNavigate></MenubarItem>
                 <MenubarItem><LinkNavigate href="/dashboard/gerenciarAdministrativo">Gerenciar</LinkNavigate></MenubarItem>
                 <MenubarItem><LinkNavigate href="/dashboard/financeiro">Financeiro</LinkNavigate></MenubarItem>
+                 <MenubarItem><LinkNavigate href="/dashboard/analyze">DashBoard</LinkNavigate></MenubarItem>
                 <MenubarSub>
                   <MenubarSubTrigger>Sorteios</MenubarSubTrigger>
                   <MenubarSubContent>
@@ -167,7 +173,6 @@ export function Header() {
             <MenubarMenu>
               <MenubarTrigger asChild>
                 <button
-                  disabled={!permissoes.includes("EMP4e61a06f-dee3-4c74-8b31-aca0d771dbff")}
                   className="disabled:cursor-not-allowed disabled:text-gray-400"
                   onClick={() => Router.push("/dashboard/afapSaude")}
                 >
@@ -195,19 +200,19 @@ export function Header() {
         </div>
 
         {/* USUÁRIO */}
-        <div className="hidden sm:flex items-center gap-4">
-          <Button variant="secondary">
-            <Bell size={20} />
-          </Button>
-          <Button onClick={signOut} variant="secondary">
-            <LogIn size={20} />
-          </Button>
-          <Avatar rounded img={usuario?.image} />
-          <div className="flex flex-col items-start">
-            <span className="text-sm font-semibold">{usuario?.nome}</span>
-            <span className="text-xs">{usuario?.cargo}</span>
-          </div>
-        </div>
+       <div className="hidden sm:flex items-center gap-4">
+                         <button  >
+                           <FaBell  size={14} />
+                         </button>
+                         <button  onClick={signOut} >
+                           <LogIn color="black" size={15} />
+                         </button>
+                         <Avatar size="sm" rounded img={usuario?.image} />
+                       
+                           <span className="text-xs font-semibold">{usuario?.nome}</span>
+                         
+                       
+                       </div>
       </div>
 
       {/* Modal */}

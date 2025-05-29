@@ -7,7 +7,8 @@ import {
   CalendarDays, 
   CalendarRange, 
   Calendar as CalendarIcon, 
-  PlusCircle 
+  PlusCircle, 
+  Building2
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -15,7 +16,23 @@ import { SidebarProps } from "@/types/afapSaude";
 import { Select, SelectContent, SelectTrigger, SelectValue,SelectItem  } from "@/components/ui/select";
 import { Combobox } from "@/components/ui/combobox";
 import useVerifyPermission from "@/hooks/useVerifyPermission";
-
+const empresas = [
+  { 
+  id: '1',
+    nome: 'Empresa 1',
+    cidade: 'Cidade 1',
+  },
+  {
+    id: '2',
+    nome: 'Empresa 2',
+    cidade: 'Cidade 2',
+  },
+  {
+    id: '3',
+    nome: 'Empresa 3',
+    cidade: 'Cidade 3',
+  },
+]
 
 const Sidebar: React.FC<SidebarProps> = ({ 
   view, 
@@ -27,6 +44,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   selectedDoctor,
   setSelectedDoctor,
   medicos,
+  nomeEmpresa,
 }) => {
 
   const {verify} = useVerifyPermission()
@@ -36,9 +54,20 @@ const Sidebar: React.FC<SidebarProps> = ({
         <div>
           <h2 className="text-lg font-medium  text-gray-800">Calendário</h2>
           <p className="text-sm text-gray-500">{format(date, "MMMM yyyy", { locale: ptBR })}</p>
+          
         </div>
 
         <div className="space-y-2">
+
+           <Card className="bg-blue-50/50 border-blue-200">
+          <CardContent className="px-3 py-2">
+            <div className="flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-blue-600" />
+              <span className="text-sm  font-medium text-blue-800">Empresa Ativa</span>
+            </div>
+            <p className="text-sm ms-2 text-gray-700 font-semibold">{nomeEmpresa}</p>
+          </CardContent>
+        </Card>
         
 
            <Combobox

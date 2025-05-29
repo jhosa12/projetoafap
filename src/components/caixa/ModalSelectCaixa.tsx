@@ -18,7 +18,7 @@ import RelatorioSintetico from "@/Documents/caixa/RelatorioMovimentacao";
 import { SomaProps } from "../tabs/financeiro/caixa/caixa";
 import { EmpresaProps } from "@/types/empresa";
 import { useReactToPrint } from "react-to-print";
-import pageStyle from "@/utils/pageStyle";
+import { pageStyle } from "@/utils/pageStyle";
 
 interface FilterCaixaProps{
     caixa:string

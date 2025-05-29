@@ -7,7 +7,7 @@ import { BiSolidUserPlus } from "react-icons/bi";
 import { IoArchive } from "react-icons/io5";
 import ResumoVendedor from "@/Documents/vendas/ResumoVendedor";
 import { useReactToPrint } from "react-to-print";
-import pageStyle from "@/utils/pageStyle";
+
 import useApiGet from "@/hooks/useApiGet";
 import {
   Dialog,
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableBody, TableCell, TableHead, TableRow } from "@/components/ui/table";
+import { pageStyle } from "@/utils/pageStyle";
 
 
 interface DataProps{

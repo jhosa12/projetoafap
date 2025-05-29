@@ -8,7 +8,7 @@ import { Header } from "./header";
 
 
   
-export function MenuLateral(){
+export function MenuLateral({path}:{path?:string}){
    
     const [isOpen,setIsOpen]=useState(false);
     const {usuario,getDadosFixos,empresas,permissoes,selectEmp,setSelectEmp}= useContext(AuthContext);
@@ -53,7 +53,7 @@ export function MenuLateral(){
   return (
  
    
-<Header/>
+<Header path={path}/>
 
   
  

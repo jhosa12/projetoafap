@@ -12,9 +12,9 @@ import { EmpresaProps } from "@/types/empresa";
 import { HiPrinter } from "react-icons/hi2";
 import { useReactToPrint } from "react-to-print";
 import {RelatorioEstoque} from "../../Documents/estoque/RelatorioEstoque";
-import pageStyle from "@/utils/pageStyle";
 import { Button } from "../ui/button";
 import { AuthContext } from "@/store/AuthContext";
+import { pageStyle } from "@/utils/pageStyle";
 
 
 

@@ -1,47 +1,61 @@
-import { useRef } from "react"
-import { useReactToPrint } from "react-to-print"
-import { Button } from "./ui/button"
-import { LucideIcon, Printer } from "lucide-react"
-import pageStyle from "@/utils/pageStyle"
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+import { Button } from "./ui/button";
+import { LucideIcon, Printer } from "lucide-react";
+import { pageStyle } from "@/utils/pageStyle";
 
-interface PrintProps{
-    children: React.ReactNode
-    documentTitle?: string
-    iconButton?:() =>JSX.Element
-    sizeButton?:"default" | "sm" | "lg" | "icon" | null | undefined
-    textButton:string
-    
+
+interface PrintProps {
+  children: React.ReactNode;
+  documentTitle?: string;
+  iconButton?: () => JSX.Element;
+  sizeButton?: "default" | "sm" | "lg" | "icon" | null | undefined;
+  textButton: string;
+  onAfterPrint?: () => void;
+  varianteButton?:
+    | "link"
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | null
+    | undefined;
+    pageOrientation?: string;
 }
 
-export default function PrintDocComponent({children,documentTitle,sizeButton='sm',textButton,iconButton}:PrintProps){
+export default function PrintDocComponent({
+  children,
+  documentTitle,
+  sizeButton = "sm",
+  textButton,
+  iconButton,
+  onAfterPrint,
+  varianteButton='outline',
+  pageOrientation=pageStyle
+}: PrintProps) {
+  const ref = useRef<HTMLDivElement | null>(null);
 
-    const ref = useRef<HTMLDivElement|null>(null)
+  const print = useReactToPrint({
+    pageStyle: pageOrientation,
+    content: () => ref.current,
+    onBeforeGetContent: async () => {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    },
+    documentTitle: documentTitle ?? "Documento",
+    onAfterPrint: onAfterPrint,
+  });
 
-    const print = useReactToPrint({
-        pageStyle:pageStyle,
-        content: () => ref.current,
-        documentTitle:documentTitle??"Documento",
-        onAfterPrint: () =>{},
-    })
-    
+  return (
+    <>
+      <Button size={sizeButton} variant={varianteButton} onClick={print}>
+        {iconButton ? iconButton() : <Printer />}
+        {textButton}
+      </Button>
 
-
-    return (
-        <>
-
-             <Button size={sizeButton}  variant={"outline"} onClick={print}>
-                {iconButton?(iconButton()):<Printer  />}
-                {textButton}
-             </Button>
-
-<div className="hidden" >
-       <div ref={ref}>
-          {children}
-        </div>
-</div>
-           
-           
-
-        </>
-    )
+      <div style={{ display: "none" }}>
+        <div ref={ref}>{children}</div>
+      </div>
+    </>
+  );
 }

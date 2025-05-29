@@ -27,7 +27,7 @@ export function Combobox({ items, value, onChange, placeholder='Selecione um ite
   return (
     <PopoverRoot  open={open} onOpenChange={setOpen}>
       <PopoverTrigger disabled={disabled} asChild className=" w-full">
-        <Button className=" justify-between text-xs truncate" variant="outline" role="combobox" aria-expanded={open}>
+        <Button className=" justify-between text-xs truncate border-gray-400" variant="outline" role="combobox" aria-expanded={open}>
         <span className="truncate">{selectedItem ? selectedItem?.label : placeholder}</span>
           <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
         </Button>

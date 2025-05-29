@@ -5,7 +5,6 @@ import { AuthContext } from "@/store/AuthContext";
 import Orcamento from "@/Documents/afapSaude/orcamento";
 import { ajustarData } from "@/utils/ajusteData";
 import handleWhatsAppClick from "@/utils/openWhats";
-import pageStyle from "@/utils/pageStyle";
 import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
 import { ExameRealizadoProps, ExamesProps } from "@/types/afapSaude";
 import { toast } from "sonner";
@@ -27,10 +26,13 @@ import { FilterIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HiDocumentAdd } from "react-icons/hi";
 import { verify } from "crypto";
+import { EmpresaProps } from "@/types/empresa";
+import { pageStyle } from "@/utils/pageStyle";
 
 interface DataProps {
   exames: Array<ExamesProps>;
   verifyPermission: (permission: string) => boolean;
+  empresa:EmpresaProps|null
 }
 
 interface FiltroForm {
@@ -40,9 +42,10 @@ interface FiltroForm {
   status: string;
 }
 
-export default function Exames({ exames,verifyPermission }: DataProps) {
+export default function Exames({ exames,verifyPermission,empresa }: DataProps) {
   const valorInicial = {
     id_exame: null,
+    id_empresa: "",
     celular: "",
     data_orcamento: new Date(),
     data_realizado: new Date(),
@@ -106,6 +109,7 @@ export default function Exames({ exames,verifyPermission }: DataProps) {
     setExames,
     listarExamesRealizados: () => listarExamesRealizados(getValues()),
     setModal,
+    id_empresa:empresa?.id??'',
     setExameSelected,
     valorInicial,
   });
@@ -145,9 +149,9 @@ export default function Exames({ exames,verifyPermission }: DataProps) {
   );
 
   useEffect(() => {
-    if(examesRealizados.length > 0) return
+   // if(examesRealizados.length > 0) return
     listarExamesRealizados(getValues());
-  }, []);
+  }, [empresa?.id]);
 
   const listarExamesRealizados = useCallback(
     async ({ endDate, nome, startDate, status }: FiltroForm) => {
@@ -160,6 +164,7 @@ export default function Exames({ exames,verifyPermission }: DataProps) {
 
       try {
         const response = await api.post("/afapSaude/examesRealizados/listar", {
+          id_empresa:empresa?.id ??undefined,
           endDate: dataFim,
           nome,
           startDate: dataIni,
@@ -170,7 +175,7 @@ export default function Exames({ exames,verifyPermission }: DataProps) {
         console.log(error);
       }
     },
-    []
+    [empresa?.id]
   );
 
   return (

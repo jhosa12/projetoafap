@@ -1,17 +1,15 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { Calendar, dateFnsLocalizer, ToolbarProps, View } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "moment/locale/pt-br"; // Importa o idioma português para o moment
 import { ModalDrawer } from "@/components/tabs/afapSaude/agendaMedico/drawer";
-import {  Modal, Alert } from "flowbite-react";
+import {  Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
 import ptBR from "date-fns/locale/pt-BR";
 import { format, parse, startOfWeek } from "date-fns";
-import { AuthContext } from "@/store/AuthContext";
 import { getDay } from "date-fns";
 import { api } from "@/lib/axios/apiClient";
-import { LuCalendarCheck, LuCalendarClock, LuCalendarX } from "react-icons/lu";
 import { CalendarEvent as CalendarEventProps,  EventProps, MedicoProps } from "@/types/afapSaude";
 import { toast } from "sonner";
 import Sidebar from "@/components/afapSaude/calendar/SideBar";
@@ -56,25 +54,18 @@ interface DataProps {
   medicos: Array<MedicoProps>;
   events: Array<EventProps>;
   setArrayEvent: (array: Array<EventProps>) => void;
-}
-
-interface ObjectArrayMod {
-  id_ag: number;
-  id_med: number;
-  id_usuario: number;
-  data: Date;
-  start: Date;
-  end: Date;
-  title: string;
-  status: string;
-  obs: string;
-  clientes: Array<EventProps>;
+  id_empresa:string
+  nomeEmpresa:string,
+  localEmpresa:string
 }
 
 export default function Calendario({
   medicos,
   events,
   setArrayEvent,
+  id_empresa,
+  nomeEmpresa,
+  localEmpresa
 }: DataProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [modalDelete, setModalDel] = useState(false);
@@ -284,6 +275,7 @@ export default function Calendario({
       <div className="hidden md:block">
         <Sidebar
           view={view}
+          nomeEmpresa={nomeEmpresa}
           setView={setView}
           date={date}
           onNavigate={handleNavigate}
@@ -295,12 +287,14 @@ export default function Calendario({
         />
       </div>
       <ModalDrawer
+        id_empresa={id_empresa}
         deletarEvento={deletarEvento}
         setArrayEvent={setArrayEvent}
         events={events}
         dataEvent={dataEvent}
         arrayMedicos={medicos}
         isOpen={isOpen}
+        local={localEmpresa}
         toggleDrawer={toggleDrawer}
       />
      <div className="flex-1 flex flex-col px-2 py-1 overflow-hidden">

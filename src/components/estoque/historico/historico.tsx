@@ -11,9 +11,9 @@ import RelatorioMov from "@/Documents/estoque/RelatorioMov";
 import { GrRevert } from "react-icons/gr";
 import { Tooltip } from "react-tooltip";
 import { ModalConfirm } from "../../modals/estoque/modalConfirm";
-import pageStyle from "@/utils/pageStyle";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { pageStyle } from "@/utils/pageStyle";
 
 
 interface DataProps {

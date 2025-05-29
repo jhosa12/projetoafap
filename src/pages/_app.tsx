@@ -6,7 +6,6 @@ import type { AppProps } from 'next/app';
 import Error from 'next/error';
 import { useRouter } from 'next/router';
 import { memo, StrictMode, useEffect } from 'react';
-
 import { Toaster } from "@/components/ui/sonner";
 
 
@@ -19,10 +18,10 @@ function isLoginPage(pathname: string) {
 }
 
 
-function PrivateLayout({ children }: { children: React.ReactNode }) {
+function PrivateLayout({ children,pathName }: { children: React.ReactNode,pathName:string }) {
   return (
     <div translate='no'  className="w-full">
-      <Header />
+      <Header path={pathName} />
       
      <div> {children}</div>
      
@@ -69,7 +68,7 @@ function PrivateRouter({ Component, pageProps }: AppProps) {
   // Renderiza o layout privado apenas para rotas protegidas
   if (!isLoginPage(router.pathname)) {
     return (
-      <PrivateLayout >
+      <PrivateLayout pathName={router.pathname} >
         <ModalLoading show={loadingInfo} />
         <Component  {...pageProps} />
       </PrivateLayout>

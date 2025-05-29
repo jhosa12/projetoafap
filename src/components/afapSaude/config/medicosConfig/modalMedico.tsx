@@ -23,7 +23,6 @@ import { BiMoneyWithdraw } from "react-icons/bi"
 import useApiPost from "@/hooks/useApiPost"
 import ReciboRepasse from "@/Documents/afapSaude/reciboRepasse"
 import { useReactToPrint } from "react-to-print"
-import pageStyle from "@/utils/pageStyle"
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
@@ -31,6 +30,7 @@ import { ajustarData } from "@/utils/ajusteData"
 import { ConsultaProps, MedicoProps } from "@/types/afapSaude"
 import { toast } from "sonner"
 import useVerifyPermission from "@/hooks/useVerifyPermission"
+import { pageStyle } from "@/utils/pageStyle"
 
 
 interface DataProps {

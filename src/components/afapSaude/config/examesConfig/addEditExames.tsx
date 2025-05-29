@@ -6,13 +6,13 @@ import { api } from "@/lib/axios/apiClient";
 import { IoIosPrint } from "react-icons/io";
 import { useReactToPrint } from "react-to-print";
 import RelatorioLucroExames from "@/Documents/afapSaude/relatorioLucroExames";
-import pageStyle from "@/utils/pageStyle";
 import { ModalConfirmar } from "../../../modals/modalConfirmar";
 import { ExamesProps } from "@/types/afapSaude";
 import { toast } from "sonner";
 import { DataTable } from "../../../ui/data-table";
 import {  getExamesColumns } from "./examesColumns";
 import useVerifyPermission from "@/hooks/useVerifyPermission";
+import { pageStyle } from "@/utils/pageStyle";
 
 interface DataProps {
   exames: Array<ExamesProps>;

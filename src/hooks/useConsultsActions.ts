@@ -4,12 +4,13 @@ import { api } from "@/lib/axios/apiClient";
 import { AuthContext } from "@/store/AuthContext";
 import { useReactToPrint } from "react-to-print";
 import { ajustarData } from "@/utils/ajusteData";
-import pageStyle from "@/utils/pageStyle";
+
 import { ConsultaProps, MedicoProps, EventProps } from "@/types/afapSaude";
 import ListaConsultas from "@/Documents/afapSaude/listaConsultas";
 import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
 import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
 import { toast } from "sonner";
+import { pageStyle } from "@/utils/pageStyle";
 
 export const valorInicial = {
   celular: "",
@@ -113,7 +114,7 @@ export const useConsultasActions = ({ medicos, consultas, setConsultas }: UseCon
   }, [buscarConsultas]);
 
   const imprimirFicha = useReactToPrint({
-    pageStyle,
+    pageStyle:pageStyle,
     content: () => currentPage.current,
     onAfterPrint: () => setModal((prev) => ({ ...prev, printProntuario: false })),
   });

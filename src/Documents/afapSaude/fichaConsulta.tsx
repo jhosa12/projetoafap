@@ -13,6 +13,7 @@ interface DadosProps {
   bairro: string;
   cidade: string;
   especialidade: string;
+  logoUrl: string;
   identidade: string;
   celular: string;
   nascimento: Date | undefined;
@@ -36,6 +37,7 @@ const FichaConsulta = forwardRef<HTMLDivElement, DadosProps>((
    parentesco,
     responsavel,
     especialista,
+    logoUrl,
     especialidade,
     id_consulta,
     procedimentos}:DadosProps,ref
@@ -56,14 +58,14 @@ const FichaConsulta = forwardRef<HTMLDivElement, DadosProps>((
             gap: "20px",
           }}
         >
-          <img
-            loading="lazy"
+         {logoUrl && <img
+           
             width={70}
             height={70}
-            src={'/afapsaudelogo.jpg'}
+            src={logoUrl}
             alt="lg"
          
-         />
+         />}
           <h1 style={{ fontWeight: "bold", fontSize: "20px" }}>
             PRONTUÁRIO MÉDICO N° {id_consulta}
           </h1>

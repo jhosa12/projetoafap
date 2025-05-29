@@ -11,12 +11,12 @@ import DeclaracaoExclusao from "@/Documents/dependentes/DeclaracaoExclusao"
 import { IoPrint } from "react-icons/io5"
 import { useReactToPrint } from "react-to-print"
 import { AssociadoProps, DependentesProps } from "@/types/associado"
-import pageStyle from "@/utils/pageStyle"
 import { Button, ButtonGroup, Table } from "flowbite-react"
 import { toast } from "sonner"
 import { EmpresaProps } from "@/types/empresa"
 import { UserProps } from "@/types/user"
 import { Checkbox } from "@/components/ui/checkbox"
+import { pageStyle } from "@/utils/pageStyle"
 
 
 interface DadosProps {

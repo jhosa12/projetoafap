@@ -1,6 +1,6 @@
 'use client'
 import Image from "next/image";
-import logo from "../../../public/afapsaude.png"
+
 import React, { forwardRef } from 'react';
 import { Table } from "flowbite-react";
 import { MedicoProps } from "@/types/afapSaude";
@@ -13,16 +13,11 @@ interface DadosProps {
 const RelatorioListaMedicos = (
 {dados}:DadosProps
 )=>{
-        let totalParticular = 0;
-        let totalFuneraria = 0;
-        let totalPlano = 0;
-        let totalBruto= 0;
-
         return (
             <div  className='flex flex-col w-full gap-3 p-4'>
                 <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', justifyContent: 'center', gap: '10px' }} >
-                    <Image width={120} height={120} src={logo} alt="logo" />
-                    <h1 style={{ fontWeight: 'bold', fontSize: '25px' }}>RELATORIO LUCRO POR EXAMES</h1>
+                    <img width={120} height={120} src={'/afapsaude.png'} alt="logo" />
+                    <h1 style={{ fontWeight: 'bold', fontSize: '24px' }}>LISTA DE MÉDICOS/PROCEDIMENTOS</h1>
                 </div>
               
 

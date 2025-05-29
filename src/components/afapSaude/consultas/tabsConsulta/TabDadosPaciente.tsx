@@ -12,6 +12,7 @@ import { calcularIdade } from "@/utils/calcIdade";
 import { PhoneMaskInput } from "@/components/PhoneMaskInput";
 import { CPFInput } from "@/components/CpfMaskInput";
 import { withMaskitoRegister } from "@/utils/with-maskito-register";
+import { DatePickerInput } from "@/components/DatePickerInput";
 
 
 const arrayParams = [
@@ -50,7 +51,7 @@ export default function TabDadosPaciente({ register, control, watch, setValue }:
             name="nascimento"
             control={control}
             render={({ field: { onChange, value } }) => (
-              <DatePicker selected={value} onChange={onChange} dateFormat={"dd/MM/yyyy"} locale={pt} className="flex w-full  text-sm h-9 border border-gray-200 shadow-sm rounded-md " />
+             <DatePickerInput value={value} onChange={onChange} required={true} className="h-9"/>
             )}
           />
 

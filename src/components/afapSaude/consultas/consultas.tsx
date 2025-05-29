@@ -7,18 +7,15 @@ import { HiDocumentAdd, HiFilter } from "react-icons/hi";
 
 import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
 import { useReactToPrint } from "react-to-print";
-import { MdDelete, MdEdit } from "react-icons/md";
-import { BiMoneyWithdraw } from "react-icons/bi";
 import { AuthContext } from "@/store/AuthContext";
-import { GiReturnArrow } from "react-icons/gi";
-import { FaWhatsapp } from "react-icons/fa";
+
 import handleWhatsAppClick from "@/utils/openWhats";
-import pageStyle from "@/utils/pageStyle";
+
 import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
 import { ajustarData } from "@/utils/ajusteData";
 import { ModalConfirmar } from "../../modals/modalConfirmar";
 import ListaConsultas from "@/Documents/afapSaude/listaConsultas";
-import { SlOptions } from "react-icons/sl";
+
 import {
   Select,
   SelectContent,
@@ -42,11 +39,15 @@ import { useForm } from "react-hook-form";
 import { ModalConsulta } from "@/components/afapSaude/consultas/modalNovaConsulta";
 import { ModalFiltroConsultas } from "@/components/afapSaude/consultas/modalFiltro";
 import { DropdownAcoesConsulta } from "./DropdownAcoesConsulta";
+import PrintDocComponent from "@/components/PrintDocComponent";
+import { EmpresaProps } from "@/types/empresa";
+import { pageStyle, pageStyleLandscape } from "@/utils/pageStyle";
 
 interface DataProps {
   medicos: Array<MedicoProps>;
   events: Array<EventProps>;
   verifyPermission: (permission: string) => boolean;
+  empresa:EmpresaProps|null
 }
 export const valorInicial = {
   celular: "",
@@ -65,7 +66,7 @@ export const valorInicial = {
 
 
 
-export default function Consultas({ medicos, events, verifyPermission }: DataProps) {
+export default function Consultas({ medicos, events, verifyPermission,empresa }: DataProps) {
   const [data, setData] = useState<Partial<ConsultaProps>>();
   const { usuario, consultores } = useContext(AuthContext);
   const [formPag, setFormPag] = useState<string>("");
@@ -85,9 +86,9 @@ export default function Consultas({ medicos, events, verifyPermission }: DataPro
 
   
 
-const currentPage = useRef<HTMLDivElement|null>(null)
- const currentRecibo = useRef<HTMLDivElement|null>(null)
-const currentConsultas = useRef<HTMLDivElement|null>(null)
+ const currentPage = useRef<HTMLDivElement|null>(null)
+  const currentRecibo = useRef<HTMLDivElement|null>(null)
+ const currentConsultas = useRef<HTMLDivElement|null>(null)
 
   const { register, control, handleSubmit, watch, getValues, reset } =
     useForm<FiltroConsultaProps>({
@@ -95,6 +96,7 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
         startDate: new Date(),
         endDate: new Date(),
         buscar: "",
+      
       },
     });
 
@@ -133,7 +135,8 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
           buscar,
           nome,
           id_consultor,
-          especialidade
+          especialidade,
+          id_empresa:empresa?.id
         },
         {
           signal,
@@ -160,7 +163,6 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
   useEffect(() => {
     modal.printProntuario && imprimirFicha();
     modal.printRecibo && imprimirRecibo();
-    modal.printListaConsultas && imprimirConsultas();
   }, [modal.printProntuario, modal.printRecibo, modal.printListaConsultas]);
 
   const handleEstornarConsulta = async () => {
@@ -253,38 +255,7 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
     [data?.id_consulta]
   );
 
-  const imprimirConsultas = useCallback(
-    useReactToPrint({
-      pageStyle: `
-      @page {
-          size: landscape;
-          margin: 1rem;
-      }
-      @media print {
-          body {
-              -webkit-print-color-adjust: exact;
-          }
-          @page {
-              size: landscape;
-              margin: 1rem;
-          }
-          @page {
-              @top-center {
-                  content: none;
-              }
-              @bottom-center {
-                  content: none;
-              }
-          }
-      }
-  `,
-      content: () => currentConsultas.current,
-      onAfterPrint: () => {
-        setData({}), setModal({ printListaConsultas: false });
-      },
-    }),
-    [consultas]
-  );
+ 
 
   const imprimirRecibo = useCallback(
     useReactToPrint({
@@ -315,13 +286,13 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
 
     const controller = new AbortController();
     const signal = controller.signal;
-    if(consultas.length>0)return
+    //if(consultas.length>0)return
     buscarConsultas({ ...getValues(), signal });
 
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [empresa?.id]);
 
   const handleReceberConsulta = useCallback(async () => {
     if (!data?.id_consulta) {
@@ -366,6 +337,7 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
         historico: `CONSULTA.${data?.id_consulta}-${data?.nome}-${data?.espec}`,
         valor: valorPg, 
         usuario: usuario?.nome,
+        id_empresa:data.id_empresa
       }),
       {
         error: "Erro ao receber consulta",
@@ -378,7 +350,7 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
         },
       }
     );
-  }, [usuario , consultas, data, formPag,data?.procedimentos]);
+  }, [usuario , consultas, data, formPag,data?.procedimentos,empresa?.id]);
 
   const handleDeletar = useCallback(async () => {
     if (!data?.id_consulta) {
@@ -416,8 +388,10 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
     <div className="flex flex-col p-2 gap-2">
 
       {modal.editar &&  <ModalConsulta
+          empresa={empresa?.cidade_uf}
           verifyPermission={verifyPermission}
           events={events}
+          id_empresa={empresa?.id}
           setConsulta={setData}
           consultas={consultas}
           consulta={data ?? {}}
@@ -446,14 +420,11 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
             Adicionar
           </Button>
 
-          <Button
-            variant={"outline"}
-            onClick={() => setModal({ printListaConsultas: true })}
-            size={"sm"}
-          >
-            <HiPrinter className=" h-4 w-4" />
-            Imprimir Lista
-          </Button>
+          <PrintDocComponent pageOrientation={pageStyleLandscape} textButton="Lista de consultas">
+             <ListaConsultas  dados={consultas}/>
+          </PrintDocComponent>
+
+          
 
           <Button
             variant={"outline"}
@@ -669,8 +640,8 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
         </ModalConfirmar>
       )}
 
-      <div className="hidden" >
-        {modal.printProntuario && (
+      <div style={{display:"none"}} >
+      
             <FichaConsulta
             ref={currentPage}
             especialista={
@@ -692,8 +663,9 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
             procedimentos={data?.procedimentos}
             celular={data?.celular ?? ""}
             parentesco={data?.grau_parentesco ?? ""}
+            logoUrl={empresa?.logoUrl ?? ""}
           /> 
-        )}
+        
 
         {modal.printRecibo && (
           
@@ -718,11 +690,10 @@ const currentConsultas = useRef<HTMLDivElement|null>(null)
           />
         )}
 
-        {modal.printListaConsultas && (
        
-                     <ListaConsultas ref={currentConsultas} dados={consultas}/>
-              
-        )}
+       
+                    
+            
       </div>
 
       <ModalConfirmar

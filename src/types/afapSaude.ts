@@ -77,6 +77,7 @@ export interface ExamesProps{
 export interface ConsultaProps{
   id_consulta:number|null,
   id_med:number|null,
+  id_empresa:string,
   id_global:number|null,
   id_contrato:number|null,
   id_empContrato?:string,
@@ -154,7 +155,8 @@ export interface EventProps {
   nome: string,
   celular: string,
   tipoAg: string,
-  editar: boolean
+  editar: boolean,
+  id_empresa:string
 }
 
 
@@ -163,6 +165,7 @@ export interface EventProps {
 export interface ExameRealizadoProps{
   id_exame:number|null,
   id_selected:number|null,
+  id_empresa:string,
   exame:string,
   celular:string,
   endereco:string,
@@ -197,13 +200,14 @@ export interface FiltroConsultaProps {
   id_consultor?: number,
   medico?:string
   signal?: AbortSignal;
-  especialidade?:string
+  especialidade?:string,
 }
 
 
 
 export interface SidebarProps {
   view: View;
+  nomeEmpresa:string,
   setView: Dispatch<SetStateAction<View>>;
   date: Date;
   onNavigate: (date: Date) => void;

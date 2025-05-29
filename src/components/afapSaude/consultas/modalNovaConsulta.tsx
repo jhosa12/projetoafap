@@ -1,4 +1,4 @@
-import { Modal } from "flowbite-react";
+
 import { api } from "@/lib/axios/apiClient";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { valorInicial } from "./consultas";
@@ -11,7 +11,7 @@ import TabsConsulta from "./tabsConsulta/TabsConsulta";
 import { ErrorIndicator } from "@/components/errorIndicator";
 import { useEffect, useState } from "react";
 import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";
-import { error } from "console";
+
 import {
   Dialog,
   DialogContent,
@@ -32,6 +32,8 @@ interface DataProps {
   setConsulta: (consulta: Partial<ConsultaProps>) => void;
   events: Array<EventProps>;
   verifyPermission: (permission: string) => boolean
+  id_empresa:string|undefined
+  empresa?:string
   
 }
 
@@ -39,13 +41,15 @@ export function ModalConsulta({
   openModal,
   setOpenModal,
   medicos,
+  id_empresa,
   consulta,
   buscarConsultas,
   consultas,
   setConsulta,
   events,
   setConsultas,
-  verifyPermission
+  verifyPermission,
+  empresa
 }: DataProps) {
   const [search, setSearch] = useState(false);
   const {
@@ -132,6 +136,7 @@ export function ModalConsulta({
       api.post("/afapSaude/consultas/cadastro", {
         ...data,
         data: dataAtual,
+        id_empresa:id_empresa,
         nascimento: nasc,
         data_prev: newDate,
         numero: data.numero ? Number(data.numero) : undefined,
@@ -173,7 +178,7 @@ export function ModalConsulta({
         <DialogHeader>
           <div className="inline-flex gap-8 items-center">
           <DialogTitle >
-            ADMINISTRAR CONSULTA
+            ADMINISTRAR CONSULTA - ({empresa})
             {/* <ClienteModal />*/}
           </DialogTitle>
             {!consulta.id_consulta && <ModalBuscaConsulta reset={reset}/>}

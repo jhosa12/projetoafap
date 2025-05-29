@@ -63,7 +63,7 @@ export default function ModalBuscaConsulta({reset}:{reset:UseFormReset<ConsultaP
         <DialogTrigger asChild>
             <Button  variant={'outline'} size={'sm'}>
                 <FcRefresh className="mr-2" />
-                ADIONAR DADOS POR CONSULTAS ANTERIORES
+                ADICIONAR DADOS POR CONSULTAS ANTERIORES
                 </Button>
         </DialogTrigger>
       <DialogContent autoFocus={false} className="sm:max-w-[625px]">

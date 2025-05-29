@@ -20,18 +20,7 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogFooter,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { Pagination } from "@/components/ui/pagination";
-import { toast } from "sonner";
+
 import { ModalFiltroCobranca } from "../modalCobranca";
 import { SubmitHandler } from "react-hook-form";
 import ReactPaginate from "react-paginate";

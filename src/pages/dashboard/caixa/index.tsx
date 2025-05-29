@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios/apiClient";
-import { MdDelete, MdOutlineAddCircle, MdOutlineLaunch } from "react-icons/md";
+import { MdDelete, MdOutlineLaunch } from "react-icons/md";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -7,8 +7,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from "date-fns/locale/pt-BR";
 import { ModalLancamentosCaixa } from "@/components/modals/caixa/modalLancamentosCaixa";
 import { AuthContext } from "@/store/AuthContext";
-import { IoMdOptions } from "react-icons/io";
-import RelatorioSintetico from "@/Documents/caixa/RelatorioMovimentacao";
 import { Modal, Spinner, Table } from "flowbite-react";
 import { HiPencil } from "react-icons/hi2";
 import { ModalFechamento } from "../../../components/modals/caixa/modalFechamento";
@@ -18,12 +16,6 @@ import { ScreenCloseCaixa } from "@/components/caixa/screenCloseCaixa";
 import { ModalMensalidade } from "@/components/modals/admContrato/historico/modalmensalidade";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-
-import { useReactToPrint } from "react-to-print";
-import { SomaProps } from "@/components/tabs/financeiro/caixa/caixa";
-import pageStyle from "@/utils/pageStyle";
-import { ModalLancamento } from "@/components/modals/caixa/modalLancamento";
 import { BiCalendarMinus } from "react-icons/bi";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import { toast } from "sonner";

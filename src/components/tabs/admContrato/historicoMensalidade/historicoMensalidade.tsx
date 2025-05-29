@@ -12,7 +12,6 @@ import { ModalEditarMensalidade } from '../../../modals/admContrato/historico/mo
 import { ModalExcluirMens } from '../../../modals/admContrato/historico/modalExcluirMens';
 import { MensalidadeProps } from '@/types/financeiro';
 import { ReciboMensalidade } from '@/Documents/associado/mensalidade/Recibo';
-import pageStyle from '@/utils/pageStyle';
 import { Popover } from 'flowbite-react';
 import { PopoverVencimento } from './popoverVencimento';
 import { PopoverReagendamento } from './popoverReagendamento';
@@ -29,6 +28,7 @@ import { Button } from '@/components/ui/button';
 import { removerFusoDate } from '@/utils/removerFusoDate';
 import { Checkbox } from '@/components/ui/checkbox';
 import { HtmlContext } from 'next/dist/server/route-modules/pages/vendored/contexts/entrypoints';
+import { pageStyle } from '@/utils/pageStyle';
 
 
 

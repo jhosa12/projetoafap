@@ -27,25 +27,32 @@ import { toast } from "sonner";
 import { useEffect } from "react";
 import { Combobox } from "@/components/ui/combobox";
 import useVerifyPermission from "@/hooks/useVerifyPermission";
+import { Badge } from "@/components/ui/badge";
+import { Stethoscope } from "lucide-react";
+import { CompanyIndicator } from "./CompanyIndicator";
 
 interface DrawerProps {
   isOpen: boolean;
+  id_empresa:string
   toggleDrawer: () => void;
   arrayMedicos: Array<MedicoProps>;
   dataEvent: Partial<EventProps>;
   setArrayEvent: (array: Array<EventProps>) => void;
   events: Array<EventProps>;
   deletarEvento: () => Promise<void>;
+  local?:string
 }
 
 export function ModalDrawer({
   events,
+  id_empresa,
   setArrayEvent,
   isOpen,
   toggleDrawer,
   arrayMedicos,
   dataEvent,
   deletarEvento,
+  local
 }: DrawerProps) {
   const { register, handleSubmit, setValue, control, watch, reset } =
     useForm<EventProps>({
@@ -90,6 +97,7 @@ export function ModalDrawer({
 
     toast.promise(
       api.post("/agenda/novoEvento", {
+        id_empresa:id_empresa,
         id_med: Number(data.id_med),
         data: new Date(),
         start: data.start,
@@ -162,15 +170,19 @@ export function ModalDrawer({
 
   return (
     <Sheet open={isOpen} onOpenChange={toggleDrawer}>
-      <SheetContent side={"right"} className="bg-white px-10 sm:max-w-2xl ">
-        <SheetHeader className="flex items-center justify-between">
-          <div className="inline-flex items-center gap-2">
-            <MdEvent size={32} />
-            <SheetTitle>
-              {dataEvent.id_agmed ? "Editar Evento" : "Novo Evento"}
+      <SheetContent side={"right"} className="bg-white px-10 sm:max-w-lg ">
+        <SheetHeader className="flex  items-center justify-between">
+          
+            <SheetTitle className="flex items-center gap-2">
+             <Stethoscope className="h-5 w-5 text-blue-600" />
+            Agendamento de Consulta
             </SheetTitle>
-          </div>
+                 <CompanyIndicator companyName={
+        local??''
+        } />
+         
         </SheetHeader>
+   
 
         <form
           onSubmit={handleSubmit(handleEvento)}
@@ -202,41 +214,7 @@ export function ModalDrawer({
                     }
                   }}
                 />
-                // <Select
-                //   value={String(field.value)}
-                //   onValueChange={(value) => {
-                //     const sel = arrayMedicos.find(
-                //       (m) => m.id_med.toString() === value
-                //     );
-                //     if (sel) {
-                //       setValue("id_med", sel.id_med);
-                //       setValue("title", `${sel.nome}-(${sel.espec})`);
-                //     }
-                //   }}
-                // >
-                //   <SelectTrigger id="medico" className="w-full">
-                //     <SelectValue placeholder="Selecione o especialista" />
-                //   </SelectTrigger>
-                //   <SelectContent>
-                //     <SelectGroup>
-                //       {arrayMedicos.map((item) => (
-                //         <SelectItem
-                //           key={item.id_med}
-                //           value={item.id_med.toString()}
-                //         >
-                //           <div className="inline-flex items-center gap-2">
-                //             <img
-                //               src={`${process.env.NEXT_PUBLIC_API_URL}/file/${item.imageUrl}`}
-                //               alt={item.nome}
-                //               className="w-6 h-6 rounded-full"
-                //             />
-                //             {item.nome} ({item.espec})
-                //           </div>
-                //         </SelectItem>
-                //       ))}
-                //     </SelectGroup>
-                //   </SelectContent>
-                // </Select>
+         
               )}
             />
           </div>
@@ -261,8 +239,8 @@ export function ModalDrawer({
             />
           </div>
 
-          {/* Datas */}
-          <div className=" flex flex-row gap-4">
+     
+          
             <div className="flex flex-col gap-1 w-full">
               <Label>Data Inicial</Label>
               <Controller
@@ -297,9 +275,9 @@ export function ModalDrawer({
                 )}
               />
             </div>
-          </div>
+         
 
-          {/* Observação */}
+     
           <div>
             <Label htmlFor="obs">Observação</Label>
             <Textarea id="obs" rows={4} {...register("obs")} className="mt-1" />
