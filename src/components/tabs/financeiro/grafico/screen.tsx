@@ -321,7 +321,10 @@ useEffect(()=>{
 
   
        
-      <GraficoMensalidades mensalidades={data?.mensalidade??[]}/>
+     {Array.isArray(arrayGraf) && arrayGraf?.length > 0 && <GraficoMensalidade
+        dados={arrayGraf}
+      //completo={true}
+      />}
   
 
   </div>}

@@ -1,18 +1,20 @@
-import React from 'react';
-import { 
+import React, { useEffect, useState } from "react";
+import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  type ChartConfig
+  type ChartConfig,
 } from "@/components/ui/chart";
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  ResponsiveContainer 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
 } from "recharts";
+import { api } from "@/lib/axios/apiClient";
+import { removerFusoDate } from "@/utils/removerFusoDate";
 
 interface DateRange {
   from: Date;
@@ -20,7 +22,14 @@ interface DateRange {
 }
 
 interface AdhesionCancellationChartProps {
-  dateRange: DateRange;
+ 
+  data: ChartData[];
+}
+
+interface ChartData {
+  month: string;
+  adhesions: number;
+  cancellations: number;
 }
 
 const chartConfig = {
@@ -34,16 +43,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function AdhesionCancellationChart({ dateRange }: AdhesionCancellationChartProps) {
-  // Dados simulados - substitua pela sua API
-  const data = [
-    { month: "Jan", adhesions: 89, cancellations: 23 },
-    { month: "Fev", adhesions: 95, cancellations: 18 },
-    { month: "Mar", adhesions: 102, cancellations: 31 },
-    { month: "Abr", adhesions: 87, cancellations: 15 },
-    { month: "Mai", adhesions: 134, cancellations: 42 },
-    { month: "Jun", adhesions: 116, cancellations: 28 },
-  ];
+export function AdhesionCancellationChart({
+  data
+}: AdhesionCancellationChartProps) {
+ 
+
 
   return (
     <ChartContainer config={chartConfig} className="h-[400px]">

@@ -1,19 +1,22 @@
-import React from 'react';
-import { 
+import React, { useEffect, useState } from "react";
+import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  type ChartConfig
+  type ChartConfig,
 } from "@/components/ui/chart";
-import { 
-  ComposedChart, 
-  Bar, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  ResponsiveContainer 
+import {
+  ComposedChart,
+  Bar,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
 } from "recharts";
+import { api } from "@/lib/axios/apiClient";
+import { removerFusoDate } from "@/utils/removerFusoDate";
+import { RevenueData } from "@/pages/dashboard/analyze";
 
 interface DateRange {
   from: Date;
@@ -21,7 +24,7 @@ interface DateRange {
 }
 
 interface RevenueChartProps {
-  dateRange: DateRange;
+  data: RevenueData[];
 }
 
 const chartConfig = {
@@ -35,16 +38,9 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function RevenueChart({ dateRange }: RevenueChartProps) {
-  // Dados simulados - substitua pela sua API
-  const data = [
-    { month: "Jan", revenue: 12000, quantity: 45 },
-    { month: "Fev", revenue: 15000, quantity: 52 },
-    { month: "Mar", revenue: 18000, quantity: 61 },
-    { month: "Abr", revenue: 22000, quantity: 73 },
-    { month: "Mai", revenue: 19000, quantity: 65 },
-    { month: "Jun", revenue: 25000, quantity: 84 },
-  ];
+export function RevenueChart({ data }: RevenueChartProps) {
+ 
+
 
   return (
     <ChartContainer config={chartConfig} className="h-[300px]">
@@ -56,11 +52,11 @@ export function RevenueChart({ dateRange }: RevenueChartProps) {
           <YAxis yAxisId="right" orientation="right" />
           <ChartTooltip content={<ChartTooltipContent />} />
           <Bar yAxisId="left" dataKey="revenue" fill="var(--color-revenue)" />
-          <Line 
-            yAxisId="right" 
-            type="monotone" 
-            dataKey="quantity" 
-            stroke="var(--color-quantity)" 
+          <Line
+            yAxisId="right"
+            type="monotone"
+            dataKey="quantity"
+            stroke="var(--color-quantity)"
             strokeWidth={2}
           />
         </ComposedChart>

@@ -9,24 +9,32 @@ interface DateRange {
 
 interface MetricsCardsProps {
   dateRange: DateRange;
+  revenueValue: number;
+  revenueQuantity: number;
+  adhesionCount: number;
+  inadimplenceRate?: number;
+  newClientsCount?: number;
+  cancellationsCount: number;
 }
 
-export function MetricsCards({ dateRange }: MetricsCardsProps) {
+export function MetricsCards({ dateRange,adhesionCount,cancellationsCount,revenueValue,inadimplenceRate,newClientsCount,revenueQuantity }: MetricsCardsProps) {
   // Dados simulados - substitua pela sua API
   const metrics = [
     {
       title: "Receita Total",
-      value: "R$ 45.231,89",
+      value: Number(revenueValue).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
       change: "+20.1%",
       changeType: "positive" as const,
       icon: CreditCard,
+      disabled: false
     },
     {
       title: "Total de Mensalidades",
-      value: "1.234",
+      value: revenueQuantity?.toString()??'0',
       change: "+15.3%",
       changeType: "positive" as const,
       icon: Users,
+       disabled: false
     },
     {
       title: "Taxa de Inadimplência",
@@ -34,20 +42,23 @@ export function MetricsCards({ dateRange }: MetricsCardsProps) {
       change: "-2.4%",
       changeType: "negative" as const,
       icon: AlertTriangle,
+       disabled: true
     },
     {
       title: "Novos Clientes",
-      value: "89",
+      value: adhesionCount?.toString()??'0',
       change: "+8.2%",
       changeType: "positive" as const,
       icon: TrendingUp,
+       disabled: false
     },
     {
       title: "Cancelamentos",
-      value: "23",
+      value: cancellationsCount?.toString()??'0',
       change: "-12.1%",
       changeType: "negative" as const,
       icon: UserX,
+       disabled: false
     },
     {
       title: "Taxa de Conversão",
@@ -55,13 +66,14 @@ export function MetricsCards({ dateRange }: MetricsCardsProps) {
       change: "+3.7%",
       changeType: "positive" as const,
       icon: TrendingUp,
+       disabled: true
     },
   ];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
       {metrics.map((metric, index) => (
-        <Card key={index}>
+        <Card className={`${metric.disabled ? ' opacity-30' : 'white'}`} key={index}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
               {metric.title}
