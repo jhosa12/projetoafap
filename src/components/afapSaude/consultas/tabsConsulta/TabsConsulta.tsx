@@ -18,9 +18,10 @@ interface ComponentTabProps extends TabsConsultaProps{
     medicos:Array<MedicoProps>
     events:Array<EventProps>
     setSearch:Dispatch<SetStateAction<boolean>>
+    verifyPermission:(permission:string)=>boolean
 }
 
-export default function TabsConsulta({ register, control, watch, setValue,events,medicos,setSearch }: ComponentTabProps) {
+export default function TabsConsulta({ register, control, watch, setValue,events,medicos,setSearch,verifyPermission }: ComponentTabProps) {
   return (
     <Tabs defaultValue="dados">
       <TabsList className="mb-4">
@@ -37,7 +38,7 @@ export default function TabsConsulta({ register, control, watch, setValue,events
         <TabConsulta events={events} medicos={medicos}  register={register} control={control} watch={watch} setValue={setValue} />
       </TabsContent>
       <TabsContent  forceMount className="hidden data-[state=active]:flex flex-col gap-4" value="procedimentos">
-        <TabProcedimentos setSearch={setSearch} medicos={medicos} register={register} control={control} watch={watch} setValue={setValue} />
+        <TabProcedimentos verify={verifyPermission} setSearch={setSearch} medicos={medicos} register={register} control={control} watch={watch} setValue={setValue} />
       </TabsContent>
     </Tabs>
   );

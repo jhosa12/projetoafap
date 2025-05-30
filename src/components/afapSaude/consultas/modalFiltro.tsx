@@ -13,6 +13,7 @@ import { Combobox } from "@/components/ui/combobox";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { MultiSelects } from "@/components/ui/multiSelect";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { arrayDemandaExterna } from "@/utils/arrayDemandaExterna";
 registerLocale('pt-br', pt)
 
 interface DataProps {
@@ -148,10 +149,10 @@ export function ModalFiltroConsultas({ loading, setFiltro, show, buscarConsultas
                     <SelectValue className="truncate" placeholder="Selecione o consultor" />
                   </SelectTrigger>
                   <SelectContent>
-                <SelectItem className="text-xs" value='ÓTICA DOS TRABALHADORES CEDRENSE'>ÓTICA DOS TRABALHADORES CEDRENSE</SelectItem>
-                <SelectItem className="text-xs" value='ÓTICA POPULAR'>ÓTICA POPULAR</SelectItem>
-                <SelectItem className="text-xs" value='LUZ ÓPTICA'>LUZ ÓPTICA</SelectItem>
-                <SelectItem className="text-xs" value='CENTRO SUL'>CENTRO SUL</SelectItem>
+                  {arrayDemandaExterna?.map((item, index)=> (
+                    <SelectItem className="text-xs" key={index} value={item}>{item}</SelectItem>
+                  ))}
+               
                 </SelectContent>
                 </Select>
               )}

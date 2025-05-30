@@ -147,7 +147,7 @@ export function Header({path}:{path?:string}) {
                 <MenubarItem><LinkNavigate href="/dashboard/cobranca">Cobrança</LinkNavigate></MenubarItem>
                 <MenubarItem><LinkNavigate href="/dashboard/gerenciarAdministrativo">Gerenciar</LinkNavigate></MenubarItem>
                 <MenubarItem><LinkNavigate href="/dashboard/financeiro">Financeiro</LinkNavigate></MenubarItem>
-                 <MenubarItem><LinkNavigate href="/dashboard/analyze">DashBoard</LinkNavigate></MenubarItem>
+              
                 <MenubarSub>
                   <MenubarSubTrigger>Sorteios</MenubarSubTrigger>
                   <MenubarSubContent>
@@ -166,7 +166,7 @@ export function Header({path}:{path?:string}) {
                   Ativos/Inativos
                 </MenubarItem>
                 <MenubarItem><LinkNavigate href="/dashboard/conveniados">Conveniados</LinkNavigate></MenubarItem>
-                <MenubarItem><LinkNavigate href="/chart">Gráficos</LinkNavigate></MenubarItem>
+                   <MenubarItem><LinkNavigate href="/dashboard/analyze">DashBoard</LinkNavigate></MenubarItem>
               </MenubarContent>
             </MenubarMenu>
 

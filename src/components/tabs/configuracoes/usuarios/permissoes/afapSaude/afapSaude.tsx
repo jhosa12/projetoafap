@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { id } from "date-fns/locale";
 
 interface DataProps {
   permissions: Array<string>;
@@ -62,6 +61,7 @@ const sections = [
           { id: "AFS3.4", label: "Prontuário" },
           { id: "AFS3.5", label: "Receber Consulta" },
           { id: "AFS3.6", label: "Estornar Consulta" },
+          { id: "AFS3.7", label: "Remover Procedimentos" },
         ],
       },
     ],

@@ -22,16 +22,17 @@ import {
 interface TabProcedimentoProps extends TabsConsultaProps{
     medicos:Array<MedicoProps>
     setSearch:Dispatch<SetStateAction<boolean>>
+    verify:(permission:string)=>boolean
 }
 
 
-export default function TabProcedimentos({ watch, setValue,control,medicos,setSearch }: TabProcedimentoProps) {
+export default function TabProcedimentos({ watch, setValue,control,medicos,setSearch,verify }: TabProcedimentoProps) {
 
   let valorTotalFinal =0
   let totalDesc = 0
   let totalPart = 0
 
-
+  const id_consulta = watch('id_consulta')
 
   const verificarStatus = () => {
     const status = watch('status')
@@ -232,9 +233,10 @@ export default function TabProcedimentos({ watch, setValue,control,medicos,setSe
           </TableCell>
           <TableCell className="px-3 py-1">
             <button
+              disabled={ verify('AFS3.7') && !!id_consulta }
               type="button"
               onClick={() => handleDelProcdimentoTable(item.id_exame)}
-              className="font-medium text-gray-500 hover:text-red-600"
+              className="font-medium text-gray-500 hover:text-red-600 disabled:cursor-not-allowed"
             >
               <HiTrash size={16} />
             </button>

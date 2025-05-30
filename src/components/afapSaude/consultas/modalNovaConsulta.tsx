@@ -204,6 +204,7 @@ export function ModalConsulta({
             control={control}
             watch={watch}
             setValue={setValue}
+            verifyPermission={verifyPermission}
           />
           <Button  disabled={verifyPermission(consulta?.id_consulta ? "AFS3.2" : "AFS3.1")} variant={"default"} className="ml-auto" type="submit">
             {consulta?.id_consulta ? "Atualizar" : "Cadastrar"}

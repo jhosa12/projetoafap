@@ -13,15 +13,16 @@ import {
   CartesianGrid, 
   ResponsiveContainer 
 } from "recharts";
+import { DefaultData } from '@/pages/dashboard/analyze';
 
-interface DateRange {
-  from: Date;
-  to: Date;
-}
 
 interface DefaultChartProps {
-  dateRange: DateRange;
+ 
+  data: DefaultData[];
 }
+
+
+
 
 const chartConfig = {
   defaultRate: {
@@ -30,16 +31,9 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function DefaultChart({ dateRange }: DefaultChartProps) {
+export function DefaultChart({ data }: DefaultChartProps) {
   // Dados simulados - substitua pela sua API
-  const data = [
-    { month: "Jan", defaultRate: 15.2 },
-    { month: "Fev", defaultRate: 13.8 },
-    { month: "Mar", defaultRate: 16.5 },
-    { month: "Abr", defaultRate: 12.1 },
-    { month: "Mai", defaultRate: 14.3 },
-    { month: "Jun", defaultRate: 11.7 },
-  ];
+
 
   return (
     <ChartContainer config={chartConfig} className="h-[300px]">

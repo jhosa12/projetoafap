@@ -1,23 +1,19 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, TrendingDown, Users, CreditCard, AlertTriangle, UserX } from "lucide-react";
-
-interface DateRange {
-  from: Date;
-  to: Date;
-}
+import { TrendingUp, TrendingDown, Users, CreditCard, AlertTriangle, UserX,HeartHandshake } from "lucide-react";
 
 interface MetricsCardsProps {
-  dateRange: DateRange;
+  
   revenueValue: number;
   revenueQuantity: number;
   adhesionCount: number;
   inadimplenceRate?: number;
   newClientsCount?: number;
   cancellationsCount: number;
+  assets?:number
 }
 
-export function MetricsCards({ dateRange,adhesionCount,cancellationsCount,revenueValue,inadimplenceRate,newClientsCount,revenueQuantity }: MetricsCardsProps) {
+export function MetricsCards({ adhesionCount,cancellationsCount,revenueValue,inadimplenceRate,newClientsCount,revenueQuantity,assets }: MetricsCardsProps) {
   // Dados simulados - substitua pela sua API
   const metrics = [
     {
@@ -37,12 +33,12 @@ export function MetricsCards({ dateRange,adhesionCount,cancellationsCount,revenu
        disabled: false
     },
     {
-      title: "Taxa de Inadimplência",
-      value: "12.5%",
+      title: "Total de Ativos Atualmente",
+      value: assets?.toString()??'0',
       change: "-2.4%",
       changeType: "negative" as const,
-      icon: AlertTriangle,
-       disabled: true
+      icon: HeartHandshake,
+       disabled: false
     },
     {
       title: "Novos Clientes",

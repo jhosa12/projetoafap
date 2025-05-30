@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
 import { addDays } from "date-fns";
 import { DatePickerWithRange } from '@/components/dashboard/DatePickerWithRange';
 import { MetricsCards } from '@/components/dashboard/MetricsCards';
 import { RevenueChart } from '@/components/dashboard/RevenueChart';
 import { DefaultChart } from '@/components/dashboard/DefaultChart';
 import { AdhesionCancellationChart } from '@/components/dashboard/AdhesionCancellationChart';
-import { removerFusoDate } from '@/utils/removerFusoDate';
 import { api } from '@/lib/axios/apiClient';
 import { ajustarData } from '@/utils/ajusteData';
+import { DateRange } from 'react-day-picker';
 
 
 export interface RevenueData {
@@ -24,12 +23,16 @@ interface AdhesionData {
   cancellations: number;
 }
 
+export interface DefaultData {
+  month: string;
+  default: number;
+}
 
 
 
 
 const Index = () => {
-  const [dateRange, setDateRange] = useState({
+  const [dateRange, setDateRange] = useState<DateRange|undefined>({
     from: addDays(new Date(), -30),
     to: new Date(),
   });
@@ -37,25 +40,38 @@ const Index = () => {
 
 const [revenueData, setRevenueData] = useState<RevenueData[]>([]);
   const [adhesionData, setAdhesionData] = useState<AdhesionData[]>([]);
+  const [defaultData, setDefaultData] = useState<DefaultData[]>([]);
+  const [assets, setAssets] = useState<number|undefined>(undefined);
 
   useEffect(() => {
+    if (!dateRange?.from || !dateRange?.to) {
+      return;
+    }
 
-    const {dataIni,dataFim} = ajustarData(dateRange.from, dateRange.to)
+    const {dataIni,dataFim} = ajustarData(dateRange?.from, dateRange?.to)
      
     
     const fetchData = async () => {
       try {
-        const [revenueRes, adhesionRes] = await Promise.all([
+        const [revenueRes, adhesionRes,defaultRes,assetsRes] = await Promise.all([
            await api.post(`/dashboard/mensalidades?from=${dataIni}&to=${dataFim}`),
          await api.get(
                    `/dashboard/adhesionsCancellations?from=${dataIni}&to=${dataFim}`
-                 )
+                 ),
+                 await api.get(
+                   `/dashboard/default?from=${dataIni}&to=${dataFim}`
+                 ),
+
+                   await api.get(
+                  '/dashboard/assets'
+                 ),
         ]);
 
-        
-
+      
         setRevenueData(revenueRes.data);
         setAdhesionData(adhesionRes.data);
+        setDefaultData(defaultRes.data);
+        setAssets(assetsRes.data)
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
       }
@@ -92,7 +108,8 @@ const [revenueData, setRevenueData] = useState<RevenueData[]>([]);
           revenueQuantity={totalQuantity}
           adhesionCount={totalAdhesions}
           cancellationsCount={totalCancellations}
-        dateRange={dateRange} />
+          assets={assets}
+       />
 
         {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -110,7 +127,7 @@ const [revenueData, setRevenueData] = useState<RevenueData[]>([]);
           </Card>
 
           {/* Default Chart */}
-          <Card className='opacity-50'>
+          <Card>
             <CardHeader>
               <CardTitle>Taxa de Inadimplência</CardTitle>
               <CardDescription>
@@ -118,7 +135,7 @@ const [revenueData, setRevenueData] = useState<RevenueData[]>([]);
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <DefaultChart dateRange={dateRange} />
+              <DefaultChart data={defaultData}  />
             </CardContent>
           </Card>
         </div>
