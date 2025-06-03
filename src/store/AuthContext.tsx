@@ -66,7 +66,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const [dadosassociado, setDadosAssociado] = useState<Partial<AssociadoProps>>({});
     const [empresas, setEmpresas] = useState<Array<EmpresaProps>>([])
-    const [planos, setPlanos] = useState<Array<PlanosProps>>([]);
     const [cidades, setCidades] = useState<Array<CidadesProps>>([]);
     const [consultores, setConsultores] = useState<Array<ConsultoresProps>>([]);
     const [selectEmp, setSelectEmp] = useState('')
@@ -78,8 +77,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const getDadosFixos = async () => {
         if (empresas.length > 0 &&
             cidades.length > 0 &&
-            consultores.length > 0 &&
-            planos.length > 0) return;
+            consultores.length > 0
+           // planos.length > 0
+           ) return;
 
         try {
             const response = await api.post("/dadosFixos")
@@ -87,7 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setEmpresas(response.data.empresas || []);
             setCidades(response.data.cidades || []);
             setConsultores(response.data.consultores || []);
-            setPlanos(response.data.planos || []);
+           // setPlanos(response.data.planos || []);
         } catch (error) {
             console.log(error)
         }
@@ -169,7 +169,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
     return (
-        <AuthContext.Provider value={{ infoEmpresa, loadingInfo, loading, selectEmp, setSelectEmp, getDadosFixos, planos, consultores, cidades, empresas, permissoes, setarDadosAssociado, limparDados, usuario, signIn, signOut, dadosassociado, carregarDados }}>
+        <AuthContext.Provider value={{ infoEmpresa, loadingInfo, loading, selectEmp, setSelectEmp, getDadosFixos, planos:infoEmpresa?.planos??[], consultores, cidades, empresas, permissoes, setarDadosAssociado, limparDados, usuario, signIn, signOut, dadosassociado, carregarDados }}>
             {children}
         </AuthContext.Provider>
     );

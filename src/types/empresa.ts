@@ -1,3 +1,5 @@
+import { PlanosProps } from "./planos"
+
 export interface EmpresaProps{
     id:string,
     nome:string,
@@ -23,4 +25,5 @@ export interface EmpresaProps{
     logoUrl:string,
     cont_clausuras:string
     bancos:Array<{banco:string,agencia:string,conta:string}>
+    planos:Array<PlanosProps>
 }
