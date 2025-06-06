@@ -19,21 +19,17 @@ import Calendario from "@/components/tabs/afapSaude/agendaMedico/calendario";
 import { EventProps, ExamesProps, MedicoProps } from "@/types/afapSaude";
 import { AuthContext } from "@/store/AuthContext";
 import useVerifyPermission from "@/hooks/useVerifyPermission";
-import { AlertTriangle, CalendarDays, ClipboardList, Cog, LogIn, Settings, Syringe } from "lucide-react";
-import { Avatar } from "flowbite-react";
-import Link from "next/link";
-import { EmpresaProps } from "@/types/empresa";
-import { useGetEmpresasSaude } from "@/utils/getEmpresas";
+import { AlertTriangle, BarChart, CalendarDays, ClipboardList, Cog, LogIn, Settings, Syringe,GitGraph } from "lucide-react";
+
 import {
   Tabs,
   TabsList,
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs";
-import { FaCalendarAlt } from "react-icons/fa";
-import { HiClipboardList } from "react-icons/hi";
-import { BiSolidInjection } from "react-icons/bi";
-import { IoMdSettings } from "react-icons/io";
+
+import ScreenDashBoard from "@/components/afapSaude/dashboardAfapSaude/ScreenDashBoard";
+import { TbChartPie, TbChartPieFilled } from "react-icons/tb";
 
 export default function AppLayout() {
    const [medicos, setMedicos] = useState<Array<MedicoProps>>([])
@@ -195,6 +191,15 @@ if (!nomeNormalizado?.includes("SAUDE")) {
     <Settings className="h-4 w-4" />
     CONFIGURAR
   </TabsTrigger>
+
+    <TabsTrigger
+    
+    className="flex text-xs items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm"
+    value="dashboard"
+  >
+    <TbChartPie className="h-4 w-4" />
+    DASHBOARD
+  </TabsTrigger>
 </TabsList>
       <div className="text-right">
           <p className="text-[13px] font-medium text-slate-800">{infoEmpresa?.cidade_uf}</p>
@@ -215,6 +220,9 @@ if (!nomeNormalizado?.includes("SAUDE")) {
 
       <TabsContent className="px-4" value="configurar" >
         <Configuracoes  medicos={medicos} setMedicos={setArrayMedicos} setExames={setExames} exames={exames} />
+      </TabsContent>
+       <TabsContent className="px-4 overflow-auto max-h-[calc(100vh-115px)]" value="dashboard" >
+        <ScreenDashBoard />
       </TabsContent>
     </Tabs>
     

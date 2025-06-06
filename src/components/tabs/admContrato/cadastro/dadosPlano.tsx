@@ -1,152 +1,237 @@
-
-
-import { FormWrapper } from "../../../organizador";
 import { AuthContext } from '@/store/AuthContext';
-import { useContext, useEffect, useState } from 'react';
-import DatePicker,{registerLocale} from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import pt from 'date-fns/locale/pt-BR';
-import { Label, Select, TextInput } from "flowbite-react";
+import { useContext } from 'react';
+
+
+
+import { Controller } from "react-hook-form";
 import { ChildrenProps } from "@/components/modals/admContrato/cadastro/modalCadastro";
-import { set } from "date-fns";
+
+import {
+  Label,
+} from "@/components/ui/label";
+import {
+  Input
+} from "@/components/ui/input";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { DatePickerInput } from '@/components/DatePickerInput';
 
 
-registerLocale('pt', pt)
-
-export function DadosPlano({register,setValue,watch}:ChildrenProps){
-  const {empresas,consultores,planos} =useContext(AuthContext)
- 
-
-    return(
-     
-            
-        <div  className="grid gap-2 grid-flow-c-dense  w-full  md:grid-cols-4" >
+export function DadosPlano({ control,setValue }: ChildrenProps) {
+  const { consultores, planos } = useContext(AuthContext);
 
 
-  
-        <div className="col-span-1">
-          <div >
-          <Label className="text-xs"  value="Origem" />
-        </div>
-            <Select sizing="sm" {...register('contrato.origem')}  >
-            <option selected></option>
-              <option value={'PLANO NOVO'} >PLANO NOVO</option>
-              <option value={'TRANSFERENCIA SEM CA'} >TRANSFERÊNCIA</option>
-            </Select>
-          </div>
-
-          <div className="col-span-1">
-          <div >
-          <Label className="text-xs" value="Plano" />
-        </div>
-            <Select sizing="sm" value={watch('contrato.id_plano')} onChange={(e) => {
-    const selectedPlanId = Number(e.target.value); 
-    const selectedPlan = planos?.find(plan =>plan.id_plano === selectedPlanId);
+   const handlePlanoChange = (selectedPlanoId: number) => {
+    const selectedPlan = planos?.find(plan => plan.id_plano === selectedPlanoId);
     if(selectedPlan){
-      setValue('contrato.id_plano',selectedPlanId);
+      setValue('contrato.id_plano',selectedPlan.id_plano);
       setValue('contrato.plano',selectedPlan.descricao);  
       setValue('contrato.valor_mensalidade',Number(selectedPlan?.valor));
     }
-  }} >
-             <option></option>
-  {planos?.map((item)=>{
-    return (
-      <option value={item.id_plano} key={item.id_plano} >{item.descricao}</option>
-    )
-  })}
+  };
+  return (
+    <div className="grid gap-2 grid-flow-c-dense w-full md:grid-cols-4">
+
+      {/* Origem */}
+      <div className="col-span-1">
+        <Label className="text-xs">Origem</Label>
+        <Controller
+          control={control}
+          name="contrato.origem"
+          render={({ field }) => (
+            <Select required onValueChange={field.onChange} value={field.value}>
+              <SelectTrigger className="h-9">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="PLANO NOVO">PLANO NOVO</SelectItem>
+                <SelectItem value="TRANSFERENCIA SEM CA">TRANSFERÊNCIA</SelectItem>
+              </SelectContent>
             </Select>
-          </div>
-         
+          )}
+        />
+      </div>
 
-          <div className="col-span-1">
-          <div >
-          <Label className="text-xs"  value="Valor" />
-        </div>
-        <TextInput sizing="sm"  value={watch('contrato.valor_mensalidade')} {...register('contrato.valor_mensalidade')} type="number" required />
-          </div> 
-          <div className="col-span-1">
-          <div >
-          <Label className="text-xs"  value="Cobrador" />
-        </div>
-            <Select sizing="sm" value={watch('contrato.cobrador')} {...register('contrato.cobrador')}   >
-
-            <option selected></option>
-            {consultores?.map((item)=>
-               (
-               item.funcao==='COBRADOR (RDA)' && <option value={item.nome} key={item.id_consultor} >{item.nome}</option>
-              )
-            )}
+      {/* Plano */}
+      <div className="col-span-1">
+        <Label className="text-xs">Plano</Label>
+        <Controller
+          control={control}
+          name="contrato.id_plano"
+          render={({ field: { onChange, value } }) => (
+            <Select
+            required
+              value={String(value)}
+              onValueChange={(val) => {
+                handlePlanoChange(Number(val));
+                //onChange(val);
+              }}
+            >
+              <SelectTrigger className="h-9">
+                <SelectValue placeholder="Selecione um plano" />
+              </SelectTrigger>
+              <SelectContent>
+                {planos?.map((item) => (
+                  <SelectItem key={item.id_plano} value={String(item.id_plano)}>
+                    {item.descricao}
+                  </SelectItem>
+                ))}
+              </SelectContent>
             </Select>
-          </div>
+          )}
+        />
+      </div>
 
+      {/* Valor */}
+      <div className="col-span-1">
+        <Label className="text-xs">Valor</Label>
+        <Controller
+          control={control}
+          name="contrato.valor_mensalidade"
+          render={({ field }) => (
+            <Input required className="h-9" type="number" {...field} />
+          )}
+        />
+      </div>
 
-          <div className="col-span-1">
-          <div >
-          <Label className="text-xs"  value="Consultor" />
-        </div>
-            <Select sizing="sm" value={watch('contrato.consultor')} {...register('contrato.consultor')}  >
-
-            <option selected></option>
-            {consultores?.map((item,index)=>
-              (
-              item.funcao==='PROMOTOR(A) DE VENDAS' && <option value={item.nome} key={index} >{item.nome}</option>
-              )
-            )}
+      {/* Cobrador */}
+      <div className="col-span-1">
+        <Label className="text-xs">Cobrador</Label>
+        <Controller
+          control={control}
+          name="contrato.cobrador"
+          render={({ field }) => (
+            <Select required onValueChange={field.onChange} value={field.value || ''}>
+              <SelectTrigger className="h-9">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                {consultores
+                  ?.filter(item => item.funcao === "COBRADOR (RDA)")
+                  .map(item => (
+                    <SelectItem key={item.id_consultor} value={item.nome}>
+                      {item.nome}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
             </Select>
-          </div>
+          )}
+        />
+      </div>
 
-
-          <div className="col-span-1">
-          <div >
-          <Label className="text-xs"  value="Supervisor" />
-        </div>
-            <Select sizing="sm"  value={watch('contrato.supervisor')} {...register('contrato.supervisor')} >
-
-            <option selected></option>
-              <option >JACKSON</option>
-              <option >SAMUEL</option>
+      {/* Consultor */}
+      <div className="col-span-1">
+        <Label className="text-xs">Consultor</Label>
+        <Controller
+          control={control}
+          name="contrato.consultor"
+          rules={{required:'Consultor é obrigatório'}}
+          render={({ field }) => (
+            <Select required onValueChange={field.onChange} value={field.value}>
+              <SelectTrigger aria-required className="h-9">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                {consultores
+                  ?.filter(item => item.funcao === "PROMOTOR(A) DE VENDAS")
+                  .map(item => (
+                    <SelectItem className='text-xs' key={item.id_consultor} value={item.nome}>
+                      {item.nome}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
             </Select>
-          </div>
-         
-      
+          )}
+        />
+      </div>
 
-          <div className="col-span-1">
-          <div >
-          <Label className="text-xs"  value="Numero de Parcelas" />
-        </div>
-        <TextInput sizing="sm"  {...register('contrato.n_parcelas')}  type="number" required />
-          </div>
-         
-          <div className="col-span-1">
-          <div >
-          <Label className="text-xs" value="Venc. 1° Parcela" />
-        </div>
-          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={watch('contrato.data_vencimento')} onChange={(e)=>e && setValue('contrato.data_vencimento',e)}  required className="block text-xs uppercase  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
-          </div>
+      {/* Supervisor */}
+      <div className="col-span-1">
+        <Label className="text-xs">Supervisor</Label>
+        <Controller
+          control={control}
+          name="contrato.supervisor"
+          render={({ field }) => (
+            <Select onValueChange={field.onChange} value={field.value || ''}>
+              <SelectTrigger className="h-9">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="JACKSON">JACKSON</SelectItem>
+                <SelectItem value="SAMUEL">SAMUEL</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+        />
+      </div>
 
+      {/* Número de Parcelas */}
+      <div className="col-span-1">
+        <Label className="text-xs">Número de Parcelas</Label>
+        <Controller
+          control={control}
+          name="contrato.n_parcelas"
+          render={({ field }) => (
+            <Input required className="h-9" type="number" {...field} />
+          )}
+        />
+      </div>
 
-          <div className="col-span-1">
-          <div >
-          <Label className="text-xs"  value="Data de adesão" />
-        </div>
-          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={watch('contrato.dt_adesao')} onChange={e=>e && setValue('contrato.dt_adesao',e)}  required className="block text-xs uppercase  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
-          </div>
+      {/* Vencimento 1ª Parcela */}
+      <div className="col-span-1">
+        <Label className="text-xs">Venc. 1° Parcela</Label>
+        <Controller
+          control={control}
+          name="contrato.data_vencimento"
+          render={({ field }) => (
+            <DatePickerInput
+            required
+              onChange={field.onChange}
+              value={field.value}
+              className='h-9'
+            />
+          )}
+        />
+      </div>
 
+      {/* Data de adesão */}
+      <div className="col-span-1">
+        <Label className="text-xs">Data de adesão</Label>
+        <Controller
+          control={control}
+          name="contrato.dt_adesao"
+          render={({ field }) => (
+            <DatePickerInput
+            required
+              onChange={field.onChange}
+              value={field.value}
+              className='h-9'
+            />
+          )}
+        />
+      </div>
 
-          <div className="col-span-1">
-          <div >
-          <Label className="text-xs"  value="Fim da carência" />
-        </div>
-          <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={watch('contrato.dt_carencia')} onChange={e=>e && setValue('contrato.dt_carencia',e)}  required className="block text-xs uppercase  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
-          </div>
-
-         
-        </div>
-
-
-      
-   
-
-
-    )
+      {/* Fim da carência */}
+      <div className="col-span-1">
+        <Label className="text-xs">Fim da carência</Label>
+        <Controller
+          control={control}
+          name="contrato.dt_carencia"
+          render={({ field }) => (
+             <DatePickerInput
+             required
+              onChange={field.onChange}
+              value={field.value}
+              className='h-9'
+            />
+          )}
+        />
+      </div>
+    </div>
+  );
 }

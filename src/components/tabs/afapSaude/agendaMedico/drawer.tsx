@@ -54,15 +54,13 @@ export function ModalDrawer({
   deletarEvento,
   local
 }: DrawerProps) {
-  const { register, handleSubmit, setValue, control, watch, reset } =
+  const { register, handleSubmit, setValue, control, watch, reset,formState:{ errors } } =
     useForm<EventProps>({
-      defaultValues: {
-        ...dataEvent,
-        end: dataEvent.id_agmed ? dataEvent.end : dataEvent.start,
-      },
+    
     });
 
-    const {verify} =useVerifyPermission()
+    const {verify} = useVerifyPermission()
+    
 
   useEffect(() => {
     if (dataEvent) {
@@ -94,6 +92,8 @@ export function ModalDrawer({
       toast.info("Data final deve ser maior que a data inicial");
       return;
     }
+
+    if(new Date(data.start).toLocaleDateString('pt-BR') !== new Date(data.end).toLocaleDateString('pt-BR')){toast.info("O evento deve ter a mesma data de inicio e fim");return;}
 
     toast.promise(
       api.post("/agenda/novoEvento", {
@@ -193,7 +193,7 @@ export function ModalDrawer({
             <Label htmlFor="medico">Especialista</Label>
             <Controller
               control={control}
-              rules={{ required: true }}
+              rules={{ required: 'Selecione um médico' }}
               name="id_med"
               render={({ field }) => (
                 <Combobox
@@ -217,6 +217,11 @@ export function ModalDrawer({
          
               )}
             />
+            {errors.id_med && (
+              <span className="text-xs text-red-500">
+                {errors.id_med.message}
+              </span>
+            )}
           </div>
 
           {/* Status */}
@@ -225,8 +230,9 @@ export function ModalDrawer({
             <Controller
               control={control}
               name="status"
+              rules={{ required: 'Selecione o status' }}
               render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
+                <Select required value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger id="status" className="w-full">
                     <SelectValue placeholder="Selecione o status" />
                   </SelectTrigger>
@@ -237,6 +243,11 @@ export function ModalDrawer({
                 </Select>
               )}
             />
+            {errors.status && (
+              <span className="text-xs text-red-500">
+                {errors.status.message}
+              </span>
+            )}
           </div>
 
      

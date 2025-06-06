@@ -259,7 +259,7 @@ export default function Calendario({
       id_agmed: undefined,
       id_med: undefined,
       obs: "",
-      status: "AB",
+      status: "ABERTO",
       title: "",
       celular: "",
       nome: "",

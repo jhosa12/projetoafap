@@ -137,6 +137,7 @@ export interface LeadProps {
   dependentes: Array<Partial<DependentesProps>>;
   form_pag?: string;
   adesao?: Date;
+  dataVenda: Date;
 }
 
 export function Historico() {
@@ -457,8 +458,10 @@ export function Historico() {
               }}
             >
               <Table.HeadCell>Nome</Table.HeadCell>
+              <Table.HeadCell>Cidade</Table.HeadCell>
               <Table.HeadCell>Previsão de Visita</Table.HeadCell>
-              <Table.HeadCell>Data</Table.HeadCell>
+              <Table.HeadCell>Data Cad.</Table.HeadCell>
+               <Table.HeadCell>Data Venda.</Table.HeadCell>
               <Table.HeadCell>categoria</Table.HeadCell>
               <Table.HeadCell>Vendedor</Table.HeadCell>
               <Table.HeadCell>Celular1</Table.HeadCell>
@@ -476,7 +479,9 @@ export function Historico() {
                       setLead(item), setModal({ lead: true });
                     }}
                   >
+                    
                     <Table.Cell className="">{item?.nome}</Table.Cell>
+                     <Table.Cell className="">{item?.cidade}/{item?.uf}</Table.Cell>
                     <Table.Cell className="">
                       {item?.visita &&
                         new Date(item?.visita).toLocaleDateString("pt-BR", {
@@ -487,6 +492,12 @@ export function Historico() {
                     <Table.Cell className="">
                       {item?.data &&
                         new Date(item?.data).toLocaleDateString("pt-BR", {
+                          timeZone: "UTC",
+                        })}
+                    </Table.Cell>
+                       <Table.Cell className="">
+                      {item?.dataVenda &&
+                        new Date(item?.dataVenda).toLocaleDateString("pt-BR", {
                           timeZone: "UTC",
                         })}
                     </Table.Cell>
@@ -520,10 +531,7 @@ export function Historico() {
 
                     <Table.Cell>
                       {item?.vencimento
-                        ? new Date(item?.vencimento).toLocaleDateString(
-                            "pt-BR",
-                            { timeZone: "UTC" }
-                          )
+                        ? new Date(item?.vencimento).toLocaleDateString()
                         : ""}
                     </Table.Cell>
 

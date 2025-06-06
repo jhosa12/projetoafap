@@ -59,8 +59,8 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         <div className="space-y-2">
 
-           <Card className="bg-blue-50/50 border-blue-200">
-          <CardContent className="px-3 py-2">
+           <Card  className="bg-blue-50/50 border-blue-200 rounded-sm">
+          <CardContent  className="px-3 py-2">
             <div className="flex items-center gap-2">
               <Building2 className="w-4 h-4 text-blue-600" />
               <span className="text-sm  font-medium text-blue-800">Empresa Ativa</span>

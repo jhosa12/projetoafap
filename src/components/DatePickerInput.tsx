@@ -33,6 +33,7 @@ const combinedClassName = [ "h-8 w-full rounded-md shadow-sm px-2 border text-sm
 
   return (
     <DatePicker
+    required={required}
     popperClassName="z-50"
       showIcon
       isClearable={true}

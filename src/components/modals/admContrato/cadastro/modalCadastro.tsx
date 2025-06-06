@@ -33,7 +33,7 @@ export interface ChildrenProps{
     setValue:UseFormSetValue<DadosCadastro>,
     watch:UseFormWatch<DadosCadastro>
     trigger:UseFormTrigger<DadosCadastro>
-    control?:Control<DadosCadastro>
+    control:Control<DadosCadastro>
   }
 
 
@@ -165,9 +165,9 @@ export default function ModalCadastro({isOpen,onClose}:ModalProps) {
 
   const {steps,currentStepIndex,step,next,back} =MultiStep([
     <DadosTitular control={control} trigger={trigger} key={1} register={register} setValue={setValue} watch={watch} />,
-    <DadosPlano trigger={trigger} key={2} register={register} setValue={setValue} watch={watch}  />,
-    <DadosDependentes key={3} trigger={trigger} register={register} setValue={setValue} watch={watch}  />,
-    <ResumoCadastro key={4} trigger={trigger} register={register} setValue={setValue} watch={watch} />
+    <DadosPlano control={control} trigger={trigger} key={2} register={register} setValue={setValue} watch={watch}  />,
+    <DadosDependentes control={control} key={3} trigger={trigger} register={register} setValue={setValue} watch={watch}  />,
+    <ResumoCadastro control={control} key={4} trigger={trigger} register={register} setValue={setValue} watch={watch} />
   ])
   const onSubmit:SubmitHandler<DadosCadastro>=(data)=>{
     steps.length-1===currentStepIndex ? handleSave(data):next()
@@ -180,7 +180,7 @@ export default function ModalCadastro({isOpen,onClose}:ModalProps) {
           show={isOpen}
           position={'center'}
           onClose={()=>onClose(false)}
-          size={'5xl'}
+          size={'6xl'}
          //dismissible
         >
           <Modal.Header>Cadastro de Contrato</Modal.Header>
