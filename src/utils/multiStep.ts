@@ -28,6 +28,7 @@ export function MultiStep(steps:ReactElement[]){
         goTo, 
         next,
         back,
+        setCurrentStepIndex
     
     } 
 

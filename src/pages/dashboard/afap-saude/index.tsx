@@ -44,15 +44,6 @@ export default function AppLayout() {
   }, [usuario])
 
 
-
-
-
-
-
-
-
-
-
   const buscarExames = useCallback(async (signal?: AbortSignal) => {
     try {
       const response = await api.post("/afapSaude/exames", { signal })
@@ -222,7 +213,7 @@ if (!nomeNormalizado?.includes("SAUDE")) {
         <Configuracoes  medicos={medicos} setMedicos={setArrayMedicos} setExames={setExames} exames={exames} />
       </TabsContent>
        <TabsContent className="px-4 overflow-auto max-h-[calc(100vh-115px)]" value="dashboard" >
-        <ScreenDashBoard />
+        <ScreenDashBoard id_empresa={infoEmpresa?.id??''} />
       </TabsContent>
     </Tabs>
     

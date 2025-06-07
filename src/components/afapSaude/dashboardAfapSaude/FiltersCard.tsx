@@ -4,9 +4,11 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, Filter } from "lucide-react";
-import { format } from "date-fns";
+import { endOfMonth, format, startOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useState } from "react";
+import { DateRange } from "react-day-picker";
+import { DatePickerWithRange } from "@/components/dashboard/DatePickerWithRange";
 
 interface FiltersCardProps {
   onPeriodChange?: (period: { from: Date | undefined; to: Date | undefined }) => void;
@@ -14,6 +16,8 @@ interface FiltersCardProps {
   onEspecialidadeChange?: (especialidade: string) => void;
   showMedicos?: boolean;
   showEspecialidades?: boolean;
+  dateRange: DateRange | undefined
+  setDateRange: (dateRange: DateRange | undefined) => void
 }
 
 const FiltersCard = ({ 
@@ -21,10 +25,11 @@ const FiltersCard = ({
   onMedicoChange, 
   onEspecialidadeChange, 
   showMedicos = true, 
-  showEspecialidades = true 
+  showEspecialidades = true,
+  dateRange,
+  setDateRange
 }: FiltersCardProps) => {
-  const [dateFrom, setDateFrom] = useState<Date | undefined>();
-  const [dateTo, setDateTo] = useState<Date | undefined>();
+ 
 
   const medicos = [
     "Todos os Médicos",
@@ -43,15 +48,7 @@ const FiltersCard = ({
     "Ginecologia"
   ];
 
-  const handleDateFromChange = (date: Date | undefined) => {
-    setDateFrom(date);
-    onPeriodChange?.({ from: date, to: dateTo });
-  };
 
-  const handleDateToChange = (date: Date | undefined) => {
-    setDateTo(date);
-    onPeriodChange?.({ from: dateFrom, to: date });
-  };
 
   return (
     <Card>
@@ -63,46 +60,14 @@ const FiltersCard = ({
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Filtro de Data Inicial */}
+        
           <div className="space-y-2">
-            <label className="text-sm font-medium">Data Inicial</label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-left font-normal">
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {dateFrom ? format(dateFrom, "dd/MM/yyyy", { locale: ptBR }) : "Selecionar"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={dateFrom}
-                  onSelect={handleDateFromChange}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-
-          {/* Filtro de Data Final */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Data Final</label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-left font-normal">
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {dateTo ? format(dateTo, "dd/MM/yyyy", { locale: ptBR }) : "Selecionar"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={dateTo}
-                  onSelect={handleDateToChange}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+            <label className="text-sm font-medium">Período</label>
+            <DatePickerWithRange
+                       dateRange={dateRange}
+                       onDateRangeChange={setDateRange}
+                       
+                     />
           </div>
 
           {/* Filtro de Médicos */}

@@ -78,7 +78,7 @@ export const ReciboMensalidade = forwardRef<HTMLDivElement, DataProps>(({
                                 value={n_doc} />}
 
                             <img
-                                fetchPriority='high'
+                                //fetchPriority='high'
                                 src={logoUrl}
                                 alt="logo"
                                 width={80}

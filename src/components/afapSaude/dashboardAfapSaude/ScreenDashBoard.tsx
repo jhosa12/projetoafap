@@ -8,8 +8,9 @@ import ConsultasChart from "./ConsultsChart";
 import ExamesChart from "./ExamesChart";
 import RevenueChart from "./RevenueChart";
 
-const Dashboard = () => {
+const Dashboard = ({id_empresa}:{id_empresa:string}) => {
   const stats = mockDashboardStats;
+
   
   // Estados independentes para filtros de consultas
   const [consultasFilters, setConsultasFilters] = useState({
@@ -105,8 +106,9 @@ const Dashboard = () => {
             </div>
 
             <ConsultasChart 
-              consultasPorStatus={consultasStats.porStatus}
-              tendenciaMensal={stats.tendenciaMensal}
+            empresa={id_empresa}
+             // consultasPorStatus={consultasStats.porStatus}
+            //  tendenciaMensal={stats.tendenciaMensal}
               onFiltersChange={setConsultasFilters}
               filters={consultasFilters}
             />

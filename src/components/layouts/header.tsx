@@ -113,7 +113,7 @@ export function Header({path}:{path?:string}) {
                 <LinkNavigate href="/chart">Gráficos</LinkNavigate>
 
                 {permissoes.includes("EMP4e61a06f-dee3-4c74-8b31-aca0d771dbff") && (
-                  <LinkNavigate href="/dashboard/afapSaude">Afap Saúde</LinkNavigate>
+                  <LinkNavigate href="/dashboard/afap-saude">Afap Saúde</LinkNavigate>
                 )}
 
                 <span className="font-semibold text-gray-500 mt-4">Serviços</span>
@@ -174,7 +174,7 @@ export function Header({path}:{path?:string}) {
               <MenubarTrigger asChild>
                 <button
                   className="disabled:cursor-not-allowed disabled:text-gray-400"
-                  onClick={() => Router.push("/dashboard/afapSaude")}
+                  onClick={() => Router.push("/dashboard/afap-saude")}
                 >
                   Afap Saúde
                 </button>

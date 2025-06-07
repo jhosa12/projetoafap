@@ -3,11 +3,17 @@ import {  MdAddCircle, MdDeleteForever } from "react-icons/md";
 import DatePicker,{registerLocale, setDefaultLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { Label, Modal, Select, Table, TextInput } from "flowbite-react";
+import {  Table } from "flowbite-react";
 import { ChildrenProps } from "@/components/modals/admContrato/cadastro/modalCadastro";
 import { Control, Controller, useForm, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { PhoneMaskInput } from "@/components/PhoneMaskInput";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { DatePickerInput } from "@/components/DatePickerInput";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { parentescos } from "@/utils/arrayParentesco";
 registerLocale('pt', pt)
 
 interface UserProps{
@@ -23,7 +29,7 @@ interface UserProps{
 export function DadosDependentes({register,setValue,watch,trigger}:ChildrenProps){
 
 const {register:registerDep,setValue:setValueDep,watch:watchDep,reset:resetDep,control} = useForm<UserProps>()
-const [open,setOpen] = useState(false)
+
 
 
 
@@ -55,10 +61,10 @@ const [open,setOpen] = useState(false)
     return(
  
         <div className="flex flex-col divide-x-2 max-h-96 gap-2  rounded-lg w-full">
-          <ModalAddDep adicionar={adicionar} show={open} onClose={()=>setOpen(false)} register={registerDep} control={control} setValue={setValueDep}/>
+          <ModalAddDep adicionar={adicionar}  register={registerDep} control={control} setValue={setValueDep}/>
           <h1 className="font-semibold">Dependentes: {watch('arraydep')?.length}</h1>   
 
-          <Button type="button" onClick={() => setOpen(true)} variant="outline" size={"sm"} className="mr-auto"><MdAddCircle size={20}/>Adicionar</Button> 
+        
 
           <div></div>           
 
@@ -119,113 +125,125 @@ interface DepProps {
     register:UseFormRegister<UserProps>
     control:Control<UserProps,any>
     setValue:UseFormSetValue<UserProps>
-    show:boolean,
-  onClose:()=>void,
   adicionar:()=>void
 }
 
-        export const ModalAddDep = ({control,onClose,register,setValue,show,adicionar}:DepProps)=>{
+        export const ModalAddDep = ({control,register,setValue,adicionar}:DepProps)=>{
+          const [show, setShow] = useState(false)
           return(
-            <Modal show={show} size="md" onClose={() => onClose()} popup>
-            <Modal.Header />
-            <Modal.Body>
-            <div  className="grid border-white   border-r-2 pb-3 gap-2    grid-cols-2" >
-             
-             
-             <div className="col-span-2">
-             <div className="mb-1 block">
-             <Label className="text-xs"  value="Nome" />
-           </div>
-           <TextInput sizing="sm" {...register('nome')} type="text"  />
-             </div>
-                
-                
-             <div className="col-span-1">
-             <div className="mb-1 block">
-             <Label className="text-xs"  value="Nascimento" />
-           </div>
-           <Controller
-           name="data_nasc"
-           control={control}
-           render={({ field:{onChange,value} }) => (
-            <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={value} onChange={(date)=>onChange(date)}     className="flex uppercase w-full text-xs  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
-           )}
-           />
-           
-             </div>
-                
-             <div className="col-span-1">
-             <div className="mb-1 block">
-             <Label className="text-xs"  value="Parentesco" />
-           </div>
-               <Select sizing="sm"  {...register('grau_parentesco')}  >
-   
-               <option selected className="text-gray-200">PARENTESCO</option>
-                       <option>CONJUGE</option>
-                       <option>PAI</option>
-                       <option>MÃE</option>
-                       <option>FILHO(A)</option>,
-                       <option>IRMÃO(Ã)</option>
-                       <option>PRIMO(A)</option>
-                       <option>SOBRINHA(A)</option>
-                       <option>NORA</option>
-                       <option>GENRO</option>
-                       <option>TIO(A)</option>
-                       <option>AVÔ(Ó)</option>
-                       <option>OUTROS</option>
-               </Select>
-             </div> 
-   
-   
-             <div className="col-span-1">
-             <div className="mb-1 block">
-             <Label className="text-xs"  value="Celular" />
-           </div>
-          
-            <PhoneMaskInput controlName="celular" register={register} />
-           
-           
-           
-             </div>
-               
-                 
-             
-             <div className="col-span-1">
-             <div className="mb-1 block">
-             <Label className="text-xs"  value="Adesão" />
-           </div>
+              <Dialog open={show} onOpenChange={setShow}>
+      <DialogTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="mr-auto"
+        >
+          <MdAddCircle size={20} />
+          Adicionar
+        </Button>
+      </DialogTrigger>
 
-           <Controller
-            name="data_adesao"
-            control={control}
-            render={({ field:{onChange,value} }) => (
-              <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={value} onChange={(date)=>onChange(date)}   className="flex uppercase w-full text-xs  pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
-            )}
-           />
+      <DialogContent
+        className="sm:max-w-md"
+        onInteractOutside={(e) => e.preventDefault()} // impede fechar ao clicar fora
+        onEscapeKeyDown={(e) => e.preventDefault()}  // impede fechar com ESC
+      >
+        <DialogHeader>
+          <DialogTitle>Adicionar Dependente</DialogTitle>
+        </DialogHeader>
+
+        <div className="grid pb-3 gap-2 grid-cols-2">
+          <div className="col-span-2">
+            <Label className="text-xs">Nome</Label>
+            <Input
+              type="text"
+              {...register("nome")}
+            />
+          </div>
+
+          <div>
+            <Label className="text-xs">Nascimento</Label>
+            <Controller
+              name="data_nasc"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+               <DatePickerInput
+                value={value}
+                className="h-9"
+                onChange={onChange}/>
+              )}
+            />
+          </div>
+
+          <div>
+            <Label className="text-xs">Parentesco</Label>
+            <Controller
+              control={control}
+              name="grau_parentesco"
+              render={({ field: { onChange, value } }) => (
+                <Select
+                  onValueChange={onChange}
+                  value={value}
+                  defaultValue={value}
+                >
+                  <SelectTrigger className="h-9">
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {parentescos.map((parentesco) => (
+                      <SelectItem key={parentesco.value} value={parentesco.value}>
+                        {parentesco.label}
+                      </SelectItem>
+                    ))}
+                   
+                  </SelectContent>
+                </Select>
+              )}
+            />
            
-             </div>
-   
-   
-             <div className="col-span-1">
-             <div className="mb-1 block">
-             <Label className="text-xs"  value="Carência" />
-           </div>
-           <Controller
-           name="carencia"
-           control={control}
-           render={({ field:{onChange,value} }) => (
-            <DatePicker locale={pt} dateFormat={"dd/MM/yyyy"} selected={value} onChange={(date)=>onChange(date)}   className="flex uppercase w-full text-xs pr-2 pl-2  border bg-gray-50  rounded-lg  border-gray-300 placeholder-gray-400 text-black "/>
-           )}
-           />
-            
-             </div>
-   
-                 <div className="col-span-2 flex justify-end ">
-                 <Button className="" type="button" onClick={adicionar} size="sm">Adicionar</Button> 
-                 </div>
-                
-                 </div>
-            </Modal.Body>
-            </Modal>
+          </div>
+
+          <div>
+            <label className="text-xs">Celular</label>
+            <PhoneMaskInput controlName="celular" register={register} />
+          </div>
+
+          <div>
+            <label className="text-xs">Adesão</label>
+            <Controller
+              name="data_adesao"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+               <DatePickerInput
+                value={value}
+                className="h-9"
+                onChange={onChange}/>
+              )}
+            />
+          </div>
+
+          <div>
+            <label className="text-xs">Carência</label>
+            <Controller
+              name="carencia"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                     <DatePickerInput
+                value={value}
+                className="h-9"
+                onChange={onChange}/>
+              )}
+            />
+          </div>
+
+          <div className="col-span-2 flex justify-end mt-2">
+            <Button type="button" onClick={adicionar} size="sm">
+              Adicionar
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
           )
         }

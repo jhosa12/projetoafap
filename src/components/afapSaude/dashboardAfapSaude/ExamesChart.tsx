@@ -41,6 +41,8 @@ const ExamesChart = ({ examesPorStatus, tendenciaMensal, onFiltersChange, filter
   return (
     <div className="space-y-6">
       <FiltersCard 
+        dateRange={filters.period}
+        setDateRange={(dateRange) => onFiltersChange({ ...filters, period: dateRange })}
         onPeriodChange={handlePeriodChange}
         onMedicoChange={handleMedicoChange}
         showEspecialidades={false}

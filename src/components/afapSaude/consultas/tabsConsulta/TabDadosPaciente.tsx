@@ -48,10 +48,11 @@ export default function TabDadosPaciente({ register, control, watch, setValue }:
           </div>
 
           <Controller
+          
             name="nascimento"
             control={control}
             render={({ field: { onChange, value } }) => (
-             <DatePickerInput value={value} onChange={onChange} required={true} className="h-9"/>
+             <DatePickerInput value={value} onChange={onChange}  className="h-9"/>
             )}
           />
 

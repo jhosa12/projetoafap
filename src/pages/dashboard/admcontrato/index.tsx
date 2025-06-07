@@ -45,7 +45,6 @@ export default function AdmContrato() {
     const { usuario,dadosassociado, carregarDados, permissoes, limparDados, loading, infoEmpresa,setarDadosAssociado } = useContext(AuthContext)
     const [modal, setModal] = useState<{ [key: string]: boolean }>({
         busca: false,
-        cadastro: false,
         altPlano: false,
         inativar: false,
         impressao: false
@@ -144,7 +143,7 @@ export default function AdmContrato() {
             </Modal>
             }
                 {modal.busca && (<ModalBusca carregarDados={carregarDados} selectEmp={infoEmpresa?.id ?? ''} visible={modal.busca} setVisible={() => setModal({ busca: false })} />)}
-                {modal.cadastro && (<ModalCadastro onClose={() => setModal({ cadastro: false })} isOpen={modal.cadastro} />)}
+             
                 {modal.impressao && <ModalConfirmar pergunta={`Realmente deseja imprimir o(a) ${chaveAtiva}?. Esteja ciente de que ao confirmar, os dados de data e usuario que realizou a impressão serão atualizados!`} openModal={modal.impressao} setOpenModal={() => setModal({ impressao: false })} handleConfirmar={handleImpressao} />}
 
                 {modal.altPlano && <ModalAlterarPlano openModal={modal.altPlano} setOpenModal={() => setModal({ altPlano: false })} />}
@@ -157,11 +156,8 @@ export default function AdmContrato() {
                             <IoMdSearch size={18} />
                             Buscar Cliente
                         </Button>
-                        <Button disabled={!infoEmpresa}  variant={'outline'} size={'sm'} type="button" onClick={() => setModal({ cadastro: true })} >
-                            <IoMdAdd size={18} />
-                            Novo Associado
-                        </Button>
-
+                    
+                               <ModalCadastro empresa={infoEmpresa?.nome??''} isEmpresa={!infoEmpresa} />
                     </div>
                   
          {  dadosassociado.id_global &&  <div className="flex flex-wrap w-full justify-between gap-2 mb-1 pl-2 text-sm font-semibold text-black">
