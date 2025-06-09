@@ -3,9 +3,9 @@ import { Dispatch, SetStateAction } from "react";
 import { View } from "react-big-calendar";
 
 
-export type ConsultaStatus = "AGENDADO" | "AGUARDANDO DATA" | "CONFIRMADO" | "ATENDIDO" | "CANCELADO" | "RECEBIDO";
+export type ConsultaStatus = "AGENDADO" | "AGUARDANDO DATA" | "CONFIRMADO" | "ATENDIDO" | "CANCELADO" | "RECEBIDO" | "INDECISO"|"AGUARDANDO RESPOSTA";
 
-export const statusConsultaArray = ["AGENDADO","AGUARDANDO DATA","CONFIRMADO","ATENDIDO","CANCELADO","RECEBIDO","VENDA OCULOS"]
+export const statusConsultaArray = ["AGENDADO","AGUARDANDO DATA","CONFIRMADO","ATENDIDO","CANCELADO","RECEBIDO","VENDA OCULOS","INDECISO","AGUARDANDO RESPOSTA"]
 
 export interface ClienteFormProps {
   id_client?: number;
