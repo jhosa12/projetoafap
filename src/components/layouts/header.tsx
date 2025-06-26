@@ -170,7 +170,7 @@ export function Header({path}:{path?:string}) {
               </MenubarContent>
             </MenubarMenu>
 
-            <MenubarMenu>
+            {/* <MenubarMenu>
               <MenubarTrigger asChild>
                 <button
                   className="disabled:cursor-not-allowed disabled:text-gray-400"
@@ -179,7 +179,7 @@ export function Header({path}:{path?:string}) {
                   Afap Saúde
                 </button>
               </MenubarTrigger>
-            </MenubarMenu>
+            </MenubarMenu> */}
 
             <MenubarMenu>
               <MenubarTrigger>Serviços</MenubarTrigger>
