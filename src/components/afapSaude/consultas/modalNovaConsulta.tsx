@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ConsultaProps, EventProps, MedicoProps } from "@/types/afapSaude";
-import TabsConsulta from "./tabsConsulta/TabsConsulta";
+import TabsConsulta from "./tabsModalConsulta/TabsConsulta";
 import { ErrorIndicator } from "@/components/errorIndicator";
 import {  useState } from "react";
 import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";

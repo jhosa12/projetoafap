@@ -1,10 +1,8 @@
 import { api } from "@/lib/axios/apiClient";
-import { Table } from "flowbite-react";
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-
-import { HiPrinter } from "react-icons/hi2";
-import { HiDocumentAdd, HiFilter } from "react-icons/hi";
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { HiDocumentAdd, HiFilter, HiSearch } from "react-icons/hi";
 import FichaConsulta from "@/Documents/afapSaude/fichaConsulta";
 import { useReactToPrint } from "react-to-print";
 import { AuthContext } from "@/store/AuthContext";
@@ -13,7 +11,6 @@ import handleWhatsAppClick from "@/utils/openWhats";
 
 import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
 import { ajustarData } from "@/utils/ajusteData";
-import { ModalConfirmar } from "../../modals/modalConfirmar";
 import ListaConsultas from "@/Documents/afapSaude/listaConsultas";
 
 import {
@@ -34,7 +31,6 @@ import {
   statusConsultaArray,
 } from "@/types/afapSaude";
 import { toast } from "sonner";
-import useApiPut from "@/hooks/useApiPut";
 import { useForm } from "react-hook-form";
 import { ModalConsulta } from "@/components/afapSaude/consultas/modalNovaConsulta";
 import { ModalFiltroConsultas } from "@/components/afapSaude/consultas/modalFiltro";
@@ -42,12 +38,20 @@ import { DropdownAcoesConsulta } from "./DropdownAcoesConsulta";
 import PrintDocComponent from "@/components/PrintDocComponent";
 import { EmpresaProps } from "@/types/empresa";
 import { pageStyle, pageStyleLandscape } from "@/utils/pageStyle";
+import { Input } from "@/components/ui/input";
+import { useConsultasActions } from "@/hooks/useConsultsActions";
+import { ModalConfirmar } from "@/components/modals/modalConfirmar";
+import { HelpCircle } from "lucide-react";
+import ModalPosicao from "./ModalPosicao";
+import { AtendimentoAtual } from "./tabsConsultas/AtendimentoAtual";
+import { TodasConsultas } from "./tabsConsultas/TodasConsultas";
+import { FilaEspera } from "./tabsConsultas/FilaEspera";
 
 interface DataProps {
   medicos: Array<MedicoProps>;
   events: Array<EventProps>;
   verifyPermission: (permission: string) => boolean;
-  empresa:EmpresaProps|null
+  empresa: EmpresaProps | null;
 }
 export const valorInicial = {
   celular: "",
@@ -64,9 +68,12 @@ export const valorInicial = {
   vl_final: 0,
 };
 
-
-
-export default function Consultas({ medicos, events, verifyPermission,empresa }: DataProps) {
+export default function Consultas({
+  medicos,
+  events,
+  verifyPermission,
+  empresa,
+}: DataProps) {
   const [data, setData] = useState<Partial<ConsultaProps>>();
   const { usuario, consultores } = useContext(AuthContext);
   const [formPag, setFormPag] = useState<string>("");
@@ -82,21 +89,20 @@ export default function Consultas({ medicos, events, verifyPermission,empresa }:
     printProntuario: false,
     printRecibo: false,
     printListaConsultas: false,
+    alterarPosicao: false,
   });
 
-  
+  const [searchTerm, setSearchTerm] = useState("");
 
- const currentPage = useRef<HTMLDivElement|null>(null)
-  const currentRecibo = useRef<HTMLDivElement|null>(null)
- const currentConsultas = useRef<HTMLDivElement|null>(null)
+  const currentPage = useRef<HTMLDivElement | null>(null);
+  const currentRecibo = useRef<HTMLDivElement | null>(null);
 
-  const { register, control, handleSubmit, watch, getValues, reset } =
+  const { register, control, handleSubmit, getValues, reset } =
     useForm<FiltroConsultaProps>({
       defaultValues: {
         startDate: new Date(),
         endDate: new Date(),
         buscar: "",
-      
       },
     });
 
@@ -111,8 +117,7 @@ export default function Consultas({ medicos, events, verifyPermission,empresa }:
     externo,
     signal,
     medico,
-    especialidade
-  
+    especialidade,
   }: FiltroConsultaProps) => {
     const { dataIni, dataFim } = ajustarData(startDate, endDate);
     let medicoId = medicos.find((item) => item.nome === medico)?.id_med;
@@ -136,7 +141,7 @@ export default function Consultas({ medicos, events, verifyPermission,empresa }:
           nome,
           id_consultor,
           especialidade,
-          id_empresa:empresa?.id
+          id_empresa: empresa?.id,
         },
         {
           signal,
@@ -151,33 +156,51 @@ export default function Consultas({ medicos, events, verifyPermission,empresa }:
     setLoading(false);
   };
 
-  const { data: estorno, postData: handleEstorno } = useApiPut<
-    any,
-    { id_consulta: number }
-  >(
-    "/afapSaude/estornarConsulta",
-    () => buscarConsultas(getValues()),
-    () => setModal({ estornar: false })
-  );
+  const {
+    handleEstornarConsulta,
+    handleAlterarStatus,
+    handleReceberConsulta,
+    handleDeletar,
+    handleConfirmarPosicao,
+  } = useConsultasActions({
+    data,
+    setData,
+    setModal,
+    usuario,
+    consultas,
+    setConsultas,
+    getValues,
+    buscarConsultas,
+    formPag,
+  });
+
+  const handleSearch = useCallback(async (term: string) => {
+    try {
+      setLoading(true);
+      const response = await api.post("/afapSaude/consultas", {
+        nome: term,
+      });
+      setConsultas(response.data);
+    } catch (error) {
+      console.error("Erro ao buscar consultas:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // const { data: estorno, postData: handleEstorno } = useApiPut<
+  //   any,
+  //   { id_consulta: number }
+  // >(
+  //   "/afapSaude/estornarConsulta",
+  //   () => buscarConsultas(getValues()),
+  //   () => setModal({ estornar: false })
+  // );
 
   useEffect(() => {
     modal.printProntuario && imprimirFicha();
     modal.printRecibo && imprimirRecibo();
   }, [modal.printProntuario, modal.printRecibo, modal.printListaConsultas]);
-
-  const handleEstornarConsulta = async () => {
-    if (!data?.id_consulta) {
-      return;
-    }
-    if (data.status !== "RECEBIDO") {
-      toast.warning("Consulta ainda nao foi recebida");
-      return;
-    }
-
-    await handleEstorno({ id_consulta: data.id_consulta });
-
-    // buscarConsultas(getValues())
-  };
 
   const handleChangeStatus = async ({
     status,
@@ -207,47 +230,13 @@ export default function Consultas({ medicos, events, verifyPermission,empresa }:
     setModal({ status: true });
   };
 
-  const handleAlterarStatus = async () => {
-    if (!data?.data_prev) {
-      toast.warning("Cliente ainda não agendou data!");
-      return;
-    }
-    toast.promise(
-      api.put("/afapSaude/consultas/Editarcadastro", {
-        id_consulta: data?.id_consulta,
-        id_agmed: data?.status === "AGUARDANDO DATA" ? null : data?.id_agmed,
-        data_prev: data?.status === "AGUARDANDO DATA" ? null : data?.data_prev,
-        id_med: Number(data.id_med),
-        status: data?.status,
-      }),
-      {
-        error: "Erro na requisição",
-        loading: "Alterando status..",
-        success: (evento) => {
-          const novo = [...consultas];
-          const index = consultas.findIndex(
-            (item) => item.id_consulta === data?.id_consulta
-          );
-          novo[index] = { ...evento.data };
-
-          setConsultas(novo);
-
-          //setOpenStatus(false)
-          setModal({ status: false });
-          setData({});
-          return "Status alterado com sucesso";
-        },
-      }
-    );
-  };
-
   const imprimirFicha = useCallback(
     useReactToPrint({
       pageStyle: pageStyle,
       content: () => currentPage.current,
       onBeforeGetContent: async () => {
-    await new Promise(resolve => setTimeout(resolve, 500));
-  },
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      },
       onAfterPrint: () => {
         setData({}), setModal({ printProntuario: false });
       },
@@ -255,7 +244,10 @@ export default function Consultas({ medicos, events, verifyPermission,empresa }:
     [data?.id_consulta]
   );
 
- 
+  const handleAlterarPosicao = () => {
+
+    setModal({ alterarPosicao: true });
+  };
 
   const imprimirRecibo = useCallback(
     useReactToPrint({
@@ -282,8 +274,6 @@ export default function Consultas({ medicos, events, verifyPermission,empresa }:
   );
 
   useEffect(() => {
-
-
     const controller = new AbortController();
     const signal = controller.signal;
     //if(consultas.length>0)return
@@ -294,421 +284,372 @@ export default function Consultas({ medicos, events, verifyPermission,empresa }:
     };
   }, [empresa?.id]);
 
-  const handleReceberConsulta = useCallback(async () => {
-    if (!data?.id_consulta) {
-      toast.warning("Selecione uma consulta");
-      return;
-    }
-
-    if (data?.status === "RECEBIDO") {
-      toast.warning("Consulta ja foi recebida!");
-      return;
-    }
-    if (data?.status === "AGUARDANDO DATA") {
-      toast.warning("Consulta ainda não foi agendada!");
-      return;
-    }
-
-    if (data?.procedimentos?.length === 0) {
-      toast.warning("Defina os procedimentos realizados!");
-      return;
-    }
-
-    if (!formPag) {
-      toast.warning("Selecione uma forma de pagamento");
-      return;
-    }
-
-    const dataAtual = new Date();
-    dataAtual.setTime(
-      dataAtual.getTime() - dataAtual.getTimezoneOffset() * 60 * 1000
-    );
-   const valorPg= data?.procedimentos?.reduce(
-      (total, item) => total + item.valorFinal,
-      0
-    )
-
-    toast.promise(
-      api.put("/afapSaude/receberConsulta", {
-        id_consulta: data?.id_consulta,
-        // id_usuario:usuario?.id,
-        datalancUTC: dataAtual.toISOString(),
-        descricao: "CONSULTA",
-        historico: `CONSULTA.${data?.id_consulta}-${data?.nome}-${data?.espec}`,
-        valor: valorPg, 
-        usuario: usuario?.nome,
-        id_empresa:data.id_empresa
-      }),
-      {
-        error: "Erro ao receber consulta",
-        loading: "Recebendo consulta....",
-        success: () => {
-          buscarConsultas(getValues());
-          setData(valorInicial);
-          setModal({ receber: false });
-          return "Consulta recebida com sucesso!";
-        },
-      }
-    );
-  }, [usuario , consultas, data, formPag,data?.procedimentos,empresa?.id]);
-
-  const handleDeletar = useCallback(async () => {
-    if (!data?.id_consulta) {
-      toast.warning("Selecione uma consulta");
-      return;
-    }
-
-    if (data?.status === "RECEBIDO") {
-      toast.warning("Impossivel deletar. Consulta ja foi recebida!");
-      return;
-    }
-
-    toast.promise(
-      api.delete(`/afapSaude/consultas/deletarCadastro`, {
-        data: {
-          id_consulta: data?.id_consulta,
-        },
-      }),
-      {
-        error: "Erro ao deletar dados",
-        loading: "Deletando dados....",
-        success: () => {
-          setConsultas(
-            consultas.filter((atual) => atual.id_consulta !== data?.id_consulta)
-          );
-          setModal({ deletar: false });
-          setData(valorInicial);
-          return "Dados deletados com sucesso!";
-        },
-      }
-    );
-  }, [consultas, data, setConsultas]);
-
   return (
-    <div className="flex flex-col p-2 gap-2">
+    <Tabs defaultValue="atendimento" className="space-y-4">
+    <TabsList className="grid w-full grid-cols-3">
+      <TabsTrigger value="atendimento">Atendimento Atual</TabsTrigger>
+      <TabsTrigger value="todas">Todas as Consultas</TabsTrigger>
+      <TabsTrigger value="fila">Fila de Espera</TabsTrigger>
+    </TabsList>
 
-      {modal.editar &&  <ModalConsulta
-          empresa={empresa?.cidade_uf}
-          verifyPermission={verifyPermission}
-          events={events}
-          id_empresa={empresa?.id}
-          setConsulta={setData}
-          consultas={consultas}
-          consulta={data ?? {}}
-          setConsultas={setConsultas}
-          medicos={medicos}
-          openModal={modal.editar}
-          setOpenModal={() => setModal({ editar: false })}
-          buscarConsultas={() =>
-            buscarConsultas(getValues())
-          }
-        />}
+    <TabsContent value="atendimento" className="space-y-4">
+      <AtendimentoAtual consultas={consultas} />
+    </TabsContent>
 
+    <TabsContent value="todas" className="space-y-4">
+      <TodasConsultas consultas={consultas} />
+    </TabsContent>
 
-      <div className=" inline-flex w-full justify-between text-black items-center">
-        <div className="inline-flex gap-4">
-          <Button
-          disabled={verifyPermission('AFS3.1')}
-            variant={"outline"}
-            onClick={() => {
-              setData({}), setModal({ editar: true });
-            }}
-            size={"sm"}
-            color="gray"
-          >
-            <HiDocumentAdd className=" h-4 w-4" />
-            Adicionar
-          </Button>
+    <TabsContent value="fila" className="space-y-4">
+      <FilaEspera consultas={consultas} />
+    </TabsContent>
+  </Tabs>
+    // <div className="flex flex-col p-2 gap-2">
+    //   {modal.editar && (
+    //     <ModalConsulta
+    //       empresa={empresa?.cidade_uf}
+    //       verifyPermission={verifyPermission}
+    //       events={events}
+    //       id_empresa={empresa?.id}
+    //       setConsulta={setData}
+    //       consultas={consultas}
+    //       consulta={data ?? {}}
+    //       setConsultas={setConsultas}
+    //       medicos={medicos}
+    //       openModal={modal.editar}
+    //       setOpenModal={() => setModal({ editar: false })}
+    //       buscarConsultas={() => buscarConsultas(getValues())}
+    //     />
+    //   )}
 
-          <PrintDocComponent pageOrientation={pageStyleLandscape} textButton="Lista de consultas">
-             <ListaConsultas  dados={consultas}/>
-          </PrintDocComponent>
+    //   <div className=" inline-flex w-full justify-between text-black items-center">
+    //     <div className="inline-flex gap-4">
+    //       <Button
+    //         disabled={verifyPermission("AFS3.1")}
+    //         variant={"outline"}
+    //         onClick={() => {
+    //           setData({}), setModal({ editar: true });
+    //         }}
+    //         size={"sm"}
+    //         color="gray"
+    //       >
+    //         <HiDocumentAdd className=" h-4 w-4" />
+    //         Adicionar
+    //       </Button>
 
-          
+    //       <PrintDocComponent
+    //         pageOrientation={pageStyleLandscape}
+    //         textButton="Lista de consultas"
+    //       >
+    //         <ListaConsultas dados={consultas} />
+    //       </PrintDocComponent>
 
-          <Button
-            variant={"outline"}
-            size={"sm"}
-            onClick={() => setModal({ filtro: true })}
-          >
-            {" "}
-            <HiFilter className=" h-4 w-4" /> Filtro
-          </Button>
-        </div>
+    //       <Button
+    //         variant={"outline"}
+    //         size={"sm"}
+    //         onClick={() => setModal({ filtro: true })}
+    //       >
+    //         {" "}
+    //         <HiFilter className=" h-4 w-4" /> Filtro
+    //       </Button>
+    //       <div className="inline-flex gap-1">
+    //         <Input
+    //           className="h-8 border-gray-200 shadow-sm"
+    //           placeholder="Buscar"
+    //           value={searchTerm}
+    //           onChange={(e) => {
+    //             setSearchTerm(e.target.value);
+    //             if (!e.target.value) {
+    //               buscarConsultas(getValues());
+    //             }
+    //           }}
+    //         />
+    //         <Button
+    //           size="sm"
+    //           variant="outline"
+    //           onClick={() => handleSearch(searchTerm)}
+    //         >
+    //           <HiSearch className="h-4 w-4" />
+    //         </Button>
+    //       </div>
+    //     </div>
 
-        <span className="text-xs font-medium">
-          Total de consultas: {consultas.length}
-        </span>
-      </div>
+    //     <span className="text-xs font-medium">
+    //       Total de consultas: {consultas.length}
+    //     </span>
+    //   </div>
 
-      <div className="overflow-y-auto h-[calc(100vh-145px)]">
-        <Table
-          theme={{
-            root: { shadow: "none" },
-            body: {
-              cell: { base: "px-1 text-black py-0 text-[10px] font-medium" },
-            },
-            head: { cell: { base: "px-1 text-black py-0 text-[11px]" } },
-          }}
-        >
-          <Table.Head className="sticky top-0 bg-white z-10 border-b-2">
-            <Table.HeadCell>ID</Table.HeadCell>
-            <Table.HeadCell>Nome</Table.HeadCell>
-            <Table.HeadCell>Fone</Table.HeadCell>
-            <Table.HeadCell>Especialidade</Table.HeadCell>
-            <Table.HeadCell>Data</Table.HeadCell>
-            <Table.HeadCell>Data Prev.</Table.HeadCell>
-            <Table.HeadCell>Hora Prev</Table.HeadCell>
-            <Table.HeadCell>Valor</Table.HeadCell>
-            <Table.HeadCell>Usuário</Table.HeadCell>
-            <Table.HeadCell>Retorno</Table.HeadCell>
-            <Table.HeadCell>Status</Table.HeadCell>
-            <Table.HeadCell></Table.HeadCell>
-          </Table.Head>
-          <Table.Body className="divide-y">
-            {consultas.map((item, index) => (
-              <Table.Row
-                key={item.id_consulta}
-                className={`font-medium bg-white hover:cursor-pointer`}
-                  onClick={e => {
-                            
-                            setData(item), setModal({ editar: true });
-                          }}
-              >
-                    <Table.Cell >
-                  {item.id_consulta}
-                </Table.Cell>
-                <Table.Cell >
-                  {item.nome}
-                </Table.Cell>
-                <Table.Cell className="whitespace-nowrap">
-                  {item.celular}
-                </Table.Cell>
-                <Table.Cell>{item.espec}</Table.Cell>
-                <Table.Cell>
-                  {new Date(item.data).toLocaleDateString("pt-BR", {
-                    timeZone: "UTC",
-                  })}
-                </Table.Cell>
-                <Table.Cell>
-                  {item.data_prev &&
-                    new Date(item?.data_prev).toLocaleDateString("pt-BR", {
-                      timeZone: "UTC",
-                    })}
-                </Table.Cell>
+    
 
-                <Table.Cell>
-                  {item.hora_prev &&
-                    new Date(item?.hora_prev).toLocaleTimeString("pt-BR")}
-                </Table.Cell>
-                <Table.Cell>
-                  {Number(
-                    item?.procedimentos?.reduce(
-                      (acc, curr) => acc + curr.valorFinal,
-                      0
-                    ) ?? 0
-                  ).toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })}
-                </Table.Cell>
-                <Table.Cell>{item?.user}</Table.Cell>
-                <Table.Cell className="font-semibold text-red-600">
-                  {item?.retorno}
-                </Table.Cell>
-                <Table.Cell onClick={(e) => e.stopPropagation()}>
-                  <Select
-                    value={item?.status}
-                    onValueChange={(e) => {
-                      handleChangeStatus({ item, status: e });
-                    }}
-                  >
-                    <SelectTrigger
-                      className={`border-0 w-[140px] shadow-none font-semibold text-[10px] focus:ring-0 ${
-                        item?.status === "AGENDADO"
-                          ? "text-blue-500"
-                          : item?.status === "AGUARDANDO DATA"
-                          ? "text-yellow-500"
-                          : item?.status === "CONFIRMADO"
-                          ? "text-cyan-500"
-                          : item?.status === "RECEBIDO"
-                          ? "text-green-500"
-                          : item?.status === "ATENDIDO"
-                          ? "text-violet-600"
-                          : item?.status === "CANCELADO"
-                          ? "text-red-500"
-                          : ""
-                      } `}
-                    >
-                      <SelectValue placeholder="Select a status" />
-                    </SelectTrigger>
-                    <SelectContent className="shadow-none">
-                      <SelectGroup className="shadow-none">
-                        {statusConsultaArray?.map((item) => (
-                          <SelectItem
-                            className="text-xs"
-                            disabled={
-                              item === "AGENDADO" || item === "RECEBIDO"
-                            }
-                            key={item}
-                            value={item}
-                          >
-                            {item}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </Table.Cell>
+    //   <div className="overflow-y-auto h-[calc(100vh-145px)]">
+    //     <div className="overflow-y-auto h-[calc(100vh-145px)]">
+    //       <Table>
+    //         <TableHeader>
+    //           <TableRow>
+    //             <TableHead>Seq.</TableHead>
+    //             <TableHead>Origem</TableHead>
+    //             <TableHead>Nome</TableHead>
+    //             <TableHead>Fone</TableHead>
+    //             <TableHead>Especialidade</TableHead>
+    //             <TableHead>Data</TableHead>
+    //             <TableHead>Data Prev.</TableHead>
+    //             <TableHead>Hora Prev</TableHead>
+    //             <TableHead>Valor</TableHead>
+    //             <TableHead>Usuário</TableHead>
+    //             <TableHead>Retorno</TableHead>
+    //             <TableHead>Status</TableHead>
+    //             <TableHead></TableHead>
+    //           </TableRow>
+    //         </TableHeader>
+    //         <TableBody>
+    //           {consultas.map((item, index) => (
+    //             <TableRow
+    //               key={item.id_consulta}
+    //               className={`font-medium hover:cursor-pointer text-[10px] py-1`}
+    //               onClick={(e) => {
+    //                 setData(item), setModal({ editar: true });
+    //               }}
+    //             >
+    //               <TableCell className="cursor-pointer hover:bg-gray-50">
+    //                 <button
+    //                   onClick={(e) => {
+    //                     e.stopPropagation();
+    //                   setData(item)
+    //                   setModal({alterarPosicao:true})
+    //                   }}
+    //                   className="text-white flex items-center gap-1 hover:bg-blue-500 hover:text-blue-50"
+    //                 >
+    //               {item?.posicao ? <span className={`text-xs font-medium border p-2 rounded ${item?.status === "RECEBIDO"||item?.status === "ATENDIDO" ? "bg-green-600" : "bg-blue-600"}`}>{item?.posicao}</span> : <HelpCircle className="w-4 h-4 text-blue-600" />}
+    //                 </button>
+    //               </TableCell>
+    //               <TableCell>{item.externo}</TableCell>
+    //               <TableCell>{item.nome}</TableCell>
+    //               <TableCell className="whitespace-nowrap">
+    //                 {item.celular}
+    //               </TableCell>
+    //               <TableCell>
+    //                 {medicos.find((medico) => medico.id_med === item.id_med)?.espec}
+    //               </TableCell>
+    //               <TableCell>
+    //                 {new Date(item.data).toLocaleDateString("pt-BR", {
+    //                   timeZone: "UTC",
+    //                 })}
+    //               </TableCell>
+    //               <TableCell>
+    //                 {item.data_prev &&
+    //                   new Date(item?.data_prev).toLocaleDateString("pt-BR", {
+    //                     timeZone: "UTC",
+    //                   })}
+    //               </TableCell>
+    //               <TableCell>
+    //                 {item.hora_prev &&
+    //                   new Date(item?.hora_prev).toLocaleTimeString("pt-BR")}
+    //               </TableCell>
+    //               <TableCell>
+    //                 {Number(
+    //                   item?.procedimentos?.reduce(
+    //                     (acc, curr) => acc + curr.valorFinal,
+    //                     0
+    //                   ) ?? 0
+    //                 ).toLocaleString("pt-BR", {
+    //                   style: "currency",
+    //                   currency: "BRL",
+    //                 })}
+    //               </TableCell>
+    //               <TableCell>{item?.user}</TableCell>
+    //               <TableCell className="font-semibold text-red-600">
+    //                 {item?.retorno}
+    //               </TableCell>
+    //               <TableCell onClick={(e) => e.stopPropagation()}>
+    //                 <Select
+    //                   value={item?.status}
+    //                   onValueChange={(e) => {
+    //                     handleChangeStatus({ item, status: e });
+    //                   }}
+    //                 >
+    //                   <SelectTrigger
+    //                     className={`border-0 w-[140px] shadow-none font-semibold text-[10px] focus:ring-0 ${
+    //                       item?.status === "AGENDADO"
+    //                         ? "text-blue-500"
+    //                         : item?.status === "AGUARDANDO DATA"
+    //                         ? "text-yellow-500"
+    //                         : item?.status === "CONFIRMADO"
+    //                         ? "text-cyan-500"
+    //                         : item?.status === "RECEBIDO"
+    //                         ? "text-green-500"
+    //                         : item?.status === "ATENDIDO"
+    //                         ? "text-violet-600"
+    //                         : item?.status === "CANCELADO"
+    //                         ? "text-red-500"
+    //                         : ""
+    //                     } `}
+    //                   >
+    //                     <SelectValue placeholder="Select a status" />
+    //                   </SelectTrigger>
+    //                   <SelectContent className="shadow-none">
+    //                     <SelectGroup className="shadow-none">
+    //                       {statusConsultaArray?.map((item) => (
+    //                         <SelectItem
+    //                           className="text-xs"
+    //                           disabled={
+    //                             item === "AGENDADO" || item === "RECEBIDO"
+    //                           }
+    //                           key={item}
+    //                           value={item}
+    //                         >
+    //                           {item}
+    //                         </SelectItem>
+    //                       ))}
+    //                     </SelectGroup>
+    //                   </SelectContent>
+    //                 </Select>
+    //               </TableCell>
+    //               <TableCell onClick={(e) => e.stopPropagation()}>
+    //                 <DropdownAcoesConsulta
+    //                   verifyPermissions={verifyPermission}
+    //                   item={item}
+    //                   setData={setData}
+    //                   setModal={setModal}
+    //                   handleWhatsAppClick={() =>
+    //                     handleWhatsAppClick({
+    //                       phone: item.celular,
+    //                     })
+    //                   }
+    //                 />
+    //               </TableCell>
+    //             </TableRow>
+    //           ))}
+    //         </TableBody>
+    //       </Table>
+    //     </div>
+    //   </div>
 
-                <Table.Cell onClick={(e) => e.stopPropagation()}>
-                  <DropdownAcoesConsulta
-                    verifyPermissions={verifyPermission}
-                    item={item}
-                    setData={setData}
-                    setModal={setModal}
-                    handleWhatsAppClick={()=>handleWhatsAppClick({
-                      phone:item.celular
-                    })}
-                  />
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
-      </div>
+    //   <ModalConfirmar
+    //     openModal={modal.deletar ?? false}
+    //     setOpenModal={() => setModal({ deletar: false })}
+    //     handleConfirmar={handleDeletar}
+    //     pergunta={"Realmente deseja deletar essa consulta?"}
+    //   />
 
-      
-      
-      
+    //   <ModalFiltroConsultas
+    //     reset={reset}
+    //     register={register}
+    //     control={control}
+    //     handle={handleSubmit}
+    //     consultores={consultores}
+    //     medicos={medicos}
+    //     buscarConsultas={buscarConsultas}
+    //     loading={loading}
+    //     setFiltro={() => setModal({ filtro: false })}
+    //     show={modal.filtro ?? false}
+    //   />
 
-      <ModalConfirmar
-        openModal={modal.deletar??false}
-        setOpenModal={() => setModal({ deletar: false })}
-        handleConfirmar={handleDeletar}
-        pergunta={"Realmente deseja deletar essa consulta?"}
-      />
+    //   {modal.receber && (
+    //     <ModalConfirmar
+    //       pergunta="Realmente deseja receber essa consulta?"
+    //       handleConfirmar={handleReceberConsulta}
+    //       openModal={modal.receber ?? false}
+    //       setOpenModal={() => setModal({ receber: false })}
+    //     >
+    //       <Select
+    //         value={formPag}
+    //         onValueChange={(e) => {
+    //           setFormPag(e);
+    //         }}
+    //       >
+    //         <SelectTrigger
+    //           className={`shadow-none font-semibold  focus:ring-0`}
+    //         >
+    //           <SelectValue placeholder="Selecione a forma de pagamento" />
+    //         </SelectTrigger>
+    //         <SelectContent className="shadow-none ">
+    //           <SelectGroup className="shadow-none ">
+    //             <SelectItem className="text-xs" value="DINHEIRO">
+    //               DINHEIRO
+    //             </SelectItem>
+    //             <SelectItem className="text-xs" value="CARTAO">
+    //               CARTÃO
+    //             </SelectItem>
+    //             <SelectItem className="text-xs" value="PIX">
+    //               PIX
+    //             </SelectItem>
+    //             <SelectItem className="text-xs" value="TRANSFERENCIA">
+    //               TRANSFERÊNCIA
+    //             </SelectItem>
+    //           </SelectGroup>
+    //         </SelectContent>
+    //       </Select>
+    //     </ModalConfirmar>
+    //   )}
 
-      <ModalFiltroConsultas
-        reset={reset}
-        register={register}
-        control={control}
-        handle={handleSubmit}
-        consultores={consultores}
-        medicos={medicos}
-        buscarConsultas={buscarConsultas}
-        loading={loading}
-        setFiltro={() => setModal({ filtro: false })}
-        show={modal.filtro??false}
-      />
+    //   <div style={{ display: "none" }}>
+    //     <FichaConsulta
+    //       ref={currentPage}
+    //       especialista={
+    //         medicos.find((item) => item.id_med === data?.id_med)?.nome ?? ""
+    //       }
+    //       id_consulta={data?.id_consulta ?? null}
+    //       bairro={data?.bairro ?? ""}
+    //       data={data?.data_prev ? new Date(data?.data_prev) : new Date()}
+    //       cidade={data?.cidade ?? ""}
+    //       cpf={data?.cpf ?? ""}
+    //       endereco={data?.endereco ?? ""}
+    //       nascimento={data?.nascimento ?? undefined}
+    //       identidade={data?.identidade ?? ""}
+    //       especialidade={
+    //         medicos.find((item) => item.id_med === data?.id_med)?.espec ?? ""
+    //       }
+    //       responsavel={data?.responsavel ?? ""}
+    //       nome={data?.nome ?? ""}
+    //       procedimentos={data?.procedimentos}
+    //       celular={data?.celular ?? ""}
+    //       parentesco={data?.grau_parentesco ?? ""}
+    //       logoUrl={empresa?.logoUrl ?? ""}
+    //     />
 
-      {modal.receber && (
-        <ModalConfirmar
-          pergunta="Realmente deseja receber essa consulta?"
-          handleConfirmar={handleReceberConsulta}
-          openModal={modal.receber ??false}
-          setOpenModal={() => setModal({ receber: false })}
-        >
-          <Select
-            value={formPag}
-            onValueChange={(e) => {
-              setFormPag(e);
-            }}
-          >
-            <SelectTrigger
-              className={`shadow-none font-semibold  focus:ring-0`}
-            >
-              <SelectValue placeholder="Selecione a forma de pagamento" />
-            </SelectTrigger>
-            <SelectContent className="shadow-none ">
-              <SelectGroup className="shadow-none ">
-                <SelectItem className="text-xs" value="DINHEIRO">
-                  DINHEIRO
-                </SelectItem>
-                <SelectItem className="text-xs" value="CARTAO">
-                  CARTÃO
-                </SelectItem>
-                <SelectItem className="text-xs" value="PIX">
-                  PIX
-                </SelectItem>
-                <SelectItem className="text-xs" value="TRANSFERENCIA">
-                  TRANSFERÊNCIA
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </ModalConfirmar>
-      )}
+    //     {modal.printRecibo && (
+    //       <ReciboMensalidade
+    //         ref={currentRecibo}
+    //         cidade_uf="CEDRO/CE"
+    //         endereco="RUA VER. SALUSTIANO MOURAO, 394 - CENTRO"
+    //         logoUrl="/afapsaudelogo.jpg"
+    //         associado={data?.nome ?? ""}
+    //         contrato={data?.id_consulta ?? null}
+    //         data_pgto={data?.dt_pgto ?? null}
+    //         n_doc=""
+    //         referencia=""
+    //         valor={Number(
+    //           data?.procedimentos?.reduce(
+    //             (acc, curr) => acc + curr.valorFinal,
+    //             0
+    //           ) ?? 0
+    //         )}
+    //         vencimento={new Date()}
+    //         referente={`Consulta Médica - ${data?.espec}`}
+    //       />
+    //     )}
+    //   </div>
 
-      <div style={{display:"none"}} >
-      
-            <FichaConsulta
-            ref={currentPage}
-            especialista={
-              medicos.find((item) => item.id_med === data?.id_med)?.nome ?? ""
-            }
-            id_consulta={data?.id_consulta ?? null}
-            bairro={data?.bairro ?? ""}
-            data={data?.data_prev ? new Date(data?.data_prev) : new Date()}
-            cidade={data?.cidade ?? ""}
-            cpf={data?.cpf ?? ""}
-            endereco={data?.endereco ?? ""}
-            nascimento={data?.nascimento ?? undefined}
-            identidade={data?.identidade ?? ""}
-            especialidade={
-              medicos.find((item) => item.id_med === data?.id_med)?.espec ?? ""
-            }
-            responsavel={data?.responsavel ?? ""}
-            nome={data?.nome ?? ""}
-            procedimentos={data?.procedimentos}
-            celular={data?.celular ?? ""}
-            parentesco={data?.grau_parentesco ?? ""}
-            logoUrl={empresa?.logoUrl ?? ""}
-          /> 
-        
+    //   <ModalConfirmar
+    //     pergunta="Realmente deseja alterar o status?"
+    //     handleConfirmar={handleAlterarStatus}
+    //     openModal={modal.status ?? false}
+    //     setOpenModal={() => setModal({ status: false })}
+    //   />
 
-        {modal.printRecibo && (
-          
-          <ReciboMensalidade
-           ref={currentRecibo}
-            cidade_uf="CEDRO/CE"
-            endereco="RUA VER. SALUSTIANO MOURAO, 394 - CENTRO"
-            logoUrl="/afapsaudelogo.jpg"
-            associado={data?.nome ?? ""}
-            contrato={data?.id_consulta ?? null}
-            data_pgto={data?.dt_pgto ?? null}
-            n_doc=""
-            referencia=""
-            valor={Number(
-              data?.procedimentos?.reduce(
-                (acc, curr) => acc + curr.valorFinal,
-                0
-              ) ?? 0
-            )}
-            vencimento={new Date()}
-            referente={`Consulta Médica - ${data?.espec}`}
-          />
-        )}
+    //   <ModalConfirmar
+    //     pergunta="Realmente deseja Estornar a consulta?"
+    //     handleConfirmar={handleEstornarConsulta}
+    //     openModal={modal.estornar ?? false}
+    //     setOpenModal={() => setModal({ estornar: false })}
+    //   />
 
-       
-       
-                    
-            
-      </div>
-
-      <ModalConfirmar
-        pergunta="Realmente deseja alterar o status?"
-        handleConfirmar={handleAlterarStatus}
-        openModal={modal.status??false}
-        setOpenModal={() => setModal({ status: false })}
-      />
-
-      <ModalConfirmar
-        pergunta="Realmente deseja Estornar a consulta?"
-        handleConfirmar={handleEstornarConsulta}
-        openModal={modal.estornar??false}
-        setOpenModal={() => setModal({ estornar: false })}
-      />
-    </div>
+    //   <ModalPosicao
+    //     open={modal.alterarPosicao}
+    //     onClose={() => setModal({ alterarPosicao: false })}
+    //     handleConfirmarPosicao={handleConfirmarPosicao}
+    //     posicao={data?.posicao}
+    //   />
+    // </div>
   );
 }

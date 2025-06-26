@@ -307,7 +307,6 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
           <Input
             required
             className=" text-xs"
-            value={watch("historico")?.toUpperCase()}
             {...register("historico")}
           />
         </div>

@@ -458,7 +458,7 @@ export default function CaixaMovimentar() {
           <ScreenCloseCaixa fechamento={data.fechamento} />
         ) : (
           <div className="flex flex-col border-t-2 bg-white">
-            <div className="overflow-y-auto mt-1 px-2 h-[calc(100vh-144px)] ">
+            <div className="overflow-y-auto mt-1 px-2 h-[calc(100vh-130px)] ">
               <Table
                 hoverable
                 theme={{

@@ -217,6 +217,7 @@ export default function TabConsulta({
         <Controller
           control={control}
           name="externo"
+          rules={{ required: "Demanda Externa é obrigatória" }}
           render={({ field: { onChange, value } }) => (
             <Select value={value} onValueChange={(e) => onChange(e)}>
               <SelectTrigger className="">

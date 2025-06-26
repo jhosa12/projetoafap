@@ -78,6 +78,7 @@ export interface ConsultaProps{
   id_consulta:number|null,
   id_med:number|null,
   id_empresa:string,
+  posicao:number,
   id_global:number|null,
   id_contrato:number|null,
   id_empContrato?:string,
@@ -120,6 +121,8 @@ export interface ConsultaProps{
   buscar:string,
   data_prev:Date|undefined,
   retorno:string
+  medico_nome:string
+  medico_espec:string
 }
 
 export interface MedicoProps {
