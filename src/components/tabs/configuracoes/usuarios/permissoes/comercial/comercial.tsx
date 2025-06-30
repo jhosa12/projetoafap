@@ -26,6 +26,7 @@ export function TabComercial({ permissions, handlePermission }: DataProps) {
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
       <TabsList className="mb-4">
         <TabsTrigger value="vendas">Vendas</TabsTrigger>
+        <TabsTrigger value="dashboard">Dashboard</TabsTrigger>  
       </TabsList>
 
       <TabsContent value="vendas">
@@ -37,6 +38,19 @@ export function TabComercial({ permissions, handlePermission }: DataProps) {
             <CardContent className="space-y-2">
               {renderCheckbox("COM1.1", "Filtro")}
               {renderCheckbox("COM1.2", "Adicionar Meta")}
+            </CardContent>
+          </Card>
+        </div>
+      </TabsContent>
+      <TabsContent value="dashboard">
+        <div className="grid grid-cols-4 gap-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Tela</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {renderCheckbox("COM2.0", "Dashboard")}
+           
             </CardContent>
           </Card>
         </div>

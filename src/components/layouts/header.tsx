@@ -166,7 +166,7 @@ export function Header({path}:{path?:string}) {
                   Ativos/Inativos
                 </MenubarItem>
                 <MenubarItem><LinkNavigate href="/dashboard/conveniados">Conveniados</LinkNavigate></MenubarItem>
-                   <MenubarItem><LinkNavigate href="/dashboard/analyze">DashBoard</LinkNavigate></MenubarItem>
+                   <MenubarItem disabled={!permissoes?.includes("COM2.0")}><LinkNavigate href="/dashboard/analyze">DashBoard</LinkNavigate></MenubarItem>
               </MenubarContent>
             </MenubarMenu>
 
