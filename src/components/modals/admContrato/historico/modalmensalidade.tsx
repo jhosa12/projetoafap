@@ -1,4 +1,24 @@
 "use client"
+
+
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter
+  } from "@/components/ui/dialog"
+  import { Input } from "@/components/ui/input"
+  import {
+    Select,
+    SelectTrigger,
+    SelectValue,
+    SelectContent,
+    SelectItem
+  } from "@/components/ui/select"
+  import { Checkbox } from "@/components/ui/checkbox"
+  import { Button } from "@/components/ui/button"
+  import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { AuthContext} from "@/store/AuthContext";
 import { useContext, useEffect, useState } from "react";
@@ -8,10 +28,19 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import useBaixaMensalidade from "@/hooks/useBaixaMensalidade";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Button, Checkbox, Modal, Select, TextInput } from "flowbite-react";
+
 import { removerFusoDate } from "@/utils/removerFusoDate";
 import { toast } from "sonner";
 import { MensalidadeBaixaProps } from "@/types/financeiro";
+import { DatePickerInput } from "@/components/DatePickerInput"
+import { Label } from "@/components/ui/label"
+
+import { Calendar } from "@/components/ui/calendar"
+import { BuildingIcon, CalendarIcon, CheckCircleIcon, CreditCardIcon, DollarSignIcon, UserIcon } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
+import { Separator } from "@/components/ui/separator"
 
 interface Props{
     handleAtualizar:Function
@@ -20,6 +49,18 @@ interface Props{
     mensalidade:Partial<MensalidadeBaixaProps>
    
 }
+
+
+const FORMAS_PAGAMENTO = [
+    { value: "DINHEIRO", label: "Dinheiro", icon: DollarSignIcon },
+    { value: "PIX", label: "PIX", icon: CreditCardIcon },
+    { value: "CARTAO", label: "Cartão", icon: CreditCardIcon },
+    { value: "DEPOSITO", label: "Depósito", icon: BuildingIcon },
+    { value: "TRANSFERENCIA", label: "Transferência", icon: BuildingIcon },
+    { value: "BOLETO", label: "Boleto", icon: BuildingIcon },
+  ]
+
+  const BANCOS = ["BANCO DO BRASIL", "CORA", "PAGBANK", "CAIXA", "TON"]
 
 export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtualizar}:Props){
 
@@ -31,11 +72,20 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
     )
 
 
+  
+
+
     useEffect(()=>{
         reset({...mensalidade,form_pagto:'',valor_total:mensalidade?.valor_principal,data_pgto:new Date()})
     },[mensalidade])
 
-
+    const formaPagamento = watch("form_pagto")
+    const valorTotal = Number(watch("valor_total"))
+    const valorPrincipal = Number(watch("valor_principal"))
+  
+    const isDescontoVisible = valorTotal < valorPrincipal && valorTotal !== undefined && valorTotal > 0
+    const isPago = mensalidade.status === "P"
+    const canEdit = permissoes.includes("ADM1.2.5") && !isPago
 
          const handleBaixar:SubmitHandler<MensalidadeBaixaProps> = async(data)=> {
             // Função para exibir toast e retornar
@@ -100,147 +150,272 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
         }
     return(
 
-<Modal
-        className="absolute  overflow-y-auto"
-        content={"base"}
-         show={openModal}
-         onClose={()=>setOpenModal(false)}
-          size={'3xl'}
-           popup 
-        
-         dismissible
-          >
-            <Modal.Header className="flex text-white items-start justify-between bg-gray-700 rounded-t border-b p-2 border-gray-60">
-             <h1 className="text-white">REALIZAR BAIXA</h1>
-                </Modal.Header>
+<Dialog open={openModal} onOpenChange={setOpenModal}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="space-y-3">
+          <DialogTitle className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <CheckCircleIcon className="h-6 w-6 text-green-600" />
+            Realizar Baixa de Mensalidade
+          </DialogTitle>
+          {isPago && (
+            <Badge variant="secondary" className="w-fit">
+              Mensalidade já paga
+            </Badge>
+          )}
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit(handleBaixar)}>
-            <Modal.Body>
-              
-            <span className="flex w-full text-gray-500 border-b">Associado</span>
-                    <h1 className="font-semibold text-lg">{mensalidade.id_contrato}-{mensalidade.associado?.nome}</h1>
-                    <p className="text-sm">{mensalidade.associado?.endereco}</p>
-                    <span className="flex w-full text-gray-500 border-b mt-2">Mensalidade</span>
-          <div className="p-2 mt-2 grid gap-2 grid-flow-row-dense grid-cols-3">
+        <form onSubmit={handleSubmit(handleBaixar)} className="space-y-6">
+          {/* Informações do Associado */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2 text-gray-700">
+                <UserIcon className="h-5 w-5" />
+                Dados do Associado
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <Badge variant="outline" className="text-sm">
+                    Contrato: {mensalidade.id_contrato}
+                  </Badge>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900">{mensalidade.associado?.nome}</h3>
+                <p className="text-sm text-gray-600 mt-1">{mensalidade.associado?.endereco}</p>
+              </div>
+            </CardContent>
+          </Card>
 
-          <div className="mb-1 col-span-1 ">
-<label  className="block mb-1 text-xs font-medium  text-black">REFERÊNCIA</label>
-<TextInput disabled style={{padding:6}} {...register('referencia')} placeholder="REFERÊNCIA"/>
-</div>
+          {/* Dados da Mensalidade */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2 text-gray-700">
+                <CreditCardIcon className="h-5 w-5" />
+                Dados do Pagamento
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="space-y-2">
+                  <Label htmlFor="referencia" className="text-sm font-medium text-gray-700">
+                    Referência
+                  </Label>
+                  <Input
+                    id="referencia"
+                    disabled
+                    {...register("referencia", { required: true })}
+                    placeholder="Referência da mensalidade"
+                    className="bg-gray-50"
+                  />
+                </div>
 
-<div className="mb-1 col-span-1">
-<label  className="block mb-1 text-xs font-medium  text-black">VALOR PAGO</label>
-<TextInput style={{padding:6}}  {...register('valor_total')} placeholder="VALOR PAGO"/>
-</div>
-<div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-black">RECEBIDO POR</label>
-    <Select  {...register('recebido_por')}  style={{padding:6}}>
-            <option value={''}>{''}</option>
-            {consultores?.map((consultor)=>(<option className="text-[11px]" key={consultor.id_consultor} value={consultor.nome}>{consultor.nome}</option>))}
-           
-    </Select>
-  
-</div>
-<div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-black">FORMA PAG.</label>
-    <Select  {...register('form_pagto')}  style={{padding:6}}>
-            <option value={''}>{''}</option>
-            <option value={'DINHEIRO'}>DINHEIRO</option>
-            <option value={'PIX'}>PIX</option>
-            <option value={'CARTAO'}>CARTÃO</option>
-            <option value={'DEPOSITO'}>DEPOSITO</option>
-            <option value={'TRANSFERENCIA'}>TRANSFERÊNCIA</option>
-            <option value={'BOLETO'}>BOLETO</option>
-    </Select>
-</div>
-<div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-black">BANCO DESTINO</label>
-    <Select  {...register('banco_dest')}  style={{padding:6}}>
-            <option>{''}</option>
-            <option value={'BANCO DO BRASIL'}>BANCO DO BRASIL</option>
-            <option value={'CORA'}>CORA</option>
-            <option value={'PAGBANK'}>PAGBANK</option>
-            <option value={'CAIXA'}>CAIXA</option>
-            <option value={'TON'}>TON</option>
-    </Select>
-</div>
-<div className="mb-1 col-span-1">
-<label  className="block mb-1 text-xs font-medium  text-black">PAGAMENTO</label>
-<Controller
-control={control}
-name='data_pgto'
-render={({field:{value,onChange}})=>(
-    <DatePicker className="flex w-full text-sm p-1.5 rounded-lg bg-gray-50 border-gray-300" disabled={!permissoes.includes('ADM1.2.7')} selected={value}  onChange={e=>e && onChange(e)}  dateFormat={'dd/MM/yyyy'} locale={pt} />
-)}
+                <div className="space-y-2">
+                  <Label htmlFor="valor_total" className="text-sm font-medium text-gray-700">
+                    Valor Pago *
+                  </Label>
+                  <Input
+                    required
+                    id="valor_total"
+                    {...register("valor_total", { required: true })}
+                    placeholder="0,00"
+                    disabled={!canEdit}
+                    className={!canEdit ? "bg-gray-50" : ""}
+                  />
+                </div>
 
-/>
+                <div className="space-y-2">
+                  <Label htmlFor="recebido_por" className="text-sm font-medium text-gray-700">
+                    Recebido por 
+                  </Label>
+                  <Controller
+                    control={control}
+                    name="recebido_por"
+                    render={({ field }) => (
+                      <Select value={field.value} onValueChange={field.onChange} disabled={!canEdit}>
+                        <SelectTrigger className={!canEdit ? "bg-gray-50" : ""}>
+                          <SelectValue placeholder="Selecione o consultor" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {consultores?.map((consultor) => (
+                            <SelectItem key={consultor.id_consultor} value={consultor.nome}>
+                              {consultor.nome}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </div>
 
-</div>
+                <div className="space-y-2">
+                  <Label htmlFor="form_pagto" className="text-sm font-medium text-gray-700">
+                    Forma de Pagamento *
+                  </Label>
+                  <Controller
+                    control={control}
+                    name="form_pagto"
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <Select required value={field.value} onValueChange={field.onChange} disabled={!canEdit}>
+                        <SelectTrigger className={!canEdit ? "bg-gray-50" : ""}>
+                          <SelectValue placeholder="Selecione a forma" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {FORMAS_PAGAMENTO.map((forma) => (
+                            <SelectItem key={forma.value} value={forma.value}>
+                              <div className="flex items-center gap-2">
+                                <forma.icon className="h-4 w-4" />
+                                {forma.label}
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </div>
 
-{watch('form_pagto')!=='DINHEIRO' && (watch('form_pagto')!=='') && (
-    <div className="mb-1 col-span-1">
-    <label  className="block mb-1 text-xs font-medium  text-black">VALOR PIX/CARTÃO</label>
-    <TextInput style={{padding:6}} {...register('valor_metodo')} placeholder="VALOR"/>
+                <div className="space-y-2">
+                  <Label htmlFor="banco_dest" className="text-sm font-medium text-gray-700">
+                    Banco Destino
+                  </Label>
+                  <Controller
+                    control={control}
+                    name="banco_dest"
+                    render={({ field }) => (
+                      <Select value={field.value} onValueChange={field.onChange} disabled={!canEdit}>
+                        <SelectTrigger className={!canEdit ? "bg-gray-50" : ""}>
+                          <SelectValue placeholder="Selecione o banco" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {BANCOS.map((banco) => (
+                            <SelectItem key={banco} value={banco}>
+                              {banco}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </div>
 
-</div>
-)}
+                <div className="space-y-2">
+                  <Label htmlFor="data_pgto" className="text-sm font-medium text-gray-700">
+                    Data do Pagamento *
+                  </Label>
+                  <Controller
+                    control={control}
+                    name="data_pgto"
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <DatePickerInput
+                        value={value}
+                        onChange={onChange}
+                        disable={!canEdit}
+                        required
+                        className="h-9 border border-gray-100"
+                      />
+                    )}
+                  />
+                </div>
 
-{watch('form_pagto')==='PIX'&& (
+                {/* Campos condicionais */}
+                {formaPagamento && formaPagamento !== "DINHEIRO" && (
+                  <div className="space-y-2">
+                    <Label htmlFor="valor_metodo" className="text-sm font-medium text-gray-700">
+                      Valor {formaPagamento === "PIX" ? "PIX" : "Cartão"}
+                    </Label>
+                    <Input
+                      required
+                      id="valor_metodo"
+                      {...register("valor_metodo", { required: 'Campo obrigatório' })}
+                      placeholder="0,00"
+                      disabled={!canEdit}
+                      className={!canEdit ? "bg-gray-50" : ""}
+                    />
+                  </div>
+                )}
 
-<div className="mb-1 col-span-2">
-    <label  className="block mb-1 text-xs font-medium  text-black">PIX POR</label>
-    <TextInput style={{padding:6}} {...register('pix_por')} placeholder="PIX POR "/>
+                {formaPagamento === "PIX" && (
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="pix_por" className="text-sm font-medium text-gray-700">
+                      PIX realizado por
+                    </Label>
+                    <Input
+                      id="pix_por"
+                      {...register("pix_por")}
+                      placeholder="Nome de quem realizou o PIX"
+                      disabled={!canEdit}
+                      className={!canEdit ? "bg-gray-50" : ""}
+                    />
+                  </div>
+                )}
 
-</div>
-)
+                {formaPagamento === "CARTAO" && (
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="aut" className="text-sm font-medium text-gray-700">
+                      Código de Autorização
+                    </Label>
+                    <Input
+                      id="aut"
+                      {...register("aut")}
+                      placeholder="Código de autorização do cartão"
+                      disabled={!canEdit}
+                      className={!canEdit ? "bg-gray-50" : ""}
+                    />
+                  </div>
+                )}
+              </div>
 
-}
+              {/* Seção de Desconto */}
+              {isDescontoVisible && (
+                <>
+                  <Separator className="my-6" />
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="desconto"
+                        checked={desconto}
+                        onCheckedChange={(checked) => setDesconto(!!checked)}
+                        disabled={!canEdit}
+                      />
+                      <Label htmlFor="desconto" className="text-sm font-medium text-gray-700 cursor-pointer">
+                        Aplicar desconto
+                      </Label>
+                    </div>
 
-{watch('form_pagto')==='CARTAO'&& (
+                    {desconto && (
+                      <div className="space-y-2">
+                        <Label htmlFor="motivo_bonus" className="text-sm font-medium text-gray-700">
+                          Motivo do desconto *
+                        </Label>
+                        <Input
+                          id="motivo_bonus"
+                          {...register("motivo_bonus")}
+                          placeholder="Descreva o motivo do desconto aplicado"
+                          disabled={!desconto || !canEdit}
+                          className={!desconto || !canEdit ? "bg-gray-50" : ""}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
 
-<div className="mb-1 col-span-2">
-    <label  className="block mb-1 text-xs font-medium  text-black">AUT</label>
-    <TextInput style={{padding:6}} {...register('aut')} placeholder="CODIGO DE AUTORIZACÃO (AUT)"/>
-</div>
-)
-
-}
-
-{((watch('valor_total') ?? 0)<(watch('valor_principal') ?? 0) && watch('valor_total')!==undefined)&& watch('valor_total')>0?(
- <div className="col-span-4 gap-1 mt-1 inline-flex ">
-    <div className="flex items-top w-2/12 ">
-    <Checkbox  onClick={()=>setDesconto(!desconto)}  checked={desconto} />
-    <label  className="ms-2 text-sm font-medium text-gray-700">Desconto</label>
-</div>
-    <div className="mb-1 w-full">
-  <label  className="block mb-1 text-xs font-medium  text-black">INFORME O MOTIVO DO DESCONTO</label>
-  <TextInput {...register('motivo_bonus')} disabled={!desconto || mensalidade.status==='P'} type="text" style={{padding:6}}/>
-  </div>
- </div> 
-):''}
-  
-
-</div>
-          </Modal.Body>
-
-          <Modal.Footer >
-            <div className="ml-auto">
-            <Button disabled={!permissoes.includes('ADM1.2.5')||mensalidade.status==='P'}
-             color={'success'} 
-             type="submit"
-             >
-            <IoIosArrowDropdownCircle className="mr-2 h-5 w-5"/>
-             BAIXAR
-             </Button>
-         
-            </div>
-    
-        </Modal.Footer>
+          <DialogFooter className="gap-2">
+            <Button type="button" variant="outline" onClick={() => setOpenModal(false)}>
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={!canEdit} className="min-w-[120px]">
+              <CheckCircleIcon className="mr-2 h-4 w-4" />
+              Confirmar Baixa
+            </Button>
+          </DialogFooter>
         </form>
-
-
-
-        </Modal>
+      </DialogContent>
+    </Dialog>
 
 )
 }
