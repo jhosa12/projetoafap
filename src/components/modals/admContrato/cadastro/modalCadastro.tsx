@@ -32,6 +32,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { Badge } from "@/components/ui/badge";
+import { gerarMensalidade } from "@/utils/gerarArrayMensal";
 
 interface ParcelaData {
   parcela_n: number;
@@ -62,23 +63,23 @@ export default function ModalCadastro({isEmpresa,empresa}:{isEmpresa?:boolean,em
   }, [open]);
 
 
-  function gerarMensalidade() {
-    const mensalidades: Array<ParcelaData> = [];
-    let currentDate = new Date(watch('contrato.data_vencimento') ?? new Date());
-    for (let i = 0; i < Number(watch('contrato.n_parcelas')); i++) {
-      const dataMensalidade: ParcelaData = {
-        parcela_n: i + 1,
-        vencimento: new Date(currentDate),
-        cobranca: new Date(currentDate),
-        valor_principal: Number(watch('contrato.valor_mensalidade')),
-        status: 'A',
-        referencia: `${String(new Date(currentDate).getMonth() + 1).padStart(2, '0')}/${new Date(currentDate).getFullYear() % 100}`
-      };
-      mensalidades.push(dataMensalidade);
-      currentDate.setMonth(currentDate.getMonth() + 1);
-    }
-    return mensalidades;
-  }
+  // function gerarMensalidade() {
+  //   const mensalidades: Array<ParcelaData> = [];
+  //   let currentDate = new Date(watch('contrato.data_vencimento') ?? new Date());
+  //   for (let i = 0; i < Number(watch('contrato.n_parcelas')); i++) {
+  //     const dataMensalidade: ParcelaData = {
+  //       parcela_n: i + 1,
+  //       vencimento: new Date(currentDate),
+  //       cobranca: new Date(currentDate),
+  //       valor_principal: Number(watch('contrato.valor_mensalidade')),
+  //       status: 'A',
+  //       referencia: `${String(new Date(currentDate).getMonth() + 1).padStart(2, '0')}/${new Date(currentDate).getFullYear() % 100}`
+  //     };
+  //     mensalidades.push(dataMensalidade);
+  //     currentDate.setMonth(currentDate.getMonth() + 1);
+  //   }
+  //   return mensalidades;
+  // }
 
   const handleSave = async (data: DadosCadastro) => {
     const dataAtual = new Date();
@@ -142,7 +143,11 @@ export default function ModalCadastro({isEmpresa,empresa}:{isEmpresa?:boolean,em
           dt_carencia: data.contrato?.dt_carencia ? dataCarencia : null
         },
         dependentes: data.arraydep,
-        mensalidades: gerarMensalidade()
+          mensalidades: gerarMensalidade({
+          vencimento: data.contrato?.data_vencimento,
+          n_parcelas: Number(data.contrato?.n_parcelas),
+          valorMensalidade: Number(data.contrato?.valor_mensalidade)
+        })
       }),
       {
         loading: `Efetuando`,
