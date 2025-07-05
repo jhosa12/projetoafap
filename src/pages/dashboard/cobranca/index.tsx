@@ -1,4 +1,4 @@
-import {  Suspense, useContext,  useState } from "react"
+import {  Suspense, useContext,  useEffect,  useState } from "react"
 import Head from "next/head"
 import { AuthContext } from "@/store/AuthContext"
 import {  Tabs } from "flowbite-react"
@@ -6,6 +6,7 @@ import {  FaCalendarCheck } from "react-icons/fa"
 import { Cobranca } from "@/components/tabs/cobranca/cobranca/cobranca"
 import { Inadimplencia } from "@/components/tabs/cobranca/indimplencia/indimplencia"
 import { FaCalendarDays } from "react-icons/fa6"
+import { api } from "@/lib/axios/apiClient"
 
 
 
@@ -18,13 +19,26 @@ import { FaCalendarDays } from "react-icons/fa6"
 
 export default function AdministrarEstoque(){
   
-  
-    const {permissoes,selectEmp} = useContext(AuthContext);
+      const [arrayBairros, setArrayBairros] = useState<Partial<{ bairro: string; check: boolean; id_empresa: string,cidade: string }>[]>(
+        []
+      );
+   
+    const {selectEmp} = useContext(AuthContext);
     const [tab,setTab] = useState<number>(0)
-   
+    useEffect(() => {
+       const getBairros =  async()=>{
+         const res = await api.post("/bairros",{id_empresa:selectEmp})
+         setArrayBairros(res.data)
+      
+       }
+       getBairros()
+     }, []);
+
+
+     const cidades = [...new Set(arrayBairros?.map(item => item.cidade))];
 
    
-
+     
   
     return(
         <>
@@ -39,16 +53,14 @@ export default function AdministrarEstoque(){
       }}}}}}}  variant="underline"  onActiveTabChange={e=>setTab(e)}>
 
       <Tabs.Item  active={tab===0} title="COBRANÇA" icon={()=>(<FaCalendarCheck className="mr-2 h-4 w-4"/>)}>
-       {tab===0 && <Cobranca/>}
+       {tab===0 && <Cobranca arrayBairros={arrayBairros} cidades={cidades??[]} />}
      
       </Tabs.Item>
       <Tabs.Item  active={tab===1} title="INADIMPLENCIA" icon={()=><FaCalendarDays  className="mr-2 h-4 w-4"/>}>
      {tab===1 &&
      <Suspense fallback={<div>Carregando...</div>}>
-       <Inadimplencia/>
+       <Inadimplencia cidades={cidades??[]} arrayBairros={arrayBairros} />
      </Suspense>
-     
-      
       }
       </Tabs.Item>
 

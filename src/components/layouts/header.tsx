@@ -34,6 +34,7 @@ import { ModalAtivosInativos } from "../modals/modalAtivosInativos";
 import LinkNavigate from "../Link";
 import { FaBell } from "react-icons/fa";
 
+
 export function Header({ path }: { path?: string }) {
   const {
     usuario,
@@ -51,6 +52,7 @@ export function Header({ path }: { path?: string }) {
     <header className="w-full border-b border-gray-200 bg-white px-3 py-1">
       <div className="flex items-center w-full justify-between">
         {/* LOGO + Empresa */}
+       
         <div className="flex items-center gap-3">
           <Image width={40} height={40} src="/improved_logo.png" alt="Logo" />
           <div className="sm:flex flex-col">
@@ -238,6 +240,11 @@ export function Header({ path }: { path?: string }) {
                     DashBoard
                   </LinkNavigate>
                 </MenubarItem>
+                <MenubarItem>
+                  <LinkNavigate href="/dashboard/cobranca/rotas">
+                    Rota de Cobrança
+                  </LinkNavigate>
+                </MenubarItem>
               </MenubarContent>
             </MenubarMenu>
 
@@ -276,6 +283,9 @@ export function Header({ path }: { path?: string }) {
                 </MenubarItem>
                 <MenubarItem disabled={!permissoes.includes("CFG1")}>
                   <LinkNavigate href="/settings/empresas">Empresa</LinkNavigate>
+                </MenubarItem>
+                <MenubarItem >
+                  <LinkNavigate href="/dashboard/auditoria">Auditoria</LinkNavigate>
                 </MenubarItem>
               </MenubarContent>
             </MenubarMenu>

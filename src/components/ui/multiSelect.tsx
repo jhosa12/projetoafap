@@ -108,7 +108,7 @@ export function MultiSelects({
                       key={option.value}
                       variant="secondary"
                       className={cn(
-                        "mr-1 mb-1 py-1 px-2  bg-blue-100 text-blue-800 hover:bg-purple-200",
+                        "mr-1 mb-1 py-1 px-2  bg-blue-100 text-blue-800 hover:bg-blue-200",
                         badgeClassName
                       )}
                     >
@@ -187,7 +187,7 @@ export function MultiSelects({
                       disabled={option.disabled}
                       className={cn(
                         "flex text-xs items-center gap-2",
-                        isSelected ? "bg-purple-50" : "",
+                        isSelected ? "bg-blue-50" : "",
                         option.disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"
                       )}
                     >
@@ -195,7 +195,7 @@ export function MultiSelects({
                         className={cn(
                           "flex items-center justify-center h-4 w-4 border rounded mr-1",
                           isSelected
-                            ? "border-purple-500 bg-purple-500"
+                            ? "border-blue-500 bg-blue-500"
                             : "border-gray-300"
                         )}
                       >

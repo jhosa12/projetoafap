@@ -54,6 +54,7 @@ export interface FormProps{
   status:string,
   cobrador:Array<string>
   bairros:Array<string>
+  cidade:string
 }
 
 
@@ -70,15 +71,17 @@ let formatter = new Intl.NumberFormat('pt-BR', {
   currency: 'BRL'
 });
 
+interface ScreenProps{
+  arrayBairros: Array<Partial<{ bairro: string, check: boolean,id_empresa:string }>>
+  cidades: Array<string|undefined>
+}
 
 
-
-export  function Cobranca() {
+export  function Cobranca({arrayBairros,cidades}:ScreenProps) {
   const [dataInicial, setDataicial] = useState<Date>(new Date())
   const [dataFinal, setDataFinal] = useState<Date>(new Date())
   const [arrayCobranca, setArrayCobranca] = useState<Array<Partial<CobrancaProps>>>([]);
   const [valorTotal, setValor] = useState<number>(0);
-  const [arrayBairros, setArrayBairros] = useState<Array<Partial<{ bairro: string, check: boolean,id_empresa:string }>>>([])
   const [loading, setLoading] = useState(false) 
   const componenteRef = useRef<Relatorio>(null)
   const [ultimosPag, setUltimosPag] = useState<Array<UltimosPagProps>>([])
@@ -120,24 +123,9 @@ export  function Cobranca() {
   },[isPrint])
 
 
-  useEffect(() => {
-
-    listarBairros()
-
-  }, [])
 
 
 
- const listarBairros =  useCallback(
-  async()=> {
-
-    const bairros = await api.get("/bairros");
-    const bairrosProps: Array<Partial<{ bairro: string, check: boolean }>> = bairros.data
-  
-    setArrayBairros(bairrosProps)
-    
-  },[arrayBairros]
- ) 
 
 
 
@@ -158,7 +146,8 @@ export  function Cobranca() {
           cobradores,
           id_empresa:infoEmpresa?.id,
           status: data.status.split(','),
-          bairros: data.bairros
+          bairros: data.bairros,
+          cidade:data.cidade
         })
         const valor = response.data.cobranca.reduce((acumulador: number, item: CobrancaProps) => {
           return acumulador += Number(item.valor_principal)
@@ -314,7 +303,7 @@ export  function Cobranca() {
           </div>}
           </div>
       </div>
-   {filtro && <ModalFiltroCobranca  inad={false} setArrayBairros={setArrayBairros}  empresa={infoEmpresa?.id??''}   selectCobrador={consultores} listarCobranca={handleListarCobranca} loading={loading} setFiltro={setFiltro}  show={filtro} arrayBairros={arrayBairros}/>}
+   {filtro && <ModalFiltroCobranca cidades={cidades??[]}  inad={false}  empresa={infoEmpresa?.id??''}   selectCobrador={consultores} listarCobranca={handleListarCobranca} loading={loading} setFiltro={setFiltro}  show={filtro} arrayBairros={arrayBairros}/>}
     </div>
   )
 }

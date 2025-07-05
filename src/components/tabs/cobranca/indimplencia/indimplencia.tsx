@@ -33,6 +33,7 @@ interface ReqProps{
   endDate:Date,
   status:Array<string>,
   bairros:Array<string>
+  cidade:string
 }
 interface ContagemProps{
   n1:number,
@@ -51,13 +52,18 @@ export interface FormProps{
   status:string,
   cobrador:Array<string>
   bairros:Array<string>
+  cidade:string
 }
+
+
 export interface UltimosPagProsps { /* … */ }
 
-export function Inadimplencia() {
-  const [arrayBairros, setArrayBairros] = useState<Partial<{ bairro: string; check: boolean; id_empresa: string }>[]>(
-    []
-  );
+interface ScreenProps{
+  arrayBairros: Array<Partial<{ bairro: string, check: boolean,id_empresa:string }>>
+  cidades: Array<string|undefined>
+}
+
+export function Inadimplencia({arrayBairros,cidades}:ScreenProps) {
   const componenteRef = useRef<RelatorioInadimplencia>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [filtro, setFiltro] = useState(false);
@@ -100,12 +106,7 @@ export function Inadimplencia() {
   useEffect(() => { isPrint && imprimirRelatorio(); }, [isPrint]);
 
   // carregar bairros
-  useEffect(() => {
-    api.get("/bairros").then((res) => {
-      setArrayBairros(res.data);
-    });
-  }, []);
-
+ 
   // submissão de filtro
   const handleInadimplencia:SubmitHandler<FormProps> = async (dataReq) => {
     postData({
@@ -116,6 +117,7 @@ export function Inadimplencia() {
       status: dataReq.status.split(",").map((s) => s.trim()),
       param: dataReq.param_nparcela,
       bairros: dataReq.bairros,
+      cidade:dataReq.cidade
     });
   };
 
@@ -154,7 +156,7 @@ export function Inadimplencia() {
         </div>
 
         {/* Tabela */}
-        <div className="overflow-y-auto p-2 max-h-[70vh]">
+        <div className="overflow-y-auto p-2 max-h-[calc(100vh-200px)]">
           <Table>
             <TableHeader >
               <TableRow className="text-xs font-semibold text-black">
@@ -245,7 +247,7 @@ activeClassName={'active text-blue-600'}
       {filtro && (
         <ModalFiltroCobranca
           inad
-          setArrayBairros={setArrayBairros}
+          cidades={cidades??[]}
           empresa={selectEmp}
           selectCobrador={consultores}
           listarCobranca={handleInadimplencia}

@@ -8,9 +8,10 @@ import { Controller, SubmitHandler, useForm} from "react-hook-form";
 import { ConsultoresProps } from "@/types/consultores";
 import { FormProps } from "./cobranca/cobranca";
 import { MultiSelect } from "../../ui/multi-select";
-import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { Button } from "../../ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useEffect } from "react";
 
 
 
@@ -22,13 +23,13 @@ interface DataProps {
   loading: boolean,
   listarCobranca: SubmitHandler<FormProps>,
   selectCobrador: Array<ConsultoresProps>
-  arrayBairros: Array<Partial<{ bairro: string, check: boolean,id_empresa:string }>>
-  setArrayBairros: (array: Array<Partial<{ bairro: string, check: boolean,id_empresa:string }>>) => void,
-  inad:boolean
+  arrayBairros: Array<Partial<{ bairro: string, check: boolean,id_empresa:string,cidade:string }>>
+ // setArrayBairros: (array: Array<Partial<{ bairro: string, check: boolean,id_empresa:string }>>) => void,
+  inad:boolean,
+  cidades : Array<string|undefined>
 }
 
-export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, selectCobrador, arrayBairros, empresa,inad }: DataProps) {
-  const [dropCobrador, setDropCobrador] = useState<boolean>(false)
+export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, selectCobrador, arrayBairros, empresa,inad,cidades }: DataProps) {
   const { register, watch, handleSubmit, control, setValue } = useForm<FormProps>({
     defaultValues: {
       status:'A,R',
@@ -36,186 +37,189 @@ export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, 
       id_empresa: empresa,
       startDate:new Date(),
       endDate:new Date(), 
+      
      
     }
   })
- 
- 
-
-
+ const bairrosSelecionados = watch('bairros')
+ const cidadeSelecionada = watch('cidade')
 
  
 
 
-  /*const toggleBairro = (index: number)=> {
-    
-    setValue('bairros',
-      watch('bairros').map((item,i)=> i===index ? {...item,check:!item.check}:item)
-    )
-  }*/
 
 
- /* const toggleCobrador = (index: number) =>
-    setValue(
-      "cobrador",
-      watch("cobrador").map((item, i) =>
-        i === index ? { ...item, check: !item.check } : item
-      )
-    );*/
+  const handleCidadeChange = (value: string) => {
+    setValue('cidade', value);
+    setValue('bairros', [])
+  };
+ 
+  useEffect(() => {
+    const bairrosDaCidade = arrayBairros
+      .filter(b => b.cidade === cidadeSelecionada)
+      .map(b => b.bairro)
+  
+    const bairrosValidos = bairrosSelecionados?.filter(b => bairrosDaCidade.includes(b))
+  
+    // Se houver bairros inválidos, limpa ou corrige
+    if (bairrosSelecionados?.length !== bairrosValidos?.length) {
+      setValue("bairros", bairrosValidos)
+    }
+  }, [cidadeSelecionada])
 
 
- /*useEffect(()=>{
-   if(empresa){
-      setValue('bairros',(arrayBairros.filter(item=>item.id_empresa===empresa)))
-   }else setValue('bairros',[])
-    
-  },[empresa]) */
+  const bairrosFilter = arrayBairros.filter(item=>item.cidade===watch('cidade'))
+ 
+
 
 
 
   return (
-    <Modal dismissible size={'lg'} show={show} onClose={() => setFiltro(false)}>
-      <Modal.Header >
-        <div className='inline-flex items-center'>
-          <HiFilter color='gray' size={30} />
-          Filtro
+    <Dialog open={show} onOpenChange={setFiltro}>
+    <DialogContent className="max-w-2xl">
+      <DialogHeader>
+        <DialogTitle>
+          <div className="inline-flex items-center gap-2">
+            <HiFilter size={24} />
+            Filtro
+          </div>
+        </DialogTitle>
+      </DialogHeader>
+
+      <form onSubmit={handleSubmit(listarCobranca)} className="flex flex-col space-y-4 w-full">
+
+        <Controller
+          control={control}
+          name="cidade"
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={handleCidadeChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Selecionar cidade" />
+              </SelectTrigger>
+              <SelectContent>
+                {cidades?.map((cidade, index) => (
+                  <SelectItem key={index} value={cidade ?? ''}>
+                    {cidade}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="bairros"
+          render={({ field }) => (
+            <MultiSelect
+            options={bairrosFilter.map(item => ({
+              label: item.bairro ?? '',
+              value: item.bairro ?? ''
+            }))}
+            value={field.value}
+            onValueChange={field.onChange}
+            placeholder="Selecione o bairro"
+            maxCount={3}
+            
+         
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="cobrador"
+          render={({ field }) => (
+            <MultiSelect
+              options={selectCobrador?.map((item) => ({
+                label: item.nome ?? '',
+                value: item.nome ?? '',
+              })) ?? []}
+              onValueChange={field.onChange}
+             // defaultValue={field.value}
+              placeholder="Selecione o Cobrador"
+              maxCount={3}
+              value={field.value}
+            />
+          )}
+        />
+
+        <div className="flex flex-col gap-2">
+          <Label className="text-xs">Status</Label>
+          <Controller
+            name="status"
+            control={control}
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="A,R">ABERTO/REAGENDADO</SelectItem>
+                  <SelectItem value="A">ABERTO</SelectItem>
+                  <SelectItem value="R">REAGENDADO</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
         </div>
 
-      </Modal.Header>
-      <Modal.Body>
-        <form onSubmit={handleSubmit(listarCobranca)} className='flex flex-col space-y-2 w-full'>
-{/*
-          <div className="inline-flex gap-6 w-full">
-          <div className="flex items-center gap-2">
-        <Radio onChange={() => setValue('radio', true)} id="cobranca" name="countries" value="cobranca" checked={watch('radio')} />
-        <Label htmlFor="united-state">Cobrança Resumida</Label>
-      </div>
-      <div className="flex items-center gap-2">
-        <Radio onChange={() => setValue('radio', false)} id="inadimplencia" name="countries" value="inadimplencia" checked={!watch('radio')} />
-        <Label htmlFor="united-state">Inadimplência</Label>
-      </div>
-          </div>*/}
-
-
-          <Controller
-            control={control}
-            name="bairros"
-            render={({ field }) => (
-              <MultiSelect
-              options={arrayBairros?.map((item, index) => ({ label: item.bairro?? '', value: item.bairro??'' }))??[]}
-              onValueChange={field.onChange}
-              defaultValue={field.value}
-              placeholder="Selececione o bairro"
-              variant="default"
-              animation={undefined}
-              maxCount={3}
-            
-            />
-            )}
-          />
-   
-
-
-   
-   <Controller
-            control={control}
-            name="cobrador"
-            render={({ field }) => (
-              <MultiSelect
-              options={selectCobrador?.map((item, index) => ({ label: item.nome?? '', value: item.nome??'' }))??[]}
-              onValueChange={field.onChange}
-              defaultValue={field.value}
-              placeholder="Selececione o Cobrador"
-              variant="default"
-              animation={undefined}
-              maxCount={3}
-            
-            />
-            )}
-          />
-
-          <div className="inline-flex gap-4 w-full">
-         
-            <div className="w-full">
-              <div className=" block">
-                <Label className="text-xs" htmlFor="email1" value="Status" />
-              </div>
-
-              <Controller
-              name="status"
+        <div className="flex gap-4">
+          <div className="flex flex-col w-full">
+            <Label className="text-xs">Data início</Label>
+            <Controller
               control={control}
+              name="startDate"
               render={({ field: { onChange, value } }) => (
-                  <Select  value={value} onValueChange={onChange}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="A,R">ABERTO/REAGENDADO</SelectItem>
-                      <SelectItem value="A">ABERTO</SelectItem>
-                      <SelectItem value="R">REAGENDADO</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <DatePicker
+                  selected={value}
+                  onChange={onChange}
+                  dateFormat="dd/MM/yyyy"
+                  locale={pt}
+                  className="w-full text-xs border rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400"
+                />
               )}
-              />
-            {/*  <Select sizing={'sm'} onChange={e => setValue('status', e.target.value)}>
-                <option value="A,R" >ABERTO/REAGENDADO</option>
-                <option value="A" >ABERTO</option>
-                <option value="R" >REAGENDADO</option>
-              </Select>*/}
-            </div>
-
+            />
           </div>
 
- 
-          <div className='inline-flex gap-4 w-full justify-between'>
-            <div  className=" flex flex-col w-full" >
-              <div className=" block">
-                <Label className="text-xs" value="Data inicio" />
-              </div>
-              <Controller
-                control={control}
-                name="startDate"
-                render={({ field: { onChange, value } }) => (
-                  <DatePicker selected={value} onChange={e => { e && onChange(e) }} dateFormat={"dd/MM/yyyy"} locale={pt} className="flex w-full    text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
-                )}
-              />
-
-            </div>
-            <div className="flex flex-col w-full" >
-              <div className=" block">
-                <Label className="text-xs" value="Data Fim" />
-              </div>
-              <Controller
-                control={control}
-                name="endDate"
-                render={({ field: { onChange, value } }) => (
-                  <DatePicker selected={value} onChange={e => { e && onChange(e) }} dateFormat={"dd/MM/yyyy"} locale={pt} className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
-                )}
-              />
-            </div>
-
-                <div className="flex items-center mt-6 w-full gap-2 ">
-                <Checkbox onChange={() =>setValue('periodo',!watch('periodo'))} checked={watch('periodo')} id={'periodo'} />
-                <Label className="hover:cursor-pointer" htmlFor={`bairro`}>Todo Periodo</Label>
-                </div>
-           
-          </div>
-
-      { inad &&   <div className="inline-flex gap-4 w-full">
-         
-         <div className="w-full">
-           <div className=" block">
-             <Label className="text-xs" htmlFor="email1" value="Numero de parcelas" />
-           </div>
-                <div className="flex flex-row w-full gap-4">
-
-                <Controller
-              name="param_nparcela"
+          <div className="flex flex-col w-full">
+            <Label className="text-xs">Data fim</Label>
+            <Controller
               control={control}
+              name="endDate"
               render={({ field: { onChange, value } }) => (
-                  <Select value={value} onValueChange={onChange}>
+                <DatePicker
+                  selected={value}
+                  onChange={onChange}
+                  dateFormat="dd/MM/yyyy"
+                  locale={pt}
+                  className="w-full text-xs border rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400"
+                />
+              )}
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id="periodo"
+            checked={watch("periodo")}
+            onChange={() => setValue("periodo", !watch("periodo"))}
+          />
+          <Label htmlFor="periodo" className="text-sm">Todo Período</Label>
+        </div>
+
+        {inad && (
+          <div className="flex flex-col gap-2">
+            <Label className="text-xs">Número de parcelas</Label>
+            <div className="flex gap-4">
+              <Controller
+                name="param_nparcela"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Status" />
+                      <SelectValue placeholder="Operador" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="=">Igual a</SelectItem>
@@ -223,37 +227,26 @@ export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, 
                       <SelectItem value="<">Menor que</SelectItem>
                     </SelectContent>
                   </Select>
-              )}
+                )}
               />
-             
+              <input
+                type="number"
+                placeholder="Número de parcelas"
+                {...register("numeroParcelas")}
+                className="w-full border rounded px-2 py-1 text-sm"
+              />
+            </div>
+          </div>
+        )}
 
-           <TextInput {...register('numeroParcelas')} placeholder="numero de parcelas" sizing={'sm'}  type="number"/>
-                </div>
-       
-         </div>
-
-       </div>}
-
-
-
-
-
-
-
-
-
-
-
-
-          <Button variant={'outline'} type="submit" className='ml-auto' size={'sm'}>Aplicar Filtro</Button>
-         
-        
-         
-
-
-        </form>
-      </Modal.Body>
-    </Modal>
+        <div className="flex justify-end">
+          <Button type="submit" variant="outline" size="sm">
+            Aplicar Filtro
+          </Button>
+        </div>
+      </form>
+    </DialogContent>
+  </Dialog>
 
   )
 
