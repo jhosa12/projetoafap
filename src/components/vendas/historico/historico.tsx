@@ -1,13 +1,19 @@
 import useApiGet from "@/hooks/useApiGet";
-import { Label, Modal, Spinner, Table, TextInput } from "flowbite-react";
+import { Label, Modal, Spinner, TextInput } from "flowbite-react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ModalItem } from "./modalItem/modalItem";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import useApiPost from "@/hooks/useApiPost";
 import { Button } from "@/components/ui/button";
-import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import pt from "date-fns/locale/pt-BR";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"; 
 import {
   Control,
   Controller,
@@ -48,7 +54,9 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
+import { pageStyleLandscape } from "@/utils/pageStyle";
 
 export interface ReqLeadsProps {
   id?: string;
@@ -141,6 +149,7 @@ export interface LeadProps {
 }
 
 export function Historico() {
+  const [open,setOpen] = useState(false)
   const {
     postData,
     data,
@@ -204,29 +213,7 @@ export function Historico() {
   };
 
   const imprimir = useReactToPrint({
-    pageStyle: `
-      @page {
-          size: landscape;
-          margin: 1rem;
-      }
-      @media print {
-          body {
-              -webkit-print-color-adjust: exact;
-          }
-          @page {
-              size: landscape;
-              margin: 1rem;
-          }
-          @page {
-              @top-center {
-                  content: none;
-              }
-              @bottom-center {
-                  content: none;
-              }
-          }
-      }
-  `,
+    pageStyle: pageStyleLandscape,
     content: () => componenteRef.current,
     onAfterPrint: () => {
       setModal({
@@ -321,7 +308,6 @@ export function Historico() {
         usuario: lead?.usuario,
         id_lead: lead?.id_lead,
       });
-
      // postData({});
       reqDados(getValues());
       setModal({ confirmaCategoria: false });
@@ -370,7 +356,14 @@ export function Historico() {
   }, []);
 
   return (
-    <div className="flex-col w-full px-2 mt-1 bg-white   ">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger className="ml-2 text-sm ">
+        Histórico
+      </DialogTrigger>
+      <DialogContent className="max-w-6xl">
+        <DialogHeader>
+          <DialogTitle>Leads/Prospecões/Vendas</DialogTitle>
+        </DialogHeader>
       {modal.filtro && (
         <ModalFiltro
           consultores={consultores
@@ -442,119 +435,103 @@ export function Historico() {
       {loadingLeads ? (
         <ModalLoading show={loadingLeads} />
       ) : (
-        <div className="overflow-y-auto mt-2  h-[calc(100vh-145px)]   ">
-          <Table
-            hoverable
-            theme={{
-              root: { shadow: "none" },
-              body: { cell: { base: " px-2 py-0  text-[11px] text-black" } },
-            }}
+        <div className="overflow-y-auto mt-2  max-h-[calc(100vh-185px)]   ">
+  <Table className="rounded-none border-none shadow-none">
+  <TableHeader>
+    <TableRow className="bg-gray-50">
+      <TableHead className="px-3 py-1 text-xs text-black font-bold">Nome</TableHead>
+      <TableHead className="px-3 py-1 text-xs text-black font-bold">Cidade</TableHead>
+      <TableHead className="px-3 py-1 text-xs text-black font-bold">Previsão de Visita</TableHead>
+      <TableHead className="px-3 py-1 text-xs text-black font-bold">Data Cad.</TableHead>
+      <TableHead className="px-3 py-1 text-xs text-black font-bold">Data Venda</TableHead>
+      <TableHead className="px-3 py-1 text-xs text-black font-bold">Categoria</TableHead>
+      <TableHead className="px-3 py-1 text-xs text-black font-bold">Vendedor</TableHead>
+      <TableHead className="px-3 py-1 text-xs text-black font-bold">Celular1</TableHead>
+      <TableHead className="px-3 py-1 text-xs text-black font-bold">Vencimento</TableHead>
+      <TableHead className="px-3 py-1 text-xs text-black font-bold"></TableHead>
+    </TableRow>
+  </TableHeader>
+
+  <TableBody>
+    {data?.map((item, index) => (
+      <TableRow
+        key={index}
+        className="cursor-pointer hover:bg-muted"
+        onClick={() => {
+          setLead(item);
+          setModal({ lead: true });
+        }}
+      >
+        <TableCell className="px-2 py-0 text-[10px] text-black">{item?.nome}</TableCell>
+        <TableCell className="px-2 py-0 text-[10px] text-black">
+          {item?.cidade}/{item?.uf}
+        </TableCell>
+        <TableCell className="px-2 py-0 text-[10px] text-black">
+          {item?.visita &&
+            new Date(item?.visita).toLocaleDateString("pt-BR", {
+              timeZone: "UTC",
+            })}
+        </TableCell>
+        <TableCell className="px-2 py-0 text-[10px] text-black">
+          {item?.data &&
+            new Date(item?.data).toLocaleDateString("pt-BR", {
+              timeZone: "UTC",
+            })}
+        </TableCell>
+        <TableCell className="px-2 py-0 text-[10px] text-black">
+          {item?.dataVenda &&
+            new Date(item?.dataVenda).toLocaleDateString("pt-BR", {
+              timeZone: "UTC",
+            })}
+        </TableCell>
+        <TableCell
+          className={`px-2 py-0 text-[10px] ${
+            item?.status === "LEAD"
+              ? "text-blue-600"
+              : item.status === "PROSPECCAO"
+              ? "text-yellow-500"
+              : "text-green-500"
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <select
+            onChange={(e) => onChangeCategoria(e, item)}
+            className="appearance-none border-none bg-transparent text-xs focus:outline-none"
+            value={item?.status}
           >
-            <Table.Head
-              theme={{
-                cell: {
-                  base: "px-3 py-1 text-xs text-black font-bold bg-gray-50",
-                },
+            <option value="LEAD">LEAD</option>
+            <option value="PROSPECCAO">PROSPECCAO</option>
+            <option value="PRE VENDA">PRE VENDA</option>
+            <option value="VENDA">VENDA</option>
+          </select>
+        </TableCell>
+        <TableCell className="px-2 py-0 text-[10px] text-black">{item?.consultor}</TableCell>
+        <TableCell className="px-2 py-0 text-[10px] text-black">{item?.celular1}</TableCell>
+        <TableCell className="px-2 py-0 text-[10px] text-black">
+          {item?.vencimento
+            ? new Date(item?.vencimento).toLocaleDateString()
+            : ""}
+        </TableCell>
+        <TableCell className="px-2 py-0 text-[10px] text-black">
+          {item.status === "VENDA" && (
+            <button
+              type="button"
+              data-tooltip-id="tooltipAcoes"
+              data-tooltip-content="Criar Plano"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLead(item);
+                setModal({ confirmaPlano: true });
               }}
             >
-              <Table.HeadCell>Nome</Table.HeadCell>
-              <Table.HeadCell>Cidade</Table.HeadCell>
-              <Table.HeadCell>Previsão de Visita</Table.HeadCell>
-              <Table.HeadCell>Data Cad.</Table.HeadCell>
-               <Table.HeadCell>Data Venda.</Table.HeadCell>
-              <Table.HeadCell>categoria</Table.HeadCell>
-              <Table.HeadCell>Vendedor</Table.HeadCell>
-              <Table.HeadCell>Celular1</Table.HeadCell>
-              <Table.HeadCell>Vencimento</Table.HeadCell>
-
-              <Table.HeadCell></Table.HeadCell>
-            </Table.Head>
-            <Table.Body className="divide-y">
-              {data?.map((item, index) => (
-                <>
-                  <Table.Row
-                    className="cursor-pointer "
-                    key={index}
-                    onClick={() => {
-                      setLead(item), setModal({ lead: true });
-                    }}
-                  >
-                    
-                    <Table.Cell className="">{item?.nome}</Table.Cell>
-                     <Table.Cell className="">{item?.cidade}/{item?.uf}</Table.Cell>
-                    <Table.Cell className="">
-                      {item?.visita &&
-                        new Date(item?.visita).toLocaleDateString("pt-BR", {
-                          timeZone: "UTC",
-                        })}
-                    </Table.Cell>
-
-                    <Table.Cell className="">
-                      {item?.data &&
-                        new Date(item?.data).toLocaleDateString("pt-BR", {
-                          timeZone: "UTC",
-                        })}
-                    </Table.Cell>
-                       <Table.Cell className="">
-                      {item?.dataVenda &&
-                        new Date(item?.dataVenda).toLocaleDateString("pt-BR", {
-                          timeZone: "UTC",
-                        })}
-                    </Table.Cell>
-
-                    <Table.Cell
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                      className={`${
-                        item?.status === "LEAD"
-                          ? "text-blue-600"
-                          : item.status === "PROSPECCAO"
-                          ? "text-yellow-500"
-                          : "text-green-500"
-                      }`}
-                    >
-                      <select
-                        onChange={(e) => onChangeCategoria(e, item)}
-                        className="appearance-none border-none text-xs"
-                        value={item?.status}
-                      >
-                        <option>LEAD</option>
-                        <option>PROSPECCAO</option>
-                        <option>PRE VENDA</option>
-                        <option>VENDA</option>
-                      </select>
-                    </Table.Cell>
-                    <Table.Cell>{item?.consultor}</Table.Cell>
-
-                    <Table.Cell>{item?.celular1}</Table.Cell>
-
-                    <Table.Cell>
-                      {item?.vencimento
-                        ? new Date(item?.vencimento).toLocaleDateString()
-                        : ""}
-                    </Table.Cell>
-
-                    <Table.Cell>
-                      {item.status === "VENDA" && (
-                        <button
-                          type="button"
-                          data-tooltip-id="tooltipAcoes"
-                          data-tooltip-content={"Criar Plano"}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setLead(item), setModal({ confirmaPlano: true });
-                          }}
-                        >
-                          <MdCreateNewFolder size={20} />
-                        </button>
-                      )}
-                    </Table.Cell>
-                  </Table.Row>
-                </>
-              ))}
-            </Table.Body>
-          </Table>
+              <MdCreateNewFolder size={20} />
+            </button>
+          )}
+        </TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+</Table>
 
           <Tooltip id="tooltipAcoes" />
         </div>
@@ -563,7 +540,8 @@ export function Historico() {
       <div style={{ display: "none" }}>
         {modal.print && <DocListaLeads ref={componenteRef} leads={data ?? []} />}
       </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 

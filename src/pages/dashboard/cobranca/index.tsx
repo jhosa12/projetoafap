@@ -32,7 +32,7 @@ export default function AdministrarEstoque(){
       
        }
        getBairros()
-     }, []);
+     }, [selectEmp]);
 
 
      const cidades = [...new Set(arrayBairros?.map(item => item.cidade))];

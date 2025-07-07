@@ -10,6 +10,7 @@ import useApiGet from "@/hooks/useApiGet"
 import { toast } from "sonner"
 import { CidadeSelectVirtualizada } from "@/components/ui/virtualize"
 import { useForm } from "react-hook-form"
+import { SalesTracking } from "@/components/vendas/sales/SalesTracking"
 
 
 export interface FormProps {
@@ -43,7 +44,12 @@ export default function Vendas() {
   const [tab, setTab] = useState<number>(0)
   const {data,postData} = useApiGet<Array<SetorProps>,undefined>("/gerenciarAdministrativo/listarSetores")
 
- 
+  const mockSetores = [
+    { id_grupo: 1, descricao: "Vendas Diretas" },
+    { id_grupo: 2, descricao: "Televendas" },
+    { id_grupo: 3, descricao: "E-commerce" },
+    { id_grupo: 4, descricao: "Parcerias" }
+  ];
 
   const listarSetores = useCallback(async()=>{
 
@@ -73,8 +79,13 @@ export default function Vendas() {
       }}}}}}} variant="underline" onActiveTabChange={e => setTab(e)}>
 
           <Tabs.Item active={tab === 0} title="ACOMPANHAMENTO" icon={()=><FaStore className="mr-2 h-4 w-4"/>}>
-           { tab === 0 && <Acompanhamento logoUrl={infoEmpresa?.logoUrl??''} usuario={usuario?.nome??''} setores={data??[]} empresa={infoEmpresa?.id??''} />}
-
+           {/* { tab === 0 && <Acompanhamento logoUrl={infoEmpresa?.logoUrl??''} usuario={usuario?.nome??''} setores={data??[]} empresa={infoEmpresa?.id??''} />} */}
+            <SalesTracking
+              empresa="1"
+              setores={mockSetores}
+              usuario="Administrador"
+              logoUrl="/placeholder.svg"
+            />
           </Tabs.Item>
           <Tabs.Item active={tab === 1} title="HISTÓRICO" icon={()=><RiHistoryLine className="mr-2 h-4 w-4"/>}>
            

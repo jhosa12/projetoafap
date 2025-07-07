@@ -33,6 +33,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ModalAtivosInativos } from "../modals/modalAtivosInativos";
 import LinkNavigate from "../Link";
 import { FaBell } from "react-icons/fa";
+import { Historico } from "../vendas/historico/historico";
 
 
 export function Header({ path }: { path?: string }) {
@@ -221,9 +222,21 @@ export function Header({ path }: { path?: string }) {
             <MenubarMenu>
               <MenubarTrigger>Comercial</MenubarTrigger>
               <MenubarContent>
-                <MenubarItem>
-                  <LinkNavigate href="/dashboard/vendas">Vendas</LinkNavigate>
-                </MenubarItem>
+
+              <MenubarSub>
+                  <MenubarSubTrigger>Vendas</MenubarSubTrigger>
+                  <MenubarSubContent>
+                    <MenubarItem>
+                      <LinkNavigate href="/dashboard/vendas/acompanhamento">
+                        Acompanhamento
+                      </LinkNavigate>
+                    </MenubarItem>
+                    <MenubarItem asChild>
+                      <Historico/>
+                    </MenubarItem>
+                  </MenubarSubContent>
+                </MenubarSub>
+             
                 <MenubarItem
                   className="cursor-pointer"
                   onClick={() => setOpen(true)}

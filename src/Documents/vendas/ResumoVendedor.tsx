@@ -34,7 +34,7 @@ class ResumoVendedor extends React.Component<DadosProps> {
 
                   <span className="text-xs ml-auto ">{usuario}-{new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</span>
                 <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', justifyContent: 'center', gap: '10px' }} >
-                  <img fetchPriority='high' src={logoUrl} alt="logo" width={120} height={120} />
+                  {/* <img fetchPriority='high' src={logoUrl} alt="logo" width={120} height={120} /> */}
                     <h1 style={{ fontWeight: 'normal', fontSize: '20px' }}>RESUMO DE VENDAS</h1>
                 </div>
               

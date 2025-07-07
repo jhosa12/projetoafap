@@ -2,6 +2,7 @@
 import { api } from "@/lib/axios/apiClient";
 import { AxiosError, AxiosResponse } from "axios";
 import { useState } from "react";
+import { toast } from "sonner";
 
 
 
@@ -25,14 +26,15 @@ const useApiGet = <T=any,P=any>(url:string):{
 
   const postData = async(payload:P)=>{
     setLoading(true)
-    setError(null)
+   // setError(null)
     try{
         const response:AxiosResponse = await api.post(url,payload)
         setData(response.data)
        // console.log(response.data)
 
     }catch(error){
-        setError(error as AxiosError)
+       // setError(error as AxiosError)
+       toast.error('Erro ao buscar dados')
 
     }finally{
         setLoading(false)
