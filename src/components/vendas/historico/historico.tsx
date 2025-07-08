@@ -35,7 +35,7 @@ import { ContratoProps, DependentesProps } from "@/types/associado";
 import Router from "next/router";
 import { ajustarData } from "@/utils/ajusteData";
 import { ModalLoading } from "@/components/modals/loading/modalLoading";
-import { MultiSelect } from "@/components/ui/multi-select";
+
 import DocListaLeads from "@/Documents/vendas/DocListaLeads";
 import { useReactToPrint } from "react-to-print";
 import { Input } from "@/components/ui/input";
@@ -57,6 +57,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { pageStyleLandscape } from "@/utils/pageStyle";
+import { MultiSelects } from "@/components/ui/multiSelect";
 
 export interface ReqLeadsProps {
   id?: string;
@@ -581,14 +582,11 @@ export const ModalFiltro = ({
             control={control}
             name="consultores"
             render={({ field }) => (
-              <MultiSelect
+              <MultiSelects
                 options={consultores}
-                onValueChange={field.onChange}
-                defaultValue={field.value}
+                onChange={field.onChange}
+                selected={field.value??[]}
                 placeholder="CONSULTORES"
-                variant="default"
-                animation={undefined}
-                maxCount={3}
               />
             )}
           />
