@@ -32,7 +32,7 @@ interface RouteGeneratorProps {
 const RouteGenerator = ({ onClose,empresas }: RouteGeneratorProps) => {
 
     const {control,handleSubmit,watch,formState:{errors}} = useForm<RouteProps>();
-    const {data,loading,postData} = useApiPost('/cobranca/novaRota')
+    const {postData} = useApiPost('/cobranca/novaRota')
 
 
 

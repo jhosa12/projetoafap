@@ -243,7 +243,8 @@ export function Historico() {
       !lead.vencimento ||
       !lead.origem ||
       !lead.cpfcnpj ||
-      !lead.n_parcelas
+      !lead.n_parcelas ||
+      !lead.adesao
     ) {
       toast.warning(
         "Preencha todos os campos obrigatorios para gerar contrato!"
