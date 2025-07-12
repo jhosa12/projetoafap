@@ -6,7 +6,8 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogFooter
+    DialogFooter,
+    DialogPortal
   } from "@/components/ui/dialog"
   import { Input } from "@/components/ui/input"
   import {
@@ -21,7 +22,7 @@ import {
   import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { AuthContext} from "@/store/AuthContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -70,9 +71,10 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
     const {register,handleSubmit,watch,control,reset} = useForm<MensalidadeBaixaProps>(
       
     )
+ 
 
 
-  
+   
 
 
     useEffect(()=>{
@@ -150,8 +152,8 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
         }
     return(
 
-<Dialog open={openModal} onOpenChange={setOpenModal}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+<Dialog  open={openModal} onOpenChange={setOpenModal}>
+      <DialogContent  autoFocus={false} aria-describedby={undefined} className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader className="space-y-3">
           <DialogTitle className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <CheckCircleIcon className="h-6 w-6 text-green-600" />
@@ -164,7 +166,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
           )}
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(handleBaixar)} className="space-y-6">
+        <form inert onSubmit={handleSubmit(handleBaixar)} className="space-y-6">
           {/* Informações do Associado */}
           <Card>
             <CardHeader className="pb-3">
@@ -220,18 +222,20 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
                     placeholder="0,00"
                     disabled={!canEdit}
                     className={!canEdit ? "bg-gray-50" : ""}
+                   
                   />
                 </div>
 
-                <div className="space-y-2">
+                <div  className="space-y-2">
                   <Label htmlFor="recebido_por" className="text-sm font-medium text-gray-700">
                     Recebido por 
                   </Label>
                   <Controller
+                  
                     control={control}
                     name="recebido_por"
                     render={({ field }) => (
-                      <Select value={field.value} onValueChange={field.onChange} disabled={!canEdit}>
+                      <Select  value={field.value} onValueChange={field.onChange} disabled={!canEdit}>
                         <SelectTrigger className={!canEdit ? "bg-gray-50" : ""}>
                           <SelectValue placeholder="Selecione o consultor" />
                         </SelectTrigger>

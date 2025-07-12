@@ -56,41 +56,42 @@ export default function CaixaMovimentar() {
 
 
 
-  // useEffect(() => {
+  useEffect(() => {
 
-  //     if(modalDados)return
-  //     let currentBarcode = '';
-  //     let timeout: ReturnType<typeof setTimeout>;
+      if(modalDados)return
+      let currentBarcode = '';
+      let timeout: ReturnType<typeof setTimeout>;
 
-  //     const handleKeyPress = (event: KeyboardEvent) => {
-  //       //Verifica se a tecla "Enter" foi pressionada
-  //       if (event.key === 'Enter') {
-  //       //setScannedCode(currentBarcode);
-  //      event.preventDefault();
-  //     event.stopPropagation();
-  //       buscarMensalidade(currentBarcode)
-  //         currentBarcode = ''; // Reinicia o código de barras após a leitura
-  //         setModal({lancar:false})
-  //       } else {
-  //         //Acumula os caracteres do código de barras
-  //         currentBarcode += event.key;
-  //       }
+      const handleKeyPress = (event: KeyboardEvent) => {
+        event.preventDefault();
+        event.stopPropagation();
+        //Verifica se a tecla "Enter" foi pressionada
+        if (event.key === 'Enter') {
+        //setScannedCode(currentBarcode);
+    
+        buscarMensalidade(currentBarcode)
+          currentBarcode = ''; // Reinicia o código de barras após a leitura
+          setModal({lancar:false})
+        } else {
+          //Acumula os caracteres do código de barras
+          currentBarcode += event.key;
+        }
 
-  //       //Limpa o buffer se não houver atividade por 300ms
-  //       clearTimeout(timeout);
-  //       timeout = setTimeout(() => {
-  //         currentBarcode = '';
-  //       }, 300);
-  //     };
+        //Limpa o buffer se não houver atividade por 300ms
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          currentBarcode = '';
+        }, 300);
+      };
 
-  //     //Adiciona o ouvinte de eventos para capturar as teclas pressionadas
-  //     document.addEventListener('keydown', handleKeyPress);
+      //Adiciona o ouvinte de eventos para capturar as teclas pressionadas
+      document.addEventListener('keydown', handleKeyPress,true);
 
-  //     //Remove o ouvinte de eventos quando o componente é desmontado
-  //     return () => {
-  //       document.removeEventListener('keydown', handleKeyPress);
-  //     };
-  //   }, [modalDados]);
+      //Remove o ouvinte de eventos quando o componente é desmontado
+      return () => {
+        document.removeEventListener('keydown', handleKeyPress,true);
+      };
+    }, [modalDados,infoEmpresa]);
 
   /*  useEffect(()=>{
 
@@ -120,13 +121,14 @@ export default function CaixaMovimentar() {
 
   const buscarMensalidade = useCallback(
     async (n_doc: string) => {
+    console.log(infoEmpresa?.id)
       setLoading(true);
       try {
         const response = await api.post("/mensalidade/baixaDireta", {
           n_doc,
           id_empresa: infoEmpresa?.id,
         });
-
+       
         setMensalidade(response.data);
         setModalDados(true);
       } catch (error: any) {
@@ -144,12 +146,12 @@ export default function CaixaMovimentar() {
 
       setLoading(false);
     },
-    [infoEmpresa?.id, mensalidade, modalDados]
+    [infoEmpresa,mensalidade,modalDados]
   );
 
   useEffect(() => {
     handleChamarFiltro();
-  }, [infoEmpresa?.id]);
+  }, [infoEmpresa]);
 
  
 
@@ -273,7 +275,7 @@ export default function CaixaMovimentar() {
 
       {/*<ModalDadosMensalidade  handleChamarFiltro={handleChamarFiltro} setMensalidade={setMensalidade} mensalidade={mensalidade??{}} open={modalDados} setOpen={setModalDados}/>*/}
 
-      {
+      { modalDados &&
         <ModalMensalidade
           handleAtualizar={() =>
             listarLancamentos({

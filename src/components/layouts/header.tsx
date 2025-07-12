@@ -58,7 +58,7 @@ export function Header({ path }: { path?: string }) {
           <Image width={40} height={40} src="/improved_logo.png" alt="Logo" />
           <div className="sm:flex flex-col">
             <Label className="text-xs" value="AFAP Gestão - V 2.0" />
-            <Select value={selectEmp} onValueChange={setSelectEmp}>
+            <Select  value={selectEmp} onValueChange={setSelectEmp}>
               <SelectTrigger className="w-[150px] h-5 text-xs">
                 <SelectValue />
               </SelectTrigger>

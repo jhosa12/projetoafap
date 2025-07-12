@@ -54,7 +54,7 @@ class ImpressaoCarne extends React.Component<DadosProps> {
                         height: '250px',
                         width: '100%',
                         fontSize: '11px'
-                    }} className="inline-flex  w-full text-black">
+                    }} key={index} className="inline-flex  w-full text-black">
 
                         {//  <Image src={carne} className=" object-cover  h-[250px]" alt="modeloCarne"  />
                         }
