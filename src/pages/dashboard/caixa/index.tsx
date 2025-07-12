@@ -26,6 +26,8 @@ import {
 } from "@/types/caixa";
 import { MensalidadeBaixaProps } from "@/types/financeiro";
 import ActionsCaixa from "@/components/caixa/ActionsCaixa";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
 
 registerLocale("pt", pt);
 
@@ -58,7 +60,7 @@ export default function CaixaMovimentar() {
 
   useEffect(() => {
 
-      if(modalDados)return
+      if(modalDados||openModal)return
       let currentBarcode = '';
       let timeout: ReturnType<typeof setTimeout>;
 
@@ -91,7 +93,7 @@ export default function CaixaMovimentar() {
       return () => {
         document.removeEventListener('keydown', handleKeyPress,true);
       };
-    }, [modalDados,infoEmpresa]);
+    }, [modalDados,openModal,infoEmpresa]);
 
   /*  useEffect(()=>{
 
@@ -454,6 +456,7 @@ export default function CaixaMovimentar() {
             </Button>
                 <ActionsCaixa infoEmpresa={infoEmpresa} id_empresa={infoEmpresa?.id??''} data={data} setSelectRelatorio={setSelectRelatorio} />
            
+       
           </form>
         </div>
         {!!data?.fechamento ? (

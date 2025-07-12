@@ -153,7 +153,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
     return(
 
 <Dialog  open={openModal} onOpenChange={setOpenModal}>
-      <DialogContent  autoFocus={false} aria-describedby={undefined} className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent forceMount aria-describedby={undefined} className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader className="space-y-3">
           <DialogTitle className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <CheckCircleIcon className="h-6 w-6 text-green-600" />

@@ -33,7 +33,7 @@ export default function ActionsCaixa({data,setSelectRelatorio,id_empresa,infoEmp
     const {verify} =useVerifyPermission()
     return(
         
-         <DropdownMenu open={open} onOpenChange={setOpen}>
+         <DropdownMenu  defaultOpen={false} open={open??false} onOpenChange={setOpen}>
                       <DropdownMenuTrigger asChild>
                         <Button
                           variant={"outline"}
@@ -47,7 +47,7 @@ export default function ActionsCaixa({data,setSelectRelatorio,id_empresa,infoEmp
                           Ações
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent >
+                      <DropdownMenuContent  >
                         <DropdownMenuLabel>Ações</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         {/* <DropdownMenuItem
@@ -60,6 +60,11 @@ export default function ActionsCaixa({data,setSelectRelatorio,id_empresa,infoEmp
                           <DropdownMenuItem asChild onClick={() => setSelectRelatorio("ANALITICO")}>
                             <ModalSelectCaixa infoEmpresa={infoEmpresa} id_empresa={id_empresa} />
                           </DropdownMenuItem>
+
+
+
+
+
                         {/* <DropdownMenuSub>
                       
                          <DropdownMenuPortal>
