@@ -26,8 +26,21 @@ import {
 } from "@/types/caixa";
 import { MensalidadeBaixaProps } from "@/types/financeiro";
 import ActionsCaixa from "@/components/caixa/ActionsCaixa";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 registerLocale("pt", pt);
 
@@ -56,44 +69,47 @@ export default function CaixaMovimentar() {
     },
   });
 
-
-
   useEffect(() => {
+    if (modalDados)
+      return;
+    let currentBarcode = "";
+    let timeout: ReturnType<typeof setTimeout>;
 
-      if(modalDados||openModal)return
-      let currentBarcode = '';
-      let timeout: ReturnType<typeof setTimeout>;
-
-      const handleKeyPress = (event: KeyboardEvent) => {
-        event.preventDefault();
-        event.stopPropagation();
-        //Verifica se a tecla "Enter" foi pressionada
-        if (event.key === 'Enter') {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      
+      event.stopPropagation();
+      //Verifica se a tecla "Enter" foi pressionada
+      if (event.key === "Enter") {
         //setScannedCode(currentBarcode);
-    
-        buscarMensalidade(currentBarcode)
-          currentBarcode = ''; // Reinicia o código de barras após a leitura
-          setModal({lancar:false})
-        } else {
-          //Acumula os caracteres do código de barras
-          currentBarcode += event.key;
-        }
+        
+        event.preventDefault();
+        buscarMensalidade(currentBarcode);
+        currentBarcode = ""; // Reinicia o código de barras após a leitura
+        setModal({ lancar: false });
+      } else {
+        //Acumula os caracteres do código de barras
+        currentBarcode += event.key;
+      }
 
-        //Limpa o buffer se não houver atividade por 300ms
-        clearTimeout(timeout);
-        timeout = setTimeout(() => {
-          currentBarcode = '';
-        }, 300);
-      };
+      //Limpa o buffer se não houver atividade por 300ms
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        currentBarcode = "";
+      }, 300);
+    };
 
-      //Adiciona o ouvinte de eventos para capturar as teclas pressionadas
-      document.addEventListener('keydown', handleKeyPress,true);
+    //Adiciona o ouvinte de eventos para capturar as teclas pressionadas
+    document.addEventListener("keydown", handleKeyPress, true);
 
-      //Remove o ouvinte de eventos quando o componente é desmontado
-      return () => {
-        document.removeEventListener('keydown', handleKeyPress,true);
-      };
-    }, [modalDados,openModal,infoEmpresa]);
+    //Remove o ouvinte de eventos quando o componente é desmontado
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress, true);
+    };
+  }, [
+    modalDados,
+   
+    infoEmpresa,
+  ]);
 
   /*  useEffect(()=>{
 
@@ -123,14 +139,14 @@ export default function CaixaMovimentar() {
 
   const buscarMensalidade = useCallback(
     async (n_doc: string) => {
-    console.log(infoEmpresa?.id)
+      console.log(infoEmpresa?.id);
       setLoading(true);
       try {
         const response = await api.post("/mensalidade/baixaDireta", {
           n_doc,
           id_empresa: infoEmpresa?.id,
         });
-       
+
         setMensalidade(response.data);
         setModalDados(true);
       } catch (error: any) {
@@ -148,14 +164,12 @@ export default function CaixaMovimentar() {
 
       setLoading(false);
     },
-    [infoEmpresa,mensalidade,modalDados]
+    [infoEmpresa, mensalidade, modalDados]
   );
 
   useEffect(() => {
     handleChamarFiltro();
   }, [infoEmpresa]);
-
- 
 
   const handleExcluir = useCallback(async () => {
     toast.promise(
@@ -277,7 +291,7 @@ export default function CaixaMovimentar() {
 
       {/*<ModalDadosMensalidade  handleChamarFiltro={handleChamarFiltro} setMensalidade={setMensalidade} mensalidade={mensalidade??{}} open={modalDados} setOpen={setModalDados}/>*/}
 
-      { modalDados &&
+      {modalDados && (
         <ModalMensalidade
           handleAtualizar={() =>
             listarLancamentos({
@@ -293,7 +307,7 @@ export default function CaixaMovimentar() {
           openModal={modalDados}
           setOpenModal={setModalDados}
         />
-      }
+      )}
 
       <Modal size={"sm"} popup show={loading}>
         <Modal.Body>
@@ -451,12 +465,15 @@ export default function CaixaMovimentar() {
               size={"sm"}
               type="button"
             >
-              <MdOutlineLaunch  />
+              <MdOutlineLaunch />
               Lançar
             </Button>
-                <ActionsCaixa infoEmpresa={infoEmpresa} id_empresa={infoEmpresa?.id??''} data={data} setSelectRelatorio={setSelectRelatorio} />
-           
-       
+            <ActionsCaixa
+              infoEmpresa={infoEmpresa}
+              id_empresa={infoEmpresa?.id ?? ""}
+              data={data}
+              setSelectRelatorio={setSelectRelatorio}
+            />
           </form>
         </div>
         {!!data?.fechamento ? (
@@ -657,7 +674,7 @@ export default function CaixaMovimentar() {
           grupo={data?.grupo ?? []}
         />
       )}
-{/* 
+      {/* 
       <div style={{ display: "none" }}>
       
         {selectRelatorio && (
