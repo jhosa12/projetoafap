@@ -32,7 +32,7 @@ export function TabPlano({
           control={control}
           render={({ field: { onChange, value } }) => (
             <Select
-              value={value.toString()}
+              value={value?.toString()}
               onValueChange={(value) => {
                 onChange(value);
                 const plano = planos.find(
@@ -51,9 +51,9 @@ export function TabPlano({
                 {planos.map((plano) => (
                   <SelectItem
                     key={plano.id_plano}
-                    value={plano.id_plano.toString()}
+                    value={plano?.id_plano?.toString()}
                   >
-                    {plano.descricao}
+                    {plano?.descricao}
                   </SelectItem>
                 ))}
               </SelectContent>
