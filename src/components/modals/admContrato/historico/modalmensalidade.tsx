@@ -42,6 +42,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
+import useVerifyPermission from "@/hooks/useVerifyPermission"
 
 interface Props{
     handleAtualizar:Function
@@ -72,14 +73,11 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
       
     )
  
-
-
-   
-
-
     useEffect(()=>{
         reset({...mensalidade,form_pagto:'',valor_total:mensalidade?.valor_principal,data_pgto:new Date()})
     },[mensalidade])
+
+    const {verify} = useVerifyPermission()
 
     const formaPagamento = watch("form_pagto")
     const valorTotal = Number(watch("valor_total"))
@@ -315,7 +313,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
                       <DatePickerInput
                         value={value}
                         onChange={onChange}
-                        disable={!canEdit}
+                        disable={!canEdit || verify('ADM1.2.7') }
                         required
                         className="h-9 border border-gray-100"
                       />

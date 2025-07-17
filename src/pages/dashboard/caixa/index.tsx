@@ -70,8 +70,7 @@ export default function CaixaMovimentar() {
   });
 
   useEffect(() => {
-    if (modalDados)
-      return;
+    if (modalDados) return;
     let currentBarcode = "";
     let timeout: ReturnType<typeof setTimeout>;
 

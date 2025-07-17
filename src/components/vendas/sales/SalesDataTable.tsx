@@ -95,14 +95,14 @@ export const SalesDataTable: React.FC<SalesDataTableProps> = ({
                   >
                     <TableCell className="py-2">
                       <div className="flex items-center space-x-2">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white text-xs font-medium">
+                        <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-medium">
                           {vendedor.consultor.charAt(0).toUpperCase()}
                         </div>
                         <span className="font-medium">{vendedor.consultor}</span>
                       </div>
                     </TableCell>
                     <TableCell className="text-right py-2 font-medium">
-                      {vendedor._sum.valor_mensalidade.toLocaleString('pt-BR', {
+                      {Number(vendedor._sum.valor_mensalidade).toLocaleString('pt-BR', {
                         style: 'currency',
                         currency: 'BRL'
                       })}

@@ -83,7 +83,6 @@ export default function Vendas() {
             <SalesTracking
               empresa="1"
               setores={mockSetores}
-              usuario="Administrador"
               logoUrl="/placeholder.svg"
             />
           </Tabs.Item>

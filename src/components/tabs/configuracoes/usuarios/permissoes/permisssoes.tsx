@@ -7,7 +7,7 @@ import { TabServicos } from "./servicos/servicos";
 import { TabConfiguracoes } from "./configuracoes/configuracoes";
 import { TabEstoque } from "./estoque/estoquePermissions";
 import { PermissoesEmpresas } from "./empresas/permissoesEmpresas";
-import { EmpresaProps } from "@/types/empresa";
+
 
 
 interface DataProps{

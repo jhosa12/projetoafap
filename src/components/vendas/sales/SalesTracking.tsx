@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import useApiGet from '@/hooks/useApiGet';
 import { api } from '@/lib/axios/apiClient';
 import { ModalVendedor } from '../modalVendedor';
+import { getDiasUteisMes } from '@/utils/getDiasUteisMes';
 
 
 // Interfaces mantidas do código original
@@ -22,17 +23,7 @@ export interface VendasProps {
   situacao: string;
 }
 
-export interface MetasProps {
-  id_meta: number;
-  id_empresa: string;
-  id_grupo: number;
-  id_conta: string;
-  valor: number;
-  descricao: string;
-  date: Date;
-  dateFimMeta: Date;
-  descricao_grupo: string;
-}
+
 
 export interface SetorProps {
   id_grupo: number;
@@ -61,7 +52,7 @@ export interface ChatProps {
 
 interface ResponseProps {
   grupos: VendasProps[];
-  metas: MetasProps[];
+  //metas: MetasProps[];
   setores: SetorProps[];
   consultores: ConsultoresProps[];
   leads: Array<ConsultorLeads>;
@@ -73,7 +64,6 @@ interface ResponseProps {
 interface SalesTrackingProps {
   empresa: string;
   setores: SetorProps[];
-  usuario: string;
   logoUrl: string;
 }
 export interface ReqLeadsProps {
@@ -110,7 +100,7 @@ export const SalesTracking: React.FC<SalesTrackingProps> = ({
     end: new Date().toISOString() 
   });
 
-
+  const diasUteis = getDiasUteisMes(startDate, endDate)
 
   useEffect(() => {
     const chartTrat = reqData?.grupos?.map((item, index) => ({
@@ -211,7 +201,7 @@ const dadosVendas = async () => {
         </div>
 
         {/* Compact Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <CompactMetricCard
             title="Meta Total"
             value={(reqData?.metaAtual??0 * (reqData?.consultores?.length??0)).toLocaleString('pt-BR', {
@@ -219,6 +209,16 @@ const dadosVendas = async () => {
               currency: 'BRL'
             })}
             icon={<Goal className="w-4 h-4" />}
+          />
+
+<CompactMetricCard
+            title="Meta Diária"
+            value={(Number(reqData?.metaAtual??0) / diasUteis).toLocaleString('pt-BR',{
+              style:'currency',
+              currency:'BRL'
+            })}
+            icon={<TrendingUp className="w-4 h-4" />}
+          
           />
           
           <CompactMetricCard

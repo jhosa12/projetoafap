@@ -9,6 +9,7 @@ import { useContext, useEffect } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { api } from "@/lib/axios/apiClient";
 import { Button } from "@/components/ui/button";
+import { Save, FileText } from "lucide-react";
 import { ContratoProps, DependentesProps } from "@/types/associado";
 import {  ParcelaData } from "@/utils/gerarArrayMensal";
 import { toast } from "sonner";
@@ -26,39 +27,40 @@ interface DataProps{
     open:boolean,
     onClose:Function,
     item:Partial<LeadProps>,
-    handleLoadLeads:()=>void
+    handleLoadLeads:()=>void,
+    handleGerarContrato:SubmitHandler<LeadProps>
 }
 
-interface CadastroRequest {
-    id_empresa:string,
-    nome: string;
-    cpfcnpj: string;
-    rg:string;
-    cep: string;
-    endereco: string;
-    bairro: string;
-    numero: number;
-    cidade: string;
-    uf: string;
-    guia_rua: string;
-    email: string;
-    data_nasc: Date;
-    data_cadastro: Date;
-    celular1: string;
-    celular2: string;
-    telefone: string;
-    cad_usu: string;
-    cad_dh: Date;
-    edi_usu: string;
-    edi_dh: Date;
-    profissao: string;
-    sexo: string;
-    situacao:string;
-    contrato: Partial<ContratoProps>;
-    dependentes:Array<Partial<DependentesProps>>;
-    mensalidades: Array<Partial<ParcelaData>>;
-    empresa:string
-}
+// interface CadastroRequest {
+//     id_empresa:string,
+//     nome: string;
+//     cpfcnpj: string;
+//     rg:string;
+//     cep: string;
+//     endereco: string;
+//     bairro: string;
+//     numero: number;
+//     cidade: string;
+//     uf: string;
+//     guia_rua: string;
+//     email: string;
+//     data_nasc: Date;
+//     data_cadastro: Date;
+//     celular1: string;
+//     celular2: string;
+//     telefone: string;
+//     cad_usu: string;
+//     cad_dh: Date;
+//     edi_usu: string;
+//     edi_dh: Date;
+//     profissao: string;
+//     sexo: string;
+//     situacao:string;
+//     contrato: Partial<ContratoProps>;
+//     dependentes:Array<Partial<DependentesProps>>;
+//     mensalidades: Array<Partial<ParcelaData>>;
+//     empresa:string
+// }
 
 export interface UseFormLeadProps{
   register:UseFormRegister<LeadProps>
@@ -69,7 +71,7 @@ export interface UseFormLeadProps{
 }
 
 
-export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
+export function ModalItem({onClose,open,item,handleLoadLeads,handleGerarContrato}:DataProps) {
 
     const {cidades,planos} = useContext(AuthContext)
 
@@ -169,11 +171,28 @@ export function ModalItem({onClose,open,item,handleLoadLeads}:DataProps) {
     </TabsContent>
   </Tabs>
 
-  <div className="flex flex-row w-full justify-between mt-2">
+  <div className="flex flex-row w-full justify-between mt-4">
     <ErrorIndicator errors={errors} />
-    <Button className="ml-auto" size="sm" type="submit">
-      Salvar
-    </Button>
+    <div className="ml-auto flex gap-3">
+    { item.status === 'VENDA' && <Button
+        type="button"
+        size="default"
+        variant="outline"
+        onClick={handleSubmit(handleGerarContrato)}
+      >
+        <FileText />
+        Gerar Contrato
+      </Button>}
+
+      <Button
+        type="submit"
+        size="default"
+      >
+        <Save />
+       Salvar
+      </Button>
+     
+    </div>
   </div>
 </form>
 

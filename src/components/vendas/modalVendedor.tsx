@@ -1,5 +1,5 @@
 
-import {  Spinner } from "flowbite-react";
+
 import { ConsultorLeads, VendasProps } from "./acompanhamento";
 import { useEffect, useRef, useState } from "react";
 import { MdCall, MdPrint } from "react-icons/md";
@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableBody, TableCell, TableHead, TableRow } from "@/components/ui/table";
 import { pageStyle } from "@/utils/pageStyle";
+import { Spinner } from "../ui/spinner";
 
 
 interface DataProps{

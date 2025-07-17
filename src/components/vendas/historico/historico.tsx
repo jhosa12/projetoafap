@@ -227,24 +227,25 @@ export function Historico() {
     if (modal.print) imprimir();
   }, [modal]);
 
-  const handleGerarContrato = async () => {
+  const handleGerarContrato:SubmitHandler<LeadProps> = async (data) => {
     if (lead?.status !== "VENDA") {
       toast.warning("Selecione uma venda para gerar contrato!");
       return;
     }
+   
     if (
-      !lead.endereco ||
-      !lead.bairro ||
-      !lead.cep ||
-      !lead.cidade ||
-      !lead.id_plano ||
-      !lead.plano ||
-      !lead.valor_mensalidade ||
-      !lead.vencimento ||
-      !lead.origem ||
-      !lead.cpfcnpj ||
-      !lead.n_parcelas ||
-      !lead.adesao
+      !data.endereco ||
+      !data.bairro ||
+      !data.cep ||
+      !data.cidade ||
+      !data.id_plano ||
+      !data.plano ||
+      !data.valor_mensalidade ||
+      !data.vencimento ||
+      !data.origem ||
+      !data.cpfcnpj ||
+      !data.n_parcelas ||
+      !data.adesao
     ) {
       toast.warning(
         "Preencha todos os campos obrigatorios para gerar contrato!"
@@ -252,13 +253,13 @@ export function Historico() {
       return;
     }
     let adesao;
-    if (lead.adesao) {
-      adesao = new Date(lead.adesao);
+    if (data.adesao) {
+      adesao = new Date(data.adesao);
       adesao.setTime(adesao.getTime() - adesao.getTimezoneOffset() * 60 * 1000);
     }
     let dtVencimento;
-    if (lead.vencimento) {
-      dtVencimento = new Date(lead.vencimento);
+    if (data.vencimento) {
+      dtVencimento = new Date(data.vencimento);
       dtVencimento.setTime(
         dtVencimento.getTime() - dtVencimento.getTimezoneOffset() * 60 * 1000
       );
@@ -266,39 +267,39 @@ export function Historico() {
 
     await postAssociado({
       dataPlano: {
-        dependentes: lead.dependentes,
-        bairro: lead.bairro,
-        celular1: lead.celular1,
-        celular2: lead.celular2,
-        cep: lead.cep,
-        cidade: lead.cidade,
-        cpfcnpj: lead.cpfcnpj,
-        data_nasc: lead.data_nasc,
-        endereco: lead.endereco,
+        dependentes: data.dependentes,
+        bairro: data.bairro,
+        celular1: data.celular1,
+        celular2: data.celular2,
+        cep: data.cep,
+        cidade: data.cidade,
+        cpfcnpj: data.cpfcnpj,
+        data_nasc: data.data_nasc,
+        endereco: data.endereco,
         id_empresa: selectEmp,
-        nome: lead.nome,
-        numero: lead.numero,
-        uf: lead.uf,
-        rg: lead.rg,
+        nome: data.nome,
+        numero: data.numero,
+        uf: data.uf,
+        rg: data.rg,
         contrato: {
-          id_plano: lead.id_plano,
-          plano: lead.plano,
-          valor_mensalidade: lead.valor_mensalidade,
-          n_parcelas: lead.n_parcelas,
+          id_plano: data.id_plano,
+          plano: data.plano,
+          valor_mensalidade: data.valor_mensalidade,
+          n_parcelas: data.n_parcelas,
           data_vencimento: dtVencimento,
           dt_adesao: adesao,
           dt_carencia: new Date(),
-          origem: lead.origem,
-          consultor: lead.consultor,
+          origem: data.origem,
+          consultor: data.consultor,
           // form_pag: lead.form_pag,
         },
         mensalidades: gerarMensalidade({
           vencimento: dtVencimento,
-          n_parcelas: lead.n_parcelas,
-          valorMensalidade: Number(lead.valor_mensalidade),
+          n_parcelas: data.n_parcelas,
+          valorMensalidade: Number(data.valor_mensalidade),
         }),
       },
-      id_lead: lead.id_lead,
+      id_lead: data.id_lead,
     });
   };
 
@@ -386,6 +387,7 @@ export function Historico() {
           item={lead ?? {}}
           open={modal.lead}
           onClose={() => setModal({ lead: false })}
+          handleGerarContrato={handleGerarContrato}
         />
       )}
       <ModalConfirmar
@@ -395,14 +397,7 @@ export function Historico() {
         setOpenModal={() => setModal({ confirmaCategoria: false })}
       />
 
-      {modal.confirmaPlano && (
-        <ModalConfirmar
-          pergunta={`Tem certeza que deseja Transformar essa venda em Plano ?`}
-          handleConfirmar={handleGerarContrato}
-          openModal={modal.confirmaPlano}
-          setOpenModal={() => setModal({ confirmaPlano: false })}
-        />
-      )}
+   
 
       {modal.novo && (
         <ModalNovoContrato

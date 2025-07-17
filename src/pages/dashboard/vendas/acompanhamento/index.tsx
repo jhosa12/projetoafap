@@ -19,7 +19,6 @@ export default function Sales(){
            <SalesTracking
                       empresa={selectEmp}
                       setores={mockSetores}
-                      usuario="Administrador"
                       logoUrl="/placeholder.svg"
                     />
     )
