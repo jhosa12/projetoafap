@@ -9,8 +9,6 @@ import { memo, StrictMode, useEffect } from 'react';
 import { Toaster } from "@/components/ui/sonner";
 
 
-
-
 const Header = memo(MenuLateral);
 
 function isLoginPage(pathname: string) {

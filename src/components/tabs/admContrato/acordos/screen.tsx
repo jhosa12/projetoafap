@@ -24,7 +24,6 @@ interface DataProps{
     id_contrato:number|undefined
     id_contrato_global:number|undefined|null
     id_global:number|undefined|null
-    usuario:{nome:string,id:string}
     acordos:Array<AcordoProps>|[]
     mensalidades:Array<MensalidadeProps>|[]
 }
@@ -32,7 +31,7 @@ interface DataProps{
 
 
 
-export function Acordos({acordos,mensalidades,id_contrato_global,id_global,usuario,id_empresa,id_associado,id_contrato}:DataProps) {
+export function Acordos({acordos,mensalidades,id_contrato_global,id_global,id_empresa,id_associado,id_contrato}:DataProps) {
 const {permissoes,consultores,carregarDados} = useContext(AuthContext)
 const [openAcordo,setOpenAcordo] = useState(false)
 const [acordo,setAcordo] = useState<Partial<AcordoProps>>()
@@ -56,8 +55,6 @@ useEffect(()=>{
                id_global={id_global??null}
                mensalidades={mensalidades}
                open={openAcordo}
-               usuario={usuario.nome}
-               id_usuario={usuario.id}
                consultores={consultores}
 
                 />}

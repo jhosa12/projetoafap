@@ -34,13 +34,14 @@ export function TabPlano({
             <Select
               value={value?.toString()}
               onValueChange={(value) => {
-                onChange(value);
+                onChange(Number(value));
                 const plano = planos.find(
                   (plano) => plano.id_plano === Number(value)
                 );
                 if (plano) {
                   setValue("plano", plano.descricao);
                   setValue("valor_mensalidade", plano.valor);
+                  setValue('id_plano',Number(plano.id_plano))
                 }
               }}
             >

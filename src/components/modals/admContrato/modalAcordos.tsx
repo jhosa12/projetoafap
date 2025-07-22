@@ -18,8 +18,7 @@ interface DadosAcordoProps{
     acordo:Partial<AcordoProps>,
     open:boolean,
     close:Function,
-   usuario:string,
-   id_usuario:string
+ 
     mensalidades:Array<Partial<MensalidadeProps>>
     id_contrato_global:number|null,
     id_global:number|null,
@@ -29,7 +28,7 @@ interface DadosAcordoProps{
     consultores:Array<Partial<ConsultoresProps>>
     carregarDados:(id:number)=>Promise<void>
 }
-export function ModalAcordos({acordo,id_empresa,usuario,id_usuario,open,close,mensalidades,carregarDados,id_contrato_global,id_global,id_associado,id_contrato,consultores}:DadosAcordoProps){
+export function ModalAcordos({acordo,id_empresa,open,close,mensalidades,carregarDados,id_contrato_global,id_global,id_associado,id_contrato,consultores}:DadosAcordoProps){
  
  const [mensalidadeSelect,setMensalidade] = useState<number|null>(null)
 
@@ -169,8 +168,7 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
         
           toast.promise(
                 api.post('/novoAcordo',{
-                    usuario,
-                    id_usuario,
+                  
                     id_empresa,
                     id_contrato_global,
                     id_global,
@@ -213,7 +211,6 @@ const onSubmit:SubmitHandler<AcordoProps> = (data) => {
          toast.promise(
                 api.put('/editarAcordo',{
                id_acordo:data.id_acordo,
-               id_usuario:id_usuario,
                 //status:'A',
                 //dt_pgto:new Date(),
                 data_inicio:data.data_inicio,

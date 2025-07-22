@@ -282,7 +282,7 @@ export function Historico() {
         uf: data.uf,
         rg: data.rg,
         contrato: {
-          id_plano: data.id_plano,
+          id_plano: Number(data.id_plano),
           plano: data.plano,
           valor_mensalidade: data.valor_mensalidade,
           n_parcelas: data.n_parcelas,

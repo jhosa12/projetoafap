@@ -41,6 +41,7 @@ class DocListaLeads extends React.Component<DadosProps> {
                             <Table.HeadCell>ENDEREÇO</Table.HeadCell>
                             <Table.HeadCell>BAIRRO</Table.HeadCell>
                             <Table.HeadCell>CELULAR</Table.HeadCell>
+                            <Table.HeadCell>VENC.</Table.HeadCell>
                         </Table.Head>
                         <Table.Body className="divide-y">
                             {leads?.map((item, index) => {
@@ -53,6 +54,7 @@ class DocListaLeads extends React.Component<DadosProps> {
                                     <Table.Cell>{item.endereco} Nº {item.numero}</Table.Cell>
                                     <Table.Cell>{item.bairro}</Table.Cell>
                                     <Table.Cell>{item.celular1}</Table.Cell>
+                                    <Table.Cell>{item.vencimento && new Date(item.vencimento).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</Table.Cell>
                                 </Table.Row>)
     })}
 
