@@ -76,15 +76,13 @@ export function ModalItem({onClose,open,item,handleLoadLeads,handleGerarContrato
     const {cidades,planos} = useContext(AuthContext)
 
 
-    const {register,control,setValue,handleSubmit,trigger,watch,reset,  formState: { errors }} = useForm<LeadProps>(
+    const {register,control,setValue,handleSubmit,trigger,watch,reset,  formState: { errors },getValues} = useForm<LeadProps>(
         {
             defaultValues:{...item,adesao:item.dataVenda}
         }
     )
 
-    useEffect(()=>{
-        reset({...item,adesao:item.dataVenda})
-    },[item])
+
 
 
     const cidadeCE = cidades.filter(item=>item.uf === 'CE')
@@ -178,7 +176,7 @@ export function ModalItem({onClose,open,item,handleLoadLeads,handleGerarContrato
         type="button"
         size="default"
         variant="outline"
-        onClick={handleSubmit(handleGerarContrato)}
+        onClick={()=>handleGerarContrato(getValues())}
       >
         <FileText />
         Gerar Contrato

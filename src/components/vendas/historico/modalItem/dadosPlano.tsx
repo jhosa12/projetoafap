@@ -34,14 +34,14 @@ export function TabPlano({
             <Select
               value={value?.toString()}
               onValueChange={(value) => {
-                onChange(Number(value));
+              
                 const plano = planos.find(
                   (plano) => plano.id_plano === Number(value)
                 );
                 if (plano) {
                   setValue("plano", plano.descricao);
                   setValue("valor_mensalidade", plano.valor);
-                  setValue('id_plano',Number(plano.id_plano))
+                  setValue('id_plano',plano.id_plano)
                 }
               }}
             >
@@ -49,7 +49,7 @@ export function TabPlano({
                 <SelectValue placeholder="Selecione um plano" />
               </SelectTrigger>
               <SelectContent>
-                {planos.map((plano) => (
+                {planos?.map((plano) => (
                   <SelectItem
                     key={plano.id_plano}
                     value={plano?.id_plano?.toString()}

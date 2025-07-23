@@ -59,6 +59,22 @@ import {
 import { pageStyleLandscape } from "@/utils/pageStyle";
 import { MultiSelects } from "@/components/ui/multiSelect";
 
+
+const camposObrigatorios: Partial<Record<keyof LeadProps, string>> = {
+  endereco: "Endereço",
+  bairro: "Bairro",
+  cep: "CEP",
+  cidade: "Cidade",
+  id_plano: "Plano (ID)",
+  plano: "Plano",
+  valor_mensalidade: "Valor da Mensalidade",
+  vencimento: "Vencimento",
+  origem: "Origem",
+  cpfcnpj: "CPF/CNPJ",
+  n_parcelas: "Número de Parcelas",
+  adesao: "Data de Adesão",
+};
+
 export interface ReqLeadsProps {
   id?: string;
   statusSelected?: string;
@@ -228,30 +244,22 @@ export function Historico() {
   }, [modal]);
 
   const handleGerarContrato:SubmitHandler<LeadProps> = async (data) => {
+   
     if (lead?.status !== "VENDA") {
       toast.warning("Selecione uma venda para gerar contrato!");
       return;
     }
    
-    if (
-      !data.endereco ||
-      !data.bairro ||
-      !data.cep ||
-      !data.cidade ||
-      !data.id_plano ||
-      !data.plano ||
-      !data.valor_mensalidade ||
-      !data.vencimento ||
-      !data.origem ||
-      !data.cpfcnpj ||
-      !data.n_parcelas ||
-      !data.adesao
-    ) {
-      toast.warning(
-        "Preencha todos os campos obrigatorios para gerar contrato!"
-      );
-      return;
-    }
+    const camposFaltando = Object.entries(camposObrigatorios)
+    .filter(([key]) => !data[key as keyof LeadProps])
+    .map(([, nomeLegivel]) => nomeLegivel);
+
+  if (camposFaltando.length > 0) {
+    toast.warning(
+      `Preencha os seguintes campos obrigatórios para gerar o contrato:\n${camposFaltando.join(", ")}`
+    );
+    return;
+  }
     let adesao;
     if (data.adesao) {
       adesao = new Date(data.adesao);
@@ -367,6 +375,7 @@ export function Historico() {
         <DialogHeader>
           <DialogTitle>Leads/Prospecões/Vendas</DialogTitle>
         </DialogHeader>
+        
       {modal.filtro && (
         <ModalFiltro
           consultores={consultores

@@ -62,7 +62,7 @@ export function TabDadosPessoais({control,register,setValue,trigger,watch,cidade
             <div className="w-full flex flex-col">
                 <Label className="text-xs" >CEP</Label>
                 
-             <CepMaskInput controlName={'cep'} register={register} />
+             <CepMaskInput  controlName={'cep'} register={register} />
             </div>
             <div className="w-full flex flex-col">
                 <Label className="text-xs">Guia de Rua</Label>
