@@ -6,14 +6,7 @@ import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import useApiPost from "@/hooks/useApiPost";
 import { Button } from "@/components/ui/button";
 import "react-datepicker/dist/react-datepicker.css";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"; 
+
 import {
   Control,
   Controller,
@@ -39,14 +32,7 @@ import { ModalLoading } from "@/components/modals/loading/modalLoading";
 import DocListaLeads from "@/Documents/vendas/DocListaLeads";
 import { useReactToPrint } from "react-to-print";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { toast } from "sonner";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import {
@@ -58,6 +44,11 @@ import {
 } from "@/components/ui/dialog";
 import { pageStyleLandscape } from "@/utils/pageStyle";
 import { MultiSelects } from "@/components/ui/multiSelect";
+import { PaginationComponent } from "@/components/PaginationComponent";
+import { ModalFiltroHistorico } from "./ModalFiltroHistorico";
+import { TableHistoricoVendas } from "./TableHistorico";
+import { ModalNovoContrato } from "./ModalNovoContrato";
+
 
 
 const camposObrigatorios: Partial<Record<keyof LeadProps, string>> = {
@@ -172,7 +163,7 @@ export function Historico() {
     data,
     loading: loadingLeads,
   } = useApiGet<Array<LeadProps>, ReqLeadsProps>("/lead/lista");
-  const [lead, setLead] = useState<Partial<LeadProps>>();
+  const [lead, setLead] = useState<Partial<LeadProps>>({});
   const [categoria, setCategoria] = useState("");
   const { postData: postCategoria } = useApiPost<
     LeadProps,
@@ -194,6 +185,17 @@ export function Historico() {
   });
   const componenteRef = useRef<DocListaLeads>(null);
 
+
+  const [currentPage, setCurrentPage] = useState(1);
+const rowsPerPage =10;
+
+const paginatedData = data?.slice(
+  (currentPage - 1) * rowsPerPage,
+  currentPage * rowsPerPage
+);
+
+const totalPages = data ? Math.ceil(data.length / rowsPerPage) : 1;
+
   const {
     data: associado,
     loading,
@@ -205,9 +207,13 @@ export function Historico() {
       id_contrato_global: number;
     },
     Partial<CadastroRequest>
-  >("/leads/gerarPlano", undefined, undefined, () => {
-    setModal({ novo: true }), reqDados(getValues());
-  });
+  >("/leads/gerarPlano", undefined, () => {
+     reqDados(getValues())},
+    () => {
+      setModal(prev=>({...prev,novo:true}))
+    },  
+    
+    );
 
   const { register, handleSubmit, control, watch, getValues } =
     useForm<ReqLeadsProps>({
@@ -226,7 +232,7 @@ export function Historico() {
     }
     setCategoria(e.target.value);
     setLead(lead);
-    setModal({ confirmaCategoria: true });
+    setModal(prev=>({...prev,confirmaCategoria:true}));
   };
 
   const imprimir = useReactToPrint({
@@ -272,7 +278,7 @@ export function Historico() {
         dtVencimento.getTime() - dtVencimento.getTimezoneOffset() * 60 * 1000
       );
     }
-
+try{
     await postAssociado({
       dataPlano: {
         dependentes: data.dependentes,
@@ -309,7 +315,13 @@ export function Historico() {
       },
       id_lead: data.id_lead,
     });
-  };
+    
+   // setModal({ novo: true });
+  
+  }catch(error){
+    console.log(error);
+  }
+}
 
   const handleAtualizarCategoria = useCallback(async () => {
     try {
@@ -350,7 +362,7 @@ export function Historico() {
         endDate: dataFim,
       });
 
-      setModal({ filtro: false });
+      setModal(prev=>({...prev,filtro:false}));
     } catch (error) {
       console.log(error);
     }
@@ -377,7 +389,7 @@ export function Historico() {
         </DialogHeader>
         
       {modal.filtro && (
-        <ModalFiltro
+        <ModalFiltroHistorico
           consultores={consultores
             .filter((item) => item.funcao === "PROMOTOR(A) DE VENDAS")
             .map((item) => ({ label: item.nome, value: item.nome }))}
@@ -387,7 +399,7 @@ export function Historico() {
           control={control}
           handleOnSubmit={reqDados}
           show={modal.filtro}
-          onClose={() => setModal({ filtro: false })}
+          onClose={() => setModal(prev=>({...prev,filtro:false}))}
         />
       )}
       {modal.lead && (
@@ -395,7 +407,7 @@ export function Historico() {
           handleLoadLeads={() => reqDados(getValues())}
           item={lead ?? {}}
           open={modal.lead}
-          onClose={() => setModal({ lead: false })}
+          onClose={() => setModal(prev=>({...prev,lead:false}))}
           handleGerarContrato={handleGerarContrato}
         />
       )}
@@ -403,25 +415,25 @@ export function Historico() {
         pergunta={`Tem certeza que deseja alterar o(a) ${lead?.status} para um(a) ${categoria} ? Essa alteração será contabilizada na faturação!`}
         handleConfirmar={handleAtualizarCategoria}
         openModal={modal.confirmaCategoria}
-        setOpenModal={() => setModal({ confirmaCategoria: false })}
+        setOpenModal={() => setModal(prev=>({...prev,confirmaCategoria:false}))}
       />
 
-   
-
+  
       {modal.novo && (
         <ModalNovoContrato
+          closeAll={()=>setOpen(false)}
           id_global={associado?.id_global}
           carregarDados={carregarDados}
           id_contrato={associado?.id_contrato}
           loading={loading}
-          show={modal.novo}
-          onClose={() => setModal({ novo: false })}
+          show={modal.novo??false}
+          onClose={() => setModal(prev=>({...prev,novo:false}))}
         />
       )}
       <div className="inline-flex gap-4">
         `
         <Button
-          onClick={() => setModal({ filtro: true })}
+          onClick={() => setModal(prev=>({...prev,filtro:true}))}
           size={"sm"}
           variant={"outline"}
         >
@@ -429,7 +441,7 @@ export function Historico() {
           FILTRAR
         </Button>
         <Button
-          onClick={() => setModal({ print: true })}
+          onClick={() => setModal(prev=>({...prev,print:true}))}
           size={"sm"}
           variant={"outline"}
         >
@@ -442,102 +454,23 @@ export function Historico() {
         <ModalLoading show={loadingLeads} />
       ) : (
         <div className="overflow-y-auto mt-2  max-h-[calc(100vh-185px)]   ">
-  <Table className="rounded-none border-none shadow-none">
-  <TableHeader>
-    <TableRow className="bg-gray-50">
-      <TableHead className="px-3 py-1 text-xs text-black font-bold">Nome</TableHead>
-      <TableHead className="px-3 py-1 text-xs text-black font-bold">Cidade</TableHead>
-      <TableHead className="px-3 py-1 text-xs text-black font-bold">Previsão de Visita</TableHead>
-      <TableHead className="px-3 py-1 text-xs text-black font-bold">Data Cad.</TableHead>
-      <TableHead className="px-3 py-1 text-xs text-black font-bold">Data Venda</TableHead>
-      <TableHead className="px-3 py-1 text-xs text-black font-bold">Categoria</TableHead>
-      <TableHead className="px-3 py-1 text-xs text-black font-bold">Vendedor</TableHead>
-      <TableHead className="px-3 py-1 text-xs text-black font-bold">Celular1</TableHead>
-      <TableHead className="px-3 py-1 text-xs text-black font-bold">Vencimento</TableHead>
-      <TableHead className="px-3 py-1 text-xs text-black font-bold"></TableHead>
-    </TableRow>
-  </TableHeader>
 
-  <TableBody>
-    {data?.map((item, index) => (
-      <TableRow
-        key={index}
-        className="cursor-pointer hover:bg-muted"
-        onClick={() => {
-          setLead(item);
-          setModal({ lead: true });
-        }}
-      >
-        <TableCell className="px-2 py-0 text-[10px] text-black">{item?.nome}</TableCell>
-        <TableCell className="px-2 py-0 text-[10px] text-black">
-          {item?.cidade}/{item?.uf}
-        </TableCell>
-        <TableCell className="px-2 py-0 text-[10px] text-black">
-          {item?.visita &&
-            new Date(item?.visita).toLocaleDateString("pt-BR", {
-              timeZone: "UTC",
-            })}
-        </TableCell>
-        <TableCell className="px-2 py-0 text-[10px] text-black">
-          {item?.data &&
-            new Date(item?.data).toLocaleDateString("pt-BR", {
-              timeZone: "UTC",
-            })}
-        </TableCell>
-        <TableCell className="px-2 py-0 text-[10px] text-black">
-          {item?.dataVenda &&
-            new Date(item?.dataVenda).toLocaleDateString("pt-BR", {
-              timeZone: "UTC",
-            })}
-        </TableCell>
-        <TableCell
-          className={`px-2 py-0 text-[10px] ${
-            item?.status === "LEAD"
-              ? "text-blue-600"
-              : item.status === "PROSPECCAO"
-              ? "text-yellow-500"
-              : "text-green-500"
-          }`}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <select
-            onChange={(e) => onChangeCategoria(e, item)}
-            className="appearance-none border-none bg-transparent text-xs focus:outline-none"
-            value={item?.status}
-          >
-            <option value="LEAD">LEAD</option>
-            <option value="PROSPECCAO">PROSPECCAO</option>
-            <option value="PRE VENDA">PRE VENDA</option>
-            <option value="VENDA">VENDA</option>
-          </select>
-        </TableCell>
-        <TableCell className="px-2 py-0 text-[10px] text-black">{item?.consultor}</TableCell>
-        <TableCell className="px-2 py-0 text-[10px] text-black">{item?.celular1}</TableCell>
-        <TableCell className="px-2 py-0 text-[10px] text-black">
-          {item?.vencimento
-            ? new Date(item?.vencimento).toLocaleDateString()
-            : ""}
-        </TableCell>
-        <TableCell className="px-2 py-0 text-[10px] text-black">
-          {item.status === "VENDA" && (
-            <button
-              type="button"
-              data-tooltip-id="tooltipAcoes"
-              data-tooltip-content="Criar Plano"
-              onClick={(e) => {
-                e.stopPropagation();
-                setLead(item);
-                setModal({ confirmaPlano: true });
-              }}
-            >
-              <MdCreateNewFolder size={20} />
-            </button>
-          )}
-        </TableCell>
-      </TableRow>
-    ))}
-  </TableBody>
-</Table>
+          <TableHistoricoVendas
+            data={paginatedData ?? []}
+            onChangeCategoria={onChangeCategoria}
+            setLead={setLead}
+            setModal={setModal}
+          />
+
+{data && data.length > rowsPerPage && (
+  <div className="mt-4 flex justify-center">
+<PaginationComponent
+  currentPage={currentPage}
+  totalPages={totalPages}
+  setCurrentPage={setCurrentPage}
+/>
+  </div>
+)}
 
           <Tooltip id="tooltipAcoes" />
         </div>
@@ -551,173 +484,6 @@ export function Historico() {
   );
 }
 
-interface DataProps {
-  show: boolean;
-  onClose: () => void;
-  loading: boolean;
-  handleOnSubmit: SubmitHandler<ReqLeadsProps>;
-  register: UseFormRegister<ReqLeadsProps>;
-  control: Control<ReqLeadsProps, any>;
-  handleSubmit: UseFormHandleSubmit<ReqLeadsProps>;
-  consultores: Array<{ label: string; value: string }> | [];
-}
 
-export const ModalFiltro = ({
-  onClose,
-  show,
-  handleOnSubmit,
-  register,
-  control,
-  handleSubmit,
-  loading,
-  consultores,
-}: DataProps) => {
-  return (
-    <Dialog open={show} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle></DialogTitle>
-        </DialogHeader>
 
-        <form
-          onSubmit={handleSubmit(handleOnSubmit)}
-          className="flex flex-col gap-2 mt-1"
-        >
-          <Controller
-            control={control}
-            name="consultores"
-            render={({ field }) => (
-              <MultiSelects
-                options={consultores}
-                onChange={field.onChange}
-                selected={field.value??[]}
-                placeholder="CONSULTORES"
-              />
-            )}
-          />
 
-          <div>
-            <Label className="text-xs" value="Nome" />
-            <Input
-              {...register("nome")}
-              className="uppercase"
-              placeholder="NOME"
-            />
-          </div>
-
-          <div>
-            <Label className="text-xs" value="Categoria" />
-
-            <Controller
-              control={control}
-              name="statusSelected"
-              render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="STATUS" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="LEAD">LEAD</SelectItem>
-                      <SelectItem value="PROSPECCAO">PROSPECÇÃO</SelectItem>
-                      <SelectItem value="PRE VENDA">PRE VENDA</SelectItem>
-                      <SelectItem value="VENDA">VENDA</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
-          <div className="inline-flex w-full justify-between gap-2">
-            <div>
-              <Label className="text-xs" value="Data inicio" />
-              <Controller
-                control={control}
-                name="startDate"
-                render={({ field: { onChange, value } }) => (
-                  <DatePickerInput
-                    value={value ? new Date(value) : undefined}
-                    onChange={onChange}
-                    className="h-9"
-                  />
-                )}
-              />
-            </div>
-
-            <div>
-              <Label className="text-xs" value="Data fim" />
-              <Controller
-                control={control}
-                name="endDate"
-                render={({ field: { onChange, value } }) => (
-                  <DatePickerInput
-                    value={value ? new Date(value) : undefined}
-                    onChange={onChange}
-                    className="h-9"
-                  />
-                )}
-              />
-            </div>
-          </div>
-          <Button className="mt-2" type="submit">
-            {loading ? <Spinner size="sm" /> : "Aplicar"}
-          </Button>
-        </form>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-interface ModalNovoContratoProps {
-  show: boolean;
-  onClose: () => void;
-  loading: boolean;
-  id_contrato: number | undefined;
-  id_global: number | undefined;
-  carregarDados: Function;
-}
-
-export const ModalNovoContrato = ({
-  id_contrato,
-  loading,
-  onClose,
-  show,
-  carregarDados,
-  id_global,
-}: ModalNovoContratoProps) => {
-  return (
-    <Modal size="sm" popup show={show} onClose={onClose}>
-      <Modal.Body>
-        <div className="flex flex-col justify-center items-center w-full gap-2 mt-6">
-          {loading ? (
-            <Spinner size="xl" />
-          ) : (
-            <div className="flex flex-col w-full gap-4">
-              <div className="inline-flex items-center gap-1">
-                <MdCheckCircle size={24} className="text-green-500" />
-                <span className="font-semibold">Sucesso</span>
-              </div>
-              <h1 className="text-md font-semibold">
-                Novo Contrato: {id_contrato?.toString()}
-              </h1>
-              <div className="flex w-full justify-between">
-                <Button
-                  onClick={() => {
-                    Router.push(`/dashboard/admcontrato`);
-                    carregarDados(id_global);
-                  }}
-                  variant={"outline"}
-                >
-                  Acessar Contrato
-                </Button>
-                <Button variant={"destructive"} onClick={onClose}>
-                  Fechar
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
-      </Modal.Body>
-    </Modal>
-  );
-};
