@@ -1,5 +1,4 @@
 import useApiGet from "@/hooks/useApiGet";
-import { Label, Modal, Spinner, TextInput } from "flowbite-react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ModalItem } from "./modalItem/modalItem";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
@@ -8,33 +7,23 @@ import { Button } from "@/components/ui/button";
 import "react-datepicker/dist/react-datepicker.css";
 
 import {
-  Control,
-  Controller,
   SubmitHandler,
   useForm,
-  UseFormHandleSubmit,
-  UseFormRegister,
 } from "react-hook-form";
 import {
-  MdCheckCircle,
-  MdCreateNewFolder,
+
   MdFilter1,
   MdPrint,
 } from "react-icons/md";
-import { Tooltip } from "react-tooltip";
+
 import { AuthContext } from "@/store/AuthContext";
 import { gerarMensalidade, ParcelaData } from "@/utils/gerarArrayMensal";
 import { ContratoProps, DependentesProps } from "@/types/associado";
-import Router from "next/router";
 import { ajustarData } from "@/utils/ajusteData";
 import { ModalLoading } from "@/components/modals/loading/modalLoading";
-
 import DocListaLeads from "@/Documents/vendas/DocListaLeads";
 import { useReactToPrint } from "react-to-print";
-import { Input } from "@/components/ui/input";
-
 import { toast } from "sonner";
-import { DatePickerInput } from "@/components/DatePickerInput";
 import {
   Dialog,
   DialogContent,
@@ -43,7 +32,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { pageStyleLandscape } from "@/utils/pageStyle";
-import { MultiSelects } from "@/components/ui/multiSelect";
 import { PaginationComponent } from "@/components/PaginationComponent";
 import { ModalFiltroHistorico } from "./ModalFiltroHistorico";
 import { TableHistoricoVendas } from "./TableHistorico";

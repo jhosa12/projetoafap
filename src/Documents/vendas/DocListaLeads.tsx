@@ -1,11 +1,11 @@
-
+'use client'
 import React from 'react';
 import { Table } from "flowbite-react";
 import { roboto_Mono } from "@/fonts/fonts";
-import { LeadProps } from "@/components/vendas/historico/Historico";
+import { LeadProps } from '@/components/vendas/historico/Historico';
 interface DadosProps {
    leads:Array<LeadProps>,
- 
+
 }
 
 
