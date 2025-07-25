@@ -1,5 +1,5 @@
 
-import { LeadProps } from "../historico";
+import { LeadProps } from "../Historico";
 import { Control, SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
 import { TabDadosPessoais } from "./dadosPessoais";
 import { TabFormulario } from "./formulario";
@@ -81,8 +81,6 @@ export function ModalItem({onClose,open,item,handleLoadLeads,handleGerarContrato
             defaultValues:{...item,adesao:item.dataVenda}
         }
     )
-
-
 
 
     const cidadeCE = cidades.filter(item=>item.uf === 'CE')

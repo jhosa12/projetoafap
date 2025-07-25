@@ -18,6 +18,8 @@ import { ptBR } from "date-fns/locale";
 import AuditDetails from "@/components/audit/AuditDetails";
 import { AuditLog } from "@/types/audit";
 import useApiGet from "@/hooks/useApiGet";
+import { removerFusoDate } from "@/utils/removerFusoDate";
+import { ajustarData } from "@/utils/ajusteData";
 
 
 
@@ -36,7 +38,7 @@ export default function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [actionFilter, setActionFilter] = useState("");
   const [modelFilter, setModelFilter] = useState("");
-  const { data:logs, loading,postData } = useApiGet<Array<AuditLog>,undefined>("/auditLog")
+  const { data:logs, loading,postData } = useApiGet<Array<AuditLog>,{startDate?:string,endDate?:string}>("/auditLog")
 
   useEffect(() => {
     loadLogs();
@@ -48,8 +50,9 @@ export default function Dashboard() {
 
   const loadLogs = async () => {
     setIsLoading(true);
+    const {dataIni,dataFim} = ajustarData(new Date(),new Date())
     try {
-      await postData(undefined)
+      await postData({startDate:dataIni,endDate:dataFim})
     } catch (error) {
       console.error("Erro ao carregar logs:", error);
     }

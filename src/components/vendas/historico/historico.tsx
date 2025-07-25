@@ -472,7 +472,7 @@ try{
   </div>
 )}
 
-          <Tooltip id="tooltipAcoes" />
+         
         </div>
       )}
 

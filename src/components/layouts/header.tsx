@@ -33,7 +33,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ModalAtivosInativos } from "../modals/modalAtivosInativos";
 import LinkNavigate from "../Link";
 import { FaBell } from "react-icons/fa";
-import { Historico } from "../vendas/historico/historico";
+import { Historico } from "../vendas/historico/Historico";
 
 
 export function Header({ path }: { path?: string }) {

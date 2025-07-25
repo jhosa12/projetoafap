@@ -1,5 +1,5 @@
 import { Control, Controller, SubmitHandler, UseFormHandleSubmit, UseFormRegister } from "react-hook-form";
-import { ReqLeadsProps } from "./historico";
+import { ReqLeadsProps } from "./Historico";
 import { MultiSelects } from "@/components/ui/multiSelect";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";

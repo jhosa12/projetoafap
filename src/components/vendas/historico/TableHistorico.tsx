@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"; 
-import { LeadProps } from "./historico";
+import { LeadProps } from "./Historico";
 import { MdCreateNewFolder } from "react-icons/md";
 
 interface Props{
@@ -33,7 +33,7 @@ export const TableHistoricoVendas = ({data, onChangeCategoria, setLead, setModal
             <TableHead className="px-3 py-1 text-xs text-black font-bold">Vendedor</TableHead>
             <TableHead className="px-3 py-1 text-xs text-black font-bold">Celular1</TableHead>
             <TableHead className="px-3 py-1 text-xs text-black font-bold">Vencimento</TableHead>
-            <TableHead className="px-3 py-1 text-xs text-black font-bold"></TableHead>
+            {/* <TableHead className="px-3 py-1 text-xs text-black font-bold"></TableHead> */}
           </TableRow>
         </TableHeader>
       
@@ -97,12 +97,10 @@ export const TableHistoricoVendas = ({data, onChangeCategoria, setLead, setModal
                   ? new Date(item?.vencimento).toLocaleDateString()
                   : ""}
               </TableCell>
-              <TableCell className="px-2 py-0 text-[10px] text-black">
+              {/* <TableCell className="px-2 py-0 text-[10px] text-black">
                 {item.status === "VENDA" && (
                   <button
                     type="button"
-                    data-tooltip-id="tooltipAcoes"
-                    data-tooltip-content="Criar Plano"
                     onClick={(e) => {
                       e.stopPropagation();
                       setLead(item);
@@ -112,7 +110,7 @@ export const TableHistoricoVendas = ({data, onChangeCategoria, setLead, setModal
                     <MdCreateNewFolder size={20} />
                   </button>
                 )}
-              </TableCell>
+              </TableCell> */}
             </TableRow>
           ))}
         </TableBody>

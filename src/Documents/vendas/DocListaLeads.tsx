@@ -4,7 +4,7 @@ import React from 'react';
 import { Table } from "flowbite-react";
 import { AdesaoProps } from "@/components/vendas/modalVendedor";
 import { roboto_Mono } from "@/fonts/fonts";
-import { LeadProps } from "@/components/vendas/historico/historico";
+import { LeadProps } from "@/components/vendas/historico/Historico";
 interface DadosProps {
    leads:Array<LeadProps>,
  
