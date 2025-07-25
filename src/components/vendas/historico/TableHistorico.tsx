@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"; 
-import { LeadProps } from "./Historico";
+import { LeadProps } from "@/types/vendas";
 import { MdCreateNewFolder } from "react-icons/md";
 
 interface Props{

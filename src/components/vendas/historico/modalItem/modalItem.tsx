@@ -1,5 +1,4 @@
 
-import { LeadProps } from "../Historico";
 import { Control, SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
 import { TabDadosPessoais } from "./dadosPessoais";
 import { TabFormulario } from "./formulario";
@@ -21,6 +20,7 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs"; 
+import { LeadProps } from "@/types/vendas";
 
 
 interface DataProps{
