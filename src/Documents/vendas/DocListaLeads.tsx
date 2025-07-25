@@ -1,8 +1,6 @@
 
-import Image from "next/image";
 import React from 'react';
 import { Table } from "flowbite-react";
-import { AdesaoProps } from "@/components/vendas/modalVendedor";
 import { roboto_Mono } from "@/fonts/fonts";
 import { LeadProps } from "@/components/vendas/historico/Historico";
 interface DadosProps {
