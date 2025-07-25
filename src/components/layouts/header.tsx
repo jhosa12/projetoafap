@@ -3,9 +3,7 @@
 import { useContext, useState } from "react";
 import { Avatar, Label } from "flowbite-react";
 import { AuthContext } from "@/store/AuthContext";
-import Router from "next/router";
 import Image from "next/image";
-
 import { LogIn, Menu } from "lucide-react";
 
 import {
@@ -34,6 +32,7 @@ import { ModalAtivosInativos } from "../modals/modalAtivosInativos";
 import LinkNavigate from "../Link";
 import { FaBell } from "react-icons/fa";
 import { Historico } from "../vendas/historico/Historico";
+
 
 
 export function Header({ path }: { path?: string }) {
