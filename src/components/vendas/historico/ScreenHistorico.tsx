@@ -21,7 +21,6 @@ import { gerarMensalidade, ParcelaData } from "@/utils/gerarArrayMensal";
 import { ContratoProps, DependentesProps } from "@/types/associado";
 import { ajustarData } from "@/utils/ajusteData";
 import { ModalLoading } from "@/components/modals/loading/modalLoading";
-import DocListaLeads from "@/Documents/vendas/DocLeads";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "sonner";
 import {
@@ -37,6 +36,7 @@ import { ModalFiltroHistorico } from "./ModalFiltroHistorico";
 import { TableHistoricoVendas } from "./TableHistorico";
 import { ModalNovoContrato } from "./ModalNovoContrato";
 import { LeadProps } from "@/types/vendas";
+import DocListaLeads from "@/Documents/vendas/DocLeads";
 
 
 
