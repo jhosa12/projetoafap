@@ -295,7 +295,7 @@ toast.promise(
                             />
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-2 flex flex-col">
                             <Label>Data de Adesão</Label>
                             <Controller
                                 control={control}
@@ -311,7 +311,7 @@ toast.promise(
                             />
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-2 flex flex-col">
                             <Label>Carência</Label>
                             <Controller
                                 control={control}
