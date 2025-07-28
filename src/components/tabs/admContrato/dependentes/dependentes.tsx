@@ -11,7 +11,8 @@ import DeclaracaoExclusao from "@/Documents/dependentes/DeclaracaoExclusao"
 import { IoPrint } from "react-icons/io5"
 import { useReactToPrint } from "react-to-print"
 import { AssociadoProps, DependentesProps } from "@/types/associado"
-import { Button, ButtonGroup, Table } from "flowbite-react"
+import { Table } from "flowbite-react"
+import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { EmpresaProps } from "@/types/empresa"
 import { UserProps } from "@/types/user"
@@ -122,18 +123,41 @@ export function Dependentes({dadosassociado,infoEmpresa,setarDadosAssociado,usua
                     <span className="ml-2 text-xs font-medium">Exibir Excluídos</span>
                 </div>
         
-                                     <ButtonGroup>
-
-                                             <Button disabled={!permissoes.includes('ADM1.3.2')} onClick={() => {
-                                                 setDadosDep({}),
-                                                setModal({dependente:true})}} type="button" color='light' size='xs'><RiAddCircleFill className='mr-1 h-4 w-4' /> Adicionar</Button>
-                                                    <Button disabled={!permissoes.includes('ADM1.3.2')} onClick={() => {
-                                                       
-                                                        setModal({dependente:true})
-                                                        }} type="button" color='light' size='xs'><MdEdit className='mr-1 h-4 w-4' />Editar</Button>
-                                
-                                                    <Button disabled={!permissoes.includes('ADM1.3.3')} onClick={() =>setModal({excluir:true}) } type="button" color='light' size='xs'><MdDeleteForever className='mr-1 h-4 w-4' /> Excluir</Button>
-                                                </ButtonGroup>
+                                    <div className="flex gap-2">
+                                        <Button 
+                                            variant="outline" 
+                                            size="sm" 
+                                            disabled={!permissoes.includes('ADM1.3.2')} 
+                                            onClick={() => {
+                                                setDadosDep({}),
+                                                setModal({dependente: true})
+                                            }}
+                                            className="flex items-center gap-1"
+                                        >
+                                            <RiAddCircleFill className="h-4 w-4" />
+                                            Adicionar
+                                        </Button>
+                                        <Button 
+                                            variant="outline" 
+                                            size="sm" 
+                                            disabled={!permissoes.includes('ADM1.3.2')} 
+                                            onClick={() => setModal({dependente: true})}
+                                            className="flex items-center gap-1"
+                                        >
+                                            <MdEdit className="h-4 w-4" />
+                                            Editar
+                                        </Button>
+                                        <Button 
+                                            variant="outline" 
+                                            size="sm" 
+                                            disabled={!permissoes.includes('ADM1.3.3')} 
+                                            onClick={() => setModal({excluir: true})}
+                                            className="flex items-center gap-1 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                        >
+                                            <MdDeleteForever className="h-4 w-4" />
+                                            Excluir
+                                        </Button>
+                                    </div>
                             
                                 </div>
                                 <Table  theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 text-black py-1 text-xs" } },head: { cell: { base: "px-4 text-black py-1 text-xs" } } }} >

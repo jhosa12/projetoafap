@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Calendar, Users, FileText, MessageSquare } from "lucide-react";
+import { MapPin, Calendar, Users, FileText, MessageSquare, Plus } from "lucide-react";
 import DistrictSelector from "./routeForm/DistrictSelector";
 import PeriodSelector from "./routeForm/PeriodSelector";
 import ClientCriteriaSelector from "./routeForm/ClientCriteriaSelector";
@@ -15,6 +15,7 @@ import { RouteProps } from "@/types/cobranca";
 import { Textarea } from "../ui/textarea";
 import useApiPost from "@/hooks/useApiPost";
 import { EmpresaProps } from "@/types/empresa";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 
 
 export interface RouteFormData {
@@ -25,14 +26,14 @@ export interface RouteFormData {
 }
 
 interface RouteGeneratorProps {
-  onClose?: () => void;
   empresas:EmpresaProps[] | null
 }
 
-const RouteGenerator = ({ onClose,empresas }: RouteGeneratorProps) => {
+const RouteGenerator = ({empresas }: RouteGeneratorProps) => {
 
     const {control,handleSubmit,watch,formState:{errors}} = useForm<RouteProps>();
     const {postData} = useApiPost('/cobranca/novaRota')
+    const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
 
 
 
@@ -70,14 +71,26 @@ const RouteGenerator = ({ onClose,empresas }: RouteGeneratorProps) => {
    
     
    
-      onClose?.();
+      setIsGeneratorOpen(false)
     
   };
 
   //const isFormValid = watch("parametros.bairros").length > 0 && watch("parametros.consultor");
 
   return (
-    <form onSubmit={handleSubmit(handleGenerateRoute)} className="grid lg:grid-cols-3 gap-4">
+
+    <Dialog open={isGeneratorOpen} onOpenChange={setIsGeneratorOpen}>
+           <DialogTrigger asChild>
+             <Button className="flex items-center gap-2">
+               <Plus className="h-4 w-4" />
+               Nova Rota
+             </Button>
+           </DialogTrigger>
+           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+             <DialogHeader>
+               <DialogTitle>Gerar Nova Rota</DialogTitle>
+             </DialogHeader>
+             <form onSubmit={handleSubmit(handleGenerateRoute)} className="grid lg:grid-cols-3 gap-4">
       <div className="lg:col-span-2 space-y-4">
         <Card className="shadow-sm">
           <CardHeader className="pb-3">
@@ -208,6 +221,9 @@ const RouteGenerator = ({ onClose,empresas }: RouteGeneratorProps) => {
         </Card>
       </div>
     </form>
+           </DialogContent>
+         </Dialog>
+    
   );
 };
 

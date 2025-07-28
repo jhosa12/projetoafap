@@ -1,16 +1,23 @@
-
 import { MdSaveAlt } from "react-icons/md";
 import { RiAddCircleFill } from "react-icons/ri";
 import { AuthContext} from "@/store/AuthContext";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { api } from "@/lib/axios/apiClient";
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { Button, Label, Modal, Select, TextInput } from "flowbite-react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { DependentesProps } from "@/types/associado";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Save, PlusCircle } from "lucide-react";
+import { DatePickerInput } from "@/components/DatePickerInput";
 
 registerLocale('pt', pt)
 
@@ -39,9 +46,17 @@ interface DataProps{
 
 export function ModalDependentes({openModal,setModal,data}:DataProps){
     const {usuario,dadosassociado,carregarDados}=useContext(AuthContext)
-    const {register,handleSubmit,control} = useForm<DependentesProps>({
+    const {register,handleSubmit,control,reset} = useForm<DependentesProps>({
       defaultValues:data
     })
+
+
+    useEffect(()=>{
+    
+        reset(data)
+     
+    },[data])
+      
 
 
     const handleApiFunction:SubmitHandler<DependentesProps> = async(dadosForm)=>{
@@ -80,11 +95,11 @@ toast.promise(
   {
     loading:'Cadastrando Dependente...',
     success:'Adicionado com Sucesso!',
-    error:'Erro ao adicionar dependente'
+    error:async(error)=>{
+      return error?.response?.data.error??'Erro ao adicionar dependente'
+    }
   }
-
 )
-
 
    /* const response = await toast.promise(
       api.post('/novoDependente',{
@@ -132,9 +147,17 @@ toast.promise(
         sexo:dados.sexo
     }),
     {
-        error:'Erro ao atualizar dependente',
+        error:async(error)=>{
+
+          return error?.response?.data.error??'Erro ao atualizar dependente'
+          
+        },
         loading:'Atualizando Dependente....',
-        success:'Atualizado com Sucesso!'
+        success:async(res)=>{
+            dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
+            setModal(false)
+            return 'Atualizado com Sucesso!'
+        }
     }
   )
 
@@ -156,7 +179,7 @@ toast.promise(
             success:'Atualizado com Sucesso!'
         }
     )*/
-    dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
+   // dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
  }
 
  /*async function resgatarDep(){
@@ -185,111 +208,163 @@ toast.promise(
          console.log(err)
      }
    }*/
-    return(
+    return (
+        <Dialog open={openModal} onOpenChange={setModal}>
+            <DialogContent className="sm:max-w-[600px]">
+                <DialogHeader>
+                    <DialogTitle className="text-lg font-semibold">
+                        {data.id_dependente ? 'Editar Dependente' : 'Adicionar Dependente'}
+                    </DialogTitle>
+                </DialogHeader>
+                
+                <form onSubmit={handleSubmit(handleApiFunction)} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="nome">Nome</Label>
+                            <Input
+                                id="nome"
+                                {...register('nome')}
+                                placeholder="Nome completo"
+                                required
+                                className="w-full"
+                            />
+                        </div>
 
-<Modal show={openModal} onClose={()=>setModal(false)} popup>
-<Modal.Header>Administrar Dependente</Modal.Header>
-    <Modal.Body>
-        <form className="  grid gap-2 grid-cols-4 font-semibold" onSubmit={handleSubmit(handleApiFunction)}>
-        <div className="col-span-2" >
-  <div className=" block">
-    <Label className="text-xs"  value="Nome" />
-  </div>
-  <TextInput className="font-semibold" sizing={'sm'} {...register('nome')} type="text" placeholder="Nome" required />
-</div>
-<div className="col-span-1" >
-  <div className=" block">
-    <Label className="text-xs"  value="Nascimento" />
-  </div>
-  <Controller
-  control={control}
-  name="data_nasc"
-  render={({ field:{onChange,value} }) => (
-<DatePicker selected={value} onChange={onChange}  dateFormat={"dd/MM/yyyy"} locale={pt} className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+                        <div className="space-y-2">
+                            <Label htmlFor="data_nasc">Data de Nascimento</Label>
+                            <Controller
+                                control={control}
+                                name="data_nasc"
+                                render={({ field }) => (
+                                  <DatePickerInput
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  className ='h-9'
+                                  required
+                                    />
+                                )}
+                            />
+                        </div>
 
-  )}
-  
-  />
- 
-</div>
+                        <div className="space-y-2">
+                            <Label>Sexo</Label>
+                            <Controller
+                                control={control}
+                                name="sexo"
+                                render={({ field }) => (
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Selecione o sexo" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="MASCULINO">Masculino</SelectItem>
+                                            <SelectItem value="FEMININO">Feminino</SelectItem>
+                                            <SelectItem value="OUTRO">Outro</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
+                        </div>
 
+                        <div className="space-y-2">
+                            <Label>Grau de Parentesco</Label>
+                            <Controller
+                                control={control}
+                                name="grau_parentesco"
+                                render={({ field }) => (
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Selecione o parentesco" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="CONJUGE">Cônjuge</SelectItem>
+                                            <SelectItem value="PAI">Pai</SelectItem>
+                                            <SelectItem value="MÃE">Mãe</SelectItem>
+                                            <SelectItem value="FILHO">Filho(a)</SelectItem>
+                                            <SelectItem value="IRMÃO(Ã)">Irmão(ã)</SelectItem>
+                                            <SelectItem value="PRIMO">Primo(a)</SelectItem>
+                                            <SelectItem value="SOBRINHO(A)">Sobrinho(a)</SelectItem>
+                                            <SelectItem value="NORA">Nora</SelectItem>
+                                            <SelectItem value="GENRO">Genro</SelectItem>
+                                            <SelectItem value="TIO(A)">Tio(a)</SelectItem>
+                                            <SelectItem value="AVÔ(Ó)">Avô(ó)</SelectItem>
+                                            <SelectItem value="OUTROS">Outros</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
+                        </div>
 
+                        <div className="space-y-2">
+                            <Label>Data de Adesão</Label>
+                            <Controller
+                                control={control}
+                                name="data_adesao"
+                                render={({ field }) => (
+                                  <DatePickerInput
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  className ='h-9'
+                                  required
+                                    />
+                                )}
+                            />
+                        </div>
 
-<div className="col-span-1" >
-  <div className=" block">
-    <Label className="text-xs"  value="Parentesco" />
-  </div>
-  <Select sizing={'sm'} {...register('grau_parentesco')}>
-  <option selected className="text-gray-200">PARENTESCO</option>
-                    <option value={'CONJUGE'}>CONJUGE</option>
-                    <option value={'PAI'}>PAI</option>
-                    <option value={'MÃE'}>MÃE</option>
-                    <option value={'FILHO'}>FILHO(A)</option>,
-                    <option value={'IRMÃO(Ã)'}>IRMÃO(Ã)</option>
-                    <option value={'PRIMO'}>PRIMO(A)</option>
-                    <option   value={'SOBRINHO(A)'}>SOBRINHO(A)</option>
-                    <option value={'NORA'}>NORA</option>
-                    <option value={'GENRO'}>GENRO</option>
-                    <option value={'TIO(A)'}>TIO(A)</option>
-                    <option value={'AVÔ(Ó)'}>AVÔ(Ó)</option>
-                    <option value={'OUTROS'}>OUTROS</option>
-            </Select >
-</div>
+                        <div className="space-y-2">
+                            <Label>Carência</Label>
+                            <Controller
+                                control={control}
+                                name="carencia"
+                                render={({ field }) => (
+                                  <DatePickerInput
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  className ='h-9'
+                                    />
+                                   
+                                )}
+                            />
+                        </div>
 
-<div className="col-span-1" >
-  <div className=" block">
-    <Label className="text-xs"  value="Adesão" />
-  </div>
-  <Controller
-  control={control}
-  name="data_adesao"
-  render={({ field:{onChange,value} }) => (
-    <DatePicker selected={value} onChange={onChange}   dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
-  )}
-  />
-</div>
+                        {data.exclusao_motivo && (
+                            <div className="space-y-2 col-span-2">
+                                <Label htmlFor="exclusao_motivo">Motivo da Exclusão</Label>
+                                <Input
+                                    id="exclusao_motivo"
+                                    {...register('exclusao_motivo')}
+                                    disabled={data.excluido}
+                                    placeholder="Motivo da exclusão"
+                                    required
+                                />
+                            </div>
+                        )}
+                    </div>
 
-<div className="col-span-1" >
-  <div className=" block">
-    <Label className="text-xs"  value="Carência" />
-  </div>
-  <Controller
-  control={control}
-  name="carencia"
-  render={({ field:{onChange,value} }) => (
-    <DatePicker  selected={value} onChange={onChange}    dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase   text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
-  )}
-  />
-
-</div>
-
-
-
-{data.exclusao_motivo && (
-     <div className="col-span-2" >
-     <div className=" block">
-       <Label className="text-xs"  value="Motivo exclusão" />
-     </div>
-     <TextInput disabled={data.excluido}   sizing={'sm'} {...register('exclusao_motivo')}  type="text" placeholder="Motivo" required />
-   </div>
- )}
-
-<div className=" gap-2 col-span-4  flex flex-row justify-end">
-<Button size={'sm'} type="submit">
-    { data.id_dependente ? (
-      <>
-        <MdSaveAlt size={22} /> Salvar
-      </>
-    ) : (
-      <>
-        <RiAddCircleFill size={22} /> Adicionar
-      </>
-    )}
-  </Button>
-</div>
-  
-</form>
-</Modal.Body>
-</Modal>
-)
+                    <div className="flex justify-end gap-2 pt-4">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setModal(false)}
+                        >
+                            Cancelar
+                        </Button>
+                        <Button type="submit" className="gap-2">
+                            {data.id_dependente ? (
+                                <>
+                                    <Save className="h-4 w-4" />
+                                    Salvar Alterações
+                                </>
+                            ) : (
+                                <>
+                                    <PlusCircle className="h-4 w-4" />
+                                    Adicionar Dependente
+                                </>
+                            )}
+                        </Button>
+                    </div>
+                </form>
+            </DialogContent>
+        </Dialog>
+    )
 }
