@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -16,6 +16,8 @@ import { Textarea } from "../ui/textarea";
 import useApiPost from "@/hooks/useApiPost";
 import { EmpresaProps } from "@/types/empresa";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { AuthContext } from "@/store/AuthContext";
+import { api } from "@/lib/axios/apiClient";
 
 
 export interface RouteFormData {
@@ -26,17 +28,41 @@ export interface RouteFormData {
 }
 
 interface RouteGeneratorProps {
-  empresas:EmpresaProps[] | null
+selectEmp:string
 }
 
-const RouteGenerator = ({empresas }: RouteGeneratorProps) => {
+const RouteGenerator = ({selectEmp}:RouteGeneratorProps) => {
 
     const {control,handleSubmit,watch,formState:{errors}} = useForm<RouteProps>();
     const {postData} = useApiPost('/cobranca/novaRota')
     const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
+    const [arrayBairros, setArrayBairros] = useState<Partial<{ bairro: string; check: boolean; id_empresa: string,cidade: string }>[]>(
+        []
+      );
+  
+
+    useEffect(() => {
+       const getBairros =  async()=>{
+         const res = await api.post("/cobranca/inadimplencia",{
+          id_empresa:selectEmp,
+          cidade:"CEDRO",
+          param:">",
+          n_parcelas:1,
+          status:["A","R"],
+          startDate: new Date("1900-01-01"),
+          endDate: new Date(),
+          resumeBairro:true,
+        })
+        console.log(res.data)
+         //setArrayBairros(res.data)
+      
+       }
+       getBairros()
+     }, [selectEmp]);
 
 
-
+     const cidades = [...new Set(arrayBairros?.map(item => item.cidade))];
+  
 
 
   const handleGenerateRoute:SubmitHandler<RouteProps> = async(data) => {
@@ -106,7 +132,8 @@ const RouteGenerator = ({empresas }: RouteGeneratorProps) => {
               render={({ field }) => (
                 <DistrictSelector 
                   control={control}
-                  empresas={empresas}
+                  bairros={arrayBairros}
+                  cidades={cidades??[]}
                 />
               )}
             />

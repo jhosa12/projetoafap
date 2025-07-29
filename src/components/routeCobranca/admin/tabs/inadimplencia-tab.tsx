@@ -23,7 +23,7 @@ return (
                         <TableHead>Contato</TableHead>
                         <TableHead>Mensalidades</TableHead>
                         <TableHead>Valor</TableHead>
-                        <TableHead>Status Visita</TableHead>
+                        <TableHead>Status</TableHead>
                         <TableHead>Check-in/out</TableHead>
                         <TableHead>Ações</TableHead>
                       </TableRow>

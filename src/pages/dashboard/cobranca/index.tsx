@@ -17,7 +17,7 @@ import { api } from "@/lib/axios/apiClient"
 
 
 
-export default function AdministrarEstoque(){
+export default function CobrancaScreen(){
   
       const [arrayBairros, setArrayBairros] = useState<Partial<{ bairro: string; check: boolean; id_empresa: string,cidade: string }>[]>(
         []

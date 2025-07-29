@@ -21,13 +21,18 @@ export interface InadimplenciaProps{
 
 
 
-
-
+export interface InadimplenciaBairroProps{
+  [bairro:string]:{
+    totalContratos:number,
+    valorTotal:number,
+  }
+}
 
 
 export interface ResInadimplenciaApiProps{
     filtered:Array<InadimplenciaProps>, 
     active:number|null
+    inadResumoBairro:InadimplenciaBairroProps
 }
 
 
@@ -116,7 +121,8 @@ interface MensalidadeProps{
   export interface MensalidadePagaProps extends MensalidadeProps{
       cliente_nome:string,
       id_contrato:number
-      observacoes?:string
+      observacoes?:string,
+      valor_forma:number
   }
   
   

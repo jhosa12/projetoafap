@@ -1,21 +1,32 @@
 import { ModalFiltro } from "@/components/renovacao/modalFiltro";
-import { Button, ButtonGroup,Table} from "flowbite-react";
+import { ParcelasDialog } from "@/components/renovacao/ParcelasDialog";
 import { useContext, useEffect, useRef, useState } from "react";
 import { api } from "@/lib/axios/apiClient";
 import { useReactToPrint } from "react-to-print";
 import DocumentTemplate from "@/Documents/renovacao/impressao";
-
 import { AuthContext } from "@/store/AuthContext";
-import { IoPrint } from "react-icons/io5";
-import { FaFilter } from "react-icons/fa6";
-import { PopoverRenovar } from "@/components/renovacao/popOverRenovar";
-import { themeLight } from "@/components/tabs/admContrato/acordos/screen";
 import { toast } from "sonner";
 import { pageStyle } from "@/utils/pageStyle";
 
+// Shadcn/ui Components
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
+// Icons
+import { IoPrint, IoRefresh, IoSearch } from "react-icons/io5";
+import { FaFilter, FaFileExport, FaSyncAlt } from "react-icons/fa";
+import { RiFileExcel2Line } from "react-icons/ri";
 
- interface MensalidadeProps {
+interface MensalidadeProps {
     n_doc: string,
     parcela_n: number,
     vencimento: Date,
@@ -64,13 +75,14 @@ export interface ListaProps{
 
 export default function Renovacao(){
 const {infoEmpresa} = useContext(AuthContext)
-const [openModalFiltro,setModalFiltro]=useState<boolean>(false)
-const [loading,setLoading] =useState<boolean>(false)
-const [dataFiltro,setFiltro] = useState<FiltroProps>({contratoInicial:null,mensAberto:null,contratoFinal:null})
-const [array,setArray]= useState<Array<ListaProps>>([])
-const [MensImp,setMensImp]= useState<Array<DadosImpressao>>([])
-const [parcelas,setParcelas] = useState<number|null>(0)
-const componentRef =useRef<DocumentTemplate>(null);
+const [openModalFiltro, setModalFiltro] = useState<boolean>(false);
+const [openParcelasDialog, setOpenParcelasDialog] = useState<boolean>(false);
+const [loading, setLoading] = useState<boolean>(false);
+const [dataFiltro, setFiltro] = useState<FiltroProps>({ contratoInicial: null, mensAberto: null, contratoFinal: null });
+const [array, setArray] = useState<Array<ListaProps>>([]);
+const [MensImp, setMensImp] = useState<Array<DadosImpressao>>([]);
+const [parcelas, setParcelas] = useState<number>(12);
+const componentRef = useRef<DocumentTemplate>(null);
 
 
 
@@ -129,26 +141,50 @@ MensImp.length>0 && imprimirCarne()
 
 
 
-const handleRenovacao = async()=>{
+const handleRenovacao = async () => {
+  if (array.length === 0) {
+    toast.error("Nenhum contrato selecionado para renovação");
+    return;
+  }
+  setOpenParcelasDialog(true);
+};
+
+const confirmRenovacao = async (numParcelas: number) => {
+  setOpenParcelasDialog(false);
   
-   toast.promise(
-            api.post('/renovacao',{
-                contratos:array?.map(item=>{ return {id_contrato:item.id_contrato,valor_mensalidade:item.planos.valor,id_associado:item.associado.id_associado,acrescimo:item.planos.acrescimo,dependentes:item.associado._count.dependentes,id_global:item.associado.id_global,id_contrato_global:item.id_contrato_global,id_empresa:item.id_empresa}}),
-                quantidade:parcelas
-            }),
-            {
-                error:'Erro na renovação',
-                loading:'Executando Renovação....Aguarde',
-                success:(response)=>{
-                    
-                    return response.data}
-            }
-        )
-
-
-        
-    
-}
+  try {
+    await toast.promise(
+      api.post('/renovacao', {
+        contratos: array?.map(item => ({
+          id_contrato: item.id_contrato,
+          valor_mensalidade: item.planos.valor,
+          id_associado: item.associado.id_associado,
+          acrescimo: item.planos.acrescimo,
+          dependentes: item.associado._count.dependentes,
+          id_global: item.associado.id_global,
+          id_contrato_global: item.id_contrato_global,
+          id_empresa: item.id_empresa
+        })),
+        quantidade: numParcelas
+      }),
+      {
+        loading: `Gerando ${numParcelas} parcelas...`,
+        success: (response) => {
+          // Recarregar os dados após a renovação
+          filtrar();
+          return response.data || "Renovação realizada com sucesso!";
+        },
+        error: (error) => {
+          console.error("Erro na renovação:", error);
+          return error.response?.data?.message || "Erro ao realizar a renovação";
+        }
+      }
+    );
+  } catch (error) {
+    console.error("Erro na requisição de renovação:", error);
+    toast.error("Ocorreu um erro ao processar a renovação");
+  }
+};
 
 
 
@@ -165,7 +201,7 @@ const filtrar = async()=>{
         })
 
         setArray(response.data)
-        console.log(response.data)
+ 
     } catch (error) {
         console.log(error)
     }
@@ -173,75 +209,270 @@ const filtrar = async()=>{
     setModalFiltro(false)
 }
 
-    return(
+    return (
         <>
-    <div style={{display:'none'}}>
-    <DocumentTemplate
-    ref={componentRef}
-    arrayMensalidade={MensImp}
-
-    
-    />
-
-    </div>
-
-
-       {openModalFiltro && <ModalFiltro 
-      
-        setFiltro={setFiltro}
-        dataFiltro={dataFiltro}
-        filtrar={filtrar} 
-        openModal={openModalFiltro} 
-        setModal={setModalFiltro} 
-        loading={loading}/>}
-
-     
-        <div className="flex flex-col w-full h-[100vh] p-1 bg-white text-black">
-            <div className="inline-flex w-full justify-end items-end mt-1 gap-8 pr-1">
-
-      <ButtonGroup>
-                <Button theme={themeLight} onClick={()=>setModalFiltro(true)} type="button" color='light' size='xs'><FaFilter className='mr-1 h-4 w-4' />Filtrar</Button>
-
-               {/*<PopoverReagendamento setSelecionadas={setLinhasSelecionadas} id_usuario={usuario?.id} mensalidades={linhasSelecionadas} id_global={dadosAssociado.id_global}/>*/}
-
-                <Button theme={themeLight} isProcessing={loading} onClick={handleImpressao} color='light' size='xs'>  <IoPrint className='mr-1 h-4 w-4' /> Imprimir</Button>
-              
-              {/*  <PopoverVencimento    />*/}
-             
-               <PopoverRenovar setParcelas={setParcelas} n_Parcelas={parcelas} handleFunction={handleRenovacao}/>
-            
-            </ButtonGroup>
-     
-              
-             
-
+            {/* Hidden print template */}
+            <div style={{ display: 'none' }}>
+                <DocumentTemplate ref={componentRef} arrayMensalidade={MensImp} />
             </div>
 
+            {/* Parcelas Dialog */}
+            <ParcelasDialog 
+                open={openParcelasDialog}
+                onOpenChange={setOpenParcelasDialog}
+                onConfirm={confirmRenovacao}
+                loading={loading}
+            />
 
+            {/* Filter Modal */}
+            {openModalFiltro && (
+                <ModalFiltro 
+                    setFiltro={setFiltro}
+                    dataFiltro={dataFiltro}
+                    filtrar={filtrar} 
+                    openModal={openModalFiltro} 
+                    setModal={setModalFiltro} 
+                    loading={loading}
+                />
+            )}
 
-            <div className="overflow-y-auto overflow-x-auto max-h-[82vh] mt-1 px-2">
-                <Table  theme={{root:{shadow:'none'}, body: { cell: { base: "px-4 py-1 text-xs " } },head:{cell:{base:"px-4 py-1 text-xs"}} }}>
-                    <Table.Head className="sticky">
-                        <Table.HeadCell>Contrato</Table.HeadCell>
-                        <Table.HeadCell>Associado</Table.HeadCell>
-                        <Table.HeadCell>Endereço</Table.HeadCell>
-                        <Table.HeadCell>Bairro</Table.HeadCell>
-                    </Table.Head>
-                    <Table.Body className="text-black divide-y">
-                      { array?.map((item,index)=>(
-                         <Table.Row  key={item.id_contrato}>
-                              <Table.Cell className="font-semibold">{item.id_contrato}</Table.Cell>
-                            <Table.Cell>{item.associado.nome}</Table.Cell>
-                            <Table.Cell>{item.associado.endereco}</Table.Cell>
-                            <Table.Cell>{item.associado.bairro}</Table.Cell>
-                         </Table.Row>
-                      ))
-                       }
-                    </Table.Body>
-                </Table>
+            <div className="container mx-auto p-6 space-y-6">
+                {/* Header */}
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="text-2xl font-bold tracking-tight">Renovação de Contratos</h1>
+                        <p className="text-muted-foreground">Gerencie e renove contratos de forma eficiente</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Button variant="outline" size="sm" onClick={() => setModalFiltro(true)}>
+                            <FaFilter className="mr-2 h-4 w-4" />
+                            Filtros
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
+                            <IoRefresh className="mr-2 h-4 w-4" />
+                            Atualizar
+                        </Button>
+                    </div>
+                </div>
 
+                {/* Stats Cards */}
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Contratos Encontrados</CardTitle>
+                            <div className="h-4 w-4 text-muted-foreground">📋</div>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{array.length}</div>
+                            <p className="text-xs text-muted-foreground">Total de contratos</p>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Valor Total</CardTitle>
+                            <div className="h-4 w-4 text-muted-foreground">💰</div>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">
+                                {new Intl.NumberFormat('pt-BR', {
+                                    style: 'currency',
+                                    currency: 'BRL'
+                                }).format(array.reduce((sum, item) => sum + Number(item.planos?.valor??0), 0))}
+                            </div>
+                            <p className="text-xs text-muted-foreground">Valor total dos contratos</p>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Média por Contrato</CardTitle>
+                            <div className="h-4 w-4 text-muted-foreground">📊</div>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">
+                                {array.length > 0 
+                                    ? new Intl.NumberFormat('pt-BR', {
+                                        style: 'currency',
+                                        currency: 'BRL'
+                                    }).format(array.reduce((sum, item) => sum + Number(item.planos?.valor??0), 0) / array.length)
+                                    : 'R$ 0,00'
+                                }
+                            </div>
+                            <p className="text-xs text-muted-foreground">Valor médio por contrato</p>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Ações</CardTitle>
+                            <div className="h-4 w-4 text-muted-foreground">⚡</div>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                            <Button 
+                                size="sm" 
+                                className="w-full"
+                                onClick={handleImpressao}
+                                disabled={array.length === 0 || loading}
+                            >
+                                <IoPrint className="mr-2 h-4 w-4" />
+                                Imprimir
+                            </Button>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button 
+                                        variant="outline" 
+                                        size="sm" 
+                                        className="w-full"
+                                        disabled={array.length === 0 || loading}
+                                    >
+                                        <FaFileExport className="mr-2 h-4 w-4" />
+                                        Exportar
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-48 p-2">
+                                    <Button variant="ghost" className="w-full justify-start">
+                                        <RiFileExcel2Line className="mr-2 h-4 w-4" />
+                                        Excel
+                                    </Button>
+                                    <Button variant="ghost" className="w-full justify-start">
+                                        <span className="mr-2">📄</span>
+                                        PDF
+                                    </Button>
+                                </PopoverContent>
+                            </Popover>
+                        </CardContent>
+                    </Card>
+                </div>
+                {/* Data Table */}
+                <Card>
+                    <CardHeader>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <CardTitle>Contratos para Renovação</CardTitle>
+                                <CardDescription>
+                                    {array.length} contratos encontrados
+                                </CardDescription>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <div className="relative">
+                                    <IoSearch className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        placeholder="Pesquisar..."
+                                        className="pl-8 w-[200px]"
+                                        // Add search functionality here
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="max-h-[calc(100vh-480px)]  overflow-y-auto ">
+                      
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Contrato</TableHead>
+                                        <TableHead>Associado</TableHead>
+                                        <TableHead>Endereço</TableHead>
+                                        <TableHead>Valor</TableHead>
+                                        <TableHead>Vencimento</TableHead>
+                                        <TableHead>Dependentes</TableHead>
+                                        <TableHead className="w-[100px]">Ações</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {array.length > 0 ? (
+                                        array.map((item) => (
+                                            <TableRow className="text-xs p-0" key={item.id_contrato}>
+                                                <TableCell className="font-medium">{item.id_contrato}</TableCell>
+                                                <TableCell>{item.associado.nome}</TableCell>
+                                                <TableCell>
+                                                    {item.associado.endereco}, {item.associado.bairro}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {new Intl.NumberFormat('pt-BR', {
+                                                        style: 'currency',
+                                                        currency: 'BRL'
+                                                    }).format(item.planos?.valor)}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {item?.mensalidade?.length > 0 
+                                                        ? format(new Date(item?.mensalidade[0].vencimento), "dd/MM/yyyy", { locale: ptBR })
+                                                        : 'N/A'}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge variant="outline">
+                                                        {item?.associado?._count.dependentes} dep.
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex space-x-1">
+                                                        <Button 
+                                                            variant="ghost" 
+                                                            size="icon" 
+                                                            className="h-8 w-8 p-0"
+                                                        >
+                                                            <span className="sr-only">Ver detalhes</span>
+                                                            <IoSearch className="h-4 w-4" />
+                                                        </Button>
+                                                        <Button 
+                                                            variant="ghost" 
+                                                            size="icon" 
+                                                            className="h-8 w-8 p-0"
+                                                            onClick={() => {
+                                                                setMensImp([{
+                                                                    nome: item?.associado?.nome,
+                                                                    endereco: item?.associado?.endereco,
+                                                                    bairro: item?.associado?.bairro,
+                                                                    numero: 0,
+                                                                    cidade: '',
+                                                                    uf: '',
+                                                                    mensalidade: [{
+                                                                        n_doc: '',
+                                                                        parcela_n: 1,
+                                                                        vencimento: new Date(),
+                                                                        cobranca: new Date(),
+                                                                        valor_principal: item?.planos?.valor,
+                                                                        id_contrato: item?.id_contrato,
+                                                                        id_mensalidade: 0,
+                                                                        referencia: 'REF'
+                                                                    }]
+                                                                }]);
+                                                            }}
+                                                        >
+                                                            <span className="sr-only">Imprimir</span>
+                                                            <IoPrint className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell colSpan={7} className="h-24 text-center">
+                                                Nenhum contrato encontrado. Aplique os filtros para visualizar os dados.
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                     
+                    </CardContent>
+                    <CardFooter className="flex items-center justify-between px-2 py-4 border-t">
+                        <div className="text-sm text-muted-foreground">
+                            Mostrando <strong>{array.length}</strong> de <strong>{array.length}</strong> contratos
+                        </div>
+                        <div className="space-x-2">
+                            <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={handleRenovacao}
+                                disabled={array.length === 0 || loading}
+                            >
+                                <FaSyncAlt className="mr-2 h-4 w-4" />
+                                Renovar Selecionados
+                            </Button>
+                        </div>
+                    </CardFooter>
+                </Card>
             </div>
-        </div>
         </>
-    )
+    );
 }

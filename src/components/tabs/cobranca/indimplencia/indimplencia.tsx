@@ -25,7 +25,7 @@ import { ModalFiltroCobranca } from "../modalCobranca";
 import { SubmitHandler } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 
-interface ReqProps{
+export interface ReqInadProps{
   id_empresa:string
   n_parcelas:number,
   param:string,
@@ -33,7 +33,8 @@ interface ReqProps{
   endDate:Date,
   status:Array<string>,
   bairros:Array<string>
-  cidade:string
+  cidade:string,
+  resumeBairro?:boolean
 }
 interface ContagemProps{
   n1:number,
@@ -70,27 +71,29 @@ export function Inadimplencia({arrayBairros,cidades}:ScreenProps) {
   const { consultores, selectEmp, permissoes, usuario } = useContext(AuthContext);
   const [isPrint, setIsPrint] = useState(false);
   const [cont, setContagem] = useState<ContagemProps>();
-  const { data, loading, postData } = useApiGet<ResInadimplenciaApiProps, ReqProps>("/cobranca/inadimplencia");
+  const { data, loading, postData } = useApiGet<ResInadimplenciaApiProps, ReqInadProps>("/cobranca/inadimplencia");
 
   const itemsPerPage = 19;
-  const pageCount = Math.ceil((data?.filtered.length ?? 0) / itemsPerPage);
+  const pageCount = Math.ceil((data?.filtered?.length ?? 0) / itemsPerPage);
   const offset = currentPage * itemsPerPage;
-  const currentItems = data?.filtered.slice(offset, offset + itemsPerPage);
+  const currentItems = data?.filtered?.slice(offset, offset + itemsPerPage);
 
   const handlePageClick = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected)
 
   }
-  
+
+
+
 
   // calculo dos badges
   const contagem = useCallback(() => {
     if (!data) return;
     setContagem({
-      n1: data.filtered.filter((i) => i.overdueCount === 1).length,
-      n2: data.filtered.filter((i) => i.overdueCount === 2).length,
-      n3: data.filtered.filter((i) => i.overdueCount === 3).length,
-      nn: data.filtered.filter((i) => i.overdueCount > 3).length,
+      n1: data.filtered?.filter((i) => i.overdueCount === 1).length,
+      n2: data.filtered?.filter((i) => i.overdueCount === 2).length,
+      n3: data.filtered?.filter((i) => i.overdueCount === 3).length,
+      nn: data.filtered?.filter((i) => i.overdueCount > 3).length,
     });
   }, [data]);
 
@@ -117,7 +120,7 @@ export function Inadimplencia({arrayBairros,cidades}:ScreenProps) {
       status: dataReq.status.split(",").map((s) => s.trim()),
       param: dataReq.param_nparcela,
       bairros: dataReq.bairros,
-      cidade:dataReq.cidade
+      cidade:dataReq.cidade,
     });
   };
 
@@ -208,15 +211,15 @@ export function Inadimplencia({arrayBairros,cidades}:ScreenProps) {
 
         {/* Resumos */}
         <div className="flex justify-between text-xs px-2">
-          <span>CONTRATOS: {data?.filtered.length}</span>
+          <span>CONTRATOS: {data?.filtered?.length}</span>
           <span>
             MENSALIDADES:{" "}
-            {data?.filtered.reduce((sum, it) => sum + it.overdueCount, 0)}
+            {data?.filtered?.reduce((sum, it) => sum + it.overdueCount, 0)}
           </span>
           <span>
             VALOR:{" "}
             {data
-              ?.filtered.reduce((sum, it) => sum + it.totalOverdueAmount, 0)
+              ?.filtered?.reduce((sum, it) => sum + it.totalOverdueAmount, 0)
               .toLocaleString("pt-BR", {
                 style: "currency",
                 currency: "BRL",

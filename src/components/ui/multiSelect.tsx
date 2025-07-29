@@ -152,7 +152,7 @@ export function MultiSelects({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-full p-0 z-50"
+          className="w-full p-0 z-50 border rounded-b-sm"
           style={{ width: buttonRef.current?.offsetWidth }}
         >
           <Command className="w-full">

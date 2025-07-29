@@ -20,10 +20,10 @@ return (
     </TableHeader>
     <TableBody>
       {route.solicitacoes.map((solicitacao) => (
-        <TableRow key={solicitacao.id_global}>
+        <TableRow className="text-xs" key={solicitacao.id_global}>
           <TableCell>{solicitacao.nome_cliente}</TableCell>
           <TableCell>
-            <Badge variant="outline">{solicitacao.categoria}</Badge>
+            <Badge className="text-xs" variant="outline">{solicitacao.categoria}</Badge>
           </TableCell>
           <TableCell>{solicitacao.descricao}</TableCell>
           <TableCell>{solicitacao.id_contrato}</TableCell>

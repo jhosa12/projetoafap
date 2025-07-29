@@ -52,7 +52,7 @@ const PeriodSelector = ({ period, onChange }: PeriodSelectorProps) => {
       </div>
 
       <div className="grid grid-cols-2 gap-2">
-        <Popover>
+        <Popover modal >
           <PopoverTrigger asChild>
             <Button variant="outline" size="sm" className="text-xs justify-start">
               <CalendarIcon className="h-3 w-3 mr-1" />
@@ -69,7 +69,7 @@ const PeriodSelector = ({ period, onChange }: PeriodSelectorProps) => {
           </PopoverContent>
         </Popover>
 
-        <Popover>
+        <Popover modal>
           <PopoverTrigger asChild>
             <Button variant="outline" size="sm" className="text-xs justify-start">
               <CalendarIcon className="h-3 w-3 mr-1" />

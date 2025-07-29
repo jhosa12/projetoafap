@@ -9,10 +9,10 @@ import { EmpresaProps } from "@/types/empresa"
 interface HeaderProps {
   activeFiltersCount: number
   onOpenFilters: () => void
-  empresas:EmpresaProps[] | null
+selectEmp:string
 }
 
-export function Header({ activeFiltersCount, onOpenFilters, empresas }: HeaderProps) {
+export function Header({ activeFiltersCount, onOpenFilters,selectEmp }: HeaderProps) {
   return (
     <div className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
@@ -30,7 +30,7 @@ export function Header({ activeFiltersCount, onOpenFilters, empresas }: HeaderPr
               </Badge>
             )}
           </Button>
-           <RouteGenerator   empresas={empresas} />
+           <RouteGenerator selectEmp={selectEmp} />
         </div>
       </div>
     </div>

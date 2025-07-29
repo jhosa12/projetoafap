@@ -1,14 +1,10 @@
-import { Button, Checkbox, Label, Modal, ModalHeader, Radio, Select, TextInput } from "flowbite-react";
-import { HiFilter } from "react-icons/hi";
-
-
-
-
-import DatePicker, { registerLocale } from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import pt from 'date-fns/locale/pt-BR';
 import { FiltroProps } from "@/pages/dashboard/renovacao";
-
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { Filter } from "lucide-react";
 
 interface DataProps{
   
@@ -20,39 +16,65 @@ interface DataProps{
     setFiltro:(fields:FiltroProps)=>void
 }
 
-export function ModalFiltro({loading,openModal,setModal,filtrar,dataFiltro,setFiltro}:DataProps){
-
-
-    return(
-        <Modal size={'lg'} show={openModal} onClose={()=>setModal(false)} popup>
-                <ModalHeader>
-                <div className='inline-flex items-center'>
-                    <HiFilter color='gray' size={30}/>
-                    Filtro
+export function ModalFiltro({ loading, openModal, setModal, filtrar, dataFiltro, setFiltro }: DataProps) {
+    return (
+        <Dialog open={openModal} onOpenChange={setModal}>
+            <DialogContent className="sm:max-w-[425px] md:max-w-lg">
+                <DialogHeader>
+                    <div className="flex items-center gap-2">
+                        <Filter className="h-5 w-5 text-muted-foreground" />
+                        <DialogTitle>Filtro de Contratos</DialogTitle>
                     </div>
-                </ModalHeader>
+                </DialogHeader>
+                <Separator />
+                
+                <div className="space-y-6 py-2">
+                    <div className="space-y-2">
+                        <Label htmlFor="contrato-range">Intervalo de Contratos</Label>
+                        <div className="flex items-center gap-2">
+                            <div className="flex-1">
+                                <Input
+                                    id="contrato-inicial"
+                                    type="number"
+                                    placeholder="Número inicial"
+                                    value={dataFiltro.contratoInicial || ''}
+                                    onChange={(e) => setFiltro({ ...dataFiltro, contratoInicial: Number(e.target.value) })}
+                                />
+                            </div>
+                            <span className="text-muted-foreground">até</span>
+                            <div className="flex-1">
+                                <Input
+                                    id="contrato-final"
+                                    type="number"
+                                    placeholder="Número final"
+                                    value={dataFiltro.contratoFinal || ''}
+                                    onChange={(e) => setFiltro({ ...dataFiltro, contratoFinal: Number(e.target.value) })}
+                                />
+                            </div>
+                        </div>
+                    </div>
 
-                <Modal.Body>
-                <div className='space-y-4'>
-              
+                    <div className="space-y-2">
+                        <Label htmlFor="mensalidades-aberto">Número máximo de mensalidades em aberto</Label>
+                        <Input
+                            id="mensalidades-aberto"
+                            type="number"
+                            value={dataFiltro.mensAberto || ''}
+                            onChange={(e) => setFiltro({ ...dataFiltro, mensAberto: Number(e.target.value) })}
+                        />
+                    </div>
 
-            <div className="inline-flex gap-2 items-end">
-                <span>Consultar</span>
-      <span>contratos:</span>
-
-      <TextInput type="number" value={dataFiltro.contratoInicial?Number(dataFiltro.contratoInicial):''} onChange={e=>setFiltro({...dataFiltro,contratoInicial:Number(e.target.value)})}  sizing={'sm'}/>
-      <span>a</span>
-      <TextInput type="number" value={dataFiltro.contratoFinal?Number(dataFiltro.contratoFinal):''} onChange={e=>setFiltro({...dataFiltro,contratoFinal:Number(e.target.value)})}  sizing={'sm'}/>
-
-            </div>
-            <div>
-                    <span>Número máximo de mensalidades em aberto</span>
-                    <TextInput value={dataFiltro.mensAberto?Number(dataFiltro.mensAberto):''} onChange={e=>setFiltro({...dataFiltro,mensAberto:Number(e.target.value)})} sizing={'sm'}/>
-            </div> 
-
-                     <Button  isProcessing={loading} className='cursor-pointer' onClick={()=>filtrar()} size={'sm'}>Aplicar Filtro</Button>
-                     </div>
-                </Modal.Body>
-        </Modal>
+                    <div className="flex justify-end pt-2">
+                        <Button 
+                            onClick={filtrar} 
+                            disabled={loading}
+                            className="min-w-[120px]"
+                        >
+                            {loading ? 'Aplicando...' : 'Aplicar Filtro'}
+                        </Button>
+                    </div>
+                </div>
+            </DialogContent>
+        </Dialog>
     )
 }

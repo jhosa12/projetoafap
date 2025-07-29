@@ -27,7 +27,7 @@ return (
                       {route.agendamentos.map((agendamento) => {
                         const valorTotal = agendamento.mensalidades.reduce((sum, mens) => sum + mens.valor, 0)
                         return (
-                          <TableRow key={agendamento.id_global}>
+                          <TableRow className="text-xs" key={agendamento.id_global}>
                             <TableCell>
                               <div className="font-medium">{agendamento.cliente_nome}</div>
                             </TableCell>

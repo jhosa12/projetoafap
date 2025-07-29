@@ -15,10 +15,10 @@ import { EmpresaProps } from "@/types/empresa"
 
 interface Props{
     routes: RouteProps[]
-    empresas:EmpresaProps[] | null
+   selectEmp:string
 }
 
-export default function CobrancaAdmin({routes,empresas}: Props) {
+export default function CobrancaAdmin({routes,selectEmp}: Props) {
   
   const [selectedRoute, setSelectedRoute] = useState<RouteProps | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -61,7 +61,7 @@ export default function CobrancaAdmin({routes,empresas}: Props) {
         <Header
           activeFiltersCount={activeFiltersCount}
           onOpenFilters={() => setFiltersOpen(true)}
-          empresas={empresas}
+          selectEmp={selectEmp}
         />
         <StatsCards stats={{}as CobrancaStats} />
         <RoutesTable

@@ -44,7 +44,7 @@ interface DataProps{
 
 
 
-export function ModalDependentes({openModal,setModal,data}:DataProps){
+export function ModalDependentes({openModal=false,setModal,data}:DataProps){
     const {usuario,dadosassociado,carregarDados}=useContext(AuthContext)
     const {register,handleSubmit,control,reset} = useForm<DependentesProps>({
       defaultValues:data
@@ -94,7 +94,11 @@ toast.promise(
   }),
   {
     loading:'Cadastrando Dependente...',
-    success:'Adicionado com Sucesso!',
+    success:async(res)=>{
+      dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
+      setModal(false)
+      return 'Adicionado com Sucesso!'
+    },
     error:async(error)=>{
       return error?.response?.data.error??'Erro ao adicionar dependente'
     }
@@ -122,7 +126,7 @@ toast.promise(
           success:'Adicionado com Sucesso!'
       }
   )*/
-  dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
+//  dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
 
   setModal(false)
     
@@ -257,9 +261,8 @@ toast.promise(
                                             <SelectValue placeholder="Selecione o sexo" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="MASCULINO">Masculino</SelectItem>
-                                            <SelectItem value="FEMININO">Feminino</SelectItem>
-                                            <SelectItem value="OUTRO">Outro</SelectItem>
+                                            <SelectItem value="M">Masculino</SelectItem>
+                                            <SelectItem value="F">Feminino</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 )}

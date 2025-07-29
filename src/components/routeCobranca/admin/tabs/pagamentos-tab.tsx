@@ -19,7 +19,7 @@ return (
                     </TableHeader>
                     <TableBody>
                       {route.pagamentos.map((pagamento) => (
-                        <TableRow key={pagamento.id_mensalidade_global}>
+                        <TableRow className="text-xs" key={pagamento.id_mensalidade_global}>
                           <TableCell>{pagamento.cliente_nome}</TableCell>
                           <TableCell>{pagamento.referencia}</TableCell>
                           <TableCell>R$ {pagamento.valor_principal.toFixed(2)}</TableCell>

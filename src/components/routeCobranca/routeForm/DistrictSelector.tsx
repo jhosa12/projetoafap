@@ -11,21 +11,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 interface DistrictSelectorProps {
   control:Control<RouteProps>
-  empresas:EmpresaProps[] | null
+  bairros:Partial<{ bairro: string; check: boolean; id_empresa: string,cidade: string }>[]
+  cidades:Array<string|undefined>
 }
 
-const commonDistricts = [
-  "CENTRO",
-  "VILA NOVA",
-  "JARDIM AMÉRICA",
-  "BELA VISTA",
-  "INDUSTRIAL",
-  "SANTA MÔNICA",
-  "VILA OPERÁRIA",
-  "RESIDENCIAL",
-];
 
-const DistrictSelector = ({ control,empresas }: DistrictSelectorProps) => {
+
+const DistrictSelector = ({ control,bairros,cidades }: DistrictSelectorProps) => {
   const [inputValue, setInputValue] = useState("");
 
   // const addDistrict = (district: string) => {
@@ -48,7 +40,7 @@ const DistrictSelector = ({ control,empresas }: DistrictSelectorProps) => {
   return (
     <div className="space-y-3">
 
-      <Controller
+      {/* <Controller
       name="id_empresa"
       control={control}
       render={({ field }) => (
@@ -65,7 +57,7 @@ const DistrictSelector = ({ control,empresas }: DistrictSelectorProps) => {
         </SelectContent>
        </Select>
       )}
-      />
+      /> */}
 
       <Controller
       name="parametros.bairros"
@@ -73,10 +65,10 @@ const DistrictSelector = ({ control,empresas }: DistrictSelectorProps) => {
       render={({ field }) => (
       <MultiSelects
         maxDisplayItems={10}
-        options={commonDistricts.map((district) => ({
-          value: district,
-          label: district,
-        }))}
+        options={bairros.map((district) => ({
+          value: district.bairro??"",
+          label: district.bairro??"",
+        }))??[]}
        
         selected={field.value}
         onChange={field.onChange}
