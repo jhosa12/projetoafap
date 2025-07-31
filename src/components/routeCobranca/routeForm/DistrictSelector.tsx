@@ -4,22 +4,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { X, Plus } from "lucide-react";
 import { MultiSelects } from "@/components/ui/multiSelect";
-import { Control, Controller } from "react-hook-form";
-import { RouteProps } from "@/types/cobranca";
+import { Control, Controller, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { InadimplenciaBairroProps, RouteProps } from "@/types/cobranca";
 import { EmpresaProps } from "@/types/empresa";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface DistrictSelectorProps {
   control:Control<RouteProps>
-  bairros:Partial<{ bairro: string; check: boolean; id_empresa: string,cidade: string }>[]
-  cidades:Array<string|undefined>
+  setValue:UseFormSetValue<RouteProps>
+  watch:UseFormWatch<RouteProps>
+  bairros:Array<InadimplenciaBairroProps>
+  cidades:Array<string>
 }
 
 
 
-const DistrictSelector = ({ control,bairros,cidades }: DistrictSelectorProps) => {
+const DistrictSelector = ({ control,setValue, watch,bairros,cidades }: DistrictSelectorProps) => {
   const [inputValue, setInputValue] = useState("");
-
+  const bairrosFilter = bairros.filter(item=>item.cidade===watch('parametros.cidade'))
   // const addDistrict = (district: string) => {
   //   if (district && !selected.includes(district)) {
   //     onChange([...selected, district]);
@@ -36,6 +38,11 @@ const DistrictSelector = ({ control,bairros,cidades }: DistrictSelectorProps) =>
   //     setInputValue("");
   //   }
   // };
+
+  const handleCidadeChange = (value: string) => {
+    setValue('parametros.cidade', value);
+    setValue('parametros.bairros', [])
+  };
 
   return (
     <div className="space-y-3">
@@ -59,15 +66,34 @@ const DistrictSelector = ({ control,bairros,cidades }: DistrictSelectorProps) =>
       )}
       /> */}
 
+              <Controller
+                control={control}
+                name="parametros.cidade"
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={handleCidadeChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecionar cidade" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {cidades?.map((cidade, index) => (
+                        <SelectItem key={index} value={cidade?? ''}>
+                          {cidade}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+
       <Controller
       name="parametros.bairros"
       control={control}
       render={({ field }) => (
       <MultiSelects
         maxDisplayItems={10}
-        options={bairros.map((district) => ({
+        options={bairrosFilter.map((district) => ({
           value: district.bairro??"",
-          label: district.bairro??"",
+          label: `${district.bairro} - ${district.totalContratos} contratos - R$ ${district.valorTotal}`,
         }))??[]}
        
         selected={field.value}

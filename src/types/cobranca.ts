@@ -22,10 +22,10 @@ export interface InadimplenciaProps{
 
 
 export interface InadimplenciaBairroProps{
-  [bairro:string]:{
-    totalContratos:number,
-    valorTotal:number,
-  }
+ bairro:string,
+ totalContratos:number,
+ valorTotal:number,
+ cidade:string
 }
 
 
@@ -192,6 +192,7 @@ export interface RouteProps{
   id_empresa:string
    cobranca :Array<InadimplenciaRotaProps> 
    parametros :{
+    cidade:string,
       bairros:Array<string>,
       periodo:{
         start:Date|null,

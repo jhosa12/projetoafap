@@ -18,7 +18,7 @@ interface RoutesTableProps {
 
 export function RoutesTable({ routes, onViewDetails, onOpenFilters }: RoutesTableProps) {
   return (
-    <div className="px-6 py-4">
+    <div className="px-4 py-2">
       <Card>
         <CardHeader>
           <CardTitle>Rotas de Cobrança</CardTitle>
@@ -103,9 +103,9 @@ export function RoutesTable({ routes, onViewDetails, onOpenFilters }: RoutesTabl
             </Table>
           ) : (
             <div className="text-center py-12">
-              <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
               <h3 className="text-lg font-medium mb-2">Nenhuma rota encontrada</h3>
-              <p className="text-muted-foreground mb-4">Ajuste os filtros para encontrar as rotas desejadas.</p>
+              <p className="text-muted-foreground mb-2">Ajuste os filtros para encontrar as rotas desejadas.</p>
               <Button variant="outline" onClick={onOpenFilters}>
                 <Filter className="h-4 w-4 mr-2" />
                 Ajustar Filtros

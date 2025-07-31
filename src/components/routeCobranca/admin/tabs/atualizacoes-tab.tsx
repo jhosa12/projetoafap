@@ -1,14 +1,14 @@
-import { RouteProps } from "@/types/cobranca";
+import { ClientUpdateProps, RouteProps } from "@/types/cobranca";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 
 
-export function AtualizacoesTab({ route }: { route: RouteProps }) {
+export function AtualizacoesTab({ atualizacoes }: { atualizacoes: Array<ClientUpdateProps> }) {
 
 return (
     <div className="grid gap-4">
-                {route?.atualizacaoCadastral?.map((update) => (
+                {atualizacoes?.map((update) => (
                   <Card key={update.id_global}>
                     <CardHeader>
                       <CardTitle className="text-base">{update.nome}</CardTitle>

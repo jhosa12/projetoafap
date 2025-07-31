@@ -50,19 +50,19 @@ export function RouteDetailsDialog({ route, open, onOpenChange }: RouteDetailsDi
             </TabsContent>
 
             <TabsContent value="pagamentos">
-             <PagamentosTab route={route}/>
+             <PagamentosTab pagamentos={route?.pagamentos }/>
             </TabsContent>
 
             <TabsContent value="agendamentos">
-             <AgendamentosTab route={route}/>
+             <AgendamentosTab agendamentos={route?.agendamentos}/>
             </TabsContent>
 
             <TabsContent value="solicitacoes">
-              <SolicitacoesTab route={route}/>
+              <SolicitacoesTab solicitacoes={route?.solicitacoes }/>
             </TabsContent>
 
             <TabsContent value="atualizacoes">
-              <AtualizacoesTab route={route}/>
+              <AtualizacoesTab atualizacoes={route?.atualizacaoCadastral}/>
             </TabsContent>
           </Tabs>
         </TooltipProvider>

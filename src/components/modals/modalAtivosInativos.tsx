@@ -1,6 +1,6 @@
 
 import { Controller, useForm } from "react-hook-form"
-import { Dialog, DialogTrigger, DialogContent, DialogHeader } from "../ui/dialog"
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog"
 import { useEffect, useRef, useState } from "react"
 import { Select, SelectItem, SelectContent, SelectTrigger } from "../ui/select"
 import { SelectValue } from "@radix-ui/react-select"
@@ -15,6 +15,7 @@ import { ajustarData } from "@/utils/ajusteData"
 import { Spinner } from "flowbite-react"
 import { DatePickerInput } from "../DatePickerInput"
 import { pageStyle } from "@/utils/pageStyle"
+import { MultiSelects } from "../ui/multiSelect"
 
 interface ModalProps {
     open: boolean
@@ -22,19 +23,26 @@ interface ModalProps {
     id_empresa: string
     logo: string | undefined,
     usuario: string | undefined
+    cidadesEmpresa: string[]
+    bairrosEmpresa: Array<{ cidade: string; bairro: string }>;
 }
 
 interface FormProps {
     startDate: Date,
     endDate: Date,
-    tipo: string
+    tipo: string,
+    cidade?: string,
+    bairros?: string[]
 }
 
 
 interface RequestProps {
     startDate?: string,
     endDate?: string,
-    tipo: string
+    tipo: string,
+    cidade?: string,
+    bairros?: string[],
+    id_empresa:string
 }
 
 interface ResponseProps {
@@ -51,7 +59,7 @@ interface ResponseProps {
     }
 }
 
-export const ModalAtivosInativos = ({ open, onClose, id_empresa, logo, usuario }: ModalProps) => {
+export const ModalAtivosInativos = ({ open, onClose, id_empresa, logo, usuario, cidadesEmpresa, bairrosEmpresa }: ModalProps) => {
     const currentRef = useRef<AtivosInativos>(null)
     const { register, watch, setValue, handleSubmit, reset, control } = useForm<FormProps>({
         defaultValues: {
@@ -61,13 +69,14 @@ export const ModalAtivosInativos = ({ open, onClose, id_empresa, logo, usuario }
         }
     })
     const { data, loading, postData, setData } = useApiPost<Array<ResponseProps>, RequestProps>('/listarAtivosInativos')
-
+    const bairrosFilter = watch('cidade')? bairrosEmpresa.filter(item=>item.cidade===watch('cidade')):bairrosEmpresa
     const onSubmit = async (data: FormProps) => {
         const { dataIni, dataFim } = ajustarData(data.startDate, data.endDate)
         await postData({
             ...data,
             startDate: dataIni,
-            endDate: dataFim
+            endDate: dataFim,
+            id_empresa
         })
         // onClose()
     }
@@ -75,21 +84,28 @@ export const ModalAtivosInativos = ({ open, onClose, id_empresa, logo, usuario }
     useEffect(() => {
 
         if (data) imprimir()
-        //  console.log(data)   
+      
     }, [data])
 
     const imprimir = useReactToPrint({
         pageStyle: pageStyle,
         content: () => currentRef.current,
-        onAfterPrint: () => setData(null)
+        onAfterPrint: async() => setData(null)
     })
+
+    const handleCidadeChange = (value: string) => {
+        setValue('cidade', value);
+        setValue('bairros', [])
+      };
 
 
     return (
         <Dialog open={open} onOpenChange={onClose} >
 
             <DialogContent className="max-w-sm">
-                <DialogHeader>Ativos/Inativos</DialogHeader>
+                <DialogHeader>
+                   <DialogTitle>Ativos/Inativos</DialogTitle>
+                    </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-3 w-full">
 
                     <div>
@@ -114,6 +130,43 @@ export const ModalAtivosInativos = ({ open, onClose, id_empresa, logo, usuario }
 
 
                     </div>
+
+                     <Controller
+                                    control={control}
+                                    name="cidade"
+                                    render={({ field }) => (
+                                      <Select value={field.value} onValueChange={handleCidadeChange}>
+                                        <SelectTrigger>
+                                          <SelectValue placeholder="Selecionar cidade" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          {cidadesEmpresa?.map((cidade, index) => (
+                                            <SelectItem key={index} value={cidade?? ''}>
+                                              {cidade}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                    )}
+                                  />
+                    
+                          <Controller
+                          name="bairros"
+                          control={control}
+                          render={({ field }) => (
+                          <MultiSelects
+                            maxDisplayItems={10}
+                            options={bairrosFilter.map((district) => ({
+                              value: district.bairro??"",
+                              label: `${district.bairro}`,
+                            }))??[]}
+                            selected={field.value??[]}
+                            onChange={field.onChange}
+                            placeholder="Seleciona os bairros/distritos"
+                            className="min-h-9"
+                          />
+                          )}
+                          />
 
                     <div className="inline-flex w-full gap-4">
                         <div className="flex flex-col">
@@ -153,12 +206,21 @@ export const ModalAtivosInativos = ({ open, onClose, id_empresa, logo, usuario }
 
                     </div>
 
+                                    <div className="flex w-full justify-between">
+                                    <Button type="button" size={'sm'} variant={'outline'} onClick={()=>reset({
+                                        startDate: new Date(new Date().setDate(1)),
+                                        endDate: new Date(),
+                                        tipo: 'ATIVO',
+                                        cidade: '',
+                                        bairros: []
+                                    })}>Limpar Parametros</Button>
+                                    <Button disabled={loading} type="submit" size={'sm'} className="ml-auto">{loading ? <Spinner /> : 'Aplicar'}</Button>
+                                    </div>
+                   
 
-                    <Button disabled={loading} type="submit" size={'sm'} className="ml-auto">{loading ? <Spinner /> : 'Aplicar'}</Button>
 
 
-
-                    {data && data?.length > 1 && <div style={{ display: 'none' }}>
+                    {data && data?.length > 0 && <div style={{ display: 'none' }}>
                         <AtivosInativos  tipo={watch('tipo')} periodo={{ start: watch('startDate'), end: watch('endDate') }} logo={logo} ref={currentRef} dados={data ?? []} usuario={usuario} />
                     </div>}
                 </form>

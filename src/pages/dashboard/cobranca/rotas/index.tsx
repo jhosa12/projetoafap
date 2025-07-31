@@ -19,7 +19,9 @@ const RouteManagement = () => {
   const [selectedRoute, setSelectedRoute] = useState<RouteProps | null>(null);
   const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const {selectEmp} = useContext(AuthContext)
+  const {selectEmp,cidadesEmpresa,consultores} = useContext(AuthContext)
+
+  const cobradores = consultores.filter(c => c.funcao === 'COBRADOR (RDA)')
 
   const getStatusColor = (status: RouteProps['status']) => {
     switch (status) {
@@ -52,7 +54,7 @@ const RouteManagement = () => {
  // const totalAmount = routes.reduce((sum, r) => sum + r.amountCollected, 0);
 
   return (
-    <CobrancaAdmin routes={routes} selectEmp={selectEmp} />
+    <CobrancaAdmin cobradores={cobradores} routes={routes} selectEmp={selectEmp} cidadesEmpresa={cidadesEmpresa} />
     // <div className="p-6 max-w-7xl mx-auto">
     //   <div className="flex items-center justify-between mb-6">
     //     <div>

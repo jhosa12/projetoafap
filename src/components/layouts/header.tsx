@@ -44,6 +44,8 @@ export function Header({ path }: { path?: string }) {
     permissoes,
     infoEmpresa,
     signOut,
+    bairrosEmpresa,
+    cidadesEmpresa,
   } = useContext(AuthContext);
 
   const [open, setOpen] = useState(false);
@@ -326,6 +328,8 @@ export function Header({ path }: { path?: string }) {
         open={open}
         onClose={() => setOpen(false)}
         id_empresa={selectEmp}
+        cidadesEmpresa={cidadesEmpresa}
+        bairrosEmpresa={bairrosEmpresa}
       />
     </header>
   );

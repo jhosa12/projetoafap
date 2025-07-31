@@ -177,11 +177,11 @@ export function MultiSelects({
                     </Button>
                   </div>
                 )}
-                {options.map((option) => {
+                {options.map((option,index) => {
                   const isSelected = selected.includes(option.value);
                   return (
                     <CommandItem
-                      key={option.value}
+                      key={index}
                       value={option.value}
                       onSelect={handleSelect}
                       disabled={option.disabled}

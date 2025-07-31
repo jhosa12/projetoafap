@@ -26,4 +26,5 @@ export interface EmpresaProps{
     cont_clausuras:string
     bancos:Array<{banco:string,agencia:string,conta:string}>
     planos:Array<PlanosProps>
+    bairrosCidades:Array<{cidade:string,bairro:string}>
 }

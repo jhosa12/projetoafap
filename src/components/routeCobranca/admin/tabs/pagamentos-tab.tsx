@@ -1,10 +1,10 @@
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { RouteProps } from "@/types/cobranca"
+import { MensalidadePagaProps, RouteProps } from "@/types/cobranca"
 
 
 
-export function PagamentosTab({ route }: { route: RouteProps }) {
+export function PagamentosTab({ pagamentos }: { pagamentos: Array<MensalidadePagaProps> }) {
 
 return (
      <Table>
@@ -18,7 +18,7 @@ return (
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {route.pagamentos.map((pagamento) => (
+                      {pagamentos?.map((pagamento) => (
                         <TableRow className="text-xs" key={pagamento.id_mensalidade_global}>
                           <TableCell>{pagamento.cliente_nome}</TableCell>
                           <TableCell>{pagamento.referencia}</TableCell>

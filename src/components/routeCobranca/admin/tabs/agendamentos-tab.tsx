@@ -1,6 +1,6 @@
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { RouteProps } from "@/types/cobranca"
+import { AgendamentoCobranca, RouteProps } from "@/types/cobranca"
 import { CalendarDays, Phone } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
 import { Badge } from "@/components/ui/badge"
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 
 
 
-export function AgendamentosTab({ route }: { route: RouteProps }) {
+export function AgendamentosTab({ agendamentos }: { agendamentos: Array<AgendamentoCobranca> }) {
 
 return (
      <Table>
@@ -24,7 +24,7 @@ return (
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {route.agendamentos.map((agendamento) => {
+                      {agendamentos?.map((agendamento) => {
                         const valorTotal = agendamento.mensalidades.reduce((sum, mens) => sum + mens.valor, 0)
                         return (
                           <TableRow className="text-xs" key={agendamento.id_global}>

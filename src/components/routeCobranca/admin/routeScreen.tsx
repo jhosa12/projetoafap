@@ -6,23 +6,24 @@ import { CobrancaStats, RouteProps } from "@/types/cobranca"
 import { Header } from "./header"
 import { StatsCards } from "./stats-cards"
 import { RoutesTable } from "./routes-table"
-import { NewRouteDialog } from "./new-route-dialog"
 import { FiltersDialog } from "./filters-dialog"
 import { RouteDetailsDialog } from "./route-details-dialog"
 import RouteDetailsModal from "../routeManagement/RouteDetailsModal"
 import RouteGenerator from "../RouteGenerator"
 import { EmpresaProps } from "@/types/empresa"
+import { ConsultoresProps } from "@/types/consultores"
 
 interface Props{
     routes: RouteProps[]
    selectEmp:string
+   cidadesEmpresa:Array<string>
+   cobradores:ConsultoresProps[]
 }
 
-export default function CobrancaAdmin({routes,selectEmp}: Props) {
+export default function CobrancaAdmin({routes,selectEmp,cidadesEmpresa,cobradores}: Props) {
   
   const [selectedRoute, setSelectedRoute] = useState<RouteProps | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [newRouteOpen, setNewRouteOpen] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [filters, setFilters] = useState({
     consultor: "",
@@ -62,6 +63,8 @@ export default function CobrancaAdmin({routes,selectEmp}: Props) {
           activeFiltersCount={activeFiltersCount}
           onOpenFilters={() => setFiltersOpen(true)}
           selectEmp={selectEmp}
+          cidadesEmpresa={cidadesEmpresa}
+          cobradores={cobradores}
         />
         <StatsCards stats={{}as CobrancaStats} />
         <RoutesTable
@@ -70,7 +73,7 @@ export default function CobrancaAdmin({routes,selectEmp}: Props) {
           onOpenFilters={() => setFiltersOpen(true)}
         />
 
-        <NewRouteDialog open={newRouteOpen} onOpenChange={setNewRouteOpen} onSave={()=>{}} />
+  
          
         <FiltersDialog
           open={filtersOpen}

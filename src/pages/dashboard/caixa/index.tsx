@@ -323,7 +323,7 @@ export default function CaixaMovimentar() {
             onSubmit={handleSubmit(listarLancamentos)}
             className="flex w-full items-end flex-row justify-end p-1 gap-4 text-black pr-2 "
           >
-            <div className="flex flex-col whitespace-nowrap ml-4 bg-gray-50 px-2 py-1 text-[11px] rounded-md ">
+            <div className="flex flex-col whitespace-nowrap ml-4 bg-gray-50 px-2 py-1 text-[11px] rounded-md font-semibold">
               <div className="inline-flex items-center gap-4">
                 <div>
                   <span>SALDO:</span>

@@ -1,4 +1,4 @@
-import { RouteProps } from "@/types/cobranca";
+import { RouteProps, Solicitacao } from "@/types/cobranca";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge";
 
@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 
 
 
-export function SolicitacoesTab({ route }: { route: RouteProps }) {
+export function SolicitacoesTab({ solicitacoes }: { solicitacoes: Array<Solicitacao> }) {
 
 return (
     <Table>
@@ -19,7 +19,7 @@ return (
       </TableRow>
     </TableHeader>
     <TableBody>
-      {route.solicitacoes.map((solicitacao) => (
+      {solicitacoes?.map((solicitacao) => (
         <TableRow className="text-xs" key={solicitacao.id_global}>
           <TableCell>{solicitacao.nome_cliente}</TableCell>
           <TableCell>
