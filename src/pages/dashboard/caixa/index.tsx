@@ -172,9 +172,17 @@ export default function CaixaMovimentar() {
 
   const handleExcluir = useCallback(async () => {
     toast.promise(
-      api.delete(`/caixa/deletar/${infoEmpresa?.id}/${mov?.lanc_id}`),
+      api.delete(`/caixa/deletar`,{
+        data:{
+          lanc_id:mov?.lanc_id,
+          id_empresa:infoEmpresa?.id
+        }
+      }),
       {
-        error: "Erro ao deletar lancamento",
+        error: (error:any)=>{
+          console.log(error)
+          return 'Erro ao deletar lancamento'
+        },
         loading: "Solicitando exclusão..",
         success: () => {
           // const novo = [...(data?.lista||[])]

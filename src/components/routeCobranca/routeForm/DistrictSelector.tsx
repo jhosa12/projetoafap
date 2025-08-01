@@ -99,7 +99,7 @@ const DistrictSelector = ({ control,setValue, watch,bairros,cidades }: DistrictS
         selected={field.value}
         onChange={field.onChange}
         placeholder="Seleciona os bairros/distritos"
-        className="min-h-8"
+        className="min-h-9"
       />
       )}
       />

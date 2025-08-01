@@ -61,14 +61,19 @@ return (
                           <TableCell>{item.status_visita && <StatusBadge status={item.status_visita} />}</TableCell>
                           <TableCell>
                             <div className="space-y-1">
+                   
                               {item.check_in && (
                                 <div className="text-xs">
-                                  <span className="text-green-600">In:</span> {item.check_in.data.toLocaleString()}
+                                  <span className="text-green-600">In:</span> {item.check_in.data && new Date(item.check_in.data).toLocaleDateString('pt-BR',{
+                                    timeZone:'America/Fortaleza'
+                                  })} - {item.check_in.data && new Date(item.check_in.data).toLocaleTimeString('pt-BR',{
+                                    timeZone:'America/Fortaleza'
+                                  })}
                                 </div>
                               )}
                               {item.check_out && (
                                 <div className="text-xs">
-                                  <span className="text-red-600">Out:</span> {item.check_out.data.toLocaleString()}
+                                  <span className="text-red-600">Out:</span> {item.check_out.data.toLocaleString('pt-BR')}
                                 </div>
                               )}
                               {item.check_out?.observacoes && (
@@ -89,7 +94,16 @@ return (
                             <div className="flex gap-1">
                               {item.check_in && (
                                 <MapButton
-                                  coordenadas={item.check_in.coordenadas}
+                                  coordenadas={{
+                                    inLocale:{
+                                      lat_In:item.check_in.coordenadas.latitude,
+                                      lng_In:item.check_in.coordenadas.longitude
+                                    },
+                                    outLocale:{
+                                      lat_Out:item.check_out?.coordenadas.latitude,
+                                      lng_Out:item.check_out?.coordenadas.longitude
+                                    }
+                                  }}
                                   endereco={`${item.associado.endereco}, ${item.associado.numero}`}
                                 />
                               )}

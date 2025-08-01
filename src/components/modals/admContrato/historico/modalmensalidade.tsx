@@ -7,7 +7,6 @@ import {
     DialogHeader,
     DialogTitle,
     DialogFooter,
-    DialogPortal
   } from "@/components/ui/dialog"
   import { Input } from "@/components/ui/input"
   import {
@@ -19,14 +18,11 @@ import {
   } from "@/components/ui/select"
   import { Checkbox } from "@/components/ui/checkbox"
   import { Button } from "@/components/ui/button"
-  import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { IoIosArrowDropdownCircle } from "react-icons/io";
+
 import { AuthContext} from "@/store/AuthContext";
 import { useContext, useEffect, useRef, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import pt from 'date-fns/locale/pt-BR';
 import useBaixaMensalidade from "@/hooks/useBaixaMensalidade";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
@@ -36,11 +32,9 @@ import { MensalidadeBaixaProps } from "@/types/financeiro";
 import { DatePickerInput } from "@/components/DatePickerInput"
 import { Label } from "@/components/ui/label"
 
-import { Calendar } from "@/components/ui/calendar"
-import { BuildingIcon, CalendarIcon, CheckCircleIcon, CreditCardIcon, DollarSignIcon, UserIcon } from "lucide-react"
+import { BuildingIcon, CheckCircleIcon, CreditCardIcon, DollarSignIcon, UserIcon } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
 import useVerifyPermission from "@/hooks/useVerifyPermission"
 
@@ -66,7 +60,7 @@ const FORMAS_PAGAMENTO = [
 
 export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtualizar}:Props){
 
-    const {usuario,permissoes,selectEmp,consultores}=useContext(AuthContext)
+    const {permissoes,selectEmp,consultores}=useContext(AuthContext)
     const [desconto,setDesconto] = useState(false)
     const {error,postData} = useBaixaMensalidade('/mensalidade/baixa',setOpenModal,handleAtualizar)
     const {register,handleSubmit,watch,control,reset} = useForm<MensalidadeBaixaProps>(
@@ -133,7 +127,8 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
                         id_empresa:selectEmp,
                         valor_metodo:data?.valor_metodo,
                         data_lanc:data_lanc,
-                        recebido_por:data.recebido_por
+                        recebido_por:data.recebido_por,
+                        aut:data.aut
                     
                     },
                  

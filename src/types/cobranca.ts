@@ -118,12 +118,17 @@ interface MensalidadeProps{
   }
   
   
+  
   export interface MensalidadePagaProps extends MensalidadeProps{
-      cliente_nome:string,
-      id_contrato:number
-      observacoes?:string,
-      valor_forma:number
-  }
+    cliente_nome:string,
+    id_global:number,
+    id_contrato:number,
+    observacoes?:string,
+    valor_forma:number,
+    pix_por?:string,
+    forma_pagto:string,
+    valor_pix?:number
+}
   
   
   interface DataClientes {

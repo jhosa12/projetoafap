@@ -64,7 +64,7 @@ export function MultiSelects({
     if (option?.disabled) return;
 
     onChange(
-      selected?.includes(value)
+      selected.some((item) => item === value)
         ? selected?.filter((item) => item !== value)
         : [...selected, value]
     );
@@ -103,9 +103,9 @@ export function MultiSelects({
             <div className="flex flex-wrap gap-1 items-center">
               {selectedOptions.length > 0 ? (
                 <>
-                  {displayedItems.map((option) => (
+                  {displayedItems.map((option,index) => (
                     <Badge
-                      key={option.value}
+                      key={index}
                       variant="secondary"
                       className={cn(
                         "mr-1 mb-1 py-1 px-2  bg-blue-100 text-blue-800 hover:bg-blue-200",
@@ -114,6 +114,7 @@ export function MultiSelects({
                     >
                       {option.label}
                       <button
+                        type="button"
                         className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                         onKeyDown={(e) => {
                           if (e.key === "Enter" || e.key === " ") {
@@ -182,8 +183,9 @@ export function MultiSelects({
                   return (
                     <CommandItem
                       key={index}
+                     
                       value={option.value}
-                      onSelect={handleSelect}
+                      onSelect={()=>handleSelect(option.value)}
                       disabled={option.disabled}
                       className={cn(
                         "flex text-xs items-center gap-2",

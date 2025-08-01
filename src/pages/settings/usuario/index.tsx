@@ -1,22 +1,19 @@
 
 import { api } from "@/lib/axios/apiClient"
-import {  useEffect, useState } from "react"
-import { MdEdit } from "react-icons/md";
-import { IoIosAddCircle } from "react-icons/io";
+import { useEffect, useState, useMemo } from "react"
+import { Edit2, Plus, Loader2 } from "lucide-react"
+import { format } from "date-fns"
+import { ptBR } from "date-fns/locale"
+import { ColumnDef } from "@tanstack/react-table"
 
-import { Button } from "@/components/ui/button";
-import { ConsultoresProps } from "@/types/consultores";
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { ModalNovoUsuario } from "@/components/tabs/configuracoes/usuarios/modalNovoUsuario";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { ModalNovoUsuario } from "@/components/tabs/configuracoes/usuarios/modalNovoUsuario"
+import { Skeleton } from "@/components/ui/skeleton"
+import { toast } from "sonner"
+import { ConsultoresProps } from "@/types/consultores"
+import { DataTable } from "@/components/ui/data-table"
 
 
 export interface UsuarioProps {
@@ -32,7 +29,8 @@ export interface UsuarioProps {
   editar: boolean,
   repSenha: string,
   permissoes: Array<string>,
-  consultor: Array<ConsultoresProps>
+  consultor: Array<ConsultoresProps>,
+  situacao:string
 }
 
 
@@ -40,6 +38,10 @@ export interface UsuarioProps {
 
 export default function Usuario() {
   const [userDados, setUserDados] = useState<Array<UsuarioProps>>()
+  const [isLoading, setIsLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
   const [modalAdicionar, setModalAdicionar] = useState<boolean>(false)
   const [dadosUser, setDadosUser] = useState<Partial<UsuarioProps>>({})
   const [dadosFuncionario, setDadosFuncionario] = useState<Partial<ConsultoresProps>>({})
@@ -251,148 +253,168 @@ export default function Usuario() {
   }, [])
 
   async function getUsers() {
+    setIsLoading(true)
     try {
       const response = await api.get("/getUser")
-    //  console.log(response.data)
       setUserDados(response.data)
-
-   
     } catch (error) {
-      toast.error('ERRO NA REQUISIÇÃO')
-
+      toast.error('Erro ao carregar usuários')
+      console.error(error)
+    } finally {
+      setIsLoading(false)
     }
 
   }
 
 
-  return (
-    <div className="flex w-full flex-col px-2 mt-2 bg-white rounded-lg text-black">
-    
-        <Button
-        className="ml-auto"
-         size={'sm'} 
-        variant={'outline'}
-         onClick={() => {
-          setarDadosUsuario({
-            cargo: '',
-            consultor: [],
-            editar: false,
-            id_user: '',
-            nome: '',
-            permissoes: [],
-            password: '',
-            usuario: '',
-            image: '',
-            repSenha: '',
-            file: undefined,
-            avatarUrl: ''
-          }),
-          setModalAdicionar(!modalAdicionar)
-        }} ><IoIosAddCircle size={20} />Adicionar</Button>
-    
-      <div className="flex flex-col mt-2 px-2 w-full overflow-y-auto h-[calc(100vh-145px)]  ">
-
-      <Table >
-  
-      <TableHeader >
-        <TableRow>
-        <TableHead >#</TableHead>
-          <TableHead >Nome</TableHead>
-          <TableHead>Cargo</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead className="text-right">Telefone</TableHead>
-          <TableHead className="text-right">Ações</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody className="text-[11px]">
-        {userDados?.map((invoice) => (
-          <TableRow key={invoice.id_user}>
-            <TableCell >  {invoice.image && <img className="w-[26px] h-[26px] rounded-full" src={`${invoice.image}`} alt="Rounded avatar"></img>}</TableCell>
-            <TableCell >{invoice.nome}</TableCell>
-            <TableCell>{invoice.cargo}</TableCell>
-            <TableCell>{''}</TableCell>
-            <TableCell>{''}</TableCell>
-            <TableCell className="text-right">{
-              <button
-                onClick={() => {
-                  setarDadosUsuario({
-                    ...invoice, password: '', repSenha: '', editar: true, avatarUrl: ''
-                  }),
-                  setarDadosFuncionario({ ...invoice.consultor[0] }),
-                 // setarDadosPermissoes([...item.permissoes]??[]),
-                  setModalAdicionar(true)
-                }}
-              >
-                <MdEdit color="gray" size={17} />
-              </button>
-              }</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    
-    </Table>
-
-     { /*  <ul className="flex flex-col w-full p-2 gap-1 text-sm">
-          <li className="flex flex-col w-full  text-xs pl-4 border-b-[1px] font-bold ">
-            <div className="inline-flex w-full items-center">
-              <span className="flex w-40 me-2 justify-center ">#</span>
-              <span className="flex w-full text-start whitespace-nowrap">NOME</span>
-              <span className="flex w-full text-start whitespace-nowrap ">CARGO</span>
-              <span className="flex w-full text-start whitespace-nowrap">E-MAIL</span>
-              <span className="flex w-full text-start whitespace-nowrap ">TELEFONE</span>
-              <span className="flex w-full justify-center whitespace-nowrap ">PERMISSÕES</span>
-              <span className="flex w-full justify-end  "></span>
-
+  // Define columns for the data table
+  const columns: ColumnDef<UsuarioProps>[] = useMemo(() => [
+    {
+      accessorKey: 'nome',
+      header: 'Nome',
+      cell: ({ row }) => (
+        <div className="flex items-center space-x-3">
+          {row.original.avatarUrl ? (
+            <img 
+              src={row.original.avatarUrl} 
+              alt={row.getValue('nome')} 
+              className="h-8 w-8 rounded-full object-cover"
+            />
+          ) : (
+            <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-medium">
+              {String(row.getValue('nome')).charAt(0).toUpperCase()}
             </div>
-          </li>
-          {
-            userDados?.map((item, index) => {
+          )}
+          <div className="font-medium">{row.getValue('nome')}</div>
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'usuario',
+      header: 'Usuário',
+    },
+    {
+      accessorKey: 'cargo',
+      header: 'Cargo',
+      cell: ({ row }) => (
+        <Badge variant="outline">
+          {row.getValue('cargo') || 'Não definido'}
+        </Badge>
+      ),
+    },
+    {
+      accessorKey: 'situacao',
+      header: 'Status',
+      cell: ({ row }) => {
+        const situacao = row.getValue('situacao') as string;
+        return (
+          <div className="flex items-center">
+            <span className={`h-2.5 w-2.5 rounded-full mr-2 ${
+              situacao === 'Ativo' ? 'bg-green-500' : 'bg-gray-400'
+            }`}></span>
+            {situacao || 'Inativo'}
+          </div>
+        );
+      },
+    },
+    {
+      id: 'actions',
+      cell: ({ row }) => {
+        const user = row.original;
+        return (
+          <div className="text-right">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                setDadosUser({
+                  ...user,
+                  editar: true,
+                  senhaAtual: '',
+                  repSenha: ''
+                });
+                if (user.consultor && user.consultor[0]) {
+                  setarDadosFuncionario({ ...user.consultor[0] });
+                }
+                setModalAdicionar(true);
+              }}
+            >
+              <Edit2 className="h-4 w-4" />
+              <span className="sr-only">Editar</span>
+            </Button>
+          </div>
+        );
+      },
+    },
+  ], []);
 
-              return (
-                <li key={index} className={`flex flex-col w-full p-2 text-xs pl-4 rounded-lg ${index % 2 === 0 ? "bg-slate-300" : "bg-slate-200"} uppercase cursor-pointer`}>
-                  <div className="inline-flex w-full items-center">
-                    <div className="flex w-40 me-2 text-start font-semibold">
-                      {item.image && <img className="w-[26px] h-[26px] rounded-full" src={`${item.image}`} alt="Rounded avatar"></img>}</div>
-                    <span className="flex w-full text-start font-semibold">{item?.nome}</span>
-                    <span className="flex w-full text-start font-semibold">{item.cargo}</span>
-                    <span className="flex w-full text-start font-semibold">{''}</span>
-                    <span className="flex w-full text-start ">{''}</span>
-                    <div className="flex w-full justify-center text-orange-400 ">
-                      <button >
-                        <BiSolidLockOpenAlt size={17} />
-                      </button>
+  return (
+    <div className="container mx-auto p-4">
+      <div className="flex flex-col space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold">Usuários do Sistema</h1>
+            <p className="text-sm text-muted-foreground">
+              Gerencie os usuários do sistema
+            </p>
+          </div>
+          <Button
+            onClick={() => {
+              setarDadosUsuario({
+                cargo: '',
+                consultor: [],
+                editar: false,
+                id_user: '',
+                nome: '',
+                permissoes: [],
+                password: '',
+                usuario: '',
+                image: '',
+                repSenha: '',
+                file: undefined,
+                avatarUrl: ''
+              })
+              setModalAdicionar(true)
+            }}
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Novo Usuário
+          </Button>
+        </div>
 
-                    </div>
-                    <div className="flex w-full justify-end gap-3 text-gray-500 ">
-                      <button onClick={() => {
-                        setarDadosUsuario({
-                          ...item, password: '', repSenha: '', editar: true, avatarUrl: ''
-                        }),
-                        setarDadosFuncionario({ ...item.consultor[0] }),
-                       // setarDadosPermissoes([...item.permissoes]??[]),
-                        setModalAdicionar(true)
-                      }}
-                        className="hover:text-blue-500   rounded-lg ">
-                        <MdEdit size={17} />
-                      </button>
-                      <button className="hover:text-red-500  rounded-lg  ">
-                        <MdDelete size={17} />
-                      </button>
-                    </div>
-
-
-                  </div>
-
-                </li>
-              )
-            })
-          }
-        </ul>*/}
-        {/*modalAdicionar && <MenuMultiStep setarModalAdicionar={setarModalAdicionar} getUsers={getUsers} dadosFuncionario={dadosFuncionario} dadosPermissoes={dadosPermissoes} dadosUser={dadosUser} setarDadosFuncionario={setarDadosFuncionario} setarDadosPermissoes={setarDadosPermissoes} setarDadosUsuario={setarDadosUsuario} />*/}
-       
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="relative w-full">
+                {isLoading ? (
+                  <Skeleton className="h-10 w-full" />
+                ) : (
+                  <DataTable
+                    columns={columns}
+                    data={userDados || []}
+                    maxHeight="h-[calc(100vh-300px)]"
+                  >
+                    <Button variant="outline" size="sm" className="h-8">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Adicionar Filtro
+                    </Button>
+                  </DataTable>
+                )}
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
       </div>
 
-      <ModalNovoUsuario handleEditarCadastro={handleEditarCadastro}  handleNovoCadastro={handleNovoCadastro}  handlePermission={handlePermission}  dadosUser={dadosUser} setModal={setModalAdicionar} setarDadosUsuario={setarDadosUsuario} show={modalAdicionar} />
+      <ModalNovoUsuario 
+        handleEditarCadastro={handleEditarCadastro}
+        handleNovoCadastro={handleNovoCadastro}
+        handlePermission={handlePermission}
+        dadosUser={dadosUser}
+        setModal={setModalAdicionar}
+        setarDadosUsuario={setarDadosUsuario}
+        show={modalAdicionar}
+      />
     </div>
   )
 }

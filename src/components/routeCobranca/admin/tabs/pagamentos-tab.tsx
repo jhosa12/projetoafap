@@ -1,13 +1,38 @@
 
+import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { api } from "@/lib/axios/apiClient"
 import { MensalidadePagaProps, RouteProps } from "@/types/cobranca"
+import { Download } from "lucide-react"
+import { toast } from "sonner"
 
 
 
 export function PagamentosTab({ pagamentos }: { pagamentos: Array<MensalidadePagaProps> }) {
 
+
+  const handlePagamento = async () => {
+
+    try {
+      const response = await api.post("/cobranca/sincPag", {
+       mensalidades:pagamentos
+      })
+      toast.success('Dados baixados com sucesso')
+    } catch (error) {
+
+      console.log(error)
+      toast.error('Erro ao baixar dados')
+      
+    }
+  }
+
 return (
-     <Table>
+  <div>
+    <Button variant="outline" onClick={handlePagamento}>
+      Baixar
+      <Download className="h-4 w-4" />
+    </Button>
+ <Table>
                     <TableHeader>
                       <TableRow>
                         <TableHead>Cliente</TableHead>
@@ -29,5 +54,7 @@ return (
                       ))}
                     </TableBody>
                   </Table>
+  </div>
+    
 )
 }

@@ -34,7 +34,7 @@ return (
                           </div>
                           <div className="text-sm">
                             <span className="text-muted-foreground">Data:</span>
-                            <span className="ml-2">{update.dt_created.toLocaleDateString()}</span>
+                            <span className="ml-2">{update.dt_created && new Date(update.dt_created).toLocaleDateString()}</span>
                           </div>
                         </div>
                       </div>

@@ -29,7 +29,8 @@ interface PayloadProps {
     id_proximaMensalidade:number,
     situacao:string,
     status:string,
-    id_empresa:string
+    id_empresa:string,
+    aut?:string
 }
 
  const useBaixaMensalidade = (url:string,setModal:(state:boolean)=>void,atualizar:Function):{

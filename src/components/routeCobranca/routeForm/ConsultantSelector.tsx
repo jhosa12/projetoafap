@@ -22,7 +22,7 @@ const ConsultantSelector = ({ selected, onChange,consultants }: ConsultantSelect
         </SelectTrigger>
         <SelectContent>
           {consultants?.map(consultant => (
-            <SelectItem key={consultant.id_consultor} value={consultant.id_consultor.toString()}>
+            <SelectItem key={consultant.id_consultor} value={consultant.nome}>
               <div className="flex items-center gap-2">
                 <Avatar className="h-6 w-6">
                   <AvatarFallback className="text-xs">

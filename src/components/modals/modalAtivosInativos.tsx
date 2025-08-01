@@ -1,12 +1,10 @@
 
 import { Controller, useForm } from "react-hook-form"
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog"
-import { useEffect, useRef, useState } from "react"
+import { Dialog,DialogContent, DialogHeader, DialogTitle } from "../ui/dialog"
+import { useEffect, useRef } from "react"
 import { Select, SelectItem, SelectContent, SelectTrigger } from "../ui/select"
 import { SelectValue } from "@radix-ui/react-select"
-import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import pt from 'date-fns/locale/pt-BR';
 import { Button } from "../ui/button"
 import useApiPost from "@/hooks/useApiPost"
 import { AtivosInativos } from "@/Documents/ativosInativos/ListaAtivosInativos"
@@ -116,7 +114,7 @@ export const ModalAtivosInativos = ({ open, onClose, id_empresa, logo, usuario, 
                             name="tipo"
                             render={({ field }) => (
                                 <Select required value={field.value} onValueChange={field.onChange}>
-                                    <SelectTrigger className="text-[11px] h-9">
+                                    <SelectTrigger >
                                         <SelectValue placeholder="SELECIONE" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -155,7 +153,7 @@ export const ModalAtivosInativos = ({ open, onClose, id_empresa, logo, usuario, 
                           control={control}
                           render={({ field }) => (
                           <MultiSelects
-                            maxDisplayItems={10}
+                            maxDisplayItems={3}
                             options={bairrosFilter.map((district) => ({
                               value: district.bairro??"",
                               label: `${district.bairro}`,
