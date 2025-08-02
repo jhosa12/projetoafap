@@ -1,17 +1,38 @@
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { AgendamentoCobranca, RouteProps } from "@/types/cobranca"
+import { AgendamentoCobranca} from "@/types/cobranca"
 import { CalendarDays, Phone } from "lucide-react"
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
+import { Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
+import { api } from "@/lib/axios/apiClient"
 
 
 
 
 export function AgendamentosTab({ agendamentos }: { agendamentos: Array<AgendamentoCobranca> }) {
 
+
+
+  const sincAgendamentos = async()=>{
+      toast.promise(
+        api.post('/cobranca/sincAgend',{
+          agendamentos
+        }),
+        {
+          loading: 'Sincronizando agendamentos...',
+          success: 'Agendamentos sincronizados com sucesso!',
+          error: 'Erro ao sincronizar agendamentos.'
+        }
+      )
+  }
+
 return (
+  <div>
+    <Button onClick={sincAgendamentos}>
+      Sincronizar
+    </Button>
      <Table>
                     <TableHeader>
                       <TableRow>
@@ -81,5 +102,6 @@ return (
                       })}
                     </TableBody>
                   </Table>
+                  </div>
 )
 }

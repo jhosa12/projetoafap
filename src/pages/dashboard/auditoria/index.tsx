@@ -12,7 +12,8 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { RefreshCw, Search, Filter, Eye, Database, Plus, Edit, Trash2 } from "lucide-react";
+import { RefreshCw, Search, Eye, Database, Plus, Edit, Trash2, Filter } from "lucide-react";
+import { AuditFilterDialog } from "@/components/audit/AuditFilterDialog";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import AuditDetails from "@/components/audit/AuditDetails";
@@ -100,77 +101,51 @@ export default function Dashboard() {
 
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-4  space-y-4">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Logs de Auditoria</h1>
+          <h1 className="text-xl font-bold text-slate-900">Logs de Auditoria</h1>
           <p className="text-slate-600 mt-1">Sistema de monitoramento de atividades</p>
         </div>
-        <Button
-          onClick={refreshLogs}
-          disabled={isRefreshing}
-          className="bg-blue-600 hover:bg-blue-700"
-        >
-          <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-          {isRefreshing ? 'Atualizando...' : 'Atualizar'}
-        </Button>
+        <div className="flex flex-col ">
+          <div className="flex justify-between items-center gap-2">
+            <div className="flex-1 max-w-md">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar por descrição, usuário, modelo..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 h-8"
+                />
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <AuditFilterDialog
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                actionFilter={actionFilter}
+                setActionFilter={setActionFilter}
+                modelFilter={modelFilter}
+                setModelFilter={setModelFilter}
+                uniqueModels={uniqueModels}
+                onClearFilters={clearFilters}
+                onApplyFilters={applyFilters}
+              />
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={refreshLogs}
+                disabled={isRefreshing}
+              >
+                <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Filter className="w-5 h-5" />
-            Filtros
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
-              <Input
-                placeholder="Pesquisar..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-
-            <Select value={actionFilter} onValueChange={setActionFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="Filtrar por ação" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={"Todos"}>Todas as ações</SelectItem>
-                <SelectItem value="CREATE">Criar</SelectItem>
-                <SelectItem value="UPDATE">Atualizar</SelectItem>
-                <SelectItem value="DELETE">Deletar</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={modelFilter} onValueChange={setModelFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="Filtrar por modelo" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={"todos"}>Todos os modelos</SelectItem>
-                {uniqueModels.map(model => (
-                  <SelectItem key={model} value={model}>{model}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Button 
-              variant="outline" 
-              onClick={clearFilters}
-              className="w-full"
-            >
-              Limpar Filtros
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-     
+      
     
           {isLoading ? (
             <div className="space-y-4">

@@ -8,16 +8,13 @@ import { StatsCards } from "./stats-cards"
 import { RoutesTable } from "./routes-table"
 import { FiltersDialog } from "./filters-dialog"
 import { RouteDetailsDialog } from "./route-details-dialog"
-import RouteDetailsModal from "../routeManagement/RouteDetailsModal"
-import RouteGenerator from "../RouteGenerator"
-import { EmpresaProps } from "@/types/empresa"
 import { ConsultoresProps } from "@/types/consultores"
 
 interface Props{
     routes: RouteProps[]
-   selectEmp:string
-   cidadesEmpresa:Array<string>
-   cobradores:ConsultoresProps[]
+    selectEmp:string
+    cidadesEmpresa:Array<string>
+    cobradores:ConsultoresProps[]
 }
 
 export default function CobrancaAdmin({routes,selectEmp,cidadesEmpresa,cobradores}: Props) {
@@ -48,13 +45,13 @@ export default function CobrancaAdmin({routes,selectEmp,cidadesEmpresa,cobradore
 
   const filteredRoutes = routes.filter((route) => {
     return (
-      (!filters.consultor || route.consultor.toLowerCase().includes(filters.consultor.toLowerCase())) &&
-      (filters.status === "todos" || route.status === filters.status) &&
-      (!filters.bairro || route.parametros.bairros.some((b) => b.toLowerCase().includes(filters.bairro.toLowerCase())))
+      (!filters?.consultor || route?.consultor?.toLowerCase()?.includes(filters.consultor?.toLowerCase())) &&
+      (filters?.status === "todos" || route?.status === filters?.status) &&
+      (!filters?.bairro || route?.parametros?.bairros?.some((b) => b.toLowerCase().includes(filters.bairro?.toLowerCase())))
     )
   })
 
-  const activeFiltersCount = Object.values(filters).filter((value) => value && value !== "todos").length
+  const activeFiltersCount = Object.values(filters)?.filter((value) => value && value !== "todos").length
 
   return (
     <TooltipProvider>
@@ -72,9 +69,6 @@ export default function CobrancaAdmin({routes,selectEmp,cidadesEmpresa,cobradore
           onViewDetails={handleViewDetails}
           onOpenFilters={() => setFiltersOpen(true)}
         />
-
-  
-         
         <FiltersDialog
           open={filtersOpen}
           onOpenChange={setFiltersOpen}

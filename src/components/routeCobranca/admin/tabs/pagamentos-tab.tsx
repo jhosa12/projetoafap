@@ -39,6 +39,7 @@ return (
                         <TableHead>Referência</TableHead>
                         <TableHead>Valor</TableHead>
                         <TableHead>Data Pagamento</TableHead>
+                        <TableHead>Forma Pagamento</TableHead>
                         <TableHead>Observações</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -49,6 +50,7 @@ return (
                           <TableCell>{pagamento.referencia}</TableCell>
                           <TableCell>R$ {pagamento.valor_principal.toFixed(2)}</TableCell>
                           <TableCell>{pagamento.data_pgto ? new Date(pagamento.data_pgto).toLocaleDateString() : "-"}</TableCell>
+                          <TableCell>{pagamento.forma_pagto}</TableCell>
                           <TableCell>{pagamento.observacoes || "-"}</TableCell>
                         </TableRow>
                       ))}

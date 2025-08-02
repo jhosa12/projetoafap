@@ -109,8 +109,8 @@ const RouteGenerator = ({ selectEmp,cidadesEmpresa,cobradores }: RouteGeneratorP
   return (
     <Dialog open={isGeneratorOpen} onOpenChange={setIsGeneratorOpen}>
       <DialogTrigger asChild>
-        <Button className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
+        <Button variant={"default"}>
+          <Plus  />
           Nova Rota
         </Button>
       </DialogTrigger>

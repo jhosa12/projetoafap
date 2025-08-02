@@ -24,7 +24,7 @@ export function Header({ activeFiltersCount, onOpenFilters,selectEmp,cidadesEmpr
         </div>
         <div className="flex gap-3">
           <Button variant="outline" onClick={onOpenFilters}>
-            <Filter className="h-4 w-4 mr-2" />
+            <Filter />
             Filtros
             {activeFiltersCount > 0 && (
               <Badge variant="secondary" className="ml-2">
