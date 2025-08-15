@@ -1,14 +1,27 @@
-import { RouteProps, Solicitacao } from "@/types/cobranca";
+import { RouteProps, SolicitacaoCobradorProps } from "@/types/cobranca";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Printer } from "lucide-react";
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+import { SolicitacoesCobrador } from "@/Documents/cobranca/SolicitacoesCobrador";
 
 
 
 
 
-export function SolicitacoesTab({ solicitacoes }: { solicitacoes: Array<Solicitacao> }) {
+export function SolicitacoesTab({ solicitacoes }: { solicitacoes: Array<SolicitacaoCobradorProps> }) {
+  const currentRef = useRef<HTMLDivElement>(null)
+
+  const handlePrint = useReactToPrint({
+    content() {
+      return currentRef.current
+    },
+  })
 
 return (
+    <div >  
     <Table>
     <TableHeader>
       <TableRow>
@@ -16,6 +29,7 @@ return (
         <TableHead>Categoria</TableHead>
         <TableHead>Descrição</TableHead>
         <TableHead>Contrato</TableHead>
+        <TableHead>Ações</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
@@ -27,9 +41,17 @@ return (
           </TableCell>
           <TableCell>{solicitacao.descricao}</TableCell>
           <TableCell>{solicitacao.id_contrato}</TableCell>
-        </TableRow>
+          <TableCell><Button variant="outline" onClick={handlePrint}><Printer /></Button></TableCell>       
+           </TableRow>
       ))}
     </TableBody>
   </Table>
+
+{
+  <div style={{ display: 'none' }}>
+<SolicitacoesCobrador ref={currentRef} solicitacoes={solicitacoes} /> 
+</div>
+}
+  </div>
 )
 }

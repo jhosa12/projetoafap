@@ -5,7 +5,7 @@ import { IoPrint } from "react-icons/io5";
 import { AuthContext } from "@/store/AuthContext";
 import { HiFilter } from "react-icons/hi";
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
-import RelatorioInadimplencia from "@/Documents/relatorioCobranca/RelatorioIndimplencia";
+import RelatorioInadimplencia from "@/Documents/cobranca/RelatorioIndimplencia";
 import useApiGet from "@/hooks/useApiGet";
 import { ResInadimplenciaApiProps } from "@/types/cobranca";
 
@@ -24,17 +24,20 @@ import {
 import { ModalFiltroCobranca } from "../modalCobranca";
 import { SubmitHandler } from "react-hook-form";
 import ReactPaginate from "react-paginate";
+import { FormProps } from "../cobranca/cobranca";
+import { ajustarData } from "@/utils/ajusteData";
 
 export interface ReqInadProps{
   id_empresa:string
   n_parcelas:number,
   param:string,
-  startDate:Date,
-  endDate:Date,
+  startDate:string|undefined,
+  endDate:string|undefined,
   status:Array<string>,
   bairros:Array<string>
   cidade:string,
-  resumeBairro?:boolean
+  resumeBairro?:boolean,
+  statusReagendamento:string|undefined
 }
 interface ContagemProps{
   n1:number,
@@ -42,19 +45,19 @@ interface ContagemProps{
   n3:number,
   nn:number
 }
-export interface FormProps{
-  startDate:Date,
-  endDate:Date,
-  periodo:boolean,
-  id_empresa:string,
-  param_nparcela:string,
-  numeroParcelas:number,
-  radio:boolean
-  status:string,
-  cobrador:Array<string>
-  bairros:Array<string>
-  cidade:string
-}
+// export interface FormProps{
+//   startDate:Date,
+//   endDate:Date,
+//   periodo:boolean,
+//   id_empresa:string,
+//   param_nparcela:string,
+//   numeroParcelas:number,
+//   radio:boolean
+//   status:string,
+//   cobrador:Array<string>
+//   bairros:Array<string>
+//   cidade:string
+// }
 
 
 export interface UltimosPagProsps { /* … */ }
@@ -84,8 +87,6 @@ export function Inadimplencia({arrayBairros,cidades}:ScreenProps) {
   }
 
 
-
-
   // calculo dos badges
   const contagem = useCallback(() => {
     if (!data) return;
@@ -108,19 +109,24 @@ export function Inadimplencia({arrayBairros,cidades}:ScreenProps) {
   });
   useEffect(() => { isPrint && imprimirRelatorio(); }, [isPrint]);
 
-  // carregar bairros
+  
  
   // submissão de filtro
   const handleInadimplencia:SubmitHandler<FormProps> = async (dataReq) => {
+    const {dataIni,dataFim} = ajustarData(
+      dataReq.periodo ? new Date("1900-01-01"):dataReq.startDate,
+      dataReq.endDate
+    )
     postData({
-      startDate: dataReq.periodo ? new Date("1900-01-01") : dataReq.startDate,
-      endDate: dataReq.periodo ? new Date() : dataReq.endDate,
+      startDate:dataIni,
+      endDate: dataFim,
       id_empresa: selectEmp,
       n_parcelas: Number(dataReq.numeroParcelas),
       status: dataReq.status.split(",").map((s) => s.trim()),
       param: dataReq.param_nparcela,
       bairros: dataReq.bairros,
       cidade:dataReq.cidade,
+      statusReagendamento:dataReq.statusReagendamento
     });
   };
 

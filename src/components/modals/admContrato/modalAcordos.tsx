@@ -1,445 +1,503 @@
-
-
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios/apiClient";
-import DatePicker,{registerLocale} from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import pt from 'date-fns/locale/pt-BR';
-import { useForm,SubmitHandler, Controller } from 'react-hook-form';
-import { Button, Label, Modal, Select, Table, TextInput } from "flowbite-react";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { AcordoProps, MensalidadeProps } from "@/types/financeiro";
 import { ConsultoresProps } from "@/types/consultores";
-import { MdClose } from "react-icons/md";
 import { toast } from "sonner";
 
+// Shadcn/ui components
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CalendarIcon, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
+interface DadosAcordoProps {
+  acordo: Partial<AcordoProps>;
+  open: boolean;
+  close: Function;
 
-interface DadosAcordoProps{
-    acordo:Partial<AcordoProps>,
-    open:boolean,
-    close:Function,
- 
-    mensalidades:Array<Partial<MensalidadeProps>>
-    id_contrato_global:number|null,
-    id_global:number|null,
-    id_empresa:string,
-    id_contrato:number|undefined,
-    id_associado:number|undefined,
-    consultores:Array<Partial<ConsultoresProps>>
-    carregarDados:(id:number)=>Promise<void>
+  mensalidades: Array<Partial<MensalidadeProps>>;
+  id_contrato_global: number | null;
+  id_global: number | null;
+  id_empresa: string;
+  id_contrato: number | undefined;
+  id_associado: number | undefined;
+  consultores: Array<Partial<ConsultoresProps>>;
+  carregarDados: (id: number) => Promise<void>;
 }
-export function ModalAcordos({acordo,id_empresa,open,close,mensalidades,carregarDados,id_contrato_global,id_global,id_associado,id_contrato,consultores}:DadosAcordoProps){
- 
- const [mensalidadeSelect,setMensalidade] = useState<number|null>(null)
+export function ModalAcordos({
+  acordo,
+  id_empresa,
+  open,
+  close,
+  mensalidades,
+  carregarDados,
+  id_contrato_global,
+  id_global,
+  id_associado,
+  id_contrato,
+  consultores,
+}: DadosAcordoProps) {
+  const [mensalidadeSelect, setMensalidade] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-    const {register,handleSubmit,watch,setValue,control} = useForm<AcordoProps>({
-        defaultValues:{...acordo,total_acordo:acordo.mensalidade?.reduce((acc,at)=>{
-            return acc+Number(at?.valor_principal)
-        },0)}
-    });
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    control,
+    formState: { errors },
+    reset,
+  } = useForm<AcordoProps>({
+    defaultValues: {
+      ...acordo,
+      total_acordo:
+        acordo.mensalidade?.reduce(
+          (acc, at) => acc + Number(at?.valor_principal || 0),
+          0
+        ) || 0,
+    },
+  });
 
-    const gatilho = watch('mensalidade')
+  const gatilho = watch("mensalidade");
 
+  useEffect(() => {
+    const soma = gatilho?.reduce((acc, at) => {
+      return acc + Number(at?.valor_principal);
+    }, 0);
+    setValue("total_acordo", soma);
+  }, [gatilho]);
 
+  const handleRemove = async (id_mensalidade_global: number) => {
+    if (acordo.id_acordo) {
+      toast.promise(
+        api.put(`/acordo/removerMensalidade`, {
+          id_mensalidade: id_mensalidade_global,
+          id_acordo: null,
+        }),
+        {
+          loading: "Removendo...",
+          success: async () => {
+            id_global && (await carregarDados(id_global));
+            const array = watch("mensalidade") || [];
+            const newArray = array.filter(
+              (item) => item.id_mensalidade_global !== id_mensalidade_global
+            );
+            setValue("mensalidade", newArray);
 
-
-
-    useEffect(()=>{
-        const soma = gatilho?.reduce((acc,at)=>{
-            return acc+Number(at?.valor_principal)
-        },0)
-        setValue('total_acordo',soma)
-     
-    },[gatilho])
-
-
-
-
-
-
-    const handleRemove = async(id_mensalidade_global:number)=>{
-        if(acordo.id_acordo){
-         
-                 toast.promise(
-                    api.put(`/acordo/removerMensalidade`,{id_mensalidade:id_mensalidade_global,id_acordo:null}),
-                    {
-                        loading: 'Removendo...',
-                        success: async()=>{
-                            id_global && await carregarDados(id_global);
-                            const array = watch('mensalidade')||[];
-                            const newArray = array.filter(item => item.id_mensalidade_global !== id_mensalidade_global);
-                            setValue('mensalidade',newArray)
-                            
-                            return'Mensalidade removida com sucesso!'},
-                        error: 'Erro ao remover mensalidade'
-                    }
-                )
-
-             
-        
-    
-          return;      
-    }
-
-
-    const array = watch('mensalidade')||[];
-    const newArray = array.filter(item => item.id_mensalidade_global !== id_mensalidade_global);
-    setValue('mensalidade',newArray)
-    }
-
-
-
-
-
-
-const handleNovaRef = async()=>{
- 
-    const mensalidade = mensalidades.find(mensalidade=>mensalidade.id_mensalidade_global===mensalidadeSelect)
-   
-    const mensalidadeArray = watch('mensalidade')||[];
-    const isExists =mensalidadeArray?.some(item => item.referencia === mensalidade?.referencia);
-    if(isExists){
-    toast.info("Referência já inclusa no acordo!")
-    return;
-    }
-
-    if(mensalidade?.id_acordo){
-        toast.info("Mensalidade ja vinculada a outro acordo!")
-        return
-    }
-
-
-    if(acordo.id_acordo){
-     
-             toast.promise(
-                api.put(`/acordo/removerMensalidade`,{id_mensalidade:mensalidade?.id_mensalidade_global,id_acordo:acordo.id_acordo}),
-                {
-                    loading: 'Adicionando...',
-                    success:async(response)=>{
-                        id_global && await carregarDados(id_global);
-                        const array = watch('mensalidade')||[];
-                        array.push(response.data);
-                        setValue('mensalidade',array)
-                        return'Mensalidade adicionada com sucesso!'},
-                    error: 'Erro ao adicionar mensalidade'}
-            )
-
-           
-      
-
-      return;      
-}
-
-    if(mensalidade){
-        const array = [...mensalidadeArray];
-        array.push(mensalidade);
-        array.sort((a,b)=>Number(a.id_mensalidade_global)-Number(b.id_mensalidade_global))
-          setValue('mensalidade',array)
-    }
-    
-}
-
-const handleConsultorSelect = (id_consultor:number)=>{
-    setValue('id_consultor',id_consultor)
-    setValue('realizado_por',consultores?.find(consultor=>consultor.id_consultor===id_consultor)?.nome)
-}
-
-
-
-
-const onSubmit:SubmitHandler<AcordoProps> = (data) => {
-    acordo.id_acordo?editarAcordo(data):criarAcordo(data)
-}
-
-
-       const criarAcordo = async (data:AcordoProps) => {
-     
-        if(!data.data_inicio||!data.data_fim||!data.descricao||!data.id_consultor){
-            toast.info("Preencha todos os campos!")
-            return;
+            return "Mensalidade removida com sucesso!";
+          },
+          error: "Erro ao remover mensalidade",
         }
-       
-
-        const dt_criacao= new Date();
-        const dt_prev = new Date(data.data_fim);
-        dt_criacao.setTime(dt_criacao.getTime() - dt_criacao.getTimezoneOffset() * 60 * 1000);
-        dt_prev.setTime(dt_prev.getTime() - dt_prev.getTimezoneOffset() * 60 * 1000);
-     
-        
-          toast.promise(
-                api.post('/novoAcordo',{
-                  
-                    id_empresa,
-                    id_contrato_global,
-                    id_global,
-                    id_consultor:Number(data.id_consultor),
-                    status:'A',
-                    data_inicio:dt_criacao.toISOString(),
-                    data_fim:dt_prev.toISOString(),
-                    total_acordo:Number(data.total_acordo),
-                    realizado_por:data.realizado_por,
-                    descricao:data.descricao,
-                    metodo:data.metodo,
-                    dt_criacao:new Date() ,
-                    mensalidades:data.mensalidade,
-                    id_contrato:id_contrato,
-                    id_associado:id_associado
-                }),
-                {
-                    error:'Erro na requisição',
-                    success:()=>{
-                        id_global && carregarDados(id_global);
-                        close()
-                        return 'Acordo criado com sucesso'},
-                    loading:'Criando acordo'
-                }
-            )
-          //  toast.success("Acordo criado com sucesso")
-         
-
-     
+      );
     }
-    
-     
+    return;
+  };
 
-   
+  const handleNovaRef = async () => {
+    const mensalidade = mensalidades.find(
+      (mensalidade) => mensalidade.id_mensalidade_global === mensalidadeSelect
+    );
 
-      async function editarAcordo(data:AcordoProps){
-          
+    const mensalidadeArray = watch("mensalidade") || [];
+    const isExists = mensalidadeArray?.some(
+      (item) => item.referencia === mensalidade?.referencia
+    );
+    if (isExists) {
+      toast.info("Referência já inclusa no acordo!");
+      return;
+    }
 
-     
-         toast.promise(
-                api.put('/editarAcordo',{
-               id_acordo:data.id_acordo,
-                //status:'A',
-                //dt_pgto:new Date(),
-                data_inicio:data.data_inicio,
-                data_fim:data.data_fim,
-                descricao:data.descricao.toUpperCase(),
-                metodo:data.metodo,
-                total_acordo:data.total_acordo,
-                realizado_por:data.realizado_por,
-                id_consultor:Number(data.id_consultor),
-                //mensalidade:novasMensalidades
-                //mensalidades:data.mensalidade
-                }),
-                {
-                error:'Erro ao efetuar atualização',
-               loading:'Efetuando atualização',
-                success:'Atualização Efetuada com sucesso!'
-                }
-            )
+    if (mensalidade?.id_acordo) {
+      toast.info("Mensalidade ja vinculada a outro acordo!");
+      return;
+    }
 
+    if (acordo.id_acordo) {
+      toast.promise(
+        api.put(`/acordo/removerMensalidade`, {
+          id_mensalidade: mensalidade?.id_mensalidade_global,
+          id_acordo: acordo.id_acordo,
+        }),
+        {
+          loading: "Adicionando...",
+          success: async (response) => {
+            id_global && (await carregarDados(id_global));
+            const array = watch("mensalidade") || [];
+            array.push(response.data);
+            setValue("mensalidade", array);
+            return "Mensalidade adicionada com sucesso!";
+          },
+          error: "Erro ao adicionar mensalidade",
+        }
+      );
 
-    
-        
+      return;
+    }
+
+    if (mensalidade) {
+      const array = [...mensalidadeArray];
+      array.push(mensalidade);
+      array.sort(
+        (a, b) =>
+          Number(a.id_mensalidade_global) - Number(b.id_mensalidade_global)
+      );
+      setValue("mensalidade", array);
+    }
+  };
+
+  const handleConsultorSelect = (id_consultor: number) => {
+    setValue("id_consultor", id_consultor);
+    setValue(
+      "realizado_por",
+      consultores?.find((consultor) => consultor.id_consultor === id_consultor)
+        ?.nome
+    );
+  };
+
+  const onSubmit: SubmitHandler<AcordoProps> = (data) => {
+    acordo.id_acordo ? editarAcordo(data) : criarAcordo(data);
+  };
+
+  const criarAcordo = async (data: AcordoProps) => {
+    if (!data.data_inicio || !data.descricao || !data.id_consultor) {
+      toast.info("Preencha todos os campos!");
+      return;
+    }
+
+    const dt_criacao = new Date();
+    const dt_prev = new Date();
+    dt_criacao.setTime(
+      dt_criacao.getTime() - dt_criacao.getTimezoneOffset() * 60 * 1000
+    );
+    dt_prev.setTime(
+      dt_prev.getTime() - dt_prev.getTimezoneOffset() * 60 * 1000
+    );
+
+    toast.promise(
+      api.post("/novoAcordo", {
+        id_empresa,
+        id_contrato_global,
+        id_global,
+        id_consultor: Number(data.id_consultor),
+        status: "A",
+        data_inicio: dt_criacao.toISOString(),
+        data_fim: dt_prev ? dt_prev.toISOString() : undefined,
+        total_acordo: Number(data.total_acordo),
+        realizado_por: data.realizado_por,
+        descricao: data.descricao,
+        metodo: data.metodo,
+        dt_criacao: new Date(),
+        mensalidades: data.mensalidade,
+        id_contrato: id_contrato,
+        id_associado: id_associado,
+      }),
+      {
+        error: "Erro na requisição",
+        success: () => {
+          id_global && carregarDados(id_global);
+          close();
+          return "Acordo criado com sucesso";
+        },
+        loading: "Criando acordo",
       }
-     
-    return(
-   
-  <Modal show={open} size={'5xl'} onClose={()=>close()}>
-    <Modal.Header>Administrar Acordo</Modal.Header>
-    <Modal.Body>
-        <form className="font-semibold" onSubmit={handleSubmit(onSubmit)}>
-       
-        <div className="  border-gray-600 grid mb-1 gap-2 grid-flow-row-dense grid-cols-4">
-       
-        <div className="flex flex-col w-full">
-       
-          <Label htmlFor="startDate" value="Data Criação" />
+    );
+    //  toast.success("Acordo criado com sucesso")
+  };
 
+  async function editarAcordo(data: AcordoProps) {
+    toast.promise(
+      api.put("/editarAcordo", {
+        id_acordo: data.id_acordo,
+        //status:'A',
+        //dt_pgto:new Date(),
+        data_inicio: data.data_inicio,
+        data_fim: data.data_fim,
+        descricao: data.descricao.toUpperCase(),
+        metodo: data.metodo,
+        total_acordo: data.total_acordo,
+        realizado_por: data.realizado_por,
+        id_consultor: Number(data.id_consultor),
+        //mensalidade:novasMensalidades
+        //mensalidades:data.mensalidade
+      }),
+      {
+        error: "Erro ao efetuar atualização",
+        loading: "Efetuando atualização",
+        success: "Atualização Efetuada com sucesso!",
+      }
+    );
+  }
 
-          <Controller
-            control={control}
-            name="data_inicio"
-            render={({ field: { onChange, value } }) => (
-                 <DatePicker selected={watch('data_inicio')} showMonthDropdown  onChange={e=>e && setValue('data_inicio',e)}  dateFormat={"dd/MM/yyyy"} locale={pt}   required className="flex w-full  sm:text-xs  border  rounded-lg bg-gray-50 
-      border-gray-300 placeholder-gray-400  "/>
-            )}
-          />
-    
-       
-      </div>
+  return (
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && close()}>
+      <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-semibold">
+            {acordo.id_acordo ? "Editar" : "Novo"} Acordo
+          </DialogTitle>
+        </DialogHeader>
 
-      <div  className="flex flex-col w-full">
-       
-       <Label  htmlFor="endDate" value="Data Prevista" />
- <Controller
- control={control}
- name="data_fim"
- render={({ field: { onChange, value } }) => (
-       <DatePicker selected={value} showMonthDropdown  onChange={e=>e && onChange(e)} dateFormat={"dd/MM/yyyy"} locale={pt}   required className="flex w-full  sm:text-xs  border  rounded-lg bg-gray-50 
-      border-gray-300 placeholder-gray-400  "/>
- )}
- />
-   
-   </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="descricao">Descrição *</Label>
+              <Input
+                id="descricao"
+                placeholder="Descrição do acordo"
+                {...register("descricao", { required: "Campo obrigatório" })}
+                className={errors.descricao && "border-destructive"}
+              />
+              {errors.descricao && (
+                <p className="text-sm text-destructive">
+                  {errors.descricao.message}
+                </p>
+              )}
+            </div>
 
-   <div  className="flex flex-col w-full">
-       
-       <Label  htmlFor="total" value="Total Acordo" />
- 
-    <TextInput required disabled {...register("total_acordo")} sizing={'sm'}/>
-   </div>
+            <div className="space-y-2">
+              <Label>Consultor *</Label>
+              <Controller
+                name="id_consultor"
+                control={control}
+                rules={{ required: "Selecione um consultor" }}
+                render={({ field }) => (
+                  <Select
+                    onValueChange={(value) => {
+                      field.onChange(Number(value));
+                      handleConsultorSelect(Number(value));
+                    }}
+                    value={field.value?.toString() || ""}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Selecione um consultor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {consultores?.map((consultor) => (
+                        <SelectItem
+                          key={consultor.id_consultor}
+                          value={consultor.id_consultor?.toString() || ""}
+                        >
+                          {consultor.nome}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.id_consultor && (
+                <p className="text-sm text-destructive">
+                  {errors.id_consultor.message}
+                </p>
+              )}
+            </div>
 
-   <div  className=" flex flex-col w-full">
-       
-       <Label  htmlFor="metodo" value="Realizado Por" />
+            <div className="space-y-2">
+              <Label>Data de Início</Label>
+              <Controller
+                name="data_inicio"
+                control={control}
+                render={({ field }) => (
+                  <Popover modal>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full h-9 justify-start text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {field.value ? (
+                          format(new Date(field.value), "PPP", { locale: ptBR })
+                        ) : (
+                          <span>Selecione uma data</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={
+                          field.value ? new Date(field.value) : undefined
+                        }
+                        onSelect={(date) => field.onChange(date?.toISOString())}
+                        locale={ptBR}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                )}
+              />
+            </div>
 
-       <Select value={watch('id_consultor')} onChange={(e)=>handleConsultorSelect(Number(e.target.value))}  required sizing={'sm'} >
-        <option value="">SELECIONE</option>
-        {consultores.map((item,index)=>(<option key={index} value={item.id_consultor}>{item.nome}</option>))}
-       </Select>
-   </div>
+            <div className="space-y-2">
+              <Label>Método de Pagamento</Label>
+              <Input
+                placeholder="Ex: Boleto, PIX, Cartão"
+                {...register("metodo")}
+              />
+            </div>
 
+            <div className="space-y-2">
+              <Label>Total do Acordo</Label>
+              <div className="flex items-center h-10 px-3 py-2 text-sm border rounded-md bg-muted">
+                {watch("total_acordo")?.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
+              </div>
+            </div>
+          </div>
 
-   <div className="col-span-3 flex flex-col w-full">
-       
-       <Label  htmlFor="descricao" value="Descrição" />
- 
-    <TextInput required  className="uppercase" placeholder="Descreve os detalhers do acordo" {...register("descricao")} sizing={'sm'}/>
-   </div>
- 
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="font-medium">Mensalidades do Acordo</h4>
+              <div className="flex space-x-2">
+                <Select
+                  value={mensalidadeSelect?.toString() || ""}
+                  onValueChange={(value) => setMensalidade(Number(value))}
+                >
+                  <SelectTrigger className="w-[250px]">
+                    <SelectValue placeholder="Selecione uma mensalidade" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {mensalidades
+                      ?.filter(
+                        (m) => !m.id_acordo || m.id_acordo === acordo.id_acordo
+                      )
+                      .map((mensalidade) => (
+                        <SelectItem
+                          key={mensalidade.id_mensalidade_global}
+                          value={
+                            mensalidade.id_mensalidade_global?.toString() || ""
+                          }
+                        >
+                          {mensalidade.referencia} -{" "}
+                          {mensalidade.valor_principal?.toLocaleString(
+                            "pt-BR",
+                            {
+                              style: "currency",
+                              currency: "BRL",
+                            }
+                          )}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                <Button
+                  type="button"
+                  onClick={handleNovaRef}
+                  disabled={!mensalidadeSelect}
+                >
+                  Adicionar
+                </Button>
+              </div>
+            </div>
 
-
-
-   <div  className=" flex flex-col w-full">
-       
-       <Label  htmlFor="metodo" value="Método" />
-
-       <Select required sizing={'sm'} {...register("metodo")} >
-        <option value="">SELECIONE</option>
-
-        <option value="DINHEIRO">DINHEIRO</option>
-        <option value="CARTAO">CARTÃO</option>
-        <option value="PIX">PIX</option>
-        <option value="TRANSFERENCIA">TRANSFERÊNCIA</option>
-
-       </Select>
- 
- 
-   </div>
-
-   <div className="col-span-4">
-   {acordo.id_acordo && <Button className="ml-auto" type="submit" size="sm">{'EDITAR'}</Button>}
-   </div>
- 
-
-
-</div>
-
-<Modal.Footer className="flex flex-col w-full">
-<label className="flex w-full justify-center  font-semibold ">REFERÊNCIAS</label>
-
-<div className="flex w-full gap-2">
-        <Select value={mensalidadeSelect??undefined} onChange={e=>setMensalidade(Number(e.target.value))} sizing={'sm'} className="ml-auto">
-            <option value="">REFERÊNCIA</option>
-            {mensalidades.map((item,index)=>(<option key={index} value={item.id_mensalidade_global}>{item.referencia}</option>))}
-        </Select>
-        <Button onClick={handleNovaRef} size="xs">ADICIONAR</Button>
-</div>
-
-
-<div className=" max-h-[350px] overflow-y-auto w-full">
-    <Table theme={{root:{shadow:'none'},body:{cell:{base:"px-6 py-1 text-xs"}},head:{cell:{base:"px-6 py-1"}}}}   >
-    <Table.Head >
-          
-                <Table.HeadCell>
-                    NP
-                </Table.HeadCell>
-                <Table.HeadCell >
-                    DATA VENC.
-                </Table.HeadCell>
-                <Table.HeadCell >
-                    REF
-                </Table.HeadCell>
-                <Table.HeadCell >
-                    DATA AGEND.
-                </Table.HeadCell>
-                <Table.HeadCell>
-                    VALOR
-                </Table.HeadCell>
-                <Table.HeadCell>
-                    status
-                </Table.HeadCell>
-                <Table.HeadCell>
-                    
-                </Table.HeadCell>
-           
-        </Table.Head>
-        <Table.Body className="divide-y" >
-            {watch('mensalidade')?.map((item,index)=>(  
-                <Table.Row key={index} 
-                className="text-gray-900 font-semibold "
-               >
-                <Table.Cell >
-                    {item.parcela_n}
-                </Table.Cell>
-                <Table.Cell>
-                   {new Date(item.vencimento || '').toLocaleDateString('pt-BR',{timeZone:'UTC'})}
-                   
-                </Table.Cell>
-                <Table.Cell >
-                   {item.referencia}
-                </Table.Cell>
-                <Table.Cell >
-                {new Date(item.cobranca || '').toLocaleDateString('pt-BR',{timeZone:'UTC'})}
-                </Table.Cell>
-                <Table.Cell >
-               {Number(item.valor_principal).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-                </Table.Cell>
-                <Table.Cell >
-                  {item.status}
-                </Table.Cell>
-                <Table.Cell>
-                   <button type="button" onClick={()=>handleRemove(Number(item.id_mensalidade_global))}> 
-                   <MdClose className="text-red-600" size={15}/>
-                    </button> 
-                </Table.Cell>
-            </Table.Row>
-                
-            ))}
-
-
-<Table.Row 
-                className="text-gray-900 font-semibold"
-               >
-                <Table.Cell >
-                    TOTAL
-                </Table.Cell>
-                <Table.Cell>
-                   {}
-                   
-                </Table.Cell>
-                <Table.Cell >
-                   {}
-                </Table.Cell>
-                <Table.Cell >
-                {}
-                </Table.Cell>
-                <Table.Cell className="font-semibold text-blue-600" >
-               {Number(watch('total_acordo')).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-                </Table.Cell>
-                <Table.Cell >
-                  {}
-                </Table.Cell>
-
-            </Table.Row>
-            
-        </Table.Body>
-    
-    </Table>
-    </div>
-
-    <div className="flex w-full">
-{!acordo.id_acordo && <Button className="ml-auto" type="submit" size="sm">{'CRIAR'}</Button>}
-    </div>
-   
-    </Modal.Footer>
-
-</form>
-</Modal.Body>
-
-    </Modal>
-)
+            <div className="border rounded-md">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Referência</TableHead>
+                    <TableHead>Vencimento</TableHead>
+                    <TableHead>Valor</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="w-[50px]"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {watch("mensalidade")?.map((item) => (
+                    <TableRow key={item.id_mensalidade_global}>
+                      <TableCell>{item.referencia}</TableCell>
+                      <TableCell>
+                        {item.vencimento &&
+                          new Date(item.vencimento).toLocaleDateString("pt-BR")}
+                      </TableCell>
+                      <TableCell>
+                        {Number(item.valor_principal).toLocaleString("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        })}
+                      </TableCell>
+                      <TableCell>{item.status}</TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() =>
+                            item.id_mensalidade_global &&
+                            handleRemove(item.id_mensalidade_global)
+                          }
+                        >
+                          <X className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {(!watch("mensalidade") ||
+                    watch("mensalidade")?.length === 0) && (
+                    <TableRow>
+                      <TableCell
+                        colSpan={4}
+                        className="h-24 text-center text-muted-foreground"
+                      >
+                        Nenhuma mensalidade adicionada
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => close()}
+              disabled={isLoading}
+            >
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Salvando..." : "Salvar"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
 }

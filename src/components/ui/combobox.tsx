@@ -18,14 +18,15 @@ interface ComboboxProps {
   placeholder?: string;
   searchPlaceholder?: string;
   className?: string;
-  disabled?: boolean
+  disabled?: boolean,
+  modal?:boolean
 }
 
-export function Combobox({ items, value, onChange, placeholder='Selecione um item', searchPlaceholder,className='w-full',disabled=false }: ComboboxProps) {
+export function Combobox({ items, value, onChange, placeholder='Selecione um item', searchPlaceholder,className='w-full',disabled=false,modal=false }: ComboboxProps) {
   const [open, setOpen] = useState(false);
   const selectedItem = items.find(item => item.value === value);
   return (
-    <PopoverRoot  open={open} onOpenChange={setOpen}>
+    <PopoverRoot modal={modal}  open={open} onOpenChange={setOpen}>
       <PopoverTrigger disabled={disabled} asChild className=" w-full">
         <Button className=" justify-between text-xs truncate border-gray-400" variant="outline" role="combobox" aria-expanded={open}>
         <span className="truncate">{selectedItem ? selectedItem?.label : placeholder}</span>

@@ -1,15 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Control, Controller, UseFormWatch } from "react-hook-form";
+import { Control, Controller, useFormContext, UseFormWatch } from "react-hook-form";
 import { RouteProps } from "@/types/cobranca";
 
-interface ClientCriteriaSelectorProps {
-  control:Control<RouteProps>
-  watch:UseFormWatch<RouteProps>
-  // overdueMonths: number;
-  // onChange: (months: number) => void;
-}
 
 const operators = [
   // { value: ">=", label: ">= (maior ou igual)" },
@@ -21,10 +15,11 @@ const operators = [
 
 const monthOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-const ClientCriteriaSelector = ({control,watch}: ClientCriteriaSelectorProps) => {
+const ClientCriteriaSelector = () => {
   // Assuming the format is "operator:value" for simplicity, defaulting to ">=" for display
   const currentOperator = ">="; // This could be extracted from a more complex data structure
  // const currentValue = overdueMonths;
+ const {control,watch} = useFormContext<RouteProps>()
 
   return (
     <div className="space-y-3">
@@ -76,9 +71,6 @@ const ClientCriteriaSelector = ({control,watch}: ClientCriteriaSelectorProps) =>
                   </SelectContent>
                 </Select>
               )}
-            
-            
-            
             />
         
           </div>

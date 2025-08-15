@@ -5,16 +5,21 @@ import { Badge } from "@/components/ui/badge"
 import { Filter } from "lucide-react"
 import RouteGenerator from "../RouteGenerator"
 import { ConsultoresProps } from "@/types/consultores"
+import { RotaFilterProps } from "@/pages/dashboard/cobranca/rotas"
 
 interface HeaderProps {
-  activeFiltersCount: number
+ // activeFiltersCount: number
   onOpenFilters: () => void
-selectEmp:string
+empresa:{
+    id_empresa:string,
+    nome:string
+},
 cidadesEmpresa:Array<string>
 cobradores:ConsultoresProps[]
+
 }
 
-export function Header({ activeFiltersCount, onOpenFilters,selectEmp,cidadesEmpresa,cobradores }: HeaderProps) {
+export function Header({onOpenFilters,empresa,cidadesEmpresa,cobradores }: HeaderProps) {
   return (
     <div className="bg-white border-b border-gray-200 px-6 py-2">
       <div className="flex items-center justify-between">
@@ -24,15 +29,11 @@ export function Header({ activeFiltersCount, onOpenFilters,selectEmp,cidadesEmpr
         </div>
         <div className="flex gap-3">
           <Button variant="outline" onClick={onOpenFilters}>
-            <Filter />
+            <Filter  />
             Filtros
-            {activeFiltersCount > 0 && (
-              <Badge variant="secondary" className="ml-2">
-                {activeFiltersCount}
-              </Badge>
-            )}
+         
           </Button>
-           <RouteGenerator selectEmp={selectEmp} cidadesEmpresa={cidadesEmpresa} cobradores={cobradores} />
+           <RouteGenerator empresa={empresa} cidadesEmpresa={cidadesEmpresa} cobradores={cobradores} />
         </div>
       </div>
     </div>

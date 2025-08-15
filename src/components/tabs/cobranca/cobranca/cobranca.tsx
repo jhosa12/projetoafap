@@ -1,6 +1,6 @@
 import { api } from "@/lib/axios/apiClient";
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import Relatorio from '@/Documents/relatorioCobranca/DocumentTemplate';
+import Relatorio from '@/Documents/cobranca/DocumentTemplate';
 import { useReactToPrint } from "react-to-print";
 import { IoPrint } from "react-icons/io5";
 import { AuthContext } from "@/store/AuthContext";
@@ -41,7 +41,10 @@ interface CobrancaProps {
 
   }
 
+
+  
 }
+
 
 export interface FormProps{
   startDate:Date,
@@ -55,6 +58,7 @@ export interface FormProps{
   cobrador:Array<string>
   bairros:Array<string>
   cidade:string
+  statusReagendamento:string 
 }
 
 

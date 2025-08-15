@@ -127,7 +127,8 @@ interface MensalidadeProps{
     valor_forma:number,
     pix_por?:string,
     forma_pagto:string,
-    valor_pix?:number
+    valor_pix?:number,
+    aut?:string
 }
   
   
@@ -135,7 +136,7 @@ interface MensalidadeProps{
     filtered: InadimplenciaRotaProps[];
   }
 
-  export interface Solicitacao {
+  export interface SolicitacaoCobradorProps {
     id_global: number;
     id_contrato: number;
     nome_cliente: string;
@@ -194,7 +195,8 @@ export interface ClientUpdateProps {
 export interface RouteProps{
   id_cobranca :number
   consultor:string
-  id_empresa:string
+  id_empresa:string,
+  empresa:string
    cobranca :Array<InadimplenciaRotaProps> 
    parametros :{
     cidade:string,
@@ -216,7 +218,7 @@ export interface RouteProps{
    created_by :string
    pagamentos :Array<MensalidadePagaProps>
    agendamentos:AgendamentoCobranca[]
-   solicitacoes :Array<Solicitacao>
+   solicitacoes :Array<SolicitacaoCobradorProps>
    atualizacaoCadastral:Array<ClientUpdateProps>,
    observacao :string
   }

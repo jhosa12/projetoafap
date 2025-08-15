@@ -50,8 +50,7 @@ export default function CaixaMovimentar() {
   const { usuario, permissoes, infoEmpresa } = useContext(AuthContext);
   const [selectRelatorio, setSelectRelatorio] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [mensalidade, setMensalidade] =
-    useState<Partial<MensalidadeBaixaProps>>();
+  const [mensalidade, setMensalidade] =useState<Partial<MensalidadeBaixaProps>>();
   const [modalDados, setModalDados] = useState<boolean>(false);
   const [despesas, setDespesas] = useState<number>(0);
   const [data, setData] = useState<Partial<ResponseCaixaProps>>();
@@ -61,7 +60,6 @@ export default function CaixaMovimentar() {
     excluir: false,
     fecharCaixa: false,
   });
-  const [openDrop, setOpenDrop] = useState(false);
   const { register, watch, handleSubmit, control } = useForm<FormCaixaProps>({
     defaultValues: {
       startDate: new Date(),

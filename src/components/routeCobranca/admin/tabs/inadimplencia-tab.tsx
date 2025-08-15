@@ -14,7 +14,7 @@ export function InadimplenciaTab({ route }: { route: RouteProps }) {
 
 
 return (
-  <div className="max-h-[calc(100vh-250px)] overflow-y-auto">
+  <div className="max-h-[calc(100vh-300px)] overflow-y-auto">
      <Table  >
                     <TableHeader>
                       <TableRow>
@@ -64,19 +64,15 @@ return (
                    
                               {item.check_in && (
                                 <div className="text-xs">
-                                  <span className="text-green-600">In:</span> {item.check_in.data && new Date(item.check_in.data).toLocaleDateString('pt-BR',{
-                                    timeZone:'America/Fortaleza'
-                                  })} - {item.check_in.data && new Date(item.check_in.data).toLocaleTimeString('pt-BR',{
-                                    timeZone:'America/Fortaleza'
-                                  })}
+                                  <span className="text-green-600">In:</span> {item.check_in.data && new Date(item.check_in.data).toLocaleString('pt-BR')}
                                 </div>
                               )}
                               {item.check_out && (
                                 <div className="text-xs">
-                                  <span className="text-red-600">Out:</span> {item.check_out.data.toLocaleString('pt-BR')}
+                                  <span className="text-red-600">Out:</span> {item.check_out.data && new Date(item.check_out.data).toLocaleString('pt-BR')}
                                 </div>
                               )}
-                              {item.check_out?.observacoes && (
+                              {/* {item.check_out?.observacoes && (
                                 <Tooltip>
                                   <TooltipTrigger>
                                     <Badge variant="outline" className="text-xs cursor-help">
@@ -87,7 +83,7 @@ return (
                                     <p>{item.check_out.observacoes}</p>
                                   </TooltipContent>
                                 </Tooltip>
-                              )}
+                              )} */}
                             </div>
                           </TableCell>
                           <TableCell className="text-xs">

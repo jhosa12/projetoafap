@@ -16,6 +16,7 @@ import { IoMdOptions } from "react-icons/io";
 import useVerifyPermission from "@/hooks/useVerifyPermission";
 import ModalSelectCaixa from "./ModalSelectCaixa";
 import { EmpresaProps } from "@/types/empresa";
+import { openSync } from "fs";
 
 
 
@@ -33,7 +34,7 @@ export default function ActionsCaixa({data,setSelectRelatorio,id_empresa,infoEmp
     const {verify} =useVerifyPermission()
     return(
         
-         <DropdownMenu  defaultOpen={false} open={open??false} onOpenChange={setOpen}>
+         <DropdownMenu  defaultOpen={false} open={open} onOpenChange={setOpen}>
                       <DropdownMenuTrigger asChild>
                         <Button
                           variant={"outline"}
@@ -57,7 +58,7 @@ export default function ActionsCaixa({data,setSelectRelatorio,id_empresa,infoEmp
                           }
                         ></DropdownMenuItem> */}
                          
-                          <DropdownMenuItem asChild onClick={() => setSelectRelatorio("ANALITICO")}>
+                          <DropdownMenuItem asChild onClick={() => {setSelectRelatorio("ANALITICO")}}>
                             <ModalSelectCaixa infoEmpresa={infoEmpresa} id_empresa={id_empresa} />
                           </DropdownMenuItem>
 

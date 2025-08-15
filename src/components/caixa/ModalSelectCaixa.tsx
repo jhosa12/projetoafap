@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogPortal, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { AuthContext } from "@/store/AuthContext";
 import { api } from "@/lib/axios/apiClient";
@@ -19,6 +19,7 @@ import { SomaProps } from "../tabs/financeiro/caixa/caixa";
 import { EmpresaProps } from "@/types/empresa";
 import { useReactToPrint } from "react-to-print";
 import { pageStyle } from "@/utils/pageStyle";
+import { Portal } from "@radix-ui/react-dialog";
 
 interface FilterCaixaProps{
     caixa:string
@@ -176,28 +177,7 @@ export default function ModalSelectCaixa({id_empresa,infoEmpresa}:ModalPropsRela
 
     return(
 
-         <>
-
-            
-  <div style={{ display: "none" }}>
-       
-     
-          <RelatorioSintetico
-            infoEmpresa={infoEmpresa}
-            tipoRelatorio={'ANALITICO'}
-            soma={handleGerirRelatorio() ?? ({} as SomaProps)}
-            usuario={watch("caixa")}
-            startDate={watch("start")}
-            endDate={watch("end")}
-            array={data ?? []}
-            ref={currentPage}
-          />
-        
-      </div>
-
-
-
-
+ 
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger className="text-sm px-2">Relatório</DialogTrigger>
             <DialogContent>
@@ -216,13 +196,11 @@ export default function ModalSelectCaixa({id_empresa,infoEmpresa}:ModalPropsRela
                         render={({field:{onChange,value}})=>(
                             <Combobox
                             placeholder="Selecione o Caixa"
-                            items={ccustos.map(item=>{return {label:item.descricao,value:item.descricao}})}
+                            items={ccustos?.map(item=>{return {label:item.descricao,value:item.descricao}})??[]}
                             onChange={onChange}
                             value={value}
                            />
-                        )}
-
-                    />
+                        )}/>
 
                         <div className="flex items-center gap-2">
                                   <div>
@@ -272,9 +250,23 @@ export default function ModalSelectCaixa({id_empresa,infoEmpresa}:ModalPropsRela
                 </form>
                
             </DialogContent>
-           
+            <div style={{ display: "none" }}>
+       
+     
+       <RelatorioSintetico
+         infoEmpresa={infoEmpresa}
+         tipoRelatorio={'ANALITICO'}
+         soma={handleGerirRelatorio() ?? ({} as SomaProps)}
+         usuario={watch("caixa")}
+         startDate={watch("start")}
+         endDate={watch("end")}
+         array={data ?? []}
+         ref={currentPage}
+       />
+     
+   </div>
 
         </Dialog>
-       </>
+       
     )
 }

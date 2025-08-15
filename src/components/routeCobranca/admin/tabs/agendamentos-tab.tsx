@@ -15,24 +15,11 @@ export function AgendamentosTab({ agendamentos }: { agendamentos: Array<Agendame
 
 
 
-  const sincAgendamentos = async()=>{
-      toast.promise(
-        api.post('/cobranca/sincAgend',{
-          agendamentos
-        }),
-        {
-          loading: 'Sincronizando agendamentos...',
-          success: 'Agendamentos sincronizados com sucesso!',
-          error: 'Erro ao sincronizar agendamentos.'
-        }
-      )
-  }
+
 
 return (
   <div>
-    <Button onClick={sincAgendamentos}>
-      Sincronizar
-    </Button>
+ 
      <Table>
                     <TableHeader>
                       <TableRow>

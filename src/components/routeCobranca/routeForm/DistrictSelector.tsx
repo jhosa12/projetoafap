@@ -4,24 +4,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { X, Plus } from "lucide-react";
 import { MultiSelects } from "@/components/ui/multiSelect";
-import { Control, Controller, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { Control, Controller, useFormContext, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { InadimplenciaBairroProps, RouteProps } from "@/types/cobranca";
 import { EmpresaProps } from "@/types/empresa";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface DistrictSelectorProps {
-  control:Control<RouteProps>
-  setValue:UseFormSetValue<RouteProps>
-  watch:UseFormWatch<RouteProps>
+ 
   bairros:Array<InadimplenciaBairroProps>
   cidades:Array<string>
 }
 
 
 
-const DistrictSelector = ({ control,setValue, watch,bairros,cidades }: DistrictSelectorProps) => {
+const DistrictSelector = ({ bairros,cidades }: DistrictSelectorProps) => {
+  const {control,watch,setValue} =  useFormContext()
   const [inputValue, setInputValue] = useState("");
   const bairrosFilter = bairros.filter(item=>item.cidade===watch('parametros.cidade'))
+
   // const addDistrict = (district: string) => {
   //   if (district && !selected.includes(district)) {
   //     onChange([...selected, district]);

@@ -1,4 +1,4 @@
-import { IoMdAdd, IoMdSearch } from "react-icons/io";
+import { IoMdSearch } from "react-icons/io";
 import "react-tabs/style/react-tabs.css";
 import { ModalBusca } from "../../../components/modals/modalBusca/modalBusca";
 import React, { useState, useContext, useEffect } from "react";
@@ -382,7 +382,7 @@ export default function AdmContrato() {
         // Renderiza as tabs para telas maiores
         <Tabs
           defaultValue="dados"
-          className="overflow-x-auto whitespace-nowrap"
+          className=" whitespace-nowrap"
         >
           <TabsList className="gap-2">
             <TabsTrigger value="dados">
@@ -401,10 +401,10 @@ export default function AdmContrato() {
               <HiOutlineIdentification className="w-5 h-5 mr-2" />
               Carteiras
             </TabsTrigger>
-            {/* <TabsTrigger value="acordos">
+       <TabsTrigger value="acordos">
               <HiOutlineIdentification className="w-5 h-5 mr-2" />
               Acordos
-            </TabsTrigger> */}
+            </TabsTrigger> 
           </TabsList>
 
           <TabsContent value="dados">
@@ -454,10 +454,10 @@ export default function AdmContrato() {
             />
           </TabsContent>
 
-          {/* <TabsContent value="acordos">
+          <TabsContent value="acordos">
             <Acordos
               acordos={dadosassociado?.acordo ?? []}
-              mensalidades={dadosassociado?.mensalidade ?? []}
+              mensalidades={dadosassociado?.mensalidade?.filter((item) => item.status==="A" || item.status==="R") ?? []}
               id_contrato_global={dadosassociado?.contrato?.id_contrato_global ?? 0}
               id_global={dadosassociado?.id_global ?? 0}
               id_empresa={dadosassociado?.id_empresa ?? ""}
@@ -465,7 +465,7 @@ export default function AdmContrato() {
               id_contrato={dadosassociado?.contrato?.id_contrato ?? 0}
              
             />
-          </TabsContent> */}
+          </TabsContent>
         </Tabs>
       )}
 

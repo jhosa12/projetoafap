@@ -2,10 +2,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ConsultoresProps } from "@/types/consultores";
+import { Combobox } from "@/components/ui/combobox";
 
 interface ConsultantSelectorProps {
   selected: string;
-  onChange: (consultant: string) => void;
+  onChange: (consultant: string|null) => void;
   consultants:ConsultoresProps[]
 }
 
@@ -16,7 +17,18 @@ const ConsultantSelector = ({ selected, onChange,consultants }: ConsultantSelect
 
   return (
     <div className="space-y-3">
-      <Select value={selected} onValueChange={onChange}>
+
+
+      <Combobox
+        items={consultants.map(item=>{return{value:item.nome,label:item.nome}})??[]}
+        onChange={value=>onChange(value)}
+        value={selected}
+        searchPlaceholder="Selecione um consultor"
+      />
+
+
+
+      {/* <Select value={selected} onValueChange={onChange}>
         <SelectTrigger className="text-sm">
           <SelectValue placeholder="Selecione um consultor" />
         </SelectTrigger>
@@ -31,15 +43,13 @@ const ConsultantSelector = ({ selected, onChange,consultants }: ConsultantSelect
                 </Avatar>
                 <div className="flex flex-col">
                   <span className="text-sm font-medium">{consultant.nome}</span>
-                  {/* <span className="text-xs text-gray-500">
-                    {consultant.routes} rotas ativas
-                  </span> */}
+                
                 </div>
               </div>
             </SelectItem>
           ))}
         </SelectContent>
-      </Select>
+      </Select> */}
 
       {selectedConsultant && (
         <div className="p-2 bg-gray-50 rounded-md">

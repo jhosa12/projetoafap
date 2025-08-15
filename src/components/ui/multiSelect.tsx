@@ -45,7 +45,7 @@ export function MultiSelects({
   disabled = false,
   emptyMessage = "No options found.",
   maxDisplayItems = 3,
-}: MultiSelectProps) {
+} : MultiSelectProps) {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -108,7 +108,7 @@ export function MultiSelects({
                       key={index}
                       variant="secondary"
                       className={cn(
-                        "mr-1 mb-1 py-1 px-2  bg-blue-100 text-blue-800 hover:bg-blue-200",
+                        "mr-1  text-[10px] bg-blue-100 text-blue-800 hover:bg-blue-200",
                         badgeClassName
                       )}
                     >
@@ -137,7 +137,7 @@ export function MultiSelects({
                     <Badge
                       variant="secondary"
                       className={cn(
-                        "mr-1 mb-1 py-1 px-2 bg-blue-100 text-blue-800",
+                        "mr-1 text-[10px] bg-blue-100 text-blue-800",
                         badgeClassName
                       )}
                     >
@@ -183,7 +183,6 @@ export function MultiSelects({
                   return (
                     <CommandItem
                       key={index}
-                     
                       value={option.value}
                       onSelect={()=>handleSelect(option.value)}
                       disabled={option.disabled}

@@ -15,7 +15,7 @@ import ClientCriteriaSelector from "./routeForm/ClientCriteriaSelector";
 import ConsultantSelector from "./routeForm/ConsultantSelector";
 import RoutePreview from "./routeForm/RoutePreview";
 import { toast } from "sonner";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { InadimplenciaBairroProps, RouteProps } from "@/types/cobranca";
 import { Textarea } from "../ui/textarea";
 import useApiPost from "@/hooks/useApiPost";
@@ -37,19 +37,16 @@ export interface RouteFormData {
 }
 
 interface RouteGeneratorProps {
-  selectEmp: string;
+    empresa:{
+      id_empresa:string,
+      nome:string
+    },
     cidadesEmpresa:Array<string>
     cobradores:ConsultoresProps[]
 }
 
-const RouteGenerator = ({ selectEmp,cidadesEmpresa,cobradores }: RouteGeneratorProps) => {
-  const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm<RouteProps>();
+const RouteGenerator = ({ empresa,cidadesEmpresa,cobradores }: RouteGeneratorProps) => {
+  const metodos = useForm<RouteProps>();
   const { postData } = useApiPost("/cobranca/novaRota");
   const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
   const [arrayBairros, setArrayBairros] = useState<
@@ -59,8 +56,8 @@ const RouteGenerator = ({ selectEmp,cidadesEmpresa,cobradores }: RouteGeneratorP
   useEffect(() => {
     const getBairros = async () => {
       const res = await api.post("/cobranca/inadimplencia", {
-        id_empresa: selectEmp,
-        cidade: watch('parametros.cidade')??"",
+        id_empresa:empresa.id_empresa,
+        cidade: metodos.watch('parametros.cidade')??"",
         param: ">",
         n_parcelas: 1,
         status: ["A", "R"],
@@ -72,13 +69,13 @@ const RouteGenerator = ({ selectEmp,cidadesEmpresa,cobradores }: RouteGeneratorP
       setArrayBairros(res.data.inadResumoBairro)
     };
     getBairros();
-  }, [selectEmp,watch('parametros.cidade')]);
+  }, [empresa,metodos.watch('parametros.cidade')]);
 
 
 
   const handleGenerateRoute: SubmitHandler<RouteProps> = async (data) => {
    
-    await postData({...data,id_empresa:selectEmp});
+    await postData({...data,id_empresa:empresa.id_empresa,empresa:empresa.nome});
 
     if (data.parametros.bairros?.length === 0) {
       toast("Erro de validação", {
@@ -118,8 +115,9 @@ const RouteGenerator = ({ selectEmp,cidadesEmpresa,cobradores }: RouteGeneratorP
         <DialogHeader>
           <DialogTitle>Gerar Nova Rota</DialogTitle>
         </DialogHeader>
+        <FormProvider {...metodos}>
         <form
-          onSubmit={handleSubmit(handleGenerateRoute)}
+          onSubmit={metodos.handleSubmit(handleGenerateRoute)}
           className="grid lg:grid-cols-3 gap-4"
         >
           <div className="lg:col-span-2 space-y-4">
@@ -131,19 +129,12 @@ const RouteGenerator = ({ selectEmp,cidadesEmpresa,cobradores }: RouteGeneratorP
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <Controller
-                  name="parametros.bairros"
-                  control={control}
-                  render={({ field }) => (
+               
                     <DistrictSelector
-                    setValue={setValue}
-                    watch={watch}
-                      control={control}
                       bairros={arrayBairros}
                       cidades={cidadesEmpresa}
                     />
-                  )}
-                />
+                 
               </CardContent>
             </Card>
 
@@ -156,16 +147,11 @@ const RouteGenerator = ({ selectEmp,cidadesEmpresa,cobradores }: RouteGeneratorP
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Controller
-                    name="parametros.periodo"
-                    control={control}
-                    render={({ field }) => (
+          
                       <PeriodSelector
-                        period={field.value}
-                        onChange={(period) => field.onChange(period)}
+                        
                       />
-                    )}
-                  />
+                 
                 </CardContent>
               </Card>
 
@@ -177,7 +163,7 @@ const RouteGenerator = ({ selectEmp,cidadesEmpresa,cobradores }: RouteGeneratorP
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ClientCriteriaSelector control={control} watch={watch} />
+                  <ClientCriteriaSelector  />
                 </CardContent>
               </Card>
             </div>
@@ -192,7 +178,7 @@ const RouteGenerator = ({ selectEmp,cidadesEmpresa,cobradores }: RouteGeneratorP
               <CardContent>
                 <Controller
                   name="parametros.consultor"
-                  control={control}
+                  control={metodos.control}
                   render={({ field }) => (
                     <ConsultantSelector
                       selected={field.value}
@@ -206,7 +192,7 @@ const RouteGenerator = ({ selectEmp,cidadesEmpresa,cobradores }: RouteGeneratorP
           </div>
 
           <div className="space-y-4">
-            <RoutePreview formData={watch()} />
+            <RoutePreview formData={metodos.watch()} />
 
             <Card>
               <CardHeader className="pb-3">
@@ -218,7 +204,7 @@ const RouteGenerator = ({ selectEmp,cidadesEmpresa,cobradores }: RouteGeneratorP
               <CardContent>
                 <Controller
                   name="observacao"
-                  control={control}
+                  control={metodos.control}
                   render={({ field }) => (
                     <Textarea
                       value={field.value}
@@ -249,6 +235,7 @@ const RouteGenerator = ({ selectEmp,cidadesEmpresa,cobradores }: RouteGeneratorP
             </Card>
           </div>
         </form>
+        </FormProvider>
       </DialogContent>
     </Dialog>
   );

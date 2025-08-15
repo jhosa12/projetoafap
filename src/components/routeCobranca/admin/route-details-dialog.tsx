@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {TooltipProvider } from "@/components/ui/tooltip"
 import { Badge } from "@/components/ui/badge"
-import {  FileText } from "lucide-react"
+import {  FileText, FolderSyncIcon } from "lucide-react"
 import { StatusBadge } from "./status-badge"
 import { RouteProps } from "@/types/cobranca"
 import { InadimplenciaTab } from "./tabs/inadimplencia-tab"
@@ -14,6 +14,9 @@ import { PagamentosTab } from "./tabs/pagamentos-tab"
 import { AgendamentosTab } from "./tabs/agendamentos-tab"
 import { SolicitacoesTab } from "./tabs/solicitacoes-tab"
 import { AtualizacoesTab } from "./tabs/atualizacoes-tab"
+import { api } from "@/lib/axios/apiClient"
+import { toast } from "sonner"
+import { Button } from "@/components/ui/button"
 
 
 interface RouteDetailsDialogProps {
@@ -25,14 +28,78 @@ interface RouteDetailsDialogProps {
 export function RouteDetailsDialog({ route, open, onOpenChange }: RouteDetailsDialogProps) {
   if (!route) return null
 
+
+
+
+  const sincPagamentos = async () => {
+
+    try {
+      const response = await api.post("/cobranca/sincPag", {
+       id_rota:route.id_cobranca
+      })
+    } catch (error) {
+
+      toast.error('Erro ao baixar dados')
+      
+    }
+  }
+
+
+  const sincAgendamentos = async()=>{
+      toast.promise(
+        api.post('/cobranca/sincAgend',{
+          agendamentos:route?.agendamentos
+        }),
+        {
+          loading: 'Sincronizando agendamentos...',
+          success: 'Agendamentos sincronizados com sucesso!',
+          error: 'Erro ao sincronizar agendamentos.'
+        }
+      )
+  }
+
+
+  const handleSincData = () =>{
+      toast.promise(
+        Promise.all([
+          sincPagamentos(),
+          sincAgendamentos()
+        ]),
+        {
+          loading: 'Sincronizando dados...',
+          success: 'Dados sincronizados com sucesso!',
+          error: 'Erro ao sincronizar dados.'
+        }
+      )
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
+        <DialogHeader >
           <DialogTitle>Detalhes da Rota #{route.id_cobranca}</DialogTitle>
           <DialogDescription>
             Consultor: {route.consultor} • Status: <StatusBadge status={route.status} />
           </DialogDescription>
+         <Button className="ml-auto bg-gray-200" variant='outline' onClick={handleSincData}>
+          <FolderSyncIcon />
+          Sincronizar Dados
+          </Button>
         </DialogHeader>
 
         <TooltipProvider>
@@ -50,7 +117,7 @@ export function RouteDetailsDialog({ route, open, onOpenChange }: RouteDetailsDi
             </TabsContent>
 
             <TabsContent value="pagamentos">
-             <PagamentosTab pagamentos={route?.pagamentos }/>
+             <PagamentosTab id_rota={route?.id_cobranca} pagamentos={route?.pagamentos }/>
             </TabsContent>
 
             <TabsContent value="agendamentos">

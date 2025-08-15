@@ -2,8 +2,21 @@ import { useContext, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { MapPin, Plus, Eye, Calendar, Users, TrendingUp } from "lucide-react";
 import RouteGenerator from "@/components/routeCobranca/RouteGenerator";
 import RouteDetailsModal from "@/components/routeCobranca/routeManagement/RouteDetailsModal";
@@ -12,49 +25,65 @@ import { RouteProps } from "@/types/cobranca";
 import { api } from "@/lib/axios/apiClient";
 import { SelectValue } from "@radix-ui/react-select";
 import CobrancaAdmin from "@/components/routeCobranca/admin/routeScreen";
+import { DateRange } from "react-day-picker";
+import { ajustarData } from "@/utils/ajusteData";
 
-
+export interface RotaFilterProps {
+  consultor: string;
+  status: string;
+  bairro: string;
+  dateRange: DateRange | undefined;
+}
 const RouteManagement = () => {
   const [routes, setRoutes] = useState<RouteProps[]>([]);
-  const [selectedRoute, setSelectedRoute] = useState<RouteProps | null>(null);
-  const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const {selectEmp,cidadesEmpresa,consultores} = useContext(AuthContext)
+  const { infoEmpresa, cidadesEmpresa, consultores } = useContext(AuthContext);
 
-  const cobradores = consultores.filter(c => c.funcao === 'COBRADOR (RDA)')
+  const cobradores = consultores.filter((c) => c.funcao === "COBRADOR (RDA)");
 
-  const getStatusColor = (status: RouteProps['status']) => {
-    switch (status) {
-      case 'ativa': return 'default';
-      case 'pausada': return 'secondary';
-      case 'concluida': return 'destructive';
-      default: return 'outline';
-    }
-  };
-  useEffect(()=>{
-    getRotas()
-  },[])
-
-  const getRotas = async()=>{
-      try {
-        const response  = await api.post('/cobranca/rotas')
-        setRoutes(response.data)
-        
-      } catch (error) {
-        
-      } 
-  }
-
-  const getProgressPercentage = (visited: number, total: number) => {
-    return Math.round((visited / total) * 100);
+  const initialFilters: RotaFilterProps = {
+    consultor: "",
+    bairro: "",
+    dateRange: {
+      from: new Date(),
+      to: new Date(),
+    },
+    status: "",
   };
 
-  const totalActive = routes.filter(r => r.status === 'ativa').length;
-  const totalAmount = 0;
- // const totalAmount = routes.reduce((sum, r) => sum + r.amountCollected, 0);
+  useEffect(() => {
+    getRotas(initialFilters);
+  }, []);
+
+  const getRotas = async (data: RotaFilterProps) => {
+    const {dataIni,dataFim} = ajustarData(data.dateRange?.from,data.dateRange?.to)
+    try {
+      const response = await api.post("/cobranca/rotas",
+        {
+          startDate:dataIni,
+          endDate:dataFim
+        }
+      );
+      setRoutes(response.data);
+    } catch (error) {}
+  };
+
+  // const getProgressPercentage = (visited: number, total: number) => {
+  //   return Math.round((visited / total) * 100);
+  // };
+
+  // const totalActive = routes.filter((r) => r.status === "ativa").length;
+  // const totalAmount = 0;
+  // const totalAmount = routes.reduce((sum, r) => sum + r.amountCollected, 0);
 
   return (
-    <CobrancaAdmin cobradores={cobradores} routes={routes} selectEmp={selectEmp} cidadesEmpresa={cidadesEmpresa} />
+    <CobrancaAdmin
+      cobradores={consultores}
+      routes={routes}
+      empresa={{id_empresa:infoEmpresa?.id!,nome:infoEmpresa?.nome??''}}
+      cidadesEmpresa={cidadesEmpresa}
+      initialFilters={initialFilters}
+      getRotas={getRotas}
+    />
     // <div className="p-6 max-w-7xl mx-auto">
     //   <div className="flex items-center justify-between mb-6">
     //     <div>
@@ -167,8 +196,8 @@ const RouteManagement = () => {
     //                     <span>{getProgressPercentage(route.clientsVisited, route.clientsTotal)}%</span> */}
     //                   </div>
     //                   <div className="w-full bg-gray-200 rounded-full h-2">
-    //                     <div 
-    //                       className="bg-blue-600 h-2 rounded-full" 
+    //                     <div
+    //                       className="bg-blue-600 h-2 rounded-full"
     //                       // style={{ width: `${getProgressPercentage(route.clientsVisited, route.clientsTotal)}%` }}
     //                     />
     //                   </div>
@@ -186,8 +215,8 @@ const RouteManagement = () => {
     //                 {/* {route.deadline.toLocaleDateString('pt-BR')} */}
     //               </TableCell>
     //               <TableCell>
-    //                 <Button 
-    //                   variant="outline" 
+    //                 <Button
+    //                   variant="outline"
     //                   size="sm"
     //                   onClick={() => {
     //                     setSelectedRoute(route);
@@ -204,7 +233,7 @@ const RouteManagement = () => {
     //     </CardContent>
     //   </Card>
 
-    //   {/* <RouteDetailsModal 
+    //   {/* <RouteDetailsModal
     //     route={selectedRoute}
     //     isOpen={isDetailsOpen}
     //     onClose={() => setIsDetailsOpen(false)}
