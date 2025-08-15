@@ -199,7 +199,7 @@ export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, 
                     <SelectItem value="R">REAGENDADOS</SelectItem>
                     <SelectItem value="RAV">REAGENDADOS A VENCER (RAV)</SelectItem>
                     <SelectItem value="RV">REAGENDADOS VENCIDOS (RV)</SelectItem>
-                    <SelectItem value="A/B">ABERTOS E REAGENDADOS</SelectItem>
+                    <SelectItem value="A/R">ABERTOS E REAGENDADOS</SelectItem>
                     <SelectItem value="A">ABERTOS</SelectItem>
                     <SelectItem value="AV">ABERTOS VENCIDOS</SelectItem>
                     <SelectItem value="AAV">ABERTOS A VENCER</SelectItem>
