@@ -163,7 +163,7 @@ export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, 
               />
             )}
           />
-
+{/* 
           <div className="flex flex-col gap-2">
             <Label className="text-xs">Status</Label>
             <Controller
@@ -182,7 +182,7 @@ export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, 
                 </Select>
               )}
             />
-          </div>
+          </div> */}
 
 
           <div className="flex flex-col gap-2">
