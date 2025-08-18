@@ -38,6 +38,7 @@ export interface ReqInadProps{
   cidade:string,
   resumeBairro?:boolean,
   statusReagendamento:string|undefined
+  cobrador:Array<string>
 }
 interface ContagemProps{
   n1:number,
@@ -126,7 +127,8 @@ export function Inadimplencia({arrayBairros,cidades}:ScreenProps) {
       param: dataReq.param_nparcela,
       bairros: dataReq.bairros,
       cidade:dataReq.cidade,
-      statusReagendamento:dataReq.statusReagendamento
+      statusReagendamento:dataReq.statusReagendamento,
+      cobrador:dataReq.cobrador
     });
   };
 

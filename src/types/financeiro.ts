@@ -82,7 +82,7 @@ export type AcordoProps = {
     data_fim: Date,
     realizado_por: string|undefined,
     dt_pgto: Date,
-    mensalidade: Array<Partial<MensalidadeProps>>,
+    mensalidadeAcordo:Array<{id_mensal_acordo?:number,mensalidade:Partial<MensalidadeProps>}>,
     status: string,
     descricao: string,
     metodo: string

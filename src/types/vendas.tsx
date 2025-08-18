@@ -39,4 +39,5 @@ export interface LeadProps {
   form_pag?: string;
   adesao?: Date;
   dataVenda: Date;
+  cobrador: string;
 }

@@ -139,7 +139,7 @@ export  function Cobranca({arrayBairros,cidades}:ScreenProps) {
     setDataicial(data.startDate)
     setDataFinal(data.endDate)
    const {dataIni,dataFim} =  ajustarData(data.startDate, data.endDate)
-   const cobradores = data.cobrador
+   
   
       try {
         //console.log(data.status)
@@ -147,7 +147,7 @@ export  function Cobranca({arrayBairros,cidades}:ScreenProps) {
         const response = await api.post("/cobranca/lista", {
           dataInicial:dataIni,
           dataFinal:dataFim,
-          cobradores,
+          cobradores:data.cobrador,
           id_empresa:infoEmpresa?.id,
           status: data.status.split(','),
           bairros: data.bairros,

@@ -1,5 +1,5 @@
 
-import React, {  useContext, useEffect, useState } from 'react';
+import React, {  useContext, useEffect, useRef, useState } from 'react';
 import { MdDeleteForever, MdEdit, MdPrint} from 'react-icons/md';
 import { RiAddCircleFill } from 'react-icons/ri';
 import { AuthContext } from '@/store/AuthContext';
@@ -16,6 +16,11 @@ import {
 import { AcordoProps, MensalidadeProps } from '@/types/financeiro';
 import { ModalAcordos } from '../../../modals/admContrato/modalAcordos';
 import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
+import { Home, Printer } from 'lucide-react';
+import { AcordoComprovante } from '@/Documents/associado/acordo/acordoComprovante';
+import { useReactToPrint } from 'react-to-print';
+import { pageStyle } from '@/utils/pageStyle';
 
 export const themeLight = {
     color:{
@@ -40,7 +45,37 @@ interface DataProps{
 export function Acordos({acordos,mensalidades,id_contrato_global,id_global,id_empresa,id_associado,id_contrato}:DataProps) {
 const {permissoes,consultores,carregarDados} = useContext(AuthContext)
 const [openAcordo,setOpenAcordo] = useState(false)
-const [acordo,setAcordo] = useState<Partial<AcordoProps>>()
+const [acordo,setAcordo] = useState<Partial<AcordoProps>>({} as AcordoProps)
+
+const comprovanteAcordo = useRef<HTMLDivElement>(null)
+
+
+
+
+const printComprovante = useReactToPrint({
+   
+    content() {
+        return comprovanteAcordo.current
+    },
+    pageStyle:pageStyle,
+   
+})
+
+
+
+const verificarQuebra = (acordo:AcordoProps)=>{
+const verifyDates = acordo.mensalidadeAcordo.every(item=>item.mensalidade.data_pgto && (item?.mensalidade?.data_pgto<=acordo.data_fim))
+const pagas = acordo.mensalidadeAcordo.every(item=>item.mensalidade.data_pgto)
+if(pagas){
+    if(verifyDates){return 'CUMPRIDO'}
+    return 'QUEBRA'
+}else if(new Date(acordo.data_fim)<new Date()){
+    return 'QUEBRA'
+}else{
+    return 'PENDENTE'
+}
+}
+
 
 
 useEffect(()=>{
@@ -84,7 +119,7 @@ useEffect(()=>{
                     <MdPrint className="h-3.5 w-3.5" />
                     <span>Imprimir</span>
                 </Button>
-                <Button 
+                {/* <Button 
                     variant="outline" 
                     size="sm" 
                     
@@ -97,7 +132,7 @@ useEffect(()=>{
                 >
                     <MdEdit className="h-3.5 w-3.5" />
                     <span>Alterar</span>
-                </Button>
+                </Button> */}
                 <Button 
                     variant="outline" 
                     size="sm" 
@@ -109,59 +144,69 @@ useEffect(()=>{
                 </Button>
             </div>
             <div className="flex w-full p-2 max-h-[calc(100vh-205px)] overflow-y-auto">
-                <Table className="text-xs border rounded-md">
+                <Table className="text-xs border rounded-sm">
                     <TableHeader className="sticky top-0 bg-gray-50">
                         <TableRow className="hover:bg-transparent">
-                            <TableHead className="px-4 py-1 font-semibold text-gray-600 border-r">DESCRIÇÃO</TableHead>
-                            <TableHead className="px-4 py-1 font-semibold text-gray-600 border-r">CONSULTOR</TableHead>
-                            <TableHead className="px-4 py-1 font-semibold text-gray-600 border-r">VALOR</TableHead>
-                            <TableHead className="px-4 py-1 font-semibold text-gray-600 border-r">MÉTODO DE PAG</TableHead>
-                            <TableHead className="px-4 py-1 font-semibold text-gray-600 border-r">DATA CRIAÇÃO</TableHead>
-                            <TableHead className="px-4 py-1 font-semibold text-gray-600 border-r">DATA PREVISTA</TableHead>
-                            <TableHead className="px-4 py-1 font-semibold text-gray-600 border-r">DATA PAG.</TableHead>
-                            <TableHead className="px-4 py-1 font-semibold text-gray-600 border-r">HR PAG.</TableHead>
-                            <TableHead className="px-4 py-1 font-semibold text-gray-600 border-r">USUÁRIO</TableHead>
-                            <TableHead className="px-4 py-1 font-semibold text-gray-600">FORMA</TableHead>
+                            <TableHead className="px-2 py-1 font-semibold text-gray-600 border-r">DESCRIÇÃO</TableHead>
+                            <TableHead className="px-2 py-1 font-semibold text-gray-600 border-r">CONSULTOR</TableHead>
+                            <TableHead className="px-2 py-1 font-semibold text-gray-600 border-r">VALOR</TableHead>
+                            <TableHead className="px-2 py-1 font-semibold text-gray-600 border-r">MÉTODO DE PAG</TableHead>
+                            <TableHead className="px-2 py-1 font-semibold text-gray-600 border-r">DATA CRIAÇÃO</TableHead>
+                            <TableHead className="px-2 py-1 font-semibold text-gray-600 border-r">DATA PREVISTA</TableHead>
+                            <TableHead className="px-2 py-1 font-semibold text-gray-600 border-r">DATA PAG.</TableHead>
+                            <TableHead className="px-2 py-1 font-semibold text-gray-600 border-r">HR PAG.</TableHead>
+                            <TableHead className="px-2 py-1 font-semibold text-gray-600 border-r">USUÁRIO</TableHead>
+                            <TableHead className="px-2 py-1 font-semibold text-gray-600  border-r">STATUS</TableHead>
+                            <TableHead className="px-2 py-1 font-semibold text-gray-600">AÇÕES</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {Array.isArray(acordos) && acordos.map((item, index) => (
                             <TableRow 
                                 key={index}
-                                onClick={() => setAcordo(item)}
+                                onClick={() => {setAcordo(item);setOpenAcordo(true)}}
                                 className={cn(
                                     "cursor-pointer hover:bg-gray-50",
                                     item.id_acordo === acordo?.id_acordo && "bg-blue-50 hover:bg-blue-50"
                                 )}
                             >
-                                <TableCell className="px-4 py-2 border-r">{item.descricao}</TableCell>
-                                <TableCell className="px-4 py-2 border-r">{item.realizado_por}</TableCell>
-                                <TableCell className="px-4 py-2 border-r font-medium">
-                                    {Number(item.mensalidade?.reduce((a, b) => a + Number(b.valor_principal), 0)).toLocaleString('pt-BR', { 
+                                <TableCell className="px-2 py-2 border-r">{item.descricao}</TableCell>
+                                <TableCell className="px-2 py-2 border-r">{item.realizado_por}</TableCell>
+                                <TableCell className="px-2 py-2 border-r font-medium">
+                                    {Number(item.mensalidadeAcordo?.reduce((a, b) => a + Number(b.mensalidade.valor_principal), 0)).toLocaleString('pt-BR', { 
                                         style: 'currency', 
                                         currency: 'BRL' 
                                     })}
                                 </TableCell>
-                                <TableCell className="px-4 py-2 border-r">{item.metodo}</TableCell>
-                                <TableCell className="px-4 py-2 border-r whitespace-nowrap">
-                                    {item.data_inicio && new Date(item.data_inicio).toLocaleDateString('pt-BR',{timeZone:"UTC"})}
+                                <TableCell className="px-2 py-2 border-r">{item.metodo}</TableCell>
+                                <TableCell className="px-2 py-2 border-r whitespace-nowrap">
+                                    {item.data_inicio && new Date(item.data_inicio).toLocaleDateString('pt-BR')}
                                 </TableCell>
-                                <TableCell className="px-4 py-2 border-r whitespace-nowrap">
-                                    {item.data_fim && new Date(item.data_fim).toLocaleDateString('pt-BR',{timeZone:"UTC"})}
+                                <TableCell className="px-2 py-2 border-r whitespace-nowrap">
+                                    {item.data_fim && new Date(item.data_fim).toLocaleDateString('pt-BR')}
                                 </TableCell>
-                                <TableCell className="px-4 py-2 border-r whitespace-nowrap">
-                                    {item.dt_pgto && new Date(item.dt_pgto).toLocaleDateString('pt-BR',{timeZone:"UTC"})}
+                                <TableCell className="px-2 py-2 border-r whitespace-nowrap">
+                                    {item.dt_pgto && new Date(item.dt_pgto).toLocaleDateString('pt-BR')}
                                 </TableCell>
-                                <TableCell className="px-4 py-2 border-r whitespace-nowrap">
+                                <TableCell className="px-2 py-2 border-r whitespace-nowrap">
                                     {item.dt_pgto && new Date(item.dt_pgto).toLocaleTimeString('pt-BR')}
                                 </TableCell>
-                                <TableCell className="px-4 py-2 border-r">{item.usuario}</TableCell>
-                                <TableCell className="px-4 py-2">{/* FORMA */}</TableCell>
+                                <TableCell className="px-2 py-2 border-r">{item.usuario}</TableCell>
+                              
+                                <TableCell className="px-2 py-2  border-r">
+                                    <Badge variant={verificarQuebra(item) === 'CUMPRIDO' ? 'success' : verificarQuebra(item) === 'QUEBRA' ? 'destructive' : 'warning'}>{verificarQuebra(item)}</Badge>
+                                   
+                                    </TableCell>
+                                    <TableCell className="px-2 py-2">
+                                   <button onClick={e=>{e.stopPropagation();printComprovante()}}>
+                                    <Printer size={16}/>
+                                   </button>
+                                    </TableCell>
                             </TableRow>
                         ))}
                         {(!acordos || acordos.length === 0) && (
                             <TableRow>
-                                <TableCell colSpan={10} className="px-4 py-4 text-center text-gray-500">
+                                <TableCell colSpan={10} className="px-2 py-4 text-center text-gray-500">
                                     Nenhum acordo encontrado
                                 </TableCell>
                             </TableRow>
@@ -169,6 +214,33 @@ useEffect(()=>{
                     </TableBody>
                 </Table>
             </div>
+
+                        <div style={{display:'none'}}>
+                        <AcordoComprovante 
+            ref={comprovanteAcordo}
+            acordo={acordo}
+            associado={
+                {
+                    nome:'JOSE HENRIQUE BATISTA DE FREITAS',
+                    cpf:'000.000.000-00',
+                    endereco:'Rua Teste, 123',
+                    cidade:'Teste',
+                    uf:'Teste'
+                }
+            }
+            empresa={
+                {
+                    nome:'AFAP',
+                    endereco:'Rua Teste, 123',
+                    cidade:'Teste',
+                    uf:'Teste',
+                    cnpj:'00.000.000/0000-00',
+                    telefone:'(00) 0000-0000'
+                }
+            }
+            />
+                        </div>
+           
         </div>
     )
 }

@@ -13,6 +13,7 @@ import { Controller } from "react-hook-form";
 import { DatePickerInput } from "@/components/DatePickerInput";
 interface TabPlanoProps extends UseFormLeadProps {
   planos: Array<PlanosProps>;
+  cobradores:Array<string>
 }
 
 export function TabPlano({
@@ -22,6 +23,7 @@ export function TabPlano({
   trigger,
   watch,
   planos,
+  cobradores
 }: TabPlanoProps) {
   return (
     <div className="grid grid-cols-4 gap-2">
@@ -128,6 +130,31 @@ export function TabPlano({
           )}
         />
       </div>
+
+      <div className="">
+        <Label className="text-xs">Cobrador</Label>
+        <Controller
+          name="cobrador"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <Select value={value} onValueChange={onChange}>
+              <SelectTrigger className="w-full ">
+                <SelectValue placeholder="Selecione o cobrador" />
+              </SelectTrigger>
+              <SelectContent>
+                {cobradores?.map((cobrador) => (
+                  <SelectItem key={cobrador} value={cobrador}>
+                    {cobrador}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
+      </div>
+
+
+
       <div className="">
         <Label className="text-xs">Forma de Pagamento</Label>
         <Controller

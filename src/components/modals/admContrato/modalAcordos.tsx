@@ -41,6 +41,7 @@ import {
 } from "@/components/ui/popover";
 import { CalendarIcon, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ajustarData } from "@/utils/ajusteData";
 
 interface DadosAcordoProps {
   acordo: Partial<AcordoProps>;
@@ -84,18 +85,18 @@ export function ModalAcordos({
     defaultValues: {
       ...acordo,
       total_acordo:
-        acordo.mensalidade?.reduce(
-          (acc, at) => acc + Number(at?.valor_principal || 0),
+        acordo.mensalidadeAcordo?.reduce(
+          (acc, at) => acc + Number(at?.mensalidade?.valor_principal || 0),
           0
         ) || 0,
     },
   });
 
-  const gatilho = watch("mensalidade");
+  const gatilho = watch("mensalidadeAcordo");
 
   useEffect(() => {
     const soma = gatilho?.reduce((acc, at) => {
-      return acc + Number(at?.valor_principal);
+      return acc + Number(at?.mensalidade?.valor_principal);
     }, 0);
     setValue("total_acordo", soma);
   }, [gatilho]);
@@ -111,11 +112,11 @@ export function ModalAcordos({
           loading: "Removendo...",
           success: async () => {
             id_global && (await carregarDados(id_global));
-            const array = watch("mensalidade") || [];
+            const array = watch("mensalidadeAcordo") || [];
             const newArray = array.filter(
-              (item) => item.id_mensalidade_global !== id_mensalidade_global
+              (item) => item.mensalidade.id_mensalidade_global !== id_mensalidade_global
             );
-            setValue("mensalidade", newArray);
+            setValue("mensalidadeAcordo", newArray);
 
             return "Mensalidade removida com sucesso!";
           },
@@ -126,24 +127,51 @@ export function ModalAcordos({
     return;
   };
 
+  const handleRemoverMensalidade = async (id_mensal_acordo?: number) => {
+
+    if(!id_mensal_acordo){return}
+
+     
+      toast.promise(
+       await api.put(`/acordo/removerMensalidade`, {
+          id_mensal_acordo:id_mensal_acordo
+        }),
+        {
+          loading: "Removendo...",
+          success: async (response) => {
+            id_global && (await carregarDados(id_global));
+            const index = watch("mensalidadeAcordo")?.findIndex(
+              (item) => item.id_mensal_acordo === id_mensal_acordo
+            );
+            if(index){
+              const array = watch("mensalidadeAcordo") || [];
+              const newArray = array.filter(
+                (item) => item.id_mensal_acordo !== id_mensal_acordo
+              );
+              setValue("mensalidadeAcordo", newArray);
+            }
+            return "Mensalidade removida com sucesso!";
+          },
+          error: "Erro ao remover mensalidade",
+        }
+      );
+  }
+
   const handleNovaRef = async () => {
     const mensalidade = mensalidades.find(
       (mensalidade) => mensalidade.id_mensalidade_global === mensalidadeSelect
     );
 
-    const mensalidadeArray = watch("mensalidade") || [];
+    const mensalidadeArray = watch("mensalidadeAcordo") || [];
     const isExists = mensalidadeArray?.some(
-      (item) => item.referencia === mensalidade?.referencia
+      (item) => item.mensalidade?.referencia === mensalidade?.referencia
     );
     if (isExists) {
       toast.info("Referência já inclusa no acordo!");
       return;
     }
 
-    if (mensalidade?.id_acordo) {
-      toast.info("Mensalidade ja vinculada a outro acordo!");
-      return;
-    }
+    const array = watch("mensalidadeAcordo") || [];
 
     if (acordo.id_acordo) {
       toast.promise(
@@ -155,9 +183,9 @@ export function ModalAcordos({
           loading: "Adicionando...",
           success: async (response) => {
             id_global && (await carregarDados(id_global));
-            const array = watch("mensalidade") || [];
+           
             array.push(response.data);
-            setValue("mensalidade", array);
+            setValue("mensalidadeAcordo", array);
             return "Mensalidade adicionada com sucesso!";
           },
           error: "Erro ao adicionar mensalidade",
@@ -167,14 +195,15 @@ export function ModalAcordos({
       return;
     }
 
+
     if (mensalidade) {
       const array = [...mensalidadeArray];
-      array.push(mensalidade);
+      array.push({mensalidade:mensalidade});
       array.sort(
         (a, b) =>
-          Number(a.id_mensalidade_global) - Number(b.id_mensalidade_global)
+          Number(a.mensalidade.id_mensalidade_global) - Number(b.mensalidade.id_mensalidade_global)
       );
-      setValue("mensalidade", array);
+      setValue("mensalidadeAcordo", array);
     }
   };
 
@@ -192,10 +221,12 @@ export function ModalAcordos({
   };
 
   const criarAcordo = async (data: AcordoProps) => {
-    if (!data.data_inicio || !data.descricao || !data.id_consultor) {
+    if (!data.data_fim || !data.descricao || !data.id_consultor) {
       toast.info("Preencha todos os campos!");
       return;
     }
+
+    const {dataIni,dataFim} = ajustarData(new Date(),data.data_fim)
 
     const dt_criacao = new Date();
     const dt_prev = new Date();
@@ -214,13 +245,13 @@ export function ModalAcordos({
         id_consultor: Number(data.id_consultor),
         status: "A",
         data_inicio: dt_criacao.toISOString(),
-        data_fim: dt_prev ? dt_prev.toISOString() : undefined,
+        data_fim: dataFim,
         total_acordo: Number(data.total_acordo),
         realizado_por: data.realizado_por,
         descricao: data.descricao,
         metodo: data.metodo,
         dt_criacao: new Date(),
-        mensalidades: data.mensalidade,
+        mensalidades: data.mensalidadeAcordo.map(item=>item.mensalidade),
         id_contrato: id_contrato,
         id_associado: id_associado,
       }),
@@ -327,7 +358,7 @@ export function ModalAcordos({
             <div className="space-y-2">
               <Label>Data de Início</Label>
               <Controller
-                name="data_inicio"
+                name="data_fim"
                 control={control}
                 render={({ field }) => (
                   <Popover modal>
@@ -435,32 +466,36 @@ export function ModalAcordos({
                     <TableHead>Vencimento</TableHead>
                     <TableHead>Valor</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Data Pag.</TableHead>
                     <TableHead className="w-[50px]"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {watch("mensalidade")?.map((item) => (
-                    <TableRow key={item.id_mensalidade_global}>
-                      <TableCell>{item.referencia}</TableCell>
-                      <TableCell>
-                        {item.vencimento &&
-                          new Date(item.vencimento).toLocaleDateString("pt-BR")}
+                  {watch("mensalidadeAcordo")?.map((item) => (
+                    <TableRow key={item.mensalidade.id_mensalidade_global}>
+                      <TableCell className="text-xs">{item.mensalidade.referencia}</TableCell>
+                      <TableCell className="text-xs">
+                        {item.mensalidade.vencimento &&
+                          new Date(item.mensalidade.vencimento).toLocaleDateString("pt-BR")}
                       </TableCell>
-                      <TableCell>
-                        {Number(item.valor_principal).toLocaleString("pt-BR", {
+                      <TableCell className="text-xs">
+                        {Number(item.mensalidade.valor_principal).toLocaleString("pt-BR", {
                           style: "currency",
                           currency: "BRL",
                         })}
                       </TableCell>
-                      <TableCell>{item.status}</TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-xs">{item.mensalidade.status}</TableCell>
+                      <TableCell className="text-xs">
+                        {item.mensalidade.data_pgto &&
+                          new Date(item.mensalidade.data_pgto).toLocaleDateString("pt-BR")}
+                      </TableCell>
+                      <TableCell className="text-right ">
                         <Button
                           type="button"
                           variant="ghost"
                           size="icon"
                           onClick={() =>
-                            item.id_mensalidade_global &&
-                            handleRemove(item.id_mensalidade_global)
+                            handleRemoverMensalidade(item.id_mensal_acordo)
                           }
                         >
                           <X className="h-4 w-4 text-destructive" />
@@ -468,8 +503,8 @@ export function ModalAcordos({
                       </TableCell>
                     </TableRow>
                   ))}
-                  {(!watch("mensalidade") ||
-                    watch("mensalidade")?.length === 0) && (
+                  {(!watch("mensalidadeAcordo") ||
+                    watch("mensalidadeAcordo")?.length === 0) && (
                     <TableRow>
                       <TableCell
                         colSpan={4}

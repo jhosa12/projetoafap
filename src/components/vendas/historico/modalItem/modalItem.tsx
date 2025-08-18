@@ -73,9 +73,9 @@ export interface UseFormLeadProps{
 
 export function ModalItem({onClose,open,item,handleLoadLeads,handleGerarContrato}:DataProps) {
 
-    const {cidades,planos} = useContext(AuthContext)
+    const {cidades,planos,consultores} = useContext(AuthContext)
 
-
+  const cobradores = consultores.filter(item=>item.funcao==='COBRADOR (RDA)').map(item=>item.nome)
     const {register,control,setValue,handleSubmit,trigger,watch,reset,  formState: { errors },getValues} = useForm<LeadProps>(
         {
             defaultValues:{...item,adesao:item.dataVenda}
@@ -147,6 +147,7 @@ export function ModalItem({onClose,open,item,handleLoadLeads,handleGerarContrato
 
     <TabsContent value="plano">
       <TabPlano
+        cobradores={cobradores}
         planos={planos}
         control={control}
         register={register}

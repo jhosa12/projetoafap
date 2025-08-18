@@ -52,6 +52,7 @@ const camposObrigatorios: Partial<Record<keyof LeadProps, string>> = {
   cpfcnpj: "CPF/CNPJ",
   n_parcelas: "Número de Parcelas",
   adesao: "Data de Adesão",
+  cobrador:"Cobrador"
 };
 
 export interface ReqLeadsProps {
@@ -254,6 +255,7 @@ try{
           dt_carencia: new Date(),
           origem: data.origem,
           consultor: data.consultor,
+          cobrador:data.cobrador,
           // form_pag: lead.form_pag,
         },
         mensalidades: gerarMensalidade({

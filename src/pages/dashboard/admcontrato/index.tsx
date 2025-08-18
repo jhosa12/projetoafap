@@ -74,6 +74,9 @@ export default function AdmContrato() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [tab, setTab] = useState("dados");
 
+
+
+
   /*  useEffect(() => {
           async function listaCadastro() {
               const response = await api.get('/listarDadosCadastro')

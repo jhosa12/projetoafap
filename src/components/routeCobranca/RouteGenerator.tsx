@@ -61,6 +61,7 @@ const RouteGenerator = ({ empresa,cidadesEmpresa,cobradores }: RouteGeneratorPro
         param: ">",
         n_parcelas: 1,
         status: ["A", "R"],
+        statusReagendamento:'A/R',
         startDate: new Date("1900-01-01"),
         endDate: new Date(),
         resumeBairro: true,
@@ -75,7 +76,7 @@ const RouteGenerator = ({ empresa,cidadesEmpresa,cobradores }: RouteGeneratorPro
 
   const handleGenerateRoute: SubmitHandler<RouteProps> = async (data) => {
    
-    await postData({...data,id_empresa:empresa.id_empresa,empresa:empresa.nome});
+    await postData({...data,id_empresa:empresa.id_empresa,empresa:empresa.nome,parametros:{...data.parametros,statusReagendamento:'A/R'}});
 
     if (data.parametros.bairros?.length === 0) {
       toast("Erro de validação", {
