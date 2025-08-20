@@ -36,6 +36,7 @@ import { TableHistoricoVendas } from "./TableHistorico";
 import { ModalNovoContrato } from "./ModalNovoContrato";
 import { LeadProps } from "@/types/vendas";
 import DocListaLeads from "@/Documents/vendas/DocLeads";
+import { upperCaseString } from "@/utils/upperCaseString";
 
 
 
@@ -52,7 +53,8 @@ const camposObrigatorios: Partial<Record<keyof LeadProps, string>> = {
   cpfcnpj: "CPF/CNPJ",
   n_parcelas: "Número de Parcelas",
   adesao: "Data de Adesão",
-  cobrador:"Cobrador"
+  cobrador:"Cobrador",
+  bairroPlano:"Bairro Plano"
 };
 
 export interface ReqLeadsProps {
@@ -165,7 +167,7 @@ const totalPages = data ? Math.ceil(data.length / rowsPerPage) : 1;
     
     );
 
-  const { register, handleSubmit, control, watch, getValues } =
+  const { register, handleSubmit, control, getValues } =
     useForm<ReqLeadsProps>({
       defaultValues: {
 
@@ -232,16 +234,16 @@ try{
     await postAssociado({
       dataPlano: {
         dependentes: data.dependentes,
-        bairro: data.bairro,
+        bairro: data.bairroPlano,
         celular1: data.celular1,
         celular2: data.celular2,
         cep: data.cep,
-        cidade: data.cidade,
+        cidade: upperCaseString(data.cidade),
         cpfcnpj: data.cpfcnpj,
         data_nasc: data.data_nasc,
-        endereco: data.endereco,
+        endereco: upperCaseString(data.endereco),
         id_empresa: selectEmp,
-        nome: data.nome,
+        nome: upperCaseString(data.nome),
         numero: data.numero,
         uf: data.uf,
         rg: data.rg,

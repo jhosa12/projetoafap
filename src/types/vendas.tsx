@@ -40,4 +40,5 @@ export interface LeadProps {
   adesao?: Date;
   dataVenda: Date;
   cobrador: string;
+  bairroPlano?:string
 }

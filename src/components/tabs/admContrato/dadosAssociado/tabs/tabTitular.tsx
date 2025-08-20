@@ -13,6 +13,7 @@ import { CepMaskInput } from "@/components/CepMaskInput";
 import { CPFInput } from "@/components/CpfMaskInput";
 import { PhoneMaskInput } from "@/components/PhoneMaskInput";
 import { Combobox } from "@/components/ui/combobox";
+import { SelectBairroEmpresa } from "@/components/selectBairrosEmpresa";
 
 export function TabTitular({ register, setValue, watch, control }: UseFormAssociadoProps) {
   const { cidades } = useContext(AuthContext);
@@ -90,7 +91,15 @@ export function TabTitular({ register, setValue, watch, control }: UseFormAssoci
       {/* Bairro */}
       <div className="col-span-2">
         <Label className="text-xs">Bairro</Label>
-        <Input className="text-xs" {...register('bairro',{required:'Bairro é obrigatório'})} placeholder="Bairro" />
+        <Controller
+          control={control}
+          name="bairro"
+          rules={{required:'Bairro é obrigatório'}}
+          render={({ field }) => (
+           <SelectBairroEmpresa value={field.value} onChange={field.onChange} />
+          )}
+        />
+        {/* <Input className="text-xs" {...register('bairro',{required:'Bairro é obrigatório'})} placeholder="Bairro" /> */}
       </div>
 
       {/* Referência */}
@@ -133,6 +142,7 @@ export function TabTitular({ register, setValue, watch, control }: UseFormAssoci
             items={cidadesFiltered?.map((cidade) => ({ value: cidade.cidade, label: cidade.cidade })) || []}
             onChange={field.onChange}
             value={field.value}
+            classNameInput="h-9"
           />
           )}
         />

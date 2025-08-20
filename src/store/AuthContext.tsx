@@ -15,7 +15,7 @@ import { AssociadoProps } from "@/types/associado";
 import { SignInProps, UserProps } from "@/types/user";
 import { EmpresaProps } from "@/types/empresa";
 import { PlanosProps } from "@/types/planos";
-import { CidadesProps } from "@/types/cidades";
+import { BairroProps, CidadesProps } from "@/types/cidades";
 import { ConsultoresProps } from "@/types/consultores";
 import { useAuthActions } from "@/hooks/useAuthActions";
 import useApiGet from "@/hooks/useApiGet";
@@ -42,14 +42,16 @@ type AuthContextData = {
   infoEmpresa: EmpresaProps | null;
   bairrosEmpresa: Array<{ cidade: string; bairro: string }>;
   cidadesEmpresa:Array<string>
+  bairrosUnicos:Array<string>
+  getBairrosUnicos:()=>Promise<void>
 };
 
 export const AuthContext = createContext({} as AuthContextData);
 
 export function signOut() {
-  const router = useRouter();
+
   try {
-    router.push("/");
+    window.location.href = "/";
     destroyCookie(undefined, "@nextauth.token");
     delete api.defaults.headers["Authorization"];
   } catch (err) {
@@ -68,6 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [empresas, setEmpresas] = useState<Array<EmpresaProps>>([]);
   const [cidades, setCidades] = useState<Array<CidadesProps>>([]);
   const [consultores, setConsultores] = useState<Array<ConsultoresProps>>([]);
+  const [bairrosUnicos, setBairrosUnicos] = useState<Array<BairroProps>>([]);
   const [selectEmp, setSelectEmp] = useState("");
   const [loading, setLoading] = useState(false);
   const {
@@ -76,6 +79,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     postData: reqInfoEmpresa,
   } = useApiGet<EmpresaProps, { id: string }>("/empresa/infoEmpresa");
   const { permissoes, signIn, usuario, signOut } = useAuthActions();
+
+  const getBairros = async()=>{
+    const res = await api.post("/bairro/listar",{id_empresa:selectEmp})
+    setBairrosUnicos(res.data)
+  }
+
+useEffect(()=>{
+
+if(usuario) getBairros()
+
+},[])
+
+  
 
   const getDadosFixos = async () => {
     if (
@@ -164,9 +180,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  console.log(infoEmpresa?.bairrosCidades)
+
   return (
     <AuthContext.Provider
       value={{
+        bairrosUnicos:bairrosUnicos.map((item) => item.nome_bairro),
+        getBairrosUnicos:getBairros,
         infoEmpresa,
         loadingInfo,
         loading,

@@ -15,6 +15,7 @@ import { useEffect, useState } from "react"
 import { endOfMonth } from "date-fns";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { MultiSelects } from "@/components/ui/multiSelect";
+import SelectStatusCobranca from "@/components/routeCobranca/selectStatusCobranca";
 
 
 
@@ -191,22 +192,10 @@ export function ModalFiltroCobranca({ loading, setFiltro, show, listarCobranca, 
               name="statusReagendamento"
               control={control}
               render={({ field }) => (
-                <Select required value={field.value} onValueChange={e => handleStatusSelect(e)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Status Reagendamento" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="R">REAGENDADOS</SelectItem>
-                    <SelectItem value="RAV">REAGENDADOS A VENCER (RAV)</SelectItem>
-                    <SelectItem value="RV">REAGENDADOS VENCIDOS (RV)</SelectItem>
-                    <SelectItem value="A/R">ABERTOS E REAGENDADOS</SelectItem>
-                    <SelectItem value="A">ABERTOS</SelectItem>
-                    <SelectItem value="AV">ABERTOS VENCIDOS</SelectItem>
-                    <SelectItem value="AAV">ABERTOS A VENCER</SelectItem>
-                    <SelectItem value="A/RV">ABERTOS E REAGENDADOS VENCIDOS</SelectItem>
-                    <SelectItem value="A/RAV">ABERTOS E REAGENDADOS A VENCER</SelectItem>
-                  </SelectContent>
-                </Select>
+              <SelectStatusCobranca
+              onChange={field.onChange}
+              value={field.value}
+              />
               )}
             />
           </div>
