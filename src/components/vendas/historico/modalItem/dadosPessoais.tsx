@@ -35,7 +35,14 @@ export function TabDadosPessoais({control,register,cidades}:TabDadosPessoaisProp
             
             <div className="w-full flex flex-col">
                 <Label className="text-xs">Bairro Plano</Label>
-                <SelectBairroEmpresa value={''} onChange={()=>{}} />   
+                <Controller
+                name="bairroPlano"
+                rules={{required:'Bairro Plano é Obrigatório'}}
+                control={control}
+                render={({ field }) => (
+                    <SelectBairroEmpresa value={field.value?? null} onChange={field.onChange} />
+                )}
+                /> 
             </div>
 
             <div className="w-full flex flex-col">

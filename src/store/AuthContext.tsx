@@ -85,11 +85,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setBairrosUnicos(res.data)
   }
 
-useEffect(()=>{
-
-if(usuario) getBairros()
-
-},[usuario])
 
   
 
@@ -116,6 +111,7 @@ if(usuario) getBairros()
 
   useEffect(() => {
     if (!usuario) signOut();
+    if(usuario) getBairros()
   }, [usuario]);
 
   useEffect(() => {
