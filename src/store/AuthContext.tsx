@@ -89,7 +89,7 @@ useEffect(()=>{
 
 if(usuario) getBairros()
 
-},[])
+},[usuario])
 
   
 
