@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +28,7 @@ import {
 } from "../ui/dialog";
 import { api } from "@/lib/axios/apiClient";
 import { ConsultoresProps } from "@/types/consultores";
+import { RotaFilterProps } from "@/pages/dashboard/cobranca/rotas";
 
 export interface RouteFormData {
   districts: string[];
@@ -42,12 +43,14 @@ interface RouteGeneratorProps {
       nome:string
     },
     cidadesEmpresa:Array<string>
-    cobradores:ConsultoresProps[]
+    cobradores:ConsultoresProps[],
+    filters : RotaFilterProps,
+    getRotas:(data:RotaFilterProps)=>Promise<void>
 }
 
-const RouteGenerator = ({ empresa,cidadesEmpresa,cobradores }: RouteGeneratorProps) => {
+const RouteGenerator = ({ empresa,cidadesEmpresa,cobradores,filters,getRotas }: RouteGeneratorProps) => {
   const metodos = useForm<RouteProps>();
-  const { postData } = useApiPost("/cobranca/novaRota");
+  const { postData } = useApiPost("/cobranca/novaRota",undefined,undefined,()=>setIsGeneratorOpen(false));
   const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
   const [arrayBairros, setArrayBairros] = useState<
    InadimplenciaBairroProps[]
@@ -76,6 +79,9 @@ const RouteGenerator = ({ empresa,cidadesEmpresa,cobradores }: RouteGeneratorPro
 
   const handleGenerateRoute: SubmitHandler<RouteProps> = async (data) => {
    
+
+
+    
     await postData({...data,id_empresa:empresa.id_empresa,empresa:empresa.nome,parametros:{...data.parametros,statusReagendamento:'A/R'}});
 
     if (data.parametros.bairros?.length === 0) {
@@ -93,13 +99,14 @@ const RouteGenerator = ({ empresa,cidadesEmpresa,cobradores }: RouteGeneratorPro
       });
       return;
     }
+    getRotas(filters)
 
-    toast("Rota gerada com sucesso!", {
+     /* toast("Rota gerada com sucesso!", {
       description: `Rota criada para ${data.parametros.consultor} em ${data.parametros.bairros?.length} bairro(s)`,
       //variant: "destructive",
-    });
+    });*/
 
-    setIsGeneratorOpen(false);
+    //setIsGeneratorOpen(false);
   };
 
   //const isFormValid = watch("parametros.bairros").length > 0 && watch("parametros.consultor");
@@ -164,7 +171,7 @@ const RouteGenerator = ({ empresa,cidadesEmpresa,cobradores }: RouteGeneratorPro
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ClientCriteriaSelector  />
+                  <ClientCriteriaSelector consultores={cobradores}  />
                 </CardContent>
               </Card>
             </div>

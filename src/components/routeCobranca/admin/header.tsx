@@ -6,6 +6,8 @@ import { Filter } from "lucide-react"
 import RouteGenerator from "../RouteGenerator"
 import { ConsultoresProps } from "@/types/consultores"
 import { RotaFilterProps } from "@/pages/dashboard/cobranca/rotas"
+import { useFormContext } from "react-hook-form"
+
 
 interface HeaderProps {
  // activeFiltersCount: number
@@ -16,10 +18,13 @@ empresa:{
 },
 cidadesEmpresa:Array<string>
 cobradores:ConsultoresProps[]
+getRotas:(data:RotaFilterProps)=>Promise<void>
 
 }
 
-export function Header({onOpenFilters,empresa,cidadesEmpresa,cobradores }: HeaderProps) {
+export function Header({onOpenFilters,empresa,cidadesEmpresa,cobradores,getRotas }: HeaderProps) {
+  const methodos = useFormContext<RotaFilterProps>()
+  const {getValues} = methodos
   return (
     <div className="bg-white border-b border-gray-200 px-6 py-2">
       <div className="flex items-center justify-between">
@@ -31,9 +36,8 @@ export function Header({onOpenFilters,empresa,cidadesEmpresa,cobradores }: Heade
           <Button variant="outline" onClick={onOpenFilters}>
             <Filter  />
             Filtros
-         
           </Button>
-           <RouteGenerator empresa={empresa} cidadesEmpresa={cidadesEmpresa} cobradores={cobradores} />
+           <RouteGenerator empresa={empresa} cidadesEmpresa={cidadesEmpresa} cobradores={cobradores} getRotas={getRotas} filters={getValues()} />
         </div>
       </div>
     </div>

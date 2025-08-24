@@ -1,4 +1,4 @@
-import { api } from "@/lib/axios/apiClient"; 
+
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { IoPrint } from "react-icons/io5";
@@ -8,8 +8,6 @@ import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons
 import RelatorioInadimplencia from "@/Documents/cobranca/RelatorioIndimplencia";
 import useApiGet from "@/hooks/useApiGet";
 import { ResInadimplenciaApiProps } from "@/types/cobranca";
-
-// shadcn/ui imports (um por pacote)
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {

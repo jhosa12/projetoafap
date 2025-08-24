@@ -10,7 +10,6 @@ import {
 } from "react";
 import { api } from "../lib/axios/apiClient";
 import { destroyCookie } from "nookies";
-import { useRouter } from "next/navigation";
 import { AssociadoProps } from "@/types/associado";
 import { SignInProps, UserProps } from "@/types/user";
 import { EmpresaProps } from "@/types/empresa";
@@ -176,7 +175,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  console.log(infoEmpresa?.bairrosCidades)
 
   return (
     <AuthContext.Provider

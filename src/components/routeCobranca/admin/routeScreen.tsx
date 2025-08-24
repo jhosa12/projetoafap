@@ -10,6 +10,7 @@ import { FiltersDialog } from "./filters-dialog"
 import { RouteDetailsDialog } from "./route-details-dialog"
 import { ConsultoresProps } from "@/types/consultores"
 import { RotaFilterProps } from "@/pages/dashboard/cobranca/rotas"
+import { FormProvider, useForm } from "react-hook-form"
 
 interface Props{
     routes: RouteProps[]
@@ -28,6 +29,7 @@ export default function CobrancaAdmin({routes,empresa,cidadesEmpresa,cobradores,
   const [selectedRoute, setSelectedRoute] = useState<RouteProps | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
+  const methods = useForm<RotaFilterProps>()
 
 
   const handleViewDetails = (route: RouteProps) => {
@@ -56,10 +58,12 @@ export default function CobrancaAdmin({routes,empresa,cidadesEmpresa,cobradores,
  // const activeFiltersCount = Object.values(filters)?.filter((value) => value && value !== "todos").length
 
   return (
+    <FormProvider {...methods}>
     <TooltipProvider>
-      <div className="min-h-screen bg-gray-50">
+      <div className=" bg-gray-50">
         <Header
           //activeFiltersCount={activeFiltersCount}
+          getRotas={getRotas}
           onOpenFilters={() => setFiltersOpen(true)}
           empresa={empresa}
           cidadesEmpresa={cidadesEmpresa}
@@ -80,5 +84,6 @@ export default function CobrancaAdmin({routes,empresa,cidadesEmpresa,cobradores,
         <RouteDetailsDialog route={selectedRoute} open={dialogOpen} onOpenChange={setDialogOpen} />
       </div>
     </TooltipProvider>
+    </FormProvider>
   )
 }

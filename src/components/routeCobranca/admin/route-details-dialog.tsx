@@ -48,7 +48,7 @@ export function RouteDetailsDialog({ route, open, onOpenChange }: RouteDetailsDi
   const sincAgendamentos = async()=>{
       toast.promise(
         api.post('/cobranca/sincAgend',{
-          agendamentos:route?.agendamentos
+          id_rota:route.id_cobranca
         }),
         {
           loading: 'Sincronizando agendamentos...',

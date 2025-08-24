@@ -199,6 +199,8 @@ export interface RouteProps{
   empresa:string
    cobranca :Array<InadimplenciaRotaProps> 
    parametros :{
+    statusReagendamento:string
+    cobrador:Array<string>,
     cidade:string,
       bairros:Array<string>,
       periodo:{
@@ -221,6 +223,7 @@ export interface RouteProps{
    solicitacoes :Array<SolicitacaoCobradorProps>
    atualizacaoCadastral:Array<ClientUpdateProps>,
    observacao :string
+ 
   }
   
 

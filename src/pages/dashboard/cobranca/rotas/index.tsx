@@ -1,29 +1,7 @@
 import { useContext, useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { MapPin, Plus, Eye, Calendar, Users, TrendingUp } from "lucide-react";
-import RouteGenerator from "@/components/routeCobranca/RouteGenerator";
-import RouteDetailsModal from "@/components/routeCobranca/routeManagement/RouteDetailsModal";
 import { AuthContext } from "@/store/AuthContext";
 import { RouteProps } from "@/types/cobranca";
 import { api } from "@/lib/axios/apiClient";
-import { SelectValue } from "@radix-ui/react-select";
 import CobrancaAdmin from "@/components/routeCobranca/admin/routeScreen";
 import { DateRange } from "react-day-picker";
 import { ajustarData } from "@/utils/ajusteData";
@@ -55,6 +33,7 @@ const RouteManagement = () => {
   }, []);
 
   const getRotas = async (data: RotaFilterProps) => {
+
     const {dataIni,dataFim} = ajustarData(data.dateRange?.from,data.dateRange?.to)
     try {
       const response = await api.post("/cobranca/rotas",

@@ -52,7 +52,7 @@ const RoutePreview = ({ formData }: RoutePreviewProps) => {
           </div>
           { formData?.parametros?.periodo?.end ? (
             <p className="text-xs text-gray-700">
-              {formData?.parametros?.periodo?.start ? format(formData?.parametros?.periodo?.start, "dd/MM/yyyy", { locale: ptBR }) : "Todo Periodo até"} - {format(formData?.parametros?.periodo?.end, "dd/MM/yyyy", { locale: ptBR })}
+              {formData?.parametros?.periodo?.start ? new Date(formData.parametros.periodo.start).toLocaleDateString() : "Todo Periodo até"} - {new Date(formData.parametros.periodo.end).toLocaleDateString()}
             </p>
           ) : (
             <p className="text-xs text-gray-500">Período não definido</p>

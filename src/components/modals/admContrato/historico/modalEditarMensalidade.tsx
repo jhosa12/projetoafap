@@ -39,7 +39,7 @@ export function ModalEditarMensalidade({ openModal, setOpenModal, mensalidade, s
      
             toast.promise(
                 api.put('/mensalidade/editar',{
-                    id_mensalidade: mensalidade.id_mensalidade_global,
+                    id_mensalidade_global: mensalidade.id_mensalidade_global,
                     cobranca:mensalidade.cobranca,
                     vencimento:mensalidade.vencimento,
                     valor_principal: mensalidade.valor_principal,

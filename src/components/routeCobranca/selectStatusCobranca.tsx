@@ -5,17 +5,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 interface Props {
     value:string|undefined
     onChange:(e:string)=>void
+    className?:string
+    label?:boolean
 }
 
 
-export default function SelectStatusCobranca({value,onChange}:Props){
+export default function SelectStatusCobranca({value,onChange,className,label=true}:Props){
     return(
         <div className="flex flex-col gap-2">
-                   <Label className="text-xs">Status Reagendamento</Label>
+                   {label && <Label className="text-xs">Status Reagendamento</Label>}
                  
                    
                        <Select required value={value} onValueChange={e => onChange(e)}>
-                         <SelectTrigger>
+                         <SelectTrigger className={className}>
                            <SelectValue placeholder="Status Reagendamento" />
                          </SelectTrigger>
                          <SelectContent>

@@ -35,7 +35,7 @@ const useApiPost = <T=any,P=any,U=any>(url:string,signal?:AbortSignal,update?:()
             
             error:(error)=>{
               errorAction?.()
-              return  'Erro ao salvar dados'}
+              return error.response.data.error || 'Erro ao salvar dados'}
           }
 
         )

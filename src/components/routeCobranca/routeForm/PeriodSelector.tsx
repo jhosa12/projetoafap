@@ -2,12 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { Controller, useFormContext } from "react-hook-form";
 import { RouteProps } from "@/types/cobranca";
-
-
 
 
 const PeriodSelector = () => {
@@ -57,12 +53,12 @@ const PeriodSelector = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-1">
         <Popover modal >
           <PopoverTrigger asChild>
             <Button variant="outline" size="sm" className="text-xs justify-start">
-              <CalendarIcon className="h-3 w-3 mr-1" />
-              {periodo?.start ? format(periodo?.start, "dd/MM", { locale: ptBR }) : "Início"}
+              <CalendarIcon className="h-3 w-2 " />
+              {periodo?.start ? new Date(periodo?.start).toLocaleDateString() : "Início"}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
@@ -73,7 +69,7 @@ const PeriodSelector = () => {
               <Calendar
               mode="single"
               selected={field.value || undefined}
-              onSelect={(date) => field.onChange({ ...periodo, start: date || null })}
+              onSelect={(date) => {console.log(date), field.onChange( date || null )}}
               initialFocus
             />
             }
@@ -85,8 +81,8 @@ const PeriodSelector = () => {
         <Popover modal>
           <PopoverTrigger asChild>
             <Button variant="outline" size="sm" className="text-xs justify-start">
-              <CalendarIcon className="h-3 w-3 mr-1" />
-              {periodo?.end ? format(periodo?.end, "dd/MM", { locale: ptBR }) : "Fim"}
+              <CalendarIcon className="h-3 w-2" />
+              {periodo?.end ? new Date(periodo?.end).toLocaleDateString() : "Fim"}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
@@ -97,11 +93,10 @@ const PeriodSelector = () => {
               <Calendar
             mode="single"
             selected={field.value || undefined}
-            onSelect={(date) => field.onChange({ ...periodo, end: date || null })}
+            onSelect={(date) => field.onChange(date || null )}
             initialFocus
           />}
             />
-           
           </PopoverContent>
         </Popover>
       </div>

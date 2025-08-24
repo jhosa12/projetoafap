@@ -8,30 +8,26 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DatePickerWithRange } from "@/components/dashboard/DatePickerWithRange"
 import { DateRange } from "react-day-picker"
-import { Controller, SubmitHandler, useForm } from "react-hook-form"
+import { Controller, SubmitHandler, useForm, useFormContext } from "react-hook-form"
 import { RotaFilterProps } from "@/pages/dashboard/cobranca/rotas"
 
 interface FiltersDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  filters: { consultor: string; status: string; bairro: string,dateRange:DateRange|undefined }
+ filters: { consultor: string; status: string; bairro: string,dateRange:DateRange|undefined }
  getRotas:(data:RotaFilterProps)=>Promise<void>
 }
 
-interface FormProps{
-  consultor: string;
-   status: string;
-    bairro: string,
-    dateRange:DateRange|undefined 
-}
 
-export function FiltersDialog({ open, onOpenChange, filters,getRotas}: FiltersDialogProps) {
-  const [tempFilters, setTempFilters] = useState(filters)
-  const {register,handleSubmit,control} = useForm<FormProps>({
-    defaultValues:filters
-  })
+export function FiltersDialog({ open, onOpenChange,getRotas,filters}: FiltersDialogProps) {
+ // const [tempFilters, setTempFilters] = useState(filters)
+  // const {register,handleSubmit,control} = useForm<FormProps>({
+  //   defaultValues:filters
+  // })
+  const methodos = useFormContext<RotaFilterProps>()
+  const {register,handleSubmit,control,reset} = methodos
 
-  const handleApply:SubmitHandler<FormProps> = (data) => {
+  const handleApply:SubmitHandler<RotaFilterProps> = (data) => {
    // onFiltersChange(data)
    getRotas(data)
     onOpenChange(false)
@@ -39,8 +35,9 @@ export function FiltersDialog({ open, onOpenChange, filters,getRotas}: FiltersDi
 
   const handleClear = () => {
     const clearedFilters = { consultor: "", status: "todos", bairro: "",dateRange:{from:undefined,to:undefined} }
-    setTempFilters(clearedFilters)
+   // setTempFilters(clearedFilters)
    // onFiltersChange(clearedFilters)
+    reset(clearedFilters)
     onOpenChange(false)
   }
 

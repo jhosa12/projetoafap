@@ -9,7 +9,6 @@ import { AlertCircle, Eye, User, Filter } from "lucide-react"
 import { StatusBadge } from "./status-badge"
 import { RouteProps } from "@/types/cobranca"
 
-
 interface RoutesTableProps {
   routes: RouteProps[]
   onViewDetails: (route: RouteProps) => void
@@ -36,69 +35,84 @@ export function RoutesTable({ routes, onViewDetails, onOpenFilters }: RoutesTabl
                   <TableHead>Consultor</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Bairros</TableHead>
-                  <TableHead>Clientes</TableHead>
+                  <TableHead>Progresso</TableHead>
                   <TableHead>Criada em</TableHead>
                   <TableHead>Atualizada em</TableHead>
                   <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {routes.map((route) => (
-                  <TableRow key={route.id_cobranca}>
-                    <TableCell className="font-medium">#{route.id_cobranca}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2 uppercase">
-                        <User className="h-4 w-4 text-muted-foreground " />
-                        {route.parametros.consultor}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <StatusBadge status={route.status} />
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1">
-                        {route.parametros.bairros.slice(0, 2).map((bairro, index) => (
-                          <Badge key={index} variant="outline" className="text-xs">
-                            {bairro}
-                          </Badge>
-                        ))}
-                        {route.parametros.bairros.length > 2 && (
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger>
-                                <Badge variant="outline" className="text-xs">
-                                  +{route.parametros.bairros.length - 2}
-                                </Badge>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <div className="space-y-1">
-                                  {route.parametros.bairros.slice(2).map((bairro, index) => (
-                                    <div key={index}>{bairro}</div>
-                                  ))}
-                                </div>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">{route.cobranca.length}</Badge>
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      { route.dt_created ? new Date(route.dt_created).toLocaleDateString() : "-"}
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      { route.dt_updated ? new Date(route.dt_updated).toLocaleDateString() : "-"}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="outline" size="sm" onClick={() => onViewDetails(route)}>
-                        <Eye className="h-4 w-4 mr-1" />
-                        Detalhes
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {routes.map((route) => {
+                  const totalClientes = route.cobranca.length
+                  const concluidos = route.cobranca.filter((c) => c.check_in && c.check_out).length
+                  const percent = totalClientes > 0 ? Math.round((concluidos / totalClientes) * 100) : 0
+
+                  return (
+                    <TableRow key={route.id_cobranca}>
+                      <TableCell className="font-medium">#{route.id_cobranca}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2 uppercase">
+                          <User className="h-4 w-4 text-muted-foreground " />
+                          {route.parametros.consultor}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge status={route.status} />
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {route.parametros.bairros.slice(0, 2).map((bairro, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {bairro}
+                            </Badge>
+                          ))}
+                          {route.parametros.bairros.length > 2 && (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <Badge variant="outline" className="text-xs">
+                                    +{route.parametros.bairros.length - 2}
+                                  </Badge>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <div className="space-y-1">
+                                    {route.parametros.bairros.slice(2).map((bairro, index) => (
+                                      <div key={index}>{bairro}</div>
+                                    ))}
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+                        </div>
+                      </TableCell>
+                   
+                      <TableCell>
+                        <div className="space-y-1 w-40">
+                          <div className="flex items-center justify-between text-xs text-muted-foreground">
+                            <span>{concluidos}/{totalClientes}</span>
+                            <span>{percent}%</span>
+                          </div>
+                          <div className="h-2 w-full rounded bg-muted">
+                            <div className="h-2 rounded bg-primary" style={{ width: `${percent}%` }} />
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        { route.dt_created ? new Date(route.dt_created).toLocaleDateString() : "-"}
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        { route.dt_updated ? new Date(route.dt_updated).toLocaleDateString() : "-"}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="outline" size="sm" onClick={() => onViewDetails(route)}>
+                          <Eye className="h-4 w-4 mr-1" />
+                          Detalhes
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
               </TableBody>
             </Table>
           ) : (
