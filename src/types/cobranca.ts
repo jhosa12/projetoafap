@@ -214,6 +214,7 @@ export interface RouteProps{
       consultor:string
    } 
    status:string
+   dt_charge:Date
    dt_created :Date
    dt_updated :Date
    updated_by :string

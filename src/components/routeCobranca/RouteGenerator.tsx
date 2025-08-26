@@ -6,7 +6,6 @@ import {
   Calendar,
   Users,
   FileText,
-  MessageSquare,
   Plus,
 } from "lucide-react";
 import DistrictSelector from "./routeForm/DistrictSelector";
@@ -17,7 +16,6 @@ import RoutePreview from "./routeForm/RoutePreview";
 import { toast } from "sonner";
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { InadimplenciaBairroProps, RouteProps } from "@/types/cobranca";
-import { Textarea } from "../ui/textarea";
 import useApiPost from "@/hooks/useApiPost";
 import {
   Dialog,
@@ -201,7 +199,7 @@ const RouteGenerator = ({ empresa,cidadesEmpresa,cobradores,filters,getRotas }: 
 
           <div className="space-y-4">
             <RoutePreview formData={metodos.watch()} />
-
+{/* 
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -221,26 +219,17 @@ const RouteGenerator = ({ empresa,cidadesEmpresa,cobradores,filters,getRotas }: 
                   )}
                 />
               </CardContent>
-            </Card>
+            </Card> */}
 
-            <Card className="shadow-sm">
-              <CardContent className="pt-6">
-                <Button
-                  type="submit"
-                  // disabled={!isFormValid}
-                  className="w-full"
-                  size="lg"
-                >
-                  Gerar Rota
-                </Button>
+           
+                
 
                 {/* {!isFormValid && (
               <p className="text-xs text-gray-500 mt-2 text-center">
                 Preencha todos os campos obrigatórios
               </p>
             )} */}
-              </CardContent>
-            </Card>
+          
           </div>
         </form>
         </FormProvider>

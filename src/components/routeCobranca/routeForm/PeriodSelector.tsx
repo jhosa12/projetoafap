@@ -100,6 +100,7 @@ const PeriodSelector = () => {
           </PopoverContent>
         </Popover>
       </div>
+
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { MapPin, Calendar, FileText, User } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { RouteProps } from "@/types/cobranca";
+import { Button } from "@/components/ui/button";
 
 
 interface RoutePreviewProps {
@@ -93,6 +94,14 @@ const RoutePreview = ({ formData }: RoutePreviewProps) => {
             ~{estimatedClients} clientes potenciais
           </p>
         </div>
+        <Button
+                  type="submit"
+                  // disabled={!isFormValid}
+                  className="w-full"
+                  size="lg"
+                >
+                  Gerar Rota
+                </Button>
       </CardContent>
     </Card>
   );

@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios/apiClient";
-import { MdDelete, MdOutlineLaunch } from "react-icons/md";
+import {  MdOutlineLaunch } from "react-icons/md";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -7,8 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from "date-fns/locale/pt-BR";
 import { ModalLancamentosCaixa } from "@/components/modals/caixa/modalLancamentosCaixa";
 import { AuthContext } from "@/store/AuthContext";
-import { Modal, Spinner, Table } from "flowbite-react";
-import { HiPencil } from "react-icons/hi2";
+import { Modal, Spinner} from "flowbite-react";
 import { ModalFechamento } from "../../../components/modals/caixa/modalFechamento";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ajustarData } from "@/utils/ajusteData";
@@ -16,6 +15,7 @@ import { ScreenCloseCaixa } from "@/components/caixa/screenCloseCaixa";
 import { ModalMensalidade } from "@/components/modals/admContrato/historico/modalmensalidade";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BiCalendarMinus } from "react-icons/bi";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import { toast } from "sonner";
@@ -26,23 +26,11 @@ import {
 } from "@/types/caixa";
 import { MensalidadeBaixaProps } from "@/types/financeiro";
 import ActionsCaixa from "@/components/caixa/ActionsCaixa";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu";
+import { CardValuesCaixa } from "@/components/caixa/card-values-caixa";
+import { TableCaixa } from "@/components/caixa/table-caixa";
 
-registerLocale("pt", pt);
+
+
 
 export default function CaixaMovimentar() {
   const [mov, setMov] = useState<Partial<LancamentosProps>>();
@@ -54,6 +42,8 @@ export default function CaixaMovimentar() {
   const [modalDados, setModalDados] = useState<boolean>(false);
   const [despesas, setDespesas] = useState<number>(0);
   const [data, setData] = useState<Partial<ResponseCaixaProps>>();
+  const [filteredData, setFilteredData] = useState<Partial<ResponseCaixaProps>>();
+  const [tipoFiltro, setTipoFiltro] = useState<string>('TODOS');
   const [valorForma, setValorForma] = useState<Record<string, number>>();
   const [openModal, setModal] = useState<{ [key: string]: boolean }>({
     lancar: false,
@@ -227,6 +217,7 @@ export default function CaixaMovimentar() {
         //console.log(response.data)
 
         setData(response.data);
+        setFilteredData(response.data);
         // setLancamentos(lista)
         // setPlanos(plano_de_contas)
         // setGrupos(grupos)
@@ -329,73 +320,7 @@ export default function CaixaMovimentar() {
             onSubmit={handleSubmit(listarLancamentos)}
             className="flex w-full items-end flex-row justify-end p-1 gap-4 text-black pr-2 "
           >
-            <div className="flex flex-col whitespace-nowrap ml-4 bg-gray-50 px-2 py-1 text-[11px] rounded-md font-semibold">
-              <div className="inline-flex items-center gap-4">
-                <div>
-                  <span>SALDO:</span>
-                  <span>
-                    {" "}
-                    {Number(data?.dif).toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    })}
-                  </span>
-                </div>
-
-                <div>
-                  <span>DIA ANTERIOR:</span>
-                  <span>
-                    {" "}
-                    {Number(data?.valorAnterior).toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    })}
-                  </span>
-                </div>
-              </div>
-
-              <div className="inline-flex items-center gap-4">
-                <div>
-                  <span>SALDO DIA:</span>
-                  <span>R$ {saldo.toFixed(2)}</span>
-                </div>
-
-                <div>
-                  <span>DESPESAS:</span>
-                  <span>
-                    {" "}
-                    {Number(despesas).toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    })}
-                  </span>
-                </div>
-
-                <div>
-                  <span>RECEITAS:</span>
-                  <span>
-                    {" "}
-                    {Number(saldo + despesas).toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    })}
-                  </span>
-                </div>
-              </div>
-
-              <ul className="inline-flex gap-4">
-                {valorForma &&
-                  Object.entries(valorForma).map(([forma, valor]) => (
-                    <li key={forma}>
-                      <strong>{forma}:</strong>{" "}
-                      {Number(valor).toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      })}
-                    </li>
-                  ))}
-              </ul>
-            </div>
+           <CardValuesCaixa saldo={saldo} despesas={despesas} valorForma={valorForma} data={data}/>
 
             <div className="flex items-center gap-2">
               <div>
@@ -435,12 +360,39 @@ export default function CaixaMovimentar() {
               </div>
             </div>
 
-            <div className="w-1/2">
+            <div className="w-1/3">
               <Input
                 placeholder="Descrição"
                 className="w-full h-8 text-[11px]"
                 {...register("descricao")}
               />
+            </div>
+            
+            <div className="w-[150px]">
+              <Select 
+                value={tipoFiltro}
+                onValueChange={(value) => {
+                  setTipoFiltro(value);
+                  if (data?.lista) {
+                    const filtered = {
+                      ...data,
+                      lista: value === 'TODOS' 
+                        ? data.lista 
+                        : data.lista.filter(item => item.tipo === value)
+                    };
+                    setFilteredData(filtered);
+                  }
+                }}
+              >
+                <SelectTrigger className="h-8 text-[11px] w-full">
+                  <SelectValue placeholder="Filtrar por tipo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="TODOS">Todos</SelectItem>
+                  <SelectItem value="RECEITA">RECEITAS</SelectItem>
+                  <SelectItem value="DESPESA">DESPESAS</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <Button variant={"outline"} size={"sm"} type="submit">
@@ -484,134 +436,7 @@ export default function CaixaMovimentar() {
         {!!data?.fechamento ? (
           <ScreenCloseCaixa fechamento={data.fechamento} />
         ) : (
-          <div className="flex flex-col border-t-2 bg-white">
-            <div className="overflow-y-auto mt-1 px-2 h-[calc(100vh-130px)] ">
-              <Table
-                hoverable
-                theme={{
-                  root: { shadow: "none" },
-                  body: { cell: { base: "px-2 py-0 text-[10px] font-medium" } },
-                }}
-              >
-                <Table.Head
-                  className="sticky top-0 bg-white z-5 border-b-[1px] border-gray-300"
-                  theme={{
-                    cell: {
-                      base: "bg-gray-50 px-2 py-0 text-[11px] border border-gray-300",
-                    },
-                  }}
-                >
-                  <Table.HeadCell className="border border-gray-300">
-                    Nº
-                  </Table.HeadCell>
-                  <Table.HeadCell className="border border-gray-300">
-                    DATA
-                  </Table.HeadCell>
-                  <Table.HeadCell className="border border-gray-300">
-                    CONTA
-                  </Table.HeadCell>
-                  <Table.HeadCell className="border border-gray-300">
-                    C.CUSTOS
-                  </Table.HeadCell>
-                  <Table.HeadCell className="border border-gray-300">
-                    DOCUMENTO
-                  </Table.HeadCell>
-                  <Table.HeadCell className="border border-gray-300">
-                    HISTÓRICO
-                  </Table.HeadCell>
-                  <Table.HeadCell className="border border-gray-300">
-                    TIPO
-                  </Table.HeadCell>
-                  <Table.HeadCell className="border border-gray-300">
-                    VALOR
-                  </Table.HeadCell>
-                  <Table.HeadCell className="border border-gray-300">
-                    AÇÕES
-                  </Table.HeadCell>
-                </Table.Head>
-
-                <Table.Body className="divide-y divide-gray-300">
-                  {data?.lista?.map((item) => (
-                    <Table.Row key={item.lanc_id} className="text-black">
-                      <Table.Cell className="whitespace-nowrap border border-gray-300">
-                        {item.num_seq}
-                      </Table.Cell>
-                      <Table.Cell
-                        className="border border-gray-300"
-                        data-tooltip-id="tooltip-hora"
-                        data-tooltip-place="bottom"
-                        data-tooltip-content={new Date(
-                          item.datalanc
-                        ).toLocaleTimeString()}
-                      >
-                        {new Date(item.data).toLocaleDateString("pt-BR", {
-                          timeZone: "UTC",
-                        })}
-                      </Table.Cell>
-                      <Table.Cell className="border border-gray-300">
-                        {item.conta}
-                      </Table.Cell>
-                      <Table.Cell className="whitespace-nowrap border border-gray-300">
-                        {item.ccustos_desc}
-                      </Table.Cell>
-                      <Table.Cell className="border border-gray-300">
-                        {item.notafiscal
-                          ? item.notafiscal.toUpperCase()
-                          : item?.descricao?.toUpperCase()}
-                      </Table.Cell>
-                      <Table.Cell className="border border-gray-300">
-                        {item.historico}
-                      </Table.Cell>
-                      <Table.Cell
-                        className={`font-semibold border border-gray-300 ${
-                          item.tipo === "RECEITA"
-                            ? "text-green-500"
-                            : "text-red-500"
-                        }`}
-                      >
-                        {item.tipo}
-                      </Table.Cell>
-                      <Table.Cell className="font-semibold border border-gray-300">
-                        {Number(item.valor).toLocaleString("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        })}
-                      </Table.Cell>
-                      <Table.Cell className="space-x-4 whitespace-nowrap border border-gray-300">
-                        <button
-                          disabled={
-                            item.conta === "1.01.002" ||
-                            !permissoes.includes("ADM2.1.3")
-                          }
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            setMov({ ...item });
-                            setModal({ lancar: true });
-                          }}
-                          className="font-medium text-gray-500 hover:text-cyan-600 disabled:cursor-not-allowed"
-                        >
-                          <HiPencil size={14} />
-                        </button>
-                        <button
-                          disabled={
-                            item.conta === "1.01.002" ||
-                            !permissoes.includes("ADM2.1.4")
-                          }
-                          onClick={() => {
-                            setMov({ lanc_id: item.lanc_id }),
-                              setModal({ excluir: true });
-                          }}
-                          className="font-medium text-gray-500 hover:text-red-600 disabled:cursor-not-allowed"
-                        >
-                          <MdDelete size={16} />
-                        </button>
-                      </Table.Cell>
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
-            </div>
-          </div>
+          <TableCaixa setModal={setModal} setMov={setMov} permissoes={permissoes} data={filteredData || data}/>
         )}
 
         {!data?.fechamento && (

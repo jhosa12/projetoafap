@@ -23,6 +23,7 @@ const ClientCriteriaSelector = ({consultores}:Props) => {
   // Assuming the format is "operator:value" for simplicity, defaulting to ">=" for display
   const currentOperator = ">="; // This could be extracted from a more complex data structure
  // const currentValue = overdueMonths;
+ const cobradores =  consultores.filter((item)=>item.funcao==='COBRADOR (RDA)')
  const {control} = useFormContext<RouteProps>()
 
   return (
@@ -91,12 +92,12 @@ const ClientCriteriaSelector = ({consultores}:Props) => {
             name="parametros.cobrador"
             render={({ field }) => (
               <MultiSelects  
-                options={consultores?.map((item) => ({
+                options={cobradores?.map((item) => ({
                   label: item.nome ?? '',
                   value: item.nome ?? '',
                 })) ?? []}
                 onChange={field.onChange}
-                placeholder="Selecione o Cobrador"
+                placeholder="Selecione a classificação"
                 maxDisplayItems={3}
                 selected={field.value??[]}
                 className="min-h-8"
