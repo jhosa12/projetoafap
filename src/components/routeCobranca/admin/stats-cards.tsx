@@ -18,7 +18,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
         </Card>
         <Card>
           <CardContent className="p-2">
-            <div className="text-2xl font-bold">{stats.totalMensalidades}</div>
+            <div className="text-2xl font-bold">{stats.mensalidadesPagas}</div>
             <p className="text-xs text-muted-foreground">Mensalidades</p>
           </CardContent>
         </Card>

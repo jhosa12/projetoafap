@@ -56,7 +56,16 @@ export default function CobrancaAdmin({routes,empresa,cidadesEmpresa,cobradores,
   // })
 
  // const activeFiltersCount = Object.values(filters)?.filter((value) => value && value !== "todos").length
-
+const statsCobranca:CobrancaStats = {
+    totalClientes:routes.reduce((total, route) => total + (route.cobranca?.length || 0), 0),
+    totalMensalidades:0,
+    valorTotal:0,
+    clientesVisitados:routes.reduce((total, route) => {
+      return total+route.cobranca?.filter(c => c.check_in && c.check_out).length || 0
+    }, 0),
+    mensalidadesPagas:routes.reduce((total,route)=>total+(route.pagamentos?.length||0),0),
+    valorRecebido:routes.reduce((total,route)=>total+(route.pagamentos?.reduce((sum,pag)=>sum+pag.valor_forma||0,0))||0,0)
+}
   return (
     <FormProvider {...methods}>
     <TooltipProvider>
@@ -69,7 +78,7 @@ export default function CobrancaAdmin({routes,empresa,cidadesEmpresa,cobradores,
           cidadesEmpresa={cidadesEmpresa}
           cobradores={cobradores}
         />
-        <StatsCards stats={{}as CobrancaStats} />
+        <StatsCards stats={statsCobranca} />
         <RoutesTable
           routes={routes}
           onViewDetails={handleViewDetails}
