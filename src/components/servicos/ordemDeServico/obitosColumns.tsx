@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
 import { Button } from "@/components/ui/button"; // shadcn button
-import { ObitoProps } from "@/types/associado";
+import { ObitoProps } from "@/app/(dashboard)/admcontrato/_types/associado";
 import { IoMdTrash } from "react-icons/io";
 
 type ActionsProps = {
@@ -83,8 +83,8 @@ export function getObitoColumns({
     //   header: "Desconto Plano",
     //   cell: ({ row }) => `${row.getValue("porcPlan")}%`,
     // },
-     {
-       id: "actions",
+    {
+      id: "actions",
       header: "Ações",
       cell: ({ row }) => {
         const exame = row.original;
@@ -100,16 +100,16 @@ export function getObitoColumns({
               <HiPencil className="h-3 w-3" />
             </Button>
             <Button
-           variant="destructive"
+              variant="destructive"
               size="icon"
               onClick={() => onDelete?.(exame)}
               className="h-6 w-6"
-             >
-         <IoMdTrash className="h-3 w-3" />
+            >
+              <IoMdTrash className="h-3 w-3" />
             </Button>
-       </div>
+          </div>
         );
-       },
-     },
+      },
+    },
   ];
 }

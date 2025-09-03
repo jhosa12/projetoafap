@@ -1,13 +1,13 @@
 import { MdSaveAlt } from "react-icons/md";
 import { RiAddCircleFill } from "react-icons/ri";
-import { AuthContext} from "@/store/AuthContext";
+import { AuthContext } from "@/store/AuthContext";
 import { useContext, useEffect } from "react";
 import { api } from "@/lib/axios/apiClient";
-import DatePicker,{registerLocale} from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { DependentesProps } from "@/types/associado";
+import { DependentesProps } from "@/app/(dashboard)/admcontrato/_types/associado";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,195 +23,195 @@ registerLocale('pt', pt)
 
 
 
-interface FormDataProps{
-  
-  nome:string
-  data_nasc:Date
-  grau_parentesco:string
-  data_adesao:Date
-  carencia:Date
-  sexo:string,
-  exclusao_motivo:string
+interface FormDataProps {
+
+    nome: string
+    data_nasc: Date
+    grau_parentesco: string
+    data_adesao: Date
+    carencia: Date
+    sexo: string,
+    exclusao_motivo: string
 }
 
 
-interface DataProps{
-    openModal:boolean,
-    setModal:(open:boolean)=>void
-    data:Partial<DependentesProps>
+interface DataProps {
+    openModal: boolean,
+    setModal: (open: boolean) => void
+    data: Partial<DependentesProps>
 }
 
 
 
 
-export function ModalDependentes({openModal=false,setModal,data}:DataProps){
-    const {usuario,dadosassociado,carregarDados}=useContext(AuthContext)
-    const {register,handleSubmit,control,reset} = useForm<DependentesProps>({
-      defaultValues:data
+export function ModalDependentes({ openModal = false, setModal, data }: DataProps) {
+    const { usuario, dadosassociado, carregarDados } = useContext(AuthContext)
+    const { register, handleSubmit, control, reset } = useForm<DependentesProps>({
+        defaultValues: data
     })
 
 
-    useEffect(()=>{
-    
+    useEffect(() => {
+
         reset(data)
-     
-    },[data])
-      
+
+    }, [data])
 
 
-    const handleApiFunction:SubmitHandler<DependentesProps> = async(dadosForm)=>{
-      if (data.excluido) {
-        // Se o dependente está excluído, você resgata ele.
-       // await resgatarDep();
-      } else if (data.id_dependente) {
-        // Se já existe um dependente (tem ID), então você atualiza.
-        await atualizarDependente(dadosForm);
-      } else {
-        // Se é um novo dependente, você adiciona.
-        await addDependente(dadosForm);
-      }
+
+    const handleApiFunction: SubmitHandler<DependentesProps> = async (dadosForm) => {
+        if (data.excluido) {
+            // Se o dependente está excluído, você resgata ele.
+            // await resgatarDep();
+        } else if (data.id_dependente) {
+            // Se já existe um dependente (tem ID), então você atualiza.
+            await atualizarDependente(dadosForm);
+        } else {
+            // Se é um novo dependente, você adiciona.
+            await addDependente(dadosForm);
+        }
 
     }
 
- async function addDependente(dados:DependentesProps){
-  try {
+    async function addDependente(dados: DependentesProps) {
+        try {
 
 
-toast.promise(
-  api.post('/novoDependente',{
-    id_global:dadosassociado?.id_global,
-    id_contrato_global:dadosassociado?.contrato?.id_contrato_global,
-      id_contrato:dadosassociado?.contrato?.id_contrato,
-      id_associado:dadosassociado?.id_associado,
-      nome:dados.nome.toUpperCase(),
-      data_nasc:dados.data_nasc,
-      grau_parentesco:dados.grau_parentesco,
-      data_adesao:dados.data_adesao,
-      cad_usu:usuario?.nome,
-      cad_dh:new Date(),
-      carencia:dados.carencia,
-      sexo:dados.sexo
-  }),
-  {
-    loading:'Cadastrando Dependente...',
-    success:async(res)=>{
-      dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
-      setModal(false)
-      return 'Adicionado com Sucesso!'
-    },
-    error:async(error)=>{
-      return error?.response?.data.error??'Erro ao adicionar dependente'
-    }
-  }
-)
+            toast.promise(
+                api.post('/novoDependente', {
+                    id_global: dadosassociado?.id_global,
+                    id_contrato_global: dadosassociado?.contrato?.id_contrato_global,
+                    id_contrato: dadosassociado?.contrato?.id_contrato,
+                    id_associado: dadosassociado?.id_associado,
+                    nome: dados.nome.toUpperCase(),
+                    data_nasc: dados.data_nasc,
+                    grau_parentesco: dados.grau_parentesco,
+                    data_adesao: dados.data_adesao,
+                    cad_usu: usuario?.nome,
+                    cad_dh: new Date(),
+                    carencia: dados.carencia,
+                    sexo: dados.sexo
+                }),
+                {
+                    loading: 'Cadastrando Dependente...',
+                    success: async (res) => {
+                        dadosassociado?.id_global && await carregarDados(dadosassociado?.id_global)
+                        setModal(false)
+                        return 'Adicionado com Sucesso!'
+                    },
+                    error: async (error) => {
+                        return error?.response?.data.error ?? 'Erro ao adicionar dependente'
+                    }
+                }
+            )
 
-   /* const response = await toast.promise(
-      api.post('/novoDependente',{
-        id_global:dadosassociado?.id_global,
-        id_contrato_global:dadosassociado?.contrato?.id_contrato_global,
-          id_contrato:dadosassociado?.contrato?.id_contrato,
-          id_associado:dadosassociado?.id_associado,
-          nome:dados.nome.toUpperCase(),
-          data_nasc:dados.data_nasc,
-          grau_parentesco:dados.grau_parentesco,
-          data_adesao:dados.data_adesao,
-          cad_usu:usuario?.nome,
-          cad_dh:new Date(),
-          carencia:dados.carencia,
-          sexo:dados.sexo
-      }),
-      {
-          error:'Erro ao adicionar dependente',
-          pending:'Cadastrando Dependente',
-          success:'Adicionado com Sucesso!'
-      }
-  )*/
-//  dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
+            /* const response = await toast.promise(
+               api.post('/novoDependente',{
+                 id_global:dadosassociado?.id_global,
+                 id_contrato_global:dadosassociado?.contrato?.id_contrato_global,
+                   id_contrato:dadosassociado?.contrato?.id_contrato,
+                   id_associado:dadosassociado?.id_associado,
+                   nome:dados.nome.toUpperCase(),
+                   data_nasc:dados.data_nasc,
+                   grau_parentesco:dados.grau_parentesco,
+                   data_adesao:dados.data_adesao,
+                   cad_usu:usuario?.nome,
+                   cad_dh:new Date(),
+                   carencia:dados.carencia,
+                   sexo:dados.sexo
+               }),
+               {
+                   error:'Erro ao adicionar dependente',
+                   pending:'Cadastrando Dependente',
+                   success:'Adicionado com Sucesso!'
+               }
+           )*/
+            //  dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
 
-  setModal(false)
-    
-  } catch (error:any) {
-    toast.error(error?.response?.data.error??'Erro ao salvar dados')
-  }
-    
-   
- }
-
- async function atualizarDependente(dados:DependentesProps){
-
-  toast.promise(
-    api.put('/atualizarDependente',{
-      id_dependente_global:data.id_dependente_global,
-        id_dependente:data.id_dependente,
-        nome:dados.nome.toUpperCase(),
-        data_nasc:dados.data_nasc,
-        grau_parentesco:dados.grau_parentesco,
-        data_adesao:dados.data_adesao,
-        carencia:dados.carencia,
-        sexo:dados.sexo
-    }),
-    {
-        error:async(error)=>{
-
-          return error?.response?.data.error??'Erro ao atualizar dependente'
-          
-        },
-        loading:'Atualizando Dependente....',
-        success:async(res)=>{
-            dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
             setModal(false)
-            return 'Atualizado com Sucesso!'
+
+        } catch (error: any) {
+            toast.error(error?.response?.data.error ?? 'Erro ao salvar dados')
         }
+
+
     }
-  )
+
+    async function atualizarDependente(dados: DependentesProps) {
+
+        toast.promise(
+            api.put('/atualizarDependente', {
+                id_dependente_global: data.id_dependente_global,
+                id_dependente: data.id_dependente,
+                nome: dados.nome.toUpperCase(),
+                data_nasc: dados.data_nasc,
+                grau_parentesco: dados.grau_parentesco,
+                data_adesao: dados.data_adesao,
+                carencia: dados.carencia,
+                sexo: dados.sexo
+            }),
+            {
+                error: async (error) => {
+
+                    return error?.response?.data.error ?? 'Erro ao atualizar dependente'
+
+                },
+                loading: 'Atualizando Dependente....',
+                success: async (res) => {
+                    dadosassociado?.id_global && await carregarDados(dadosassociado?.id_global)
+                    setModal(false)
+                    return 'Atualizado com Sucesso!'
+                }
+            }
+        )
 
 
-   /* const response = await toast.promise(
-        api.put('/atualizarDependente',{
-          id_dependente_global:data.id_dependente_global,
-            id_dependente:data.id_dependente,
-            nome:dados.nome.toUpperCase(),
-            data_nasc:dados.data_nasc,
-            grau_parentesco:dados.grau_parentesco,
-            data_adesao:dados.data_adesao,
-            carencia:dados.carencia,
-            sexo:dados.sexo
-        }),
-        {
-            error:'Erro ao atualizar dependente',
-            pending:'Atualizando Dependente',
-            success:'Atualizado com Sucesso!'
-        }
-    )*/
-   // dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
- }
-
- /*async function resgatarDep(){
-
-    if(!data.id_dependente){
-     toast.info("Selecione um dependente!")
-     return;
-    }
- 
-     try{
-         await toast.promise(
-             api.put('/excluirDependente',{
-                 id_dependente:Number(data.id_dependente),
-                 excluido:false,
+        /* const response = await toast.promise(
+             api.put('/atualizarDependente',{
+               id_dependente_global:data.id_dependente_global,
+                 id_dependente:data.id_dependente,
+                 nome:dados.nome.toUpperCase(),
+                 data_nasc:dados.data_nasc,
+                 grau_parentesco:dados.grau_parentesco,
+                 data_adesao:dados.data_adesao,
+                 carencia:dados.carencia,
+                 sexo:dados.sexo
              }),
              {
-                 pending: `Efetuando`,
-                 success: `Dependente Resgatado`,
-                 error: `Erro ao Resgatar`
+                 error:'Erro ao atualizar dependente',
+                 pending:'Atualizando Dependente',
+                 success:'Atualizado com Sucesso!'
              }
-         )
-         
-      dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
-       
-     }catch(err){
-         console.log(err)
-     }
-   }*/
+         )*/
+        // dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
+    }
+
+    /*async function resgatarDep(){
+   
+       if(!data.id_dependente){
+        toast.info("Selecione um dependente!")
+        return;
+       }
+    
+        try{
+            await toast.promise(
+                api.put('/excluirDependente',{
+                    id_dependente:Number(data.id_dependente),
+                    excluido:false,
+                }),
+                {
+                    pending: `Efetuando`,
+                    success: `Dependente Resgatado`,
+                    error: `Erro ao Resgatar`
+                }
+            )
+            
+         dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
+          
+        }catch(err){
+            console.log(err)
+        }
+      }*/
     return (
         <Dialog open={openModal} onOpenChange={setModal}>
             <DialogContent className="sm:max-w-[600px]">
@@ -220,7 +220,7 @@ toast.promise(
                         {data.id_dependente ? 'Editar Dependente' : 'Adicionar Dependente'}
                     </DialogTitle>
                 </DialogHeader>
-                
+
                 <form onSubmit={handleSubmit(handleApiFunction)} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
@@ -240,11 +240,11 @@ toast.promise(
                                 control={control}
                                 name="data_nasc"
                                 render={({ field }) => (
-                                  <DatePickerInput
-                                  value={field.value}
-                                  onChange={field.onChange}
-                                  className ='h-9'
-                                  required
+                                    <DatePickerInput
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        className='h-9'
+                                        required
                                     />
                                 )}
                             />
@@ -304,11 +304,11 @@ toast.promise(
                                 control={control}
                                 name="data_adesao"
                                 render={({ field }) => (
-                                  <DatePickerInput
-                                  value={field.value}
-                                  onChange={field.onChange}
-                                  className ='h-9'
-                                  required
+                                    <DatePickerInput
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        className='h-9'
+                                        required
                                     />
                                 )}
                             />
@@ -320,12 +320,12 @@ toast.promise(
                                 control={control}
                                 name="carencia"
                                 render={({ field }) => (
-                                  <DatePickerInput
-                                  value={field.value}
-                                  onChange={field.onChange}
-                                  className ='h-9'
+                                    <DatePickerInput
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        className='h-9'
                                     />
-                                   
+
                                 )}
                             />
                         </div>

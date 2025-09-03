@@ -1,4 +1,4 @@
-import { DependentesProps } from "./associado";
+import { DependentesProps } from "../app/(dashboard)/admcontrato/_types/associado";
 
 export interface LeadProps {
   index: number;
@@ -40,5 +40,5 @@ export interface LeadProps {
   adesao?: Date;
   dataVenda: Date;
   cobrador: string;
-  bairroPlano?:string
+  bairroPlano?: string
 }

@@ -12,7 +12,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { MdClose } from "react-icons/md";
-import { DependentesProps } from "@/types/associado";
+import { DependentesProps } from "@/app/(dashboard)/admcontrato/_types/associado";
 import { parentescos } from "@/utils/arrayParentesco";
 import { toast } from "sonner";
 
@@ -37,7 +37,7 @@ export function TabDependentes({ control, register, setValue, trigger, watch }: 
 
     }
     const handleAdicionarDependente = (data: DependentesProps) => {
-        if(!data.nome || !data.grau_parentesco){
+        if (!data.nome || !data.grau_parentesco) {
             toast.error("Preencha os campos obrigatorios")
             return
         }
@@ -80,8 +80,8 @@ export function TabDependentes({ control, register, setValue, trigger, watch }: 
                                 </TableCell>
                                 <TableCell className="text-xs">{item?.celular}</TableCell>
                                 <TableCell>
-                                    <button 
-                                        type="button" 
+                                    <button
+                                        type="button"
                                         onClick={() => handleDeleteDependente(index)}
                                         className="text-red-600 hover:text-red-700"
                                     >
@@ -151,16 +151,16 @@ export function TabDependentes({ control, register, setValue, trigger, watch }: 
                                 name="grau_parentesco"
                                 control={controlDependente}
                                 render={({ field: { onChange, value } }) => (
-                                  <Select value={value} onValueChange={onChange}>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Selecione" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {parentescos.map((item)=>(
-                                            <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>
-                                        ))}  
-                                    </SelectContent>
-                                  </Select>
+                                    <Select value={value} onValueChange={onChange}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Selecione" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {parentescos.map((item) => (
+                                                <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 )}
                             />
                         </div>

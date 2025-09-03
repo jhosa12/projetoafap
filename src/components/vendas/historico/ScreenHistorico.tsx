@@ -17,7 +17,7 @@ import {
 
 import { AuthContext } from "@/store/AuthContext";
 import { gerarMensalidade, ParcelaData } from "@/utils/gerarArrayMensal";
-import { ContratoProps, DependentesProps } from "@/types/associado";
+import { ContratoProps, DependentesProps } from "@/app/(dashboard)/admcontrato/_types/associado";
 import { ajustarData } from "@/utils/ajusteData";
 import { ModalLoading } from "@/components/modals/loading/modalLoading";
 import { useReactToPrint } from "react-to-print";
@@ -53,8 +53,8 @@ const camposObrigatorios: Partial<Record<keyof LeadProps, string>> = {
   cpfcnpj: "CPF/CNPJ",
   n_parcelas: "Número de Parcelas",
   adesao: "Data de Adesão",
-  cobrador:"Cobrador",
-  bairroPlano:"Bairro Plano"
+  cobrador: "Cobrador",
+  bairroPlano: "Bairro Plano"
 };
 
 export interface ReqLeadsProps {
@@ -109,7 +109,7 @@ interface CadastroRequest {
 
 
 export function Historico() {
-  const [open,setOpen] = useState(false)
+  const [open, setOpen] = useState(false)
   const {
     postData,
     data,
@@ -139,14 +139,14 @@ export function Historico() {
 
 
   const [currentPage, setCurrentPage] = useState(1);
-const rowsPerPage =10;
+  const rowsPerPage = 10;
 
-const paginatedData = data?.slice(
-  (currentPage - 1) * rowsPerPage,
-  currentPage * rowsPerPage
-);
+  const paginatedData = data?.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
 
-const totalPages = data ? Math.ceil(data.length / rowsPerPage) : 1;
+  const totalPages = data ? Math.ceil(data.length / rowsPerPage) : 1;
 
   const {
     data: associado,
@@ -160,12 +160,13 @@ const totalPages = data ? Math.ceil(data.length / rowsPerPage) : 1;
     },
     Partial<CadastroRequest>
   >("/leads/gerarPlano", undefined, () => {
-     reqDados(getValues())},
+    reqDados(getValues())
+  },
     () => {
-      setModal(prev=>({...prev,novo:true}))
-    },  
-    
-    );
+      setModal(prev => ({ ...prev, novo: true }))
+    },
+
+  );
 
   const { register, handleSubmit, control, getValues } =
     useForm<ReqLeadsProps>({
@@ -184,7 +185,7 @@ const totalPages = data ? Math.ceil(data.length / rowsPerPage) : 1;
     }
     setCategoria(e.target.value);
     setLead(lead);
-    setModal(prev=>({...prev,confirmaCategoria:true}));
+    setModal(prev => ({ ...prev, confirmaCategoria: true }));
   };
 
   const imprimir = useReactToPrint({
@@ -201,23 +202,23 @@ const totalPages = data ? Math.ceil(data.length / rowsPerPage) : 1;
     if (modal.print) imprimir();
   }, [modal]);
 
-  const handleGerarContrato:SubmitHandler<LeadProps> = async (data) => {
-   
+  const handleGerarContrato: SubmitHandler<LeadProps> = async (data) => {
+
     if (lead?.status !== "VENDA") {
       toast.warning("Selecione uma venda para gerar contrato!");
       return;
     }
-   
-    const camposFaltando = Object.entries(camposObrigatorios)
-    .filter(([key]) => !data[key as keyof LeadProps])
-    .map(([, nomeLegivel]) => nomeLegivel);
 
-  if (camposFaltando.length > 0) {
-    toast.warning(
-      `Preencha os seguintes campos obrigatórios para gerar o contrato:\n${camposFaltando.join(", ")}`
-    );
-    return;
-  }
+    const camposFaltando = Object.entries(camposObrigatorios)
+      .filter(([key]) => !data[key as keyof LeadProps])
+      .map(([, nomeLegivel]) => nomeLegivel);
+
+    if (camposFaltando.length > 0) {
+      toast.warning(
+        `Preencha os seguintes campos obrigatórios para gerar o contrato:\n${camposFaltando.join(", ")}`
+      );
+      return;
+    }
     let adesao;
     if (data.adesao) {
       adesao = new Date(data.adesao);
@@ -230,51 +231,51 @@ const totalPages = data ? Math.ceil(data.length / rowsPerPage) : 1;
         dtVencimento.getTime() - dtVencimento.getTimezoneOffset() * 60 * 1000
       );
     }
-try{
-    await postAssociado({
-      dataPlano: {
-        dependentes: data.dependentes,
-        bairro: data.bairroPlano,
-        celular1: data.celular1,
-        celular2: data.celular2,
-        cep: data.cep,
-        cidade: upperCaseString(data.cidade),
-        cpfcnpj: data.cpfcnpj,
-        data_nasc: data.data_nasc,
-        endereco: upperCaseString(data.endereco),
-        id_empresa: selectEmp,
-        nome: upperCaseString(data.nome),
-        numero: data.numero,
-        uf: data.uf,
-        rg: data.rg,
-        contrato: {
-          id_plano: Number(data.id_plano),
-          plano: data.plano,
-          valor_mensalidade: data.valor_mensalidade,
-          n_parcelas: data.n_parcelas,
-          data_vencimento: dtVencimento,
-          dt_adesao: adesao,
-          dt_carencia: new Date(),
-          origem: data.origem,
-          consultor: data.consultor,
-          cobrador:data.cobrador,
-          // form_pag: lead.form_pag,
+    try {
+      await postAssociado({
+        dataPlano: {
+          dependentes: data.dependentes,
+          bairro: data.bairroPlano,
+          celular1: data.celular1,
+          celular2: data.celular2,
+          cep: data.cep,
+          cidade: upperCaseString(data.cidade),
+          cpfcnpj: data.cpfcnpj,
+          data_nasc: data.data_nasc,
+          endereco: upperCaseString(data.endereco),
+          id_empresa: selectEmp,
+          nome: upperCaseString(data.nome),
+          numero: data.numero,
+          uf: data.uf,
+          rg: data.rg,
+          contrato: {
+            id_plano: Number(data.id_plano),
+            plano: data.plano,
+            valor_mensalidade: data.valor_mensalidade,
+            n_parcelas: data.n_parcelas,
+            data_vencimento: dtVencimento,
+            dt_adesao: adesao,
+            dt_carencia: new Date(),
+            origem: data.origem,
+            consultor: data.consultor,
+            cobrador: data.cobrador,
+            // form_pag: lead.form_pag,
+          },
+          mensalidades: gerarMensalidade({
+            vencimento: dtVencimento,
+            n_parcelas: data.n_parcelas,
+            valorMensalidade: Number(data.valor_mensalidade),
+          }),
         },
-        mensalidades: gerarMensalidade({
-          vencimento: dtVencimento,
-          n_parcelas: data.n_parcelas,
-          valorMensalidade: Number(data.valor_mensalidade),
-        }),
-      },
-      id_lead: data.id_lead,
-    });
-    
-   // setModal({ novo: true });
-  
-  }catch(error){
-    console.log(error);
+        id_lead: data.id_lead,
+      });
+
+      // setModal({ novo: true });
+
+    } catch (error) {
+      console.log(error);
+    }
   }
-}
 
   const handleAtualizarCategoria = useCallback(async () => {
     try {
@@ -284,7 +285,7 @@ try{
         usuario: lead?.usuario,
         id_lead: lead?.id_lead,
       });
-     // postData({});
+      // postData({});
       reqDados(getValues());
       setModal({ confirmaCategoria: false });
     } catch (error) {
@@ -315,7 +316,7 @@ try{
         endDate: dataFim,
       });
 
-      setModal(prev=>({...prev,filtro:false}));
+      setModal(prev => ({ ...prev, filtro: false }));
     } catch (error) {
       console.log(error);
     }
@@ -340,98 +341,98 @@ try{
         <DialogHeader>
           <DialogTitle>Leads/Prospecões/Vendas</DialogTitle>
         </DialogHeader>
-        
-      {modal.filtro && (
-        <ModalFiltroHistorico
-          consultores={consultores
-            .filter((item) => item.funcao === "PROMOTOR(A) DE VENDAS")
-            .map((item) => ({ label: item.nome, value: item.nome }))}
-          loading={loadingLeads}
-          handleSubmit={handleSubmit}
-          register={register}
-          control={control}
-          handleOnSubmit={reqDados}
-          show={modal.filtro}
-          onClose={() => setModal(prev=>({...prev,filtro:false}))}
-        />
-      )}
-      {modal.lead && (
-        <ModalItem
-          handleLoadLeads={() => reqDados(getValues())}
-          item={lead ?? {}}
-          open={modal.lead}
-          onClose={() => setModal(prev=>({...prev,lead:false}))}
-          handleGerarContrato={handleGerarContrato}
-        />
-      )}
-      <ModalConfirmar
-        pergunta={`Tem certeza que deseja alterar o(a) ${lead?.status} para um(a) ${categoria} ? Essa alteração será contabilizada na faturação!`}
-        handleConfirmar={handleAtualizarCategoria}
-        openModal={modal.confirmaCategoria}
-        setOpenModal={() => setModal(prev=>({...prev,confirmaCategoria:false}))}
-      />
 
-  
-      {modal.novo && (
-        <ModalNovoContrato
-          closeAll={()=>setOpen(false)}
-          id_global={associado?.id_global}
-          carregarDados={carregarDados}
-          id_contrato={associado?.id_contrato}
-          loading={loading}
-          show={modal.novo??false}
-          onClose={() => setModal(prev=>({...prev,novo:false}))}
-        />
-      )}
-      <div className="inline-flex gap-4">
-        `
-        <Button
-          onClick={() => setModal(prev=>({...prev,filtro:true}))}
-          size={"sm"}
-          variant={"outline"}
-        >
-          <MdFilter1 />
-          FILTRAR
-        </Button>
-        <Button
-          onClick={() => setModal(prev=>({...prev,print:true}))}
-          size={"sm"}
-          variant={"outline"}
-        >
-          <MdPrint />
-          IMPRIMIR
-        </Button>
-      </div>
-
-      {loadingLeads ? (
-        <ModalLoading show={loadingLeads} />
-      ) : (
-        <div className="overflow-y-auto mt-2  max-h-[calc(100vh-185px)]   ">
-
-          <TableHistoricoVendas
-            data={paginatedData ?? []}
-            onChangeCategoria={onChangeCategoria}
-            setLead={setLead}
-            setModal={setModal}
+        {modal.filtro && (
+          <ModalFiltroHistorico
+            consultores={consultores
+              .filter((item) => item.funcao === "PROMOTOR(A) DE VENDAS")
+              .map((item) => ({ label: item.nome, value: item.nome }))}
+            loading={loadingLeads}
+            handleSubmit={handleSubmit}
+            register={register}
+            control={control}
+            handleOnSubmit={reqDados}
+            show={modal.filtro}
+            onClose={() => setModal(prev => ({ ...prev, filtro: false }))}
           />
+        )}
+        {modal.lead && (
+          <ModalItem
+            handleLoadLeads={() => reqDados(getValues())}
+            item={lead ?? {}}
+            open={modal.lead}
+            onClose={() => setModal(prev => ({ ...prev, lead: false }))}
+            handleGerarContrato={handleGerarContrato}
+          />
+        )}
+        <ModalConfirmar
+          pergunta={`Tem certeza que deseja alterar o(a) ${lead?.status} para um(a) ${categoria} ? Essa alteração será contabilizada na faturação!`}
+          handleConfirmar={handleAtualizarCategoria}
+          openModal={modal.confirmaCategoria}
+          setOpenModal={() => setModal(prev => ({ ...prev, confirmaCategoria: false }))}
+        />
 
-{data && data.length > rowsPerPage && (
-  <div className="mt-4 flex justify-center">
-<PaginationComponent
-  currentPage={currentPage}
-  totalPages={totalPages}
-  setCurrentPage={setCurrentPage}
-/>
-  </div>
-)}
 
-         
+        {modal.novo && (
+          <ModalNovoContrato
+            closeAll={() => setOpen(false)}
+            id_global={associado?.id_global}
+            carregarDados={carregarDados}
+            id_contrato={associado?.id_contrato}
+            loading={loading}
+            show={modal.novo ?? false}
+            onClose={() => setModal(prev => ({ ...prev, novo: false }))}
+          />
+        )}
+        <div className="inline-flex gap-4">
+          `
+          <Button
+            onClick={() => setModal(prev => ({ ...prev, filtro: true }))}
+            size={"sm"}
+            variant={"outline"}
+          >
+            <MdFilter1 />
+            FILTRAR
+          </Button>
+          <Button
+            onClick={() => setModal(prev => ({ ...prev, print: true }))}
+            size={"sm"}
+            variant={"outline"}
+          >
+            <MdPrint />
+            IMPRIMIR
+          </Button>
         </div>
-      )}
 
-      <div style={{ display: "none" }}>
-        {modal.print && <DocListaLeads ref={componenteRef} leads={data ?? []} />}
-      </div>
+        {loadingLeads ? (
+          <ModalLoading show={loadingLeads} />
+        ) : (
+          <div className="overflow-y-auto mt-2  max-h-[calc(100vh-185px)]   ">
+
+            <TableHistoricoVendas
+              data={paginatedData ?? []}
+              onChangeCategoria={onChangeCategoria}
+              setLead={setLead}
+              setModal={setModal}
+            />
+
+            {data && data.length > rowsPerPage && (
+              <div className="mt-4 flex justify-center">
+                <PaginationComponent
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  setCurrentPage={setCurrentPage}
+                />
+              </div>
+            )}
+
+
+          </div>
+        )}
+
+        <div style={{ display: "none" }}>
+          {modal.print && <DocListaLeads ref={componenteRef} leads={data ?? []} />}
+        </div>
       </DialogContent>
     </Dialog>
   );

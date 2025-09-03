@@ -10,7 +10,7 @@ import {
 } from "react";
 import { api } from "../lib/axios/apiClient";
 import { destroyCookie } from "nookies";
-import { AssociadoProps } from "@/types/associado";
+import { AssociadoProps } from "@/app/(dashboard)/admcontrato/_types/associado";
 import { SignInProps, UserProps } from "@/types/user";
 import { EmpresaProps } from "@/types/empresa";
 import { PlanosProps } from "@/types/planos";
@@ -40,9 +40,9 @@ type AuthContextData = {
   loadingInfo: boolean;
   infoEmpresa: EmpresaProps | null;
   bairrosEmpresa: Array<{ cidade: string; bairro: string }>;
-  cidadesEmpresa:Array<string>
-  bairrosUnicos:Array<string>
-  getBairrosUnicos:()=>Promise<void>
+  cidadesEmpresa: Array<string>
+  bairrosUnicos: Array<string>
+  getBairrosUnicos: () => Promise<void>
 };
 
 export const AuthContext = createContext({} as AuthContextData);
@@ -79,13 +79,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   } = useApiGet<EmpresaProps, { id: string }>("/empresa/infoEmpresa");
   const { permissoes, signIn, usuario, signOut } = useAuthActions();
 
-  const getBairros = async()=>{
-    const res = await api.post("/bairro/listar",{id_empresa:selectEmp})
+  const getBairros = async () => {
+    const res = await api.post("/bairro/listar", { id_empresa: selectEmp })
     setBairrosUnicos(res.data)
   }
 
 
-  
+
 
   const getDadosFixos = async () => {
     if (
@@ -110,7 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!usuario) signOut();
-    if(usuario) getBairros()
+    if (usuario) getBairros()
   }, [usuario]);
 
   useEffect(() => {
@@ -179,8 +179,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider
       value={{
-        bairrosUnicos:bairrosUnicos.map((item) => item.nome_bairro),
-        getBairrosUnicos:getBairros,
+        bairrosUnicos: bairrosUnicos.map((item) => item.nome_bairro),
+        getBairrosUnicos: getBairros,
         infoEmpresa,
         loadingInfo,
         loading,
@@ -199,8 +199,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signOut,
         dadosassociado,
         carregarDados,
-        bairrosEmpresa:infoEmpresa?.bairrosCidades??[],
-        cidadesEmpresa:[...new Set(infoEmpresa?.bairrosCidades?.map((item) => item.cidade))]
+        bairrosEmpresa: infoEmpresa?.bairrosCidades ?? [],
+        cidadesEmpresa: [...new Set(infoEmpresa?.bairrosCidades?.map((item) => item.cidade))]
       }}
     >
       {children}

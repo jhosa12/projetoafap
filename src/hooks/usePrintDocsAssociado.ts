@@ -7,7 +7,7 @@ import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
 import { ProtocoloCancelamento } from "@/Documents/associado/protocoloCancelamento/ProtocoloCancelamento";
 import { api } from "@/lib/axios/apiClient";
 import { AuthContext } from "@/store/AuthContext";
-import { AssociadoProps } from "@/types/associado";
+import { AssociadoProps } from "@/app/(dashboard)/admcontrato/_types/associado";
 import { pageStyle } from "@/utils/pageStyle";
 import { removerFusoDate } from "@/utils/removerFusoDate";
 import { useCallback, useContext, useRef, useState } from "react";
@@ -18,31 +18,31 @@ import { toast } from "sonner";
 
 
 
-type Docs = 'carne'|'cancelamento'|'contrato'|'carteira'|'resumo'|'carta'
+type Docs = 'carne' | 'cancelamento' | 'contrato' | 'carteira' | 'resumo' | 'carta'
 
 
 
 export function usePrintDocsAssociado(
-    dadosassociado:Partial<AssociadoProps>,
-    usuario:string,
-    id_empresa:string,
-    setarDadosAssociado:Function,
-    onClose?:Function
-){
-    
-        const [printState, setPrintState] = useState<{ [key in Docs]: boolean }>({
-            carne: false,
-            contrato: false,
-            carteira: false,
-            resumo: false,
-            carta: false,
-            cancelamento: false
-          });
+    dadosassociado: Partial<AssociadoProps>,
+    usuario: string,
+    id_empresa: string,
+    setarDadosAssociado: Function,
+    onClose?: Function
+) {
 
-          
+    const [printState, setPrintState] = useState<{ [key in Docs]: boolean }>({
+        carne: false,
+        contrato: false,
+        carteira: false,
+        resumo: false,
+        carta: false,
+        cancelamento: false
+    });
+
+
     const chaveAtiva = printState
-    ? Object.entries(printState).find(([_, valor]) => valor === true)?.[0]
-    : null;
+        ? Object.entries(printState).find(([_, valor]) => valor === true)?.[0]
+        : null;
 
     const componentRefs = {
         contrato: useRef<DocumentTemplate>(null),
@@ -55,60 +55,60 @@ export function usePrintDocsAssociado(
 
 
     const handlePrint = (doc: Docs) => {
-        setPrintState((prev) => ({...prev, [doc]: !prev[doc] }));
-  
-       
+        setPrintState((prev) => ({ ...prev, [doc]: !prev[doc] }));
+
+
     };
 
 
-        const handleImpressao = useCallback(async () => {
-    
-            if (printState.contrato) imprimirContrato();
-            if (printState.carteira) imprimirCarteira();
-            if (printState.carne) imprimirCarne();
-            if (printState.resumo) imprimirResumo();
-            if (printState.carta) imprimirCarta();
-            if (printState.cancelamento) imprimirCancelamento();
-    
-    
-        }, [printState])
+    const handleImpressao = useCallback(async () => {
+
+        if (printState.contrato) imprimirContrato();
+        if (printState.carteira) imprimirCarteira();
+        if (printState.carne) imprimirCarne();
+        if (printState.resumo) imprimirResumo();
+        if (printState.carta) imprimirCarta();
+        if (printState.cancelamento) imprimirCancelamento();
+
+
+    }, [printState])
 
     const handleRegisterImpressao = useCallback(async (arquivo: Docs) => {
         const { newDate } = removerFusoDate(new Date());
         const impressoes = [...(dadosassociado.contrato?.impressoes || [])];
         const index = impressoes.findIndex((imp) => imp.arquivo === arquivo);
-    
+
         if (index === -1) {
-          impressoes.push({ arquivo, date: newDate, user: usuario });
+            impressoes.push({ arquivo, date: newDate, user: usuario });
         } else {
-          impressoes[index] = { ...impressoes[index], date: newDate, user: usuario };
+            impressoes[index] = { ...impressoes[index], date: newDate, user: usuario };
         }
-    
+
         try {
-          const response = await api.put("/contrato/impressoes", {
-            id_contrato_global: dadosassociado?.contrato?.id_contrato_global,
-            impressoes,
-          });
-         handlePrint(arquivo)
-          setarDadosAssociado({ contrato: { ...dadosassociado?.contrato, impressoes: response.data.impressoes } });
-          onClose?.()
+            const response = await api.put("/contrato/impressoes", {
+                id_contrato_global: dadosassociado?.contrato?.id_contrato_global,
+                impressoes,
+            });
+            handlePrint(arquivo)
+            setarDadosAssociado({ contrato: { ...dadosassociado?.contrato, impressoes: response.data.impressoes } });
+            onClose?.()
         } catch (error) {
-          toast.error("Erro ao registrar impressão");
+            toast.error("Erro ao registrar impressão");
         }
-      }, [dadosassociado, usuario, setarDadosAssociado]);
+    }, [dadosassociado, usuario, setarDadosAssociado]);
 
 
 
 
-          const imprimirCancelamento = useReactToPrint({
-              pageStyle: pageStyle,
-              documentTitle: "CANCELAMENTO",
-              content: () => componentRefs.cancelamento.current,
-              onBeforeGetContent: async () => {
-                await handleRegisterImpressao('cancelamento');
-            },
-          });
-      
+    const imprimirCancelamento = useReactToPrint({
+        pageStyle: pageStyle,
+        documentTitle: "CANCELAMENTO",
+        content: () => componentRefs.cancelamento.current,
+        onBeforeGetContent: async () => {
+            await handleRegisterImpressao('cancelamento');
+        },
+    });
+
 
 
     const imprimirContrato = useReactToPrint({
@@ -164,13 +164,13 @@ export function usePrintDocsAssociado(
 
 
 
-return  {
-    printState,
-    handleImpressao,
-    chaveAtiva,
-    handlePrint,
-    componentRefs
-    
-}
+    return {
+        printState,
+        handleImpressao,
+        chaveAtiva,
+        handlePrint,
+        componentRefs
+
+    }
 
 }

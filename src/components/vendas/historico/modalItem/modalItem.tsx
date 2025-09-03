@@ -9,8 +9,8 @@ import { AuthContext } from "@/store/AuthContext";
 import { api } from "@/lib/axios/apiClient";
 import { Button } from "@/components/ui/button";
 import { Save, FileText } from "lucide-react";
-import { ContratoProps, DependentesProps } from "@/types/associado";
-import {  ParcelaData } from "@/utils/gerarArrayMensal";
+import { ContratoProps, DependentesProps } from "@/app/(dashboard)/admcontrato/_types/associado";
+import { ParcelaData } from "@/utils/gerarArrayMensal";
 import { toast } from "sonner";
 import { ErrorIndicator } from "@/components/errorIndicator";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
@@ -19,16 +19,16 @@ import {
   TabsList,
   TabsTrigger,
   TabsContent,
-} from "@/components/ui/tabs"; 
+} from "@/components/ui/tabs";
 import { LeadProps } from "@/types/vendas";
 
 
-interface DataProps{
-    open:boolean,
-    onClose:Function,
-    item:Partial<LeadProps>,
-    handleLoadLeads:()=>void,
-    handleGerarContrato:SubmitHandler<LeadProps>
+interface DataProps {
+  open: boolean,
+  onClose: Function,
+  item: Partial<LeadProps>,
+  handleLoadLeads: () => void,
+  handleGerarContrato: SubmitHandler<LeadProps>
 }
 
 // interface CadastroRequest {
@@ -62,140 +62,141 @@ interface DataProps{
 //     empresa:string
 // }
 
-export interface UseFormLeadProps{
-  register:UseFormRegister<LeadProps>
-  watch:UseFormWatch<LeadProps>
-  trigger:UseFormTrigger<LeadProps>
-  setValue:UseFormSetValue<LeadProps>
-  control:Control<LeadProps,any>
+export interface UseFormLeadProps {
+  register: UseFormRegister<LeadProps>
+  watch: UseFormWatch<LeadProps>
+  trigger: UseFormTrigger<LeadProps>
+  setValue: UseFormSetValue<LeadProps>
+  control: Control<LeadProps, any>
 }
 
 
-export function ModalItem({onClose,open,item,handleLoadLeads,handleGerarContrato}:DataProps) {
+export function ModalItem({ onClose, open, item, handleLoadLeads, handleGerarContrato }: DataProps) {
 
-    const {cidades,planos,consultores} = useContext(AuthContext)
+  const { cidades, planos, consultores } = useContext(AuthContext)
 
-  const cobradores = consultores.filter(item=>item.funcao==='COBRADOR (RDA)').map(item=>item.nome)
-    const {register,control,setValue,handleSubmit,trigger,watch,reset,  formState: { errors },getValues} = useForm<LeadProps>(
-        {
-            defaultValues:{...item,adesao:item.dataVenda}
-        }
-    )
-
-
-    const cidadeCE = cidades.filter(item=>item.uf === 'CE')
-
-
-
-    const handleOnSubmit:SubmitHandler<LeadProps> = async(data) =>{
- 
-
-        toast.promise(
-                    api.put("/lead/editarLead",{lead:data}),
-                    {
-                        loading:"Editando Lead",
-                        success:()=>{
-                            handleLoadLeads()
-                            onClose()
-                            
-                            return "Lead editado com sucesso"},
-                        error:"Erro ao editar lead"
-                    }
-                )
-               
-           
+  const cobradores = consultores.filter(item => item.funcao === 'COBRADOR (RDA)').map(item => item.nome)
+  const { register, control, setValue, handleSubmit, trigger, watch, reset, formState: { errors }, getValues } = useForm<LeadProps>(
+    {
+      defaultValues: { ...item, adesao: item.dataVenda }
     }
+  )
+
+
+  const cidadeCE = cidades.filter(item => item.uf === 'CE')
 
 
 
-    return(
-        <Dialog  open={open} onOpenChange={()=>onClose()}>
+  const handleOnSubmit: SubmitHandler<LeadProps> = async (data) => {
 
 
-            <DialogContent className="sm:max-w-5xl ">
-                <DialogHeader/>
-            
-                <form onSubmit={handleSubmit(handleOnSubmit)}>
-  <Tabs defaultValue="dados-pessoais" className="w-full">
-    <TabsList className="grid w-full grid-cols-4">
-      <TabsTrigger value="dados-pessoais">Dados Pessoais</TabsTrigger>
-      <TabsTrigger value="formulario">Formulário</TabsTrigger>
-      <TabsTrigger value="plano">Plano</TabsTrigger>
-      <TabsTrigger value="dependentes">Dependentes</TabsTrigger>
-    </TabsList>
+    toast.promise(
+      api.put("/lead/editarLead", { lead: data }),
+      {
+        loading: "Editando Lead",
+        success: () => {
+          handleLoadLeads()
+          onClose()
 
-    <TabsContent value="dados-pessoais">
-      <TabDadosPessoais
-        cidades={cidadeCE}
-        control={control}
-        register={register}
-        setValue={setValue}
-        watch={watch}
-        trigger={trigger}
-      />
-    </TabsContent>
-
-    <TabsContent value="formulario">
-      <TabFormulario
-        control={control}
-        register={register}
-        setValue={setValue}
-        watch={watch}
-        trigger={trigger}
-      />
-    </TabsContent>
-
-    <TabsContent value="plano">
-      <TabPlano
-        cobradores={cobradores}
-        planos={planos}
-        control={control}
-        register={register}
-        setValue={setValue}
-        watch={watch}
-        trigger={trigger}
-      />
-    </TabsContent>
-
-    <TabsContent value="dependentes">
-      <TabDependentes
-        control={control}
-        register={register}
-        setValue={setValue}
-        watch={watch}
-        trigger={trigger}
-      />
-    </TabsContent>
-  </Tabs>
-
-  <div className="flex flex-row w-full justify-between mt-4">
-    <ErrorIndicator errors={errors} />
-    <div className="ml-auto flex gap-3">
-    { item.status === 'VENDA' && <Button
-        type="button"
-        size="default"
-        variant="outline"
-        onClick={()=>handleGerarContrato(getValues())}
-      >
-        <FileText />
-        Gerar Contrato
-      </Button>}
-
-      <Button
-        type="submit"
-        size="default"
-      >
-        <Save />
-       Salvar
-      </Button>
-     
-    </div>
-  </div>
-</form>
-
-                   </DialogContent>
-
-            
-        </Dialog>
+          return "Lead editado com sucesso"
+        },
+        error: "Erro ao editar lead"
+      }
     )
+
+
+  }
+
+
+
+  return (
+    <Dialog open={open} onOpenChange={() => onClose()}>
+
+
+      <DialogContent className="sm:max-w-5xl ">
+        <DialogHeader />
+
+        <form onSubmit={handleSubmit(handleOnSubmit)}>
+          <Tabs defaultValue="dados-pessoais" className="w-full">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="dados-pessoais">Dados Pessoais</TabsTrigger>
+              <TabsTrigger value="formulario">Formulário</TabsTrigger>
+              <TabsTrigger value="plano">Plano</TabsTrigger>
+              <TabsTrigger value="dependentes">Dependentes</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="dados-pessoais">
+              <TabDadosPessoais
+                cidades={cidadeCE}
+                control={control}
+                register={register}
+                setValue={setValue}
+                watch={watch}
+                trigger={trigger}
+              />
+            </TabsContent>
+
+            <TabsContent value="formulario">
+              <TabFormulario
+                control={control}
+                register={register}
+                setValue={setValue}
+                watch={watch}
+                trigger={trigger}
+              />
+            </TabsContent>
+
+            <TabsContent value="plano">
+              <TabPlano
+                cobradores={cobradores}
+                planos={planos}
+                control={control}
+                register={register}
+                setValue={setValue}
+                watch={watch}
+                trigger={trigger}
+              />
+            </TabsContent>
+
+            <TabsContent value="dependentes">
+              <TabDependentes
+                control={control}
+                register={register}
+                setValue={setValue}
+                watch={watch}
+                trigger={trigger}
+              />
+            </TabsContent>
+          </Tabs>
+
+          <div className="flex flex-row w-full justify-between mt-4">
+            <ErrorIndicator errors={errors} />
+            <div className="ml-auto flex gap-3">
+              {item.status === 'VENDA' && <Button
+                type="button"
+                size="default"
+                variant="outline"
+                onClick={() => handleGerarContrato(getValues())}
+              >
+                <FileText />
+                Gerar Contrato
+              </Button>}
+
+              <Button
+                type="submit"
+                size="default"
+              >
+                <Save />
+                Salvar
+              </Button>
+
+            </div>
+          </div>
+        </form>
+
+      </DialogContent>
+
+
+    </Dialog>
+  )
 }

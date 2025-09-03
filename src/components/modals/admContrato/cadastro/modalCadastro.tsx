@@ -23,10 +23,10 @@ import {
 } from "react-hook-form";
 
 import { MultiStep } from "@/utils/multiStep";
-import { DadosCadastro } from '@/types/associado';
-import { DadosTitular } from '@/components/tabs/admContrato/cadastro/dadosTitular';
-import { DadosPlano } from '@/components/tabs/admContrato/cadastro/dadosPlano';
-import { DadosDependentes } from '@/components/tabs/admContrato/cadastro/dadosDependentes';
+import { DadosCadastro } from '@/app/(dashboard)/admcontrato/_types/associado';
+import { DadosTitular } from '@/app/(dashboard)/admcontrato/_components/cadastro/dadosTitular';
+import { DadosPlano } from '@/app/(dashboard)/admcontrato/_components/cadastro/dadosPlano';
+import { DadosDependentes } from '@/app/(dashboard)/admcontrato/_components/cadastro/dadosDependentes';
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -49,15 +49,15 @@ export interface ChildrenProps {
   watch: UseFormWatch<DadosCadastro>
   trigger: UseFormTrigger<DadosCadastro>
   control: Control<DadosCadastro>
- 
+
 }
 
-export default function ModalCadastro({isEmpresa,empresa}:{isEmpresa?:boolean,empresa:string}) {
+export default function ModalCadastro({ isEmpresa, empresa }: { isEmpresa?: boolean, empresa: string }) {
   const [open, setOpen] = useState(false);
 
   const { usuario, carregarDados, selectEmp } = useContext(AuthContext);
-  const { register, handleSubmit, setValue, watch, trigger, control,reset } = useForm<DadosCadastro>();
-    useEffect(() => {
+  const { register, handleSubmit, setValue, watch, trigger, control, reset } = useForm<DadosCadastro>();
+  useEffect(() => {
     reset({})
     setCurrentStepIndex(0);
   }, [open]);
@@ -143,7 +143,7 @@ export default function ModalCadastro({isEmpresa,empresa}:{isEmpresa?:boolean,em
           dt_carencia: data.contrato?.dt_carencia ? dataCarencia : null
         },
         dependentes: data.arraydep,
-          mensalidades: gerarMensalidade({
+        mensalidades: gerarMensalidade({
           vencimento: data.contrato?.data_vencimento,
           n_parcelas: Number(data.contrato?.n_parcelas),
           valorMensalidade: Number(data.contrato?.valor_mensalidade)
@@ -162,7 +162,7 @@ export default function ModalCadastro({isEmpresa,empresa}:{isEmpresa?:boolean,em
     );
   };
 
-  const { steps, currentStepIndex, step, next, back,setCurrentStepIndex } = MultiStep([
+  const { steps, currentStepIndex, step, next, back, setCurrentStepIndex } = MultiStep([
     <DadosTitular control={control} trigger={trigger} key={1} register={register} setValue={setValue} watch={watch} />,
     <DadosPlano control={control} trigger={trigger} key={2} register={register} setValue={setValue} watch={watch} />,
     <DadosDependentes control={control} key={3} trigger={trigger} register={register} setValue={setValue} watch={watch} />,
@@ -175,12 +175,12 @@ export default function ModalCadastro({isEmpresa,empresa}:{isEmpresa?:boolean,em
 
 
   return (
-    <Dialog  open={open} onOpenChange={setOpen}>
-      <DialogTrigger  asChild>
-           <Button disabled={isEmpresa}  variant={'outline'} size={'sm'} type="button"  >
-                                   <IoMdAdd size={18} />
-                                   Novo Associado
-                               </Button>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button disabled={isEmpresa} variant={'outline'} size={'sm'} type="button"  >
+          <IoMdAdd size={18} />
+          Novo Associado
+        </Button>
       </DialogTrigger>
 
       <DialogContent onInteractOutside={(e) => e.preventDefault()} className="max-w-6xl">
@@ -194,7 +194,7 @@ export default function ModalCadastro({isEmpresa,empresa}:{isEmpresa?:boolean,em
           <div className="flex justify-end gap-4">
             {currentStepIndex !== 0 && (
               <Button
-                
+
                 type="button"
                 onClick={back}
               >
@@ -210,7 +210,7 @@ export default function ModalCadastro({isEmpresa,empresa}:{isEmpresa?:boolean,em
                 variant={'default'}
                 type="submit"
               >
-                <HiOutlineChevronRight color="white"  />
+                <HiOutlineChevronRight color="white" />
               </Button>
             )}
           </div>
