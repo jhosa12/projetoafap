@@ -2,7 +2,7 @@
 "use client"
 import { useState, useContext } from "react"
 import Image from "next/image";
-import logo from "../../public/afapsaude.png"
+import logo from "../../public/novaLogo.png"
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button"
 import { SignInProps } from "@/types/user"

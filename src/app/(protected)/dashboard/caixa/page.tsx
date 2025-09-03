@@ -6,30 +6,16 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import pt from "date-fns/locale/pt-BR";
+
 import { ModalLancamentosCaixa } from "@/components/modals/caixa/modalLancamentosCaixa";
 import { AuthContext } from "@/store/AuthContext";
 import { Modal, Spinner } from "flowbite-react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import {SubmitHandler, useForm } from "react-hook-form";
 import { ajustarData } from "@/utils/ajusteData";
 import { ScreenCloseCaixa } from "@/app/(protected)/dashboard/caixa/_components/screenCloseCaixa";
 import { ModalMensalidade } from "@/components/modals/admContrato/historico/modalmensalidade";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { BiCalendarMinus } from "react-icons/bi";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import { toast } from "sonner";
-
-import { MensalidadeBaixaProps } from "@/types/financeiro";
-import ActionsCaixa from "@/app/(protected)/dashboard/caixa/_components/ActionsCaixa";
-import { CardValuesCaixa } from "@/app/(protected)/dashboard/caixa/_components/card-values-caixa";
 import { TableCaixa } from "@/app/(protected)/dashboard/caixa/_components/table-caixa";
 import { ModalFechamento } from "@/components/modals/caixa/modalFechamento";
 import HeaderCaixa from "./_components/header-caixa";
@@ -54,7 +40,7 @@ export default function CaixaMovimentar() {
   const [openModal, setModal] = useState<{ [key: string]: boolean }>({
     lancar: false,
     excluir: false,
-    fecharCaixa: false,
+    fecharCaixa: false, 
   });
   const { register, watch, handleSubmit, control } = useForm<FormCaixaProps>({
     defaultValues: {
@@ -69,8 +55,44 @@ export default function CaixaMovimentar() {
     mensalidade,
     modalDados,
     setModalDados,
-    setLoading
+    setLoading,
+    mov,
+    setMov,
   } = useActionsCaixa();
+
+
+  const handleExcluir = useCallback(async () => {
+    toast.promise(
+      api.delete(`/caixa/deletar`, {
+        data: {
+          lanc_id: mov?.lanc_id,
+          id_empresa: infoEmpresa?.id,
+        },
+      }),
+      {
+        error: (error: any) => {
+          console.log(error);
+          return "Erro ao deletar lancamento";
+        },
+        loading: "Solicitando exclusão..",
+        success: () => {
+          // const novo = [...(data?.lista||[])]
+          // const index = novo.findIndex(item=>item.lanc_id===mov?.lanc_id)
+          //  novo.splice(index,1)
+          //  setData({...data,lista:novo})
+          handleChamarFiltro(); // Ensure this is awaited
+          setModal({ excluir: false });
+          //setModalExc(false)
+
+          return "Deletado com sucesso";
+        },
+      }
+    );
+  }, [mov?.lanc_id, data?.lista, infoEmpresa?.id]);
+
+
+
+
 
   useEffect(() => {
     if (modalDados) return;

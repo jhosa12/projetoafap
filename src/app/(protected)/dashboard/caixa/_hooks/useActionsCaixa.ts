@@ -14,7 +14,7 @@ interface ActionsProps{
 
 
 const useActionsCaixa = () => {
-    const {usuario,permissoes,infoEmpresa} = useContext(AuthContext)
+    const {infoEmpresa} = useContext(AuthContext)
     const [loading,setLoading] = useState(false)
     const [mensalidade,setMensalidade] = useState<Partial<MensalidadeBaixaProps>>()
     const [modalDados,setModalDados] = useState<boolean>(false)
@@ -50,34 +50,7 @@ const useActionsCaixa = () => {
       );
 
 
-const handleExcluir = useCallback(async () => {
-    toast.promise(
-      api.delete(`/caixa/deletar`, {
-        data: {
-          lanc_id: mov?.lanc_id,
-          id_empresa: infoEmpresa?.id,
-        },
-      }),
-      {
-        error: (error: any) => {
-          console.log(error);
-          return "Erro ao deletar lancamento";
-        },
-        loading: "Solicitando exclusão..",
-        success: () => {
-          // const novo = [...(data?.lista||[])]
-          // const index = novo.findIndex(item=>item.lanc_id===mov?.lanc_id)
-          //  novo.splice(index,1)
-          //  setData({...data,lista:novo})
-          handleChamarFiltro(); // Ensure this is awaited
-          setModal({ excluir: false });
-          //setModalExc(false)
 
-          return "Deletado com sucesso";
-        },
-      }
-    );
-  }, [mov?.lanc_id, data?.lista, infoEmpresa?.id]);
 
 
 
@@ -95,7 +68,9 @@ const handleExcluir = useCallback(async () => {
         modalDados,
         mensalidade,
         setModalDados,
-        setLoading
+        setLoading,
+        mov,
+        setMov,
       }
     
 }
