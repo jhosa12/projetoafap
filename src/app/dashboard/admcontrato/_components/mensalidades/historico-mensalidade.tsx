@@ -7,8 +7,6 @@ import { MdDeleteForever } from "react-icons/md";
 import { RiAddCircleFill } from "react-icons/ri";
 
 //import { Scanner } from './modalScanner';
-
-import { MensalidadeProps } from "@/types/financeiro";
 import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
 import { Popover } from "flowbite-react";
 import { PopoverVencimento } from "./popover-vencimento";
@@ -28,6 +26,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { pageStyle } from "@/utils/pageStyle";
 import { ModalEditarMensalidade } from "./modal-editarMensalidade";
 import { ModalMensalidade } from "./modal-mensalidade";
+import { MensalidadeProps } from "../../_types/mensalidades";
 
 export interface SetAssociadoProps {
   mensalidade: Partial<MensalidadeProps>;
