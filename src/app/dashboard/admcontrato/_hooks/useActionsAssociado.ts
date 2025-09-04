@@ -2,26 +2,29 @@ import { api } from "@/lib/axios/apiClient"
 import { AuthContext } from "@/store/AuthContext"
 import { useContext, useState } from "react"
 import { toast } from "sonner"
+import { AssociadoProps } from "../_types/associado"
+import { SubmitHandler } from "react-hook-form"
 
 interface ActionsProps {
 
   inativarAtivarContrato: () => Promise<void>
+  handleAtualizarDados: SubmitHandler<AssociadoProps>
 
 }
 
 interface UseActionsProps {
 
   setModal: (open: boolean) => void
-  
+
 }
 
 const useActionsAssociado = ({
 
   setModal
 
-}: UseActionsProps): ActionsProps => {
+}: Partial<UseActionsProps>): ActionsProps => {
 
-  const {dadosassociado, setarDadosAssociado } = useContext(AuthContext)
+  const { usuario, dadosassociado, setarDadosAssociado } = useContext(AuthContext)
 
   const [descMotivo, setDescMotivo] = useState('')
 
@@ -33,6 +36,11 @@ const useActionsAssociado = ({
 
 
   async function inativarAtivarContrato() {
+
+    if (!setModal) {
+      toast.error("Dados não encontrados para esta operação.");
+      return;
+    }
 
     const st = dadosassociado?.contrato?.situacao === 'ATIVO' ? 'INATIVO' : 'ATIVO'
 
@@ -85,9 +93,50 @@ const useActionsAssociado = ({
     // await carregarDados()
   }
 
+  const handleAtualizarDados: SubmitHandler<AssociadoProps> = async (data) => {
+
+    const dataAtual = new Date();
+    dataAtual.setTime(dataAtual.getTime() - dataAtual.getTimezoneOffset() * 60 * 1000);
+    toast.promise(
+      api.post('/atualizarAssociado', {
+        id_global: data.id_global,
+        nome: data.nome,
+        cep: data.cep,
+        cpfcnpj: data.cpfcnpj,
+        endereco: data.endereco,
+        bairro: data.bairro,
+        numero: data.numero ? Number(data.numero) : undefined,
+        cidade: data.cidade,
+        uf: data.uf,
+        guia_rua: data.guia_rua,
+        email: data.email,
+        data_nasc: data.data_nasc,
+        celular1: data.celular1,
+        celular2: data.celular2,
+        telefone: data.telefone,
+        edi_usu: usuario?.nome,
+        edi_dh: dataAtual,
+        profissao: data.profissao,
+        sexo: data.sexo,
+        contrato: data.contrato
+      }),
+      {
+        error: 'Erro ao atualizar dados',
+        loading: 'Realizando Alteração....',
+        success: (response) => {
+          setarDadosAssociado({ ...dadosassociado, ...response.data })
+          return 'Alteração realizada com sucesso'
+        }
+      }
+    )
+
+
+  }
+
   return {
 
-    inativarAtivarContrato
+    inativarAtivarContrato,
+    handleAtualizarDados
   }
 }
 export default useActionsAssociado

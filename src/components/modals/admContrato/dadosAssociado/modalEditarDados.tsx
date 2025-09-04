@@ -16,6 +16,7 @@ import { Control, SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseF
 import { AssociadoProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { toast } from "sonner";
 import { ErrorIndicator } from "@/components/errorIndicator";
+import useActionsAssociado from "@/app/dashboard/admcontrato/_hooks/useActionsAssociado";
 
 interface ModalProps {
   openEdit: boolean
@@ -32,10 +33,9 @@ export interface UseFormAssociadoProps {
 }
 
 export function ModalEditarDados({ openEdit, setModalEdit, dataForm }: ModalProps) {
-
-
-  const { usuario, setarDadosAssociado, permissoes, dadosassociado } = useContext(AuthContext)
+  const { setarDadosAssociado, permissoes, dadosassociado } = useContext(AuthContext)
   const { register, handleSubmit, watch, setValue, trigger, control, formState: { errors }, reset } = useForm<AssociadoProps>()
+  const hookProps = {}
 
   useEffect(() => {
     reset({
@@ -49,45 +49,7 @@ export function ModalEditarDados({ openEdit, setModalEdit, dataForm }: ModalProp
   }, [dataForm]);
 
 
-  const handleAtualizarDados: SubmitHandler<AssociadoProps> = async (data) => {
-
-    const dataAtual = new Date();
-    dataAtual.setTime(dataAtual.getTime() - dataAtual.getTimezoneOffset() * 60 * 1000);
-    toast.promise(
-      api.post('/atualizarAssociado', {
-        id_global: data.id_global,
-        nome: data.nome,
-        cep: data.cep,
-        cpfcnpj: data.cpfcnpj,
-        endereco: data.endereco,
-        bairro: data.bairro,
-        numero: data.numero ? Number(data.numero) : undefined,
-        cidade: data.cidade,
-        uf: data.uf,
-        guia_rua: data.guia_rua,
-        email: data.email,
-        data_nasc: data.data_nasc,
-        celular1: data.celular1,
-        celular2: data.celular2,
-        telefone: data.telefone,
-        edi_usu: usuario?.nome,
-        edi_dh: dataAtual,
-        profissao: data.profissao,
-        sexo: data.sexo,
-        contrato: data.contrato
-      }),
-      {
-        error: 'Erro ao atualizar dados',
-        loading: 'Realizando Alteração....',
-        success: (response) => {
-          setarDadosAssociado({ ...dadosassociado, ...response.data })
-          return 'Alteração realizada com sucesso'
-        }
-      }
-    )
-
-
-  }
+  const { handleAtualizarDados } = useActionsAssociado(hookProps)
 
 
   return (
