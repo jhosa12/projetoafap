@@ -8,7 +8,7 @@ import { UseFormAssociadoProps } from "../../../../../../components/modals/admCo
 import { useContext } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { Controller } from "react-hook-form";
-import { arrayUF } from "@/app/dashboard/admcontrato/_types/associado";
+import { arrayUF } from "../../../_types/array-uf";
 import { CepMaskInput } from "@/components/CepMaskInput";
 import { CPFInput } from "@/components/CpfMaskInput";
 import { PhoneMaskInput } from "@/components/PhoneMaskInput";

@@ -1,28 +1,20 @@
-import { MdSaveAlt } from "react-icons/md";
-import { RiAddCircleFill } from "react-icons/ri";
 import { AuthContext } from "@/store/AuthContext";
 import { useContext, useEffect } from "react";
-import { api } from "@/lib/axios/apiClient";
-import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { DependentesProps } from "@/app/dashboard/admcontrato/_types/associado";
-import { toast } from "sonner";
+import { DependentesProps } from "@/app/dashboard/admcontrato/_types/dependentes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
 import { Save, PlusCircle } from "lucide-react";
 import { DatePickerInput } from "@/components/DatePickerInput";
+import useActionsDependentes from "@/app/dashboard/admcontrato/_hooks/useActionsDependentes";
+import { registerLocale } from "react-datepicker";
 
 registerLocale('pt', pt)
-
-
-
 interface FormDataProps {
 
     nome: string
@@ -42,13 +34,20 @@ interface DataProps {
 }
 
 
-
-
 export function ModalDependentes({ openModal = false, setModal, data }: DataProps) {
     const { usuario, dadosassociado, carregarDados } = useContext(AuthContext)
     const { register, handleSubmit, control, reset } = useForm<DependentesProps>({
         defaultValues: data
     })
+
+    const hookProps = {
+
+        dadosassociado: dadosassociado,
+        usuario: usuario,
+        data: data,
+        setModalAdd: setModal
+
+    }
 
 
     useEffect(() => {
@@ -56,7 +55,6 @@ export function ModalDependentes({ openModal = false, setModal, data }: DataProp
         reset(data)
 
     }, [data])
-
 
 
     const handleApiFunction: SubmitHandler<DependentesProps> = async (dadosForm) => {
@@ -73,118 +71,8 @@ export function ModalDependentes({ openModal = false, setModal, data }: DataProp
 
     }
 
-    async function addDependente(dados: DependentesProps) {
-        try {
+    const { addDependente, atualizarDependente } = useActionsDependentes(hookProps)
 
-
-            toast.promise(
-                api.post('/novoDependente', {
-                    id_global: dadosassociado?.id_global,
-                    id_contrato_global: dadosassociado?.contrato?.id_contrato_global,
-                    id_contrato: dadosassociado?.contrato?.id_contrato,
-                    id_associado: dadosassociado?.id_associado,
-                    nome: dados.nome.toUpperCase(),
-                    data_nasc: dados.data_nasc,
-                    grau_parentesco: dados.grau_parentesco,
-                    data_adesao: dados.data_adesao,
-                    cad_usu: usuario?.nome,
-                    cad_dh: new Date(),
-                    carencia: dados.carencia,
-                    sexo: dados.sexo
-                }),
-                {
-                    loading: 'Cadastrando Dependente...',
-                    success: async (res) => {
-                        dadosassociado?.id_global && await carregarDados(dadosassociado?.id_global)
-                        setModal(false)
-                        return 'Adicionado com Sucesso!'
-                    },
-                    error: async (error) => {
-                        return error?.response?.data.error ?? 'Erro ao adicionar dependente'
-                    }
-                }
-            )
-
-            /* const response = await toast.promise(
-               api.post('/novoDependente',{
-                 id_global:dadosassociado?.id_global,
-                 id_contrato_global:dadosassociado?.contrato?.id_contrato_global,
-                   id_contrato:dadosassociado?.contrato?.id_contrato,
-                   id_associado:dadosassociado?.id_associado,
-                   nome:dados.nome.toUpperCase(),
-                   data_nasc:dados.data_nasc,
-                   grau_parentesco:dados.grau_parentesco,
-                   data_adesao:dados.data_adesao,
-                   cad_usu:usuario?.nome,
-                   cad_dh:new Date(),
-                   carencia:dados.carencia,
-                   sexo:dados.sexo
-               }),
-               {
-                   error:'Erro ao adicionar dependente',
-                   pending:'Cadastrando Dependente',
-                   success:'Adicionado com Sucesso!'
-               }
-           )*/
-            //  dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
-
-            setModal(false)
-
-        } catch (error: any) {
-            toast.error(error?.response?.data.error ?? 'Erro ao salvar dados')
-        }
-
-
-    }
-
-    async function atualizarDependente(dados: DependentesProps) {
-
-        toast.promise(
-            api.put('/atualizarDependente', {
-                id_dependente_global: data.id_dependente_global,
-                id_dependente: data.id_dependente,
-                nome: dados.nome.toUpperCase(),
-                data_nasc: dados.data_nasc,
-                grau_parentesco: dados.grau_parentesco,
-                data_adesao: dados.data_adesao,
-                carencia: dados.carencia,
-                sexo: dados.sexo
-            }),
-            {
-                error: async (error) => {
-
-                    return error?.response?.data.error ?? 'Erro ao atualizar dependente'
-
-                },
-                loading: 'Atualizando Dependente....',
-                success: async (res) => {
-                    dadosassociado?.id_global && await carregarDados(dadosassociado?.id_global)
-                    setModal(false)
-                    return 'Atualizado com Sucesso!'
-                }
-            }
-        )
-
-
-        /* const response = await toast.promise(
-             api.put('/atualizarDependente',{
-               id_dependente_global:data.id_dependente_global,
-                 id_dependente:data.id_dependente,
-                 nome:dados.nome.toUpperCase(),
-                 data_nasc:dados.data_nasc,
-                 grau_parentesco:dados.grau_parentesco,
-                 data_adesao:dados.data_adesao,
-                 carencia:dados.carencia,
-                 sexo:dados.sexo
-             }),
-             {
-                 error:'Erro ao atualizar dependente',
-                 pending:'Atualizando Dependente',
-                 success:'Atualizado com Sucesso!'
-             }
-         )*/
-        // dadosassociado?.id_global &&  await carregarDados(dadosassociado?.id_global)
-    }
 
     /*async function resgatarDep(){
    

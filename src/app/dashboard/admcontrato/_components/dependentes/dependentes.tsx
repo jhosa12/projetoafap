@@ -1,23 +1,19 @@
-
-import { api } from "@/lib/axios/apiClient"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { MdDeleteForever, MdEdit } from "react-icons/md"
 import { RiAddCircleFill } from "react-icons/ri"
 import { TbWheelchair } from "react-icons/tb"
-import { Tooltip } from "react-tooltip"
 import { ModalDependentes } from "../../../../../components/modals/admContrato/dependentes/modalDependentes"
 import { ModalExcluirDep } from "../../../../../components/modals/admContrato/dependentes/modalExcluir"
 import DeclaracaoExclusao from "@/Documents/dependentes/DeclaracaoExclusao"
 import { IoPrint } from "react-icons/io5"
-import { useReactToPrint } from "react-to-print"
-import { AssociadoProps, DependentesProps } from "@/app/dashboard/admcontrato/_types/associado"
+import { AssociadoProps } from "../../_types/associado"
+import { DependentesProps } from "../../_types/dependentes"
 import { Table } from "flowbite-react"
 import { Button } from "@/components/ui/button"
-import { toast } from "sonner"
 import { EmpresaProps } from "@/types/empresa"
 import { UserProps } from "@/types/user"
 import { Checkbox } from "@/components/ui/checkbox"
-import { pageStyle } from "@/utils/pageStyle"
+import useActionsDependentes from "../../_hooks/useActionsDependentes"
 
 
 interface DadosProps {
@@ -32,21 +28,21 @@ interface DadosProps {
 export function Dependentes({ dadosassociado, infoEmpresa, setarDadosAssociado, usuario, permissoes }: DadosProps) {
     const [checkDependente, setCheckDependente] = useState(false)
     const [dadosDep, setDadosDep] = useState<Partial<DependentesProps>>({})
-    const componentRef = useRef<DeclaracaoExclusao>(null)
+
+
     const [modal, setModal] = useState<{ [key: string]: boolean }>({
         dependente: false,
         excluir: false,
         print: false
     })
 
+    const hookProps = {
+        dadosassociado: dadosassociado,
+        usuario: usuario,
+        setarDadosAssociado: setarDadosAssociado
+    }
 
-    const imprimirDeclaracao = useReactToPrint({
-        pageStyle: pageStyle,
-        documentTitle: 'DECLARAÇÃO DE EXCLUSÃO DEPENDENTE',
-        content: () => componentRef.current,
-        onBeforeGetContent: () => setModal({ print: false })
-
-    })
+    const { imprimirDeclaracao, excluirDep, componentRef } = useActionsDependentes(hookProps)
 
     useEffect(() => {
         if (modal.print && dadosDep) {
@@ -63,53 +59,6 @@ export function Dependentes({ dadosassociado, infoEmpresa, setarDadosAssociado, 
         setModal({ print: true })
 
     }
-
-
-
-
-    async function excluirDep(motivo: string) {
-        if (dadosDep.excluido) {
-            toast.info("Dependente ja excluido")
-            return;
-        }
-        if (!dadosDep.id_dependente) {
-            toast.info("Selecione um dependente!")
-            return;
-        }
-        if (!motivo) {
-            toast.warning("Informe um motivo!")
-            return;
-        }
-
-        toast.promise(
-            api.put('/excluirDependente', {
-                id_dependente_global: dadosDep.id_dependente_global,
-                id_dependente: Number(dadosDep.id_dependente),
-                excluido: true,
-                user_exclusao: usuario?.nome,
-                exclusao_motivo: motivo
-            }),
-            {
-                loading: `Efetuando`,
-                success: () => {
-                    const novo = [...(dadosassociado?.dependentes ?? [])]
-                    const index = novo.findIndex(item => item.id_dependente_global === dadosDep.id_dependente_global)
-                    novo.splice(index, 1)
-                    setarDadosAssociado({ ...dadosassociado, dependentes: novo })
-                    //   await carregarDados()
-
-                    // setModalExcDep(false)
-                    setModal({ excluir: false })
-
-
-                    return `Dependente Exluido`
-                },
-                error: `Erro ao Excluir`
-            }
-        )
-
-    }
-
 
     return (
         <div className="flex flex-col   max-h-[calc(100vh-200px)]  w-full  p-2 ">

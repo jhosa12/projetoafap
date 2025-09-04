@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import DocumentTemplate from "@/Documents/associado/carteiraAssociado/CarteiraAssociado";
-import { DependentesProps } from "@/app/dashboard/admcontrato/_types/associado";
+import { DependentesProps } from "../../_types/dependentes";
 import { EmpresaProps } from "@/types/empresa";
 import { pageStyle } from "@/utils/pageStyle";
 import { Table } from "flowbite-react";
