@@ -1,9 +1,9 @@
 import { api } from "@/lib/axios/apiClient"
 import { AuthContext } from "@/store/AuthContext"
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { toast } from "sonner"
 import { AssociadoProps } from "../_types/associado"
-import { SubmitHandler } from "react-hook-form"
+import { SubmitHandler, useForm } from "react-hook-form"
 
 interface ActionsProps {
 
@@ -15,17 +15,18 @@ interface ActionsProps {
 interface UseActionsProps {
 
   setModal: (open: boolean) => void
+  dataForm: Partial<AssociadoProps>
 
 }
 
 const useActionsAssociado = ({
 
-  setModal
+  setModal,
+
 
 }: Partial<UseActionsProps>): ActionsProps => {
 
   const { usuario, dadosassociado, setarDadosAssociado } = useContext(AuthContext)
-
   const [descMotivo, setDescMotivo] = useState('')
 
   const [motivo, setMotivo] = useState<{ [key: string]: boolean }>({
@@ -33,7 +34,6 @@ const useActionsAssociado = ({
     nLocalizado: false,
     desagrado: false
   })
-
 
   async function inativarAtivarContrato() {
 
@@ -92,6 +92,7 @@ const useActionsAssociado = ({
     )
     // await carregarDados()
   }
+
 
   const handleAtualizarDados: SubmitHandler<AssociadoProps> = async (data) => {
 
