@@ -1,4 +1,4 @@
-import { DependentesProps } from "../app/(dashboard)/admcontrato/_types/associado";
+import { DependentesProps } from "../app/dashboard/admcontrato/_types/associado";
 
 export interface LeadProps {
   index: number;

@@ -23,10 +23,10 @@ import {
 } from "react-hook-form";
 
 import { MultiStep } from "@/utils/multiStep";
-import { DadosCadastro } from '@/app/(dashboard)/admcontrato/_types/associado';
-import { DadosTitular } from '@/app/(dashboard)/admcontrato/_components/cadastro/dadosTitular';
-import { DadosPlano } from '@/app/(dashboard)/admcontrato/_components/cadastro/dadosPlano';
-import { DadosDependentes } from '@/app/(dashboard)/admcontrato/_components/cadastro/dadosDependentes';
+import { DadosCadastro } from '@/app/dashboard/admcontrato/_types/associado';
+import { DadosTitular } from '@/app/dashboard/admcontrato/_components/cadastro/dadosTitular';
+import { DadosPlano } from '@/app/dashboard/admcontrato/_components/cadastro/dadosPlano';
+import { DadosDependentes } from '@/app/dashboard/admcontrato/_components/cadastro/dadosDependentes';
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useState } from "react";

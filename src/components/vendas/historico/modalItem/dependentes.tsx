@@ -12,7 +12,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { MdClose } from "react-icons/md";
-import { DependentesProps } from "@/app/(dashboard)/admcontrato/_types/associado";
+import { DependentesProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { parentescos } from "@/utils/arrayParentesco";
 import { toast } from "sonner";
 

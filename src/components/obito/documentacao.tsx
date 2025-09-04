@@ -3,7 +3,7 @@ import OrdemServico from "@/Documents/obito/OrdemServico"
 import { useRef, useState } from "react"
 import AutTanato from "@/Documents/obito/Tanato"
 import { LiaFileContractSolid } from "react-icons/lia"
-import { ObitoProps } from "@/app/(dashboard)/admcontrato/_types/associado"
+import { ObitoProps } from "@/app/dashboard/admcontrato/_types/associado"
 
 
 

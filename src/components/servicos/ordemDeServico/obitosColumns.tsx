@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
 import { Button } from "@/components/ui/button"; // shadcn button
-import { ObitoProps } from "@/app/(dashboard)/admcontrato/_types/associado";
+import { ObitoProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { IoMdTrash } from "react-icons/io";
 
 type ActionsProps = {

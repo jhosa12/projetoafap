@@ -9,7 +9,7 @@ import { AuthContext } from "@/store/AuthContext";
 import { api } from "@/lib/axios/apiClient";
 import { Button } from "@/components/ui/button";
 import { Save, FileText } from "lucide-react";
-import { ContratoProps, DependentesProps } from "@/app/(dashboard)/admcontrato/_types/associado";
+import { ContratoProps, DependentesProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { ParcelaData } from "@/utils/gerarArrayMensal";
 import { toast } from "sonner";
 import { ErrorIndicator } from "@/components/errorIndicator";
