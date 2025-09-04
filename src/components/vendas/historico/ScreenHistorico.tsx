@@ -17,7 +17,7 @@ import {
 
 import { AuthContext } from "@/store/AuthContext";
 import { gerarMensalidade, ParcelaData } from "@/utils/gerarArrayMensal";
-import { ContratoProps, DependentesProps } from "@/app/(dashboard)/admcontrato/_types/associado";
+import { ContratoProps, DependentesProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { ajustarData } from "@/utils/ajusteData";
 import { ModalLoading } from "@/components/modals/loading/modalLoading";
 import { useReactToPrint } from "react-to-print";

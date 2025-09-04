@@ -3,7 +3,8 @@ import { api } from "@/lib/axios/apiClient";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { AcordoProps, MensalidadeProps } from "@/types/financeiro";
+import { AcordoProps } from "@/app/dashboard/admcontrato/_types/acordos";
+import { MensalidadeProps } from "@/app/dashboard/admcontrato/_types/mensalidades";
 import { ConsultoresProps } from "@/types/consultores";
 import { toast } from "sonner";
 
@@ -42,6 +43,7 @@ import {
 import { CalendarIcon, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ajustarData } from "@/utils/ajusteData";
+import useActionsAcordos from "@/app/dashboard/admcontrato/_hooks/useActionsAcordos";
 
 interface DadosAcordoProps {
   acordo: Partial<AcordoProps>;
@@ -72,6 +74,7 @@ export function ModalAcordos({
 }: DadosAcordoProps) {
   const [mensalidadeSelect, setMensalidade] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
 
   const {
     register,
@@ -129,32 +132,32 @@ export function ModalAcordos({
 
   const handleRemoverMensalidade = async (id_mensal_acordo?: number) => {
 
-    if(!id_mensal_acordo){return}
+    if (!id_mensal_acordo) { return }
 
-     
-      toast.promise(
-       await api.put(`/acordo/removerMensalidade`, {
-          id_mensal_acordo:id_mensal_acordo
-        }),
-        {
-          loading: "Removendo...",
-          success: async (response) => {
-            id_global && (await carregarDados(id_global));
-            const index = watch("mensalidadeAcordo")?.findIndex(
-              (item) => item.id_mensal_acordo === id_mensal_acordo
+
+    toast.promise(
+      await api.put(`/acordo/removerMensalidade`, {
+        id_mensal_acordo: id_mensal_acordo
+      }),
+      {
+        loading: "Removendo...",
+        success: async (response) => {
+          id_global && (await carregarDados(id_global));
+          const index = watch("mensalidadeAcordo")?.findIndex(
+            (item) => item.id_mensal_acordo === id_mensal_acordo
+          );
+          if (index) {
+            const array = watch("mensalidadeAcordo") || [];
+            const newArray = array.filter(
+              (item) => item.id_mensal_acordo !== id_mensal_acordo
             );
-            if(index){
-              const array = watch("mensalidadeAcordo") || [];
-              const newArray = array.filter(
-                (item) => item.id_mensal_acordo !== id_mensal_acordo
-              );
-              setValue("mensalidadeAcordo", newArray);
-            }
-            return "Mensalidade removida com sucesso!";
-          },
-          error: "Erro ao remover mensalidade",
-        }
-      );
+            setValue("mensalidadeAcordo", newArray);
+          }
+          return "Mensalidade removida com sucesso!";
+        },
+        error: "Erro ao remover mensalidade",
+      }
+    );
   }
 
   const handleNovaRef = async () => {
@@ -183,7 +186,7 @@ export function ModalAcordos({
           loading: "Adicionando...",
           success: async (response) => {
             id_global && (await carregarDados(id_global));
-           
+
             array.push(response.data);
             setValue("mensalidadeAcordo", array);
             return "Mensalidade adicionada com sucesso!";
@@ -198,7 +201,7 @@ export function ModalAcordos({
 
     if (mensalidade) {
       const array = [...mensalidadeArray];
-      array.push({mensalidade:mensalidade});
+      array.push({ mensalidade: mensalidade });
       array.sort(
         (a, b) =>
           Number(a.mensalidade.id_mensalidade_global) - Number(b.mensalidade.id_mensalidade_global)
@@ -220,77 +223,23 @@ export function ModalAcordos({
     acordo.id_acordo ? editarAcordo(data) : criarAcordo(data);
   };
 
-  const criarAcordo = async (data: AcordoProps) => {
-    if (!data.data_fim || !data.descricao || !data.id_consultor) {
-      toast.info("Preencha todos os campos!");
-      return;
-    }
 
-    const {dataIni,dataFim} = ajustarData(new Date(),data.data_fim)
+  const hookProps = {
+    id_empresa: id_empresa,
+    carregarDados: carregarDados,
+    id_contrato_global: id_contrato_global,
+    id_global: id_global,
+    id_associado: id_associado,
+    id_contrato: id_contrato,
+    close: close,
+    mensalidades: mensalidades,
+    consultores: consultores
 
-    const dt_criacao = new Date();
-    const dt_prev = new Date();
-    dt_criacao.setTime(
-      dt_criacao.getTime() - dt_criacao.getTimezoneOffset() * 60 * 1000
-    );
-    dt_prev.setTime(
-      dt_prev.getTime() - dt_prev.getTimezoneOffset() * 60 * 1000
-    );
-
-    toast.promise(
-      api.post("/novoAcordo", {
-        id_empresa,
-        id_contrato_global,
-        id_global,
-        id_consultor: Number(data.id_consultor),
-        status: "A",
-        data_inicio: dt_criacao.toISOString(),
-        data_fim: dataFim,
-        total_acordo: Number(data.total_acordo),
-        realizado_por: data.realizado_por,
-        descricao: data.descricao,
-        metodo: data.metodo,
-        dt_criacao: new Date(),
-        mensalidades: data.mensalidadeAcordo.map(item=>item.mensalidade),
-        id_contrato: id_contrato,
-        id_associado: id_associado,
-      }),
-      {
-        error: "Erro na requisição",
-        success: () => {
-          id_global && carregarDados(id_global);
-          close();
-          return "Acordo criado com sucesso";
-        },
-        loading: "Criando acordo",
-      }
-    );
-    //  toast.success("Acordo criado com sucesso")
-  };
-
-  async function editarAcordo(data: AcordoProps) {
-    toast.promise(
-      api.put("/editarAcordo", {
-        id_acordo: data.id_acordo,
-        //status:'A',
-        //dt_pgto:new Date(),
-        data_inicio: data.data_inicio,
-        data_fim: data.data_fim,
-        descricao: data.descricao.toUpperCase(),
-        metodo: data.metodo,
-        total_acordo: data.total_acordo,
-        realizado_por: data.realizado_por,
-        id_consultor: Number(data.id_consultor),
-        //mensalidade:novasMensalidades
-        //mensalidades:data.mensalidade
-      }),
-      {
-        error: "Erro ao efetuar atualização",
-        loading: "Efetuando atualização",
-        success: "Atualização Efetuada com sucesso!",
-      }
-    );
   }
+
+  const { criarAcordo, editarAcordo} = useActionsAcordos(hookProps)
+
+
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && close()}>
@@ -505,15 +454,15 @@ export function ModalAcordos({
                   ))}
                   {(!watch("mensalidadeAcordo") ||
                     watch("mensalidadeAcordo")?.length === 0) && (
-                    <TableRow>
-                      <TableCell
-                        colSpan={4}
-                        className="h-24 text-center text-muted-foreground"
-                      >
-                        Nenhuma mensalidade adicionada
-                      </TableCell>
-                    </TableRow>
-                  )}
+                      <TableRow>
+                        <TableCell
+                          colSpan={4}
+                          className="h-24 text-center text-muted-foreground"
+                        >
+                          Nenhuma mensalidade adicionada
+                        </TableCell>
+                      </TableRow>
+                    )}
                 </TableBody>
               </Table>
             </div>

@@ -4,7 +4,7 @@ import logo from "../../../public/logoafap.png"
 // DocumentTemplate.js
 
 import React from 'react';
-import { AssociadoProps, ContratoProps } from "@/app/(dashboard)/admcontrato/_types/associado";
+import { AssociadoProps, ContratoProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { EmpresaProps } from "@/types/empresa";
 interface DadosProps {
   dados: Partial<AssociadoProps>

@@ -2,7 +2,7 @@ import { Button, ButtonGroup, Table } from "flowbite-react";
 import { MetasProps, SetorProps } from "../acompanhamento";
 import useApiPost from "@/hooks/useApiPost";
 import { useEffect, useState } from "react";
-import { themeLight } from "@/app/(dashboard)/admcontrato/_components/acordos/screen";
+import { themeLight } from "@/app/dashboard/admcontrato/_components/acordos/screen";
 import { FaFilter } from "react-icons/fa6";
 import { IoPrint } from "react-icons/io5";
 import { FormProps, ModalMetas } from "../modalMetas";

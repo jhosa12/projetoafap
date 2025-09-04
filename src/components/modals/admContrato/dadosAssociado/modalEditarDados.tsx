@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { TabTitular } from "../../../../app/(dashboard)/admcontrato/_components/dados-associados/tabs/tabTitular";
-import { TabContrato } from "../../../../app/(dashboard)/admcontrato/_components/dados-associados/tabs/tabContrato";
+import { TabTitular } from "../../../../app/dashboard/admcontrato/_components/dados-associados/tabs/tabTitular";
+import { TabContrato } from "../../../../app/dashboard/admcontrato/_components/dados-associados/tabs/tabContrato";
 import { Control, SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
-import { AssociadoProps } from "@/app/(dashboard)/admcontrato/_types/associado";
+import { AssociadoProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { toast } from "sonner";
 import { ErrorIndicator } from "@/components/errorIndicator";
 

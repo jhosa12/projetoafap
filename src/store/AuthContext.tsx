@@ -10,7 +10,7 @@ import {
 } from "react";
 import { api } from "../lib/axios/apiClient";
 import { destroyCookie } from "nookies";
-import { AssociadoProps } from "@/app/(dashboard)/admcontrato/_types/associado";
+import { AssociadoProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { SignInProps, UserProps } from "@/types/user";
 import { EmpresaProps } from "@/types/empresa";
 import { PlanosProps } from "@/types/planos";

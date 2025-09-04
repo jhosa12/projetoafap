@@ -7,7 +7,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { DependentesProps } from "@/app/(dashboard)/admcontrato/_types/associado";
+import { DependentesProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

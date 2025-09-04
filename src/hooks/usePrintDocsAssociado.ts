@@ -7,7 +7,7 @@ import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
 import { ProtocoloCancelamento } from "@/Documents/associado/protocoloCancelamento/ProtocoloCancelamento";
 import { api } from "@/lib/axios/apiClient";
 import { AuthContext } from "@/store/AuthContext";
-import { AssociadoProps } from "@/app/(dashboard)/admcontrato/_types/associado";
+import { AssociadoProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { pageStyle } from "@/utils/pageStyle";
 import { removerFusoDate } from "@/utils/removerFusoDate";
 import { useCallback, useContext, useRef, useState } from "react";
