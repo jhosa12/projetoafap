@@ -3,7 +3,6 @@ import { AuthContext } from "@/store/AuthContext";
 import { useContext, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { api } from "@/lib/axios/apiClient";
-import { MensalidadeProps } from "@/types/financeiro";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +17,7 @@ import {
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { removerFusoDate } from "@/utils/removerFusoDate";
+import { MensalidadeProps } from "../../_types/mensalidades";
 
 type FormValues = {
   id_mensalidade_global: number;
