@@ -1,0 +1,36 @@
+export type DependentesProps = {
+    id_dependente_global: number,
+    nome: string,
+    data_nasc: Date | null,
+    grau_parentesco: string,
+    celular: string,
+    data_adesao: Date,
+    carencia: Date,
+    id_dependente: number,
+    cad_dh: Date,
+    sexo: string,
+    saveAdd: boolean,
+    excluido: boolean,
+    dt_exclusao: Date,
+    user_exclusao: string,
+    exclusao_motivo: string,
+    convalescenca: {
+        convalescenca_prod: Array<Partial<{
+            id_conv: number,
+            id_produto: number,
+            descricao: string,
+            unidade: string,
+            grupo: string,
+            data: Date,
+            data_dev: Date,
+            quantidade: number,
+            valor: number,
+            descontos: number,
+            total: number,
+            hora: Date,
+            cortesia: string,
+            retornavel: string,
+            status: string
+        }>>,
+    }
+}

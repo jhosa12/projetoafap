@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { CidadesProps } from "../../../../types/cidades"
 import { AcordoProps, MensalidadeProps } from "../../../../types/financeiro"
 import { PlanosProps } from "../../../../types/planos"
@@ -108,6 +109,13 @@ export type ContratoProps = {
     desconto: number | null,
     planos: { limite_dep: number | null }
 }
+=======
+import { AcordoProps } from "./acordos"
+import { MensalidadeProps } from "./mensalidades" 
+import { ContratoProps } from "./contrato"
+import { DependentesProps } from "./dependentes"
+
+>>>>>>> 666281e65370a08221f555ae6e3bc1645e6b8fd7
 
 export type AssociadoProps = {
     id_global: number | null,
@@ -140,6 +148,7 @@ export type AssociadoProps = {
 
 
 
+<<<<<<< HEAD
 export interface ObitoProps {
     id_obitos: number,
     id_contrato: number,
@@ -347,3 +356,10 @@ export interface ImpressoesProps {
     date: Date | string | undefined,
     user: string | undefined
 }
+=======
+
+
+
+
+
+>>>>>>> 666281e65370a08221f555ae6e3bc1645e6b8fd7

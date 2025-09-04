@@ -9,7 +9,11 @@ import React, { useState, useContext, useEffect } from "react";
 
 import "react-tooltip/dist/react-tooltip.css";
 
+<<<<<<< HEAD
 import { HistoricoMensalidade } from "@/app/dashboard/admcontrato/_components/mensalidades/historico-mensalidade";
+=======
+import { HistoricoMensalidade } from "@/app/dashboard/admcontrato/_components/mensalidades/historicoMensalidade";
+>>>>>>> 666281e65370a08221f555ae6e3bc1645e6b8fd7
 import { Badge, Dropdown, Modal, Spinner } from "flowbite-react";
 import { HiOutlineIdentification, HiUserCircle } from "react-icons/hi2";
 import { DadosAssociado } from "@/app/dashboard/admcontrato/_components/dados-associados/screen";

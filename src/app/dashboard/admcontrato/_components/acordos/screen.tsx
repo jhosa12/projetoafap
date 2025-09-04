@@ -13,7 +13,8 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { AcordoProps, MensalidadeProps } from '@/types/financeiro';
+import { AcordoProps } from '@/app/dashboard/admcontrato/_types/acordos'
+import { MensalidadeProps } from '@/app/dashboard/admcontrato/_types/mensalidades'
 import { ModalAcordos } from '../../../../../components/modals/admContrato/modalAcordos';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -21,13 +22,13 @@ import { Home, Printer } from 'lucide-react';
 import { AcordoComprovante } from '@/Documents/associado/acordo/acordoComprovante';
 import { useReactToPrint } from 'react-to-print';
 import { pageStyle } from '@/utils/pageStyle';
+import useActionsAcordos from '@/app/dashboard/admcontrato/_hooks/useActionsAcordos';
 
 export const themeLight = {
     color: {
         light: "border border-gray-300 bg-white text-gray-900 focus:rind-none focus:ring-0 enabled:hover:bg-gray-100"
     }
 };
-
 
 interface DataProps {
     id_empresa: string,
@@ -40,42 +41,26 @@ interface DataProps {
 }
 
 
-
-
 export function Acordos({ acordos, mensalidades, id_contrato_global, id_global, id_empresa, id_associado, id_contrato }: DataProps) {
     const { permissoes, consultores, carregarDados } = useContext(AuthContext)
     const [openAcordo, setOpenAcordo] = useState(false)
     const [acordo, setAcordo] = useState<Partial<AcordoProps>>({} as AcordoProps)
 
-    const comprovanteAcordo = useRef<HTMLDivElement>(null)
 
+    const hookProps = {
+        id_empresa: id_empresa,
+        carregarDados: carregarDados,
+        id_contrato_global: id_contrato_global ?? null,
+        id_global: id_global ?? null,
+        id_associado: id_associado,
+        id_contrato: id_contrato,
+        close: close,
+        mensalidades: mensalidades,
+        consultores: consultores
 
-
-
-    const printComprovante = useReactToPrint({
-
-        content() {
-            return comprovanteAcordo.current
-        },
-        pageStyle: pageStyle,
-
-    })
-
-
-
-    const verificarQuebra = (acordo: AcordoProps) => {
-        const verifyDates = acordo.mensalidadeAcordo.every(item => item.mensalidade.data_pgto && (item?.mensalidade?.data_pgto <= acordo.data_fim))
-        const pagas = acordo.mensalidadeAcordo.every(item => item.mensalidade.data_pgto)
-        if (pagas) {
-            if (verifyDates) { return 'CUMPRIDO' }
-            return 'QUEBRA'
-        } else if (new Date(acordo.data_fim) < new Date()) {
-            return 'QUEBRA'
-        } else {
-            return 'PENDENTE'
-        }
     }
 
+    const { verificarQuebra, printComprovante, criarAcordo, comprovanteAcordo } = useActionsAcordos(hookProps);
 
 
     useEffect(() => {
