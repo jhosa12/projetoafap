@@ -1,8 +1,8 @@
 import { api } from "@/lib/axios/apiClient";
-import { MensalidadeProps } from "@/types/financeiro";
 import { removerFusoDate } from "@/utils/removerFusoDate";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
+import { MensalidadeProps } from "../_types/mensalidades";
 
 interface ActionsProps {
     excluirMensalidade: () => Promise<void>
