@@ -5,6 +5,7 @@ import { useContext } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { HiOutlineExclamationCircle } from "react-icons/hi2"
 import { toast } from "sonner"
+import useActionsAssociado from "@/app/dashboard/admcontrato/_hooks/useActionsAssociado"
 
 
 
@@ -25,9 +26,14 @@ interface PlanoProps {
 
 export function ModalAlterarPlano({ openModal, setOpenModal }: DataProps) {
 
-  const { register, watch, setValue, handleSubmit } = useForm<PlanoProps>({})
-  const { dadosassociado, setarDadosAssociado, planos } = useContext(AuthContext)
+  const {  setValue, handleSubmit } = useForm<PlanoProps>({})
+  const {  planos } = useContext(AuthContext)
 
+  const hookProps = {
+
+    setOpenModal: setOpenModal,
+
+  }
   const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
 
     const plano = planos?.find(item => item.id_plano === parseInt(e.target.value))
@@ -39,33 +45,8 @@ export function ModalAlterarPlano({ openModal, setOpenModal }: DataProps) {
 
     }
   }
-  const handleAlterarPlano: SubmitHandler<PlanoProps> = async (data) => {
 
-
-    toast.promise(
-      api.put('/contrato/categoria/editar', {
-        id_contrato_global: dadosassociado?.contrato?.id_contrato_global,
-        id_plano: data.id_plano,
-        plano: data.descricao,
-        valor_mensalidade: data.valor
-      }),
-      {
-        error: 'Erro ao alterar dados',
-        loading: 'Alterando dados...',
-        success: (response) => {
-          dadosassociado?.contrato && setarDadosAssociado({ ...dadosassociado, contrato: { ...dadosassociado?.contrato, id_plano: response.data.result.id_plano, plano: response.data.result.plano, valor_mensalidade: response.data.result.valor_mensalidade, planos: { limite_dep: response.data.result.planos.limite_dep } }, mensalidade: response.data.mensAtualizadas })
-          setOpenModal(false)
-          return 'Dados alterados com sucesso'
-        }
-      }
-    )
-
-
-
-
-
-  }
-
+  const { handleAlterarPlano } = useActionsAssociado(hookProps)
 
   return <Modal size={'lg'} show={openModal} popup dismissible onClose={() => setOpenModal(false)}>
 
@@ -85,7 +66,6 @@ export function ModalAlterarPlano({ openModal, setOpenModal }: DataProps) {
               <option key={item.id_plano} value={item.id_plano}>{item.descricao} - {Number(item.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</option>
             ))
             }
-
 
           </Select>
           <span className="text-red-600 text-sm">Ao confirmar a alteração todas as mensalidades terão os valores reajustados!</span>

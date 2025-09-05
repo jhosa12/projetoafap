@@ -4,11 +4,13 @@ import { useContext, useEffect, useState } from "react"
 import { toast } from "sonner"
 import { AssociadoProps } from "../_types/associado"
 import { SubmitHandler, useForm } from "react-hook-form"
+import { PlanosProps } from "@/types/planos"
 
 interface ActionsProps {
 
   inativarAtivarContrato: () => Promise<void>
   handleAtualizarDados: SubmitHandler<AssociadoProps>
+  handleAlterarPlano: SubmitHandler<PlanosProps>
 
 }
 
@@ -16,12 +18,16 @@ interface UseActionsProps {
 
   setModal: (open: boolean) => void
   dataForm: Partial<AssociadoProps>
+  setOpenModal: Function
+  openModal: boolean
 
 }
 
 const useActionsAssociado = ({
 
   setModal,
+  setOpenModal,
+  openModal
 
 
 }: Partial<UseActionsProps>): ActionsProps => {
@@ -134,10 +140,38 @@ const useActionsAssociado = ({
 
   }
 
+  const handleAlterarPlano: SubmitHandler<PlanosProps> = async (data) => {
+
+    if (!setOpenModal) {
+      toast.error("Dados não encontrados para esta operação.");
+      return;
+    }
+
+    toast.promise(
+      api.put('/contrato/categoria/editar', {
+        id_contrato_global: dadosassociado?.contrato?.id_contrato_global,
+        id_plano: data.id_plano,
+        plano: data.descricao,
+        valor_mensalidade: data.valor
+      }),
+      {
+        error: 'Erro ao alterar dados',
+        loading: 'Alterando dados...',
+        success: (response) => {
+          dadosassociado?.contrato && setarDadosAssociado({ ...dadosassociado, contrato: { ...dadosassociado?.contrato, id_plano: response.data.result.id_plano, plano: response.data.result.plano, valor_mensalidade: response.data.result.valor_mensalidade, planos: { limite_dep: response.data.result.planos.limite_dep } }, mensalidade: response.data.mensAtualizadas })
+          setOpenModal(false)
+          return 'Dados alterados com sucesso'
+        }
+      }
+    )
+
+  }
+
   return {
 
     inativarAtivarContrato,
-    handleAtualizarDados
+    handleAtualizarDados,
+    handleAlterarPlano
   }
 }
 export default useActionsAssociado
