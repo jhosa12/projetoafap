@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { RouteProps } from "@/types/cobranca";
 import { api } from "@/lib/axios/apiClient";
-import CobrancaAdmin from "@/components/routeCobranca/admin/routeScreen";
+import CobrancaAdmin from "@/app/dashboard/cobranca/components/admin/routeScreen";
 import { DateRange } from "react-day-picker";
 import { ajustarData } from "@/utils/ajusteData";
 

@@ -29,8 +29,6 @@ export function ModalInativar({ openModal, setModal }: DataProps) {
     setModal: setModal
   }
 
-
-
   const { inativarAtivarContrato } = useActionsAssociado(hookProps)
 
 
@@ -64,12 +62,6 @@ export function ModalInativar({ openModal, setModal }: DataProps) {
               </div>
               <TextInput sizing="sm" value={descMotivo} onChange={e => setDescMotivo(e.target.value)} placeholder="Informe o motivo da Inativação" autoComplete='off' type="text" required />
             </>}
-
-
-
-
-
-
 
           <div className="inline-flex  gap-4">
             <Button size={'sm'} variant={'outline'} onClick={() => inativarAtivarContrato()} >

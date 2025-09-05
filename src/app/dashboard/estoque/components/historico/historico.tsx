@@ -1,8 +1,8 @@
 
-import {Table } from "flowbite-react"
+import { Table } from "flowbite-react"
 import { useContext, useEffect, useRef, useState, useTransition } from "react";
 import { AuthContext } from "@/store/AuthContext";
-import { ModalFiltroMov } from "../../modals/estoque/modalFiltro";
+import { ModalFiltroMov } from "../../../../../components/modals/estoque/modalFiltro";
 import { api } from "@/lib/axios/apiClient";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { BiSolidPrinter } from "react-icons/bi";
@@ -10,15 +10,15 @@ import { useReactToPrint } from "react-to-print";
 import RelatorioMov from "@/Documents/estoque/RelatorioMov";
 import { GrRevert } from "react-icons/gr";
 import { Tooltip } from "react-tooltip";
-import { ModalConfirm } from "../../modals/estoque/modalConfirm";
+import { ModalConfirm } from "../../../../../components/modals/estoque/modalConfirm";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { pageStyle } from "@/utils/pageStyle";
 
 
 interface DataProps {
-   // usuario: string,
-  //  id_usuario: string,
+    // usuario: string,
+    //  id_usuario: string,
     permissoes: Array<string>
 }
 
@@ -28,12 +28,12 @@ export interface HistoricoProps {
     descricao: string,
     empresa: string,
     id_mov: number,
-    produtos: Array<{ produto: string, id_produto: number, quantidade: number,quant_atual:number,quant_anterior:number }>,
+    produtos: Array<{ produto: string, id_produto: number, quantidade: number, quant_atual: number, quant_anterior: number }>,
     tipo: string,
     usuario: string
 }
 
-export default function  HistoricoMov({ permissoes }: DataProps) {
+export default function HistoricoMov({ permissoes }: DataProps) {
     const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});
     const [openModal, setOpenModal] = useState<boolean>(false)
     const { empresas } = useContext(AuthContext)
@@ -41,7 +41,7 @@ export default function  HistoricoMov({ permissoes }: DataProps) {
     const [dadosMov, setDadosMov] = useState<Partial<HistoricoProps>>()
     const componentRef = useRef<RelatorioMov>(null)
     const [isPending, startTransition] = useTransition();
-    const [dadosEstorno,setDadosEstorno] = useState< {
+    const [dadosEstorno, setDadosEstorno] = useState<{
         id_produto: number,
         id_mov: number,
         produtos: Array<{ produto: string, id_produto: number, quantidade: number }>,
@@ -65,24 +65,24 @@ export default function  HistoricoMov({ permissoes }: DataProps) {
             }),
             {
                 loading: 'Estornando movimentação...',
-                success:()=> {
+                success: () => {
                     handleFiltro({ startDate: new Date(), endDate: new Date(), id_empresa: '' })
-                    return'Movimentação estornada com sucesso'
+                    return 'Movimentação estornada com sucesso'
                 },
                 error: 'Erro ao estornar movimentação'
             }
 
         )
 
-        
-      
 
-          
-          /*  if (response.data) {
-                setHistorico((prev) => prev.filter((h) => h.id_mov !== id_mov));
-            }*/
 
-      
+
+
+        /*  if (response.data) {
+              setHistorico((prev) => prev.filter((h) => h.id_mov !== id_mov));
+          }*/
+
+
     };
 
     useEffect(() => {
@@ -108,23 +108,23 @@ export default function  HistoricoMov({ permissoes }: DataProps) {
 
 
     const handleFiltro = async ({ startDate, endDate, id_empresa, signal }: { startDate: Date, endDate: Date, id_empresa: string, signal?: AbortSignal }) => {
-        startTransition(async() => {
+        startTransition(async () => {
             try {
                 const response = await api.post('/estoque/historico/filtro', {
                     startDate,
                     endDate,
                     id_empresa
                 }, { signal })
-    
+
                 setHistorico(response.data)
                 console.log(response.data)
-    
+
             } catch (error) {
                 console.log(error)
             }
-            
+
         })
-       
+
     }
 
     useEffect(() => {
@@ -160,22 +160,22 @@ export default function  HistoricoMov({ permissoes }: DataProps) {
 
             <ModalFiltroMov handleFiltro={handleFiltro} openModal={openModal} setOpenModal={setOpenModal} empresas={empresas} />
 
-          {  <ModalConfirm status={'ESTORNO'} handleMovimentar={handleEstorno} open={openModalConfirm} setOpen={setOpenModalConfirm} />}
-    
+            {<ModalConfirm status={'ESTORNO'} handleMovimentar={handleEstorno} open={openModalConfirm} setOpen={setOpenModalConfirm} />}
+
             <div className="flex-col w-full p-2  rounded-lg bg-white h-[79vh] ">
-<div className="flex w-full">
-<Button 
-                    variant={'outline'}
-                    size={'sm'}
-                    className="ml-auto text-black  mr-8"
-                    onClick={() => setOpenModal(true)}
-                >FILTRO
-                </Button>
-</div>
-             
+                <div className="flex w-full">
+                    <Button
+                        variant={'outline'}
+                        size={'sm'}
+                        className="ml-auto text-black  mr-8"
+                        onClick={() => setOpenModal(true)}
+                    >FILTRO
+                    </Button>
+                </div>
+
 
                 <div className="overflow-y-auto mt-1 px-2 max-h-[70vh] ">
-                    <Table hoverable theme={{root:{shadow:'none'}, body: { cell: { base: " px-4 py-1 text-xs text-black" } },head: { cell: { base: "px-4 py-1 text-xs text-black border-b-[1px]" }} }}  >
+                    <Table hoverable theme={{ root: { shadow: 'none' }, body: { cell: { base: " px-4 py-1 text-xs text-black" } }, head: { cell: { base: "px-4 py-1 text-xs text-black border-b-[1px]" } } }}  >
                         <Table.Head >
                             <Table.HeadCell >
                                 DESCRIÇÃO
@@ -251,7 +251,7 @@ export default function  HistoricoMov({ permissoes }: DataProps) {
                                                 <Table.Cell className="text-black ">QUANT ATUAL.: {prod.quant_atual}</Table.Cell>
                                                 <Table.Cell className="text-black "></Table.Cell>
                                                 <Table.Cell className="text-black ">
-                                                    <button disabled={!permissoes.includes('EST2.2')} type="button" data-id={prod.id_produto} onClick={()=>{setDadosEstorno({id_empresa:item.id_empresa,id_produto:prod.id_produto,quantidade:prod.quantidade,tipo:item.tipo,id_mov:item.id_mov,produtos:item.produtos}),setOpenModalConfirm(true)}}  data-tooltip-id="tooltip" data-tooltip-content="Estornar" className="hover:text-yellow-500 disabled:cursor-not-allowed">
+                                                    <button disabled={!permissoes.includes('EST2.2')} type="button" data-id={prod.id_produto} onClick={() => { setDadosEstorno({ id_empresa: item.id_empresa, id_produto: prod.id_produto, quantidade: prod.quantidade, tipo: item.tipo, id_mov: item.id_mov, produtos: item.produtos }), setOpenModalConfirm(true) }} data-tooltip-id="tooltip" data-tooltip-content="Estornar" className="hover:text-yellow-500 disabled:cursor-not-allowed">
                                                         <GrRevert size={16} />
                                                     </button></Table.Cell>
                                                 <Table.Cell className="text-black "></Table.Cell>

@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { ModalFiltro } from "@/components/renovacao/modalFiltro";
-import { ParcelasDialog } from "@/components/renovacao/ParcelasDialog";
+import { ModalFiltro } from "@/app/dashboard/renovacao/components/modalFiltro";
+import { ParcelasDialog } from "@/app/dashboard/renovacao/components/ParcelasDialog";
 import { api } from "@/lib/axios/apiClient";
 import { useReactToPrint } from "react-to-print";
 import DocumentTemplate from "@/Documents/renovacao/impressao";

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { DatePickerWithRange } from '@/components/dashboard/DatePickerWithRange';
+import { DatePickerWithRange } from '@/app/dashboard/admcontrato/_components/DatePickerWithRange';
 
 export interface SetorProps {
   id_grupo: number;
@@ -45,17 +45,17 @@ export const FilterModal: React.FC<FilterModalProps> = ({
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">Filtros de Vendas</DialogTitle>
         </DialogHeader>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
-       <DatePickerWithRange
-       
-        dateRange={{from:startDate,to:endDate}}
-       onDateRangeChange={(dateRange) => {
-         setStartDate(dateRange?.from || startDate);
-         setEndDate(dateRange?.to || endDate);
-       }}
-       />
-          
+          <DatePickerWithRange
+
+            dateRange={{ from: startDate, to: endDate }}
+            onDateRangeChange={(dateRange) => {
+              setStartDate(dateRange?.from || startDate);
+              setEndDate(dateRange?.to || endDate);
+            }}
+          />
+
           <div className="md:col-span-2">
             <Label className="text-sm font-medium text-gray-700">Setor</Label>
             <Select>
@@ -72,16 +72,16 @@ export const FilterModal: React.FC<FilterModalProps> = ({
             </Select>
           </div>
         </div>
-        
+
         <div className="flex justify-end space-x-3 pt-4">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => setFiltro(false)}
             disabled={loading}
           >
             Cancelar
           </Button>
-          <Button 
+          <Button
             onClick={handleFilter}
             disabled={loading}
             className="bg-blue-600 hover:bg-blue-700"

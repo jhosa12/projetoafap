@@ -34,7 +34,7 @@ body{
     /* Ocultar a barra de endereço durante a impressão */
    body {
       /*-webkit-print-color-adjust: exact !important;*/
-     /* print-color-adjust: exact !important;*/
+      print-color-adjust: exact !important;
      /* image-rendering: crisp-edges !important;*/
     }
   

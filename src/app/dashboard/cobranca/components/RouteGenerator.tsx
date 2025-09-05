@@ -23,7 +23,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
+} from "../../../../components/ui/dialog";
 import { api } from "@/lib/axios/apiClient";
 import { ConsultoresProps } from "@/types/consultores";
 import { RotaFilterProps } from "@/pages/dashboard/cobranca/rotas";
@@ -36,33 +36,33 @@ export interface RouteFormData {
 }
 
 interface RouteGeneratorProps {
-    empresa:{
-      id_empresa:string,
-      nome:string
-    },
-    cidadesEmpresa:Array<string>
-    cobradores:ConsultoresProps[],
-    filters : RotaFilterProps,
-    getRotas:(data:RotaFilterProps)=>Promise<void>
+  empresa: {
+    id_empresa: string,
+    nome: string
+  },
+  cidadesEmpresa: Array<string>
+  cobradores: ConsultoresProps[],
+  filters: RotaFilterProps,
+  getRotas: (data: RotaFilterProps) => Promise<void>
 }
 
-const RouteGenerator = ({ empresa,cidadesEmpresa,cobradores,filters,getRotas }: RouteGeneratorProps) => {
+const RouteGenerator = ({ empresa, cidadesEmpresa, cobradores, filters, getRotas }: RouteGeneratorProps) => {
   const metodos = useForm<RouteProps>();
-  const { postData } = useApiPost("/cobranca/novaRota",undefined,undefined,()=>setIsGeneratorOpen(false));
+  const { postData } = useApiPost("/cobranca/novaRota", undefined, undefined, () => setIsGeneratorOpen(false));
   const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
   const [arrayBairros, setArrayBairros] = useState<
-   InadimplenciaBairroProps[]
+    InadimplenciaBairroProps[]
   >([]);
 
   useEffect(() => {
     const getBairros = async () => {
       const res = await api.post("/cobranca/inadimplencia", {
-        id_empresa:empresa.id_empresa,
-        cidade: metodos.watch('parametros.cidade')??"",
+        id_empresa: empresa.id_empresa,
+        cidade: metodos.watch('parametros.cidade') ?? "",
         param: ">",
         n_parcelas: 1,
         status: ["A", "R"],
-        statusReagendamento:'A/R',
+        statusReagendamento: 'A/R',
         startDate: new Date("1900-01-01"),
         endDate: new Date(),
         resumeBairro: true,
@@ -71,16 +71,16 @@ const RouteGenerator = ({ empresa,cidadesEmpresa,cobradores,filters,getRotas }: 
       setArrayBairros(res.data.inadResumoBairro)
     };
     getBairros();
-  }, [empresa,metodos.watch('parametros.cidade')]);
+  }, [empresa, metodos.watch('parametros.cidade')]);
 
 
 
   const handleGenerateRoute: SubmitHandler<RouteProps> = async (data) => {
-   
 
 
-    
-    await postData({...data,id_empresa:empresa.id_empresa,empresa:empresa.nome,parametros:{...data.parametros,statusReagendamento:'A/R'}});
+
+
+    await postData({ ...data, id_empresa: empresa.id_empresa, empresa: empresa.nome, parametros: { ...data.parametros, statusReagendamento: 'A/R' } });
 
     if (data.parametros.bairros?.length === 0) {
       toast("Erro de validação", {
@@ -99,10 +99,10 @@ const RouteGenerator = ({ empresa,cidadesEmpresa,cobradores,filters,getRotas }: 
     }
     getRotas(filters)
 
-     /* toast("Rota gerada com sucesso!", {
-      description: `Rota criada para ${data.parametros.consultor} em ${data.parametros.bairros?.length} bairro(s)`,
-      //variant: "destructive",
-    });*/
+    /* toast("Rota gerada com sucesso!", {
+     description: `Rota criada para ${data.parametros.consultor} em ${data.parametros.bairros?.length} bairro(s)`,
+     //variant: "destructive",
+   });*/
 
     //setIsGeneratorOpen(false);
   };
@@ -113,7 +113,7 @@ const RouteGenerator = ({ empresa,cidadesEmpresa,cobradores,filters,getRotas }: 
     <Dialog open={isGeneratorOpen} onOpenChange={setIsGeneratorOpen}>
       <DialogTrigger asChild>
         <Button variant={"default"}>
-          <Plus  />
+          <Plus />
           Nova Rota
         </Button>
       </DialogTrigger>
@@ -122,84 +122,84 @@ const RouteGenerator = ({ empresa,cidadesEmpresa,cobradores,filters,getRotas }: 
           <DialogTitle>Gerar Nova Rota</DialogTitle>
         </DialogHeader>
         <FormProvider {...metodos}>
-        <form
-          onSubmit={metodos.handleSubmit(handleGenerateRoute)}
-          className="grid lg:grid-cols-3 gap-4"
-        >
-          <div className="lg:col-span-2 space-y-4">
-            <Card className="shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  Localização
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-               
-                    <DistrictSelector
-                      bairros={arrayBairros}
-                      cidades={cidadesEmpresa}
-                    />
-                 
-              </CardContent>
-            </Card>
-
-            <div className="grid md:grid-cols-2 gap-4">
+          <form
+            onSubmit={metodos.handleSubmit(handleGenerateRoute)}
+            className="grid lg:grid-cols-3 gap-4"
+          >
+            <div className="lg:col-span-2 space-y-4">
               <Card className="shadow-sm">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    Período
+                    <MapPin className="h-4 w-4" />
+                    Localização
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-          
-                      <PeriodSelector
-                        
-                      />
-                 
+
+                  <DistrictSelector
+                    bairros={arrayBairros}
+                    cidades={cidadesEmpresa}
+                  />
+
                 </CardContent>
               </Card>
 
+              <div className="grid md:grid-cols-2 gap-4">
+                <Card className="shadow-sm">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      Período
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+
+                    <PeriodSelector
+
+                    />
+
+                  </CardContent>
+                </Card>
+
+                <Card className="shadow-sm">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      Critérios
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ClientCriteriaSelector consultores={cobradores} />
+                  </CardContent>
+                </Card>
+              </div>
+
               <Card className="shadow-sm">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <FileText className="h-4 w-4" />
-                    Critérios
+                    <Users className="h-4 w-4" />
+                    Consultor
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ClientCriteriaSelector consultores={cobradores}  />
+                  <Controller
+                    name="parametros.consultor"
+                    control={metodos.control}
+                    render={({ field }) => (
+                      <ConsultantSelector
+                        selected={field.value}
+                        onChange={(consultant) => field.onChange(consultant)}
+                        consultants={cobradores}
+                      />
+                    )}
+                  />
                 </CardContent>
               </Card>
             </div>
 
-            <Card className="shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  Consultor
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Controller
-                  name="parametros.consultor"
-                  control={metodos.control}
-                  render={({ field }) => (
-                    <ConsultantSelector
-                      selected={field.value}
-                      onChange={(consultant) => field.onChange(consultant)}
-                      consultants={cobradores}
-                    />
-                  )}
-                />
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="space-y-4">
-            <RoutePreview formData={metodos.watch()} />
-{/* 
+            <div className="space-y-4">
+              <RoutePreview formData={metodos.watch()} />
+              {/* 
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -221,17 +221,17 @@ const RouteGenerator = ({ empresa,cidadesEmpresa,cobradores,filters,getRotas }: 
               </CardContent>
             </Card> */}
 
-           
-                
 
-                {/* {!isFormValid && (
+
+
+              {/* {!isFormValid && (
               <p className="text-xs text-gray-500 mt-2 text-center">
                 Preencha todos os campos obrigatórios
               </p>
             )} */}
-          
-          </div>
-        </form>
+
+            </div>
+          </form>
         </FormProvider>
       </DialogContent>
     </Dialog>

@@ -13,10 +13,10 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { RefreshCw, Search, Eye, Database, Plus, Edit, Trash2, Filter } from "lucide-react";
-import { AuditFilterDialog } from "@/components/audit/AuditFilterDialog";
+import { AuditFilterDialog } from "@/app/dashboard/auditoria/components/AuditFilterDialog";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import AuditDetails from "@/components/audit/AuditDetails";
+import AuditDetails from "@/app/dashboard/auditoria/components/AuditDetails";
 import { AuditLog } from "@/types/audit";
 import useApiGet from "@/hooks/useApiGet";
 import { ajustarData } from "@/utils/ajusteData";

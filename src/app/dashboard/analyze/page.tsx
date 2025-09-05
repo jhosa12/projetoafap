@@ -9,11 +9,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { addDays, endOfMonth, startOfMonth } from "date-fns";
-import { DatePickerWithRange } from "@/components/dashboard/DatePickerWithRange";
-import { MetricsCards } from "@/components/dashboard/MetricsCards";
-import { RevenueChart } from "@/components/dashboard/RevenueChart";
-import { DefaultChart } from "@/components/dashboard/DefaultChart";
-import { AdhesionCancellationChart } from "@/components/dashboard/AdhesionCancellationChart";
+import { DatePickerWithRange } from "@/app/dashboard/admcontrato/_components/DatePickerWithRange";
+import { MetricsCards } from "@/app/dashboard/admcontrato/_components/MetricsCards";
+import { RevenueChart } from "@/app/dashboard/admcontrato/_components/RevenueChart";
+import { DefaultChart } from "@/app/dashboard/admcontrato/_components/DefaultChart";
+import { AdhesionCancellationChart } from "@/app/dashboard/admcontrato/_components/AdhesionCancellationChart";
 import { api } from "@/lib/axios/apiClient";
 import { ajustarData } from "@/utils/ajusteData";
 import { DateRange } from "react-day-picker";
