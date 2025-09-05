@@ -13,7 +13,6 @@ import { Modal, Spinner } from "flowbite-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ajustarData } from "@/utils/ajusteData";
 import { ScreenCloseCaixa } from "@/app/dashboard/caixa/_components/screenCloseCaixa";
-import { ModalMensalidade } from "@/components/modals/admContrato/historico/modalmensalidade";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import { toast } from "sonner";
 import { TableCaixa } from "@/app/dashboard/caixa/_components/table-caixa";
@@ -25,6 +24,7 @@ import {
   ResponseCaixaProps,
 } from "./_types/types";
 import useActionsCaixa from "./_hooks/useActionsCaixa";
+import { ModalMensalidade } from "../admcontrato/_components/mensalidades/modal-mensalidade";
 
 export default function CaixaMovimentar() {
 
