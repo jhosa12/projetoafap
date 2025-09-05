@@ -28,7 +28,6 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import { removerFusoDate } from "@/utils/removerFusoDate";
 import { toast } from "sonner";
-import { MensalidadeBaixaProps } from "@/types/financeiro";
 import { DatePickerInput } from "@/components/DatePickerInput"
 import { Label } from "@/components/ui/label"
 
@@ -37,6 +36,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import useVerifyPermission from "@/hooks/useVerifyPermission"
+import { MensalidadeBaixaProps } from "../../_types/mensalidades"
 
 interface Props{
     handleAtualizar:Function
@@ -146,7 +146,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
     return(
 
 <Dialog  open={openModal} onOpenChange={setOpenModal}>
-      <DialogContent forceMount aria-describedby={undefined} className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader className="space-y-3">
           <DialogTitle className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <CheckCircleIcon className="h-6 w-6 text-green-600" />

@@ -11,15 +11,15 @@ import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { DatePickerInput } from "@/components/DatePickerInput";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { removerFusoDate } from "@/utils/removerFusoDate";
 import { MensalidadeProps } from "../../_types/mensalidades";
+import { DateField } from "@/components/date-shadcnui";
 
-type FormValues = {
+export type FormMensalidadeValues = {
   id_mensalidade_global: number;
   id_mensalidade: number | null;
   referencia: string;
@@ -34,19 +34,23 @@ interface Props {
   openModal: boolean;
   setOpenModal: (open: boolean) => void;
   mensalidade: Partial<MensalidadeProps>;
+  handleEditar: ({data,actions}: {data:FormMensalidadeValues,actions: {success: () => void, error?: () => void}}) => Promise<void>,
+  handleEstorno: (motivoEstorno: string,actions:{success:()=>void,error?:()=>void}) => Promise<void>;
 }
 
 export function ModalEditarMensalidade({
   openModal,
   setOpenModal,
   mensalidade,
+  handleEditar,
+  handleEstorno,
 }: Props) {
   const { dadosassociado, permissoes, setarDadosAssociado, carregarDados } =
     useContext(AuthContext);
   const [confirm, setConfirm] = useState(false);
   const [motivoEstorno, setMotivoEstorno] = useState("");
 
-  const form = useForm<FormValues>({
+  const form = useForm<FormMensalidadeValues>({
     defaultValues: {
       ...mensalidade,
       vencimento: mensalidade.vencimento,
@@ -54,6 +58,9 @@ export function ModalEditarMensalidade({
       valor_principal: mensalidade.valor_principal || 0,
     },
   });
+  const vencimento = form.watch("vencimento");
+  const cobranca = form.watch("cobranca");
+  console.log(new Date(vencimento), new Date(cobranca));
 
   // Update form when mensalidade prop changes
   useEffect(() => {
@@ -67,76 +74,76 @@ export function ModalEditarMensalidade({
     }
   }, [mensalidade, form]);
 
-  const handleEditar = async (data: FormValues) => {
-    const {newDate:vencimento} = removerFusoDate(data.vencimento)
-    const {newDate:cobranca} = removerFusoDate(data.cobranca)
-    toast.promise(
-      api.put("/mensalidade/editar", {
-        id_mensalidade_global: data.id_mensalidade_global,
-        cobranca: cobranca,
-        vencimento: vencimento,
-        valor_principal: data.valor_principal,
-      }),
-      {
-        error: "Erro na tentativa de edição, consulte o TI",
-        loading: "Realizando edição.....",
-        success: () => {
-          dadosassociado?.id_global && carregarDados(dadosassociado.id_global);
-          setOpenModal(false);
-          return "Edição efetuada com sucesso!";
-        },
-      }
-    );
-  };
+  // const handleEditar = async (data: FormValues) => {
+   
+  //   toast.promise(
+  //     api.put("/mensalidade/editar", {
+  //       id_mensalidade_global: data.id_mensalidade_global,
+  //       cobranca: data.cobranca,
+  //       vencimento: data.vencimento,
+  //       valor_principal: data.valor_principal,
+  //     }),
+  //     {
+  //       error: "Erro na tentativa de edição, consulte o TI",
+  //       loading: "Realizando edição.....",
+  //       success: () => {
+  //         dadosassociado?.id_global && carregarDados(dadosassociado.id_global);
+  //         setOpenModal(false);
+  //         return "Edição efetuada com sucesso!";
+  //       },
+  //     }
+  //   );
+  // };
 
-  const onSubmit = (data: FormValues) => {
-    handleEditar(data);
+  const onSubmit = (data: FormMensalidadeValues) => {
+    handleEditar({data,actions:{success:()=>setOpenModal(false)}});
   };
-  const handleEstorno = async () => {
-    const formValues = form.getValues();
-    const novoArray = [...(dadosassociado?.mensalidade || [])];
-    const index = novoArray.findIndex(
-      (item) => item.id_mensalidade === formValues.id_mensalidade
-    );
-    const mensalidadeProxima = novoArray[index + 1];
+  // const handleEstorno = async () => {
+  //   const formValues = form.getValues();
+  //   const novoArray = [...(dadosassociado?.mensalidade || [])];
+  //   const index = novoArray.findIndex(
+  //     (item) => item.id_mensalidade === formValues.id_mensalidade
+  //   );
+  //   const mensalidadeProxima = novoArray[index + 1];
 
-    if (mensalidadeProxima && mensalidadeProxima.status === "P") {
-      toast.warning(
-        "Impossível estornar, a próxima mensalidade se encontra paga!"
-      );
-      return;
-    }
-    if (!motivoEstorno) {
-      toast.warning("Informe o motivo do estorno");
-      return;
-    }
+  //   if (mensalidadeProxima && mensalidadeProxima.status === "P") {
+  //     toast.warning(
+  //       "Impossível estornar, a próxima mensalidade se encontra paga!"
+  //     );
+  //     return;
+  //   }
+  //   if (!motivoEstorno) {
+  //     toast.warning("Informe o motivo do estorno");
+  //     return;
+  //   }
 
   
-    toast.promise(
-      api.put("/mensalidade/estorno", {
-        id_mensalidade: formValues.id_mensalidade,
-        id_mensalidade_global: formValues.id_mensalidade_global,
-        estorno_motivo: motivoEstorno,
-      }),
+  //   toast.promise(
+  //     api.put("/mensalidade/estorno", {
+  //       id_mensalidade: formValues.id_mensalidade,
+  //       id_mensalidade_global: formValues.id_mensalidade_global,
+  //       estorno_motivo: motivoEstorno,
+  //     }),
 
-      {
-        error: "Erro na tentativa de estorno, consulte o TI",
-        loading: "Realizando estorno.....",
-        success: (response) => {
-          novoArray[index] = response.data;
-          setarDadosAssociado({ mensalidade: novoArray });
-          setOpenModal(false);
-          return "Estorno efetuado com sucesso!";
-        },
-      }
-    );
-  };
+  //     {
+  //       error: "Erro na tentativa de estorno, consulte o TI",
+  //       loading: "Realizando estorno.....",
+  //       success: (response) => {
+  //         novoArray[index] = response.data;
+  //         setarDadosAssociado({ mensalidade: novoArray });
+  //         setOpenModal(false);
+  //         return "Estorno efetuado com sucesso!";
+  //       },
+  //     }
+  //   );
+  // };
 
   return (
     <Dialog open={openModal} onOpenChange={setOpenModal}>
       <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>Editar Dados</DialogTitle>
+          <DialogDescription>Edite os dados da mensalidade</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -162,13 +169,10 @@ export function ModalEditarMensalidade({
                   <FormItem className="col-span-1">
                     <FormLabel className="text-xs">VENCIMENTO</FormLabel>
                     <FormControl>
-                      <DatePickerInput
-                        className="h-9 w-full"
-                        disabled={!permissoes.includes("ADM1.2.8")}
-                        value={field.value}
-                        
-                        onChange={(date) => field.onChange(date)}
-                      />
+                     <DateField
+                     value={field.value}
+                     onChange={(date) => field.onChange(date)}
+                     />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -181,12 +185,11 @@ export function ModalEditarMensalidade({
                   <FormItem className="col-span-1">
                     <FormLabel className="text-xs">COBRANÇA</FormLabel>
                     <FormControl>
-                      <DatePickerInput
-                        className="h-9 w-full"
-                        disabled={!permissoes.includes("ADM1.2.9")}
-                        value={field.value}
-                        onChange={(date) => field.onChange(date)}
-                      />
+                     <DateField
+                     disabled
+                     value={field.value}
+                     onChange={(date) => field.onChange(date)}
+                     />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -282,7 +285,7 @@ export function ModalEditarMensalidade({
           pergunta="Tem certeza que deseja estornar essa mensalidade?"
           openModal={confirm}
           setOpenModal={() => setConfirm(false)}
-          handleConfirmar={() => handleEstorno()}
+          handleConfirmar={() => handleEstorno(motivoEstorno,{success:()=> setOpenModal(false)})}
         >
           <Input
             value={motivoEstorno}

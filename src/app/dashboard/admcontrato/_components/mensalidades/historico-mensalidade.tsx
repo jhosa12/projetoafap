@@ -1,12 +1,9 @@
 import ImpressaoCarne from "@/Documents/associado/mensalidade/ImpressaoCarne";
-import { api } from "@/lib/axios/apiClient";
 import { useReactToPrint } from "react-to-print";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {  useEffect, useRef, useState } from "react";
 import { IoPrint } from "react-icons/io5";
 import { MdDeleteForever } from "react-icons/md";
 import { RiAddCircleFill } from "react-icons/ri";
-
-//import { Scanner } from './modalScanner';
 import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
 import { Popover } from "flowbite-react";
 import { PopoverVencimento } from "./popover-vencimento";
@@ -21,12 +18,12 @@ import { EmpresaProps } from "@/types/empresa";
 import { AssociadoProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import { Button } from "@/components/ui/button";
-import { removerFusoDate } from "@/utils/removerFusoDate";
 import { Checkbox } from "@/components/ui/checkbox";
 import { pageStyle } from "@/utils/pageStyle";
 import { ModalEditarMensalidade } from "./modal-editarMensalidade";
 import { ModalMensalidade } from "./modal-mensalidade";
 import { MensalidadeProps } from "../../_types/mensalidades";
+import useActionsMensalidades from "../../_hooks/useActionsMensalidades";
 
 export interface SetAssociadoProps {
   mensalidade: Partial<MensalidadeProps>;
@@ -53,9 +50,7 @@ export function HistoricoMensalidade({
   permissoes,
 }: DadosProps) {
   const [checkMensal, setCheck] = useState(false);
-  const [linhasSelecionadas, setLinhasSelecionadas] = useState<
-    Array<Partial<MensalidadeProps>>
-  >([]);
+ 
   const [mensalidadeSelect, setMensalidade] = useState<
     Partial<MensalidadeProps>
   >({} as Partial<MensalidadeProps>);
@@ -69,6 +64,15 @@ export function HistoricoMensalidade({
     recibo: false,
     carne: false,
   });
+  const {
+    excluirMensalidade,
+    handleEditar,
+    handleEstorno,
+    linhasSelecionadas,
+    setLinhasSelecionadas,
+    adicionarMensalidade,
+    toggleSelecionada,
+  } = useActionsMensalidades({mensalidade:mensalidadeSelect,setMensalidade});
 
   const { componentRefs, handlePrint, printState, handleImpressao } =
     usePrintDocsAssociado(
@@ -88,128 +92,11 @@ export function HistoricoMensalidade({
   });
 
   useEffect(() => {
-    mensalidadeRecibo?.id_mensalidade_global && imprimirRecibo();
+    if (mensalidadeRecibo?.id_mensalidade_global) {
+      imprimirRecibo();
+    }
   }, [mensalidadeRecibo?.id_mensalidade_global]);
 
-  const toggleSelecionada = (item: MensalidadeProps) => {
-    const index = linhasSelecionadas.findIndex(
-      (linha) => linha.id_mensalidade === item.id_mensalidade
-    );
-    if (item.status === "P") {
-      toast.info("Mensalidade Paga!");
-      return;
-    }
-    if (item.status === "E") {
-      toast.info("Mensalidade em acordo!");
-      return;
-    }
-    if (index === -1) {
-      // Adiciona a linha ao array se não estiver selecionada
-      setLinhasSelecionadas([...linhasSelecionadas, item]);
-      //  setarDados({ acordo: { mensalidade: [...linhasSelecionadas, item] } })
-    } else {
-      // Remove a linha do array se já estiver selecionada
-      const novasLinhasSelecionadas = [...linhasSelecionadas];
-      novasLinhasSelecionadas.splice(index, 1);
-      setLinhasSelecionadas(novasLinhasSelecionadas);
-      // setarDados({ acordo: { mensalidade: novasLinhasSelecionadas } })
-    }
-  };
-
-  const excluirMesal = useCallback(async () => {
-    if (!linhasSelecionadas) {
-      toast.info("Selecione uma mensalidade");
-      return;
-    }
-
-    linhasSelecionadas?.map((mensalidade) => {
-      if (mensalidade.status === "P") {
-        toast.warning("Mensalidade Paga! Para excluir solite ao gerente");
-        return;
-      }
-    });
-
-    const response = await toast.promise(
-      api.delete("/mensalidade/delete", {
-        data: {
-          mensalidades: linhasSelecionadas,
-        },
-      }),
-      {
-        loading: `Efetuando`,
-        success: () => {
-          setModal({ excluir: false });
-
-          return `Excluida com sucesso`;
-        },
-        error: `Erro ao efetuar exlusão`,
-      }
-    );
-
-    dadosassociado.id_global && (await carregarDados(dadosassociado.id_global));
-    // setarDados({ mensalidade: {} })
-    // setarDadosAssociado({mensalidade:mensalidades})
-    // setOpenExcluir(false)
-
-    setLinhasSelecionadas([]);
-    // setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
-  }, [linhasSelecionadas, dadosassociado.id_global]);
-
-  const adicionarMensalidade = useCallback(async () => {
-    if (!dadosassociado.id_global) {
-      toast.warning("Associado não encontrado");
-      return;
-    }
-    const ultimaMensalidade =
-      dadosassociado.mensalidade &&
-      dadosassociado?.mensalidade[dadosassociado?.mensalidade?.length - 1];
-
-    if (!ultimaMensalidade) {
-      toast.warning("Não há mensalidades registradas");
-    }
-
-    const vencimento = new Date(
-      ultimaMensalidade?.vencimento ? ultimaMensalidade?.vencimento : ""
-    );
-    const proxData = vencimento.setMonth(vencimento.getMonth() + 1);
-    const { newDate } = removerFusoDate(new Date(proxData));
-
-    toast.promise(
-      api.post("/mensalidade/adicionar", {
-        id_contrato_global: dadosassociado?.contrato?.id_contrato_global,
-        id_global: dadosassociado.id_global,
-        id_contrato: dadosassociado?.contrato?.id_contrato,
-        id_associado: dadosassociado.id_associado,
-        status: "A",
-        valor_principal: dadosassociado.contrato?.valor_mensalidade,
-        parcela_n:
-          ultimaMensalidade?.parcela_n && ultimaMensalidade?.parcela_n + 1,
-        vencimento: newDate,
-        cobranca: newDate,
-        referencia: new Date(proxData).toLocaleDateString("pt-BR", {
-          month: "2-digit",
-          year: "2-digit",
-        }),
-        id_empresa: dadosassociado?.id_empresa,
-      }),
-      {
-        loading: `Efetuando`,
-        success: (response) => {
-          // carregarDados()
-          setLinhasSelecionadas([]);
-          //  setarDados({ acordo: { mensalidade: [], id_acordo: 0 } })
-
-          setarDadosAssociado({
-            ...dadosassociado,
-            mensalidade: [...(dadosassociado.mensalidade ?? []), response.data],
-          });
-
-          return `Mensalidade Adicionada`;
-        },
-        error: `Erro ao gerar mensalidade`,
-      }
-    );
-  }, [dadosassociado]);
 
   return (
     <div className="flex flex-col w-full">
@@ -263,11 +150,11 @@ export function HistoricoMensalidade({
         <ModalEditarMensalidade
           mensalidade={{
             ...mensalidadeSelect,
-            vencimento:mensalidadeSelect.vencimento,
-            cobranca: mensalidadeSelect.cobranca,
           }}
           openModal={openModal.editar}
           setOpenModal={() => setModal({ editar: false })}
+          handleEditar={handleEditar}
+          handleEstorno={handleEstorno}
         />
       )}
 
@@ -276,7 +163,7 @@ export function HistoricoMensalidade({
           openModal={openModal.excluir}
           setOpenModal={() => setModal({ excluir: false })}
           pergunta={`Realmente deseja excluir a(s) mensalidade(s)?`}
-          handleConfirmar={excluirMesal}
+          handleConfirmar={()=>excluirMensalidade({actions:{success:()=>setModal({excluir:false})}})}
         />
       )}
 
@@ -305,7 +192,7 @@ export function HistoricoMensalidade({
             variant="outline"
             size="sm"
             disabled={!permissoes.includes("ADM1.2.1")}
-            onClick={adicionarMensalidade}
+            onClick={()=>adicionarMensalidade({})}
           >
             <RiAddCircleFill className="mr-1 h-4 w-4" /> Adicionar
           </Button>
