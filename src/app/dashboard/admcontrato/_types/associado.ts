@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 import { CidadesProps } from "../../../../types/cidades"
 
@@ -115,6 +116,13 @@ export type ContratoProps = {
 
 
 
+=======
+import { AcordoProps } from "./acordos"
+import { MensalidadeProps } from "./mensalidades" 
+import { ContratoProps } from "./contrato"
+import { DependentesProps } from "./dependentes"
+
+>>>>>>> ef6b44b119a634450045b945b2b94971947db8ac
 
 export type AssociadoProps = {
     id_global: number | null,
@@ -147,6 +155,7 @@ export type AssociadoProps = {
 
 
 
+<<<<<<< HEAD
 
 export interface ObitoProps {
     id_obitos: number,
@@ -356,3 +365,10 @@ export interface ImpressoesProps {
     user: string | undefined
 }
 
+=======
+
+
+
+
+
+>>>>>>> ef6b44b119a634450045b945b2b94971947db8ac
