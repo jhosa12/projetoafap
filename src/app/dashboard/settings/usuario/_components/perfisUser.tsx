@@ -22,8 +22,8 @@ import {
 import { useContext, useEffect, useState } from "react"
 import { Edit, Edit2 } from "lucide-react"
 import { UsuarioProps } from "@/app/dashboard/settings/usuario/page"
-import { ModalEditarPerfil } from "./permissoes/modalEditarPerfil"
-import { ModalNovoPerfil } from "./permissoes/modalNovoPerfil"
+import { ModalEditarPerfil } from "./modalEditarPerfil"
+import { ModalNovoPerfil } from "./modalNovoPerfil"
 
 interface DataProps {
   id_user: string | undefined
