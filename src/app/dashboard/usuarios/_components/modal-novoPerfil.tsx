@@ -9,7 +9,7 @@ import * as Dialog from "@radix-ui/react-dialog"; // Importação direta do Radi
 
 // Hooks reais do seu projeto
 import { useAuth } from "@/store/AuthContext";
-import useActionsPerfil from "@/app/dashboard/settings/hooks/useActionsPerfil";
+import useActionsPerfil from "@/app/dashboard/usuarios/hooks/useActionsPerfil";
 
 import { DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Loader2 } from "lucide-react"; 
+import { Loader2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ConsultoresProps } from "@/types/consultores";
 
@@ -45,7 +45,7 @@ export function ModalNovoPerfil({ isOpen, onClose, id, perfis }: ModalNovoPerfil
 
   const { consultores, loading: loadingContext } = useAuth();
   const funcoesUnicas = [...new Set(consultores?.map(c => c.funcao) ?? [])];
-  
+
   // 3. Inicialização do formulário com react-hook-form e o resolver do Zod
   const form = useForm<z.infer<typeof perfilFormSchema>>({
     resolver: zodResolver(perfilFormSchema),

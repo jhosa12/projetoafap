@@ -5,7 +5,7 @@ import { Permissoes } from "./permissoes/permisssoes";
 import { ModalPassword } from "./modalPassword";
 import { Button } from "@/components/ui/button";
 import { PerfisUser } from "./perfisUser";
-import { UsuarioProps } from "@/app/dashboard/settings/usuario/page";
+import { UsuarioProps } from "@/app/dashboard/usuarios/page";
 
 
 interface DataProps {
