@@ -10,10 +10,10 @@ import { EmpresaProps } from "@/types/empresa";
 import { MdEdit } from "react-icons/md";
 
 import { api } from "@/lib/axios/apiClient";
-import { MetasProps, SetorProps } from "@/components/vendas/acompanhamento";
-import { FormProps, ModalMetas } from "@/components/vendas/modalMetas";
-import { ModalFiltroMetas } from "@/components/vendas/modalFiltro";
-import { PlanoContasProps } from "@/pages/dashboard/financeiro";
+import { MetasProps, SetorProps } from "@/app/dashboard/vendas/_components/acompanhamento";
+import { FormProps, ModalMetas } from "@/app/dashboard/vendas/_components/modalMetas";
+import { ModalFiltroMetas } from "@/app/dashboard/vendas/_components/modalFiltro";
+import { PlanoContasProps } from "@/app/dashboard/financeiro/page";
 import { toast } from "sonner";
 
 interface FormFiltro {

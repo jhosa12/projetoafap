@@ -3,13 +3,13 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect} from "react";
+import { useEffect } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 
 import { ConsultoresProps } from "@/types/consultores";
 
 import { useAuth } from "@/store/AuthContext";
-import useActionsPerfil from "@/app/dashboard/settings/hooks/useActionsPerfil";
+import useActionsPerfil from "@/app/dashboard/usuarios/hooks/useActionsPerfil";
 
 import { DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";

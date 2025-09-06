@@ -1,12 +1,12 @@
 
-import { MultiStep } from "../../../../utils/multiStep";
+import { MultiStep } from "../../../../../utils/multiStep";
 import { FaCircleArrowRight } from "react-icons/fa6";
 import { FaCircleArrowLeft } from "react-icons/fa6";
 import { FormEvent } from 'react'
 import { IoIosClose } from "react-icons/io";
 import { MdSaveAlt } from "react-icons/md";
-import { ModalDadosFuncionario } from "../_components/usuario/modalDadosFuncionario";
-import { ModalPermissoes } from "../_components/usuario/modalPermissoes";
+import { ModalDadosFuncionario } from "../../../usuarios/_components/modalDadosFuncionario";
+import { ModalPermissoes } from "../../../usuarios/_components/modalPermissoes";
 
 interface PermissoesProps {
   nome: string,

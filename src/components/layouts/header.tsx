@@ -31,7 +31,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ModalAtivosInativos } from "../modals/modalAtivosInativos";
 import LinkNavigate from "../Link";
 import { FaBell } from "react-icons/fa";
-import { Historico } from "@/components/vendas/historico/ScreenHistorico";
+import { Historico } from "@/app/dashboard/vendas/_components/historico/ScreenHistorico";
 
 
 
@@ -54,12 +54,12 @@ export function Header({ path }: { path?: string }) {
     <header className="w-full border-b border-gray-200 bg-white px-3 py-1">
       <div className="flex items-center w-full justify-between">
         {/* LOGO + Empresa */}
-       
+
         <div className="flex items-center gap-3">
           <Image width={40} height={40} src="/improved_logo.png" alt="Logo" />
           <div className="sm:flex flex-col">
             <Label className="text-xs" value="AFAP Gestão - V 2.0" />
-            <Select  value={selectEmp} onValueChange={setSelectEmp}>
+            <Select value={selectEmp} onValueChange={setSelectEmp}>
               <SelectTrigger className="w-[150px] h-5 text-xs">
                 <SelectValue />
               </SelectTrigger>
@@ -131,10 +131,10 @@ export function Header({ path }: { path?: string }) {
                 {permissoes.includes(
                   "EMP4e61a06f-dee3-4c74-8b31-aca0d771dbff"
                 ) && (
-                  <LinkNavigate href="/dashboard/afap-saude">
-                    Afap Saúde
-                  </LinkNavigate>
-                )}
+                    <LinkNavigate href="/dashboard/afap-saude">
+                      Afap Saúde
+                    </LinkNavigate>
+                  )}
 
                 <span className="font-semibold text-gray-500 mt-4">
                   Serviços
@@ -224,7 +224,7 @@ export function Header({ path }: { path?: string }) {
               <MenubarTrigger>Comercial</MenubarTrigger>
               <MenubarContent>
 
-              <MenubarSub>
+                <MenubarSub>
                   <MenubarSubTrigger>Vendas</MenubarSubTrigger>
                   <MenubarSubContent>
                     <MenubarItem>
@@ -233,11 +233,11 @@ export function Header({ path }: { path?: string }) {
                       </LinkNavigate>
                     </MenubarItem>
                     <MenubarItem asChild>
-                      <Historico/>
+                      <Historico />
                     </MenubarItem>
                   </MenubarSubContent>
                 </MenubarSub>
-             
+
                 <MenubarItem
                   className="cursor-pointer"
                   onClick={() => setOpen(true)}

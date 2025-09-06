@@ -4,17 +4,17 @@ import { GoGoal } from "react-icons/go";
 import { GiStairsGoal } from "react-icons/gi";
 import { FaFilter } from "react-icons/fa6";
 import "react-datepicker/dist/react-datepicker.css";
-import { ModalVendedor } from "@/components/vendas/modalVendedor";
-import { ConsultorList } from "@/components/vendas/ConsultorList";
+import { ModalVendedor } from "@/app/dashboard/vendas/_components/modalVendedor";
+import { ConsultorList } from "@/app/dashboard/vendas/_components/ConsultorList";
 import { IoPrint } from "react-icons/io5";
 import { FaPercentage } from "react-icons/fa";
 import { ModalFiltroMetas } from "./modalFiltro";
 import { ajustarData } from "@/utils/ajusteData";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "../ui/button";
-import { ChartConfig } from "../ui/chart";
+import { Button } from "../../../../components/ui/button";
+import { ChartConfig } from "../../../../components/ui/chart";
 import { arrayColors } from "@/utils/arrayColors";
-import { BarChartInfo } from "../layouts/charts/bar";
+import { BarChartInfo } from "../../../../components/layouts/charts/bar";
 
 export interface VendasProps {
   id_consultor: number | null;
@@ -180,11 +180,11 @@ export function Acompanhamento({
           value={
             reqData.metaAtual
               ? (
-                  reqData?.metaAtual * reqData?.consultores?.length
-                ).toLocaleString("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                })
+                reqData?.metaAtual * reqData?.consultores?.length
+              ).toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })
               : "0,00"
           }
         />

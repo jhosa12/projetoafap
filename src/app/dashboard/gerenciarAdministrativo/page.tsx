@@ -1,9 +1,9 @@
 'use client';
 
-import { GerenciarConvalescenca } from "@/components/gerenciarAdm/convalescencia/convalescencia";
-import { GerenciarMetas } from "@/components/gerenciarAdm/metas/metas";
-import { PlanoContas } from "@/components/gerenciarAdm/planoContas/planoContas";
-import { GerenciarPlanos } from "@/components/gerenciarAdm/planos/planos";
+import { GerenciarConvalescenca } from "@/app/dashboard/servicos/_components/convalescentes/convalescencia";
+import { GerenciarMetas } from "@/app/dashboard/gerenciarAdministrativo/_components/metas/metas";
+import { PlanoContas } from "@/app/dashboard/gerenciarAdministrativo/_components/planoContas/planoContas";
+import { GerenciarPlanos } from "@/app/dashboard/gerenciarAdministrativo/_components/planos/planos";
 import { AuthContext } from "@/store/AuthContext";
 import { api } from "@/lib/axios/apiClient"
 import { Tabs } from "flowbite-react";
@@ -14,7 +14,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { HiClipboardList } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
 import { PlanoContasProps } from "../financeiro/page";
-import { Veiculos } from "@/components/gerenciarAdm/veiculos/veiculos";
+import { Veiculos } from "@/app/dashboard/gerenciarAdministrativo/_components/veiculos/veiculos";
 import { toast } from "sonner";
 
 interface MetasProps{
