@@ -2,8 +2,6 @@ import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import ReactInputMask from "react-input-mask";
-
-
 interface FuncionarioProps{
     id_consultor:number|null,
     nome: string,

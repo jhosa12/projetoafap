@@ -1,85 +1,126 @@
-
 import { Button } from "@/components/ui/button"
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-  } from "@/components/ui/dialog"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { AuthContext } from "@/store/AuthContext"
 import useApiGet from "@/hooks/useApiGet"
 import { ConsultoresProps } from "@/types/consultores"
 import { FuncaoProps } from "@/types/funcao"
-import { Table } from "flowbite-react"
-import { useContext, useEffect } from "react"
-  
-interface DataProps{
-  id_user:string|undefined
-  perfis:Array<ConsultoresProps>
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { useContext, useEffect, useState } from "react"
+import { Edit, Edit2 } from "lucide-react"
+import { UsuarioProps } from "@/app/dashboard/settings/usuario/page"
+import { ModalEditarPerfil } from "./permissoes/modalEditarPerfil"
+import { ModalNovoPerfil } from "./permissoes/modalNovoPerfil"
+
+interface DataProps {
+  id_user: string | undefined
+  perfis: Array<ConsultoresProps>
 }
 
+export function PerfisUser({ id_user, perfis }: DataProps) {
+  const { data, postData, loading } = useApiGet<Array<ConsultoresProps>, { id_user: string | undefined }>("/gerenciarAdministrativo/listarPerfis")
+  const [modalEditar, setModalEditar] = useState<boolean>(false)
+  const [modalNovo, setModalNovo] = useState<boolean>(false)
+  const [perfilSelecionado, setPerfilSelecionado] = useState<ConsultoresProps | null>(null)
 
-export function PerfisUser({id_user,perfis}:DataProps){
- const {data,postData,loading} = useApiGet<Array<ConsultoresProps>,{id_user:string|undefined}>("/gerenciarAdministrativo/listarPerfis")
+  useEffect(() => {
+    handleListarFuncoes()
+  }, [])
 
+  const handleListarFuncoes = async () => {
+    await postData({ id_user })
+  }
 
-useEffect(()=>{
-  handleListarFuncoes()
+  const handleNovoPerfil = () => {
+    setModalNovo(true)
+  }
 
-},[])
+  const handleEditarPerfil = (perfil: ConsultoresProps) => {
+    setPerfilSelecionado(perfil)
+    setModalEditar(true)
+  }
 
+  return (
+    <>
+      <Dialog>
+        <DialogTrigger>
+          <Button className="w-full" variant="outline">Perfis</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader >
+            <DialogTitle>Perfis</DialogTitle>
+          </DialogHeader>
+          <div className="flex items-center justify-between">
+            <DialogDescription>
+              Adicione aqui os perfis desse usuário na empresa
+            </DialogDescription>
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-4 bg-black text-white"
+              onClick={handleNovoPerfil} // Chama a função para abrir o modal de novo perfil
+            >
+              Novo Perfil
+            </Button>
+          </div>
 
+          <div>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nome</TableHead>
+                  <TableHead>Perfil</TableHead>
+                  <TableHead>Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {perfis?.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">{item?.nome}</TableCell>
+                    <TableCell>{item?.funcao}</TableCell>
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleEditarPerfil(item)} // Abre o modal de edição
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </DialogContent>
+      </Dialog>
+      <ModalEditarPerfil
+        isOpen={modalEditar}
+        onClose={() => setModalEditar(false)}
+        perfil={perfilSelecionado}
 
- const handleListarFuncoes = async () => {
-      await postData({id_user})
+        onDataReload={handleListarFuncoes}
+      />
 
- }
-
-  
-
-    return(
-        <Dialog>
-  <DialogTrigger>
-  <Button className="w-full" variant="outline">Perfis</Button>
-  </DialogTrigger>
-  <DialogContent>
-    <DialogHeader>
-      <DialogTitle>Editar Perfis</DialogTitle>
-      <DialogDescription>
-        Adicione aqui os perfis desse usuário na empresa
-      </DialogDescription>
-    </DialogHeader>
-
-    <div>
-      <Table>
-        <Table.Head>
-          <Table.HeadCell>
-            nome
-          </Table.HeadCell>
-          <Table.HeadCell>
-            Perfil
-          </Table.HeadCell>
-        </Table.Head>
-
-        <Table.Body>
-          {perfis?.map((item,index)=>(
-            <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
-            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-              {item?.nome}
-            </Table.Cell>
-            <Table.Cell>
-              {item?.funcao}
-            </Table.Cell>
-          </Table.Row>
-          ))}
-        </Table.Body>
-
-      </Table>
-    </div>
-  
-  </DialogContent>
-</Dialog>
-    )
+      <ModalNovoPerfil
+        isOpen={modalNovo}
+        onClose={() => setModalNovo(false)}
+        onDataReload={handleListarFuncoes}
+        perfil={perfilSelecionado}
+      />
+    </>
+  )
 }

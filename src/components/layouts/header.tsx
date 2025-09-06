@@ -151,7 +151,7 @@ export function Header({ path }: { path?: string }) {
                     <span className="font-semibold text-gray-500 mt-4">
                       Configurações
                     </span>
-                    <LinkNavigate href="/settings/usuario">
+                    <LinkNavigate href="/dashboard/settings/usuario">
                       Usuários
                     </LinkNavigate>
                     <LinkNavigate href="/settings/empresas">
@@ -293,7 +293,7 @@ export function Header({ path }: { path?: string }) {
               <MenubarTrigger>Configurações</MenubarTrigger>
               <MenubarContent>
                 <MenubarItem disabled={!permissoes.includes("CFG1")}>
-                  <LinkNavigate href="/settings/usuario">Usuários</LinkNavigate>
+                  <LinkNavigate href="/dashboard/settings/usuario">Usuários</LinkNavigate>
                 </MenubarItem>
                 <MenubarItem disabled={!permissoes.includes("CFG1")}>
                   <LinkNavigate href="/settings/empresas">Empresa</LinkNavigate>

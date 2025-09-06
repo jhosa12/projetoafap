@@ -6,11 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Tabs } from "flowbite-react"
 import {SubmitHandler, useForm } from "react-hook-form"
 import { AuthContext } from "@/store/AuthContext";
-import { TabInformacoes } from "@/components/tabs/configuracoes/empresas/modalEmpresa/tabInformacoes";
-import { TabContratoEmpresa } from "@/components/tabs/configuracoes/empresas/modalEmpresa/tabContrato";
+import { TabInformacoes } from "@/components/configuracoes/empresas/modalEmpresa/tabInformacoes";
+import { TabContratoEmpresa } from "@/components/configuracoes/empresas/modalEmpresa/tabContrato";
 import { toast } from "sonner";
-
-
 
 
 
