@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { HiOutlineTrash, HiPencil, HiPlusCircle } from "react-icons/hi2";
 import Link from "next/link";
 import { DataTable } from "@/components/ui/data-table";
-import { getObitoColumns } from "@/components/servicos/ordemDeServico/obitosColumns";
+import { getObitoColumns } from "@/app/dashboard/servicos/_components/obitos/ordemDeServico/obitosColumns";
 import { de } from "date-fns/locale";
 
 export default function ListarObitos() {

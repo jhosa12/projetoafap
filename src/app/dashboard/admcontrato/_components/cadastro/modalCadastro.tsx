@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "@/store/AuthContext";
-import { ResumoCadastro } from "@/components/modals/admContrato/cadastro/resumoCadastro";
+import { ResumoCadastro } from "@/app/dashboard/admcontrato/_components/cadastro/resumoCadastro";
 import { api } from "@/lib/axios/apiClient";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi2";
 import { HiInboxIn } from "react-icons/hi";

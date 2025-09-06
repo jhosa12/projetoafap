@@ -7,7 +7,7 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
-import { ChildrenProps } from "@/components/modals/admContrato/cadastro/modalCadastro";
+import { ChildrenProps } from "@/app/dashboard/admcontrato/_components/cadastro/modalCadastro";
 import { CepMaskInput } from "@/components/CepMaskInput";
 import { CPFInput } from "@/components/CpfMaskInput";
 import { PhoneMaskInput } from "@/components/PhoneMaskInput";

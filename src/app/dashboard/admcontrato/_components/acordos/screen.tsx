@@ -15,14 +15,14 @@ import {
 } from '@/components/ui/table';
 import { AcordoProps } from '@/app/dashboard/admcontrato/_types/acordos'
 import { MensalidadeProps } from '@/app/dashboard/admcontrato/_types/mensalidades'
-import { ModalAcordos } from '../../../../../components/modals/admContrato/modalAcordos';
+import { ModalAcordos } from './modalAcordos';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Home, Printer } from 'lucide-react';
 import { AcordoComprovante } from '@/Documents/associado/acordo/acordoComprovante';
 import { useReactToPrint } from 'react-to-print';
 import { pageStyle } from '@/utils/pageStyle';
-import useActionsAcordos from '@/app/dashboard/admcontrato/_hooks/useActionsAcordos';
+import useActionsAcordos from '../../_hooks/acordo/useActionsAcordos';
 
 export const themeLight = {
     color: {

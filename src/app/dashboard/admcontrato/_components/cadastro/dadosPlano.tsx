@@ -4,7 +4,7 @@ import { useContext } from 'react';
 
 
 import { Controller } from "react-hook-form";
-import { ChildrenProps } from "@/components/modals/admContrato/cadastro/modalCadastro";
+import { ChildrenProps } from "@/app/dashboard/admcontrato/_components/cadastro/modalCadastro";
 
 import {
   Label,
@@ -22,16 +22,16 @@ import {
 import { DatePickerInput } from '@/components/DatePickerInput';
 
 
-export function DadosPlano({ control,setValue }: ChildrenProps) {
+export function DadosPlano({ control, setValue }: ChildrenProps) {
   const { consultores, planos } = useContext(AuthContext);
 
 
-   const handlePlanoChange = (selectedPlanoId: number) => {
+  const handlePlanoChange = (selectedPlanoId: number) => {
     const selectedPlan = planos?.find(plan => plan.id_plano === selectedPlanoId);
-    if(selectedPlan){
-      setValue('contrato.id_plano',selectedPlan.id_plano);
-      setValue('contrato.plano',selectedPlan.descricao);  
-      setValue('contrato.valor_mensalidade',Number(selectedPlan?.valor));
+    if (selectedPlan) {
+      setValue('contrato.id_plano', selectedPlan.id_plano);
+      setValue('contrato.plano', selectedPlan.descricao);
+      setValue('contrato.valor_mensalidade', Number(selectedPlan?.valor));
     }
   };
   return (
@@ -65,7 +65,7 @@ export function DadosPlano({ control,setValue }: ChildrenProps) {
           name="contrato.id_plano"
           render={({ field: { onChange, value } }) => (
             <Select
-            required
+              required
               value={String(value)}
               onValueChange={(val) => {
                 handlePlanoChange(Number(val));
@@ -130,7 +130,7 @@ export function DadosPlano({ control,setValue }: ChildrenProps) {
         <Controller
           control={control}
           name="contrato.consultor"
-          rules={{required:'Consultor é obrigatório'}}
+          rules={{ required: 'Consultor é obrigatório' }}
           render={({ field }) => (
             <Select required onValueChange={field.onChange} value={field.value}>
               <SelectTrigger aria-required className="h-9">
@@ -190,7 +190,7 @@ export function DadosPlano({ control,setValue }: ChildrenProps) {
           name="contrato.data_vencimento"
           render={({ field }) => (
             <DatePickerInput
-            required
+              required
               onChange={field.onChange}
               value={field.value}
               className='h-9'
@@ -207,7 +207,7 @@ export function DadosPlano({ control,setValue }: ChildrenProps) {
           name="contrato.dt_adesao"
           render={({ field }) => (
             <DatePickerInput
-            required
+              required
               onChange={field.onChange}
               value={field.value}
               className='h-9'
@@ -223,8 +223,8 @@ export function DadosPlano({ control,setValue }: ChildrenProps) {
           control={control}
           name="contrato.dt_carencia"
           render={({ field }) => (
-             <DatePickerInput
-             required
+            <DatePickerInput
+              required
               onChange={field.onChange}
               value={field.value}
               className='h-9'

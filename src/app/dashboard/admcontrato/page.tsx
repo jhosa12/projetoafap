@@ -16,12 +16,12 @@ import { Badge, Dropdown, Modal, Spinner } from "flowbite-react";
 import { HiOutlineIdentification, HiUserCircle } from "react-icons/hi2";
 import { DadosAssociado } from "@/app/dashboard/admcontrato/_components/dados-associados/screen";
 import { Dependentes } from "@/app/dashboard/admcontrato/_components/dependentes/dependentes";
-import ModalCadastro from "@/components/modals/admContrato/cadastro/modalCadastro";
+import ModalCadastro from "@/app/dashboard/admcontrato/_components/cadastro/modalCadastro";
 import { VerificarSituacao } from "@/app/dashboard/admcontrato/_utils/verificarSituacao";
 import { Button } from "@/components/ui/button";
 import { AssociadoProps } from "@/app/dashboard/admcontrato/_types/associado";
 import {
-  Select, 
+  Select,
   SelectTrigger,
   SelectItem,
   SelectContent,
@@ -40,8 +40,8 @@ import ContratoResumo from "@/Documents/associado/contratoResumido/ContratoResum
 import { CartaNovoAssociado } from "@/Documents/associado/cartaNovoAssociado/cartaDocument";
 import { ProtocoloCancelamento } from "@/Documents/associado/protocoloCancelamento/ProtocoloCancelamento";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
-import { ModalAlterarPlano } from "@/components/modals/admContrato/dadosAssociado/modalAlterarPlano";
-import { ModalInativar } from "@/components/modals/admContrato/dadosAssociado/modalInativar";
+import { ModalAlterarPlano } from "@/app/dashboard/admcontrato/_components/dados-associados/modalAlterarPlano";
+import { ModalInativar } from "@/app/dashboard/admcontrato/_components/dados-associados/modalInativar";
 import { Acordos } from "@/app/dashboard/admcontrato/_components/acordos/screen";
 import { AuthContext } from "@/store/AuthContext";
 import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";

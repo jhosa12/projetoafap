@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Save, PlusCircle } from "lucide-react";
 import { DatePickerInput } from "@/components/DatePickerInput";
-import useActionsDependentes from "@/app/dashboard/admcontrato/_hooks/useActionsDependentes";
+import useActionsDependentes from "@/app/dashboard/admcontrato/_hooks/dependentes/useActionsDependentes";
 import { registerLocale } from "react-datepicker";
 
 registerLocale('pt', pt)

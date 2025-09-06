@@ -13,7 +13,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 registerLocale('pt', pt)
 
-import { UseFormAssociadoProps } from "../../../../../../components/modals/admContrato/dadosAssociado/modalEditarDados";
+import { UseFormAssociadoProps } from "../modalEditarDados";
 import { useContext } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { Controller } from "react-hook-form";

@@ -43,7 +43,7 @@ import {
 import { CalendarIcon, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ajustarData } from "@/utils/ajusteData";
-import useActionsAcordos from "@/app/dashboard/admcontrato/_hooks/useActionsAcordos";
+import useActionsAcordos from "../../_hooks/acordo/useActionsAcordos";
 
 interface DadosAcordoProps {
   acordo: Partial<AcordoProps>;

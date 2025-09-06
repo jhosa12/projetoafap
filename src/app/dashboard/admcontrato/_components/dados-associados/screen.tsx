@@ -1,4 +1,4 @@
-import { ModalEditarDados } from "@/components/modals/admContrato/dadosAssociado/modalEditarDados";
+import { ModalEditarDados } from "@/app/dashboard/admcontrato/_components/dados-associados/modalEditarDados";
 import { AssociadoProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { Badge, Button, Card, Dropdown } from "flowbite-react";
 import { useState } from "react";

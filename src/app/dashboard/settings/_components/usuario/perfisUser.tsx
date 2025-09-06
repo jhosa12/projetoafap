@@ -7,10 +7,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { AuthContext } from "@/store/AuthContext"
 import useApiGet from "@/hooks/useApiGet"
 import { ConsultoresProps } from "@/types/consultores"
-import { FuncaoProps } from "@/types/funcao"
 import {
   Table,
   TableBody,
@@ -19,9 +17,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useContext, useEffect, useState } from "react"
-import { Edit, Edit2 } from "lucide-react"
-import { UsuarioProps } from "@/app/dashboard/settings/usuario/page"
+import { useEffect, useState } from "react"
+import { Edit2 } from "lucide-react"
 import { ModalEditarPerfil } from "./modalEditarPerfil"
 import { ModalNovoPerfil } from "./modalNovoPerfil"
 
@@ -56,7 +53,7 @@ export function PerfisUser({ id_user, perfis }: DataProps) {
   return (
     <>
       <Dialog>
-        <DialogTrigger>
+        <DialogTrigger asChild>
           <Button className="w-full" variant="outline">Perfis</Button>
         </DialogTrigger>
         <DialogContent>

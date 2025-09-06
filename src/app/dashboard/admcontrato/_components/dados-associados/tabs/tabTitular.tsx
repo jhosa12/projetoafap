@@ -4,7 +4,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { UseFormAssociadoProps } from "../../../../../../components/modals/admContrato/dadosAssociado/modalEditarDados";
+import { UseFormAssociadoProps } from "../modalEditarDados";
 import { useContext } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { Controller } from "react-hook-form";
