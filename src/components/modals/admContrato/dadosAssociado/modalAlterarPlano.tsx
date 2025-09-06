@@ -5,7 +5,7 @@ import { useContext } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { HiOutlineExclamationCircle } from "react-icons/hi2"
 import { toast } from "sonner"
-import useActionsAssociado from "@/app/dashboard/admcontrato/_hooks/useActionsAssociado"
+import useActionsAssociado from "@/app/dashboard/admcontrato/_hooks/associado/useActionsAssociado"
 
 
 
@@ -26,8 +26,8 @@ interface PlanoProps {
 
 export function ModalAlterarPlano({ openModal, setOpenModal }: DataProps) {
 
-  const {  setValue, handleSubmit } = useForm<PlanoProps>({})
-  const {  planos } = useContext(AuthContext)
+  const { setValue, handleSubmit } = useForm<PlanoProps>({})
+  const { planos } = useContext(AuthContext)
 
   const hookProps = {
 

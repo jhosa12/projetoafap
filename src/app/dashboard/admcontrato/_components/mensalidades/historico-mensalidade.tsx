@@ -1,6 +1,6 @@
 import ImpressaoCarne from "@/Documents/associado/mensalidade/ImpressaoCarne";
 import { useReactToPrint } from "react-to-print";
-import React, {  useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoPrint } from "react-icons/io5";
 import { MdDeleteForever } from "react-icons/md";
 import { RiAddCircleFill } from "react-icons/ri";
@@ -23,7 +23,7 @@ import { pageStyle } from "@/utils/pageStyle";
 import { ModalEditarMensalidade } from "./modal-editarMensalidade";
 import { ModalMensalidade } from "./modal-mensalidade";
 import { MensalidadeProps } from "../../_types/mensalidades";
-import useActionsMensalidades from "../../_hooks/useActionsMensalidades";
+import useActionsMensalidades from "../../_hooks/mensalidades/useActionsMensalidades";
 
 export interface SetAssociadoProps {
   mensalidade: Partial<MensalidadeProps>;
@@ -50,7 +50,7 @@ export function HistoricoMensalidade({
   permissoes,
 }: DadosProps) {
   const [checkMensal, setCheck] = useState(false);
- 
+
   const [mensalidadeSelect, setMensalidade] = useState<
     Partial<MensalidadeProps>
   >({} as Partial<MensalidadeProps>);
@@ -72,7 +72,7 @@ export function HistoricoMensalidade({
     setLinhasSelecionadas,
     adicionarMensalidade,
     toggleSelecionada,
-  } = useActionsMensalidades({mensalidade:mensalidadeSelect,setMensalidade});
+  } = useActionsMensalidades({ mensalidade: mensalidadeSelect, setMensalidade });
 
   const { componentRefs, handlePrint, printState, handleImpressao } =
     usePrintDocsAssociado(
@@ -127,8 +127,8 @@ export function HistoricoMensalidade({
               linhasSelecionadas.length > 0
                 ? linhasSelecionadas
                 : dadosassociado.mensalidade?.filter(
-                    (item) => item.status !== "P"
-                  ) ?? []
+                  (item) => item.status !== "P"
+                ) ?? []
             }
             dadosAssociado={{
               nome: dadosassociado.nome ?? "",
@@ -163,7 +163,7 @@ export function HistoricoMensalidade({
           openModal={openModal.excluir}
           setOpenModal={() => setModal({ excluir: false })}
           pergunta={`Realmente deseja excluir a(s) mensalidade(s)?`}
-          handleConfirmar={()=>excluirMensalidade({actions:{success:()=>setModal({excluir:false})}})}
+          handleConfirmar={() => excluirMensalidade({ actions: { success: () => setModal({ excluir: false }) } })}
         />
       )}
 
@@ -192,7 +192,7 @@ export function HistoricoMensalidade({
             variant="outline"
             size="sm"
             disabled={!permissoes.includes("ADM1.2.1")}
-            onClick={()=>adicionarMensalidade({})}
+            onClick={() => adicionarMensalidade({})}
           >
             <RiAddCircleFill className="mr-1 h-4 w-4" /> Adicionar
           </Button>
@@ -285,23 +285,20 @@ export function HistoricoMensalidade({
                   <tr
                     key={index}
                     onClick={() => toggleSelecionada(item)}
-                    className={`  text-[10px] font-semibold text-black ${
-                      calcularDiferencaEmDias(
-                        new Date(),
-                        new Date(item.vencimento),
-                        item.status
-                      ) >= 1 &&
+                    className={`  text-[10px] font-semibold text-black ${calcularDiferencaEmDias(
+                      new Date(),
+                      new Date(item.vencimento),
+                      item.status
+                    ) >= 1 &&
                       item.status === "A" &&
                       "text-red-600"
-                    }  ${
-                      linhasSelecionadas.some(
+                      }  ${linhasSelecionadas.some(
                         (linha) => linha.id_mensalidade === item.id_mensalidade
                       )
                         ? "bg-gray-300"
                         : ""
-                    }  ${
-                      item.status === "P" && "text-blue-600"
-                    }   hover:bg-gray-300 hover:text-black hover:cursor-pointer }`}
+                      }  ${item.status === "P" && "text-blue-600"
+                      }   hover:bg-gray-300 hover:text-black hover:cursor-pointer }`}
                   >
                     <th scope="row" className={`px-5 py-1  `}>
                       {item.parcela_n}
@@ -326,17 +323,16 @@ export function HistoricoMensalidade({
                       })}
                     </td>
                     <td
-                      className={`px-4 py-1  font-bold ${
-                        item.status !== "P" && "text-red-600"
-                      }`}
+                      className={`px-4 py-1  font-bold ${item.status !== "P" && "text-red-600"
+                        }`}
                     >
                       {item.status}
                     </td>
                     <td className="px-4 py-1">
                       {item.data_pgto
                         ? new Date(item.data_pgto).toLocaleDateString("pt", {
-                            timeZone: "UTC",
-                          })
+                          timeZone: "UTC",
+                        })
                         : ""}
                     </td>
                     <td className="px-4 py-1">{item.hora_pgto}</td>
@@ -359,12 +355,11 @@ export function HistoricoMensalidade({
                       )}
                     </td>
                     <td
-                      className={`inline-flex items-center px-4 py-1 space-x-2 whitespace-nowrap  ${
-                        new Date(item.vencimento) < new Date() &&
-                        item.status === "A"
+                      className={`inline-flex items-center px-4 py-1 space-x-2 whitespace-nowrap  ${new Date(item.vencimento) < new Date() &&
+                          item.status === "A"
                           ? "text-red-600"
                           : "text-blue-600"
-                      }`}
+                        }`}
                     >
                       <button
                         onClick={(event) => {
@@ -397,8 +392,8 @@ export function HistoricoMensalidade({
                               ...item,
                               valor_total:
                                 item.status === "A" ||
-                                item.status === "R" ||
-                                item.status === "R"
+                                  item.status === "R" ||
+                                  item.status === "R"
                                   ? item.valor_principal
                                   : item.valor_total,
                               data_pgto: item.data_pgto
@@ -434,20 +429,18 @@ export function HistoricoMensalidade({
                     <tr
                       key={index}
                       onClick={() => toggleSelecionada(item)}
-                      className={`font-semibold text-[10px]  text-black ${
-                        calcularDiferencaEmDias(
-                          new Date(),
-                          new Date(item.vencimento),
-                          item.status
-                        ) >= 1 && "text-red-600"
-                      }   ${
-                        linhasSelecionadas.some(
+                      className={`font-semibold text-[10px]  text-black ${calcularDiferencaEmDias(
+                        new Date(),
+                        new Date(item.vencimento),
+                        item.status
+                      ) >= 1 && "text-red-600"
+                        }   ${linhasSelecionadas.some(
                           (linha) =>
                             linha.id_mensalidade === item.id_mensalidade
                         )
                           ? "bg-gray-300"
                           : ""
-                      }   hover:bg-gray-300 hover:text-black hover:cursor-pointer  }`}
+                        }   hover:bg-gray-300 hover:text-black hover:cursor-pointer  }`}
                     >
                       <td className="px-5 py-1   ">{item.parcela_n}</td>
                       <td className="px-2 py-1">
@@ -473,8 +466,8 @@ export function HistoricoMensalidade({
                       <td className="px-4 py-1">
                         {item.data_pgto
                           ? new Date(item.data_pgto).toLocaleDateString("pt", {
-                              timeZone: "UTC",
-                            })
+                            timeZone: "UTC",
+                          })
                           : ""}
                       </td>
                       <td className="px-4 py-1">{item.hora_pgto}</td>
@@ -496,12 +489,11 @@ export function HistoricoMensalidade({
                         )}
                       </td>
                       <td
-                        className={`px-4 py-1 space-x-2 whitespace-nowrap ${
-                          new Date(item.vencimento) < new Date() &&
-                          item.status === "A"
+                        className={`px-4 py-1 space-x-2 whitespace-nowrap ${new Date(item.vencimento) < new Date() &&
+                            item.status === "A"
                             ? "text-red-600"
                             : "text-blue-600"
-                        }`}
+                          }`}
                       >
                         <button
                           onClick={(event) => {
@@ -537,8 +529,8 @@ export function HistoricoMensalidade({
                                 ...item,
                                 valor_total:
                                   item.status === "A" ||
-                                  item.status === "E" ||
-                                  item.status === "R"
+                                    item.status === "E" ||
+                                    item.status === "R"
                                     ? item.valor_principal
                                     : item.valor_total,
                                 data_pgto: item.data_pgto
@@ -742,7 +734,7 @@ const PopoverAcresDecres = ({
     >
       <Button
         variant={"outline"}
-        onClick={() => {}}
+        onClick={() => { }}
         type="button"
         color="light"
         size="sm"

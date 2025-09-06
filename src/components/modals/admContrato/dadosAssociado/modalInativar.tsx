@@ -3,7 +3,7 @@ import { AuthContext } from "@/store/AuthContext"
 import { Modal, TextInput } from "flowbite-react"
 import { useContext, useState } from "react"
 import { TbAlertTriangle } from "react-icons/tb"
-import useActionsAssociado from "@/app/dashboard/admcontrato/_hooks/useActionsAssociado"
+import useActionsAssociado from "@/app/dashboard/admcontrato/_hooks/associado/useActionsAssociado"
 
 interface DataProps {
 

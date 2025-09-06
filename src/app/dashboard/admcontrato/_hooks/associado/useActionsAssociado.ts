@@ -2,7 +2,7 @@ import { api } from "@/lib/axios/apiClient"
 import { AuthContext } from "@/store/AuthContext"
 import { useContext, useEffect, useState } from "react"
 import { toast } from "sonner"
-import { AssociadoProps } from "../_types/associado"
+import { AssociadoProps } from "../../_types/associado"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { PlanosProps } from "@/types/planos"
 

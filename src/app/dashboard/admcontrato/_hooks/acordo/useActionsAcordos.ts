@@ -1,10 +1,10 @@
-import { AcordoProps } from "../_types/acordos";
+import { AcordoProps } from "../../_types/acordos";
 import { useReactToPrint } from "react-to-print";
 import React, { useRef } from "react";
 import { pageStyle } from '@/utils/pageStyle';
 import { toast } from "sonner";
 import { api } from "@/lib/axios/apiClient";
-import { MensalidadeProps } from "../_types/mensalidades";
+import { MensalidadeProps } from "../../_types/mensalidades";
 import { ConsultoresProps } from "@/types/consultores";
 import { ajustarData } from "@/utils/ajusteData";
 

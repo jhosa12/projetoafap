@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs } from "flowbite-react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { AuthContext } from "@/store/AuthContext";
-import { TabInformacoes } from "@/app/dashboard/settings/empresas/_components/tabInformacoes";
-import { TabContratoEmpresa } from "@/app/dashboard/settings/empresas/_components/tabContrato";
+import { TabInformacoes } from "@/app/dashboard/settings/_components/empresas/tabInformacoes";
+import { TabContratoEmpresa } from "@/app/dashboard/settings/_components/empresas/tabContrato";
 import { toast } from "sonner";
 
 

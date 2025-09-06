@@ -1,6 +1,6 @@
 
 import { api } from "@/lib/axios/apiClient";
-import { MensalidadeProps } from "@/types/financeiro";
+import { MensalidadeProps } from "../../_types/mensalidades";
 import { AxiosError, AxiosResponse } from "axios";
 import {  useState } from "react";
 import { toast } from "sonner";

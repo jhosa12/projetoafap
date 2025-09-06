@@ -2,28 +2,28 @@
 
 
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogFooter,
-  } from "@/components/ui/dialog"
-  import { Input } from "@/components/ui/input"
-  import {
-    Select,
-    SelectTrigger,
-    SelectValue,
-    SelectContent,
-    SelectItem
-  } from "@/components/ui/select"
-  import { Checkbox } from "@/components/ui/checkbox"
-  import { Button } from "@/components/ui/button"
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem
+} from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/components/ui/button"
 
-import { AuthContext} from "@/store/AuthContext";
+import { AuthContext } from "@/store/AuthContext";
 import { useContext, useEffect, useRef, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-datepicker/dist/react-datepicker.css";
-import useBaixaMensalidade from "@/hooks/useBaixaMensalidade";
+import useBaixaMensalidade from "@/app/dashboard/admcontrato/_hooks/mensalidades/useBaixaMensalidade";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import { removerFusoDate } from "@/utils/removerFusoDate";
@@ -38,114 +38,114 @@ import { Separator } from "@/components/ui/separator"
 import useVerifyPermission from "@/hooks/useVerifyPermission"
 import { MensalidadeBaixaProps } from "../../_types/mensalidades"
 
-interface Props{
-    handleAtualizar:Function
-    openModal:boolean,
-    setOpenModal:(open:boolean)=>void
-    mensalidade:Partial<MensalidadeBaixaProps>
-   
+interface Props {
+  handleAtualizar: Function
+  openModal: boolean,
+  setOpenModal: (open: boolean) => void
+  mensalidade: Partial<MensalidadeBaixaProps>
+
 }
 
 
 const FORMAS_PAGAMENTO = [
-    { value: "DINHEIRO", label: "Dinheiro", icon: DollarSignIcon },
-    { value: "PIX", label: "PIX", icon: CreditCardIcon },
-    { value: "CARTAO", label: "Cartão", icon: CreditCardIcon },
-    { value: "DEPOSITO", label: "Depósito", icon: BuildingIcon },
-    { value: "TRANSFERENCIA", label: "Transferência", icon: BuildingIcon },
-    { value: "BOLETO", label: "Boleto", icon: BuildingIcon },
-  ]
+  { value: "DINHEIRO", label: "Dinheiro", icon: DollarSignIcon },
+  { value: "PIX", label: "PIX", icon: CreditCardIcon },
+  { value: "CARTAO", label: "Cartão", icon: CreditCardIcon },
+  { value: "DEPOSITO", label: "Depósito", icon: BuildingIcon },
+  { value: "TRANSFERENCIA", label: "Transferência", icon: BuildingIcon },
+  { value: "BOLETO", label: "Boleto", icon: BuildingIcon },
+]
 
-  const BANCOS = ["BANCO DO BRASIL", "CORA", "PAGBANK", "CAIXA", "TON"]
+const BANCOS = ["BANCO DO BRASIL", "CORA", "PAGBANK", "CAIXA", "TON"]
 
-export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtualizar}:Props){
+export function ModalMensalidade({ openModal, setOpenModal, mensalidade, handleAtualizar }: Props) {
 
-    const {permissoes,selectEmp,consultores}=useContext(AuthContext)
-    const [desconto,setDesconto] = useState(false)
-    const {error,postData} = useBaixaMensalidade('/mensalidade/baixa',setOpenModal,handleAtualizar)
-    const {register,handleSubmit,watch,control,reset} = useForm<MensalidadeBaixaProps>(
-      
-    )
- 
-    useEffect(()=>{
-        reset({...mensalidade,form_pagto:'',valor_total:mensalidade?.valor_principal,data_pgto:new Date()})
-    },[mensalidade])
+  const { permissoes, selectEmp, consultores } = useContext(AuthContext)
+  const [desconto, setDesconto] = useState(false)
+  const { error, postData } = useBaixaMensalidade('/mensalidade/baixa', setOpenModal, handleAtualizar)
+  const { register, handleSubmit, watch, control, reset } = useForm<MensalidadeBaixaProps>(
 
-    const {verify} = useVerifyPermission()
+  )
 
-    const formaPagamento = watch("form_pagto")
-    const valorTotal = Number(watch("valor_total"))
-    const valorPrincipal = Number(watch("valor_principal"))
-  
-    const isDescontoVisible = valorTotal < valorPrincipal && valorTotal !== undefined && valorTotal > 0
-    const isPago = mensalidade.status === "P"
-    const canEdit = permissoes.includes("ADM1.2.5") && !isPago
+  useEffect(() => {
+    reset({ ...mensalidade, form_pagto: '', valor_total: mensalidade?.valor_principal, data_pgto: new Date() })
+  }, [mensalidade])
 
-         const handleBaixar:SubmitHandler<MensalidadeBaixaProps> = async(data)=> {
-            // Função para exibir toast e retornar
-            const novoArray = [...(mensalidade.associado?.mensalidade ?? [])];
-            const indexAtual = novoArray.findIndex(item => item.id_mensalidade === mensalidade.id_mensalidade);
-           let mensalidadeProx = novoArray[indexAtual + 1];
-            const mensalidadeAnt = novoArray[indexAtual - 1];
-        
-            // Verifica se a mensalidade anterior está em aberto
-            if (mensalidadeAnt?.id_mensalidade && mensalidadeAnt.status === 'A') {
-                return toast.info('Mensalidade anterior em aberto!');
-            }
+  const { verify } = useVerifyPermission()
 
-            
+  const formaPagamento = watch("form_pagto")
+  const valorTotal = Number(watch("valor_total"))
+  const valorPrincipal = Number(watch("valor_principal"))
 
-            const {newDate:dataPgto} = removerFusoDate(data.data_pgto);
-            const {newDate:data_lanc} = removerFusoDate(new Date());
-        
-           
-        
-         try {
+  const isDescontoVisible = valorTotal < valorPrincipal && valorTotal !== undefined && valorTotal > 0
+  const isPago = mensalidade.status === "P"
+  const canEdit = permissoes.includes("ADM1.2.5") && !isPago
 
-             await postData(
-                   {
-                        id_global:data?.id_global,
-                       // id_usuario: usuario?.id ,
-                        id_mensalidade_global: data?.id_mensalidade_global,
-                        id_mensalidade: data?.id_mensalidade,
-                        data_pgto: dataPgto,
-                        hora_pgto: new Date().toLocaleTimeString('pt-BR', {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit'
-                        }),          
-                        valor_total: Number(data.valor_total),
-                        motivo_bonus: data.motivo_bonus?.toUpperCase(),
-                        associado: mensalidade?.associado?.nome,
-                        form_pagto: data?.form_pagto,
-                        banco_dest: data.banco_dest,
-                        desconto: desconto,
-                        id_proximaMensalidade:mensalidadeProx?.id_mensalidade_global,
-                        situacao:mensalidade?.contrato?.situacao,
-                        status:data.status,
-                        pix_por:data.pix_por,
-                        id_empresa:selectEmp,
-                        valor_metodo:data?.valor_metodo,
-                        data_lanc:data_lanc,
-                        recebido_por:data.recebido_por,
-                        aut:data.aut
-                    
-                    },
-                 
-                );  
+  const handleBaixar: SubmitHandler<MensalidadeBaixaProps> = async (data) => {
+    // Função para exibir toast e retornar
+    const novoArray = [...(mensalidade.associado?.mensalidade ?? [])];
+    const indexAtual = novoArray.findIndex(item => item.id_mensalidade === mensalidade.id_mensalidade);
+    let mensalidadeProx = novoArray[indexAtual + 1];
+    const mensalidadeAnt = novoArray[indexAtual - 1];
 
-           //  handleAtualizar && await handleAtualizar({endDate:new Date(),startDate:new Date(),id_empresa:selectEmp,descricao:''}) 
-          
-            
-         } catch (error) {
-            
-         }
-           
-            
-        }
-    return(
+    // Verifica se a mensalidade anterior está em aberto
+    if (mensalidadeAnt?.id_mensalidade && mensalidadeAnt.status === 'A') {
+      return toast.info('Mensalidade anterior em aberto!');
+    }
 
-<Dialog  open={openModal} onOpenChange={setOpenModal}>
+
+
+    const { newDate: dataPgto } = removerFusoDate(data.data_pgto);
+    const { newDate: data_lanc } = removerFusoDate(new Date());
+
+
+
+    try {
+
+      await postData(
+        {
+          id_global: data?.id_global,
+          // id_usuario: usuario?.id ,
+          id_mensalidade_global: data?.id_mensalidade_global,
+          id_mensalidade: data?.id_mensalidade,
+          data_pgto: dataPgto,
+          hora_pgto: new Date().toLocaleTimeString('pt-BR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+          }),
+          valor_total: Number(data.valor_total),
+          motivo_bonus: data.motivo_bonus?.toUpperCase(),
+          associado: mensalidade?.associado?.nome,
+          form_pagto: data?.form_pagto,
+          banco_dest: data.banco_dest,
+          desconto: desconto,
+          id_proximaMensalidade: mensalidadeProx?.id_mensalidade_global,
+          situacao: mensalidade?.contrato?.situacao,
+          status: data.status,
+          pix_por: data.pix_por,
+          id_empresa: selectEmp,
+          valor_metodo: data?.valor_metodo,
+          data_lanc: data_lanc,
+          recebido_por: data.recebido_por,
+          aut: data.aut
+
+        },
+
+      );
+
+      //  handleAtualizar && await handleAtualizar({endDate:new Date(),startDate:new Date(),id_empresa:selectEmp,descricao:''}) 
+
+
+    } catch (error) {
+
+    }
+
+
+  }
+  return (
+
+    <Dialog open={openModal} onOpenChange={setOpenModal}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader className="space-y-3">
           <DialogTitle className="text-2xl font-bold text-gray-900 flex items-center gap-2">
@@ -215,20 +215,20 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
                     placeholder="0,00"
                     disabled={!canEdit}
                     className={!canEdit ? "bg-gray-50" : ""}
-                   
+
                   />
                 </div>
 
-                <div  className="space-y-2">
+                <div className="space-y-2">
                   <Label htmlFor="recebido_por" className="text-sm font-medium text-gray-700">
-                    Recebido por 
+                    Recebido por
                   </Label>
                   <Controller
-                  
+
                     control={control}
                     name="recebido_por"
                     render={({ field }) => (
-                      <Select  value={field.value} onValueChange={field.onChange} disabled={!canEdit}>
+                      <Select value={field.value} onValueChange={field.onChange} disabled={!canEdit}>
                         <SelectTrigger className={!canEdit ? "bg-gray-50" : ""}>
                           <SelectValue placeholder="Selecione o consultor" />
                         </SelectTrigger>
@@ -308,7 +308,7 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
                       <DatePickerInput
                         value={value}
                         onChange={onChange}
-                        disable={!canEdit || verify('ADM1.2.7') }
+                        disable={!canEdit || verify('ADM1.2.7')}
                         required
                         className="h-9 border border-gray-100"
                       />
@@ -414,5 +414,5 @@ export function ModalMensalidade({openModal,setOpenModal,mensalidade,handleAtual
       </DialogContent>
     </Dialog>
 
-)
+  )
 }

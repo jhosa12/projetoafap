@@ -15,7 +15,7 @@ import { Control, SubmitHandler, useForm, UseFormRegister, UseFormSetValue, UseF
 import { AssociadoProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { toast } from "sonner";
 import { ErrorIndicator } from "@/components/errorIndicator";
-import useActionsAssociado from "@/app/dashboard/admcontrato/_hooks/useActionsAssociado";
+import useActionsAssociado from "@/app/dashboard/admcontrato/_hooks/associado/useActionsAssociado";
 
 interface ModalProps {
   openEdit: boolean
@@ -32,25 +32,25 @@ export interface UseFormAssociadoProps {
 }
 
 export function ModalEditarDados({ openEdit, setModalEdit, dataForm }: ModalProps) {
-  const {  permissoes } = useContext(AuthContext)
+  const { permissoes } = useContext(AuthContext)
   const { register, handleSubmit, watch, setValue, trigger, control, formState: { errors }, reset } = useForm<AssociadoProps>()
   const hookProps = {}
 
-    useEffect(() => {
-  
-      if (!dataForm) {
-        toast.error("Dados não encontrados para esta operação.");
-        return;
-      }
-      reset({
-        ...dataForm, contrato: {
-          ...dataForm?.contrato, dt_adesao: dataForm.contrato?.dt_adesao ? new Date(new Date(dataForm.contrato?.dt_adesao).getUTCFullYear(), new Date(dataForm.contrato?.dt_adesao).getUTCMonth(), new Date(dataForm.contrato?.dt_adesao).getUTCDate(), new Date(dataForm.contrato?.dt_adesao).getUTCHours()) : undefined,
-          data_vencimento: dataForm.contrato?.data_vencimento ? new Date(new Date(dataForm.contrato?.data_vencimento).getUTCFullYear(), new Date(dataForm.contrato?.data_vencimento).getUTCMonth(), new Date(dataForm.contrato?.data_vencimento).getUTCDate(), new Date(dataForm.contrato?.data_vencimento).getUTCHours()) : undefined,
-  
-          dt_carencia: dataForm.contrato?.dt_carencia ? new Date(new Date(dataForm.contrato?.dt_carencia).getUTCFullYear(), new Date(dataForm.contrato?.dt_carencia).getUTCMonth(), new Date(dataForm.contrato?.dt_carencia).getUTCDate(), new Date(dataForm.contrato?.dt_carencia).getUTCHours()) : undefined,
-        },
-      })
-    }, [dataForm]);
+  useEffect(() => {
+
+    if (!dataForm) {
+      toast.error("Dados não encontrados para esta operação.");
+      return;
+    }
+    reset({
+      ...dataForm, contrato: {
+        ...dataForm?.contrato, dt_adesao: dataForm.contrato?.dt_adesao ? new Date(new Date(dataForm.contrato?.dt_adesao).getUTCFullYear(), new Date(dataForm.contrato?.dt_adesao).getUTCMonth(), new Date(dataForm.contrato?.dt_adesao).getUTCDate(), new Date(dataForm.contrato?.dt_adesao).getUTCHours()) : undefined,
+        data_vencimento: dataForm.contrato?.data_vencimento ? new Date(new Date(dataForm.contrato?.data_vencimento).getUTCFullYear(), new Date(dataForm.contrato?.data_vencimento).getUTCMonth(), new Date(dataForm.contrato?.data_vencimento).getUTCDate(), new Date(dataForm.contrato?.data_vencimento).getUTCHours()) : undefined,
+
+        dt_carencia: dataForm.contrato?.dt_carencia ? new Date(new Date(dataForm.contrato?.dt_carencia).getUTCFullYear(), new Date(dataForm.contrato?.dt_carencia).getUTCMonth(), new Date(dataForm.contrato?.dt_carencia).getUTCDate(), new Date(dataForm.contrato?.dt_carencia).getUTCHours()) : undefined,
+      },
+    })
+  }, [dataForm]);
 
 
   const { handleAtualizarDados } = useActionsAssociado(hookProps)

@@ -13,7 +13,7 @@ import { MdClose } from "react-icons/md";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import useBaixaMensalidade from "@/hooks/useBaixaMensalidade";
+import useBaixaMensalidade from "@/app/dashboard/admcontrato/_hooks/mensalidades/useBaixaMensalidade";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
@@ -83,15 +83,15 @@ export default function ModalBaixaMensalidade({ handleAtualizar, mensalidade, op
     }
 
 
-      const {newDate:dataPgto} = removerFusoDate(dataPag);
-                const {newDate:data_lanc} = removerFusoDate(new Date());
+    const { newDate: dataPgto } = removerFusoDate(dataPag);
+    const { newDate: data_lanc } = removerFusoDate(new Date());
 
     try {
 
       await postData(
         {
           id_global: mensalidade?.id_global,
-         // id_usuario: usuario?.id,
+          // id_usuario: usuario?.id,
           id_mensalidade_global: mensalidade?.id_mensalidade_global,
           id_mensalidade: mensalidade?.id_mensalidade,
           data_pgto: dataPgto,
@@ -274,7 +274,7 @@ export default function ModalBaixaMensalidade({ handleAtualizar, mensalidade, op
               <ul className={`${roboto_Mono.className}  border p-2 rounded divide-y space-y-2 bg-gray-100 text-[13px]`}>
                 {pagamentos?.map((p, index) => (
                   <li key={index} className="flex justify-between">
-                    <span>{p.forma}:  {Number(p.valor).toLocaleString('pt-BR',{ style: 'currency', currency: 'BRL'})} {p.banco} {p.observacao}</span>
+                    <span>{p.forma}:  {Number(p.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} {p.banco} {p.observacao}</span>
                     <MdClose className="text-red-600 cursor-pointer" />
                   </li>
                 ))}

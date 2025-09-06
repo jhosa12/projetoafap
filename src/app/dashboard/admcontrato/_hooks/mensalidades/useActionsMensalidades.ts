@@ -2,9 +2,9 @@ import { api } from "@/lib/axios/apiClient";
 import { removerFusoDate } from "@/utils/removerFusoDate";
 import { useCallback, useContext, useState } from "react";
 import { toast } from "sonner";
-import { MensalidadeProps } from "../_types/mensalidades";
+import { MensalidadeProps } from "../../_types/mensalidades";
 import { AuthContext } from "@/store/AuthContext";
-import { FormMensalidadeValues } from "../_components/mensalidades/modal-editarMensalidade";
+import { FormMensalidadeValues } from "../../_components/mensalidades/modal-editarMensalidade";
 
 interface ActionsProps {
   excluirMensalidade: ({
