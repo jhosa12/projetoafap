@@ -3,7 +3,7 @@ import { ConsultoresProps } from "@/types/consultores"
 import { toast } from "sonner"
 
 type NovoPerfilPayload = {
-  nome: string
+  id: number,
   funcao: string
 }
 
@@ -29,22 +29,28 @@ const useActionsPerfil = ({  carregarDados, close }: Partial<Pick<UseActionsProp
       toast.error("Dados não encontrados para esta operação.");
       return;
     }
+    console.log(data)
+try {
+  toast.promise(
 
-    toast.promise(
-
-      api.post('/user/novo', {
-        nome: data.nome,
-        funcao: data.funcao,
-      }),
-      {
-        error: "Erro ao criar novo perfil.",
-        success: () => {
-          carregarDados()
-          close()
-          return "Perfil criado com sucesso!"
-        }
+    api.post('/user/perfil/post', {
+      id: data.id,
+      funcao: data.funcao,
+    }),
+    {
+      error: "Erro ao criar novo perfil.",
+      success: () => {
+        carregarDados()
+        close()
+        return "Perfil criado com sucesso!"
       }
-    )
+    }
+  )
+} catch (error) {
+  console.error("Erro ao criar novo perfil:", error)
+ 
+}
+  
   }
   async function editarPerfil(data: ConsultoresProps) {
 
@@ -53,7 +59,7 @@ const useActionsPerfil = ({  carregarDados, close }: Partial<Pick<UseActionsProp
       return;
     }
     try {
-      await toast.promise(
+      toast.promise(
         api.put(`/user/editar`, {
           id_consultor: data.id_consultor,
           nome: data.nome,

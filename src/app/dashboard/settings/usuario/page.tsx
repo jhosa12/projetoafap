@@ -2,8 +2,6 @@
 import { api } from "@/lib/axios/apiClient"
 import { useEffect, useState, useMemo } from "react"
 import { Edit2, Plus, Loader2 } from "lucide-react"
-import { format } from "date-fns"
-import { ptBR } from "date-fns/locale"
 import { ColumnDef } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
@@ -17,6 +15,7 @@ import { DataTable } from "@/components/ui/data-table"
 
 
 export interface UsuarioProps {
+  id: number,
   nome: string,
   usuario: string,
   password: string,
@@ -39,9 +38,9 @@ export interface UsuarioProps {
 export default function Usuario() {
   const [userDados, setUserDados] = useState<Array<UsuarioProps>>()
   const [isLoading, setIsLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 10
+  // const [searchTerm, setSearchTerm] = useState("")
+  // const [currentPage, setCurrentPage] = useState(1)
+  // const itemsPerPage = 10
   const [modalAdicionar, setModalAdicionar] = useState<boolean>(false)
   const [dadosUser, setDadosUser] = useState<Partial<UsuarioProps>>({})
   const [dadosFuncionario, setDadosFuncionario] = useState<Partial<ConsultoresProps>>({})
@@ -94,25 +93,16 @@ export default function Usuario() {
       {
         error: 'ERRO AO REALIZAR CADASTRO',
         loading: 'CADASTRANDO NOVO FUNCIONÁRIO',
-        success: 'FUNCIONÁRIO CADASTRADO COM SUCESSO'
+        success: async () => {
+          await getUsers()
+          return 'FUNCIONÁRIO CADASTRADO COM SUCESSO'
+        }
       }
     )
 
 
-    try {
-      /* await toast.promise(
-         api.post('/user',data),
-         {error:'ERRO AO REALIZAR CADASTRO',
-           pending:'CADASTRANDO NOVO FUNCIONÁRIO',
-           success:'FUNCIONÁRIO CADASTRADO COM SUCESSO'
-         }
-       )*/
-
-    } catch (error) {
-      console.log(error)
-
-    }
-    await getUsers()
+   
+   // await getUsers()
 
   }
 
@@ -172,14 +162,15 @@ export default function Usuario() {
     }
 
 
-    try {
+
 
 
       toast.promise(
         api.put('/user/editar', data),
         {
           loading: 'ALTERANDO DADOS.....',
-          success: (res) => {
+          success: async(res) => {
+            await getUsers()
             return 'DADOS ALTERADOS COM SUCESSO'
           },
           error: (err) => {
@@ -190,20 +181,7 @@ export default function Usuario() {
 
 
 
-      /*  await toast.promise(
-          api.put('/user/editar',data),
-          {error:'ERRO AO REALIZAR ALTERAÇÃO',
-            pending:'ALTERANDO DADOS',
-            success:'DADOS ALTERADOS COM SUCESSO'
-          }
-        )*/
 
-    } catch (error) {
-      console.log(error)
-
-    }
-
-    await getUsers()
 
   }
 

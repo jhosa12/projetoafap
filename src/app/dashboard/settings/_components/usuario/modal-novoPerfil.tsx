@@ -7,8 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import * as Dialog from "@radix-ui/react-dialog"; // Importação direta do Radix UI para o Root do Dialog
 
-import { ConsultoresProps } from "@/types/consultores";
-
 // Hooks reais do seu projeto
 import { useAuth } from "@/store/AuthContext";
 import useActionsPerfil from "@/app/dashboard/settings/hooks/useActionsPerfil";
@@ -26,31 +24,33 @@ import {
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react"; 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ConsultoresProps } from "@/types/consultores";
 
 
 interface ModalNovoPerfilProps {
+  id: number,
   isOpen: boolean;
-  onClose: () => void;
-  perfil: ConsultoresProps | null;
-  onDataReload: () => Promise<void>;
+  onClose: () => void
+ //onDataReload: () => Promise<void>;
+  perfis: Array<ConsultoresProps>
 }
 
 // 2. Definição do schema de validação com Zod
 const perfilFormSchema = z.object({
-  nome: z.string().min(2, { message: "O nome deve ter no mínimo 2 caracteres." }),
+  id: z.number(),
   funcao: z.string().min(3, { message: "O cargo deve ter no mínimo 3 caracteres." }),
 });
 
-export function ModalNovoPerfil({ isOpen, onClose, onDataReload }: ModalNovoPerfilProps) {
+export function ModalNovoPerfil({ isOpen, onClose, id, perfis }: ModalNovoPerfilProps) {
 
-  const { consultores, getDadosFixos, loading: loadingContext } = useAuth();
+  const { consultores, loading: loadingContext } = useAuth();
   const funcoesUnicas = [...new Set(consultores?.map(c => c.funcao) ?? [])];
   
   // 3. Inicialização do formulário com react-hook-form e o resolver do Zod
   const form = useForm<z.infer<typeof perfilFormSchema>>({
     resolver: zodResolver(perfilFormSchema),
     defaultValues: {
-      nome: "",
+      id: id,
       funcao: "",
     },
   });
@@ -58,7 +58,7 @@ export function ModalNovoPerfil({ isOpen, onClose, onDataReload }: ModalNovoPerf
   // Hook para as ações de perfil (lógica de negócio) - AGORA USANDO O MOCK
   const { novoPerfil: criarNovoPerfil } = useActionsPerfil({
     close: onClose,
-    carregarDados: onDataReload,
+   // carregarDados: onDataReload,
   });
 
   // 4. Função de envio que será chamada após a validação bem-sucedida
@@ -92,7 +92,7 @@ export function ModalNovoPerfil({ isOpen, onClose, onDataReload }: ModalNovoPerf
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-2">
 
             {/* Campo Nome */}
-            <FormField
+            {/* <FormField
               control={form.control}
               name="nome"
               render={({ field }) => (
@@ -104,7 +104,7 @@ export function ModalNovoPerfil({ isOpen, onClose, onDataReload }: ModalNovoPerf
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
 
             {/* Campo Função (Cargo) */}
             <FormField

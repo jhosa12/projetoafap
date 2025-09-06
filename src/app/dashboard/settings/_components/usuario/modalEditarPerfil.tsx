@@ -36,16 +36,15 @@ interface ModalEditarPerfilProps {
   isOpen: boolean;
   onClose: () => void;
   perfil: ConsultoresProps | null;
-  onDataReload: () => Promise<void>;
+  
 }
 
 const perfilFormSchema = z.object({
-  nome: z.string().min(2, { message: "O nome deve ter no mínimo 2 caracteres." }),
   funcao: z.string().min(1, { message: "Por favor, selecione um cargo." }),
 });
 
 
-export function ModalEditarPerfil({ isOpen, onClose, perfil, onDataReload }: ModalEditarPerfilProps) {
+export function ModalEditarPerfil({ isOpen, onClose, perfil }: ModalEditarPerfilProps) {
 
 
   const { consultores, getDadosFixos, loading: loadingContext } = useAuth();
@@ -53,12 +52,12 @@ export function ModalEditarPerfil({ isOpen, onClose, perfil, onDataReload }: Mod
 
   const form = useForm<z.infer<typeof perfilFormSchema>>({
     resolver: zodResolver(perfilFormSchema),
-    defaultValues: { nome: "", funcao: "" },
+    defaultValues: {  funcao: "" },
   });
 
   const { editarPerfil } = useActionsPerfil({
     close: onClose,
-    carregarDados: onDataReload,
+   //carregarDados: onDataReload,
   });
 
   useEffect(() => {
@@ -70,7 +69,6 @@ export function ModalEditarPerfil({ isOpen, onClose, perfil, onDataReload }: Mod
   useEffect(() => {
     if (perfil) {
       form.reset({
-        nome: perfil.nome || "",
         funcao: perfil.funcao || "",
       });
     }
@@ -90,7 +88,7 @@ export function ModalEditarPerfil({ isOpen, onClose, perfil, onDataReload }: Mod
         <DialogHeader><DialogTitle>Editar Perfil</DialogTitle></DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-2">
-            <FormField
+            {/* <FormField
               control={form.control}
               name="nome"
               render={({ field }) => (
@@ -102,7 +100,7 @@ export function ModalEditarPerfil({ isOpen, onClose, perfil, onDataReload }: Mod
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             <FormField
               control={form.control}
               name="funcao"

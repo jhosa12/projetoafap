@@ -82,7 +82,7 @@ export function ModalNovoUsuario({ setarDadosUsuario, dadosUser, setModal, show,
 
 
                             }
-                            <PerfisUser perfis={dadosUser.consultor ?? []} id_user={dadosUser.id_user} />
+                            <PerfisUser id={dadosUser.id!} perfis={dadosUser.consultor ?? []} id_user={dadosUser.id_user} />
                         </div>
 
                     </Card>
@@ -95,7 +95,6 @@ export function ModalNovoUsuario({ setarDadosUsuario, dadosUser, setModal, show,
                 </div>
 
             </Modal.Body>
-
 
             <ModalPassword id_user={dadosUser.id_user ?? ''} openModal={modalPass} setOpenModal={setModalPass} />
 
