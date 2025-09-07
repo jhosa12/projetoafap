@@ -101,8 +101,8 @@ export default function Usuario() {
     )
 
 
-   
-   // await getUsers()
+
+    // await getUsers()
 
   }
 
@@ -165,19 +165,19 @@ export default function Usuario() {
 
 
 
-      toast.promise(
-        api.put('/user/editar', data),
-        {
-          loading: 'ALTERANDO DADOS.....',
-          success: async(res) => {
-            await getUsers()
-            return 'DADOS ALTERADOS COM SUCESSO'
-          },
-          error: (err) => {
-            return 'ERRO AO REALIZAR ALTERAÇÃO'
-          }
+    toast.promise(
+      api.put('/user/editar', data),
+      {
+        loading: 'ALTERANDO DADOS.....',
+        success: async (res) => {
+          await getUsers()
+          return 'DADOS ALTERADOS COM SUCESSO'
+        },
+        error: (err) => {
+          return 'ERRO AO REALIZAR ALTERAÇÃO'
         }
-      )
+      }
+    )
 
 
 
