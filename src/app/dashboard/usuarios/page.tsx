@@ -278,15 +278,15 @@ export default function Usuario() {
       ),
     },
     {
-      accessorKey: 'situacao',
+      accessorKey: 'status',
       header: 'Status',
       cell: ({ row }) => {
-        const situacao = row.getValue('situacao') as string;
+        const situacao = row.getValue('status') as string;
         return (
           <div className="flex items-center">
-            <span className={`h-2.5 w-2.5 rounded-full mr-2 ${situacao === 'Ativo' ? 'bg-green-500' : 'bg-gray-400'
+            <span className={`h-2.5 w-2.5 rounded-full mr-2 ${situacao === 'ATIVO' ? 'bg-green-500' : 'bg-red-500'
               }`}></span>
-            {situacao || 'Inativo'}
+            {situacao || 'INATIVO'}
           </div>
         );
       },
