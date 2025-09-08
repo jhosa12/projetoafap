@@ -1,7 +1,7 @@
 "use client";
 
 // 1. Importações necessárias do zod, react-hook-form e shadcn/ui
-import { z } from "zod";
+import { z  } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
