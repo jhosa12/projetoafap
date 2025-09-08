@@ -13,8 +13,7 @@ import { toast } from "sonner"
 import { ConsultoresProps } from "@/types/consultores"
 import { DataTable } from "@/components/ui/data-table"
 import { Switch } from "@/components/ui/switch"
-import useActionsPerfil from "./hooks/useActionsPerfil"
-
+import { ModalConfirmar } from "@/components/modals/modalConfirmar"
 
 export interface UsuarioProps {
   id: number;
@@ -34,7 +33,7 @@ export interface UsuarioProps {
   situacao: string;
 }
 
-export default function Usuario({  }: UsuarioProps) {
+export default function Usuario() {
   const [userDados, setUserDados] = useState<Array<UsuarioProps>>()
   const [isLoading, setIsLoading] = useState(true)
   // const [searchTerm, setSearchTerm] = useState("")
@@ -47,6 +46,9 @@ export default function Usuario({  }: UsuarioProps) {
   >({});
   const [dadosPermissoes, setDadosPermissoes] = useState<Array<string>>([]);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [pendingChange, setPendingChange] = useState<{ id_user: string; status: 'ATIVO' | 'INATIVO' } | null>(null);
 
   async function handleNovoCadastro() {
     const data = new FormData();
@@ -192,10 +194,6 @@ export default function Usuario({  }: UsuarioProps) {
 
   }
 
-
-
-
-
   const handlePermission = (permission: string) => {
     if (dadosUser.permissoes && dadosUser.permissoes.includes(permission)) {
       setDadosUser({
@@ -247,6 +245,36 @@ export default function Usuario({  }: UsuarioProps) {
     }
   }
 
+  const handleConfirmarStatus = async () => {
+
+    if (!pendingChange) return;
+
+
+    const payload = {
+      id_user: pendingChange.id_user,
+      status: pendingChange.status
+    }
+
+    toast.promise(
+      api.patch('/user/status', payload),
+      {
+        loading: 'ALTERANDO DADOS.....',
+        success: async (response) => {
+          getUsers(); 
+          setIsModalOpen(false);
+          return 'Status alterado com sucesso!';
+        },
+        error: (err) => {
+          console.error("Detalhes do erro:", err.response); // Log para depuração
+          setIsModalOpen(false);
+          return 'Erro ao alterar o status.';
+        }
+      }
+    )
+    setPendingChange(null);
+  }
+
+
   // Define columns for the data table
   const columns: ColumnDef<UsuarioProps>[] = useMemo(
     () => [
@@ -290,43 +318,21 @@ export default function Usuario({  }: UsuarioProps) {
           const situacao = row.getValue("status") as string;
           return (
             <div className="flex items-center">
-              <span
-                className={`h-2.5 w-2.5 rounded-full mr-2 ${
-                  situacao === "ATIVO" ? "bg-green-500" : "bg-red-500"
-                }`}
-              ></span>
-              {situacao || "INATIVO"}
-
               <Switch
-                checked={row.original.situacao === 'ATIVO'}
+                className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-red-500"
+                checked={situacao === 'ATIVO'}
                 onCheckedChange={(novoStatus: boolean) => {
 
                   const statusAtualizado = novoStatus ? 'ATIVO' : 'INATIVO';
 
-                  const payload = {
+                  setPendingChange({
                     id_user: row.original.id_user,
                     status: statusAtualizado
-                  }
+                  });
 
-
-                  toast.promise(
-                    api.patch('/user/status', payload),
-                    {
-                      loading: 'ALTERANDO DADOS.....',
-                      success: async (response) => {
-                        getUsers(); // Atualiza a tabela com os novos dados
-                        return 'Status alterado com sucesso!';
-                      },
-                      error: (err) => {
-                        console.error("Detalhes do erro:", err.response); // Log para depuração
-                        return 'Erro ao alterar o status.';
-                      }
-                    }
-                  )
-
+                  setIsModalOpen(true);
                 }
                 }
-
               />
             </div>
           );
@@ -432,6 +438,14 @@ export default function Usuario({  }: UsuarioProps) {
         setModal={setModalAdicionar}
         setarDadosUsuario={setarDadosUsuario}
         show={modalAdicionar}
+      />
+
+      <ModalConfirmar
+        openModal={isModalOpen}
+        setOpenModal={() => setIsModalOpen(false)}
+        handleConfirmar={handleConfirmarStatus}
+        pergunta={`Tem certeza que deseja alterar o status do usuário para ${pendingChange?.status}?`}
+        children={"Essa ação pode afetar o acesso do usuário ao sistema."}
       />
     </div>
   );
