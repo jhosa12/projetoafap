@@ -12,7 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
 import { ConsultoresProps } from "@/types/consultores"
 import { DataTable } from "@/components/ui/data-table"
-
+import { Switch } from "@/components/ui/switch"
+import useActionsPerfil from "./hooks/useActionsPerfil"
 
 export interface UsuarioProps {
   id: number,
@@ -32,10 +33,7 @@ export interface UsuarioProps {
   situacao: string
 }
 
-
-
-
-export default function Usuario() {
+export default function Usuario({  }: UsuarioProps) {
   const [userDados, setUserDados] = useState<Array<UsuarioProps>>()
   const [isLoading, setIsLoading] = useState(true)
   // const [searchTerm, setSearchTerm] = useState("")
@@ -45,6 +43,7 @@ export default function Usuario() {
   const [dadosUser, setDadosUser] = useState<Partial<UsuarioProps>>({})
   const [dadosFuncionario, setDadosFuncionario] = useState<Partial<ConsultoresProps>>({})
   const [dadosPermissoes, setDadosPermissoes] = useState<Array<string>>([])
+
 
 
 
@@ -106,9 +105,6 @@ export default function Usuario() {
 
   }
 
-
-
-
   async function handleEditarCadastro() {
     if (dadosUser.password && (dadosUser.password !== dadosUser.repSenha)) {
       toast.error('Senhas não coincidem !')
@@ -121,7 +117,7 @@ export default function Usuario() {
     }
 
     const data = new FormData();
-    dadosUser.id_user && data.append('id', dadosUser.id_user?.toString());
+    dadosUser.id_user && data.append('id_user', dadosUser.id_user?.toString());
     dadosFuncionario.id_consultor && data.append('id_consultor', dadosFuncionario.id_consultor?.toString());
     dadosUser.nome && data.append('nome', dadosUser.nome);
     dadosUser.usuario && data.append('usuario', dadosUser.usuario);
@@ -162,9 +158,6 @@ export default function Usuario() {
     }
 
 
-
-
-
     toast.promise(
       api.put('/user/editar', data),
       {
@@ -179,12 +172,7 @@ export default function Usuario() {
       }
     )
 
-
-
-
-
   }
-
 
 
   const handlePermission = (permission: string) => {
@@ -238,7 +226,6 @@ export default function Usuario() {
     } finally {
       setIsLoading(false)
     }
-
   }
 
 
@@ -281,12 +268,42 @@ export default function Usuario() {
       accessorKey: 'status',
       header: 'Status',
       cell: ({ row }) => {
-        const situacao = row.getValue('status') as string;
+        const status = row.getValue('status') as string;
         return (
           <div className="flex items-center">
-            <span className={`h-2.5 w-2.5 rounded-full mr-2 ${situacao === 'ATIVO' ? 'bg-green-500' : 'bg-red-500'
-              }`}></span>
-            {situacao || 'INATIVO'}
+            <span className={`h-2.5 w-2.5 rounded-full mr-2 ${status?.toUpperCase() === 'ATIVO' ? 'bg-green-500' : 'bg-red-500'}`}></span>
+            {status || 'INATIVO'}
+            <Switch
+              checked={row.original.situacao === 'ATIVO'}
+              onCheckedChange={(novoStatus) => {
+
+                const statusAtualizado = novoStatus ? 'ATIVO' : 'INATIVO';
+
+                const payload = {
+                  id_user: row.original.id_user,
+                  status: statusAtualizado
+                }
+
+
+                toast.promise(
+                  api.patch('/user/status', payload),
+                  {
+                    loading: 'ALTERANDO DADOS.....',
+                    success: async (response) => {
+                      getUsers(); // Atualiza a tabela com os novos dados
+                      return 'Status alterado com sucesso!';
+                    },
+                    error: (err) => {
+                      console.error("Detalhes do erro:", err.response); // Log para depuração
+                      return 'Erro ao alterar o status.';
+                    }
+                  }
+                )
+
+              }
+              }
+
+            />
           </div>
         );
       },
@@ -321,6 +338,7 @@ export default function Usuario() {
       },
     },
   ], []);
+
 
   return (
     <div className="container mx-auto p-4">

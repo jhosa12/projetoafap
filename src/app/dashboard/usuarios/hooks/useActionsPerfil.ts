@@ -17,6 +17,7 @@ interface UseActionsProps {
   id_consultor: string | null
   nome: string | null
   funcao: string | null
+  situacao: string | null
   carregarDados: () => Promise<void>;
   close: Function
 }
@@ -64,6 +65,7 @@ try {
           id_consultor: data.id_consultor,
           nome: data.nome,
           funcao: data.funcao,
+          situacao: data.situacao,
         }),
         {
           loading: "Salvando alterações...",
