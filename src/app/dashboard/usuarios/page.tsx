@@ -6,7 +6,7 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card,CardHeader } from "@/components/ui/card";
 import { ModalNovoUsuario } from "@/app/dashboard/usuarios/_components/modalNovoUsuario";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
