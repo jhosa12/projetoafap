@@ -3,6 +3,7 @@ import { ConvProps } from "../_types/convalescente"
 import { api } from "@/lib/axios/apiClient"
 import { toast } from "sonner"
 
+
 interface ActionsProps {
 
 
@@ -48,21 +49,17 @@ const useActionsListagem = () => {
   const [entregue, setEntregue] = useState(true)
   const [arrayFiltro, setFiltro] = useState<Array<ConvProps>>([])
   const [aberto, setAberto] = useState(true)
-  const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 16;
 
   const setarListaConv = useCallback((fields: Partial<ConvProps>) => {
     setLista(prev => ({ ...prev, ...fields }));
   }, []);
 
-  const handlePageClick = (selectdItem: { selected: number }) => {
-    setCurrentPage(selectdItem.selected)
-  }
+  // const handlePageClick = (selectdItem: { selected: number }) => {
+  //   setCurrentPage(selectdItem.selected)
+  // }
 
-  const offset = currentPage * itemsPerPage;
 
-  const currentItems = arrayFiltro.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(arrayFiltro.length / itemsPerPage);
+  //const pageCount = Math.ceil(arrayFiltro.length / itemsPerPage);
 
 
   useEffect(() => {
@@ -187,34 +184,32 @@ const useActionsListagem = () => {
 
   return {
 
-    
-  // --- Estados que a UI irá ler ---
-  pendente,
-  aberto,
-  entregue,
-  criterio,
-  input,
-  arrayConv,
-  listaConv,
-  excluir,
-  arrayFiltro,
-  currentItems,
-  pageCount,
 
-  // --- Funções para alterar o estado  ---
-  setPendente,
-  setAberto,
-  setEntregue,
-  setCriterio,
-  setInput,
-  setExcluir,
+    // --- Estados que a UI irá ler ---
+    pendente,
+    aberto,
+    entregue,
+    criterio,
+    input,
+    arrayConv,
+    listaConv,
+    excluir,
+    arrayFiltro,
 
-  // --- Funções de Ação ---
-  setarListaConv,
-  handlePageClick,
-  listarConv,
-  deletarConv,
-  receberDevolucao
+
+    // --- Funções para alterar o estado  ---
+    setPendente,
+    setAberto,
+    setEntregue,
+    setCriterio,
+    setInput,
+    setExcluir,
+
+    // --- Funções de Ação ---
+    setarListaConv,
+    listarConv,
+    deletarConv,
+    receberDevolucao
 
   }
 }

@@ -27,7 +27,7 @@ interface ActionsProps {
   titular: boolean;
   selectProdutos: Array<SelectProps>;
   componentRefComprovante: React.RefObject<DocumentTemplateComprovante>;
-  componentRefContrato: React.RefObject<DocumentTemplate>;
+  componentRefContrato: React.RefObject<DocumentTemplateContrato>;
   isLoading: boolean;
 
 
