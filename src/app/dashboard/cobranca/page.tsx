@@ -5,10 +5,10 @@ import Head from "next/head";
 import { AuthContext } from "@/store/AuthContext";
 import { Tabs } from "flowbite-react";
 import { FaCalendarCheck } from "react-icons/fa";
-import { Cobranca } from "@/components/tabs/cobranca/cobranca/cobranca";
-import { Inadimplencia } from "@/components/tabs/cobranca/indimplencia/indimplencia";
 import { FaCalendarDays } from "react-icons/fa6";
 import { api } from "@/lib/axios/apiClient";
+import { Cobranca } from "./_components/cobranca/cobranca/cobranca";
+import { Inadimplencia } from "./_components/cobranca/indimplencia/indimplencia";
 
 export default function CobrancaScreen() {
   const [arrayBairros, setArrayBairros] = useState<

@@ -1,7 +1,8 @@
 
-import { InadimplenciaProps } from '@/types/cobranca';
+
+import { InadimplenciaProps } from '@/app/dashboard/cobranca/types/types';
 import { Table } from 'flowbite-react';
-import React from 'react';
+import React, { forwardRef } from 'react';
 
 
 
@@ -12,20 +13,10 @@ interface DadosProps {
 }
 
 
-
-
-
-
-class RelatorioInadimplencia extends React.Component<DadosProps> {
-
-  render() {
-    const { dados,usuario } = this.props;
-
- 
-
+const RelatorioInadimplencia = forwardRef<HTMLDivElement, DadosProps>(({ dados, usuario }, ref) => {
 
     return (
-      <div className='flex flex-col w-full p-2  items-center  '>
+      <div ref={ref} className='flex flex-col w-full p-2  items-center  '>
         <span className="text-xs ml-auto">{usuario}-{new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</span>
         <h2 className="  font-semibold text-sm">RELATÓRIO DE INADIMPLENTES</h2>
         {/*<h3 className="text-xs font-medium">{new Date(dataInicial).toLocaleDateString()} a {new Date(dataFinal).toLocaleDateString()}</h3>*/}
@@ -143,7 +134,6 @@ class RelatorioInadimplencia extends React.Component<DadosProps> {
        
       </div>
     );
-  }
-}
+});
 
 export default RelatorioInadimplencia;

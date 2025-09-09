@@ -1,26 +1,17 @@
-import Image from "next/image";
-import logo from "../../../public/logoafap.png"
-
 // DocumentTemplate.js
 
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { AssociadoProps, ContratoProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { EmpresaProps } from "@/types/empresa";
+import { roboto_Mono } from '@/fonts/fonts';
 interface DadosProps {
   dados: Partial<AssociadoProps>
   infoEmpresa: EmpresaProps | null
 }
-
-
-class ContratoResumo extends React.Component<DadosProps> {
-
-  render() {
-    const { dados, infoEmpresa } = this.props;
-
-
+const ContratoResumo = forwardRef<HTMLDivElement, DadosProps>(({ dados, infoEmpresa }, ref) => {
 
     return (
-      <div className='flex flex-col w-full  ' style={{ fontSize: '12px' }}>
+      <div ref={ref} className={`flex flex-col w-full ${roboto_Mono.className}`} style={{ fontSize: '12px' }}>
         <div className="flex  w-full justify-center items-center mt-4">
           <img width={150} height={150} src={infoEmpresa?.logoUrl} alt="" />
         </div>
@@ -144,8 +135,7 @@ class ContratoResumo extends React.Component<DadosProps> {
 
       </div>
     );
-  }
-}
+});
 
 export default ContratoResumo;
 

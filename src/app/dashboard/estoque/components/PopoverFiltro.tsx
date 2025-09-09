@@ -1,10 +1,11 @@
 import {   Popover, Select, TextInput } from "flowbite-react"
 import "react-datepicker/dist/react-datepicker.css";
-import pt from 'date-fns/locale/pt-BR';
 import { HiFilter } from "react-icons/hi";
-import { FormProps, ProdutosProps } from "@/pages/dashboard/estoque";
+
 import { useState } from "react";
-import { Button } from "../ui/button";
+import { FormProps, ProdutosProps } from "../page";
+import { Button } from "@/components/ui/button";
+
 
 
 interface DataProps {

@@ -5,16 +5,18 @@ import {  Tabs } from "flowbite-react";
 import { api } from "@/lib/axios/apiClient";
 import { IoMdSettings } from "react-icons/io";
 import { AuthContext } from "@/store/AuthContext";
-import {Caixa} from "@/components/tabs/financeiro/caixa/caixa";
-import Conferencia from "../../../components/tabs/financeiro/conferencia/conferencia";
-import { PlanodeContas } from "@/components/tabs/financeiro/planodeContas/planodeContas";
-import { ContasPagarReceber } from "@/components/tabs/financeiro/contasPagarReceber/contasPagarReceber";
-import { GraficoScreen } from "@/components/tabs/financeiro/grafico/screen";
+
+
 import { FaCalendarAlt } from "react-icons/fa";
 import { MdAccessTimeFilled } from "react-icons/md";
 import { HiClipboardList } from "react-icons/hi";
 import { IoBarChart } from "react-icons/io5";
 import { toast } from "sonner";
+import { Caixa } from "./_components/tabs/caixa/caixa";
+import { PlanodeContas } from "./_components/tabs/planodeContas/planodeContas";
+import { ContasPagarReceber } from "./_components/tabs/contasPagarReceber/contasPagarReceber";
+import { GraficoScreen } from "./_components/tabs/grafico/screen";
+import Conferencia from "./_components/tabs/conferencia/conferencia";
 
 
 interface DataProps {

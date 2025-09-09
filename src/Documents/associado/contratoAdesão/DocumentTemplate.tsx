@@ -1,11 +1,6 @@
-import Image from "next/image";
-import assinatura from "../../../public/assinatura.jpg"
 import parse from 'html-react-parser';
 
-// DocumentTemplate.js
-
-import React, {  Component, useContext } from 'react';
-import { AuthContext } from "@/store/AuthContext";
+import React, { forwardRef } from 'react';
 import { EmpresaProps } from "@/types/empresa";
 import { SanitizeHtml } from "@/utils/sanitizeHtml";
 import { timesNewRoman } from "@/fonts/fonts";
@@ -41,35 +36,26 @@ interface DadosProps {
   infoEmpresa:EmpresaProps|null
 }
 
+const DocumentTemplate = React.forwardRef<HTMLDivElement, DadosProps>(({
+  nome,
+  cpf,
+  rg,
+  endereco,
+  infoEmpresa,
+  numero,
+  bairro,
+  complemento,
+  cidade,
+  estado,
+  adesao,
+  telefone,
+  contrato,
+  dependentes
+}, ref) => {
 
-
-class DocumentTemplate extends Component<DadosProps> {
-
-  render() {
-    const {
-      nome,
-      cpf,
-      rg,
-      endereco,
-      infoEmpresa,
-      numero,
-      bairro,
-      complemento,
-      cidade,
-      estado,
-      adesao,
-      telefone,
-      contrato,
-      dependentes
-    } = this.props;
-
-
-
-
-
-    return (
-      <div  className='flex flex-col w-full   text-black'>
-<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+  return (
+    <div ref={ref} className='flex flex-col w-full   text-black'>
+      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
         <div className="flex justify-center items-center
          mt-4">
           <img style={{ width: '250px', height: '150px' }}  src={infoEmpresa?.logoUrl} alt="logo" />
@@ -214,7 +200,6 @@ class DocumentTemplate extends Component<DadosProps> {
 
       </div>
     );
-  }
-}
+});
 
 export default DocumentTemplate;

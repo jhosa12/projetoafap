@@ -2,8 +2,8 @@
 
 // DocumentTemplate.js
 
-import React from 'react';
-import { UltimosPagProps } from "@/components/tabs/cobranca/cobranca/cobranca";
+import React, { forwardRef } from 'react';
+import { UltimosPagProps } from "@/app/dashboard/cobranca/_components/cobranca/cobranca/cobranca";
 import { roboto_Mono } from '@/fonts/fonts';
 
 
@@ -76,10 +76,7 @@ interface RefProps{
 }
 
 
-class DocumentTemplate extends React.Component<DadosProps> {
-
-  render() {
-    const { arrayCobranca,dataInicial,dataFinal,usuario,ultimosPag,cobrador,empresa,logo } = this.props;
+const DocumentTemplate = forwardRef<HTMLDivElement, DadosProps>(({ arrayCobranca, dataInicial, dataFinal, usuario, ultimosPag, cobrador, empresa, logo }, ref) => {
     let formatter = new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
@@ -101,7 +98,7 @@ class DocumentTemplate extends React.Component<DadosProps> {
 
 
     return (
-        <div className={`${roboto_Mono.className} flex flex-col w-full  items-center`}>
+        <div ref={ref} className={`${roboto_Mono.className} flex flex-col w-full  items-center`}>
         <span className="text-xs ml-auto">{usuario}-{new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</span>
         <img   width={150} height={150}  src={logo}/>
         <h1 className="font-semibold text-lg">{empresa}</h1>
@@ -152,7 +149,6 @@ return(
        
       </div>
     );
-  }
-}
+});
 
 export default DocumentTemplate;

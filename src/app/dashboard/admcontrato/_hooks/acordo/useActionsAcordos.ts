@@ -64,9 +64,7 @@ const useActionsAcordos = (
 
   const printComprovante = useReactToPrint({
 
-    content() {
-      return comprovanteAcordo.current
-    },
+    contentRef: comprovanteAcordo,
     pageStyle: pageStyle,
 
   })

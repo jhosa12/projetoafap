@@ -1,6 +1,4 @@
-
-
-import React from "react";
+import React, { forwardRef } from "react";
 import { EmpresaProps } from "@/types/empresa";
 import { timesNewRoman } from "@/fonts/fonts";
 
@@ -16,15 +14,9 @@ interface Props{
     usuario:string
 }
 
-
-
-export class ProtocoloCancelamento extends React.Component<Props> {
-
-
-    render(){
-        const {contrato,infoEmpresa,titular,bairro,cidade,endereco,cpf,usuario} = this.props
+export const ProtocoloCancelamento = forwardRef<HTMLDivElement, Props>(({ contrato, infoEmpresa, titular, bairro, cidade, endereco, cpf, usuario }, ref) => {
         return (
-           <div style={{display:'flex',flexDirection:'column',width:'100%',gap:'50px'}} className={timesNewRoman.className}>
+           <div ref={ref} style={{display:'flex',flexDirection:'column',width:'100%',gap:'50px'}} className={timesNewRoman.className}>
 
             <div style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
                 <img width={200} height={200} src={infoEmpresa?.logoUrl} alt="logo" />
@@ -73,6 +65,4 @@ export class ProtocoloCancelamento extends React.Component<Props> {
           </div>
            </div>
         )
-    }
-
-}
+});

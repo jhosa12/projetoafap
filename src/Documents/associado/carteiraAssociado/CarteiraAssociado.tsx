@@ -1,11 +1,7 @@
-import Image from "next/image";
-import carteiraDep from "../../../public/carteiraDep.jpeg";
-
 // DocumentTemplate.js
 
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { EmpresaProps } from "@/types/empresa";
-import { space } from "postcss/lib/list";
 interface DadosProps {
   dependentes: Array<Partial<{
     nome: string,
@@ -57,28 +53,23 @@ interface DadosProps {
   infoEmpresa:EmpresaProps|null
 
 }
-
-
-class CarteiraAssociado extends React.Component<DadosProps> {
-
-  render() {
-    const { dependentes,
-      contrato,
-      plano,
-      infoEmpresa,
-      titular,
-      endereco,
-      numero,
-      bairro,
-      cidade,
-      celular,
-      uf,
-      dependentesTitular,
-      cartTitular,
-      adesao,
-      cpf,
-      rg
-    } = this.props;
+const CarteiraAssociado = forwardRef<HTMLDivElement, DadosProps>(({ dependentes,
+  contrato,
+  plano,
+  infoEmpresa,
+  titular,
+  endereco,
+  numero,
+  bairro,
+  cidade,
+  celular,
+  uf,
+  dependentesTitular,
+  cartTitular,
+  adesao,
+  cpf,
+  rg
+}, ref) => {
 
     const options: Intl.DateTimeFormatOptions = {
       weekday: 'long', // Dia da semana por extenso
@@ -91,7 +82,7 @@ class CarteiraAssociado extends React.Component<DadosProps> {
   const venc = new Date(dataAtual.getFullYear() + 1, dataAtual.getMonth(), dataAtual.getDate())
 
     return (
-      <div className="flex flex-col w-full ">
+      <div ref={ref} className="flex flex-col w-full ">
         <div className="grid  grid-cols-2 grid-rows-5 w-full justify-items-center gap-1">
 
        {cartTitular && <div style={{
@@ -225,8 +216,7 @@ class CarteiraAssociado extends React.Component<DadosProps> {
           })}
         </div>
       </div>
-    );
-  }
-}
+  );
+});
 
 export default CarteiraAssociado;

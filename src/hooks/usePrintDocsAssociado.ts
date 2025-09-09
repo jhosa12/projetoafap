@@ -45,12 +45,12 @@ export function usePrintDocsAssociado(
         : null;
 
     const componentRefs = {
-        contrato: useRef<DocumentTemplate>(null),
-        carteira: useRef<CarteiraAssociado>(null),
-        carne: useRef<ImpressaoCarne>(null),
-        resumo: useRef<ContratoResumo>(null),
-        carta: useRef<CartaNovoAssociado>(null),
-        cancelamento: useRef<ProtocoloCancelamento>(null)
+        contrato: useRef<HTMLDivElement>(null),
+        carteira: useRef<HTMLDivElement>(null),
+        carne: useRef<HTMLDivElement>(null),
+        resumo: useRef<HTMLDivElement>(null),
+        carta: useRef<HTMLDivElement>(null),
+        cancelamento: useRef<HTMLDivElement>(null)
     };
 
 
@@ -103,8 +103,8 @@ export function usePrintDocsAssociado(
     const imprimirCancelamento = useReactToPrint({
         pageStyle: pageStyle,
         documentTitle: "CANCELAMENTO",
-        content: () => componentRefs.cancelamento.current,
-        onBeforeGetContent: async () => {
+        contentRef:componentRefs.cancelamento,
+        onBeforePrint: async () => {
             await handleRegisterImpressao('cancelamento');
         },
     });
@@ -114,8 +114,8 @@ export function usePrintDocsAssociado(
     const imprimirContrato = useReactToPrint({
         pageStyle: pageStyle,
         documentTitle: "CONTRATO",
-        content: () => componentRefs.contrato.current,
-        onBeforeGetContent: async () => {
+        contentRef:componentRefs.contrato,
+        onBeforePrint: async () => {
             await handleRegisterImpressao('contrato');
         },
 
@@ -124,8 +124,8 @@ export function usePrintDocsAssociado(
     const imprimirCarteira = useReactToPrint({
         pageStyle: pageStyle,
         documentTitle: "CARTEIRA",
-        content: () => componentRefs.carteira.current,
-        onBeforeGetContent: async () => {
+        contentRef:componentRefs.carteira,
+        onBeforePrint: async () => {
             await handleRegisterImpressao('carteira');
         },
     });
@@ -133,8 +133,8 @@ export function usePrintDocsAssociado(
     const imprimirCarne = useReactToPrint({
         pageStyle: pageStyle,
         documentTitle: "CARNÊ",
-        content: () => componentRefs.carne.current,
-        onBeforeGetContent: async () => {
+        contentRef:componentRefs.carne,
+        onBeforePrint: async () => {
             await handleRegisterImpressao('carne');
         },
     });
@@ -142,8 +142,8 @@ export function usePrintDocsAssociado(
     const imprimirResumo = useReactToPrint({
         pageStyle: pageStyle,
         documentTitle: "RESUMO",
-        content: () => componentRefs.resumo.current,
-        onBeforeGetContent: async () => {
+        contentRef: componentRefs.resumo,
+        onBeforePrint: async () => {
             await handleRegisterImpressao('resumo');
 
 
@@ -154,8 +154,8 @@ export function usePrintDocsAssociado(
     const imprimirCarta = useReactToPrint({
         pageStyle: pageStyle,
         documentTitle: "CARTA",
-        content: () => componentRefs.carta.current,
-        onBeforeGetContent: async () => {
+        contentRef:componentRefs.carta,
+        onBeforePrint: async () => {
             await handleRegisterImpressao('carta');
         },
     });

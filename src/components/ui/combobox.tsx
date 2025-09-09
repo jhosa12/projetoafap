@@ -20,7 +20,7 @@ interface ComboboxProps {
   className?: string;
   classNameInput?: string;
   disabled?: boolean,
-  modal?:boolean
+  modal?:boolean,
 }
 
 export function Combobox({ items, value, onChange, placeholder='Selecione um item', searchPlaceholder,className='w-full',disabled=false,modal=false,classNameInput }: ComboboxProps) {

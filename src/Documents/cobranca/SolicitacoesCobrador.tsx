@@ -1,12 +1,14 @@
-import { SolicitacaoCobradorProps } from "@/types/cobranca";
+import { SolicitacaoCobradorProps } from "@/app/dashboard/cobranca/types/types";
+import { roboto_Mono } from "@/fonts/fonts";
 import { forwardRef } from "react";
 
 interface SolicitacoesCobradorProps {
   solicitacoes: SolicitacaoCobradorProps[];
   dataEmissao?: Date;
+  consultor:string
 }
 
-export const SolicitacoesCobrador = forwardRef<HTMLDivElement, SolicitacoesCobradorProps>(({ solicitacoes, dataEmissao = new Date() }, ref) => {
+export const SolicitacoesCobrador = forwardRef<HTMLDivElement, SolicitacoesCobradorProps>(({ solicitacoes, dataEmissao = new Date(),consultor }, ref) => {
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('pt-BR', {
       day: '2-digit',
@@ -16,13 +18,17 @@ export const SolicitacoesCobrador = forwardRef<HTMLDivElement, SolicitacoesCobra
       minute: '2-digit'
     });
   };
+  const font = roboto_Mono.className
+
+  if(!font) return null
 
   return (
-    <div ref={ref} className="p-8 max-w-4xl mx-auto">
+    <div ref={ref} className={`${font}`}>
       {/* Cabeçalho */}
-      <div className="text-center mb-8">
+      <div className="text-center mb-4">
         <h1 className="text-xl font-bold mb-2">SOLICITAÇÕES PARA COBRANÇA</h1>
         <p className="text-sm text-gray-600">Emitido em: {formatDate(dataEmissao)}</p>
+        <p className="text-sm text-gray-600">Consultor: {consultor}</p>
       </div>
 
       {/* Tabela de Solicitações */}
@@ -53,7 +59,6 @@ export const SolicitacoesCobrador = forwardRef<HTMLDivElement, SolicitacoesCobra
       {/* Rodapé */}
       <div className="mt-8 text-sm text-gray-600">
         <p>Total de solicitações: {solicitacoes?.length}</p>
-        <p className="mt-2">Documento gerado pelo sistema de cobrança</p>
       </div>
     </div>
   );

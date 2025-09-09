@@ -5,10 +5,10 @@ import Head from "next/head"
 import { AuthContext } from "@/store/AuthContext"
 import { Tabs } from "flowbite-react"
 import { FaStore } from "react-icons/fa"
-import { Estoque } from "@/components/estoque/estoque"
 import { RiHistoryLine } from "react-icons/ri"
 
 import useApi from "@/hooks/useApiPost"
+import { Estoque } from "./components/estoque";
 
 export interface FormProps {
   grupo: string,

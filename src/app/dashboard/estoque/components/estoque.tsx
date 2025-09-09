@@ -1,8 +1,6 @@
-import { EstoqueProps, FormProps, ProdutosProps } from "@/pages/dashboard/estoque"
+
 import { Spinner, Table } from "flowbite-react"
 import { useContext, useEffect, useRef, useState } from "react";
-import { ModalMov } from "../modals/estoque/modalMovimentacao";
-import { ModalNovoProduto } from "../modals/estoque/modalNovoProduto";
 import { RiAlertLine } from "react-icons/ri";
 import { MdOutlinePlaylistAdd } from "react-icons/md";
 import { FiltroEstoque } from "./PopoverFiltro";
@@ -11,10 +9,14 @@ import useApi from "@/hooks/useApiPost";
 import { EmpresaProps } from "@/types/empresa";
 import { HiPrinter } from "react-icons/hi2";
 import { useReactToPrint } from "react-to-print";
-import {RelatorioEstoque} from "../../Documents/estoque/RelatorioEstoque";
-import { Button } from "../ui/button";
+
+import { Button } from "@/components/ui/button";
 import { AuthContext } from "@/store/AuthContext";
 import { pageStyle } from "@/utils/pageStyle";
+import { RelatorioEstoque } from "@/Documents/estoque/RelatorioEstoque";
+import { ModalMov } from "@/components/modals/estoque/modalMovimentacao";
+import { ModalNovoProduto } from "@/components/modals/estoque/modalNovoProduto";
+import { EstoqueProps, FormProps, ProdutosProps } from "../page";
 
 
 
@@ -32,7 +34,7 @@ export function Estoque({ empresas, selectProdutos, reqProdutos, permissoes }: D
   const [mov, setMov] = useState<boolean>(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
   const { data, loading, postData } = useApi<Array<EstoqueProps>, FormProps>('/estoque/listar')
-  const componentRef = useRef<RelatorioEstoque>(null);
+  const componentRef = useRef<HTMLDivElement>(null);
   const { usuario, infoEmpresa } = useContext(AuthContext)
   const handleFiltroEstoque = async () => {
 
@@ -50,7 +52,7 @@ export function Estoque({ empresas, selectProdutos, reqProdutos, permissoes }: D
     pageStyle: pageStyle,
     documentTitle: 'MOVIMENTAÇÃO DE ESTOQUE',
 
-    content: () => componentRef.current,
+    contentRef:componentRef,
 
 
   })

@@ -1,5 +1,5 @@
 import { EmpresaProps } from "@/types/empresa";
-import React from "react";
+import React, { forwardRef } from "react";
 
 
 
@@ -11,13 +11,9 @@ interface Props{
 
 
 
-export class CartaNovoAssociado extends React.Component<Props> {
-
-
-    render(){
-        const {contrato,infoEmpresa,titular} = this.props
+export const CartaNovoAssociado = forwardRef<HTMLDivElement, Props>(({ contrato, infoEmpresa, titular }, ref) => {
         return (
-           <div style={{display:'flex',flexDirection:'column',width:'100%',gap:'50px'}}>
+           <div ref={ref} style={{display:'flex',flexDirection:'column',width:'100%',gap:'50px'}}>
 
             <div style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
                 <img width={200} height={200} src={infoEmpresa?.logoUrl} alt="logo" />
@@ -42,6 +38,4 @@ constam os dados necessários para que possa usufruir dos benefícios de nosso p
 </div>
            </div>
         )
-    }
-
-}
+});

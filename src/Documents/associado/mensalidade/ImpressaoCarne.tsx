@@ -3,7 +3,7 @@ import BarCode from 'react-barcode';
 
 // DocumentTemplate.js
 
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { EmpresaProps } from '@/types/empresa';
 
 
@@ -38,12 +38,10 @@ interface DadosProps {
 }
 
 
-class ImpressaoCarne extends React.Component<DadosProps> {
-
-    render() {
-        const { dadosAssociado, arrayMensalidade, infoEmpresa } = this.props;
+const ImpressaoCarne = forwardRef<HTMLDivElement, DadosProps>(({ dadosAssociado, arrayMensalidade, infoEmpresa }, ref) => {
 
         return (
+            <div ref={ref}>
             <ul className="flex flex-col w-full justify-center items-center gap-4 ">
                 {arrayMensalidade?.map((item, index) => (
 
@@ -160,9 +158,9 @@ class ImpressaoCarne extends React.Component<DadosProps> {
 
 
             </ul>
+            </div>
 
         );
-    }
-}
+});
 
 export default ImpressaoCarne;

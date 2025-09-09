@@ -1,4 +1,4 @@
-
+'use client'
 import { api } from "@/lib/axios/apiClient";
 import { EmpresaProps } from "@/types/empresa";
 import { useContext, useEffect, useState } from "react";

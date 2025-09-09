@@ -1,10 +1,11 @@
 
 
 // DocumentTemplate.js
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { Table } from "flowbite-react";
-import { EstoqueProps } from "@/pages/dashboard/estoque";
+
 import { roboto_Mono } from '@/fonts/fonts';
+import { EstoqueProps } from '@/app/dashboard/estoque/page';
 
 
 interface DadosProps {
@@ -12,15 +13,9 @@ interface DadosProps {
     usuario:string
 }
 
-
-
-
-
-class RelatorioEstoque extends React.Component<DadosProps> {
-  render() {
-    const {dados,usuario} = this.props;
+const RelatorioEstoque = forwardRef<HTMLDivElement, DadosProps>(({ dados, usuario }, ref) => {
     return (
-      <div className={`${roboto_Mono.className} flex flex-col w-full  gap-5`}>
+      <div ref={ref} className={`${roboto_Mono.className} flex flex-col w-full  gap-5`}>
        <div className="flex  w-full justify-center ">
        <img width={100} height={100} src={"/novaLogo.png"} alt="logo"/>
        </div>
@@ -52,7 +47,6 @@ class RelatorioEstoque extends React.Component<DadosProps> {
        </div>
       </div>
     );
-  }
-}
+});
 
 export {RelatorioEstoque};
