@@ -42,18 +42,18 @@ export function Combobox({ items, value, onChange, placeholder='Selecione um ite
         //onInteractOutside={e => e.preventDefault()}
        // onOpenAutoFocus={e => e.preventDefault()}
         onCloseAutoFocus={e => e.preventDefault()}
-        className="p-0 pt-1  z-20"
+        className="p-0 pt-1  z-50"
       >
         <Command  className={`shadow-sm border border-gray-200 ${className}`}>
           <CommandInput   className="h-8 border-0 focus:ring-0 focus:border-0 focus:outline-none"  placeholder={searchPlaceholder} />
           <CommandList>
             <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
             <CommandGroup>
-              {items.map(item => (
+              {items?.map((item,index) => (
                 <CommandItem
                 className="text-xs"
-                  key={item.value}
-                  value={item.label}
+                  key={index}
+                  value={item.label??''}
                   onSelect={() => {
                     onChange(item.value === value ? null : item.value);
                     setOpen(false);

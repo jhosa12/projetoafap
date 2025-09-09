@@ -92,7 +92,6 @@ export default function Usuario() {
       data.append("file", dadosUser.file);
     }
 
-<<<<<<< HEAD
     toast.promise(api.post("/user", data), {
       error: "ERRO AO REALIZAR CADASTRO",
       loading: "CADASTRANDO NOVO FUNCIONÁRIO",
@@ -101,25 +100,6 @@ export default function Usuario() {
         return "FUNCIONÁRIO CADASTRADO COM SUCESSO";
       },
     });
-=======
-
-    toast.promise(
-      api.post('/user', data),
-      {
-        error: 'ERRO AO REALIZAR CADASTRO',
-        loading: 'CADASTRANDO NOVO FUNCIONÁRIO',
-        success: async () => {
-          await getUsers()
-          return 'FUNCIONÁRIO CADASTRADO COM SUCESSO'
-        }
-      }
-    )
-
-
-
-    // await getUsers()
-
->>>>>>> 822589c900b6ff336d58441319ae799215394bb0
   }
 
   async function handleEditarCadastro() {
@@ -194,7 +174,6 @@ export default function Usuario() {
       data.append("file", dadosUser.file);
     }
 
-<<<<<<< HEAD
     toast.promise(api.put("/user/editar", data), {
       loading: "ALTERANDO DADOS.....",
       success: async (res) => {
@@ -205,30 +184,6 @@ export default function Usuario() {
         return "ERRO AO REALIZAR ALTERAÇÃO";
       },
     });
-=======
-
-
-
-
-    toast.promise(
-      api.put('/user/editar', data),
-      {
-        loading: 'ALTERANDO DADOS.....',
-        success: async (res) => {
-          await getUsers()
-          return 'DADOS ALTERADOS COM SUCESSO'
-        },
-        error: (err) => {
-          return 'ERRO AO REALIZAR ALTERAÇÃO'
-        }
-      }
-    )
-
-
-
-
-
->>>>>>> 822589c900b6ff336d58441319ae799215394bb0
   }
 
   const handlePermission = (permission: string) => {
