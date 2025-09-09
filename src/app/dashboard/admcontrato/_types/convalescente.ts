@@ -8,7 +8,7 @@ export interface ConvProps {
   tipo_entrada: string,
   nome: string,
   cpf_cnpj: string,
-  data: Date,
+  data?: Date | null,
   status: string,
   forma_pag: string,
   logradouro: string,

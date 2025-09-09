@@ -1,18 +1,11 @@
 'use client';
 
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "@/store/AuthContext";
-import { api } from "@/lib/axios/apiClient";
+import { useState } from "react";
 import { ObitoProps } from "@/app/dashboard/admcontrato/_types/associado";
-import { toast } from "sonner";
-
-// import de UI shadcn/ui - um por arquivo
 import { Button } from "@/components/ui/button";
-import { HiOutlineTrash, HiPencil, HiPlusCircle } from "react-icons/hi2";
-import Link from "next/link";
+import { HiPlusCircle } from "react-icons/hi2";
 import { DataTable } from "@/components/ui/data-table";
 import { getObitoColumns } from "@/app/dashboard/servicos/_components/obitos/ordemDeServico/obitosColumns";
-import { de } from "date-fns/locale";
 import useActionsObito from "../_hooks/useActionsObito";
 
 export default function ListarObitos() {

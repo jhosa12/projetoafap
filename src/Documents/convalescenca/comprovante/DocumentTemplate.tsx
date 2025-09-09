@@ -11,7 +11,7 @@ interface DadosProps {
 }
 
 
-class DocumentTemplate extends React.Component<DadosProps> {
+class DocumentTemplateComprovante extends React.Component<DadosProps> {
 
   render() {
     const { nome, material, condicao } = this.props;
@@ -66,4 +66,4 @@ class DocumentTemplate extends React.Component<DadosProps> {
   }
 }
 
-export default DocumentTemplate;
+export default DocumentTemplateComprovante;

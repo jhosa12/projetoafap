@@ -18,7 +18,7 @@ interface DadosProps{
 }
 
 
-class DocumentTemplate extends React.Component<DadosProps> {
+class DocumentTemplateContrato extends React.Component<DadosProps> {
    
   render() {
     const {  nome, 
@@ -88,4 +88,4 @@ CEDRO-CE, {dt}.
   }
 }
 
-export default DocumentTemplate;
+export default DocumentTemplateContrato;

@@ -5,9 +5,9 @@ import Head from "next/head"
 import { AuthContext } from "@/store/AuthContext"
 import { Tabs } from "flowbite-react"
 import { FaStore } from "react-icons/fa"
-import { Estoque } from "@/components/estoque/estoque"
+import { Estoque } from "./components/estoque";
 import { RiHistoryLine } from "react-icons/ri"
-
+import { EstoqueProps } from "./types/estoque"
 import useApi from "@/hooks/useApiPost"
 
 export interface FormProps {
@@ -19,15 +19,7 @@ export interface FormProps {
 
 const HistoricoMov = lazy(() => import('@/app/dashboard/estoque/components/historico/historico'))
 
-export interface EstoqueProps {
-  id_produto: number,
-  descricao: string,
-  quantidade: number,
-  empresa: string
-  produtos: { grupo: string, descricao: string, cod_prod: true, tipo: string },
 
-  // estoque:Array<EstoqueProps>
-}
 export interface ProdutosProps {
   id_produto: number,
   descricao: string,

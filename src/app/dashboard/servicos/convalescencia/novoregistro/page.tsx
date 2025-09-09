@@ -1,299 +1,67 @@
 'use client';
 
-
-import { api } from "@/lib/axios/apiClient";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { AuthContext } from "@/store/AuthContext";
+import {  useState } from "react";
 import { IoMdSearch } from "react-icons/io";
 import { MdClose } from "react-icons/md";
 import { HiOutlineSave } from "react-icons/hi";
 import { IoIosClose } from "react-icons/io";
-import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import DocumentTemplate from "@/Documents/convalescenca/contrato/DocumentTemplate";
 import ComprovanteDocTemplte from '@/Documents/convalescenca/comprovante/DocumentTemplate'
-import { useReactToPrint } from "react-to-print";
 import { IoPrint } from "react-icons/io5";
 import { IoTicket } from "react-icons/io5";
 import { TbAlertTriangle } from "react-icons/tb";
-import { DadosCadastro } from "@/app/dashboard/admcontrato/_types/associado";
 import { toast } from "sonner";
+import useActionsNovoResgistro from "../../_hooks/useActionsNovoRegistro";
 
-
-interface MensalidadeProps {
-    id_acordo: number,
-    parcela_n: number,
-    vencimento: Date,
-    cobranca: Date,
-    valor_principal: number,
-    close: boolean,
-    status: string,
-    usuario: string,
-    id_mensalidade: number,
-    valor_total: number,
-    motivo_bonus: string,
-    data_pgto: Date,
-    referencia: string,
-    index: number
-}
-
-
-interface ConvProps {
-    editar: boolean
-    id_conv: number | null,
-    id_contrato: number | null,
-    id_associado: number | null,
-    id_dependente: number | null,
-    id_contrato_st: string,
-    tipo_entrada: string,
-    nome: string,
-    cpf_cnpj: string,
-    data: Date,
-    status: string,
-    forma_pag: string,
-    logradouro: string,
-    numero: number | null,
-    complemento: string,
-    bairro: string,
-    cep: string,
-    cidade: string,
-    uf: string,
-    subtotal: number | null,
-    descontos: number | null,
-    total: number | null,
-    logradouro_r: string,
-    numero_r: number | null,
-    complemento_r: string,
-    bairro_r: string,
-    cep_r: string,
-    cidade_r: string,
-    uf_r: string,
-    data_inc: Date,
-    hora_inc: Date,
-    usuario: string,
-    obs: string,
-    convalescenca_prod: Array<Partial<{
-        id_conv: number,
-        id_produto: number,
-        descricao: string,
-        unidade: string,
-        grupo: string,
-        data: Date,
-        data_dev: Date,
-        quantidade: number,
-        valor: number,
-        descontos: number,
-        total: number,
-        hora: Date,
-        cortesia: string,
-        retornavel: string,
-        status: string
-    }>>,
-    contrato: {
-        situacao: string,
-        carencia: string,
-        associado: {
-            nome: string
-        }
-
-    }
-
-}
-
-interface ContratoProps {
-    id_contrato: number,
-    plano: string,
-    id_plano: number,
-    valor_mensalidade: number,
-    dt_adesao: Date,
-    dt_carencia: Date,
-    situacao: string,
-    anotacoes: string,
-    consultor: string,
-    cobrador: string,
-    data_vencimento: Date,
-    n_parcelas: number,
-    origem: string,
-    supervisor: string,
-    convalescencia: Array<ConvProps>,
-    categoria_inativo: string,
-    motivo_inativo: string,
-    dt_cancelamento: true,
-}
-interface AcordoProps {
-    total_acordo: number,
-    data_inicio: Date,
-    data_fim: Date,
-    realizado_por: string,
-    dt_pgto: Date,
-    mensalidade: Array<Partial<MensalidadeProps>>,
-    status: string,
-    descricao: string,
-    metodo: string
-    closeAcordo: boolean,
-    id_acordo: number,
-    visibilidade: boolean
-}
-
-interface DependentesProps {
-    nome: string,
-    data_nasc: Date,
-    grau_parentesco: string,
-    data_adesao: Date,
-    carencia: Date,
-    id_dependente: number,
-    cad_dh: Date,
-    close: boolean,
-    sexo: string,
-    saveAdd: boolean,
-    excluido: boolean,
-    dt_exclusao: Date,
-    user_exclusao: string,
-    exclusao_motivo: string,
-    convalescenca: {
-        convalescenca_prod: Array<Partial<{
-            id_conv: number,
-            id_produto: number,
-            descricao: string,
-            unidade: string,
-            grupo: string,
-            data: Date,
-            data_dev: Date,
-            quantidade: number,
-            valor: number,
-            descontos: number,
-            total: number,
-            hora: Date,
-            cortesia: string,
-            retornavel: string,
-            status: string
-        }>>,
-    }
-}
-
-interface AssociadoProps {
-    nome: string,
-    data_nasc: Date,
-    sexo: string,
-    celular1: string, celular2: string, telefone: string,
-    id_associado: number,
-    endereco: string,
-    bairro: string,
-    numero: number,
-    cidade: string,
-    cep: string,
-    cpf: string, rg: string
-    email: string,
-    profissao: string,
-    guia_rua: string,
-    uf: string,
-    mensalidade: Array<MensalidadeProps>,
-    contrato: ContratoProps,
-    dependentes: Array<DependentesProps>
-    acordo: Array<AcordoProps>
-
-}
-
-interface EstoqueProps {
-    id_estoque: number,
-    codProd: string,
-    data: Date,
-    estado: string,
-    produto: string,
-}
-
-
-interface ListaMaterial {
-    id_estoque: number,
-    id_conv_prod: number,
-    id_conv: number,
-    id_produto: number,
-    descricao: string,
-    unidade: string,
-    grupo: string,
-    data: Date,
-    data_dev: Date,
-    quantidade: number,
-    valor: number,
-    descontos: number,
-    total: number,
-    hora: Date,
-    cortesia: string,
-    retornavel: string,
-    status: string,
-
-}
-
-
-interface SelectProps {
-
-    id_produto: number,
-    descricao: string,
-    unidade: string,
-    valor_custo: number,
-    valor_venda: number
-    quantidade: number,
-    margem_lucro: number,
-    valor_aluguel: number,
-    est_inicial: number,
-    est_entradas: number,
-    est_saidas: number,
-    est_saldo: number,
-    situacao: string,
-    data_inc: Date,
-    grupo: string,
-    tipo: string,
-    taxa_conval: number
-}
 
 export default function ConvalescenciaNovo() {
-    const [dataInputs, setDataInputs] = useState<Partial<ListaMaterial>>({})
-    const { usuario } = useContext(AuthContext)
+
     const [usuarioMaterial, setUsuarioMaterial] = useState(true);
     const [material, setMaterialUsuario] = useState(false);
-    const [estoque, setEstoque] = useState<Array<EstoqueProps>>([])
-    const [componenteMounted, setMounted] = useState(false);
-    const [titular, setTitular] = useState(false);
     const [dependente, setDependente] = useState(false);
     const [modalDependente, setModalDependente] = useState(false);
-    const [listaMaterial, setMaterial] = useState<Array<Partial<ListaMaterial>>>([]);
-    const [selectProdutos, setSelect] = useState<Array<SelectProps>>([]);
-    const [dadosassociado, setDadosAssociado] = useState<AssociadoProps>();
-    const componentRefContrato = useRef<DocumentTemplate>(null);
-    const componentRefComprovante = useRef<ComprovanteDocTemplte>(null);
     const [modalComprovante, setComprovante] = useState(false);
-    const [indexProd, setIndex] = useState<number>(0);
     const [modalContrato, setModalContrato] = useState(false)
     const [visible, setVisible] = useState(false)
-    const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod: [] });
-    const [data, closeModa] = useState<Partial<DadosCadastro>>({});
+
+    const {
+
+        dataInputs,
+        estoque,
+        listaMaterial,
+        indexProd,
+        dadosAssociado,
+        data,
+        listaConv,
+        titular,
+        selectProdutos,
+        componentRefComprovante,
+        componentRefContrato,
+        isLoading,
+
+        setTitular,
+        closeModa,
+        setMaterial,
+        setIndex,
 
 
+        setarListaConv,
+        imprimirComprovante,
+        imprimirContrato,
+        setInputs,
+        adicionarProduto,
+        receberDev,
+        carregarDados,
+        editarRegistro,
+        adicionarNovoRegistro
 
-    const setarListaConv = useCallback((fields: Partial<ConvProps>) => {
-        setLista(prev => ({ ...prev, ...fields }));
-    }, []);
+    } = useActionsNovoResgistro()
 
-
-    const imprimirComprovante = useReactToPrint({
-        content: () => componentRefComprovante.current
-    })
-
-    const imprimirContrato = useReactToPrint({
-        content: () => componentRefContrato.current
-    })
-
-    const setInputs = (fields: Partial<ListaMaterial>) => {
-        setDataInputs((prev: Partial<ListaMaterial>) => {
-            if (prev) {
-                return { ...prev, ...fields }
-            }
-            else {
-                return { ...fields }
-            }
-        })
+    if (isLoading) {
+        return <p>Carregando...</p>;
     }
 
     //  function statusProd(status: string) {
@@ -305,106 +73,6 @@ export default function ConvalescenciaNovo() {
     //   else { imprimirContrato() }
     //   }
 
-
-    async function adicionarProduto() {
-
-        if (!listaConv.id_conv) {
-            toast.info('SALVE OS DADOS DO SOLICITANTE!')
-            return;
-        }
-
-        toast.promise(
-            api.post('/convalescente/novoProduto',
-                {
-                    id_conv: listaConv.id_conv,
-                    id_produto: dataInputs.id_produto,
-                    descricao: dataInputs.descricao,
-                    unidade: '',
-                    grupo: 'cv',
-                    data: new Date(),
-                    data_dev: undefined,
-                    quantidade: dataInputs.quantidade,
-                    valor: dataInputs.valor,
-                    descontos: 0,
-                    total: dataInputs.quantidade,
-                    hora: new Date(),
-                    cortesia: '',
-                    retornavel: '',
-                    status: 'PENDENTE'
-                }
-            ),
-            {
-                error: 'Erro ao Atualizar Dados',
-                loading: 'Atualizando Dados....',
-                success: (response) => {
-                    const novoArray = [...listaMaterial]
-                    novoArray.push(response.data)
-                    setMaterial(novoArray)
-
-                    return 'Dados Atualizados com sucesso!'
-                }
-            }
-        )
-
-
-    }
-
-
-    async function receberDev(status: string) {
-
-        if (status === 'ABERTO') {
-            const novoArray = [...listaMaterial]
-            novoArray[indexProd].id_estoque = dataInputs.id_estoque
-            setMaterial(novoArray)
-        }
-
-        toast.promise(
-            api.put('/convalescencia/receber', {
-                id_conv_prod: listaMaterial[indexProd].id_conv_prod,
-                id_estoque: status === 'ABERTO' ? listaMaterial[indexProd].id_estoque : undefined,
-                status
-            }),
-            {
-                error: 'Erro ao Atualizar Dados',
-                loading: 'Atualizando Dados....',
-                success: (response) => {
-                    const novoArray = [...listaMaterial]
-                    novoArray[indexProd] = response.data
-                    setMaterial(novoArray)
-
-                    return 'Dados Atualizados com sucesso!'
-                }
-
-            }
-
-
-
-        )
-
-
-
-    }
-
-
-
-
-
-
-    async function carregarDados() {
-        try {
-            const response = await api.post('/associado', {
-                id_associado: Number(data.id_associado),
-                empresa: data.empresa
-
-            })
-
-            setDadosAssociado(response.data);
-
-
-        } catch (error) {
-            toast.error('Erro na requisição')
-        }
-    }
 
 
     /*  async function  atualizarStatus() {
@@ -425,178 +93,6 @@ export default function ConvalescenciaNovo() {
           
       }*/
 
-
-    async function editarRegistro() {
-
-        if (!listaConv.nome || !listaConv.logradouro) {
-            toast.info('Preencha os campos obrigatórios');
-            return;
-        }
-
-        //  if (listaConv.convalescenca_prod) {
-        //    toast.info('Adicione o Produto Desejado!');
-        //  return;
-        //  }
-
-        //const produto = {...listaConv.convalescenca_prod} ??{}
-        toast.promise(
-
-            api.put('/convalescencia/editar', {
-
-                id_conv: listaConv.id_conv,
-                id_contrato: listaConv.id_contrato,
-                id_associado: listaConv.id_associado,
-                id_contrato_st: listaConv.id_contrato_st,
-                tipo_entrada: listaConv.tipo_entrada,
-                nome: listaConv.nome,
-                cpf_cnpj: listaConv.cpf_cnpj,
-                data: new Date(listaConv.data ?? ''),
-                status: listaConv.status,
-                forma_pag: listaConv.forma_pag,
-                logradouro: listaConv.logradouro,
-                numero: listaConv.numero,
-                complemento: listaConv.complemento,
-                bairro: listaConv.bairro,
-                cep: listaConv.cep,
-                cidade: listaConv.cidade,
-                uf: listaConv.uf,
-                subtotal: listaConv.subtotal,
-                descontos: listaConv.descontos,
-                total: listaConv.total,
-                logradouro_r: listaConv.logradouro_r,
-                numero_r: listaConv.numero_r,
-                complemento_r: listaConv.complemento_r,
-                bairro_r: listaConv.bairro_r,
-                cep_r: listaConv.cep_r,
-                cidade_r: listaConv.cidade_r,
-                uf_r: listaConv.uf_r,
-                data_inc: listaConv.data && new Date(listaConv.data_inc ?? ''),
-                hora_inc: new Date(listaConv.hora_inc ?? ''),
-                usuario: listaConv.usuario,
-                obs: listaConv.obs,
-                convalescenca_prod: listaMaterial
-
-
-
-            }),
-            {
-                error: 'Erro ao atualizar dados',
-                loading: 'Atualizando Dados',
-                success: (response) => {
-
-                    setarListaConv({ ...response.data })
-                    setMaterial(response.data.convalescenca_prod)
-                    return 'Dados Atualizados com Sucesso'
-                }
-            }
-        )
-
-
-
-
-
-
-    }
-
-
-    async function adicionarNovoRegistro() {
-
-
-        if (!listaConv.nome || !listaConv.logradouro) {
-            toast.info('Preencha os campos obrigatórios');
-            return;
-        }
-
-
-        toast.promise(
-            api.post('/convalescencia/novo', {
-                id_contrato: dadosassociado?.contrato.id_contrato,
-                id_associado: dadosassociado?.id_associado,
-                id_dependente: listaConv.id_dependente,
-                id_contrato_st: listaConv.id_contrato_st,
-                tipo_entrada: listaConv.tipo_entrada,
-                nome: listaConv.nome,
-                cpf_cnpj: listaConv.cpf_cnpj,
-                data: listaConv.data,
-                status: "ABERTO",
-                forma_pag: listaConv.forma_pag,
-                logradouro: listaConv.logradouro,
-                numero: listaConv.numero,
-                complemento: listaConv.complemento,
-                bairro: listaConv.bairro,
-                cep: listaConv.cep,
-                cidade: listaConv.cidade,
-                uf: listaConv.uf,
-                subtotal: listaConv.subtotal,
-                descontos: listaConv.descontos,
-                total: listaConv.total,
-                logradouro_r: listaConv.logradouro_r,
-                numero_r: listaConv.numero_r,
-                complemento_r: listaConv.complemento_r,
-                bairro_r: listaConv.bairro_r,
-                cep_r: listaConv.cep_r,
-                cidade_r: listaConv.cidade_r,
-                uf_r: listaConv.uf_r,
-                data_inc: listaConv.data_inc,
-                hora_inc: listaConv.hora_inc,
-                usuario: usuario?.nome,
-                obs: listaConv.obs,
-
-
-            }),
-            {
-                error: 'Erro ao cadastrar',
-                loading: 'Salvando Dados',
-                success: 'Dados Registrados com Sucesso'
-            }
-        )
-
-
-
-
-    }
-
-
-    useEffect(() => {
-        closeModa({ id_associado: undefined })
-        const novoArray = listaConv.convalescenca_prod && [...listaConv.convalescenca_prod];
-        // novoArray.push({ ...listaConv.convalescenca_prod})
-        novoArray && setMaterial(novoArray)
-        if (!componenteMounted) {
-            try {
-                const selectMateriais = async () => {
-                    const response = await api.get('/estoque/listar')
-                    setSelect(response.data.produtos)
-                    setEstoque(response.data.estoque)
-
-                }
-                selectMateriais()
-
-            } catch (error) {
-                console.log(error)
-            }
-
-
-        }
-
-
-
-        setMounted(true)
-    }, [])
-
-
-    useEffect(() => {
-
-        closeModa({ ...data, closeModalPlano: false })
-
-        if (data.id_associado && componenteMounted) {
-
-            carregarDados();
-
-        }
-
-    }, [data.id_associado])
-
     //function setarMaterialLista(fields: Partial<ListaMaterial>) {
     //     setMaterial((prev: Partial<ListaMaterial>) => {
     //       if (prev) {
@@ -610,28 +106,6 @@ export default function ConvalescenciaNovo() {
 
 
     //  }
-
-
-    useEffect(() => {
-
-        if (titular) {
-            setarListaConv({
-                nome: dadosassociado?.nome ?? '',
-                data: dadosassociado?.data_nasc ?? new Date(),
-                logradouro: dadosassociado?.endereco ?? '',
-                bairro: dadosassociado?.bairro ?? '',
-                numero: dadosassociado?.numero ?? null,
-                cidade: dadosassociado?.cidade ?? '',
-                id_dependente: null
-            })
-
-        }
-
-    }, [titular])
-
-
-
-
 
     return (
         <>
@@ -728,7 +202,7 @@ export default function ConvalescenciaNovo() {
                                 </button>
                             </div>
                             <ul className="flex flex-col pt-2 overflow-y-auto text-gray-300 gap-2 ">
-                                {dadosassociado?.dependentes.map((item, index) => {
+                                {dadosAssociado?.dependentes.map((item, index) => {
                                     return (
                                         item.excluido !== true && <li onClick={() => { setarListaConv({ nome: item.nome, data: item.data_nasc, id_dependente: item.id_dependente }); setModalDependente(false) }} className="flex cursor-pointer hover:bg-gray-700 bg-gray-600 p-1 pl-2 pr-2 rounded-lg ">
                                             {item.nome}
@@ -772,8 +246,8 @@ export default function ConvalescenciaNovo() {
                         </li>}
                     </ul>
                     {usuarioMaterial && <>
-                        {dadosassociado?.id_associado && <div className="flex w-full p-2  text-lg  text-white">
-                            <h1 className="flex w-full p-1 border-b-[1px] border-gray-500">ASSOCIADO: {dadosassociado?.contrato.id_contrato} - {dadosassociado?.nome} / CATEGORIA: {dadosassociado?.contrato.plano}</h1>
+                        {dadosAssociado?.id_associado && <div className="flex w-full p-2  text-lg  text-white">
+                            <h1 className="flex w-full p-1 border-b-[1px] border-gray-500">ASSOCIADO: {dadosAssociado?.contrato.id_contrato} - {dadosAssociado?.nome} / CATEGORIA: {dadosAssociado?.contrato.plano}</h1>
                         </div>}
                         <div className="inline-flex gap-8 pl-4 pt-1">
                             <div className="flex items-center ">
