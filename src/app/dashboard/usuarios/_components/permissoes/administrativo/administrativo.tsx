@@ -1,7 +1,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { PermissionCard, type PermissionItem } from "@/components/permissions/permission-card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 interface DataProps {
   permissions: Array<string>;
@@ -18,17 +20,154 @@ const TABS = [
 
 export function TabAdministrativo({ permissions, handlePermission }: DataProps) {
   const [activeTab, setActiveTab] = useState("contrato");
+  const [query, setQuery] = useState("");
+  const permissionsSet = useMemo(() => new Set(permissions), [permissions]);
 
-  const renderCheckbox = (id: string, label: string) => (
-    <div key={id} className="flex items-center gap-2">
-      <Checkbox
-        id={id}
-        checked={permissions.includes(id)}
-        onCheckedChange={() => handlePermission(id)}
-      />
-      <label htmlFor={id} className="text-sm">{label}</label>
-    </div>
-  );
+  // Listas de itens por grupo em cada aba
+  const contratoGroups: { title: string; items: PermissionItem[] }[] = [
+    {
+      title: "Dados Associado",
+      items: [
+        { id: "ADM1.1.1", label: "Editar" },
+        { id: "ADM1.1.2", label: "Lançar/Editar Obs." },
+        { id: "ADM1.1.3", label: "Inativar/Ativar" },
+      ],
+    },
+    {
+      title: "Historico/Mensal.",
+      items: [
+        { id: "ADM1.2", label: "Visualizar" },
+        { id: "ADM1.2.1", label: "Adicionar Mensalidade" },
+        { id: "ADM1.2.3", label: "Excluir Mensalidade" },
+        { id: "ADM1.2.5", label: "Baixar" },
+        { id: "ADM1.2.6", label: "Estornar" },
+        { id: "ADM1.2.2", label: "Adicionar Acordos" },
+        { id: "ADM1.2.7", label: "Baixa Retroativa" },
+        { id: "ADM1.2.8", label: "Alterar Vencimento" },
+        { id: "ADM1.2.9", label: "Alterar data cobrança" },
+        { id: "ADM1.2.10", label: "Exibir Pagas" },
+        { id: "ADM1.2.11", label: "Manipular Acresc./Desc." },
+      ],
+    },
+    {
+      title: "Dependentes",
+      items: [
+        { id: "ADM1.3", label: "Visualizar" },
+        { id: "ADM1.3.1", label: "Exibir Excluidos" },
+        { id: "ADM1.3.3", label: "Excluir" },
+        { id: "ADM1.3.2", label: "Adicionar" },
+        { id: "ADM1.3.4", label: "Editar" },
+      ],
+    },
+    {
+      title: "Óbitos",
+      items: [{ id: "ADM1.5", label: "Visualizar" }],
+    },
+  ];
+
+  const caixaGroups: { title: string; items: PermissionItem[] }[] = [
+    {
+      title: "Movimentação",
+      items: [
+        { id: "ADM2.1.1", label: "Adicionar" },
+        { id: "ADM2.1.3", label: "Editar" },
+        { id: "ADM2.1.4", label: "Excluir" },
+        { id: "ADM2.1.5", label: "Vizualizar Valores" },
+        { id: "ADM2.1.6", label: "Caixa geral" },
+      ],
+    },
+    {
+      title: "Relatórios",
+      items: [{ id: "ADM2.2", label: "Visualizar" }],
+    },
+  ];
+
+  const cobrancaGroups: { title: string; items: PermissionItem[] }[] = [
+    {
+      title: "Lista Cobrança",
+      items: [
+        { id: "ADM3.2", label: "Imprimir" },
+        { id: "ADM3.1", label: "Filtrar" },
+      ],
+    },
+  ];
+
+  const gerenciarGroups: { title: string; items: PermissionItem[] }[] = [
+    {
+      title: "Plano de contas",
+      items: [
+        { id: "ADM4.1", label: "Visualizar" },
+        { id: "ADM4.1.1", label: "Adicionar" },
+        { id: "ADM4.1.2", label: "Editar" },
+        { id: "ADM4.1.3", label: "Excluir" },
+      ],
+    },
+    {
+      title: "Metas",
+      items: [
+        { id: "ADM4.2", label: "Visualizar" },
+        { id: "ADM4.2.1", label: "Adicionar" },
+        { id: "ADM4.2.2", label: "Editar" },
+        { id: "ADM4.2.3", label: "Excluir" },
+      ],
+    },
+    {
+      title: "Convalescencia",
+      items: [
+        { id: "ADM4.3", label: "Visualizar" },
+        { id: "ADM4.3.1", label: "Adicionar" },
+        { id: "ADM4.3.2", label: "Editar" },
+        { id: "ADM4.3.3", label: "Excluir" },
+      ],
+    },
+    {
+      title: "Planos",
+      items: [
+        { id: "ADM4.4", label: "Visualizar" },
+        { id: "ADM4.4.1", label: "Adicionar" },
+        { id: "ADM4.4.2", label: "Editar" },
+        { id: "ADM4.4.3", label: "Excluir" },
+      ],
+    },
+  ];
+
+  const convalescenciaGroups: { title: string; items: PermissionItem[] }[] = [
+    {
+      title: "Convalescencia",
+      items: [
+        { id: "ADM5", label: "Visualizar" },
+        { id: "ADM5.1", label: "Adicionar" },
+        { id: "ADM5.2", label: "Editar" },
+        { id: "ADM5.3", label: "Excluir" },
+      ],
+    },
+  ];
+
+  const groupsByTab: Record<string, { title: string; items: PermissionItem[] }[]> = {
+    contrato: contratoGroups,
+    caixa: caixaGroups,
+    cobranca: cobrancaGroups,
+    gerenciar: gerenciarGroups,
+    convalescencia: convalescenciaGroups,
+  };
+
+  const toggle = (id: string) => handlePermission(id);
+
+  const selectAllCurrentTab = () => {
+    const groups = groupsByTab[activeTab] ?? [];
+    const allItems = groups.flatMap((g) => g.items);
+    allItems.forEach((it) => {
+      if (!permissionsSet.has(it.id)) toggle(it.id);
+    });
+  };
+
+  const clearAllCurrentTab = () => {
+    const groups = groupsByTab[activeTab] ?? [];
+    const allItems = groups.flatMap((g) => g.items);
+    allItems.forEach((it) => {
+      if (permissionsSet.has(it.id)) toggle(it.id);
+    });
+  };
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -38,137 +177,98 @@ export function TabAdministrativo({ permissions, handlePermission }: DataProps) 
         ))}
       </TabsList>
 
+      <div className="mb-4 flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <Input
+            placeholder="Buscar permissões (nome ou código)"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="max-w-sm"
+          />
+          <Button variant="secondary" onClick={() => setQuery("")}>Limpar busca</Button>
+          <Separator orientation="vertical" className="h-6" />
+          <Button variant="outline" onClick={selectAllCurrentTab}>Selecionar todos (aba)</Button>
+          <Button variant="outline" onClick={clearAllCurrentTab}>Limpar (aba)</Button>
+        </div>
+      </div>
+
       {/* ADM Contrato */}
       <TabsContent value="contrato">
-        <div className="grid grid-cols-4 gap-2">
-          <Card className="p-2">
-            <CardHeader>
-              <CardTitle className="text-xs">Dados Associado</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              {["ADM1.1.1", "ADM1.1.2", "ADM1.1.3"].map((id, i) =>
-                renderCheckbox(id, ["Editar", "Lançar/Editar Obs.", "Inativar/Ativar"][i])
-              )}
-            </CardContent>
-          </Card>
-
-          <Card className="p-2">
-            <CardHeader>
-              <CardTitle className="text-xs">Historico/Mensal.</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              {[
-                "ADM1.2", "ADM1.2.1", "ADM1.2.3", "ADM1.2.5", "ADM1.2.6", "ADM1.2.2",
-                "ADM1.2.7", "ADM1.2.8", "ADM1.2.9", "ADM1.2.10", "ADM1.2.11"
-              ].map((id, i) =>
-                renderCheckbox(id, [
-                  "Visualizar", "Adicionar Mensalidade", "Excluir Mensalidade", "Baixar",
-                  "Estornar", "Adicionar Acordos", "Baixa Retroativa", "Alterar Vencimento",
-                  "Alterar data cobrança", "Exibir Pagas", "Manipular Acresc./Desc."
-                ][i])
-              )}
-            </CardContent>
-          </Card>
-
-          <Card className="p-2">
-            <CardHeader>
-              <CardTitle className="text-xs">Dependentes</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              {["ADM1.3", "ADM1.3.1", "ADM1.3.3", "ADM1.3.2", "ADM1.3.4"].map((id, i) =>
-                renderCheckbox(id, ["Visualizar", "Exibir Excluidos", "Excluir", "Adicionar", "Editar"][i])
-              )}
-            </CardContent>
-          </Card>
-
-          <Card className="p-2">
-            <CardHeader>
-              <CardTitle className="text-xs">Óbitos</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              {renderCheckbox("ADM1.5", "Visualizar")}
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+          {contratoGroups.map((g) => (
+            <PermissionCard
+              key={g.title}
+              title={g.title}
+              items={g.items}
+              permissionsSet={permissionsSet}
+              onToggle={toggle}
+              filter={query}
+            />
+          ))}
         </div>
       </TabsContent>
 
       {/* Caixa */}
       <TabsContent value="caixa">
-        <div className="grid grid-cols-4 gap-2">
-          <Card className="p-2">
-            <CardHeader>
-              <CardTitle className="text-xs">Movimentação</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              {["ADM2.1.1", "ADM2.1.3", "ADM2.1.4", "ADM2.1.5", "ADM2.1.6"].map((id, i) =>
-                renderCheckbox(id, ["Adicionar", "Editar", "Excluir", "Vizualizar Valores", "Caixa geral"][i])
-              )}
-            </CardContent>
-          </Card>
-
-          <Card className="p-2">
-            <CardHeader>
-              <CardTitle className="text-xs">Relatórios</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              {renderCheckbox("ADM2.2", "Visualizar")}
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+          {caixaGroups.map((g) => (
+            <PermissionCard
+              key={g.title}
+              title={g.title}
+              items={g.items}
+              permissionsSet={permissionsSet}
+              onToggle={toggle}
+              filter={query}
+            />
+          ))}
         </div>
       </TabsContent>
 
       {/* Cobrança */}
       <TabsContent value="cobranca">
-        <div className="grid grid-cols-4 gap-2">
-          <Card className="p-2">
-            <CardHeader>
-              <CardTitle className="text-sm">Lista Cobrança</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              {["ADM3.2", "ADM3.1"].map((id, i) =>
-                renderCheckbox(id, ["Imprimir", "Filtrar"][i])
-              )}
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+          {cobrancaGroups.map((g) => (
+            <PermissionCard
+              key={g.title}
+              title={g.title}
+              items={g.items}
+              permissionsSet={permissionsSet}
+              onToggle={toggle}
+              filter={query}
+            />
+          ))}
         </div>
       </TabsContent>
 
       {/* Gerenciar */}
       <TabsContent value="gerenciar">
-        <div className="grid grid-cols-4 gap-2">
-          {[
-            { title: "Plano de contas", base: "ADM4.1" },
-            { title: "Metas", base: "ADM4.2" },
-            { title: "Convalescencia", base: "ADM4.3" },
-            { title: "Planos", base: "ADM4.4" }
-          ].map(({ title, base }) => (
-            <Card key={base} className="p-2">
-              <CardHeader>
-                <CardTitle className="text-sm">{title}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-1">
-                {[base, `${base}.1`, `${base}.2`, `${base}.3`].map((id, i) =>
-                  renderCheckbox(id, ["Visualizar", "Adicionar", "Editar", "Excluir"][i])
-                )}
-              </CardContent>
-            </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+          {gerenciarGroups.map((g) => (
+            <PermissionCard
+              key={g.title}
+              title={g.title}
+              items={g.items}
+              permissionsSet={permissionsSet}
+              onToggle={toggle}
+              filter={query}
+            />
           ))}
         </div>
       </TabsContent>
 
       {/* Convalescencia */}
       <TabsContent value="convalescencia">
-        <div className="grid grid-cols-4 gap-2">
-          <Card className="p-2">
-            <CardHeader>
-              <CardTitle className="text-sm">Convalescencia</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              {["ADM5", "ADM5.1", "ADM5.2", "ADM5.3"].map((id, i) =>
-                renderCheckbox(id, ["Visualizar", "Adicionar", "Editar", "Excluir"][i])
-              )}
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+          {convalescenciaGroups.map((g) => (
+            <PermissionCard
+              key={g.title}
+              title={g.title}
+              items={g.items}
+              permissionsSet={permissionsSet}
+              onToggle={toggle}
+              filter={query}
+            />
+          ))}
         </div>
       </TabsContent>
     </Tabs>

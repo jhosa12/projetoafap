@@ -2,9 +2,12 @@
 
 
 import { api } from "@/lib/axios/apiClient";
-import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 
 
@@ -44,38 +47,33 @@ export function ModalPassword({openModal,setOpenModal,id_user}:DataProps) {
 
   return (
 
-    
-      <Modal show={openModal} size="md" popup onClose={() => setOpenModal(false)} >
-        <Modal.Header />
-        <Modal.Body>
-          <div className="space-y-4">
-           
-            <div>
-              <div className="mb-0 block">
-                <Label  value="Senha Atual" />
-              </div>
-              <TextInput value={senhaAtual} onChange={e=>setAtual(e.target.value)} type="password"  placeholder="senha atual" required />
-            </div>
-            <div>
-              <div className="mb-0 block">
-                <Label  value="Nova Senha" />
-              </div>
-              <TextInput value={novaSenha} onChange={e=>setNova(e.target.value)}  type="password" required />
-            </div>
-            <div>
-              <div className="mb-0 block">
-                <Label  value="Repita a nova senha" />
-              </div>
-              <TextInput value={repSenha} onChange={e=>setRep(e.target.value)} type="password" required />
-            </div>
-            
-            <div className="w-full">
-              <Button onClick={handleNewPassword}>Salvar</Button>
-            </div>
-          
+    <Dialog open={openModal} onOpenChange={setOpenModal}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Alterar senha</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          <div className="grid gap-1">
+            <Label htmlFor="senha-atual">Senha atual</Label>
+            <Input id="senha-atual" value={senhaAtual} onChange={e=>setAtual(e.target.value)} type="password" placeholder="senha atual" required />
           </div>
-        </Modal.Body>
-      </Modal>
-    
+
+          <div className="grid gap-1">
+            <Label htmlFor="nova-senha">Nova senha</Label>
+            <Input id="nova-senha" value={novaSenha} onChange={e=>setNova(e.target.value)} type="password" required />
+          </div>
+
+          <div className="grid gap-1">
+            <Label htmlFor="rep-senha">Repita a nova senha</Label>
+            <Input id="rep-senha" value={repSenha} onChange={e=>setRep(e.target.value)} type="password" required />
+          </div>
+        </div>
+
+        <DialogFooter className="mt-4">
+          <Button onClick={handleNewPassword}>Salvar</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

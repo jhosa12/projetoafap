@@ -16,7 +16,8 @@ import { pageStyle } from "@/utils/pageStyle";
 import { RelatorioEstoque } from "@/Documents/estoque/RelatorioEstoque";
 import { ModalMov } from "@/components/modals/estoque/modalMovimentacao";
 import { ModalNovoProduto } from "@/components/modals/estoque/modalNovoProduto";
-import { EstoqueProps, FormProps, ProdutosProps } from "../page";
+import { FormProps, ProdutosProps } from "../page";
+import { EstoqueProps } from "../types/estoque";
 
 
 
