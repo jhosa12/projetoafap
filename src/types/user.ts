@@ -10,3 +10,4 @@ export type UserProps = {
     dir: string,
     image: string,
 }
+

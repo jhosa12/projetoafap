@@ -13,9 +13,6 @@ interface DataProps{
 
 export function ModalConfirmar({openModal,setOpenModal,handleConfirmar,pergunta,children}:DataProps) {
 
-  
-
-
     return (
         <Dialog  open={openModal} onOpenChange={setOpenModal}>
        

@@ -1,6 +1,6 @@
-import { ConvProps } from "./convalescente"
+import { ConvProps } from "../../servicos/_types/convalescente"
 import { ImpressoesProps } from "./impressoes"
-import { ObitoProps } from "./obito"
+import { ObitoProps } from "../../servicos/_types/obito"
 
 export type ContratoProps = {
     id_contrato_global: number | null,

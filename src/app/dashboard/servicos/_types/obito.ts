@@ -1,5 +1,5 @@
-import { CheckListProps } from "./checklist"
-import { ArrayProdutoProps } from "./array-produtos"
+import { CheckListProps } from "../../admcontrato/_types/checklist"
+import { ArrayProdutoProps } from "../../admcontrato/_types/array-produtos"
 
 export interface ObitoProps {
   id_obitos: number,

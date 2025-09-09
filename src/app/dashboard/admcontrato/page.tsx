@@ -84,8 +84,6 @@ export default function AdmContrato() {
   const [tab, setTab] = useState("dados");
 
 
-
-
   /*  useEffect(() => {
           async function listaCadastro() {
               const response = await api.get('/listarDadosCadastro')

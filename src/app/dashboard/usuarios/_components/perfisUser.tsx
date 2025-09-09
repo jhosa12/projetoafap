@@ -20,7 +20,7 @@ import {
 import { useEffect, useState } from "react"
 import { Delete, Edit2 } from "lucide-react"
 import { ModalEditarPerfil } from "./modalEditarPerfil"
-import { ModalNovoPerfil } from "./modal-novoPerfil"
+import { ModalNovoPerfil } from "./modal-novo-perfil"
 
 interface DataProps {
   id: number,

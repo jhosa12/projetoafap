@@ -2,7 +2,7 @@
 
 
 import { api } from "@/lib/axios/apiClient"
-import {  useCallback,  useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { LuFolderEdit } from "react-icons/lu";
 import { MdDeleteOutline } from "react-icons/md";
 import { IoIosClose } from "react-icons/io";
@@ -12,216 +12,58 @@ import ReactPaginate from 'react-paginate';
 import { Tooltip } from 'react-tooltip';
 import Link from "next/link";
 import { toast } from "sonner";
-
-interface ConvProps {
-    id_conv: number,
-    id_contrato: number,
-    id_associado: number,
-    id_contrato_st: string,
-    tipo_entrada: string,
-    nome: string,
-    cpf_cnpj: string,
-    data: Date,
-    status: string,
-    forma_pag: string,
-    logradouro: string,
-    numero: number,
-    complemento: string,
-    bairro: string,
-    cep: string,
-    cidade: string,
-    uf: string,
-    subtotal: number,
-    descontos: number,
-    total: number,
-    logradouro_r: string,
-    numero_r: number,
-    complemento_r: string,
-    bairro_r: string,
-    cep_r: string,
-    cidade_r: string,
-    uf_r: string,
-    data_inc: Date,
-    hora_inc: Date,
-    usuario: string,
-    obs: string,
-    contrato: {
-        situacao: string,
-        carencia: string,
-        associado: {
-            nome: string
-        }
-
-    },
-    convalescenca_prod: Array<{
-        id_conv_prod: number,
-        id_conv: number,
-        id_produto: number,
-        descricao: string,
-        unidade: string,
-        grupo: string,
-        data: Date,
-        data_dev: Date,
-        quantidade: number,
-        valor: number,
-        descontos: number,
-        total: number,
-        hora: Date,
-        cortesia: string,
-        retornavel: string,
-        status: string
-    }>
-}
+import { ConvProps } from "../../_types/convalescente";
+import useActionsListagem from "../../_hooks/useActionsListagem";
+import { format } from "date-fns";
 
 export default function Convalescente() {
-    const [arrayConv, setConv] = useState<Array<ConvProps>>([])
-    const [arrayFiltro, setFiltro] = useState<Array<ConvProps>>([])
     const [dropOpen, setDrop] = useState(false)
-    const [criterio, setCriterio] = useState("Contrato")
-    const [input, setInput] = useState('')
-    const [excluir, setExcluir] = useState(false)
-    const [aberto, setAberto] = useState(true)
-    const [entregue, setEntregue] = useState(true)
-    const [pendente, setPendente] = useState(true)
-    const [currentPage, setCurrentPage] = useState(0);
-    const itemsPerPage = 16;
-const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod: [] });
 
 
-    
-        const setarListaConv = useCallback((fields: Partial<ConvProps>) => {
-            setLista(prev => ({ ...prev, ...fields }));
-        }, []);
-
-    const handlePageClick = (selectdItem: { selected: number }) => {
-        setCurrentPage(selectdItem.selected)
-    }
-
-    const offset = currentPage * itemsPerPage;
-    const currentItems = arrayFiltro.slice(offset, offset + itemsPerPage);
-    const pageCount = Math.ceil(arrayFiltro.length / itemsPerPage);
+    const {
 
 
+        // --- Estados que a UI irá ler ---
+        pendente,
+        aberto,
+        entregue,
+        criterio,
+        input,
+        arrayConv,
+        listaConv,
+        excluir,
+        arrayFiltro,
+        currentItems,
+        pageCount,
+
+        // --- Funções para alterar o estado  ---
+        setPendente,
+        setAberto,
+        setEntregue,
+        setCriterio,
+        setInput,
+        setExcluir,
+
+        // --- Funções de Ação ---
+        setarListaConv,
+        handlePageClick,
+        listarConv,
+        deletarConv,
+        receberDevolucao
+
+    } = useActionsListagem()
 
 
-    useEffect(() => {
-        try {
-
-            listarConv()
-
-        } catch (error) {
 
 
-        }
-    }, [])
-    async function listarConv() {
-
-        if (!input) {
-            const response = await api.post("/convalescencia/listar")
-            setConv(response.data)
 
 
-        }
-        else if (criterio === 'Contrato') {
-            const response = await api.post("/convalescencia/listar", {
-                id_contrato: Number(input)
-            }
-            )
-            setConv(response.data)
-
-        }
-        else if (criterio === 'Titular') {
-            const response = await api.post("/convalescencia/listar", {
-                titular: input.toUpperCase()
-            })
-            setConv(response.data)
-        }
-
-        else if (criterio === 'Usuario') {
-            const response = await api.post("/convalescencia/listar", {
-                nome: input.toUpperCase()
-            })
-            setConv(response.data)
-        }
-    }
-
-    async function deletarConv() {
-        toast.promise(
-            api.delete("/convalescencia/deletar", {
-                data: {
-                    id_conv: listaConv.id_conv
-                }
-            }),
-            {
-                error: 'Erro ao deletar lançamento',
-                loading: 'Efetuando Exclusão',
-                success: 'Excluido com sucesso!'
-
-            }
-        )
-        listarConv()
-        setarListaConv({ id_conv: undefined })
-        setExcluir(false)
-
-    }
-
-    async function receberDevolucao(id_conv: number) {
-
-      toast.promise(
-            api.put("/convalescencia/receber",
-                {
-                    id_conv,
-                    status: "FECHADO"
-                }
-            ),
-            {
-                error: "Erro na Requisição",
-                loading: "Realizando Devolução",
-                success: "Produto devolvido com Sucesso"
-            }
-
-        )
-       
 
 
-        setInput('')
-        listarConv()
-    }
-
-    useEffect(() => {
-
-        if (arrayConv.length > 0) {
-            let novoArray
-            if (pendente && entregue && aberto) {
-                setFiltro(arrayConv)
-            }
-
-            else if (pendente && !aberto && !entregue) {
-                novoArray = arrayConv.filter(item => item.convalescenca_prod.some(dado => dado.status === 'PENDENTE'))
-            }
-            else if (aberto && !pendente && !entregue) {
-                novoArray = arrayConv.filter(item => item.convalescenca_prod.some(dado => dado.status === 'ABERTO'))
-            }
-            else if (entregue && !pendente && !aberto) {
-                novoArray = arrayConv.filter(item => item.convalescenca_prod.every(dado => dado.status === 'FECHADO'))
-            }
-            else if (pendente && aberto && !entregue) {
-                novoArray = arrayConv.filter(item => item.convalescenca_prod.some(dado => dado.status === 'PENDENTE' || dado.status === 'ABERTO'))
-            }
-            else if (pendente && entregue && !aberto) {
-                novoArray = arrayConv.filter(item => item.convalescenca_prod.some(dado => dado.status === 'PENDENTE' || dado.status === 'FECHADO'))
-            }
-            else if (aberto && entregue && !pendente) {
-                novoArray = arrayConv.filter(item => item.convalescenca_prod.some(dado => dado.status === 'FECHADO' || dado.status === 'ABERTO'))
-            }
 
 
-            novoArray && setFiltro(novoArray)
-
-        }
 
 
-    }, [pendente, entregue, aberto, arrayConv])
 
 
 
@@ -313,7 +155,7 @@ const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod:
                             uf: '',
                             uf_r: '',
                             usuario: '',
-                          //  editar: false
+                            //  editar: false
                         })}
                         className="inline-flex justify-center items-center text-white bg-green-600 p-1 px-2 rounded-lg"
                         href='/servicos/convalescencia/novoregistro'>
@@ -386,8 +228,7 @@ const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod:
                                     </td>
 
                                     <td className="px-8 py-1">
-                                        {new Date(item.data).toLocaleDateString()}
-                                    </td>
+                                        {item.data ? format(new Date(item.data), 'dd/MM/yyyy') : '--/--/----'}                                    </td>
                                     <td className="px-8 py-1 text-yellow-500">
                                         {item.convalescenca_prod.some((dados) => dados.status === 'PENDENTE') ? 'PENDENTE' : item.convalescenca_prod.some(dados => dados.status === 'ABERTO') ? 'ABERTO' : 'FECHADO'}
                                     </td>
