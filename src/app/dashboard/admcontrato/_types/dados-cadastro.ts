@@ -11,6 +11,7 @@ export type DadosCadastroProps = {
     name: string,
     nasc: Date,
     sexo: string,
+    data?: Date | null,
     cep: string,
     endereco: string,
     numero: number,
@@ -38,6 +39,5 @@ export type DadosCadastroProps = {
     mensalidade: Partial<MensalidadeProps>
     mensalidadeAnt: Partial<MensalidadeProps>
     mensalidadeProx: Partial<MensalidadeProps>,
-
     acordo: Partial<AcordoProps>
 }
