@@ -1,6 +1,6 @@
 'use client';
 
-import {  useState } from "react";
+import { useState } from "react";
 import { IoMdSearch } from "react-icons/io";
 import { MdClose } from "react-icons/md";
 import { HiOutlineSave } from "react-icons/hi";

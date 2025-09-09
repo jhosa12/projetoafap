@@ -1,6 +1,6 @@
 import DocumentTemplateComprovante from "@/Documents/convalescenca/comprovante/DocumentTemplate";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { ConvProps } from "../../admcontrato/_types/convalescente";
+import { ConvProps } from "../_types/convalescente";
 import { toast } from "sonner";
 import { api } from "@/lib/axios/apiClient";
 import { ListaMaterial } from "../../admcontrato/_types/lista-material";
@@ -16,6 +16,7 @@ import DocumentTemplateContrato from "@/Documents/convalescenca/contrato/Documen
 interface ActionsProps {
 
   // --- Estados que a UI irá ler ---
+
   dataInputs: Partial<ListaMaterial>;
   estoque: Array<EstoqueNovoRegistroProps>;
   listaMaterial: Array<Partial<ListaMaterial>>;
@@ -28,17 +29,17 @@ interface ActionsProps {
   componentRefComprovante: React.RefObject<DocumentTemplateComprovante>;
   componentRefContrato: React.RefObject<DocumentTemplate>;
   isLoading: boolean;
+
+
   // --- Funções para alterar o estado  ---
-  
-  
-  
+
   setTitular: (value: boolean) => void;
   closeModa: (fields: Partial<DadosCadastroProps>) => void;
   setMaterial: (value: Array<Partial<ListaMaterial>>) => void;
   setIndex: (value: number) => void;
 
-  
-  
+
+
   // --- Funções de Ação ---
   setarListaConv: (fields: Partial<ConvProps>) => void;
   imprimirComprovante: () => void;
@@ -66,7 +67,7 @@ const useActionsNovoResgistro = () => {
   const [selectProdutos, setSelect] = useState<Array<SelectProps>>([]);
   const [estoque, setEstoque] = useState<Array<EstoqueNovoRegistroProps>>([])
   const [titular, setTitular] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(true);
 
   const setarListaConv = useCallback((fields: Partial<ConvProps>) => {
     setLista(prev => ({ ...prev, ...fields }));
@@ -172,13 +173,13 @@ const useActionsNovoResgistro = () => {
   async function carregarDados() {
     try {
       const response = await api.post('/associado', {
+        
         id_associado: Number(data.id_associado),
         empresa: data.empresa
 
       })
 
       setDadosAssociado(response.data);
-
 
     } catch (error) {
       toast.error('Erro na requisição')
@@ -198,6 +199,7 @@ const useActionsNovoResgistro = () => {
     //  }
 
     //const produto = {...listaConv.convalescenca_prod} ??{}
+
     toast.promise(
 
       api.put('/convalescencia/editar', {

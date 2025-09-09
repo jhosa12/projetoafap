@@ -1,4 +1,4 @@
-import { ConvProps } from "./convalescente"
+import { ConvProps } from "../../servicos/_types/convalescente"
 import { ImpressoesProps } from "./impressoes"
 import { ObitoProps } from "../../servicos/_types/obito"
 
