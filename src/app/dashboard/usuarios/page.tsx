@@ -14,22 +14,7 @@ import { ConsultoresProps } from "@/types/consultores"
 import { DataTable } from "@/components/ui/data-table"
 import { Switch } from "@/components/ui/switch"
 import useActionsPerfil from "./hooks/useActionsPerfil"
-=======
-"use client";
-import { api } from "@/lib/axios/apiClient";
-import { useEffect, useState, useMemo } from "react";
-import { Edit2, Plus, Loader2 } from "lucide-react";
-import { ColumnDef } from "@tanstack/react-table";
 
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { ModalNovoUsuario } from "@/app/dashboard/usuarios/_components/modalNovoUsuario";
-import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
-import { ConsultoresProps } from "@/types/consultores";
-import { DataTable } from "@/components/ui/data-table";
->>>>>>> 6367e8b64647ede03dda90ae0664aee7f0fc3f89
 
 export interface UsuarioProps {
   id: number;
@@ -111,7 +96,6 @@ export default function Usuario({  }: UsuarioProps) {
       data.append("file", dadosUser.file);
     }
 
-<<<<<<< HEAD
     toast.promise(api.post("/user", data), {
       error: "ERRO AO REALIZAR CADASTRO",
       loading: "CADASTRANDO NOVO FUNCIONÁRIO",
@@ -120,25 +104,6 @@ export default function Usuario({  }: UsuarioProps) {
         return "FUNCIONÁRIO CADASTRADO COM SUCESSO";
       },
     });
-=======
-
-    toast.promise(
-      api.post('/user', data),
-      {
-        error: 'ERRO AO REALIZAR CADASTRO',
-        loading: 'CADASTRANDO NOVO FUNCIONÁRIO',
-        success: async () => {
-          await getUsers()
-          return 'FUNCIONÁRIO CADASTRADO COM SUCESSO'
-        }
-      }
-    )
-
-
-
-    // await getUsers()
-
->>>>>>> 822589c900b6ff336d58441319ae799215394bb0
   }
 
   async function handleEditarCadastro() {
@@ -213,7 +178,6 @@ export default function Usuario({  }: UsuarioProps) {
       data.append("file", dadosUser.file);
     }
 
-<<<<<<< HEAD
     toast.promise(api.put("/user/editar", data), {
       loading: "ALTERANDO DADOS.....",
       success: async (res) => {
@@ -224,35 +188,14 @@ export default function Usuario({  }: UsuarioProps) {
         return "ERRO AO REALIZAR ALTERAÇÃO";
       },
     });
-=======
 
-    toast.promise(
-      api.put('/user/editar', data),
-      {
-        loading: 'ALTERANDO DADOS.....',
-        success: async (res) => {
-          await getUsers()
-          return 'DADOS ALTERADOS COM SUCESSO'
-        },
-        error: (err) => {
-          return 'ERRO AO REALIZAR ALTERAÇÃO'
-        }
-      }
-    )
 
-<<<<<<< HEAD
   }
 
 
-=======
 
 
 
-
->>>>>>> 822589c900b6ff336d58441319ae799215394bb0
-  }
-
->>>>>>> 6367e8b64647ede03dda90ae0664aee7f0fc3f89
   const handlePermission = (permission: string) => {
     if (dadosUser.permissoes && dadosUser.permissoes.includes(permission)) {
       setDadosUser({
