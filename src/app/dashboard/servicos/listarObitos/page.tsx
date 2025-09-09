@@ -13,50 +13,13 @@ import Link from "next/link";
 import { DataTable } from "@/components/ui/data-table";
 import { getObitoColumns } from "@/app/dashboard/servicos/_components/obitos/ordemDeServico/obitosColumns";
 import { de } from "date-fns/locale";
+import useActionsObito from "../_hooks/useActionsObito";
 
 export default function ListarObitos() {
-  const { usuario, signOut } = useContext(AuthContext);
-  const [listaServicos, setServicos] = useState<ObitoProps[]>([]);
   const [selecionado, setSelecionado] = useState<ObitoProps | null>(null);
   const [openOs, setOpenOs] = useState(false);
 
-
-  useEffect(() => {
-    if (!usuario) return signOut();
-    listar();
-  }, [usuario]);
-
-  async function listar() {
-    try {
-      const { data } = await api.get<ObitoProps[]>("/obitos/listarServicos");
-      setServicos(data);
-    } catch (err) {
-      //console.error(err);
-      toast.error("Não foi possível carregar os registros.");
-    }
-  }
-
-  async function deletarObito(os: ObitoProps) {
-    if (!os?.id_obitos) {
-      toast.warning("Selecione um registro para excluir.");
-      return;
-    }
-
-    toast.promise(
-      api.delete("/obitos/deletar", {
-        data: { id_obitos: os.id_obitos },
-      }),
-      {
-        loading: "Excluindo registro...",
-        success: () => {
-          listar();
-          // setOpenConfirm(false);
-          return "Registro excluído com sucesso!";
-        },
-        error: "Erro ao excluir registro.",
-      }
-    );
-  }
+  const { listaServicos, listar ,deletarObito } = useActionsObito()
 
   return (
     <div className="px-6 mt-2 space-y-4">
