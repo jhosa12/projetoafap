@@ -5,8 +5,6 @@ import { LuFolderEdit } from "react-icons/lu";
 import { MdDeleteOutline } from "react-icons/md";
 import { IoIosClose } from "react-icons/io";
 import { TbAlertTriangle } from "react-icons/tb";
-import { MdAdd } from "react-icons/md";
-import ReactPaginate from 'react-paginate';
 import { Tooltip } from 'react-tooltip';
 import Link from "next/link";
 import useActionsListagem from "../../_hooks/useActionsListagem";
@@ -36,15 +34,6 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination"
 import {
-    Menubar,
-    MenubarContent,
-    MenubarItem,
-    MenubarMenu,
-    MenubarSeparator,
-    MenubarShortcut,
-    MenubarTrigger,
-} from "@/components/ui/menubar"
-import {
     Select,
     SelectContent,
     SelectItem,
@@ -56,8 +45,6 @@ import { Button } from "@/components/ui/button";
 
 export default function Convalescente() {
     const [dropOpen, setDrop] = useState(false)
-
-
 
     const {
 
@@ -234,7 +221,7 @@ export default function Convalescente() {
                                 //  editar: false
                             })}
                             className="inline-flex justify-center items-center p-1 px-2 rounded-lg gap-2 text-sm"
-                            href='/servicos/convalescencia/novoregistro'>
+                            href='/dashboard/servicos/convalescencia/novoregistro'>
                             <Plus size={36}/> Add
                         </Link>
                         

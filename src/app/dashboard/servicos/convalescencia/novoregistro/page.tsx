@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { IoMdSearch } from "react-icons/io";
 import { MdClose } from "react-icons/md";
 import { HiOutlineSave } from "react-icons/hi";
@@ -15,6 +15,16 @@ import { IoTicket } from "react-icons/io5";
 import { TbAlertTriangle } from "react-icons/tb";
 import { toast } from "sonner";
 import useActionsNovoResgistro from "../../_hooks/useActionsNovoRegistro";
+import { Button } from "@/components/ui/button";
+import { ChevronDownIcon, Search } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Calendar } from "@/components/ui/calendar";
+import { date } from "zod";
+import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 
 export default function ConvalescenciaNovo() {
@@ -26,6 +36,8 @@ export default function ConvalescenciaNovo() {
     const [modalComprovante, setComprovante] = useState(false);
     const [modalContrato, setModalContrato] = useState(false)
     const [visible, setVisible] = useState(false)
+    const [open, setOpen] = React.useState(false)
+    const [date, setDate] = React.useState<Date | undefined>(undefined)
 
     const {
 
@@ -109,7 +121,6 @@ export default function ConvalescenciaNovo() {
 
     return (
         <>
-
             {modalComprovante && (<div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                 <div className="flex items-center justify-center p-2 w-full h-full">
                     <div className="relative rounded-lg shadow bg-gray-800">
@@ -215,21 +226,261 @@ export default function ConvalescenciaNovo() {
                     </div>
                 </div>
             )}
+
             <div className="flex flex-col w-full pl-10 pr-10 pt-4">
-                <div className="flex flex-row p-2 border-b-[1px] border-gray-600">
-                    <h1 className="flex w-full  text-gray-300 font-semibold text-2xl ">Solicitar Convalescente</h1>
+                <div className="flex flex-row p-2 ">
+                    <h1 className="w-full justify-between scroll-m-20 text-gray-800 pb-2 
+                    text-2xl font-semibold tracking-tight first:mt-0">
+                        Solicitar Convalescente
+                    </h1>
 
                     <div className="flex flex-row gap-8">
-
-                        <button onClick={() => closeModa({ closeModalPlano: true })} type="button" className=" border font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center focus:ring-gray-600 bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
-                            <IoMdSearch size={20} />
+                        <Button
+                            onClick={() => closeModa({ closeModalPlano: true })}
+                        >
+                            <Search />
                             Buscar
-                        </button>
+                        </Button>
                     </div>
                 </div>
-                <div className="flex-col w-full border mt-2 rounded-lg shadow  border-gray-700">
 
-                    <ul className="flex flex-wrap w-full text-sm font-medium text-center  border-b   rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800" role="tablist">
+
+                <div className="flex-col w-full mt-2 ">
+                    <Tabs defaultValue="usuario" className="w-full">
+                        <TabsList className="flex items-center border">
+                            <TabsTrigger value="usuario">Usuário</TabsTrigger>
+                            <TabsTrigger value="material">Material</TabsTrigger>
+                            <TabsTrigger value="salvar">Salvar</TabsTrigger>
+                            <TabsTrigger value="gravar">Gravar Alterações</TabsTrigger>
+                        </TabsList>
+
+                        <ScrollArea className="h-[400px] rounded-md">
+                            {/* Informações de Usuário */}
+                            <TabsContent value="usuario">
+
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Informações Pessoais</CardTitle>
+                                        <CardDescription>
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent className="flex flex-col gap-6">
+
+                                        {/* Primeira Linha */}
+                                        <div className="flex justify-between gap-4">
+                                            <div className="grid gap-3 w-80">
+                                                <Label htmlFor="tabs-demo-name">Nome do Usuário</Label>
+                                                <Input
+                                                    id="tabs-demo-name"
+                                                    value={listaConv.nome}
+                                                    onChange={e => setarListaConv({ nome: e.target.value })}
+                                                />
+                                            </div>
+
+                                            <div className="grid gap-3">
+                                                <Label htmlFor="tabs-demo-username">Data de Nascimento</Label>
+                                                <Popover open={open} onOpenChange={setOpen}>
+                                                    <PopoverTrigger asChild>
+                                                        <Button
+                                                            variant="outline"
+                                                            id="date"
+                                                            className="w-48 justify-between font-normal"
+                                                        >
+                                                            {listaConv.data ? listaConv.data.toLocaleDateString() : "Selecione a data"}
+                                                            <ChevronDownIcon />
+                                                        </Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                                                        <Calendar
+                                                            mode="single"
+                                                            selected={listaConv.data ?? undefined}
+                                                            captionLayout="dropdown"
+                                                            onSelect={(date) => {
+                                                                if (date) {
+
+                                                                    setarListaConv({ data: date });
+
+                                                                    setDate(date);
+                                                                }
+                                                                setOpen(false);
+                                                            }}
+                                                        />
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </div>
+
+                                            <div className="grid gap-3 w-64">
+                                                <Label htmlFor="tabs-demo-name">CPF</Label>
+                                                <Input
+                                                    id="tabs-demo-name"
+                                                    value={listaConv.cpf_cnpj}
+                                                    onChange={e => setarListaConv({ cpf_cnpj: e.target.value })}
+                                                />
+                                            </div>
+
+                                            <div className="grid gap-3 w-80">
+                                                <Label htmlFor="tabs-demo-name">Endereço</Label>
+                                                <Input
+                                                    id="tabs-demo-name"
+                                                    value={listaConv.logradouro}
+                                                    onChange={e => setarListaConv({ logradouro: e.target.value })}
+                                                />
+                                            </div>
+                                        </div>
+                                        {/* Segunda Linha */}
+                                        <div className="flex justify-between gap-4">
+                                            <div className="grid gap-3 w-40">
+                                                <Label htmlFor="tabs-demo-name">Número</Label>
+                                                <Input
+                                                    id="tabs-demo-name"
+                                                    value={listaConv.numero ?? ''}
+                                                    onChange={e => setarListaConv({ numero: Number(e.target.value) })}
+                                                />
+                                            </div>
+                                            <div className="grid gap-3 w-80">
+                                                <Label htmlFor="tabs-demo-name">Bairro</Label>
+                                                <Input
+                                                    id="tabs-demo-name"
+                                                    value={listaConv.bairro ?? ''}
+                                                    onChange={e => setarListaConv({ bairro: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="grid gap-3 w-80">
+                                                <Label htmlFor="tabs-demo-name">Complemento</Label>
+                                                <Input
+                                                    id="tabs-demo-name"
+                                                    value={listaConv.complemento ?? ''}
+                                                    onChange={e => setarListaConv({ complemento: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="flex justify-between gap-4">
+                                                <div className="grid gap-3 w-64">
+                                                    <Label htmlFor="tabs-demo-name">CEP</Label>
+                                                    <Input
+                                                        id="tabs-demo-name"
+                                                        value={listaConv.cep}
+                                                        onChange={e => setarListaConv({ cep: e.target.value })}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Terceira Linha */}
+
+                                        <div className="flex justify-start gap-4">
+
+                                            <div className="grid gap-3 w-96">
+                                                <Label htmlFor="tabs-demo-name">Cidade</Label>
+                                                <Input
+                                                    id="tabs-demo-name"
+                                                    value={listaConv.cidade}
+                                                    onChange={e => setarListaConv({ cidade: e.target.value })}
+                                                />
+                                            </div>
+
+                                            <div className="grid gap-3 w-40">
+                                                <Label htmlFor="tabs-demo-name">UF</Label>
+                                                <Input
+                                                    id="tabs-demo-name"
+                                                    value={listaConv.uf}
+                                                    onChange={e => setarListaConv({ uf: e.target.value })}
+                                                />
+                                            </div>
+
+                                        </div>
+
+                                        <CardTitle>Endereço de Retirada</CardTitle>
+
+
+                                        {/* Quarta Linha */}
+                                        <div className="flex justify-between gap-4">
+                                            <div className="grid gap-3 w-96">
+                                                <Label htmlFor="tabs-demo-name">Endereço</Label>
+                                                <Input
+                                                    id="tabs-demo-name"
+                                                    value={listaConv.logradouro_r}
+                                                    onChange={e => setarListaConv({ logradouro_r: e.target.value })}
+                                                />
+                                            </div>
+                                                <div className="grid gap-3 w-64">
+                                                    <Label htmlFor="tabs-demo-name">Número</Label>
+                                                    <Input
+                                                        id="tabs-demo-name"
+                                                        value={listaConv.numero_r ?? ''}
+                                                        onChange={e => setarListaConv({ numero_r: Number(e.target.value) })}
+                                                    />
+                                                </div>
+                                                <div className="grid gap-3 w-80">
+                                                    <Label htmlFor="tabs-demo-name">Bairro</Label>
+                                                    <Input
+                                                        id="tabs-demo-name"
+                                                        value={listaConv.bairro_r ?? ''}
+                                                        onChange={e => setarListaConv({ bairro_r: e.target.value })}
+                                                    />
+                                                </div>
+                                            
+                                        </div>
+
+                                        {/* Quinta Linha */}
+                                        <div className="flex justify-between gap-4">
+                                            <div className="flex justify-between gap-4">
+                                                <div className="grid gap-3 w-96">
+                                                    <Label htmlFor="tabs-demo-name">Cidade</Label>
+                                                    <Input
+                                                        id="tabs-demo-name"
+                                                        value={listaConv.cidade_r}
+                                                        onChange={e => setarListaConv({ cidade_r: e.target.value })}
+                                                    />
+                                                </div>
+                                                <div className="grid gap-3 w-40">
+                                                    <Label htmlFor="tabs-demo-name">UF</Label>
+                                                    <Input
+                                                        id="tabs-demo-name"
+                                                        value={listaConv.uf_r}
+                                                        onChange={e => setarListaConv({ uf_r: e.target.value })}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </CardContent>
+                                    <CardFooter>
+                                        <Button onClick={() => adicionarNovoRegistro()} >Salvar</Button>
+                                    </CardFooter>
+                                </Card>
+
+
+                            </TabsContent>
+                            <ScrollBar orientation="vertical" />
+                        </ScrollArea>
+
+                        {/* Informações de Material */}
+                        <TabsContent value="material">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Informações</CardTitle>
+                                    <CardDescription>
+
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="grid gap-3">
+                                        <Label htmlFor="tabs-demo-name">Name</Label>
+                                        <Input id="tabs-demo-name" defaultValue="Pedro Duarte" />
+                                    </div>
+                                    <div className="grid gap-3">
+                                        <Label htmlFor="tabs-demo-username">Username</Label>
+                                        <Input id="tabs-demo-username" defaultValue="@peduarte" />
+                                    </div>
+                                </CardContent>
+                                <CardFooter>
+                                        <Button onClick={() => adicionarNovoRegistro()} >Salvar</Button>
+                                </CardFooter>
+                            </Card>
+                        </TabsContent>
+                    </Tabs>
+
+                    {/* <ul className="flex flex-wrap w-full text-sm font-medium text-center  border-b   rounded-t-lg  border-gray-700 text-gray-400 bg-gray-800" role="tablist">
 
 
                         <li className="me-2">
@@ -242,11 +493,11 @@ export default function ConvalescenciaNovo() {
                         {!listaConv.editar ? <li className="ml-auto flex items-center mr-2">
                             <button type="button" onClick={() => adicionarNovoRegistro()} className="inline-flex p-2 text-white font-semibold rounded-lg uppercase bg-green-600 gap-1">Salvar<HiOutlineSave size={22} /></button>
                         </li> : <li className="ml-auto flex items-center mr-2">
-                            <button type="button" onClick={() => editarRegistro()} className="inline-flex p-2 text-white font-semibold rounded-lg uppercase bg-yellow-600 gap-1">Gravar Alterações<HiOutlineSave size={22} /></button>
+                            <button type="button" onClick={() => editarRegistro()} className="inline-flex p-2 text-black font-semibold rounded-lg uppercase bg-yellow-600 gap-1">Gravar Alterações<HiOutlineSave size={22} /></button>
                         </li>}
-                    </ul>
-                    {usuarioMaterial && <>
-                        {dadosAssociado?.id_associado && <div className="flex w-full p-2  text-lg  text-white">
+                    </ul> */}
+                    {/* {usuarioMaterial && <>
+                        {dadosAssociado?.id_associado && <div className="flex w-full p-2  text-lg  text-black">
                             <h1 className="flex w-full p-1 border-b-[1px] border-gray-500">ASSOCIADO: {dadosAssociado?.contrato.id_contrato} - {dadosAssociado?.nome} / CATEGORIA: {dadosAssociado?.contrato.plano}</h1>
                         </div>}
                         <div className="inline-flex gap-8 pl-4 pt-1">
@@ -262,86 +513,86 @@ export default function ConvalescenciaNovo() {
 
                         <div className="rounded-lg p-6 grid grid-flow-row-dense max-h-[calc(100vh-200px)] grid-cols-5 gap-5">
                             <div className="flex flex-col col-span-1">
-                                <label className="block  text-xs font-medium  text-white">Nome do Usuário</label>
-                                <input value={listaConv.nome} onChange={e => setarListaConv({ nome: e.target.value })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                <label className="block  text-xs font-medium  text-black">Nome do Usuário</label>
+                                <input value={listaConv.nome} onChange={e => setarListaConv({ nome: e.target.value })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-black border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                             </div>
                             <div className="flex flex-col col-span-1 ">
-                                <label className="block  text-xs font-medium  text-white">Data Nasc</label>
-                                <DatePicker dateFormat={"dd/MM/yyyy"} locale={pt} selected={listaConv.data} onChange={e => e && setarListaConv({ data: e })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</DatePicker>
+                                <label className="block  text-xs font-medium  text-black">Data Nasc</label>
+                                <DatePicker dateFormat={"dd/MM/yyyy"} locale={pt} selected={listaConv.data} onChange={e => e && setarListaConv({ data: e })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-black border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</DatePicker>
                             </div>
                             <div className="flex flex-col col-span-1">
-                                <label className="block  text-xs font-medium  text-white">CPF</label>
-                                <input value={listaConv.cpf_cnpj} onChange={e => setarListaConv({ cpf_cnpj: e.target.value })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                <label className="block  text-xs font-medium  text-black">CPF</label>
+                                <input value={listaConv.cpf_cnpj} onChange={e => setarListaConv({ cpf_cnpj: e.target.value })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-black border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                             </div>
 
                             <div className="flex flex-col col-span-1 ">
-                                <label className="block  text-xs font-medium  text-white">Endereço</label>
-                                <input value={listaConv.logradouro} onChange={e => setarListaConv({ logradouro: e.target.value })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                <label className="block  text-xs font-medium  text-black">Endereço</label>
+                                <input value={listaConv.logradouro} onChange={e => setarListaConv({ logradouro: e.target.value })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-black border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                             </div>
                             <div className="flex flex-col col-span-1 ">
-                                <label className="block  text-xs font-medium  text-white">Número</label>
-                                <input value={listaConv.numero ?? ''} onChange={e => setarListaConv({ numero: Number(e.target.value) })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                <label className="block  text-xs font-medium  text-black">Número</label>
+                                <input value={listaConv.numero ?? ''} onChange={e => setarListaConv({ numero: Number(e.target.value) })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-black border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                             </div>
                             <div className="flex flex-col col-span-1 ">
-                                <label className="block  text-xs font-medium  text-white">Complemento</label>
-                                <input value={listaConv.complemento} onChange={e => setarListaConv({ complemento: e.target.value })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                <label className="block  text-xs font-medium  text-black">Complemento</label>
+                                <input value={listaConv.complemento} onChange={e => setarListaConv({ complemento: e.target.value })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-black border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                             </div>
 
                             <div className="flex flex-col col-span-1 ">
-                                <label className="block  text-xs font-medium  text-white">Bairro</label>
-                                <input value={listaConv.bairro} onChange={e => setarListaConv({ bairro: e.target.value })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                <label className="block  text-xs font-medium  text-black">Bairro</label>
+                                <input value={listaConv.bairro} onChange={e => setarListaConv({ bairro: e.target.value })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-black border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                             </div>
                             <div className="flex flex-col col-span-1 ">
-                                <label className="block  text-xs font-medium  text-white">CEP</label>
-                                <input value={listaConv.cep} onChange={e => setarListaConv({ cep: e.target.value })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                <label className="block  text-xs font-medium  text-black">CEP</label>
+                                <input value={listaConv.cep} onChange={e => setarListaConv({ cep: e.target.value })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-black border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                             </div>
                             <div className="flex flex-row gap-x-4 col-span-2 ">
                                 <div className="flex flex-col">
-                                    <label className="block  text-xs font-medium  text-white">Cidade</label>
-                                    <input value={listaConv.cidade} onChange={e => setarListaConv({ cidade: e.target.value })} className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                    <label className="block  text-xs font-medium  text-black">Cidade</label>
+                                    <input value={listaConv.cidade} onChange={e => setarListaConv({ cidade: e.target.value })} className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-black border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                                 </div>
                                 <div className="flex flex-col">
-                                    <label className="block  text-xs font-medium  text-white">UF</label>
-                                    <input value={listaConv.uf} onChange={e => setarListaConv({ uf: e.target.value })} className="whitespace-nowrap uppercase py-1  px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                    <label className="block  text-xs font-medium  text-black">UF</label>
+                                    <input value={listaConv.uf} onChange={e => setarListaConv({ uf: e.target.value })} className="whitespace-nowrap uppercase py-1  px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-black border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                                 </div>
 
                             </div>
 
-                            <div className="flex flex-col text-white col-span-5 ">
+                            <div className="flex flex-col text-black col-span-5 ">
                                 <h1 className="border-b-[1px] border-gray-500">Endereço de Retirada</h1>
 
                             </div>
 
                             <div className="flex flex-col col-span-1 ">
-                                <label className="block  text-xs font-medium  text-white">Endereço</label>
+                                <label className="block  text-xs font-medium  text-black">Endereço</label>
                                 <input value={listaConv.logradouro_r} onChange={e => setarListaConv({ logradouro_r: e.target.value })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                             </div>
                             <div className="flex flex-col col-span-1 ">
-                                <label className="block  text-xs font-medium  text-white">Número</label>
-                                <input value={listaConv.numero_r ?? ''} onChange={e => setarListaConv({ numero_r: Number(e.target.value) })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                <label className="block  text-xs font-medium  text-black">Número</label>
+                                <input value={listaConv.numero_r ?? ''} onChange={e => setarListaConv({ numero_r: Number(e.target.value) })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-black border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                             </div>
                             <div className="flex flex-col col-span-1 ">
-                                <label className="block  text-xs font-medium  text-white">Bairro</label>
-                                <input value={listaConv.bairro_r} onChange={e => setarListaConv({ bairro_r: e.target.value })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                <label className="block  text-xs font-medium  text-black">Bairro</label>
+                                <input value={listaConv.bairro_r} onChange={e => setarListaConv({ bairro_r: e.target.value })} className="whitespace-nowrap uppercase  py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-black border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                             </div>
                             <div className="flex flex-row gap-x-4 col-span-2 ">
                                 <div className="flex flex-col">
-                                    <label className="block  text-xs font-medium  text-white">Cidade</label>
-                                    <input value={listaConv.cidade_r} onChange={e => setarListaConv({ cidade_r: e.target.value })} className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                    <label className="block  text-xs font-medium  text-black">Cidade</label>
+                                    <input value={listaConv.cidade_r} onChange={e => setarListaConv({ cidade_r: e.target.value })} className="whitespace-nowrap uppercase py-1 px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-black border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                                 </div>
                                 <div className="flex flex-col">
-                                    <label className="block  text-xs font-medium  text-white">UF</label>
-                                    <input value={listaConv.uf_r} onChange={e => setarListaConv({ uf_r: e.target.value })} className="whitespace-nowrap uppercase py-1  px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-white border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
+                                    <label className="block  text-xs font-medium  text-black">UF</label>
+                                    <input value={listaConv.uf_r} onChange={e => setarListaConv({ uf_r: e.target.value })} className="whitespace-nowrap uppercase py-1  px-0 w-full text-xs  bg-transparent border-0 border-b-2  appearance-none text-black border-gray-600  focus:outline-none focus:ring-0 focus:border-blue-600 peer" >{ }</input>
                                 </div>
                             </div>
-                        </div></>}
+                        </div></>} */}
 
 
 
 
 
                     {material && <div className="flex flex-col w-full rounded-lg p-6   gap-5">
-                        <div className="flex flex-row text-white gap-6 w-full">
+                        <div className="flex flex-row text-black gap-6 w-full">
 
                             <div>
                                 <label className="block mb-1 text-sm font-medium  text-white">Material</label>
@@ -548,7 +799,7 @@ export default function ConvalescenciaNovo() {
                     </div>
                     }
                 </div>
-            </div>
+            </div >
         </>
     )
 }

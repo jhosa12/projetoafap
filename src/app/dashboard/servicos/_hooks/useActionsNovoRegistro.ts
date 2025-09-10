@@ -26,8 +26,8 @@ interface ActionsProps {
   listaConv: Partial<ConvProps>;
   titular: boolean;
   selectProdutos: Array<SelectProps>;
-  componentRefComprovante: React.RefObject<DocumentTemplateComprovante>;
-  componentRefContrato: React.RefObject<DocumentTemplateContrato>;
+  componentRefComprovante: React.RefObject<HTMLDivElement>;
+  componentRefContrato: React.RefObject<HTMLDivElement>;
   isLoading: boolean;
 
 
@@ -61,8 +61,8 @@ const useActionsNovoResgistro = () => {
   const [indexProd, setIndex] = useState<number>(0);
   const [data, closeModa] = useState<Partial<DadosCadastroProps>>({});
   const [dadosAssociado, setDadosAssociado] = useState<AssociadoProps>();
-  const componentRefComprovante = useRef<DocumentTemplateComprovante>(null);
-  const componentRefContrato = useRef<DocumentTemplateContrato>(null);
+  const componentRefComprovante = useRef<HTMLDivElement>(null);
+  const componentRefContrato = useRef<HTMLDivElement>(null);
   const [componenteMounted, setMounted] = useState(false);
   const [selectProdutos, setSelect] = useState<Array<SelectProps>>([]);
   const [estoque, setEstoque] = useState<Array<EstoqueNovoRegistroProps>>([])
@@ -73,13 +73,20 @@ const useActionsNovoResgistro = () => {
     setLista(prev => ({ ...prev, ...fields }));
   }, []);
 
-  const imprimirComprovante = useReactToPrint({
-    content: () => componentRefComprovante.current
-  })
 
+  const imprimirComprovante = useReactToPrint({
+    contentRef: componentRefComprovante,
+    documentTitle: "Comprovante de Atendimento",
+    onAfterPrint: () => toast.success("Comprovante gerado com sucesso!"),
+  });
+
+  // --- Contrato ---
   const imprimirContrato = useReactToPrint({
-    content: () => componentRefContrato.current
-  })
+    contentRef: componentRefContrato,
+    documentTitle: "Contrato de Convalescente",
+    onAfterPrint: () => toast.success("Contrato gerado com sucesso!"),
+  });
+
 
   const setInputs = (fields: Partial<ListaMaterial>) => {
     setDataInputs((prev: Partial<ListaMaterial>) => {
@@ -173,7 +180,7 @@ const useActionsNovoResgistro = () => {
   async function carregarDados() {
     try {
       const response = await api.post('/associado', {
-        
+
         id_associado: Number(data.id_associado),
         empresa: data.empresa
 

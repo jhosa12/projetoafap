@@ -1,6 +1,6 @@
 import { AuthContext } from "@/store/AuthContext";
 import { useContext, useEffect, useState } from "react";
-import { ObitoProps } from "../../admcontrato/_types/associado";
+import { ObitoProps } from "../_types/obito";
 import { api } from "@/lib/axios/apiClient";
 import { toast } from "sonner";
 
