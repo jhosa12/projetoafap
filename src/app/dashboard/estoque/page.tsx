@@ -5,10 +5,6 @@ import Head from "next/head"
 import { AuthContext } from "@/store/AuthContext"
 import { Tabs } from "flowbite-react"
 import { FaStore } from "react-icons/fa"
-<<<<<<< HEAD
-=======
-import { Estoque } from "./components/estoque";
->>>>>>> e411cc5d3c62be39b9958ae5d339da6309a36ffb
 import { RiHistoryLine } from "react-icons/ri"
 import { EstoqueProps } from "./types/estoque"
 import useApi from "@/hooks/useApiPost"

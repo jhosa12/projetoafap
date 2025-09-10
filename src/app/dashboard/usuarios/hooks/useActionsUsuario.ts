@@ -51,43 +51,8 @@ const useActionsUsuario = () => {
     data.append("usuario", dadosUser.usuario ?? "");
     data.append("password", dadosUser.password ?? "");
     data.append("cargo", dadosUser.cargo ?? "");
-    data.append("nomeCompleto", dadosFuncionario?.nome ?? "");
-    data.append("cpf", dadosFuncionario.cpf ?? "");
-    data.append("rg", dadosFuncionario.rg ?? "");
-    data.append(
-      "nascimento",
-      dadosFuncionario.data_nascimento?.toString() ?? ""
-    );
-    data.append("cep", dadosFuncionario.cep ?? "");
-    data.append("endereco", dadosFuncionario.endereco ?? "");
-    data.append("numero", dadosFuncionario.numero ?? "");
-    data.append("bairro", dadosFuncionario.bairro ?? "");
-    data.append("cidade", dadosFuncionario.cidade ?? "");
-    data.append("uf", dadosFuncionario.uf ?? "");
-    data.append("telefone", dadosFuncionario.telefone ?? "");
-    data.append("email", dadosFuncionario.email ?? "");
-    data.append("dataAdmissao", dadosFuncionario.dt_admissao?.toString() ?? "");
-    data.append("CNH_categoria", dadosFuncionario.cnh_categoria ?? "");
-    data.append("titulo_eleitor", dadosFuncionario.titulo_eleitor ?? "");
-    data.append("zona", dadosFuncionario.zona?.toString() ?? "");
-    data.append("secao", dadosFuncionario.secao?.toString() ?? "");
-    data.append("PIS_PASEP", dadosFuncionario.pis_pasep ?? "");
-    data.append("escolaridade", dadosFuncionario.grau_instrucao ?? "");
-    data.append("nome_conjuge", dadosFuncionario.nome_conjuge ?? "");
-    data.append("n_dep", dadosFuncionario.n_dependentes?.toString() ?? "");
-    data.append("n_dep14", dadosFuncionario.menores_14?.toString() ?? "");
-    data.append("caso_emergencia", dadosFuncionario.caso_emergencia ?? "");
-    data.append("salario", dadosFuncionario.salario?.toString() ?? "");
-    data.append(
-      "contrato_exp",
-      dadosFuncionario.contrato_exp?.toString() ?? ""
-    );
-    data.append(
-      "prorrogacao",
-      dadosFuncionario.prorrogacao_cont?.toString() ?? ""
-    );
-    data.append("situacao", dadosFuncionario.situacao ?? "");
-    data.append("permissoes", JSON.stringify(dadosPermissoes) ?? "");
+    // Usar as permissões atualmente selecionadas no objeto do usuário
+    data.append("permissoes", JSON.stringify(dadosUser.permissoes ?? []) ?? "");
 
     if (dadosUser.file) {
       data.append("file", dadosUser.file);
@@ -190,17 +155,14 @@ const useActionsUsuario = () => {
   }
 
   const handlePermission = (permission: string) => {
-    if (dadosUser.permissoes && dadosUser.permissoes.includes(permission)) {
-      setDadosUser({
-        ...dadosUser,
-        permissoes: dadosUser.permissoes.filter((item) => item !== permission),
-      });
-    } else {
-      setDadosUser({
-        ...dadosUser,
-        permissoes: [...(dadosUser.permissoes ?? []), permission],
-      });
-    }
+    setDadosUser((prev) => {
+      const current = prev?.permissoes ?? [];
+      const has = current.includes(permission);
+      const next = has
+        ? current.filter((item) => item !== permission)
+        : [...current, permission];
+      return { ...(prev ?? {}), permissoes: next };
+    });
   };
 
   const setarDadosUsuario = (fields: Partial<UsuarioProps>) => {
@@ -260,7 +222,7 @@ const useActionsUsuario = () => {
           return 'Status alterado com sucesso!';
         },
         error: (err) => {
-          console.error("Detalhes do erro:", err.response); // Log para depuração
+          //console.error("Detalhes do erro:", err.response); // Log para depuração
           setIsModalOpen(false);
           return 'Erro ao alterar o status.';
         }
