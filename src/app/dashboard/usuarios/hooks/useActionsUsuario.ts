@@ -3,6 +3,8 @@ import { ConsultoresProps } from "@/types/consultores";
 import { toast } from "sonner";
 import { api } from "@/lib/axios/apiClient";
 import { UsuarioProps } from "../_types/editar-usuario";
+import { success } from "zod";
+import { ActionsFunctionsApi } from "@/types/actions";
 
 interface ActionsProps {
 
@@ -45,7 +47,7 @@ const useActionsUsuario = () => {
   // const itemsPerPage = 10
 
 
-  async function handleNovoCadastro() {
+  async function handleNovoCadastro({actions}:ActionsFunctionsApi) {
     const data = new FormData();
     data.append("nome", dadosUser.nome ?? "");
     data.append("usuario", dadosUser.usuario ?? "");
@@ -59,10 +61,13 @@ const useActionsUsuario = () => {
     }
 
     toast.promise(api.post("/user", data), {
-      error: "ERRO AO REALIZAR CADASTRO",
+      error: ()=>{
+        actions?.error?.()
+        return "ERRO AO REALIZAR CADASTRO"},
       loading: "CADASTRANDO NOVO FUNCIONÁRIO",
       success: async () => {
         await getUsers();
+        actions?.success()
         return "FUNCIONÁRIO CADASTRADO COM SUCESSO";
       },
     });

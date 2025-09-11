@@ -1,4 +1,4 @@
-import { Textarea } from "flowbite-react"
+import { Textarea } from "@/components/ui/textarea"
 import { FormEmpresaProps } from "./modalEmpresa"
 
 
@@ -9,7 +9,7 @@ import { FormEmpresaProps } from "./modalEmpresa"
 
 export const TabContratoEmpresa = ({control,register,setValue,watch}:FormEmpresaProps) => {
     return(
-        <div>
+        <div className="flex">
             <Textarea rows={25} {...register('cont_clausuras')}/>
         </div>
     )

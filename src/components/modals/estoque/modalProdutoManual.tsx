@@ -1,4 +1,5 @@
-import { ProdutosProps } from "@/pages/dashboard/estoque";
+
+import { ProdutosProps } from "@/app/dashboard/estoque/page";
 import { Button, Label, Modal, Select, TextInput } from "flowbite-react";
 import { useState } from "react";
 

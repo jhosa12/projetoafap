@@ -3,7 +3,7 @@
 
 
 // DocumentTemplate.js
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { Table } from "flowbite-react";
 import { roboto_Mono } from '@/fonts/fonts';
 
@@ -30,15 +30,16 @@ interface DadosProps {
     tipo:string,
 }
 
-
-
-
-
-class AtivosInativos extends React.Component<DadosProps> {
-  render() {
-    const {dados,usuario,logo,periodo,tipo} = this.props;
+const AtivosInativos=forwardRef<HTMLDivElement,DadosProps>(({
+    dados,
+    logo,
+    periodo,
+    tipo,
+    usuario
+},ref)=>
+  {
     return (
-      <div className={`${roboto_Mono.className} flex flex-col w-full  gap-5`}>
+      <div ref={ref} className={`${roboto_Mono.className} flex flex-col w-full  gap-5`}>
        <div className="flex  w-full justify-center ">
        <img width={100} height={100} src={logo} alt="logo"/>
        </div>
@@ -80,6 +81,8 @@ class AtivosInativos extends React.Component<DadosProps> {
       </div>
     );
   }
-}
+) 
+ 
+
 
 export {AtivosInativos};

@@ -1,10 +1,12 @@
-import { ConveniadosProps } from "@/pages/dashboard/conveniados"
+import { ConveniadosProps } from "@/app/dashboard/conveniados/page"
 import { api } from "@/lib/axios/apiClient"
-import { Button, FileInput, FloatingLabel, Label, Modal } from "flowbite-react"
-import {  useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { useState, type ChangeEvent } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { toast } from "sonner"
-
 
 interface DataProps{
     conveniados:Array<ConveniadosProps>,
@@ -15,8 +17,7 @@ interface DataProps{
     conveniado:ConveniadosProps
 }
 
-
-export  function ModalNovoConveniado({openModal,setOpenModal,usuario,conveniado,conveniados,setConveniados}:DataProps) {
+export function ModalNovoConveniado({openModal,setOpenModal,usuario,conveniado,conveniados,setConveniados}:DataProps) {
     const {register, handleSubmit,watch} = useForm<ConveniadosProps>({
         defaultValues:{
             ...conveniado,
@@ -25,8 +26,8 @@ export  function ModalNovoConveniado({openModal,setOpenModal,usuario,conveniado,
     })
     const [file,setFile] = useState<File|undefined>(undefined)
     const [tpmUrl, setTpmUrl] = useState<string>("");
-  
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+    const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         if(!event.target.files){
         
             return;
@@ -43,8 +44,7 @@ export  function ModalNovoConveniado({openModal,setOpenModal,usuario,conveniado,
         setTpmUrl(URL.createObjectURL(image));
     };
 
-
-   const handleOnSubmit:SubmitHandler<ConveniadosProps> = async(data)=>{
+    const handleOnSubmit:SubmitHandler<ConveniadosProps> = async(data)=>{
         conveniado.id_conveniados ? handleEdit(data) : handleNovo(data)
     }
 
@@ -73,7 +73,6 @@ export  function ModalNovoConveniado({openModal,setOpenModal,usuario,conveniado,
           
     
     }
-
 
     const handleEdit = async(data:ConveniadosProps)=>{
        
@@ -105,50 +104,39 @@ export  function ModalNovoConveniado({openModal,setOpenModal,usuario,conveniado,
       
     }
 
-
-
-
- 
     return (
+        <Dialog open={openModal} onOpenChange={setOpenModal}>
+            <DialogContent className="max-w-md">
+                <DialogHeader>
+                    <DialogTitle>Administrar Conveniado</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleSubmit(handleOnSubmit)} className="flex flex-col space-y-3 max-h-[82vh] overflow-y-auto">
+                    <div className="space-y-2">
+                        <Label htmlFor="file">Imagem (SVG, PNG, JPG)</Label>
+                        <Input id="file" type="file" accept="image/png,image/jpeg,image/svg+xml" onChange={handleFileChange} />
+                        {tpmUrl && (
+                            <img className="w-full h-32 object-center rounded-md" src={!tpmUrl ? `${process.env.NEXT_PUBLIC_API_URL}/file/${watch('filename')}` : tpmUrl} alt="fotoUser" />
+                        )}
+                    </div>
 
-        <Modal show={openModal} size={'md'} onClose={() => setOpenModal(false)}>
-            <Modal.Header>Administrar Conveniado</Modal.Header>
-            <Modal.Body>
-            <form onSubmit={handleSubmit(handleOnSubmit)} className="flex flex-col space-y-2 px-2  max-h-[82vh] overflow-y-auto">
-                <Label
-        htmlFor="dropzone-file"
-        className="flex relative w-full cursor-pointer mt-2 p-1 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100   "
-      >
-            <svg
-            className="absolute  z-20 mb-4 h-8 w-8 text-gray-500 "
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 20 16"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-            />
-          </svg>
-       { <div className="flex flex-col items-center justify-center pt-6">
-          <p className="text-xs text-gray-500 ">SVG, PNG, JPG(MAX. 500x350px)</p>
-        </div>}
-        <FileInput onChange={handleFileChange} id="dropzone-file" className="hidden" />
-       {tpmUrl && <img className="w-full h-32 object-center rounded-lg" src={!tpmUrl?`${process.env.NEXT_PUBLIC_API_URL}/file/${watch('filename')}`:tpmUrl} alt="fotoUser"  ></img>}
-      </Label>
-      <FloatingLabel label="Conveniado" {...register('conveniado')} variant="outlined"  />
-      <FloatingLabel label="Endereco" {...register('endereco')} variant="outlined" />
-      
-      <FloatingLabel  label="Telefone" variant="outlined" {...register('fone')} type="number" />
-  
-        <Button type="submit" className="w-full">{conveniado.id_conveniados ? 'Editar' : 'Cadastrar'}</Button>
-          </form>
-            </Modal.Body>
-        </Modal>
-    
-)
+                    <div className="space-y-2">
+                        <Label htmlFor="conveniado">Conveniado</Label>
+                        <Input id="conveniado" placeholder="Nome do conveniado" {...register('conveniado')} />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="endereco">Endereço</Label>
+                        <Input id="endereco" placeholder="Endereço" {...register('endereco')} />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="fone">Telefone</Label>
+                        <Input id="fone" type="tel" placeholder="(00) 00000-0000" {...register('fone')} />
+                    </div>
+
+                    <Button type="submit" className="w-full">{conveniado.id_conveniados ? 'Editar' : 'Cadastrar'}</Button>
+                </form>
+            </DialogContent>
+        </Dialog>
+    )
 }

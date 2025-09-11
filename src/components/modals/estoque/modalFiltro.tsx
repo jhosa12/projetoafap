@@ -1,8 +1,8 @@
-
-import { Button, Label, Modal, Select } from "flowbite-react";
-import DatePicker, { registerLocale } from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import pt from 'date-fns/locale/pt-BR';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import DatePicker from "react-datepicker";
 import { useState } from "react";
 import { EmpresaProps } from "@/types/empresa";
 
@@ -18,42 +18,42 @@ export function ModalFiltroMov({empresas,openModal,setOpenModal,handleFiltro}:Da
     const [startDate,setStartDate] = useState<Date>(new Date())
     const [endDate,setEndDate] = useState(new Date())
     const [id_empresa,setId] = useState<string>('')
-   
+
     return(
-        <Modal size={'sm'} show={openModal} onClose={()=>setOpenModal(false)} popup>
-            <Modal.Header/>
-            <Modal.Body className="space-y-4 ">
-
-            <Select onChange={e=>setId(e.target.value)} className="font-semibold" sizing={'sm'}>
-                        <option value={''}>EMPRESA</option>
-                       {empresas.map(item=>(
-                        <option value={item.id} className="font-semibold" key={item.id}>{item.nome}</option>
-                       ))}
-
-                    </Select>
-
-
+        <Dialog open={openModal} onOpenChange={setOpenModal}>
+            <DialogContent className="sm:max-w-[420px]">
+                <DialogHeader>
+                    <DialogTitle>Filtro</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                    <div className="grid gap-2">
+                        <Label htmlFor="empresa">Empresa</Label>
+                        <Select onValueChange={(v)=>setId(v)}>
+                            <SelectTrigger id="empresa" className="font-semibold">
+                                <SelectValue placeholder="EMPRESA" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {empresas.map(item=> (
+                                    <SelectItem key={item.id} value={item.id}>{item.nome}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
                     <div className="inline-flex gap-4">
-                    <div >
-                        <div className=" block">
-          <Label  value="Data inicio" />
-        </div>
-                            <DatePicker selected={startDate} onChange={e => { e && setStartDate(e) }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase font-semibold  text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+                        <div className="grid gap-2">
+                            <Label>Data início</Label>
+                            <DatePicker selected={startDate} onChange={e => { e && setStartDate(e) }} dateFormat={"dd/MM/yyyy"} required className="flex w-full uppercase font-semibold text-xs border rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400" />
                         </div>
-
-
-                        <div >
-                        <div className=" block">
-          <Label  value="Data fim" />
-        </div>
-                            <DatePicker selected={endDate} onChange={e => { e && setEndDate(e) }} dateFormat={"dd/MM/yyyy"} locale={pt} required className="flex w-full uppercase font-semibold  text-xs   border  rounded-lg   bg-gray-50 border-gray-300 placeholder-gray-400  " />
+                        <div className="grid gap-2">
+                            <Label>Data fim</Label>
+                            <DatePicker selected={endDate} onChange={e => { e && setEndDate(e) }} dateFormat={"dd/MM/yyyy"} required className="flex w-full uppercase font-semibold text-xs border rounded-lg bg-gray-50 border-gray-300 placeholder-gray-400" />
                         </div>
                     </div>
-
-                    <Button size={'sm'} onClick={()=>handleFiltro({endDate,id_empresa,startDate})} className="ml-auto">Aplicar Filtro</Button>
-                   
-
-            </Modal.Body>
-        </Modal>
+                    <div className="flex justify-end">
+                        <Button size={'sm'} onClick={async ()=>{ await handleFiltro({endDate,id_empresa,startDate}); setOpenModal(false)}}>Aplicar Filtro</Button>
+                    </div>
+                </div>
+            </DialogContent>
+        </Dialog>
     )
 }
