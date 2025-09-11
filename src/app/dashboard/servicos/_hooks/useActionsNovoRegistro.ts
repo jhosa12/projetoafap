@@ -324,31 +324,71 @@ const useActionsNovoResgistro = () => {
   }
 
   useEffect(() => {
-    closeModa({ id_associado: undefined })
+    // Estas linhas parecem ser para inicialização, vamos mantê-las
+    closeModa({ id_associado: undefined });
     const novoArray = listaConv.convalescenca_prod && [...listaConv.convalescenca_prod];
-    // novoArray.push({ ...listaConv.convalescenca_prod})
-    novoArray && setMaterial(novoArray)
-    if (!componenteMounted) {
-      try {
-        const selectMateriais = async () => {
-          const response = await api.get('/estoque/listar')
-          setSelect(response.data.produtos)
-          setEstoque(response.data.estoque)
-
-        }
-        selectMateriais()
-
-      } catch (error) {
-        console.log(error)
-      }
-
-
+    if (novoArray) {
+      setMaterial(novoArray);
     }
 
+    // Esta lógica agora busca os materiais e gerencia o estado de loading
+    if (!componenteMounted) {
+      const selectMateriais = async () => {
+        // 1. Inicia o estado de loading ANTES de fazer a chamada
+        setIsLoading(true);
+        try {
+          // 2. Usa o método POST e o caminho /api/... que funcionou
+          const response = await api.post('/estoque/listar', {});
+          const data = response.data;
 
+          // 3. Adicionamos um console.log para facilitar a depuração no futuro
+          console.log("Resposta da API de estoque:", data);
 
-    setMounted(true)
-  }, [])
+          // 4. Trata a resposta (objeto único) para evitar erros
+          if (data && data.id_produto) {
+            const produtoParaSelect: SelectProps = {
+              // --- Dados que vêm da API ---
+              id_produto: data.id_produto,
+              descricao: data.produtos.descricao, // Pegando a descrição aninhada
+              quantidade: data.quantidade,
+              grupo: data.produtos.grupo,
+
+              // --- Dados que NÃO vêm da API (preenchidos com valores padrão) ---
+              unidade: '',
+              valor_custo: 0,
+              valor_venda: 0,
+              margem_lucro: 0,
+              valor_aluguel: 0,
+              est_inicial: 0,
+              est_entradas: 0,
+              est_saidas: 0,
+              est_saldo: data.quantidade, // Podemos assumir que o saldo inicial é a quantidade
+              situacao: 'ATIVO', // Ou algum outro valor padrão que faça sentido
+              data_inc: new Date(), // Usando a data atual como padrão
+              tipo: '', // A API tem 'tipo' dentro de 'produtos', mas o tipo está incorreto no seu EstoqueProps (boolean)
+              taxa_conval: 0,
+            };
+            setSelect([produtoParaSelect]); // Transforma em uma lista com 1 item
+            setEstoque([data]); // Transforma em uma lista com 1 item
+          } else {
+            // Caso a API retorne uma estrutura com listas no futuro
+            setSelect(data.produtos || []);
+            setEstoque(data.estoque || []);
+          }
+        } catch (error) {
+          console.error("Falha ao buscar ou processar dados do estoque:", error);
+          toast.error("Não foi possível carregar os materiais.");
+        } finally {
+          // 5. O setIsLoading(false) no finally GARANTE que o loading sempre termina
+          setIsLoading(false);
+        }
+      };
+
+      selectMateriais();
+    }
+
+    setMounted(true);
+  }, []); // Adicione o array de dependências vazio se quiser que rode só uma vez
 
   useEffect(() => {
 
@@ -380,20 +420,20 @@ const useActionsNovoResgistro = () => {
   }, [titular])
 
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await api.get('/seus-dados');
-        closeModa(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar dados", error);
-      } finally {
-        // ✅ Garante que o loading termina, mesmo se der erro
-        setIsLoading(false);
-      }
-    }
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+  //       const response = await api.get('/seus-dados');
+  //       closeModa(response.data);
+  //     } catch (error) {
+  //       console.error("Erro ao buscar dados", error);
+  //     } finally {
+  //       // ✅ Garante que o loading termina, mesmo se der erro
+  //       setIsLoading(false);
+  //     }
+  //   }
+  //   fetchData();
+  // }, []);
 
   return {
 
@@ -429,3 +469,7 @@ const useActionsNovoResgistro = () => {
 }
 
 export default useActionsNovoResgistro;
+
+type ActionsHookReturnType = ReturnType<typeof useActionsNovoResgistro>;
+// 2. Cria e exporta um tipo específico para a função 'setarListaConv'
+export type SetarListaConvType = ActionsHookReturnType['setarListaConv']

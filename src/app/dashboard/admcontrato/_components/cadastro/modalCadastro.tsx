@@ -23,7 +23,7 @@ import {
 } from "react-hook-form";
 
 import { MultiStep } from "@/utils/multiStep";
-import { DadosCadastro } from '@/app/dashboard/admcontrato/_types/associado';
+import { DadosCadastroProps } from "../../_types/dados-cadastro";
 import { DadosTitular } from '@/app/dashboard/admcontrato/_components/cadastro/dadosTitular';
 import { DadosPlano } from '@/app/dashboard/admcontrato/_components/cadastro/dadosPlano';
 import { DadosDependentes } from '@/app/dashboard/admcontrato/_components/cadastro/dadosDependentes';
@@ -44,11 +44,11 @@ interface ParcelaData {
 }
 
 export interface ChildrenProps {
-  register: UseFormRegister<DadosCadastro>,
-  setValue: UseFormSetValue<DadosCadastro>,
-  watch: UseFormWatch<DadosCadastro>
-  trigger: UseFormTrigger<DadosCadastro>
-  control: Control<DadosCadastro>
+  register: UseFormRegister<DadosCadastroProps>,
+  setValue: UseFormSetValue<DadosCadastroProps>,
+  watch: UseFormWatch<DadosCadastroProps>
+  trigger: UseFormTrigger<DadosCadastroProps>
+  control: Control<DadosCadastroProps>
 
 }
 
@@ -56,7 +56,7 @@ export default function ModalCadastro({ isEmpresa, empresa }: { isEmpresa?: bool
   const [open, setOpen] = useState(false);
 
   const { usuario, carregarDados, selectEmp } = useContext(AuthContext);
-  const { register, handleSubmit, setValue, watch, trigger, control, reset } = useForm<DadosCadastro>();
+  const { register, handleSubmit, setValue, watch, trigger, control, reset } = useForm<DadosCadastroProps>();
   useEffect(() => {
     reset({})
     setCurrentStepIndex(0);
@@ -81,7 +81,7 @@ export default function ModalCadastro({ isEmpresa, empresa }: { isEmpresa?: bool
   //   return mensalidades;
   // }
 
-  const handleSave = async (data: DadosCadastro) => {
+  const handleSave = async (data: DadosCadastroProps) => {
     const dataAtual = new Date();
     dataAtual.setTime(dataAtual.getTime() - dataAtual.getTimezoneOffset() * 60 * 1000);
 
@@ -169,7 +169,7 @@ export default function ModalCadastro({ isEmpresa, empresa }: { isEmpresa?: bool
     <ResumoCadastro control={control} key={4} trigger={trigger} register={register} setValue={setValue} watch={watch} />
   ]);
 
-  const onSubmit: SubmitHandler<DadosCadastro> = (data) => {
+  const onSubmit: SubmitHandler<DadosCadastroProps> = (data) => {
     steps.length - 1 === currentStepIndex ? handleSave(data) : next();
   };
 

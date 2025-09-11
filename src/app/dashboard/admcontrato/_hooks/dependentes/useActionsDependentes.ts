@@ -2,10 +2,10 @@ import DeclaracaoExclusao from "@/Documents/dependentes/DeclaracaoExclusao";
 import { pageStyle } from "@/utils/pageStyle";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
-import { DependentesProps } from "../_types/dependentes";
+import { DependentesProps } from "../../_types/dependentes";
 import { toast } from "sonner";
 import { api } from "@/lib/axios/apiClient";
-import { AssociadoProps } from "../_types/associado";
+import { AssociadoProps } from "../../_types/associado";
 import { UserProps } from "@/types/user";
 import { AuthContext } from "@/store/AuthContext";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -97,8 +97,6 @@ const useActionsDependentes = ( {dadosassociado, usuario, setarDadosAssociado, s
     } catch (error: any) {
       toast.error(error?.response?.data.error ?? 'Erro ao salvar dados')
     }
-
-
   }
 
   async function atualizarDependente(dados: DependentesProps) {

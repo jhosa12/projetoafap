@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { IoMdSearch } from "react-icons/io";
 import { MdClose } from "react-icons/md";
 import { HiOutlineSave } from "react-icons/hi";
@@ -25,6 +25,34 @@ import { Calendar } from "@/components/ui/calendar";
 import { date } from "zod";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox";
+import { RowSelectionState } from "@tanstack/react-table";
+
+// Importe a função que gera as colunas e o tipo
+import { getColumns, Dependente } from "../../_components/convalescentes/colunas-dependentes";
+// Importe o componente da tabela
+import { TabelaDependentesCompleta } from "../../_components/convalescentes/data-table";
+import { AuthContext } from "@/store/AuthContext";
+import { GenericoBusca } from "@/components/genericoBusca";
+import { AssociadoProps } from "@/app/dashboard/admcontrato/_types/associado";
+
 
 
 export default function ConvalescenciaNovo() {
@@ -38,6 +66,12 @@ export default function ConvalescenciaNovo() {
     const [visible, setVisible] = useState(false)
     const [open, setOpen] = React.useState(false)
     const [date, setDate] = React.useState<Date | undefined>(undefined)
+    // **NOVO**: Estado para guardar a seleção DENTRO do modal
+    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+    const { ufs } = useContext(AuthContext)
+    const [listaParaBusca, setListaParaBusca] = useState<AssociadoProps[]>([]);
+    const [associadoSelecionado, setAssociadoSelecionado] = useState<AssociadoProps | null>(null);
+
 
     const {
 
@@ -72,9 +106,7 @@ export default function ConvalescenciaNovo() {
 
     } = useActionsNovoResgistro()
 
-    if (isLoading) {
-        return <p>Carregando...</p>;
-    }
+
 
     //  function statusProd(status: string) {
     //   const novoArray = [...listaMaterial]
@@ -118,6 +150,59 @@ export default function ConvalescenciaNovo() {
 
 
     //  }
+
+    // Filtra os dependentes que não foram excluídos ANTES de passar para a tabela
+    const dependentesVisiveis = React.useMemo(
+        () => dadosAssociado?.dependentes.filter((d: Dependente) => d.excluido !== true) || [],
+        [dadosAssociado]
+    )
+
+    // Gera as definições de colunas, passando as funções de ação necessárias
+    const columns = React.useMemo(
+        () => getColumns({ setarListaConv, setModalDependente }),
+        [setarListaConv, setModalDependente]
+    )
+
+
+    const [isDependenteSelecionado, setDependenteSelecionado] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    if (isLoading) {
+        return <p>Carregando...</p>;
+    }
+
+
+
+    // **NOVO**: Função que será chamada pelo botão "Salvar" do modal
+    const handleConfirmarSelecaoDependente = () => {
+        // 1. Pega os índices das linhas selecionadas
+        const indicesSelecionados = Object.keys(rowSelection).map(Number);
+
+        // 2. Verifica se APENAS UM foi selecionado
+        if (indicesSelecionados.length === 1 && dadosAssociado?.dependentes) {
+            const indice = indicesSelecionados[0];
+            const dependentesVisiveis = dadosAssociado.dependentes.filter(d => !d.excluido);
+            const dependenteEscolhido = dependentesVisiveis[indice];
+
+            // 3. Se tivermos um dependente, chame a função do seu hook principal
+            if (dependenteEscolhido) {
+                setarListaConv({
+                    nome: dependenteEscolhido.nome,
+                    data: dependenteEscolhido.data_nasc,
+                    id_dependente: dependenteEscolhido.id_dependente,
+                });
+
+                // 4. Atualiza a UI: marca o checkbox e fecha o modal
+                setDependenteSelecionado(true);
+                setIsModalOpen(false);
+            }
+        } else {
+            // 5. Mostra um aviso se nenhum ou mais de um for selecionado
+            toast.info("Por favor, selecione apenas um dependente.");
+        }
+    };
+
+
 
     return (
         <>
@@ -190,17 +275,8 @@ export default function ConvalescenciaNovo() {
             </div>)}
 
 
-
-
-
-
-
-
-
-
-
             {/*visible && <ModalBusca visible={visible} setVisible={()=>setVisible(false)} />*/}
-            {modalDependente && dependente && (
+            {/* {modalDependente && dependente && (
                 <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
 
                     <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-10 bg-gray-50 ">
@@ -225,7 +301,7 @@ export default function ConvalescenciaNovo() {
                         </div>
                     </div>
                 </div>
-            )}
+            )} */}
 
             <div className="flex flex-col w-full pl-10 pr-10 pt-4">
                 <div className="flex flex-row p-2 ">
@@ -234,213 +310,291 @@ export default function ConvalescenciaNovo() {
                         Solicitar Convalescente
                     </h1>
 
-                    <div className="flex flex-row gap-8">
-                        <Button
-                            onClick={() => closeModa({ closeModalPlano: true })}
-                        >
-                            <Search />
-                            Buscar
-                        </Button>
-                    </div>
+                    {/* <div className="flex flex-row gap-8">
+                        <GenericoBusca <carregarDados>
+                            <Button
+                                variant="outline"
+                            >
+                                <Search />
+                                Buscar
+                            </Button>
+                        </GenericoBusca>
+                    </div> */}
                 </div>
 
-
+                {/* Menu */}
                 <div className="flex-col w-full mt-2 ">
                     <Tabs defaultValue="usuario" className="w-full">
                         <TabsList className="flex items-center border">
-                            <TabsTrigger value="usuario">Usuário</TabsTrigger>
+                            <TabsTrigger value="usuario">Nova Solicitação</TabsTrigger>
                             <TabsTrigger value="material">Material</TabsTrigger>
-                            <TabsTrigger value="salvar">Salvar</TabsTrigger>
                             <TabsTrigger value="gravar">Gravar Alterações</TabsTrigger>
                         </TabsList>
 
                         <ScrollArea className="h-[400px] rounded-md">
+
+
                             {/* Informações de Usuário */}
                             <TabsContent value="usuario">
 
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle>Informações Pessoais</CardTitle>
+
+                                        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                                            <form>
+                                                <div className="flex justify-start w-full gap-10">
+                                                    <CardTitle className="text-xl">Informações Pessoais</CardTitle>
+                                                    <DialogTrigger asChild>
+                                                        <div className="flex items-center gap-2">
+                                                            <Checkbox id="terms"
+                                                                checked={isDependenteSelecionado}
+                                                                // A lógica de clique é a seguinte:
+                                                                onCheckedChange={(checked) => {
+
+                                                                    if (checked) {
+                                                                        setIsModalOpen(true)
+                                                                    } else {
+                                                                        setDependenteSelecionado(false)
+                                                                    }
+                                                                }}
+                                                            />
+                                                            <Label htmlFor="terms">DEPENDENTES</Label>
+                                                        </div>
+                                                    </DialogTrigger>
+                                                </div>
+                                                <DialogContent className="sm:max-w-4xl">
+                                                    <DialogHeader>
+                                                        <DialogTitle>Selecione o Dependente</DialogTitle>
+                                                        <DialogDescription>
+                                                            Selecione o dependente desejado na lista abaixo.
+                                                            Clique em 'Salvar Mudanças' para finalizar a seleção.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <div className="grid gap-4">
+                                                        <TabelaDependentesCompleta
+                                                            columns={columns}
+                                                            data={dependentesVisiveis}
+                                                            rowSelection={rowSelection}
+                                                            setRowSelection={setRowSelection}
+                                                        />
+                                                    </div>
+                                                    <DialogFooter>
+                                                        <DialogClose asChild>
+                                                            <Button variant="outline">Cancelar</Button>
+                                                        </DialogClose>
+                                                        <Button
+                                                            type="submit"
+                                                            onClick={handleConfirmarSelecaoDependente}
+                                                        >Salvar Mudanças</Button>
+                                                    </DialogFooter>
+                                                </DialogContent>
+                                            </form>
+                                        </Dialog>
+
                                         <CardDescription>
                                         </CardDescription>
                                     </CardHeader>
-                                    <CardContent className="flex flex-col gap-6">
 
-                                        {/* Primeira Linha */}
-                                        <div className="flex justify-between gap-4">
-                                            <div className="grid gap-3 w-80">
-                                                <Label htmlFor="tabs-demo-name">Nome do Usuário</Label>
-                                                <Input
-                                                    id="tabs-demo-name"
-                                                    value={listaConv.nome}
-                                                    onChange={e => setarListaConv({ nome: e.target.value })}
-                                                />
-                                            </div>
+                                    {/* Formulário de Usuário */}
+                                    <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
-                                            <div className="grid gap-3">
-                                                <Label htmlFor="tabs-demo-username">Data de Nascimento</Label>
-                                                <Popover open={open} onOpenChange={setOpen}>
-                                                    <PopoverTrigger asChild>
-                                                        <Button
-                                                            variant="outline"
-                                                            id="date"
-                                                            className="w-48 justify-between font-normal"
-                                                        >
-                                                            {listaConv.data ? listaConv.data.toLocaleDateString() : "Selecione a data"}
-                                                            <ChevronDownIcon />
-                                                        </Button>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-                                                        <Calendar
-                                                            mode="single"
-                                                            selected={listaConv.data ?? undefined}
-                                                            captionLayout="dropdown"
-                                                            onSelect={(date) => {
-                                                                if (date) {
+                                        <div className="grid gap-2 lg:col-span-2">
+                                            <Label htmlFor="tabs-demo-name">Nome do Usuário</Label>
+                                            <Input
+                                                id="tabs-demo-name"
+                                                value={listaConv.nome}
+                                                onChange={e => setarListaConv({ nome: e.target.value })}
+                                            />
+                                        </div>
 
-                                                                    setarListaConv({ data: date });
+                                        <div className="grid gap-2 ">
+                                            <Label htmlFor="tabs-demo-username">Data de Nascimento</Label>
+                                            <Popover open={open} onOpenChange={setOpen}>
+                                                <PopoverTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        id="date"
+                                                        className="lg:col-span-1 justify-between font-normal text-gray-500"
+                                                    >
+                                                        {listaConv.data ? listaConv.data.toLocaleDateString() : "Selecione a data"}
+                                                        <ChevronDownIcon />
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                                                    <Calendar
+                                                        mode="single"
+                                                        selected={listaConv.data ?? undefined}
+                                                        captionLayout="dropdown"
+                                                        onSelect={(date) => {
+                                                            if (date) {
 
-                                                                    setDate(date);
-                                                                }
-                                                                setOpen(false);
-                                                            }}
-                                                        />
-                                                    </PopoverContent>
-                                                </Popover>
-                                            </div>
+                                                                setarListaConv({ data: date });
 
+                                                                setDate(date);
+                                                            }
+                                                            setOpen(false);
+                                                        }}
+                                                    />
+                                                </PopoverContent>
+                                            </Popover>
+                                        </div>
+
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="tabs-demo-name">CPF</Label>
+                                            <Input
+                                                id="tabs-demo-name"
+                                                value={listaConv.cpf_cnpj}
+                                                onChange={e => setarListaConv({ cpf_cnpj: e.target.value })}
+                                            />
+                                        </div>
+
+                                        <div className="grid gap-2 lg:col-span-2">
+                                            <Label htmlFor="tabs-demo-name">Endereço</Label>
+                                            <Input
+                                                id="tabs-demo-name"
+                                                value={listaConv.logradouro}
+                                                onChange={e => setarListaConv({ logradouro: e.target.value })}
+                                            />
+                                        </div>
+
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="tabs-demo-name">Número</Label>
+                                            <Input
+                                                id="tabs-demo-name"
+                                                value={listaConv.numero ?? ''}
+                                                onChange={e => setarListaConv({ numero: Number(e.target.value) })}
+                                            />
+                                        </div>
+                                        <div className="grid gap-2 lg:col-span-2">
+                                            <Label htmlFor="tabs-demo-name">Bairro</Label>
+                                            <Input
+                                                id="tabs-demo-name"
+                                                value={listaConv.bairro ?? ''}
+                                                onChange={e => setarListaConv({ bairro: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="grid gap-2 lg:col-span-2">
+                                            <Label htmlFor="tabs-demo-name">Complemento</Label>
+                                            <Input
+                                                id="tabs-demo-name"
+                                                value={listaConv.complemento ?? ''}
+                                                onChange={e => setarListaConv({ complemento: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="grid gap-2">
                                             <div className="grid gap-3 w-64">
-                                                <Label htmlFor="tabs-demo-name">CPF</Label>
+                                                <Label htmlFor="tabs-demo-name">CEP</Label>
                                                 <Input
                                                     id="tabs-demo-name"
-                                                    value={listaConv.cpf_cnpj}
-                                                    onChange={e => setarListaConv({ cpf_cnpj: e.target.value })}
-                                                />
-                                            </div>
-
-                                            <div className="grid gap-3 w-80">
-                                                <Label htmlFor="tabs-demo-name">Endereço</Label>
-                                                <Input
-                                                    id="tabs-demo-name"
-                                                    value={listaConv.logradouro}
-                                                    onChange={e => setarListaConv({ logradouro: e.target.value })}
+                                                    value={listaConv.cep}
+                                                    onChange={e => setarListaConv({ cep: e.target.value })}
                                                 />
                                             </div>
                                         </div>
-                                        {/* Segunda Linha */}
-                                        <div className="flex justify-between gap-4">
-                                            <div className="grid gap-3 w-40">
-                                                <Label htmlFor="tabs-demo-name">Número</Label>
-                                                <Input
-                                                    id="tabs-demo-name"
-                                                    value={listaConv.numero ?? ''}
-                                                    onChange={e => setarListaConv({ numero: Number(e.target.value) })}
-                                                />
-                                            </div>
-                                            <div className="grid gap-3 w-80">
-                                                <Label htmlFor="tabs-demo-name">Bairro</Label>
-                                                <Input
-                                                    id="tabs-demo-name"
-                                                    value={listaConv.bairro ?? ''}
-                                                    onChange={e => setarListaConv({ bairro: e.target.value })}
-                                                />
-                                            </div>
-                                            <div className="grid gap-3 w-80">
-                                                <Label htmlFor="tabs-demo-name">Complemento</Label>
-                                                <Input
-                                                    id="tabs-demo-name"
-                                                    value={listaConv.complemento ?? ''}
-                                                    onChange={e => setarListaConv({ complemento: e.target.value })}
-                                                />
-                                            </div>
-                                            <div className="flex justify-between gap-4">
-                                                <div className="grid gap-3 w-64">
-                                                    <Label htmlFor="tabs-demo-name">CEP</Label>
-                                                    <Input
-                                                        id="tabs-demo-name"
-                                                        value={listaConv.cep}
-                                                        onChange={e => setarListaConv({ cep: e.target.value })}
-                                                    />
-                                                </div>
-                                            </div>
+
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="tabs-demo-name">Cidade</Label>
+                                            <Input
+                                                id="tabs-demo-name"
+                                                value={listaConv.cidade}
+                                                onChange={e => setarListaConv({ cidade: e.target.value })}
+                                            />
                                         </div>
 
-                                        {/* Terceira Linha */}
-
-                                        <div className="flex justify-start gap-4">
-
-                                            <div className="grid gap-3 w-96">
-                                                <Label htmlFor="tabs-demo-name">Cidade</Label>
-                                                <Input
-                                                    id="tabs-demo-name"
-                                                    value={listaConv.cidade}
-                                                    onChange={e => setarListaConv({ cidade: e.target.value })}
-                                                />
-                                            </div>
-
-                                            <div className="grid gap-3 w-40">
-                                                <Label htmlFor="tabs-demo-name">UF</Label>
-                                                <Input
-                                                    id="tabs-demo-name"
-                                                    value={listaConv.uf}
-                                                    onChange={e => setarListaConv({ uf: e.target.value })}
-                                                />
-                                            </div>
-
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="uf-select">UF</Label>
+                                            <Select
+                                                onValueChange={(valorUf) => {
+                                                    setarListaConv({ uf: valorUf })
+                                                }}>
+                                                <SelectTrigger id="uf-select" className="w-[180px]">
+                                                    <SelectValue placeholder="Selecione..." />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {ufs && ufs.length > 0 ? (
+                                                        ufs.map((uf) => (
+                                                            <SelectItem key={uf.id} value={uf.sigla}>
+                                                                {uf.sigla}
+                                                            </SelectItem>
+                                                        ))
+                                                    ) : (
+                                                        // Mostra uma mensagem de carregamento enquanto os dados não chegam
+                                                        <SelectItem value="loading" disabled>
+                                                            Carregando UFs...
+                                                        </SelectItem>
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
                                         </div>
 
-                                        <CardTitle>Endereço de Retirada</CardTitle>
 
 
-                                        {/* Quarta Linha */}
-                                        <div className="flex justify-between gap-4">
-                                            <div className="grid gap-3 w-96">
-                                                <Label htmlFor="tabs-demo-name">Endereço</Label>
-                                                <Input
-                                                    id="tabs-demo-name"
-                                                    value={listaConv.logradouro_r}
-                                                    onChange={e => setarListaConv({ logradouro_r: e.target.value })}
-                                                />
-                                            </div>
-                                                <div className="grid gap-3 w-64">
-                                                    <Label htmlFor="tabs-demo-name">Número</Label>
-                                                    <Input
-                                                        id="tabs-demo-name"
-                                                        value={listaConv.numero_r ?? ''}
-                                                        onChange={e => setarListaConv({ numero_r: Number(e.target.value) })}
-                                                    />
-                                                </div>
-                                                <div className="grid gap-3 w-80">
-                                                    <Label htmlFor="tabs-demo-name">Bairro</Label>
-                                                    <Input
-                                                        id="tabs-demo-name"
-                                                        value={listaConv.bairro_r ?? ''}
-                                                        onChange={e => setarListaConv({ bairro_r: e.target.value })}
-                                                    />
-                                                </div>
-                                            
+                                        {/* ------------------- Nova Seção ---------------------- */}
+
+
+
+                                        <CardTitle className="text-xl col-span-full mt-4 border-t pt-8 pb-2">
+                                            Endereço de Retirada
+                                        </CardTitle>
+
+                                        <div className="grid gap-2 lg:col-span-2">
+                                            <Label htmlFor="tabs-demo-name">Endereço</Label>
+                                            <Input
+                                                id="tabs-demo-name"
+                                                value={listaConv.logradouro_r}
+                                                onChange={e => setarListaConv({ logradouro_r: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="grid gap-3 w-64">
+                                            <Label htmlFor="tabs-demo-name">Número</Label>
+                                            <Input
+                                                id="tabs-demo-name"
+                                                value={listaConv.numero_r ?? ''}
+                                                onChange={e => setarListaConv({ numero_r: Number(e.target.value) })}
+                                            />
+                                        </div>
+                                        <div className="grid gap-2 lg:col-span-2">
+                                            <Label htmlFor="tabs-demo-name">Bairro</Label>
+                                            <Input
+                                                id="tabs-demo-name"
+                                                value={listaConv.bairro_r ?? ''}
+                                                onChange={e => setarListaConv({ bairro_r: e.target.value })}
+                                            />
                                         </div>
 
-                                        {/* Quinta Linha */}
-                                        <div className="flex justify-between gap-4">
-                                            <div className="flex justify-between gap-4">
-                                                <div className="grid gap-3 w-96">
-                                                    <Label htmlFor="tabs-demo-name">Cidade</Label>
-                                                    <Input
-                                                        id="tabs-demo-name"
-                                                        value={listaConv.cidade_r}
-                                                        onChange={e => setarListaConv({ cidade_r: e.target.value })}
-                                                    />
-                                                </div>
-                                                <div className="grid gap-3 w-40">
-                                                    <Label htmlFor="tabs-demo-name">UF</Label>
-                                                    <Input
-                                                        id="tabs-demo-name"
-                                                        value={listaConv.uf_r}
-                                                        onChange={e => setarListaConv({ uf_r: e.target.value })}
-                                                    />
-                                                </div>
-                                            </div>
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="tabs-demo-name">Cidade</Label>
+                                            <Input
+                                                id="tabs-demo-name"
+                                                value={listaConv.cidade_r}
+                                                onChange={e => setarListaConv({ cidade_r: e.target.value })}
+                                            />
+                                        </div>
+
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="uf-select">UF</Label>
+                                            <Select
+                                                onValueChange={(valorUf) => {
+                                                    setarListaConv({ uf: valorUf })
+                                                }}>
+                                                <SelectTrigger id="uf-select" className="w-[180px]">
+                                                    <SelectValue placeholder="Selecione..." />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {ufs && ufs.length > 0 ? (
+                                                        ufs.map((uf) => (
+                                                            <SelectItem key={uf.id} value={uf.sigla}>
+                                                                {uf.sigla}
+                                                            </SelectItem>
+                                                        ))
+                                                    ) : (
+                                                        // Mostra uma mensagem de carregamento enquanto os dados não chegam
+                                                        <SelectItem value="loading" disabled>
+                                                            Carregando UFs...
+                                                        </SelectItem>
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
                                         </div>
 
                                     </CardContent>
@@ -474,7 +628,7 @@ export default function ConvalescenciaNovo() {
                                     </div>
                                 </CardContent>
                                 <CardFooter>
-                                        <Button onClick={() => adicionarNovoRegistro()} >Salvar</Button>
+                                    <Button onClick={() => adicionarNovoRegistro()} >Salvar</Button>
                                 </CardFooter>
                             </Card>
                         </TabsContent>
@@ -495,7 +649,9 @@ export default function ConvalescenciaNovo() {
                         </li> : <li className="ml-auto flex items-center mr-2">
                             <button type="button" onClick={() => editarRegistro()} className="inline-flex p-2 text-black font-semibold rounded-lg uppercase bg-yellow-600 gap-1">Gravar Alterações<HiOutlineSave size={22} /></button>
                         </li>}
-                    </ul> */}
+                    </ul> */
+
+                    }
                     {/* {usuarioMaterial && <>
                         {dadosAssociado?.id_associado && <div className="flex w-full p-2  text-lg  text-black">
                             <h1 className="flex w-full p-1 border-b-[1px] border-gray-500">ASSOCIADO: {dadosAssociado?.contrato.id_contrato} - {dadosAssociado?.nome} / CATEGORIA: {dadosAssociado?.contrato.plano}</h1>
@@ -591,213 +747,7 @@ export default function ConvalescenciaNovo() {
 
 
 
-                    {material && <div className="flex flex-col w-full rounded-lg p-6   gap-5">
-                        <div className="flex flex-row text-black gap-6 w-full">
 
-                            <div>
-                                <label className="block mb-1 text-sm font-medium  text-white">Material</label>
-                                <select defaultValue={(dataInputs.descricao)} onChange={e => {
-                                    const prod = selectProdutos.find(item => item.id_produto === Number(e.target.value))
-                                    setInputs({ ...dataInputs, descricao: prod?.descricao, id_produto: Number(e.target.value) })
-                                }}
-                                    className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white " >
-                                    <option></option>
-                                    {
-                                        selectProdutos.map((item, index) => {
-                                            return (
-                                                <option value={item.id_produto}>{item.descricao}</option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block mb-1 text-sm font-medium  text-white">Codigo do Produto</label>
-                                <select onChange={e => {
-
-                                    setInputs({ ...dataInputs, id_estoque: Number(e.target.value) })
-                                }}
-                                    className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white " >
-                                    <option></option>
-                                    {
-                                        estoque.map((item, index) => {
-                                            return (
-                                                item.produto === dataInputs.descricao && <option value={item.id_estoque}>{item.codProd} - {item.estado}</option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                            </div>
-
-                            <div className="flex flex-col w-1/12">
-                                <label className="block mb-1 text-sm font-medium  text-white">Quant.</label>
-                                <input value={Number(dataInputs.quantidade)} onChange={e => setInputs({ quantidade: Number(e.target.value) })} autoComplete='off' type="number" className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
-                            </div>
-                            <div className="flex flex-col w-1/12" >
-                                <label className="block mb-1 text-sm font-medium  text-white">Valor</label>
-                                <input value={Number(dataInputs.valor)} onChange={(e) => setInputs({ valor: Number(e.target.value) })}
-                                    autoComplete='off' type="number" className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white " />
-                            </div>
-
-                            <div className="flex items-end">
-                                <button onClick={() => {
-                                    if (!dataInputs.descricao) {
-                                        toast.info('Selecione o Material');
-                                        return;
-
-                                    }
-                                    adicionarProduto()
-
-                                    // const novoArray = listaMaterial && [...listaMaterial];
-                                    // novoArray.push({ ...dataInputs, status: 'PENDENTE', data: new Date(), id_conv: Number(listaConv.id_conv) })
-                                    // setMaterial(novoArray)
-
-
-
-                                }
-                                }
-                                    className="flex bg-blue-600 p-1 pl-2 pr-2 rounded-lg ">Adicionar</button>
-                            </div>
-
-                        </div>
-                        <div className="flex">
-                            <table
-                                className="block  overflow-y-auto overflow-x-auto text-sm text-left rtl:text-center border-collapse rounded-lg text-gray-400">
-                                <thead className="sticky top-0 text-sm  uppercase bg-gray-700 text-gray-400">
-                                    <tr>
-                                        <th scope="col" className=" px-2 py-1">
-                                            Descrição Item
-                                        </th>
-                                        <th scope="col" className=" px-2 py-1">
-                                            Código do Produto
-                                        </th>
-
-                                        <th scope="col" className="px-4 py-1">
-                                            Quant.
-                                        </th>
-                                        <th scope="col" className="px-4 py-1">
-
-                                            Valor Unit.
-                                        </th>
-                                        <th scope="col" className="px-4 py-1">
-                                            Status
-                                        </th>
-
-                                        <th scope="col" className="px-4 py-1">
-                                            <span >AÇÕES</span>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {listaMaterial?.map((item, index) => {
-                                        return (<tr key={index} className={`border-b bg-gray-800 border-gray-700`}>
-                                            <td className="px-2 py-1">
-                                                {item?.descricao}
-                                            </td>
-                                            <td className="px-2 py-1">
-                                                {estoque.map(it => {
-                                                    if (item.id_estoque === it.id_estoque) {
-                                                        return it.codProd
-                                                    }
-                                                })}
-                                            </td>
-                                            <td className="px-4 py-1">
-                                                {item?.quantidade}
-                                            </td>
-                                            <td className="px-4 py-1">
-                                                R${item?.valor}
-                                            </td>
-                                            <td className="px-4 py-1">
-                                                {item?.status}
-                                            </td>
-                                            <td className="px-4 py-1 flex justify-center gap-2 text-center ">
-                                                <button onClick={() => {
-
-                                                    const novo = listaMaterial && [...listaMaterial]
-                                                    novo?.splice(index, 1)
-                                                    setMaterial(novo)
-                                                }} className=" flex justify-center items-center rounded-lg  px-1 py-1 text-white hover:bg-red-600"><MdClose /></button>
-                                                <button onClick={() => {
-
-                                                    if (item.id_conv_prod && item.status === 'ABERTO') {
-                                                        imprimirContrato()
-                                                        return;
-
-                                                    }
-                                                    if (item.id_conv_prod) {
-                                                        setModalContrato(true)
-                                                        setIndex(index)
-                                                    }
-                                                    else {
-                                                        toast.warning('SALVE AS ALTERAÇÕES')
-                                                        return;
-                                                    }
-                                                }} className="text-blue-600 p-1  rounded-lg hover:text-white hover:bg-blue-600"><IoPrint size={18} /></button>
-                                                <button onClick={() => {
-                                                    if (item.status === 'PENDENTE') {
-                                                        return
-                                                    }
-                                                    if (item.id_conv_prod && item.status === 'FECHADO') {
-                                                        imprimirComprovante()
-                                                        return;
-                                                    }
-                                                    else if (item.id_conv_prod) {
-                                                        setComprovante(true)
-                                                        setIndex(index)
-                                                    }
-                                                    else {
-                                                        toast.warning('SALVE AS ALTERAÇÕES')
-                                                        return;
-                                                    }
-
-
-                                                }} className="text-yellow-600 p-1 rounded-lg hover:text-white hover:bg-yellow-600"><IoTicket size={18} /></button>
-                                            </td>
-
-                                        </tr>)
-                                    })}
-
-                                </tbody>
-
-                                <tfoot >
-                                    <tr className={`border-b bg-gray-700 border-gray-700  hover:bg-gray-600`}>
-                                        <td className="px-4 py-1 text-start font-semibold" colSpan={3}>Total Geral</td>
-                                        <td className="px-4 py-1 text-green-500 text-start font-semibold" colSpan={3} >R${ }</td>
-                                    </tr>
-                                </tfoot>
-
-                            </table>
-
-                        </div>
-
-                        <div style={{ display: 'none' }}>
-                            <DocumentTemplate
-                                ref={componentRefContrato}
-                                nome={listaConv.nome ?? ''}
-                                cpf={listaConv.cpf_cnpj ?? ''}
-                                rg={listaConv.cpf_cnpj ?? ''}
-                                logradouro={listaConv.logradouro ?? ''}
-                                bairro={listaConv.bairro ?? ''}
-                                cidade={listaConv.cidade ?? ''}
-                                uf={listaConv.uf ?? ''}
-                                telefone={''}
-                                contrato={Number(listaConv.id_contrato)}
-                                material={/*listaConv.convalescenca_prod?.descricao ??*/''}
-
-                            />
-
-                        </div>
-                        <div style={{ display: 'none' }}>
-                            <ComprovanteDocTemplte
-                                ref={componentRefComprovante}
-                                nome={listaConv.nome ?? ''}
-                                condicao=""
-                                material={/*listaConv.convalescenca_prod?.descricao??*/''}
-
-                            />
-                        </div>
-                    </div>
-                    }
                 </div>
             </div >
         </>

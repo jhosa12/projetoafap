@@ -19,6 +19,8 @@ import { ConsultoresProps } from "@/types/consultores";
 import { useAuthActions } from "@/hooks/useAuthActions";
 import useApiGet from "@/hooks/useApiGet";
 import { toast } from "sonner";
+import { UfProps } from "@/types/ufs"
+
 
 type AuthContextData = {
   usuario?: UserProps;
@@ -43,6 +45,7 @@ type AuthContextData = {
   cidadesEmpresa: Array<string>
   bairrosUnicos: Array<string>
   getBairrosUnicos: () => Promise<void>
+  ufs: UfProps[]
 };
 
 export const AuthContext = createContext({} as AuthContextData);
@@ -72,6 +75,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [bairrosUnicos, setBairrosUnicos] = useState<Array<BairroProps>>([]);
   const [selectEmp, setSelectEmp] = useState("");
   const [loading, setLoading] = useState(false);
+  const [ufs, setUfs] = useState<UfProps[]>([]);
+
   const {
     data: infoEmpresa,
     loading: loadingInfo,
@@ -84,9 +89,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setBairrosUnicos(res.data)
   }
 
-
-
-
   const getDadosFixos = async () => {
     if (
       empresas.length > 0 &&
@@ -98,11 +100,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       const response = await api.post("/dadosFixos");
+      const cidadesData = response.data.cidades || [];
 
       setEmpresas(response.data.empresas || []);
-      setCidades(response.data.cidades || []);
+      setCidades(cidadesData);
       setConsultores(response.data.consultores || []);
       // setPlanos(response.data.planos || []);
+
+      if (cidadesData.length > 0) {
+        // Usamos um Map para garantir UFs únicas, guardando o ID e a sigla
+        const ufsMap = new Map<number, UfProps>();
+
+        cidadesData.forEach((cidade: CidadesProps) => {
+          // Verifica se já adicionamos esta UF (pela chave, que é o ID do estado)
+          if (!ufsMap.has(cidade.estado)) {
+
+            ufsMap.set(cidade.estado, {
+              id: cidade.estado,
+              sigla: cidade.uf,
+             
+            });
+          }
+        });
+
+        // Converte os valores do Map (os objetos UfProps) em um array
+        const ufsFormatadas = Array.from(ufsMap.values());
+
+        // Opcional, mas recomendado: Ordena a lista final alfabeticamente pela sigla
+        ufsFormatadas.sort((a, b) => a.sigla.localeCompare(b.sigla));
+
+        // Salva no estado. Agora o tipo está correto!
+        setUfs(ufsFormatadas);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -128,6 +157,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [permissoes]);
 
   const carregarDados = async (id: number) => {
+    console.log("2. Dentro de carregarDados no AuthContext...");
     setLoading(true);
     limparDados();
     try {
@@ -190,6 +220,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         planos: infoEmpresa?.planos ?? [],
         consultores,
         cidades,
+        ufs,
         empresas,
         permissoes,
         setarDadosAssociado,
