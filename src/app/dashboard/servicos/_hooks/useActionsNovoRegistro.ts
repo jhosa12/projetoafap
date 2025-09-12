@@ -21,7 +21,6 @@ interface ActionsProps {
   estoque: Array<EstoqueNovoRegistroProps>;
   listaMaterial: Array<Partial<ListaMaterial>>;
   indexProd: number;
-  dadosAssociado: AssociadoProps | undefined;
   data: Partial<DadosCadastroProps>;
   listaConv: Partial<ConvProps>;
   titular: boolean;
@@ -47,20 +46,18 @@ interface ActionsProps {
   setInputs: (fields: Partial<ListaMaterial>) => void;
   adicionarProduto: () => Promise<void>;
   receberDev: (status: string) => Promise<void>;
-  carregarDados: () => Promise<void>;
   editarRegistro: () => Promise<void>;
   adicionarNovoRegistro: () => Promise<void>;
 
 }
 
 const useActionsNovoResgistro = () => {
-  const { usuario } = useContext(AuthContext)
+  const { usuario, dadosassociado } = useContext(AuthContext)
   const [dataInputs, setDataInputs] = useState<Partial<ListaMaterial>>({})
   const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod: [] });
   const [listaMaterial, setMaterial] = useState<Array<Partial<ListaMaterial>>>([]);
   const [indexProd, setIndex] = useState<number>(0);
   const [data, closeModa] = useState<Partial<DadosCadastroProps>>({});
-  const [dadosAssociado, setDadosAssociado] = useState<AssociadoProps>();
   const componentRefComprovante = useRef<HTMLDivElement>(null);
   const componentRefContrato = useRef<HTMLDivElement>(null);
   const [componenteMounted, setMounted] = useState(false);
@@ -120,7 +117,7 @@ const useActionsNovoResgistro = () => {
           valor: dataInputs.valor,
           descontos: 0,
           total: dataInputs.quantidade,
-          hora: new Date(),
+          hora: new Date() || null,
           cortesia: '',
           retornavel: '',
           status: 'PENDENTE'
@@ -175,22 +172,6 @@ const useActionsNovoResgistro = () => {
 
 
 
-  }
-
-  async function carregarDados() {
-    try {
-      const response = await api.post('/associado', {
-
-        id_associado: Number(data.id_associado),
-        empresa: data.empresa
-
-      })
-
-      setDadosAssociado(response.data);
-
-    } catch (error) {
-      toast.error('Erro na requisição')
-    }
   }
 
   async function editarRegistro() {
@@ -277,8 +258,8 @@ const useActionsNovoResgistro = () => {
 
     toast.promise(
       api.post('/convalescencia/novo', {
-        id_contrato: dadosAssociado?.contrato.id_contrato,
-        id_associado: dadosAssociado?.id_associado,
+        id_contrato: dadosassociado?.contrato?.id_contrato,
+        id_associado: dadosassociado?.id_associado,
         id_dependente: listaConv.id_dependente,
         id_contrato_st: listaConv.id_contrato_st,
         tipo_entrada: listaConv.tipo_entrada,
@@ -311,6 +292,7 @@ const useActionsNovoResgistro = () => {
 
 
       }),
+
       {
         error: 'Erro ao cadastrar',
         loading: 'Salvando Dados',
@@ -322,118 +304,50 @@ const useActionsNovoResgistro = () => {
 
 
   }
-
   useEffect(() => {
-    // Estas linhas parecem ser para inicialização, vamos mantê-las
-    closeModa({ id_associado: undefined });
-    const novoArray = listaConv.convalescenca_prod && [...listaConv.convalescenca_prod];
-    if (novoArray) {
-      setMaterial(novoArray);
-    }
-
-    // Esta lógica agora busca os materiais e gerencia o estado de loading
-    if (!componenteMounted) {
-      const selectMateriais = async () => {
-        // 1. Inicia o estado de loading ANTES de fazer a chamada
-        setIsLoading(true);
-        try {
-          // 2. Usa o método POST e o caminho /api/... que funcionou
-          const response = await api.post('/estoque/listar', {});
-          const data = response.data;
-
-          // 3. Adicionamos um console.log para facilitar a depuração no futuro
-          console.log("Resposta da API de estoque:", data);
-
-          // 4. Trata a resposta (objeto único) para evitar erros
-          if (data && data.id_produto) {
-            const produtoParaSelect: SelectProps = {
-              // --- Dados que vêm da API ---
-              id_produto: data.id_produto,
-              descricao: data.produtos.descricao, // Pegando a descrição aninhada
-              quantidade: data.quantidade,
-              grupo: data.produtos.grupo,
-
-              // --- Dados que NÃO vêm da API (preenchidos com valores padrão) ---
-              unidade: '',
-              valor_custo: 0,
-              valor_venda: 0,
-              margem_lucro: 0,
-              valor_aluguel: 0,
-              est_inicial: 0,
-              est_entradas: 0,
-              est_saidas: 0,
-              est_saldo: data.quantidade, // Podemos assumir que o saldo inicial é a quantidade
-              situacao: 'ATIVO', // Ou algum outro valor padrão que faça sentido
-              data_inc: new Date(), // Usando a data atual como padrão
-              tipo: '', // A API tem 'tipo' dentro de 'produtos', mas o tipo está incorreto no seu EstoqueProps (boolean)
-              taxa_conval: 0,
-            };
-            setSelect([produtoParaSelect]); // Transforma em uma lista com 1 item
-            setEstoque([data]); // Transforma em uma lista com 1 item
-          } else {
-            // Caso a API retorne uma estrutura com listas no futuro
-            setSelect(data.produtos || []);
-            setEstoque(data.estoque || []);
-          }
-        } catch (error) {
-          console.error("Falha ao buscar ou processar dados do estoque:", error);
-          toast.error("Não foi possível carregar os materiais.");
-        } finally {
-          // 5. O setIsLoading(false) no finally GARANTE que o loading sempre termina
-          setIsLoading(false);
-        }
-      };
-
-      selectMateriais();
-    }
-
-    setMounted(true);
-  }, []); // Adicione o array de dependências vazio se quiser que rode só uma vez
-
-  useEffect(() => {
-
-    closeModa({ ...data, closeModalPlano: false })
-
-    if (data.id_associado && componenteMounted) {
-
-      carregarDados();
-
-    }
-
-  }, [data.id_associado])
-
-  useEffect(() => {
-
     if (titular) {
-      setarListaConv({
-        nome: dadosAssociado?.nome ?? '',
-        data: dadosAssociado?.data_nasc ?? new Date(),
-        logradouro: dadosAssociado?.endereco ?? '',
-        bairro: dadosAssociado?.bairro ?? '',
-        numero: dadosAssociado?.numero ?? null,
-        cidade: dadosAssociado?.cidade ?? '',
-        id_dependente: null
-      })
 
+      if (dadosassociado?.id_global) {
+
+        setarListaConv({
+          nome: dadosassociado.nome ?? '',
+          data: dadosassociado.data_nasc ? new Date(dadosassociado.data_nasc) : undefined,
+          logradouro: dadosassociado.endereco ?? '',
+          bairro: dadosassociado.bairro ?? '',
+          numero: dadosassociado.numero ?? null,
+          cidade: dadosassociado.cidade ?? '',
+          cpf_cnpj: dadosassociado.cpfcnpj ?? '',
+          uf: dadosassociado.uf ?? '',
+          id_dependente: null
+        });
+      } else {
+        // Se não há associado (ex: o usuário limpou a busca), limpamos o formulário
+        setarListaConv({});
+      }
     }
 
-  }, [titular])
+  }, [titular, dadosassociado, setarListaConv]);
 
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-  //       const response = await api.get('/seus-dados');
-  //       closeModa(response.data);
-  //     } catch (error) {
-  //       console.error("Erro ao buscar dados", error);
-  //     } finally {
-  //       // ✅ Garante que o loading termina, mesmo se der erro
-  //       setIsLoading(false);
-  //     }
-  //   }
-  //   fetchData();
-  // }, []);
+
+  useEffect(() => {
+    const selectMateriais = async () => {
+      setIsLoading(true);
+      try {
+        const response = await api.post('/estoque/listar', {});
+        // ... sua lógica para tratar a resposta da API de estoque ...
+        setSelect(response.data.produtos || []);
+        setEstoque(response.data.estoque || []);
+      } catch (error) {
+        console.error("Falha ao buscar dados do estoque:", error);
+        toast.error("Não foi possível carregar os materiais.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    selectMateriais();
+  }, []); // Roda apenas uma vez
+
 
   return {
 
@@ -441,7 +355,6 @@ const useActionsNovoResgistro = () => {
     estoque,
     listaMaterial,
     indexProd,
-    dadosAssociado,
     data,
     listaConv,
     titular,
@@ -461,7 +374,6 @@ const useActionsNovoResgistro = () => {
     setInputs,
     adicionarProduto,
     receberDev,
-    carregarDados,
     editarRegistro,
     adicionarNovoRegistro,
 
@@ -469,7 +381,3 @@ const useActionsNovoResgistro = () => {
 }
 
 export default useActionsNovoResgistro;
-
-type ActionsHookReturnType = ReturnType<typeof useActionsNovoResgistro>;
-// 2. Cria e exporta um tipo específico para a função 'setarListaConv'
-export type SetarListaConvType = ActionsHookReturnType['setarListaConv']
