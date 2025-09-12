@@ -1,14 +1,19 @@
-'use client';
-
+"use client"
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ObitoProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { Button } from "@/components/ui/button";
 import { HiPlusCircle } from "react-icons/hi2";
 import { DataTable } from "@/components/ui/data-table";
 import { getObitoColumns } from "@/app/dashboard/servicos/_components/obitos/ordemDeServico/obitosColumns";
 import useActionsObito from "../_hooks/useActionsObito";
+import { ObitoProps } from "../_types/obito";
+import { ModalObitoForm } from "../_components/obitos/tabs-modal/modal-obito-form";
+import { Newspaper, PlusCircle } from "lucide-react";
+
+
 
 export default function ListarObitos() {
+  const router = useRouter()
   const [selecionado, setSelecionado] = useState<ObitoProps | null>(null);
   const [openOs, setOpenOs] = useState(false);
 
@@ -28,92 +33,18 @@ export default function ListarObitos() {
           setSelecionado(obito);
         }
       })} data={listaServicos}>
-        <Button size={"sm"} variant={"outline"}>
-          <HiPlusCircle /> Adicionar
+        <Button onClick={()=>setOpenOs(true)} size={"sm"} variant={"outline"}>
+          <PlusCircle /> Adicionar
         </Button>
       </DataTable>
 
-      {/* Tabela */}
-      {/* <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableHead>Tipo</TableHead>
-            <TableHead>Data Fal.</TableHead>
-            <TableHead>Contrato</TableHead>
-            <TableHead>Nome Decl.</TableHead>
-            <TableHead>Nome Falecido</TableHead>
-            <TableHead>Situação Cont.</TableHead>
-            <TableHead>Falecido</TableHead>
-            <TableHead>Data Nasc.</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Ações</TableHead>
-          </TableHeader>
-          <TableBody>
-            {listaServicos.map((item) => (
-              <TableRow
-                key={item.id_obitos}
-                className="group hover:bg-gray-50 cursor-pointer"
-                onClick={() => setSelecionado(item)}
-              >
-                <TableCell>{item.tipo_atendimento}</TableCell>
-                <TableCell>
-                  {new Date(item.end_data_falecimento).toLocaleDateString()}
-                </TableCell>
-                <TableCell>{item.id_contrato}</TableCell>
-                <TableCell>{item.rd_nome}</TableCell>
-                <TableCell>{item.nome_falecido}</TableCell>
-                <TableCell>{item.id_contrato_st}</TableCell>
-                <TableCell>{item.falecido}</TableCell>
-                <TableCell>
-                  {item.data_nascimento
-                    ? new Date(item.data_nascimento).toLocaleDateString()
-                    : "-"}
-                </TableCell>
-                <TableCell>
-                  <span
-                    className={
-                      item.status === "PENDENTE"
-                        ? "text-red-600 font-semibold"
-                        : "text-green-600 font-semibold"
-                    }
-                  >
-                    {item.status}
-                  </span>
-                </TableCell>
-                <TableCell className="flex space-x-2">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Link
-                          href="/servicos/gerarOS"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <HiPencil size={18} className="hover:text-blue-600" />
-                        </Link>
-                      </TooltipTrigger>
-                      <TooltipContent>Edita dados</TooltipContent>
-                    </Tooltip>
+<ModalObitoForm
+isFormOpen={openOs}
+selectedObito={selecionado}
+setIsFormOpen={()=>setOpenOs(false)}
+setSelectedObito={setSelecionado}
 
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setOpenConfirm(true);
-                          }}
-                        >
-                          <HiOutlineTrash size={18} className="hover:text-red-600" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>Excluir</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div> */}
+/>
     </div>
   );
 }

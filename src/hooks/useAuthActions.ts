@@ -16,9 +16,11 @@ interface DecodedToken {
 
 
 export function useAuthActions(): { signIn: (credentials: SignInProps) => Promise<void>, signOut: () => void, usuario: UserProps | undefined, permissoes: Array<string> } {
+  const router = useRouter()
+ 
   const [usuario, setUsuario] = useState<UserProps | undefined>();
   const [permissoes, setPermissoes] = useState<Array<string>>([])
-  const router = useRouter()
+  
 
 
   const signIn = useCallback(async ({ user, password }: SignInProps) => {
