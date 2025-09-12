@@ -1,5 +1,5 @@
 import Image from "next/image";
-import logo from "../../../public/logoafap.png"
+import logo from "../../../../../../public/novaLogo.png"
 import { MdOutlineCheckBox } from "react-icons/md";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
 // DocumentTemplate.js

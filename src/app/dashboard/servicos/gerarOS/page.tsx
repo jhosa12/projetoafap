@@ -18,11 +18,18 @@ import { ItensUsados } from "@/app/dashboard/servicos/_components/obitos/itensUs
 import { DadosVelorio } from "@/app/dashboard/servicos/_components/obitos/dadosVelorio";
 import DocumentacaoOS from "@/app/dashboard/servicos/_components/obitos/documentacao";
 import { ModalDependente } from "@/app/dashboard/servicos/_components/obitos/modalDependentes";
-import { Button, Checkbox, Tabs } from "flowbite-react";
 import { FaCalendarAlt } from "react-icons/fa";
-import { DadosCadastro, ObitoProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { toast } from "sonner";
-
+import { ObitoProps } from "../_types/obito";
+import { DadosCadastroProps } from "../../admcontrato/_types/dados-cadastro";
+import {
+    Tabs,
+    TabsList,
+    TabsTrigger,
+    TabsContent,
+  } from "@/components/ui/tabs"
+  import { Button } from "@/components/ui/button"
+  import { Checkbox } from "@/components/ui/checkbox"
 
 
 
@@ -83,7 +90,7 @@ export default function GerarOS() {
     const [indexTab, setIndex] = useState<number>(0)
     const [visible, setVisible] = useState(false)
     const [servico, setarServico] = useState<Partial<ObitoProps>>({ hr_sepultamento: new Date(), end_hora_falecimento: new Date(), end_hora_informaram: new Date() });
-    const [data, closeModa] = useState<Partial<DadosCadastro>>({});
+    const [cadastro, setCadastro] = useState<Partial<DadosCadastroProps>>({});
 
     const handleCheckParticular = () => {
         if (!particular) {
@@ -174,7 +181,7 @@ export default function GerarOS() {
         componenteMounted && dadosassociado?.id_associado && carregarDados(dadosassociado.id_associado);
         setParticular(false);
         setMounted(true)
-    }, [data.id_associado])
+    }, [cadastro.id_associado])
 
 
 
@@ -208,11 +215,10 @@ export default function GerarOS() {
         const response = await api.get("/estoque/listar")
 
         setselectProdutos(response.data.produtos)
-        console.log(response.data.produtos)
+       
     }
 
     async function cadastrarObito() {
-        console.log(servico)
         const [hours, minutes] = (servico.hr_velorio ?? '').split(':');
         const newDate = new Date();
         newDate.setHours(parseInt(hours));
@@ -341,190 +347,207 @@ export default function GerarOS() {
 
     }
     return (
-        <>
-
-            <ModalDependente openModal={modalDependente} setOpenModal={setModalDependente} setarFalecidoDependente={setarFalecidoDependente} />
-
-
-
-
-            <div className="flex flex-col w-full pl-10 pr-10 pt-2 ">
-
-                <div className="flex flex-row p-1 border-b-[1px] text-white border-gray-600">
-                    <h1 className="flex w-full font-semibold text-2xl ">Gerar Ordem de Serviço</h1>
-
+        
+      
+              <>
+                <ModalDependente
+                  openModal={modalDependente}
+                  setOpenModal={setModalDependente}
+                  setarFalecidoDependente={setarFalecidoDependente}
+                />
+          
+                <div className="flex flex-col w-full pl-10 pr-10 pt-2">
+                  {/* Header */}
+                  <div className="flex flex-row p-1 border-b  border-gray-600">
+                    <h1 className="flex w-full font-semibold text-2xl">
+                      Gerar Ordem de Serviço
+                    </h1>
+          
                     <div className="flex flex-row gap-8">
-                        <div className="flex  items-end ">
-                            <input type="checkbox" checked={particular} onChange={handleCheckParticular} className="w-5 h-5 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                            <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-50">PARTICULAR</label>
-                        </div>
-
-                        <Button color={'light'} size={'sm'} onClick={() => closeModa({ closeModalPlano: true })} >
-                            <IoMdSearch size={20} />
-                            Buscar
-                        </Button>
+                      <div className="flex items-center">
+                        <Checkbox
+                          checked={particular}
+                          onCheckedChange={handleCheckParticular}
+                          className="mr-2"
+                        />
+                        <label className="text-sm font-medium whitespace-nowrap text-black">
+                          PARTICULAR
+                        </label>
+                      </div>
+          
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCadastro({ closeModalPlano: true })}
+                      >
+                        <IoMdSearch size={20} className="mr-2" />
+                        Buscar
+                      </Button>
                     </div>
-                </div>
-                <div className="flex-col bg-white w-full border mt-1 rounded-lg shadow  border-gray-700">
-                    <Tabs theme={{
-                        tabpanel: 'py-1 ', tablist: {
-                            tabitem: {
-                                base: "flex items-center  justify-center rounded-t-lg px-3 py-3 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 ", variant: {
-                                    underline: {
-                                        active: {
-                                            on: "active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
-                                            off: "border-b-2 border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-400 "
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }} variant="underline">
-
-                        <Tabs.Item active title="Plano" icon={FaCalendarAlt}>
-                            <DadosPlano dados={{
-                                nome: dadosassociado?.nome,
-                                categoria: dadosassociado?.contrato?.plano,
-                                id_associado: dadosassociado?.id_associado,
-                                id_contrato: dadosassociado?.contrato?.id_contrato,
-                                situacao: dadosassociado?.contrato?.situacao
-                            }}
-
-                            />
-                        </Tabs.Item>
-                        <Tabs.Item title="Falecido" icon={MdAccessTimeFilled}>
-                            <>
-                                {!particular && <div className="inline-flex gap-8 pl-4 pt-1">
-                                    <div className="flex items-center ">
-                                        <input type="checkbox" checked={titular} onClick={handleCheckTitular} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                                        <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-600">TITULAR</label>
-                                    </div>
-                                    <div className="flex items-center ">
-                                        <input type="checkbox" onClick={handleCheckDependente} checked={dependente} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                                        <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-600">DEPENDENTE</label>
-                                    </div>
-                                </div>}
-                                <DadosFalecido servico={servico} setarServico={setarServico} check={particular || titular || dependente ? false : true} />
-
-                            </>
-
-                        </Tabs.Item>
-
-                        <Tabs.Item title="Declarante" icon={HiClipboardList}>
-                            <DadosDeclarante servico={servico} setarServico={setarServico} />
-                        </Tabs.Item>
-                        <Tabs.Item icon={IoMdSettings} title="Dados Óbito">
-                            <DadosObito servico={servico} setarServico={setarServico} />
-                        </Tabs.Item>
-
-
-                        <Tabs.Item icon={IoMdSettings} title="Produtos e Serviços">
-                            <ProdutosServicos
-                                deletarProduto={deletarProduto}
-                                lancarCaixa={lancarCaixa}
-                                listaProduto={listaProduto}
-                                obito_itens={servico.obito_itens ?? []}
-                                selectProdutos={selectProdutos}
-                                setarProdutos={setarProdutos}
-                                setarServico={setarServico}
-                                total={total ?? 0}
-                                id_obito={servico.id_obitos ?? 0}
-
-
-                            />
-                        </Tabs.Item>
-
-                        <Tabs.Item icon={IoMdSettings} title="Velório">
-                            <DadosVelorio servico={servico} setarServico={setarServico} />
-                        </Tabs.Item>
-                        <Tabs.Item icon={IoMdSettings} title="CheckList">
-                            <div className="flex flex-row w-full justify-around rounded-lg p-2   gap-6">    <div className="flex flex-col overflow-y-auto w-1/3 text-white p-2 gap-2 rounded-md bg-gray-600 mt-1 mb-1 max-h-[calc(100vh-250px)] ">
-                                <h1 className="border-b-[1px] border-gray-500">Checklist Saída</h1>
-                                <ul className="flex flex-col gap-2">
-                                    {servico.listacheckida?.map((it, index) => {
-                                        return (
-                                            <li className="flex items-center ">
-                                                <input checked={it.status} onChange={() => alterCheckListIda(index)} type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                                                <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-300">{it.descricao}</label>
-                                            </li>
-                                        )
-                                    })}
-                                </ul>
-
+                  </div>
+          
+                  {/* Tabs */}
+                  <div className="flex-col w-full border mt-1 rounded-lg shadow border-gray-700">
+                    <Tabs defaultValue="plano" className="w-full">
+                      <TabsList className="flex flex-row overflow-x-auto">
+                        <TabsTrigger value="plano" className="flex gap-2">
+                          <FaCalendarAlt /> Plano
+                        </TabsTrigger>
+                        <TabsTrigger value="falecido" className="flex gap-2">
+                          <MdAccessTimeFilled /> Falecido
+                        </TabsTrigger>
+                        <TabsTrigger value="declarante" className="flex gap-2">
+                          <HiClipboardList /> Declarante
+                        </TabsTrigger>
+                        <TabsTrigger value="obito" className="flex gap-2">
+                          <IoMdSettings /> Dados Óbito
+                        </TabsTrigger>
+                        <TabsTrigger value="produtos" className="flex gap-2">
+                          <IoMdSettings /> Produtos e Serviços
+                        </TabsTrigger>
+                        <TabsTrigger value="velorio" className="flex gap-2">
+                          <IoMdSettings /> Velório
+                        </TabsTrigger>
+                        <TabsTrigger value="checklist" className="flex gap-2">
+                          <IoMdSettings /> CheckList
+                        </TabsTrigger>
+                        <TabsTrigger value="itens" className="flex gap-2">
+                          <IoMdSettings /> Itens Usados
+                        </TabsTrigger>
+                        <TabsTrigger value="documentacao" className="flex gap-2">
+                          <IoMdSettings /> Documentação
+                        </TabsTrigger>
+                      </TabsList>
+          
+                      {/* Conteúdo das Tabs */}
+                      <TabsContent value="plano">
+                        <DadosPlano
+                          dados={{
+                            nome: dadosassociado?.nome,
+                            categoria: dadosassociado?.contrato?.plano,
+                            id_associado: dadosassociado?.id_associado,
+                            id_contrato: dadosassociado?.contrato?.id_contrato,
+                            situacao: dadosassociado?.contrato?.situacao,
+                          }}
+                        />
+                      </TabsContent>
+          
+                      <TabsContent value="falecido">
+                        {!particular && (
+                          <div className="inline-flex gap-8 pl-4 pt-1">
+                            <div className="flex items-center">
+                              <Checkbox
+                                checked={titular}
+                                onCheckedChange={handleCheckTitular}
+                                className="mr-2"
+                              />
+                              <label className="text-sm font-medium whitespace-nowrap text-gray-600">
+                                TITULAR
+                              </label>
                             </div>
-
-                                <div className="flex flex-col overflow-y-auto w-1/3 text-white p-2 gap-2 rounded-md bg-gray-600 mt-1 mb-1 max-h-[calc(100vh-250px)] ">
-                                    <h1 className="border-b-[1px] border-gray-500">Checklist Retorno</h1>
-                                    <ul className="flex flex-col gap-2">
-                                        {servico?.listacheckvolta?.map((item, i) => {
-                                            return (
-                                                <li className="flex items-center ">
-                                                    <input checked={item.status} onChange={() => alterCheckListVolta(i)} type="checkbox" value="" className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                                                    <label className="ms-2 text-sm font-medium whitespace-nowrap text-gray-300">{item.descricao}</label>
-                                                </li>
-                                            )
-                                        })}
-                                    </ul>
-
-                                </div>
-
-
+                            <div className="flex items-center">
+                              <Checkbox
+                                checked={dependente}
+                                onCheckedChange={handleCheckDependente}
+                                className="mr-2"
+                              />
+                              <label className="text-sm font-medium whitespace-nowrap text-gray-600">
+                                DEPENDENTE
+                              </label>
                             </div>
-
-                        </Tabs.Item>
-
-                        <Tabs.Item icon={IoMdSettings} title="Itens Usados">
-                            <ItensUsados
-                                selectProdutos={selectProdutos}
-                                id_obito={Number(servico.id_obitos)}
-                                obito_itens={servico.obito_itens ?? []}
-                                setarServico={setarServico}
-                                atualizarProdutos={listarProdutos}
-
-                            />
-                        </Tabs.Item>
-
-
-                        <Tabs.Item icon={IoMdSettings} title="Documentação">
-                            <DocumentacaoOS servico={servico} />
-                        </Tabs.Item>
+                          </div>
+                        )}
+                        <DadosFalecido
+                          servico={servico}
+                          setarServico={setarServico}
+                          check={particular || titular || dependente ? false : true}
+                        />
+                      </TabsContent>
+          
+                      <TabsContent value="declarante">
+                        <DadosDeclarante servico={servico} setarServico={setarServico} />
+                      </TabsContent>
+          
+                      <TabsContent value="obito">
+                        <DadosObito servico={servico} setarServico={setarServico} />
+                      </TabsContent>
+          
+                      <TabsContent value="produtos">
+                        <ProdutosServicos
+                          deletarProduto={deletarProduto}
+                          lancarCaixa={lancarCaixa}
+                          listaProduto={listaProduto}
+                          obito_itens={servico.obito_itens ?? []}
+                          selectProdutos={selectProdutos}
+                          setarProdutos={setarProdutos}
+                          setarServico={setarServico}
+                          total={total ?? 0}
+                          id_obito={servico.id_obitos ?? 0}
+                        />
+                      </TabsContent>
+          
+                      <TabsContent value="velorio">
+                        <DadosVelorio servico={servico} setarServico={setarServico} />
+                      </TabsContent>
+          
+                      <TabsContent value="checklist">
+                        {/* Aqui você mantém a estrutura dos checklists, só substituindo os checkboxes pelo de shadcn */}
+                        <div className="flex flex-row w-full justify-around rounded-lg p-2 gap-6">
+                          <div className="flex flex-col overflow-y-auto w-1/3 text-white p-2 gap-2 rounded-md bg-gray-600 mt-1 mb-1 max-h-[calc(100vh-250px)]">
+                            <h1 className="border-b border-gray-500">Checklist Saída</h1>
+                            <ul className="flex flex-col gap-2">
+                              {servico.listacheckida?.map((it, index) => (
+                                <li key={index} className="flex items-center">
+                                  <Checkbox
+                                    checked={it.status}
+                                    onCheckedChange={() => alterCheckListIda(index)}
+                                    className="mr-2"
+                                  />
+                                  <label className="text-sm font-medium whitespace-nowrap text-gray-300">
+                                    {it.descricao}
+                                  </label>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+          
+                          <div className="flex flex-col overflow-y-auto w-1/3 text-white p-2 gap-2 rounded-md bg-gray-600 mt-1 mb-1 max-h-[calc(100vh-250px)]">
+                            <h1 className="border-b border-gray-500">Checklist Retorno</h1>
+                            <ul className="flex flex-col gap-2">
+                              {servico.listacheckvolta?.map((item, i) => (
+                                <li key={i} className="flex items-center">
+                                  <Checkbox
+                                    checked={item.status}
+                                    onCheckedChange={() => alterCheckListVolta(i)}
+                                    className="mr-2"
+                                  />
+                                  <label className="text-sm font-medium whitespace-nowrap text-gray-300">
+                                    {item.descricao}
+                                  </label>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </TabsContent>
+          
+                      <TabsContent value="itens">
+                        <ItensUsados
+                          selectProdutos={selectProdutos}
+                          id_obito={Number(servico.id_obitos)}
+                          obito_itens={servico.obito_itens ?? []}
+                          setarServico={setarServico}
+                          atualizarProdutos={listarProdutos}
+                        />
+                      </TabsContent>
+          
+                      <TabsContent value="documentacao">
+                        <DocumentacaoOS servico={servico} />
+                      </TabsContent>
                     </Tabs>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                  </div>
                 </div>
-
-                {/*visible && (<ModalBusca  visible={visible} setVisible={()=>setVisible(false)}/>)*/}
-
-
-            </div>
-        </>
-    )
-}
+              </>
+            )
+          }
+          

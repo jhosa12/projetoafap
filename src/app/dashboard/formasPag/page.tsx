@@ -1,4 +1,3 @@
-'use client';
 
 "use client";
 
@@ -20,7 +19,7 @@ import pt from 'date-fns/locale/pt-BR';
 import { AuthContext } from "@/store/AuthContext";
 import { bancos, formasDePagamento } from "@/utils/bancosFormasPag";
 import { removerFusoDate } from "@/utils/removerFusoDate";
-import { MensalidadeBaixaProps } from "@/types/financeiro";
+import { MensalidadeBaixaProps } from "../admcontrato/_types/mensalidades";
 
 
 export interface Pagamento {

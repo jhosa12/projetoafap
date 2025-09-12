@@ -13,6 +13,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fnando/cpf": "^1.0.2",
+    "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.2.1",
     "@maskito/core": "^3.7.1",
     "@maskito/react": "^3.7.1",

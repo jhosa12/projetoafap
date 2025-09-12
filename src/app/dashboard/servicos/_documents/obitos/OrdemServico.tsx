@@ -1,5 +1,5 @@
 import Image from "next/image";
-import logo from "../../../public/logoafap.png"
+import logo from "../../../../../../public/novaLogo.png"
 
 // DocumentTemplate.js
 
