@@ -1,6 +1,5 @@
-
-import { Table } from "flowbite-react"
-import { useContext, useEffect, useRef, useState, useTransition } from "react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Fragment, useContext, useEffect, useRef, useState, useTransition } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { ModalFiltroMov } from "../../../../../components/modals/estoque/modalFiltro";
 import { api } from "@/lib/axios/apiClient";
@@ -14,7 +13,6 @@ import { ModalConfirm } from "../../../../../components/modals/estoque/modalConf
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { pageStyle } from "@/utils/pageStyle";
-
 
 interface DataProps {
     // usuario: string,
@@ -39,7 +37,7 @@ export default function HistoricoMov({ permissoes }: DataProps) {
     const { empresas } = useContext(AuthContext)
     const [historico, setHistorico] = useState<Array<HistoricoProps>>([])
     const [dadosMov, setDadosMov] = useState<Partial<HistoricoProps>>()
-    const componentRef = useRef<RelatorioMov>(null)
+    const componentRef = useRef<HTMLDivElement>(null)
     const [isPending, startTransition] = useTransition();
     const [dadosEstorno, setDadosEstorno] = useState<{
         id_produto: number,
@@ -77,7 +75,6 @@ export default function HistoricoMov({ permissoes }: DataProps) {
 
 
 
-
         /*  if (response.data) {
               setHistorico((prev) => prev.filter((h) => h.id_mov !== id_mov));
           }*/
@@ -99,7 +96,7 @@ export default function HistoricoMov({ permissoes }: DataProps) {
 
         documentTitle: 'MOVIMENTAÇÃO DE ESTOQUE',
 
-        content: () => componentRef.current,
+        contentRef: componentRef,
         onAfterPrint: () => {
             setDadosMov(undefined)
         }
@@ -175,107 +172,67 @@ export default function HistoricoMov({ permissoes }: DataProps) {
 
 
                 <div className="overflow-y-auto mt-1 px-2 max-h-[70vh] ">
-                    <Table hoverable theme={{ root: { shadow: 'none' }, body: { cell: { base: " px-4 py-1 text-xs text-black" } }, head: { cell: { base: "px-4 py-1 text-xs text-black border-b-[1px]" } } }}  >
-                        <Table.Head >
-                            <Table.HeadCell >
-                                DESCRIÇÃO
-                            </Table.HeadCell>
-                            <Table.HeadCell >
-                                DATA
-                            </Table.HeadCell>
-                            <Table.HeadCell >
-                                EMPRESA
-                            </Table.HeadCell>
-                            <Table.HeadCell >
-                                USUÁRIO
-                            </Table.HeadCell>
-                            <Table.HeadCell >
-                                TIPO
-                            </Table.HeadCell>
-                            <Table.HeadCell >
-                                AÇÕES
-                            </Table.HeadCell>
-                            <Table.HeadCell >
-
-                            </Table.HeadCell>
-
-                        </Table.Head>
-                        <Table.Body className="divide-y text-black">
-                            {historico?.map((item, index) => {
-
-
-                                return (<>  <Table.Row className="bg-white hover:cursor-pointer " key={index} onClick={() => toogleAberto(index)} >
-
-                                    <Table.Cell >
+                    <Table className="text-xs text-black">
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="px-4 py-1 border-b">DESCRIÇÃO</TableHead>
+                                <TableHead className="px-4 py-1 border-b">DATA</TableHead>
+                                <TableHead className="px-4 py-1 border-b">EMPRESA</TableHead>
+                                <TableHead className="px-4 py-1 border-b">USUÁRIO</TableHead>
+                                <TableHead className="px-4 py-1 border-b">TIPO</TableHead>
+                                <TableHead className="px-4 py-1 border-b">AÇÕES</TableHead>
+                                <TableHead className="px-4 py-1 border-b"></TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody className="divide-y text-black">
+                            {historico?.map((item, index) => (
+                                <Fragment key={index}>
+                                <TableRow className="bg-white hover:cursor-pointer" onClick={() => toogleAberto(index)}>
+                                    <TableCell className="px-4 py-1">
                                         {item.descricao}
-                                    </Table.Cell>
-
-
-                                    <Table.Cell className="inline-flex items-center gap-2">
+                                    </TableCell>
+                                    <TableCell className="px-4 py-1 inline-flex items-center gap-2">
                                         {new Date(item.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
-                                    </Table.Cell>
-                                    <Table.Cell>
+                                    </TableCell>
+                                    <TableCell className="px-4 py-1">
                                         {item.empresa}
-                                    </Table.Cell>
-                                    <Table.Cell  >
+                                    </TableCell>
+                                    <TableCell className="px-4 py-1">
                                         {item.usuario}
-
-                                    </Table.Cell>
-                                    <Table.Cell className={`font-bold ${item.tipo === 'ENTRADA' ? 'text-green-500' : 'text-red-500'}  }`} >
+                                    </TableCell>
+                                    <TableCell className={`px-4 py-1 font-bold ${item.tipo === 'ENTRADA' ? 'text-green-500' : 'text-red-500'}`}>
                                         {item.tipo}
-
-                                    </Table.Cell>
-
-                                    <Table.Cell className="inline-flex gap-6 text-gray-600 " >
+                                    </TableCell>
+                                    <TableCell className="px-4 py-1 inline-flex gap-6 text-gray-600">
                                         <button onClick={e => {
                                             e.stopPropagation(); setDadosMov(item)
                                         }} data-tooltip-id="tooltip" data-tooltip-content="Imprimir" className="hover:text-blue-600">  <BiSolidPrinter size={18} />
                                         </button>
-
-
-
-                                    </Table.Cell>
-                                    <Table.Cell >
+                                    </TableCell>
+                                    <TableCell className="px-4 py-1">
                                         <MdKeyboardArrowDown size={16} />
-
-
-
-                                    </Table.Cell>
-                                </Table.Row>
-                                    {
-                                        abertos[index] && item.produtos.map(prod => (
-                                            <Table.Row className="bg-slate-100" key={prod.id_produto}>
-                                                <Table.Cell className="text-black font-semibold pl-12 italic ">{prod.produto}</Table.Cell>
-                                                <Table.Cell className="text-black font-semibold ">QUANT MOVIMENTADA.: {prod.quantidade}</Table.Cell>
-                                                <Table.Cell className="text-black ">QUANT ANTERIOR.: {prod.quant_anterior}</Table.Cell>
-                                                <Table.Cell className="text-black ">QUANT ATUAL.: {prod.quant_atual}</Table.Cell>
-                                                <Table.Cell className="text-black "></Table.Cell>
-                                                <Table.Cell className="text-black ">
-                                                    <button disabled={!permissoes.includes('EST2.2')} type="button" data-id={prod.id_produto} onClick={() => { setDadosEstorno({ id_empresa: item.id_empresa, id_produto: prod.id_produto, quantidade: prod.quantidade, tipo: item.tipo, id_mov: item.id_mov, produtos: item.produtos }), setOpenModalConfirm(true) }} data-tooltip-id="tooltip" data-tooltip-content="Estornar" className="hover:text-yellow-500 disabled:cursor-not-allowed">
-                                                        <GrRevert size={16} />
-                                                    </button></Table.Cell>
-                                                <Table.Cell className="text-black "></Table.Cell>
-                                            </Table.Row>
-
-                                        ))
-                                    }
-                                    <Tooltip id="tooltip" />
-                                </>
-
-                                )
-                            })}
-
-
-
-
-                        </Table.Body>
-
+                                    </TableCell>
+                                </TableRow>
+                                {abertos[index] && item.produtos.map((prod) => (
+                                    <TableRow className="bg-slate-100" key={prod.id_produto}>
+                                        <TableCell className="text-black font-semibold pl-12 italic ">{prod.produto}</TableCell>
+                                        <TableCell className="text-black font-semibold ">QUANT MOVIMENTADA.: {prod.quantidade}</TableCell>
+                                        <TableCell className="text-black ">QUANT ANTERIOR.: {prod.quant_anterior}</TableCell>
+                                        <TableCell className="text-black ">QUANT ATUAL.: {prod.quant_atual}</TableCell>
+                                        <TableCell className="text-black "></TableCell>
+                                        <TableCell className="text-black ">
+                                            <button disabled={!permissoes.includes('EST2.2')} type="button" data-id={prod.id_produto} onClick={() => { setDadosEstorno({ id_empresa: item.id_empresa, id_produto: prod.id_produto, quantidade: prod.quantidade, tipo: item.tipo, id_mov: item.id_mov, produtos: item.produtos }), setOpenModalConfirm(true) }} data-tooltip-id="tooltip" data-tooltip-content="Estornar" className="hover:text-yellow-500 disabled:cursor-not-allowed">
+                                                <GrRevert size={16} />
+                                            </button></TableCell>
+                                        <TableCell className="text-black "></TableCell>
+                                    </TableRow>
+                                ))}
+                                </Fragment>
+                            ))}
+                        </TableBody>
                     </Table>
-
-
-
+                    <Tooltip id="tooltip" />
                 </div>
-
             </div>
 
         </>

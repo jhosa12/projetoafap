@@ -1,6 +1,15 @@
 import { Button } from "@/components/ui/button"
 import { HiOutlineExclamationCircle } from "react-icons/hi2"
-import { Dialog, DialogContent, DialogHeader } from "../ui/dialog"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 
 interface DataProps{
@@ -11,31 +20,40 @@ interface DataProps{
    children?:React.ReactNode
 }
 
-export function ModalConfirmar({openModal,setOpenModal,handleConfirmar,pergunta,children}:DataProps) {
+export function ModalConfirmar({ openModal, setOpenModal, handleConfirmar, pergunta, children }: DataProps) {
 
-    return (
-        <Dialog  open={openModal} onOpenChange={setOpenModal}>
-       
-        <DialogContent >
-          <DialogHeader />
+  return (
+    <AlertDialog open={openModal} onOpenChange={setOpenModal}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle className="text-center">
           <div className="text-center space-y-4">
-            <HiOutlineExclamationCircle color="red" className="mx-auto  h-14 w-14  " />
-            <h3 className=" text-sm font-normal  dark:text-gray-400">
-             {pergunta}
-            </h3>
-            {children}
-            <div className="flex justify-center w-full gap-8">
-              <Button size={'sm'} variant={'destructive'} onClick={handleConfirmar}>
-                {"Sim, tenho certeza"}
-              </Button>
-              <Button size={'sm'} variant={'outline'} onClick={setOpenModal}>
-                Não, cancelar
-              </Button>
+          <HiOutlineExclamationCircle color="red" className="mx-auto h-14 w-14" />
+            Confirmar ação
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-    )
-
+            </AlertDialogTitle>
+          <AlertDialogDescription >
+            
+             
+              {pergunta}
+              
+            
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        {children}
+        <AlertDialogFooter className="sm:justify-center gap-4">
+          <AlertDialogAction asChild>
+            <Button color="red" size={'sm'} variant={'destructive'} onClick={handleConfirmar}>
+              {"Sim, tenho certeza"}
+            </Button>
+          </AlertDialogAction>
+          <AlertDialogCancel asChild>
+            <Button size={'sm'} variant={'outline'} onClick={setOpenModal}>
+              {"Não, cancelar"}
+            </Button>
+          </AlertDialogCancel>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
 }

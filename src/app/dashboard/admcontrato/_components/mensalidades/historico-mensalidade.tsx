@@ -1,6 +1,6 @@
 import ImpressaoCarne from "@/Documents/associado/mensalidade/ImpressaoCarne";
 import { useReactToPrint } from "react-to-print";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IoPrint } from "react-icons/io5";
 import { MdDeleteForever } from "react-icons/md";
 import { RiAddCircleFill } from "react-icons/ri";
@@ -21,9 +21,17 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { pageStyle } from "@/utils/pageStyle";
 import { ModalEditarMensalidade } from "./modal-editarMensalidade";
-import { ModalMensalidade } from "./modal-mensalidade";
 import { MensalidadeProps } from "../../_types/mensalidades";
 import useActionsMensalidades from "../../_hooks/mensalidades/useActionsMensalidades";
+import { ModalMensalidade } from "./modal-mensalidade";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export interface SetAssociadoProps {
   mensalidade: Partial<MensalidadeProps>;
@@ -86,8 +94,8 @@ export function HistoricoMensalidade({
   const imprimirRecibo = useReactToPrint({
     pageStyle: pageStyle,
     documentTitle: "RECIBO MENSALIDADE",
-    content: () => componentRecibo.current,
-    onBeforeGetContent: () => setModal({ recibo: true }), // Ativa antes da impressão
+    contentRef: componentRecibo,
+    onBeforePrint: async() => setModal({ recibo: true }), // Ativa antes da impressão
     onAfterPrint: () => setMensalidadeRecibo(undefined), // Desativa após a impressão
   });
 
@@ -97,12 +105,62 @@ export function HistoricoMensalidade({
     }
   }, [mensalidadeRecibo?.id_mensalidade_global]);
 
+  // Callbacks memorizados para ações da linha
+  const onRowClick = useCallback((item: MensalidadeProps) => toggleSelecionada(item), [toggleSelecionada]);
+  const onEditar = useCallback((item: MensalidadeProps) => {
+    setModal({ editar: true });
+    setMensalidade({
+      ...item,
+      valor_total: item.status === "A" ? item.valor_principal : item.valor_total,
+    });
+  }, [setModal, setMensalidade]);
+  const onBaixar = useCallback((item: MensalidadeProps) => {
+    if (dadosassociado.contrato?.situacao === "INATIVO")
+      return toast.warning("Contrato inativo, impossível baixar mensalidade");
+    setModal({ baixar: true });
+    setMensalidade({
+      ...item,
+      valor_total:
+        item.status === "A" || item.status === "E" || item.status === "R"
+          ? item.valor_principal
+          : item.valor_total,
+      data_pgto: item.data_pgto ? item.data_pgto : new Date(),
+    });
+  }, [dadosassociado.contrato, setModal, setMensalidade]);
+  const onRecibo = useCallback((item: MensalidadeProps) => {
+    setMensalidadeRecibo({
+      ...item,
+      data_pgto: item.data_pgto ? item.data_pgto : new Date(),
+    });
+  }, [setMensalidadeRecibo]);
+
+  // Lista memorizada de linhas para performance
+  const rowsMemo = useMemo(() => {
+    const lista = Array.isArray(dadosassociado?.mensalidade)
+      ? dadosassociado.mensalidade.filter((m) => (checkMensal ? true : m.status !== "P"))
+      : [];
+
+    return lista.map((item, index) => (
+      <RowMensalidade
+        key={index}
+        item={item}
+        selecionada={linhasSelecionadas.some(
+          (linha) => linha.id_mensalidade === item.id_mensalidade
+        )}
+        onRowClick={onRowClick}
+        onEditar={onEditar}
+        onBaixar={onBaixar}
+        onRecibo={onRecibo}
+      />
+    ));
+  }, [dadosassociado?.mensalidade, checkMensal, linhasSelecionadas, onRowClick, onEditar, onBaixar, onRecibo]);
 
   return (
     <div className="flex flex-col w-full">
       {mensalidadeRecibo?.id_mensalidade && (
-        <div ref={componentRecibo}>
+        <div >
           <ReciboMensalidade
+          ref={componentRecibo}
             cidade_uf={infoEmpresa?.cidade_uf ?? ""}
             endereco={infoEmpresa?.endereco ?? ""}
             logoUrl={infoEmpresa?.logoUrl ?? ""}
@@ -236,336 +294,26 @@ export function HistoricoMensalidade({
         </div>
       </div>
       <div className="flex w-full overflow-auto mt-2 px-2 max-h-[calc(100vh-240px)]">
-        <table className="block w-full overflow-y-auto overflow-x-auto text-xs text-center rtl:text-center border-collapse  ">
-          <thead className="sticky w-full top-0  text-xs  border-b-2 bg-white ">
-            <tr>
-              <th scope="col" className="px-6 py-1">
-                NP
-              </th>
-              <th scope="col" className=" px-6 py-1">
-                VENC.
-              </th>
-              <th scope="col" className=" px-6 py-1">
-                REF
-              </th>
-              <th scope="col" className="px-6 py-1">
-                COBRANÇA
-              </th>
-              <th scope="col" className="px-6 py-1">
-                VALOR
-              </th>
-              <th scope="col" className="px-6 py-1">
-                STATUS
-              </th>
-              <th scope="col" className=" px-6 py-1">
-                PAG.
-              </th>
-              <th scope="col" className=" px-6 py-1">
-                HR PAG.
-              </th>
-              <th scope="col" className=" px-6 py-1">
-                USUÁRIO
-              </th>
-              <th scope="col" className=" px-6 py-1">
-                VAL. PAGO
-              </th>
-              <th scope="col" className=" px-6 py-1">
-                FORMA
-              </th>
-              <th scope="col" className=" px-6 py-1">
-                ATRASO
-              </th>
-              <th scope="col" className="px-12 py-1"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y ">
-            {Array.isArray(dadosassociado?.mensalidade) &&
-              dadosassociado?.mensalidade?.map((item, index) => {
-                return checkMensal ? (
-                  <tr
-                    key={index}
-                    onClick={() => toggleSelecionada(item)}
-                    className={`  text-[10px] font-semibold text-black ${calcularDiferencaEmDias(
-                      new Date(),
-                      new Date(item.vencimento),
-                      item.status
-                    ) >= 1 &&
-                      item.status === "A" &&
-                      "text-red-600"
-                      }  ${linhasSelecionadas.some(
-                        (linha) => linha.id_mensalidade === item.id_mensalidade
-                      )
-                        ? "bg-gray-300"
-                        : ""
-                      }  ${item.status === "P" && "text-blue-600"
-                      }   hover:bg-gray-300 hover:text-black hover:cursor-pointer }`}
-                  >
-                    <th scope="row" className={`px-5 py-1  `}>
-                      {item.parcela_n}
-                    </th>
-                    <td className={`px-2 py-1 `}>
-                      {item.vencimento &&
-                        new Date(item.vencimento).toLocaleDateString("pt", {
-                          timeZone: "UTC",
-                        })}
-                    </td>
-                    <td className="px-2 py-1">{item.referencia}</td>
-                    <td className="px-5 py-1">
-                      {item.cobranca &&
-                        new Date(item.cobranca).toLocaleDateString("pt", {
-                          timeZone: "UTC",
-                        })}
-                    </td>
-                    <td className="px-3 py-1">
-                      {Number(item.valor_principal).toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      })}
-                    </td>
-                    <td
-                      className={`px-4 py-1  font-bold ${item.status !== "P" && "text-red-600"
-                        }`}
-                    >
-                      {item.status}
-                    </td>
-                    <td className="px-4 py-1">
-                      {item.data_pgto
-                        ? new Date(item.data_pgto).toLocaleDateString("pt", {
-                          timeZone: "UTC",
-                        })
-                        : ""}
-                    </td>
-                    <td className="px-4 py-1">{item.hora_pgto}</td>
-                    <td className="px-6 py-1 whitespace-nowrap">
-                      {item.usuario?.toUpperCase()}
-                    </td>
-                    <td className={`px-6 py-1`}>
-                      {Number(item.valor_total).toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      })}
-                    </td>
-                    <td className="px-4 py-1">{item.form_pagto}</td>
-
-                    <td className="px-4 py-1">
-                      {calcularDiferencaEmDias(
-                        new Date(),
-                        new Date(item.vencimento),
-                        item.status
-                      )}
-                    </td>
-                    <td
-                      className={`inline-flex items-center px-4 py-1 space-x-2 whitespace-nowrap  ${new Date(item.vencimento) < new Date() &&
-                          item.status === "A"
-                          ? "text-red-600"
-                          : "text-blue-600"
-                        }`}
-                    >
-                      <button
-                        onClick={(event) => {
-                          event.stopPropagation(); // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                          // setOpenEditar(true)
-                          setModal({ editar: true });
-                          setMensalidade({
-                            ...item,
-                            valor_total:
-                              item.status === "A"
-                                ? item.valor_principal
-                                : item.valor_total,
-                          });
-                        }}
-                        className={`  hover:underline `}
-                      >
-                        Editar
-                      </button>
-                      {item.status !== "P" && (
-                        <button
-                          onClick={(event) => {
-                            event.stopPropagation(); // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                            if (dadosassociado.contrato?.situacao === "INATIVO")
-                              return toast.warning(
-                                "Contrato inativo, impossível baixar mensalidade"
-                              );
-                            // setModalMens(true)
-                            setModal({ baixar: true });
-                            setMensalidade({
-                              ...item,
-                              valor_total:
-                                item.status === "A" ||
-                                  item.status === "R" ||
-                                  item.status === "R"
-                                  ? item.valor_principal
-                                  : item.valor_total,
-                              data_pgto: item.data_pgto
-                                ? item.data_pgto
-                                : new Date(),
-                            });
-                          }}
-                          className={`hover:underline`}
-                        >
-                          Baixar
-                        </button>
-                      )}
-
-                      <button
-                        type="button"
-                        className="hover:underline"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setMensalidadeRecibo({
-                            ...item,
-                            data_pgto: item.data_pgto
-                              ? item.data_pgto
-                              : new Date(),
-                          });
-                        }}
-                      >
-                        Recibo
-                      </button>
-                    </td>
-                  </tr>
-                ) : (
-                  item.status !== "P" && (
-                    <tr
-                      key={index}
-                      onClick={() => toggleSelecionada(item)}
-                      className={`font-semibold text-[10px]  text-black ${calcularDiferencaEmDias(
-                        new Date(),
-                        new Date(item.vencimento),
-                        item.status
-                      ) >= 1 && "text-red-600"
-                        }   ${linhasSelecionadas.some(
-                          (linha) =>
-                            linha.id_mensalidade === item.id_mensalidade
-                        )
-                          ? "bg-gray-300"
-                          : ""
-                        }   hover:bg-gray-300 hover:text-black hover:cursor-pointer  }`}
-                    >
-                      <td className="px-5 py-1   ">{item.parcela_n}</td>
-                      <td className="px-2 py-1">
-                        {new Date(item.vencimento).toLocaleDateString("pt", {
-                          timeZone: "UTC",
-                        })}
-                      </td>
-                      <td className="px-2 py-1">{item.referencia}</td>
-                      <td className="px-5 py-1">
-                        {new Date(item.cobranca).toLocaleDateString("pt", {
-                          timeZone: "UTC",
-                        })}
-                      </td>
-                      <td className="px-3 py-1">
-                        {Number(item.valor_principal).toLocaleString("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        })}
-                      </td>
-                      <td className={`px-4 py-1  font-bold text-red-600`}>
-                        {item.status}
-                      </td>
-                      <td className="px-4 py-1">
-                        {item.data_pgto
-                          ? new Date(item.data_pgto).toLocaleDateString("pt", {
-                            timeZone: "UTC",
-                          })
-                          : ""}
-                      </td>
-                      <td className="px-4 py-1">{item.hora_pgto}</td>
-                      <td className="px-6 py-1 whitespace-nowrap">
-                        {item.usuario?.toUpperCase()}
-                      </td>
-                      <td className={`px-6 py-1`}>
-                        {Number(item.valor_total).toLocaleString("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        })}
-                      </td>
-                      <td className="px-4 py-1">{item.form_pagto}</td>
-                      <td className="px-4 py-1">
-                        {calcularDiferencaEmDias(
-                          new Date(),
-                          new Date(item.vencimento),
-                          item.status
-                        )}
-                      </td>
-                      <td
-                        className={`px-4 py-1 space-x-2 whitespace-nowrap ${new Date(item.vencimento) < new Date() &&
-                            item.status === "A"
-                            ? "text-red-600"
-                            : "text-blue-600"
-                          }`}
-                      >
-                        <button
-                          onClick={(event) => {
-                            event.stopPropagation(); // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                            // setOpenEditar(true),
-                            setModal({ editar: true });
-                            setMensalidade({
-                              ...item,
-                              valor_total:
-                                item.status === "A"
-                                  ? item.valor_principal
-                                  : item.valor_total,
-                            });
-                          }}
-                          className={`hover:underline `}
-                        >
-                          Editar
-                        </button>
-
-                        {item.status !== "P" && (
-                          <button
-                            onClick={(event) => {
-                              event.stopPropagation(); // Garante que o click da linha não se sobreponha ao do botão de Baixar/Editar
-                              if (
-                                dadosassociado.contrato?.situacao === "INATIVO"
-                              )
-                                return toast.warning(
-                                  "Contrato inativo, impossível baixar mensalidade"
-                                );
-                              //setModalMens(true)
-                              setModal({ baixar: true });
-                              setMensalidade({
-                                ...item,
-                                valor_total:
-                                  item.status === "A" ||
-                                    item.status === "E" ||
-                                    item.status === "R"
-                                    ? item.valor_principal
-                                    : item.valor_total,
-                                data_pgto: item.data_pgto
-                                  ? item.data_pgto
-                                  : new Date(),
-                              });
-                            }}
-                            className={`  hover:underline`}
-                          >
-                            Baixar
-                          </button>
-                        )}
-
-                        <button
-                          type="button"
-                          className="hover:underline"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setMensalidadeRecibo({
-                              ...item,
-                              data_pgto: item.data_pgto
-                                ? item.data_pgto
-                                : new Date(),
-                            });
-                          }}
-                        >
-                          Recibo
-                        </button>
-                      </td>
-                    </tr>
-                  )
-                );
-              })}
-          </tbody>
-        </table>
+        <Table className="w-full text-xs text-center table-fixed">
+          <TableHeader className="sticky top-0 bg-white border-b-2 z-10">
+            <TableRow>
+              <TableHead className="px-3 py-1 text-center w-12">NP</TableHead>
+              <TableHead className="px-3 py-1 text-center w-20">VENC.</TableHead>
+              <TableHead className="px-3 py-1 text-center w-24">REF</TableHead>
+              <TableHead className="px-3 py-1 text-center w-24">COBRANÇA</TableHead>
+              <TableHead className="px-3 py-1 text-center w-24">VALOR</TableHead>
+              <TableHead className="px-3 py-1 text-center w-16">STATUS</TableHead>
+              <TableHead className="px-3 py-1 text-center w-20">PAG.</TableHead>
+              <TableHead className="px-3 py-1 text-center w-20">HR PAG.</TableHead>
+              <TableHead className="px-3 py-1 text-center w-28">USUÁRIO</TableHead>
+              <TableHead className="px-3 py-1 text-center w-24">VAL. PAGO</TableHead>
+              <TableHead className="px-3 py-1 text-center w-20">FORMA</TableHead>
+              <TableHead className="px-3 py-1 text-center w-16">ATRASO</TableHead>
+              <TableHead className="px-3 py-1 text-center w-40"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>{rowsMemo}</TableBody>
+        </Table>
       </div>
 
       {openModal.baixar && (
@@ -594,7 +342,7 @@ export function HistoricoMensalidade({
             await carregarDados(Number(dadosassociado.id_global));
             setLinhasSelecionadas([]);
           }}
-          openModal={openModal.baixar}
+          openModal={openModal.baixar??false}
           setOpenModal={() => setModal({ baixar: false })}
         />
       )}
@@ -625,6 +373,86 @@ mensalidade={{
     </div>
   );
 }
+
+interface RowProps {
+  item: MensalidadeProps;
+  selecionada: boolean;
+  onRowClick: (item: MensalidadeProps) => void;
+  onEditar: (item: MensalidadeProps) => void;
+  onBaixar: (item: MensalidadeProps) => void;
+  onRecibo: (item: MensalidadeProps) => void;
+}
+
+const RowMensalidade = React.memo(({ item, selecionada, onRowClick, onEditar, onBaixar, onRecibo }: RowProps) => {
+  const atraso = useMemo(() => calcularDiferencaEmDias(new Date(), new Date(item.vencimento), item.status), [item.vencimento, item.status]);
+  const isPago = item.status === "P";
+  const classeStatus = !isPago ? "text-red-600" : "text-blue-600";
+  const classeAtraso = isPago
+    ? "text-blue-600"
+    : new Date(item.vencimento) < new Date() && item.status === "A"
+    ? "text-red-600"
+    : "text-blue-600";
+  const rowClass = `text-[10px] font-semibold ${isPago ? "text-blue-600" : "text-black"} ${!isPago && atraso >= 1 && item.status === "A" ? "text-red-600" : ""} ${selecionada ? "bg-gray-300" : ""} hover:bg-gray-300 hover:text-black hover:cursor-pointer`;
+
+  return (
+    <TableRow className={rowClass} onClick={() => onRowClick(item)}>
+      <TableCell className="px-3 py-1 text-center w-12">{item.parcela_n}</TableCell>
+      <TableCell className="px-3 py-1 text-center w-20">
+        {item.vencimento && new Date(item.vencimento).toLocaleDateString("pt", { timeZone: "UTC" })}
+      </TableCell>
+      <TableCell className="px-3 py-1 text-center w-24">{item.referencia}</TableCell>
+      <TableCell className="px-3 py-1 text-center w-24">
+        {item.cobranca && new Date(item.cobranca).toLocaleDateString("pt", { timeZone: "UTC" })}
+      </TableCell>
+      <TableCell className="px-3 py-1 text-center w-24">
+        {Number(item.valor_principal).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+      </TableCell>
+      <TableCell className={`px-3 py-1 text-center w-16 font-bold ${classeStatus}`}>{item.status}</TableCell>
+      <TableCell className="px-3 py-1 text-center w-20">
+        {item.data_pgto ? new Date(item.data_pgto).toLocaleDateString("pt", { timeZone: "UTC" }) : ""}
+      </TableCell>
+      <TableCell className="px-3 py-1 text-center w-20">{item.hora_pgto}</TableCell>
+      <TableCell className="px-3 py-1 text-center w-28 whitespace-nowrap">{item.usuario?.toUpperCase()}</TableCell>
+      <TableCell className="px-3 py-1 text-center w-24">
+        {Number(item.valor_total).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+      </TableCell>
+      <TableCell className="px-3 py-1 text-center w-20">{item.form_pagto}</TableCell>
+      <TableCell className="px-3 py-1 text-center w-16">{atraso}</TableCell>
+      <TableCell className={`px-3 py-1 text-center w-40 inline-flex items-center justify-center space-x-2 whitespace-nowrap ${classeAtraso}`}>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onEditar(item);
+          }}
+          className="hover:underline"
+        >
+          Editar
+        </button>
+        {item.status !== "P" && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onBaixar(item);
+            }}
+            className="hover:underline"
+          >
+            Baixar
+          </button>
+        )}
+        <button
+          type="button"
+          className="hover:underline"
+          onClick={(e) => {
+            e.stopPropagation();
+            onRecibo(item);
+          }}
+        >
+          Recibo
+        </button>
+      </TableCell>
+    </TableRow>
+  );
+});
 
 function calcularDiferencaEmDias(data1: Date, data2: Date, status: string) {
   // Convertendo as datas para objetos Date

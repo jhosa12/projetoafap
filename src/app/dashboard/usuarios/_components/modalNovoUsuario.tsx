@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PerfisUser } from "./perfisUser";
 import { UsuarioProps } from "../_types/editar-usuario";
+import { ActionsFunctionsApi } from "@/types/actions";
 
 
 
@@ -18,7 +19,7 @@ interface DataProps {
     show: boolean,
     setModal: (open: boolean) => void
     handlePermission: (permission: string) => void
-    handleNovoCadastro: () => Promise<void>;
+    handleNovoCadastro: ({actions}:ActionsFunctionsApi) => Promise<void>;
     handleEditarCadastro: () => Promise<void>
 }
 
@@ -106,7 +107,7 @@ export function ModalNovoUsuario({ setarDadosUsuario, dadosUser, setModal, show,
                     {dadosUser.id_user ? (
                         <Button variant={'outline'} onClick={() => handleEditarCadastro()}>Gravar alterações</Button>
                     ) : (
-                        <Button onClick={() => handleNovoCadastro()}>Salvar</Button>
+                        <Button onClick={() => handleNovoCadastro({actions:{success:()=>setModal(false)}})}>Salvar</Button>
                     )}
                 </DialogFooter>
 

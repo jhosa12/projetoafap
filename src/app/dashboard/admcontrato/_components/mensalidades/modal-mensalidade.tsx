@@ -37,6 +37,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import useVerifyPermission from "@/hooks/useVerifyPermission"
 import { MensalidadeBaixaProps } from "../../_types/mensalidades"
+import { BANCOS, FORMAS_PAGAMENTO } from "@/types/pagamentos-forma"
 
 interface Props {
   handleAtualizar: Function
@@ -47,16 +48,7 @@ interface Props {
 }
 
 
-const FORMAS_PAGAMENTO = [
-  { value: "DINHEIRO", label: "Dinheiro", icon: DollarSignIcon },
-  { value: "PIX", label: "PIX", icon: CreditCardIcon },
-  { value: "CARTAO", label: "Cartão", icon: CreditCardIcon },
-  { value: "DEPOSITO", label: "Depósito", icon: BuildingIcon },
-  { value: "TRANSFERENCIA", label: "Transferência", icon: BuildingIcon },
-  { value: "BOLETO", label: "Boleto", icon: BuildingIcon },
-]
 
-const BANCOS = ["BANCO DO BRASIL", "CORA", "PAGBANK", "CAIXA", "TON"]
 
 export function ModalMensalidade({ openModal, setOpenModal, mensalidade, handleAtualizar }: Props) {
 
@@ -146,7 +138,7 @@ export function ModalMensalidade({ openModal, setOpenModal, mensalidade, handleA
   return (
 
     <Dialog open={openModal} onOpenChange={setOpenModal}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl ">
         <DialogHeader className="space-y-3">
           <DialogTitle className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <CheckCircleIcon className="h-6 w-6 text-green-600" />
@@ -159,7 +151,7 @@ export function ModalMensalidade({ openModal, setOpenModal, mensalidade, handleA
           )}
         </DialogHeader>
 
-        <form inert onSubmit={handleSubmit(handleBaixar)} className="space-y-6">
+        <form onSubmit={handleSubmit(handleBaixar)} className="space-y-6">
           {/* Informações do Associado */}
           <Card>
             <CardHeader className="pb-3">

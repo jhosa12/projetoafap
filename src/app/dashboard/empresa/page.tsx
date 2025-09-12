@@ -3,12 +3,13 @@ import { api } from "@/lib/axios/apiClient";
 import { EmpresaProps } from "@/types/empresa";
 import { useContext, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Tabs } from "flowbite-react"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { AuthContext } from "@/store/AuthContext";
 import { TabInformacoes } from "@/app/dashboard/empresa/_components/tabInformacoes";
 import { TabContratoEmpresa } from "@/app/dashboard/empresa/_components/tabContrato";
 import { toast } from "sonner";
+import { Save } from "lucide-react";
 
 
 
@@ -93,86 +94,32 @@ export default function Empresas() {
 
     return (
         <div className={`flex flex-col mt-2 px-4 w-full overflow-y-auto max-h-[calc(100vh-85px)]`}>
-
-            {/*{   open && <ModalEmpresa empresa={empresa} open={open} onClose={onClose} />}
-            <Button onClick={()=>{setEmpresa({} as EmpresaProps);onClose(true)}} type="button" className="mr-auto"  variant={'outline'} size="sm" ><IoIosAddCircle size={20}  />NOVA EMPRESA</Button>
-
-            <div className="max-h-[calc(100vh-200px)] overflow-y-auto mt-2" >
-                <Table theme={{root:{shadow:'none'}, body: { cell: { base: " px-6 py-2  text-xs text-black font-semibold" } } }} hoverable={true}>
-                    <Table.Head theme={{cell: { base: " px-6 py-2  text-xs text-black font-semibold" }}}>
-                        <Table.HeadCell>
-                            Nome
-                        </Table.HeadCell>
-                        <Table.HeadCell>
-                           Razão social
-                        </Table.HeadCell>
-                        <Table.HeadCell>
-                            Cidade
-                        </Table.HeadCell>
-                        <Table.HeadCell>
-                            CNPJ
-                        </Table.HeadCell>
-                        <Table.HeadCell>
-                            Status
-                        </Table.HeadCell>
-                        <Table.HeadCell>
-                            Ações
-                        </Table.HeadCell>
-                    </Table.Head>
-                    <Table.Body className="divide-y">
-                      {empresas.map((item,index)=>(
-                            <Table.Row key={item.id} className="text-black">
-                            <Table.Cell className="whitespace-nowrap font-medium ">
-                               {item.nome}
-                            </Table.Cell>
-                            <Table.Cell>
-                                {item.razao_social}
-                            </Table.Cell>
-                            <Table.Cell>
-                                {item.cidade_uf}
-                            </Table.Cell>
-                            <Table.Cell>
-                                {item.cnpj}
-                            </Table.Cell>
-                            <Table.Cell >
-                                {}
-                            </Table.Cell>
-                            <Table.Cell className="flex gap-4">
-                           <button onClick={()=>handleOpenEmpresa(item)} className="text-gray-500 hover:text-yellow-500"><HiMiniCog6Tooth size={15} /></button> 
-                           
-                            </Table.Cell>
-                        </Table.Row>
-                      ))}
-                    </Table.Body>
-                </Table>
-            </div>
-*/}    <form onSubmit={handleSubmit(handleEditarEmpresa)}>
-                <Tabs theme={{ tablist: { tabitem: { base: "flex z-0 items-center justify-center rounded-t-lg p-2 text-sm font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 ", variant: { fullWidth: { active: { off: 'bg-gray-50', on: 'bg-gray-300 text-black' } } } } } }} aria-label="Full width tabs" variant="fullWidth">
-                    <Tabs.Item active title="Informações da Empresa" >
+    <form onSubmit={handleSubmit(handleEditarEmpresa)}>
+                <Tabs defaultValue="info">
+                    <TabsList className="grid w-full grid-cols-4">
+                        <TabsTrigger value="info">Informações da Empresa</TabsTrigger>
+                        <TabsTrigger value="config">Configurações</TabsTrigger>
+                        <TabsTrigger value="imagens">Imagens</TabsTrigger>
+                        <TabsTrigger value="contrato">Contrato</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="info">
                         <TabInformacoes watch={watch} control={control} register={register} setValue={setValue} empresa={infoEmpresa ?? {}} />
-                    </Tabs.Item>
-
-                    <Tabs.Item title="Configurações" >
-
-                    </Tabs.Item>
-
-                    <Tabs.Item title="Imagens" >
-
-                    </Tabs.Item>
-
-
-                    <Tabs.Item title="Contrato" >
+                    </TabsContent>
+                    <TabsContent value="config">
+                    </TabsContent>
+                    <TabsContent value="imagens">
+                    </TabsContent>
+                    <TabsContent value="contrato">
                         <TabContratoEmpresa control={control} register={register} setValue={setValue} watch={watch} />
-                    </Tabs.Item>
-
-
+                    </TabsContent>
                 </Tabs>
 
-                <div className="flex w-full justify-end gap-4">
-                    <Button variant={'outline'} type="submit" >Salvar</Button>
+                <div className="flex w-full justify-end mt-2">
+                    <Button variant={'default'} type="submit" >
+                        <Save/>
+                        Salvar</Button>
 
                 </div>
-
             </form>
         </div>
     )

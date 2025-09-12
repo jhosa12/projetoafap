@@ -1,7 +1,12 @@
 
-import {  FormProps } from "@/pages/dashboard/estoque";
+
+import { FormProps } from "@/app/dashboard/estoque/page";
 import { api } from "@/lib/axios/apiClient";
-import { Button, Label, Modal, ModalHeader, Select, TextInput } from "flowbite-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -74,54 +79,44 @@ const novoProduto= async()=>{
   
 }
     return (
-        <Modal show={openModal} onClose={()=>setOpenModal(false)} >
-            <ModalHeader>Administrar Produto</ModalHeader>
-            <Modal.Body>
+        <Dialog open={openModal} onOpenChange={setOpenModal}>
+            <DialogContent className="sm:max-w-[600px]">
+                <DialogHeader>
+                    <DialogTitle>Administrar Produto</DialogTitle>
+                </DialogHeader>
                 <form className="grid grid-cols-2 gap-4">
-        
-                <div>
-        <div className=" block">
-          <Label htmlFor="produto" value="Produto" />
-        </div>
-        <TextInput className="font-semibold" onChange={e=>setForm({...form,descricao:e.target.value.toUpperCase()})} sizing={'sm'} id="produto" value={form?.descricao}  required />
-      </div>
-
-
-      <div>
-        <div className=" block">
-          <Label htmlFor="cod_produto" value="Código do Produto" />
-        </div>
-        <TextInput className="font-semibold" value={form?.cod_prod} onChange={e=>setForm({...form,cod_prod:e.target.value})} sizing={'sm'} id="cod_produto"  required />
-      
-      </div>
-      <div>
-        <div className=" block">
-          <Label htmlFor="categoria" value="Categoria" />
-        </div>
-
-        <Select id="categoria" onChange={e => setForm({ ...form, grupo: e.target.value })} className="font-semibold" sizing={'sm'}>
-                        <option value={''}>{''}</option>
-                        <option value={'cs'} className="font-semibold">CONSUMO</option>
-                        <option value={'cv'} className="font-semibold">CONVALESCENTE</option>
-                        <option value={'fn'}  className="font-semibold">FUNEBRE</option>
-                        <option  value={'ot'} className="font-semibold">ÓTICA</option>
-
-                    </Select>
-       
-      </div>
-      <div>
-        <div className=" block">
-          <Label htmlFor="alerta" value="Alertar em " />
-        </div>
-        <TextInput className="font-semibold" type="number" onChange={e=>setForm({...form,alerta:Number(e.target.value)})} sizing={'sm'} id="alerta"  required />
-      
-      </div>
+                    <div>
+                        <Label htmlFor="produto">Produto</Label>
+                        <Input className="font-semibold" onChange={e=>setForm({...form,descricao:e.target.value.toUpperCase()})} id="produto" value={form?.descricao ?? ''} required />
+                    </div>
+                    <div>
+                        <Label htmlFor="cod_produto">Código do Produto</Label>
+                        <Input className="font-semibold" value={form?.cod_prod ?? ''} onChange={e=>setForm({...form,cod_prod:e.target.value})} id="cod_produto" required />
+                    </div>
+                    <div>
+                        <Label htmlFor="categoria">Categoria</Label>
+                        <Select onValueChange={(v) => setForm({ ...form, grupo: v })}>
+                            <SelectTrigger id="categoria" className="font-semibold">
+                                <SelectValue placeholder="Selecione uma categoria" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="cs">CONSUMO</SelectItem>
+                                <SelectItem value="cv">CONVALESCENTE</SelectItem>
+                                <SelectItem value="fn">FUNEBRE</SelectItem>
+                                <SelectItem value="ot">ÓTICA</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div>
+                        <Label htmlFor="alerta">Alertar em</Label>
+                        <Input className="font-semibold" type="number" onChange={e=>setForm({...form,alerta:Number(e.target.value)})} id="alerta" required />
+                    </div>
                 </form>
-
-            </Modal.Body>
-            <Modal.Footer>
-              <Button disabled={!permissoes.includes('EST1.1')} onClick={novoProduto}>Salvar</Button>
-            </Modal.Footer>
-        </Modal>
+                <div className="flex justify-end gap-2 pt-4">
+                    <Button variant="outline" type="button" onClick={() => setOpenModal(false)}>Cancelar</Button>
+                    <Button disabled={!permissoes.includes('EST1.1')} onClick={novoProduto}>Salvar</Button>
+                </div>
+            </DialogContent>
+        </Dialog>
     )
 }
