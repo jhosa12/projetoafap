@@ -40,7 +40,7 @@ import { MensalidadeBaixaProps } from "../../_types/mensalidades"
 import { BANCOS, FORMAS_PAGAMENTO } from "@/types/pagamentos-forma"
 
 interface Props {
-  handleAtualizar: Function
+  handleAtualizar: ()=>void
   openModal: boolean,
   setOpenModal: (open: boolean) => void
   mensalidade: Partial<MensalidadeBaixaProps>

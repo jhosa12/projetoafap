@@ -14,8 +14,9 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { agruparMensalidadesPorMes } from "../../financeiro/_components/tabs/grafico/screen"
 
-import { agruparMensalidadesPorMes  } from "../../utils/agrupadorMensalidades"
+
 
 type MensalidadeProps = {
   data: Date

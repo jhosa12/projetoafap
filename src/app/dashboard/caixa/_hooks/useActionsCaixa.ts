@@ -1,9 +1,9 @@
 import { api } from "@/lib/axios/apiClient"
 import { AuthContext } from "@/store/AuthContext"
-import { MensalidadeBaixaProps } from "@/types/financeiro"
 import { useCallback, useContext, useState } from "react"
 import { toast } from "sonner"
 import { LancamentosProps } from "../_types/types"
+import { MensalidadeBaixaProps } from "../../admcontrato/_types/mensalidades"
 
 
 interface ActionsProps{

@@ -264,7 +264,7 @@ export default function CaixaMovimentar() {
 
       {modalDados && (
         <ModalMensalidade
-          handleAtualizar={() =>
+          handleAtualizar={()=>
             listarLancamentos({
               startDate: watch("startDate"),
               endDate: watch("endDate"),

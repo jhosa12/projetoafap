@@ -16,7 +16,8 @@ import {
 } from "recharts";
 import { api } from "@/lib/axios/apiClient";
 import { removerFusoDate } from "@/utils/removerFusoDate";
-import { RevenueData } from "@/pages/dashboard/analyze";
+import { RevenueData } from "../../analyze/page";
+
 
 interface DateRange {
   from: Date;

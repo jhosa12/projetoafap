@@ -1,8 +1,9 @@
 
-import { SomaProps } from "@/components/tabs/financeiro/caixa/caixa";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { roboto_Mono } from "@/fonts/fonts";
-import { LancamentosProps } from "@/types/caixa";
+import { LancamentosProps } from "../_types/types";
+import { SomaProps } from "../../financeiro/_components/tabs/caixa/caixa";
+
 
 
 

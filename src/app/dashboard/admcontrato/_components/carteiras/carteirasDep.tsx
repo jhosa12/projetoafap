@@ -47,10 +47,10 @@ const CarteirasDep = ({
   const [todosDep, setTodosDep] = useState(false);
   const [cartTitular, setTitular] = useState(false);
   const [linhasSelecionadas, setLinhasSelecionadas] = useState<Array<Partial<DependentesProps>>>([]);
-
+  const componentRef = useRef<HTMLDivElement>(null);
   // Funções
   const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
+    contentRef:componentRef,
     pageStyle: pageStyle,
   });
 
@@ -85,7 +85,7 @@ const CarteirasDep = ({
   }, [arrayPrint]);
 
   // Referências
-  const componentRef = useRef<DocumentTemplate>(null);
+
 
   return (
     <div className="flex flex-col max-h-[calc(100vh-200px)] w-full p-2">

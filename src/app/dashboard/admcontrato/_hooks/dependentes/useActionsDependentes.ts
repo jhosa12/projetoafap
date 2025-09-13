@@ -15,7 +15,7 @@ interface ActionsProps {
 
   imprimirDeclaracao: () => void
   excluirDep: (motivo: string) => Promise<void>
-  componentRef: React.RefObject<DeclaracaoExclusao>
+  componentRef: React.RefObject<HTMLDivElement>
   addDependente: (dados: DependentesProps) => Promise<void>
   atualizarDependente: (dados: DependentesProps) => Promise<void>
 
@@ -34,7 +34,7 @@ const useActionsDependentes = ( {dadosassociado, usuario, setarDadosAssociado, s
 
   const { carregarDados } = useContext(AuthContext)
   const [dadosDep, setDadosDep] = useState<Partial<DependentesProps>>({})
-  const componentRef = useRef<DeclaracaoExclusao>(null)
+  const componentRef = useRef<HTMLDivElement>(null)
   
   const [modal, setModal] = useState<{ [key: string]: boolean }>({
     dependente: false,
@@ -51,8 +51,8 @@ const useActionsDependentes = ( {dadosassociado, usuario, setarDadosAssociado, s
   const imprimirDeclaracao = useReactToPrint({
     pageStyle: pageStyle,
     documentTitle: 'DECLARAÇÃO DE EXCLUSÃO DEPENDENTE',
-    content: () => componentRef.current,
-    onBeforeGetContent: () => setModal({ print: false })
+    contentRef: componentRef,
+    onBeforePrint: async() => setModal({ print: false })
 
   })
 

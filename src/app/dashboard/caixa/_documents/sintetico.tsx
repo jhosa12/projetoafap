@@ -1,4 +1,5 @@
-import { SomaProps } from "@/components/tabs/financeiro/caixa/caixa";
+import { SomaProps } from "../../financeiro/_components/tabs/caixa/caixa";
+
 
 
 

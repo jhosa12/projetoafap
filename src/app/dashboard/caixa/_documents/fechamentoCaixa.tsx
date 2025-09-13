@@ -7,7 +7,8 @@ import React from 'react';
 import { Table } from "flowbite-react";
 import Image from "next/image";
 import logo from "../../../public/novaLogo.png"
-import { FechamentoProps } from '@/types/caixa';
+import { FechamentoProps } from '../_types/types';
+
 
 
 

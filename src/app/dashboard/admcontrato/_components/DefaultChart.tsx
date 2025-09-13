@@ -13,7 +13,8 @@ import {
   CartesianGrid, 
   ResponsiveContainer 
 } from "recharts";
-import { DefaultData } from '@/pages/dashboard/analyze';
+import { DefaultData } from '../../analyze/page';
+
 
 
 interface DefaultChartProps {

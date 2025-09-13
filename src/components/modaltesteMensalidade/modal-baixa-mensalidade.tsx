@@ -19,7 +19,7 @@ import pt from 'date-fns/locale/pt-BR';
 import { AuthContext } from "@/store/AuthContext";
 import { bancos, formasDePagamento } from "@/utils/bancosFormasPag";
 import { removerFusoDate } from "@/utils/removerFusoDate";
-import { MensalidadeBaixaProps } from "../admcontrato/_types/mensalidades";
+import { MensalidadeBaixaProps } from "../../app/dashboard/admcontrato/_types/mensalidades";
 
 
 export interface Pagamento {
@@ -44,14 +44,14 @@ interface FormProps {
 
 
 interface Props {
-  handleAtualizar: Function
+  handleAtualizar: ()=>Promise<void>
   openModal: boolean,
   setOpenModal: (open: boolean) => void
   mensalidade: Partial<MensalidadeBaixaProps>
 
 }
 
-export default function ModalBaixaMensalidade({ handleAtualizar, mensalidade, openModal, setOpenModal }: Props) {
+export function ModalBaixaMensalidade({ handleAtualizar, mensalidade, openModal, setOpenModal }: Props) {
   const [pagamentos, setPagamentos] = useState<Pagamento[]>([]);
   const { permissoes, usuario, infoEmpresa } = useContext(AuthContext)
   const { postData } = useBaixaMensalidade('/mensalidade/baixa', setOpenModal, handleAtualizar)

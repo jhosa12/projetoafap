@@ -33,7 +33,7 @@ interface PayloadProps {
     aut?:string
 }
 
- const useBaixaMensalidade = (url:string,setModal:(state:boolean)=>void,atualizar:Function):{
+ const useBaixaMensalidade = (url:string,setModal:(state:boolean)=>void,atualizar:()=>void):{
    
     error:AxiosError|null;
     postData:(payload:Partial<PayloadProps>)=>Promise<void>;
@@ -86,11 +86,12 @@ interface PayloadProps {
                 {
                     error: 'Erro na Requisição',
                     loading: 'Realizando Baixa',
-                    success:(response)=> {
-                        atualizar()
+                    success:async(response)=> {
+                      
                         setData(response.data)
-            
+                       
                         setModal(false)
+                        atualizar()
                         return 'Baixa Realizada com sucesso'}
                 }
             )

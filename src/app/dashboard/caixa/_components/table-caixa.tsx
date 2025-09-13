@@ -1,4 +1,4 @@
-import { LancamentosProps, ResponseCaixaProps } from "@/types/caixa";
+
 import { Delete, Edit } from "lucide-react";
 import {
   Table,
@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { LancamentosProps, ResponseCaixaProps } from "../_types/types";
 
 interface Props{
     data:Partial<ResponseCaixaProps>|undefined

@@ -4,12 +4,14 @@
 
 import React, { forwardRef } from 'react';
 
-import { SomaProps } from "@/components/tabs/financeiro/caixa/caixa";
+
 import Sintetico from "./sintetico";
 import { Analitico } from "./analitico";
 import { roboto_Mono } from "@/fonts/fonts";
 import { EmpresaProps } from "@/types/empresa";
-import { LancamentosProps } from "@/types/caixa";
+import { SomaProps } from '../../financeiro/_components/tabs/caixa/caixa';
+import { LancamentosProps } from '../_types/types';
+
 
 
 interface DadosProps {

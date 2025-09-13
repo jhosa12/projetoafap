@@ -8,9 +8,9 @@ import { api } from "@/lib/axios/apiClient";
 
 import { AuthContext } from "@/store/AuthContext";
 import { IoIosTime } from 'react-icons/io';
-import { MensalidadeProps } from "@/types/financeiro";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { MensalidadeProps } from "../../_types/mensalidades";
 interface DataProps{
    
     id_global:number|null,

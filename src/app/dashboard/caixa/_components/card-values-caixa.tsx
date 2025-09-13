@@ -1,4 +1,5 @@
-import { ResponseCaixaProps } from "@/types/caixa"
+import { ResponseCaixaProps } from "../_types/types"
+
 
 
 interface Props{

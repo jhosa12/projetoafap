@@ -12,13 +12,14 @@ import { Button } from "../../../../components/ui/button";
 import { ajustarData } from "@/utils/ajusteData";
 
 registerLocale("pt", pt);
-import { SomaProps } from "../../../../components/tabs/financeiro/caixa/caixa";
+
 import { EmpresaProps } from "@/types/empresa";
 import { useReactToPrint } from "react-to-print";
 import { pageStyle } from "@/utils/pageStyle";
 import { CcustosProps } from "../../financeiro/page";
 import RelatorioMovimentacao from "../_documents/relatorioMovimentacao";
 import { LancamentosProps } from "../_types/types";
+import { SomaProps } from "../../financeiro/_components/tabs/caixa/caixa";
 
 
 interface FilterCaixaProps {
@@ -59,9 +60,9 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa }: ModalProps
 
   const ImprimirRelatorio = useReactToPrint({
     pageStyle: pageStyle,
-    content: () => currentPage.current,
+    contentRef: currentPage,
     onAfterPrint: () => { },
-    onBeforeGetContent: () => {
+    onBeforePrint: async() => {
       setData([]);
       setOpen(false);
     },

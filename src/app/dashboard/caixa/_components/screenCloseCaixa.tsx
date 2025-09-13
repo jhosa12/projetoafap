@@ -1,11 +1,11 @@
 
 //import FechamentoResumo from "@/documents/caixa/FechamentoCaixa";
 
-import { FechamentoProps } from "@/types/caixa";
 import { Button } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { HiCheckCircle } from "react-icons/hi2";
 import { useReactToPrint } from "react-to-print";
+import { FechamentoProps } from "../_types/types";
 
 
 interface Props {
