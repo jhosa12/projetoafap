@@ -12,7 +12,7 @@ export type ListaMaterial = {
   valor: number,
   descontos: number,
   total: number,
-  hora: Date,
+  hora?: Date,
   cortesia: string,
   retornavel: string,
   status: string,

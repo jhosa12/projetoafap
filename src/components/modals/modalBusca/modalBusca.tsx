@@ -38,9 +38,10 @@ interface ModalBuscaProps {
   setVisible: () => void;
   carregarDados: (id: number) => Promise<void>;
   selectEmp: string;
+  filtros?: { value: string; label:string}[]
 }
 
-const arrayParams = [
+const filtrosPadrao = [
   { value: "Contrato", label: "Contrato" },
   { value: "Titular", label: "Titular" },
   { value: "Dependente", label: "Dependente" },
@@ -53,6 +54,7 @@ export function ModalBusca({
   setVisible,
   carregarDados,
   selectEmp,
+  filtros = filtrosPadrao,
 }: ModalBuscaProps) {
   const [loading, setLoading] = useState(false);
   const [clientes, setClientes] = useState<Cliente[]>([]);
@@ -68,6 +70,7 @@ export function ModalBusca({
         case "Contrato":
           if (isNaN(Number(termo))) {
             toast.info("Digite apenas números");
+            setLoading(false);
             return;
           }
           payload.id_contrato = Number(termo);
@@ -86,8 +89,12 @@ export function ModalBusca({
           break;
         default:
           toast.error("Tipo de busca inválido");
+          setLoading(false);
           return;
       }
+
+      // Adicione este log para ter certeza do que está sendo enviado
+      console.log("Enviando payload final para a API:", payload);
 
       const response = await api.post<Cliente[]>("/buscar", payload);
       setClientes(response.data || []);
@@ -108,7 +115,7 @@ export function ModalBusca({
           </DialogDescription>
         </DialogHeader>
 
-        <BarraBuscaCliente onBuscar={buscar} arrayParams={arrayParams} />
+        <BarraBuscaCliente onBuscar={buscar} arrayParams={filtros} />
         {loading ? (
   <div className="flex justify-center items-center p-6">
     <AiOutlineLoading3Quarters

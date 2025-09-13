@@ -59,12 +59,15 @@ export default function AdmContrato() {
     infoEmpresa,
     setarDadosAssociado,
   } = useContext(AuthContext);
+
+
   const [modal, setModal] = useState<{ [key: string]: boolean }>({
     busca: false,
     altPlano: false,
     inativar: false,
     impressao: false,
   });
+
 
   const {
     chaveAtiva,

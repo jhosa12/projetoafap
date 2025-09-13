@@ -91,6 +91,11 @@ export default function Convalescente() {
         siblingCount: 2 // Equivalente ao seu pageRangeDisplayed={5}
     });
 
+    const handleBuscaSubmit = (event: React.FormEvent) => {
+        event.preventDefault(); // Impede o recarregamento da página
+        listarConv();           // Chama sua função de busca do hook
+    };
+
 
     return (
         <div className="flex flex-col w-full pl-10 pr-10 pt-4">
