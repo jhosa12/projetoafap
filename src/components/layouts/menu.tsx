@@ -1,7 +1,3 @@
-'use client'
-
-
-
 import { useContext, useEffect, useState } from "react"
 import { AuthContext} from '@/store/AuthContext';
 import { io } from 'socket.io-client';

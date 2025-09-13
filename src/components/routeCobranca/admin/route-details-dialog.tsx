@@ -96,7 +96,7 @@ export function RouteDetailsDialog({ route, open, onOpenChange }: RouteDetailsDi
           <DialogDescription>
             Consultor: {route.consultor} • Status: <StatusBadge status={route.status} />
           </DialogDescription>
-         <Button className="ml-auto bg-gray-200" variant='outline' onClick={handleSincData}>
+         <Button disabled={route.status!=='CONCLUIDA'} className="ml-auto bg-gray-200" variant='outline' onClick={handleSincData}>
           <FolderSyncIcon />
           Sincronizar Dados
           </Button>
