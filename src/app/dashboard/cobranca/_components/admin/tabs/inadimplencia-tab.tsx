@@ -1,11 +1,11 @@
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { RouteProps } from "@/types/cobranca"
 import { StatusBadge } from "../status-badge"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { MapButton } from "../map-button"
 import { Button } from "@/components/ui/button"
 import { Phone } from "lucide-react"
+import { RouteProps } from "../../../types/types"
 
 
 

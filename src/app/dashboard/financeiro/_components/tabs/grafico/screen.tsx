@@ -11,7 +11,7 @@ import { EmpresaProps } from "@/types/empresa";
 import { Button } from "@/components/ui/button";
 import { ajustarData } from "@/utils/ajusteData";
 import { Control, Controller, SubmitHandler, useForm, UseFormHandleSubmit, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
-import { ModalLoading } from "@/components/modals/loading/modalLoading";
+import { ModalLoading } from "@/components/modalLoading";
 import GraficoMensalidade from "@/app/dashboard/analyze/_components/graficoMensalidades";
 
 

@@ -15,8 +15,8 @@ import { Spinner } from "@/components/ui/spinner";
 import { AuthContext } from "@/store/AuthContext";
 import { pageStyle } from "@/utils/pageStyle";
 import { RelatorioEstoque } from "@/Documents/estoque/RelatorioEstoque";
-import { ModalMov } from "@/components/modals/estoque/modalMovimentacao";
-import { ModalNovoProduto } from "@/components/modals/estoque/modalNovoProduto";
+import { ModalMov } from "@/app/dashboard/estoque/components/modalMovimentacao";
+import { ModalNovoProduto } from "@/app/dashboard/estoque/components/modalNovoProduto";
 import { FormProps, ProdutosProps } from "../page";
 import { EstoqueProps } from "../types/estoque";
 

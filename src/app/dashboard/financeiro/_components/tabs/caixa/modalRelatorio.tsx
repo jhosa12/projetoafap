@@ -1,12 +1,13 @@
 
-import { CaixaProps, CcustosProps } from "@/pages/dashboard/financeiro"
+
 import { Button, Checkbox, Dropdown, Modal } from "flowbite-react"
 import { useRef, useState } from "react"
 import { PiPrinterFill } from "react-icons/pi"
 import { TagsProps } from "./caixa"
-import { IReactToPrintProps, useReactToPrint } from "react-to-print"
+import {  useReactToPrint } from "react-to-print"
 import DocumentTemplate from "@/Documents/financeiro/caixa/DocumentTemplate"
 import { endOfDay } from "date-fns"
+import { CaixaProps, CcustosProps } from "../../../page"
 
 interface DataProps {
     openModal:boolean
@@ -30,7 +31,7 @@ export interface ArrayGeral{
 
 
 export function ModalRelatorio({openModal,setOpenModal,caixa,arrayCcustos,startDate,endDate}:DataProps) {
-    const current = useRef<DocumentTemplate>(null)
+    const current = useRef<HTMLDivElement>(null)
     const [arrayTags,setArrayTags] = useState<Array<TagsProps>>([
         {id:1,desc:'TODOS',check:true},
         {id:2,desc:'PIX',check:true},
@@ -125,7 +126,7 @@ export function ModalRelatorio({openModal,setOpenModal,caixa,arrayCcustos,startD
 
    
     const ImprimirRelatorio = useReactToPrint({
-        content:()=>current.current
+        contentRef:current
       })
 
 

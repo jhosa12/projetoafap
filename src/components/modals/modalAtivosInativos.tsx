@@ -58,7 +58,7 @@ interface ResponseProps {
 }
 
 export const ModalAtivosInativos = ({ open, onClose, id_empresa, logo, usuario, cidadesEmpresa, bairrosEmpresa }: ModalProps) => {
-    const currentRef = useRef<AtivosInativos>(null)
+    const currentRef = useRef<HTMLDivElement>(null)
     const { register, watch, setValue, handleSubmit, reset, control } = useForm<FormProps>({
         defaultValues: {
             startDate: new Date(new Date().setDate(1)),
@@ -87,7 +87,7 @@ export const ModalAtivosInativos = ({ open, onClose, id_empresa, logo, usuario, 
 
     const imprimir = useReactToPrint({
         pageStyle: pageStyle,
-        content: () => currentRef.current,
+        contentRef:currentRef,
         onAfterPrint: async() => setData(null)
     })
 

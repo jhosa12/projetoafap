@@ -33,7 +33,7 @@ export default function ConsultarGanhadores(){
   const [id_empresa,setid_empresa] = useState<string>('')
   const [arrayGanhadores,setGanhadores] = useState<Array<Partial<GanhadoresProps>>>([])
   const [loading,setLoading] = useState<boolean>(false)
-  const componentRef = useRef<DocumentTemplate>(null);
+  const componentRef = useRef<HTMLDivElement>(null);
 
 const impressao = useReactToPrint({
   pageStyle: `
@@ -59,7 +59,7 @@ const impressao = useReactToPrint({
             }
         `,
         documentTitle: 'Relatório de Ganhadores',
-  content: () => componentRef.current,
+  contentRef: componentRef,
 });
 
   useEffect(()=>{

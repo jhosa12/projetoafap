@@ -7,7 +7,7 @@ import { IoSearchSharp } from "react-icons/io5";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { ModalLancamentosCaixa } from "@/components/modals/caixa/modalLancamentosCaixa";
+import { ModalLancamentosCaixa } from "@/app/dashboard/caixa/_components/modalLancamentosCaixa";
 import { AuthContext } from "@/store/AuthContext";
 import { Modal, Spinner } from "flowbite-react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -16,7 +16,7 @@ import { ScreenCloseCaixa } from "@/app/dashboard/caixa/_components/screenCloseC
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import { toast } from "sonner";
 import { TableCaixa } from "@/app/dashboard/caixa/_components/table-caixa";
-import { ModalFechamento } from "@/components/modals/caixa/modalFechamento";
+import { ModalFechamento } from "@/app/dashboard/caixa/_components/modalFechamento";
 import HeaderCaixa from "./_components/header-caixa";
 import {
   FormCaixaProps,

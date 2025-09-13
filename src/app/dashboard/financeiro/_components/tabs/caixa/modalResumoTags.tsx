@@ -1,7 +1,8 @@
-import { CaixaProps } from "@/pages/dashboard/financeiro";
+
 import { Button, Modal, Table } from "flowbite-react";
 import {  useMemo, useState } from "react";
 import { SomaProps } from "./caixa";
+import { CaixaProps } from "../../../page";
 
 interface DataProps {
     openModal: boolean;

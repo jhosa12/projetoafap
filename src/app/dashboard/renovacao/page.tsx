@@ -78,22 +78,19 @@ const [array, setArray] = useState<Array<ListaProps>>([]);
 const [MensImp, setMensImp] = useState<Array<DadosImpressao>>([]);
 const [currentPage, setCurrentPage] = useState(1);
 const itemsPerPage = 20;
-const componentRef = useRef<DocumentTemplate>(null);
+const componentRef = useRef<HTMLDivElement>(null);
 
 
 
 const imprimirCarne =useReactToPrint({
     pageStyle:pageStyle,
     documentTitle:'CARNÊ ASSOCIADO',
-    content:()=>componentRef.current,
+    contentRef:componentRef,
     onAfterPrint() {
         setMensImp([])
        
     },
-    onBeforeGetContent(){
-       
-    },
-    onBeforePrint(){
+    onBeforePrint:async()=>{
         setLoading(false)
     }
  

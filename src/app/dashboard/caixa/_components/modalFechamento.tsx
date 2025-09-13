@@ -4,7 +4,8 @@ import { Button, FloatingLabel, Modal, ModalHeader } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { ajustarData } from "@/utils/ajusteData";
 import { toast } from "sonner";
-import { LancamentosProps } from "@/types/caixa";
+import { LancamentosProps } from "@/app/dashboard/caixa/_types/types";
+
 
 
 interface DataProps{

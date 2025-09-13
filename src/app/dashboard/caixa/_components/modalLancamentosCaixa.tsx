@@ -9,7 +9,7 @@ import {  Modal, TextInput } from "flowbite-react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { removerFusoDate } from "@/utils/removerFusoDate";
 import { toast } from "sonner";
-import { LancamentosProps } from "@/types/caixa";
+
 import {
   Dialog,
   DialogContent,
@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button"
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { Combobox } from "@/components/ui/combobox";
 import { normalizarValor } from "@/utils/normalizarValor";
+import { LancamentosProps } from "@/app/dashboard/caixa/_types/types";
 
 
 interface ModalProps{

@@ -61,7 +61,7 @@ export function ModalVendedor({ endDate, setModalVend, show, startDate, vendedor
 
 
   const { data, postData, loading } = useApiGet<ResumoVendedorProps, { startDate: Date, endDate: Date, id_consultor: number | null, consultor: string }>("/vendas/resumoVendedor")
-  const componenteRef = useRef<ResumoVendedor>(null);
+  const componenteRef = useRef<HTMLDivElement>(null);
   const [print, setPrint] = useState(false)
 
 
@@ -83,9 +83,9 @@ export function ModalVendedor({ endDate, setModalVend, show, startDate, vendedor
 
 
   const handlePrint = useReactToPrint({
-    content: () => componenteRef.current,
+    contentRef: componenteRef,
     pageStyle: pageStyle,
-    onBeforeGetContent: () => setPrint(false),
+    onBeforePrint: async() => setPrint(false),
   })
 
 

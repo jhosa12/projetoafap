@@ -1,13 +1,15 @@
 
 
 import React from 'react';
-import { PremioProps } from "@/pages/dashboard/sorteio/configuracoes";
+
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Button, Label, Modal, Select, TextInput } from "flowbite-react";
 import { api } from "@/lib/axios/apiClient";
 import { EmpresaProps } from "@/types/empresa";
-import { ConveniadosProps } from "@/pages/dashboard/conveniados";
+
 import { toast } from 'sonner';
+import { ConveniadosProps } from '../../conveniados/page';
+import { PremioProps } from '../configuracoes/page';
 
 
 interface CadastroProps {

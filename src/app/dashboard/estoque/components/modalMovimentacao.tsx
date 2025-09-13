@@ -5,14 +5,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import { HiTrash } from "react-icons/hi";
-import { ModalQuant } from "../estoque/modalQuantidade";
+
 import { api } from "@/lib/axios/apiClient";
 import { ModalManual } from "./modalProdutoManual";
 import { EmpresaProps } from "@/types/empresa";
 import { toast } from "sonner";
 import { FormProps, ProdutosProps } from "@/app/dashboard/estoque/page";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ModalConfirmar } from "../modalConfirmar";
+import { ModalConfirmar } from "../../../../components/modals/modalConfirmar";
+import { ModalQuant } from "./modalQuantidade";
 
 interface DataProps {
     setOpenModal: (open: boolean) => void

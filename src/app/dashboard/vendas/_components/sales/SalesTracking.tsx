@@ -7,8 +7,6 @@ import { SalesDataTable } from './SalesDataTable';
 import { SalesChart } from './SalesChart';
 import { FilterModal } from './FilterModal';
 import { ajustarData } from '@/utils/ajusteData';
-import { toast } from 'sonner';
-import useApiGet from '@/hooks/useApiGet';
 import { api } from '@/lib/axios/apiClient';
 import { ModalVendedor } from '../modalVendedor';
 import { getDiasUteisMes } from '@/utils/getDiasUteisMes';

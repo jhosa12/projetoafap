@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table"; 
 import { LeadProps } from "@/types/vendas";
-import { MdCreateNewFolder } from "react-icons/md";
+
 
 interface Props{
     data: Array<LeadProps>;

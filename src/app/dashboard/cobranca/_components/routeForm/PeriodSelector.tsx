@@ -2,8 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
+import { RouteProps } from "../../types/types";
 import { Controller, useFormContext } from "react-hook-form";
-import { RouteProps } from "@/types/cobranca";
+
 
 
 const PeriodSelector = () => {

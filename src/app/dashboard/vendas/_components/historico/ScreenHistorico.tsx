@@ -17,9 +17,9 @@ import {
 
 import { AuthContext } from "@/store/AuthContext";
 import { gerarMensalidade, ParcelaData } from "@/utils/gerarArrayMensal";
-import { ContratoProps, DependentesProps } from "@/app/dashboard/admcontrato/_types/associado";
+
 import { ajustarData } from "@/utils/ajusteData";
-import { ModalLoading } from "@/components/modals/loading/modalLoading";
+import { ModalLoading } from "@/components/modalLoading";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "sonner";
 import {
@@ -37,6 +37,8 @@ import { ModalNovoContrato } from "./ModalNovoContrato";
 import { LeadProps } from "@/types/vendas";
 import DocListaLeads from "@/Documents/vendas/DocLeads";
 import { upperCaseString } from "@/utils/upperCaseString";
+import { ContratoProps } from "@/app/dashboard/admcontrato/_types/contrato";
+import { DependentesProps } from "@/app/dashboard/admcontrato/_types/dependentes";
 
 
 
@@ -135,7 +137,7 @@ export function Historico() {
     confirmaPlano: false,
     print: false,
   });
-  const componenteRef = useRef<DocListaLeads>(null);
+  const componenteRef = useRef<HTMLDivElement>(null);
 
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -190,7 +192,7 @@ export function Historico() {
 
   const imprimir = useReactToPrint({
     pageStyle: pageStyleLandscape,
-    content: () => componenteRef.current,
+    contentRef: componenteRef,
     onAfterPrint: () => {
       setModal({
         print: false,

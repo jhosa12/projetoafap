@@ -5,7 +5,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { MetasProps, SetorProps } from "./acompanhamento";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { PlanoContasProps } from "@/pages/dashboard/financeiro";
+import { PlanoContasProps } from "../../financeiro/page";
+
 
 
 interface DataProps{

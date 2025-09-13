@@ -6,9 +6,9 @@ import { api } from '@/lib/axios/apiClient';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 import { Button } from 'flowbite-react';
-import { PremioProps } from './_setting/configuracoes/page';
 import { AuthContext } from '@/store/AuthContext';
 import { toast } from 'sonner';
+import { PremioProps } from './configuracoes/page';
 
 interface DadosProps {
   id_empresa: string,

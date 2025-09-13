@@ -1,12 +1,12 @@
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { AgendamentoCobranca} from "@/types/cobranca"
 import { CalendarDays, Phone } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { api } from "@/lib/axios/apiClient"
+import { AgendamentoCobranca } from "../../../types/types"
 
 
 

@@ -1,7 +1,6 @@
 import { api } from "@/lib/axios/apiClient"
 import {  useEffect, useState } from "react"
 import { IoIosAddCircle} from "react-icons/io";
-import { PlanoContasProps } from "@/pages/dashboard/financeiro";
 import { construirHierarquia, NodoConta } from "@/utils/listaContas";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { roboto_Mono } from "@/fonts/fonts";
@@ -11,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { PlanoContasProps } from "@/app/dashboard/financeiro/page";
 
 
 

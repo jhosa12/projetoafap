@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Fragment, useContext, useEffect, useRef, useState, useTransition } from "react";
 import { AuthContext } from "@/store/AuthContext";
-import { ModalFiltroMov } from "../../../../../components/modals/estoque/modalFiltro";
+import { ModalFiltroMov } from "../modalFiltro";
 import { api } from "@/lib/axios/apiClient";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { BiSolidPrinter } from "react-icons/bi";
@@ -9,7 +9,7 @@ import { useReactToPrint } from "react-to-print";
 import RelatorioMov from "@/Documents/estoque/RelatorioMov";
 import { GrRevert } from "react-icons/gr";
 import { Tooltip } from "react-tooltip";
-import { ModalConfirm } from "../../../../../components/modals/estoque/modalConfirm";
+import { ModalConfirm } from "../modalConfirm";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { pageStyle } from "@/utils/pageStyle";

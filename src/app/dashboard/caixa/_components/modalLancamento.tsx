@@ -1,14 +1,14 @@
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../../components/ui/dialog"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { Label } from "flowbite-react"
 import DatePicker,{registerLocale} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
-import { GruposProps } from "@/pages/dashboard/financeiro";
-import { Input } from "../../ui/input";
-import { Button } from "../../ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select";
+
+import { Input } from "../../../../components/ui/input";
+import { Button } from "../../../../components/ui/button";
 import {  formasDePagamento } from "@/utils/bancosFormasPag";
 import { MdClose } from "react-icons/md";
 import { roboto_Mono } from "@/fonts/fonts";
@@ -18,7 +18,9 @@ import { api } from "@/lib/axios/apiClient";
 import { useCallback, useContext, useEffect } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { removerFusoDate } from "@/utils/removerFusoDate";
-import { LancamentosProps } from "@/types/caixa";
+import { GruposProps } from "@/app/dashboard/financeiro/page";
+import { LancamentosProps } from "@/app/dashboard/caixa/_types/types";
+
 
 
 

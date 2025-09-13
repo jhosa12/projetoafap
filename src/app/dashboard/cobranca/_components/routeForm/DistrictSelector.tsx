@@ -5,9 +5,10 @@ import { Input } from "@/components/ui/input";
 import { X, Plus } from "lucide-react";
 import { MultiSelects } from "@/components/ui/multiSelect";
 import { Control, Controller, useFormContext, UseFormSetValue, UseFormWatch } from "react-hook-form";
-import { InadimplenciaBairroProps, RouteProps } from "@/types/cobranca";
+
 import { EmpresaProps } from "@/types/empresa";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { InadimplenciaBairroProps } from "../../types/types";
 
 interface DistrictSelectorProps {
  
