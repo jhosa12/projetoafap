@@ -201,7 +201,7 @@ export default function ConvalescenciaNovo() {
                 setarListaConv({
                     nome: dependenteEscolhido.nome,
                     data: dataNascimento,
-                    id_dependente: dependenteEscolhido.id_dependente,
+                    id_dependente_global: dependenteEscolhido.id_dependente_global,
                 });
 
                 // 4. Atualiza a UI: marca o checkbox e fecha o modal
@@ -660,6 +660,27 @@ export default function ConvalescenciaNovo() {
                                         <CardTitle className="text-xl col-span-full mt-4 border-t pt-8 pb-2">
                                             Outras Informações
                                         </CardTitle>
+                                        <div className="grid gap-2">
+                                            <Label>Tipo de Entrada</Label>
+                                            <Select
+                                                // O valor selecionado é lido do estado 'listaConv'
+                                                value={listaConv.tipo_entrada || ''}
+                                                // Quando o usuário muda a seleção, o estado 'listaConv' é atualizado
+                                                onValueChange={(novoValor) => {
+                                                    setarListaConv({ tipo_entrada: novoValor });
+                                                }}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Selecione o tipo de atendimento" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="CONVENIO">Convênio</SelectItem>
+                                                    <SelectItem value="PARTICULAR">Particular</SelectItem>
+                                                    <SelectItem value="CORTESIA">Cortesia</SelectItem>
+                                                    <SelectItem value="EMPRESA">Empresa</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                       </div>
 
                                         <div className="grid gap-2">
                                             <Label htmlFor="data-solicitacao">Data de Entrega</Label>
@@ -1006,28 +1027,28 @@ export default function ConvalescenciaNovo() {
                                         </div>
 
                                         {/* --- Seção de Opções --- */}
-                                        <div className="flex items-center space-x-2 pt-6 lg:col-span-2">
+                                        <div className="grid gap-2">
+                                            <Label>Cortesia</Label>
                                             <Select onValueChange={(value) => setInputs({cortesia: value})} value={dataInputs.cortesia}>
                                                 <SelectTrigger className="w-[180px]">
                                                     <SelectValue placeholder="Selecione..." />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectGroup>
-                                                        <SelectLabel>Cortesia</SelectLabel>
                                                         <SelectItem value="sim">Sim</SelectItem>
                                                         <SelectItem value="nao">Não</SelectItem>
                                                     </SelectGroup>
                                                 </SelectContent>
                                             </Select>
                                         </div>
-                                        <div className="flex items-center space-x-2 pt-6 lg:col-span-2">
+                                        <div className="grid gap-2">
+                                            <Label>Retornável</Label>
                                             <Select onValueChange={(value) => setInputs({retornavel: value})} value={dataInputs.retornavel}>
                                                 <SelectTrigger className="w-[180px]">
                                                     <SelectValue placeholder="Selecione..." />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectGroup>
-                                                        <SelectLabel>Retornável</SelectLabel>
                                                         <SelectItem value="sim">Sim</SelectItem>
                                                         <SelectItem value="nao">Não</SelectItem>
                                                     </SelectGroup>

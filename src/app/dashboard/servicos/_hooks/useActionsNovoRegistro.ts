@@ -12,6 +12,7 @@ import DocumentTemplate from '@/Documents/cobranca/DocumentTemplate';
 import { SelectProps } from '../../admcontrato/_types/select';
 import { EstoqueNovoRegistroProps } from '../../estoque/types/estoque';
 import DocumentTemplateContrato from "@/Documents/convalescenca/contrato/DocumentTemplate";
+import { converterDataParaISO } from "@/utils/converterDataParaIso";
 
 interface ActionsProps {
 
@@ -181,25 +182,28 @@ const useActionsNovoResgistro = () => {
       return;
     }
 
-    //  if (listaConv.convalescenca_prod) {
-    //    toast.info('Adicione o Produto Desejado!');
-    //  return;
-    //  }
+    const dataIso = converterDataParaISO(listaConv.data)
+    const dataIsoInc = converterDataParaISO(listaConv.data_inc)
 
-    //const produto = {...listaConv.convalescenca_prod} ??{}
+
+    if (!dataIso || !dataIsoInc) {
+      toast.error("Formato de data inválido para 'Data' ou 'Data de Nascimento'. Use DD/MM/AAAA.");
+      return;
+    }
 
     toast.promise(
 
       api.put('/convalescencia/editar', {
 
         id_conv: listaConv.id_conv,
-        id_contrato: listaConv.id_contrato,
+        id_contrato: listaConv.id_contrato_global,
         id_associado: listaConv.id_associado,
         id_contrato_st: listaConv.id_contrato_st,
         tipo_entrada: listaConv.tipo_entrada,
+        id_dependente: listaConv.id_dependente_global,
         nome: listaConv.nome,
         cpf_cnpj: listaConv.cpf_cnpj,
-        data: new Date(listaConv.data ?? ''),
+        data: new Date(listaConv.data ?? '').toISOString(),
         status: listaConv.status,
         forma_pag: listaConv.forma_pag,
         logradouro: listaConv.logradouro,
@@ -219,8 +223,8 @@ const useActionsNovoResgistro = () => {
         cep_r: listaConv.cep_r,
         cidade_r: listaConv.cidade_r,
         uf_r: listaConv.uf_r,
-        data_inc: listaConv.data && new Date(listaConv.data_inc ?? ''),
-        hora_inc: new Date(listaConv.hora_inc ?? ''),
+        data_inc: new Date().toISOString(),
+        hora_inc: new Date().toISOString(),
         usuario: listaConv.usuario,
         obs: listaConv.obs,
         convalescenca_prod: listaMaterial
@@ -255,55 +259,112 @@ const useActionsNovoResgistro = () => {
       return;
     }
 
-
-    toast.promise(
-      api.post('/convalescencia/novo', {
-        id_contrato: dadosassociado?.contrato?.id_contrato,
-        id_associado: dadosassociado?.id_associado,
-        id_dependente: listaConv.id_dependente,
-        id_contrato_st: listaConv.id_contrato_st,
-        tipo_entrada: listaConv.tipo_entrada,
-        nome: listaConv.nome,
-        cpf_cnpj: listaConv.cpf_cnpj,
-        data: listaConv.data,
-        status: "ABERTO",
-        forma_pag: listaConv.forma_pag,
-        logradouro: listaConv.logradouro,
-        numero: listaConv.numero,
-        complemento: listaConv.complemento,
-        bairro: listaConv.bairro,
-        cep: listaConv.cep,
-        cidade: listaConv.cidade,
-        uf: listaConv.uf,
-        subtotal: listaConv.subtotal,
-        descontos: listaConv.descontos,
-        total: listaConv.total,
-        logradouro_r: listaConv.logradouro_r,
-        numero_r: listaConv.numero_r,
-        complemento_r: listaConv.complemento_r,
-        bairro_r: listaConv.bairro_r,
-        cep_r: listaConv.cep_r,
-        cidade_r: listaConv.cidade_r,
-        uf_r: listaConv.uf_r,
-        data_inc: listaConv.data_inc,
-        hora_inc: listaConv.hora_inc,
-        usuario: usuario?.nome,
-        obs: listaConv.obs,
+    const dataISO = converterDataParaISO(listaConv.data);
+    const dataIsoNasc = converterDataParaISO(listaConv.data_inc);
 
 
-      }),
+    if (!dataISO) {
+      toast.error("Formato de data inválido para 'Data' ou 'Data de Nascimento'. Use DD/MM/AAAA.");
+      return;
+    }
 
-      {
-        error: 'Erro ao cadastrar',
-        loading: 'Salvando Dados',
-        success: 'Dados Registrados com Sucesso'
-      }
-    )
+    const payload = {
+      id_contrato: dadosassociado?.contrato?.id_contrato,
+      id_associado: dadosassociado?.id_associado,
+      id_dependente: listaConv?.id_dependente_global,
+      id_contrato_st: listaConv.id_contrato_st,
+      tipo_entrada: listaConv.tipo_entrada,
+      nome: listaConv.nome,
+      cpf_cnpj: listaConv.cpf_cnpj,
+      data: dataISO,
+      data_nasc: dataIsoNasc,
+      status: "ABERTO",
+      forma_pag: listaConv.forma_pag,
+      logradouro: listaConv.logradouro,
+      numero: listaConv.numero,
+      complemento: listaConv.complemento,
+      bairro: listaConv.bairro,
+      cep: listaConv.cep,
+      cidade: listaConv.cidade,
+      uf: listaConv.uf,
+      subtotal: listaConv.subtotal || 0,
+      descontos: listaConv.descontos || 0,
+      total: listaConv.total || 0,
+      logradouro_r: listaConv.logradouro_r,
+      numero_r: listaConv.numero_r,
+      complemento_r: listaConv.complemento_r,
+      bairro_r: listaConv.bairro_r,
+      cep_r: listaConv.cep_r,
+      cidade_r: listaConv.cidade_r,
+      uf_r: listaConv.uf_r,
+      data_inc: new Date().toISOString(), // Data de inclusão gerada no momento do salvamento
+      hora_inc: new Date().toISOString(), // Hora de inclusão
+      usuario: usuario?.nome,
+      obs: listaConv.obs,
+    };
+
+    const promise = api.post('/convalescencia/novo', payload);
 
 
+    // toast.promise(
+    //   api.post('/convalescencia/novo', {
+    //     id_contrato: dadosassociado?.contrato?.id_contrato,
+    //     id_associado: dadosassociado?.id_associado,
+    //     id_dependente: listaConv?.id_dependente,
+    //     id_contrato_st: listaConv.id_contrato_st,
+    //     tipo_entrada: listaConv.tipo_entrada,
+    //     nome: listaConv.nome,
+    //     cpf_cnpj: listaConv.cpf_cnpj,
+    //     data: listaConv.data,
+    //     status: "ABERTO",
+    //     forma_pag: listaConv.forma_pag,
+    //     logradouro: listaConv.logradouro,
+    //     numero: listaConv.numero,
+    //     complemento: listaConv.complemento,
+    //     bairro: listaConv.bairro,
+    //     cep: listaConv.cep,
+    //     cidade: listaConv.cidade,
+    //     uf: listaConv.uf,
+    //     subtotal: listaConv.subtotal,
+    //     descontos: listaConv.descontos,
+    //     total: listaConv.total,
+    //     logradouro_r: listaConv.logradouro_r,
+    //     numero_r: listaConv.numero_r,
+    //     complemento_r: listaConv.complemento_r,
+    //     bairro_r: listaConv.bairro_r,
+    //     cep_r: listaConv.cep_r,
+    //     cidade_r: listaConv.cidade_r,
+    //     uf_r: listaConv.uf_r,
+    //     data_inc: listaConv.data_inc,
+    //     hora_inc: listaConv.hora_inc,
+    //     usuario: usuario?.nome,
+    //     obs: listaConv.obs,
 
 
+    //   }),
+
+    //   {
+    //     error: 'Erro ao cadastrar',
+    //     loading: 'Salvando Dados',
+    //     success: (response) => {
+    //       const novoArray = [...lista']
+    //     } 
+    //   }
+    // )
+
+    toast.promise(promise, {
+      loading: 'Salvando dados...',
+      success: 'Dados registrados com sucesso!',
+      error: (err) => err.response?.data?.message || 'Erro ao cadastrar. Tente novamente.',
+    });
+
+    try {
+      await promise;
+    } catch (error: any) {
+      console.error("Falha detalhada ao salvar registro:", error.response?.data || error.message || error);
+    }
   }
+
   useEffect(() => {
     if (titular) {
 
@@ -318,7 +379,7 @@ const useActionsNovoResgistro = () => {
           cidade: dadosassociado.cidade ?? '',
           cpf_cnpj: dadosassociado.cpfcnpj ?? '',
           uf: dadosassociado.uf ?? '',
-          id_dependente: null
+          id_dependente_global: null
         });
       } else {
         // Se não há associado (ex: o usuário limpou a busca), limpamos o formulário

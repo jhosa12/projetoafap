@@ -1,9 +1,9 @@
 export interface ConvProps {
   editar: boolean
   id_conv: number | null,
-  id_contrato: number | null,
+  id_contrato_global: number | null,
   id_associado: number | null,
-  id_dependente: number | null,
+  id_dependente_global?: number | null,
   id_contrato_st: string,
   tipo_entrada: string,
   nome: string,
@@ -28,7 +28,7 @@ export interface ConvProps {
   cep_r: string,
   cidade_r: string,
   uf_r: string,
-  data_inc: Date,
+  data_inc: Date ,
   hora_inc: Date,
   usuario: string,
   obs: string,

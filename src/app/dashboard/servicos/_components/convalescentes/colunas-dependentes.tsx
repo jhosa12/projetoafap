@@ -12,7 +12,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { type SetarListaConvType } from "@/app/dashboard/servicos/_hooks/useActionsNovoRegistro";
+import setarListaConv from "@/app/dashboard/servicos/_hooks/useActionsNovoRegistro"
+import { ConvProps } from "../../_types/convalescente"
 
 export type Dependente = {
   id_dependente: null | number
@@ -25,7 +26,7 @@ export type Dependente = {
 
 
 interface ActionsProps {
-  setarListaConv: SetarListaConvType;
+  setarListaConv: (fields: Partial<ConvProps>) => void;
   setModalDependente: (value: boolean) => void
 }
 
