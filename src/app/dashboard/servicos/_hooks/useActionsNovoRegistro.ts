@@ -1,3 +1,4 @@
+import { Navigation } from 'lucide-react';
 import DocumentTemplateComprovante from "@/Documents/convalescenca/comprovante/DocumentTemplate";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ConvProps } from "../_types/convalescente";
@@ -13,6 +14,7 @@ import { SelectProps } from '../../admcontrato/_types/select';
 import { EstoqueNovoRegistroProps } from '../../estoque/types/estoque';
 import DocumentTemplateContrato from "@/Documents/convalescenca/contrato/DocumentTemplate";
 import { converterDataParaISO } from "@/utils/converterDataParaIso";
+import { useParams } from 'next/navigation'
 
 interface ActionsProps {
 
@@ -37,6 +39,7 @@ interface ActionsProps {
   closeModa: (fields: Partial<DadosCadastroProps>) => void;
   setMaterial: (value: Array<Partial<ListaMaterial>>) => void;
   setIndex: (value: number) => void;
+  handleSalvar: (value: boolean) => void;
 
 
 
@@ -66,6 +69,9 @@ const useActionsNovoResgistro = () => {
   const [estoque, setEstoque] = useState<Array<EstoqueNovoRegistroProps>>([])
   const [titular, setTitular] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const params = useParams();
+  const id = params.id as string | undefined;
+  const isEditMode = !!id;
 
   const setarListaConv = useCallback((fields: Partial<ConvProps>) => {
     setLista(prev => ({ ...prev, ...fields }));
@@ -193,14 +199,15 @@ const useActionsNovoResgistro = () => {
 
     toast.promise(
 
-      api.put('/convalescencia/editar', {
+      
+      api.put(`/convalescencia/editar/${id}`, {
 
-        id_conv: listaConv.id_conv,
+        //id_conv: id,
         id_contrato: listaConv.id_contrato_global,
         id_associado: listaConv.id_associado,
         id_contrato_st: listaConv.id_contrato_st,
         tipo_entrada: listaConv.tipo_entrada,
-        id_dependente: listaConv.id_dependente_global,
+        id_dependente: listaConv.id_dependente,
         nome: listaConv.nome,
         cpf_cnpj: listaConv.cpf_cnpj,
         data: new Date(listaConv.data ?? '').toISOString(),
@@ -243,16 +250,9 @@ const useActionsNovoResgistro = () => {
         }
       }
     )
-
-
-
-
-
-
   }
 
   async function adicionarNovoRegistro() {
-
 
     if (!listaConv.nome || !listaConv.logradouro) {
       toast.info('Preencha os campos obrigatórios');
@@ -271,7 +271,7 @@ const useActionsNovoResgistro = () => {
     const payload = {
       id_contrato: dadosassociado?.contrato?.id_contrato,
       id_associado: dadosassociado?.id_associado,
-      id_dependente: listaConv?.id_dependente_global,
+      id_dependente: listaConv?.id_dependente,
       id_contrato_st: listaConv.id_contrato_st,
       tipo_entrada: listaConv.tipo_entrada,
       nome: listaConv.nome,
@@ -306,57 +306,12 @@ const useActionsNovoResgistro = () => {
     const promise = api.post('/convalescencia/novo', payload);
 
 
-    // toast.promise(
-    //   api.post('/convalescencia/novo', {
-    //     id_contrato: dadosassociado?.contrato?.id_contrato,
-    //     id_associado: dadosassociado?.id_associado,
-    //     id_dependente: listaConv?.id_dependente,
-    //     id_contrato_st: listaConv.id_contrato_st,
-    //     tipo_entrada: listaConv.tipo_entrada,
-    //     nome: listaConv.nome,
-    //     cpf_cnpj: listaConv.cpf_cnpj,
-    //     data: listaConv.data,
-    //     status: "ABERTO",
-    //     forma_pag: listaConv.forma_pag,
-    //     logradouro: listaConv.logradouro,
-    //     numero: listaConv.numero,
-    //     complemento: listaConv.complemento,
-    //     bairro: listaConv.bairro,
-    //     cep: listaConv.cep,
-    //     cidade: listaConv.cidade,
-    //     uf: listaConv.uf,
-    //     subtotal: listaConv.subtotal,
-    //     descontos: listaConv.descontos,
-    //     total: listaConv.total,
-    //     logradouro_r: listaConv.logradouro_r,
-    //     numero_r: listaConv.numero_r,
-    //     complemento_r: listaConv.complemento_r,
-    //     bairro_r: listaConv.bairro_r,
-    //     cep_r: listaConv.cep_r,
-    //     cidade_r: listaConv.cidade_r,
-    //     uf_r: listaConv.uf_r,
-    //     data_inc: listaConv.data_inc,
-    //     hora_inc: listaConv.hora_inc,
-    //     usuario: usuario?.nome,
-    //     obs: listaConv.obs,
-
-
-    //   }),
-
-    //   {
-    //     error: 'Erro ao cadastrar',
-    //     loading: 'Salvando Dados',
-    //     success: (response) => {
-    //       const novoArray = [...lista']
-    //     } 
-    //   }
-    // )
-
     toast.promise(promise, {
       loading: 'Salvando dados...',
       success: 'Dados registrados com sucesso!',
       error: (err) => err.response?.data?.message || 'Erro ao cadastrar. Tente novamente.',
     });
+
 
     try {
       await promise;
@@ -364,6 +319,8 @@ const useActionsNovoResgistro = () => {
       console.error("Falha detalhada ao salvar registro:", error.response?.data || error.message || error);
     }
   }
+
+  
 
   useEffect(() => {
     if (titular) {
@@ -379,7 +336,7 @@ const useActionsNovoResgistro = () => {
           cidade: dadosassociado.cidade ?? '',
           cpf_cnpj: dadosassociado.cpfcnpj ?? '',
           uf: dadosassociado.uf ?? '',
-          id_dependente_global: null
+          id_dependente: null
         });
       } else {
         // Se não há associado (ex: o usuário limpou a busca), limpamos o formulário
@@ -409,6 +366,45 @@ const useActionsNovoResgistro = () => {
     selectMateriais();
   }, []); // Roda apenas uma vez
 
+  useEffect(() => {
+
+    if (isEditMode) {
+      const fetchDadosParaEdicao = async () => {
+        setIsLoading(true);
+        try {
+
+          const response = await api.get(`/convalescencia/${id}`);
+
+          // Usa sua função existente para preencher o estado do formulário
+          setarListaConv(response.data);
+          // Também preenche a lista de materiais/produtos
+          setMaterial(response.data.convalescenca_prod || []);
+
+        } catch (error) {
+          console.error("Erro ao buscar dados para edição:", error);
+          toast.error("Falha ao carregar os dados do registro.");
+          // Opcional: redirecionar para a lista se o ID for inválido
+          // router.push('/dashboard/servicos/convalescencia');
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchDadosParaEdicao();
+    } else {
+      setarListaConv({ usuario: usuario?.nome, status: "ABERTO" });
+      setIsLoading(false);
+    }
+  }, [id, isEditMode, setarListaConv, usuario?.nome]);
+
+  const handleSalvar = () => {
+    if (isEditMode) {
+      editarRegistro()
+    } else {
+      adicionarNovoRegistro()
+      
+    }
+  }
 
   return {
 
@@ -428,6 +424,7 @@ const useActionsNovoResgistro = () => {
     closeModa,
     setMaterial,
     setIndex,
+    handleSalvar,
 
     setarListaConv,
     imprimirComprovante,

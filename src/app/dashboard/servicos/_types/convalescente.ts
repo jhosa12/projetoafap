@@ -1,14 +1,16 @@
 export interface ConvProps {
   editar: boolean
   id_conv: number | null,
+  id_contrato: number | null,
   id_contrato_global: number | null,
   id_associado: number | null,
-  id_dependente_global?: number | null,
+  id_dependente?: number | null,
   id_contrato_st: string,
   tipo_entrada: string,
   nome: string,
   cpf_cnpj: string,
   data?: Date | null,
+  data_nasc?: Date | null,
   status: string,
   forma_pag: string,
   logradouro: string,

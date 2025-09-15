@@ -57,6 +57,7 @@
     "html-react-parser": "^5.2.2",
     "immer": "^10.0.3",
     "jsonwebtoken": "^9.0.2",
+    "lucide": "^0.544.0",
     "lucide-react": "^0.294.0",
     "micromatch": "^4.0.8",
     "nanoid": "^5.0.7",

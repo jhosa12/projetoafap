@@ -257,7 +257,6 @@ export default function Convalescente() {
             </div>
 
             <Table>
-                <TableCaption>A lista</TableCaption>
                 <TableHeader>
                     <TableRow>
                         <TableHead>Contrato</TableHead>
@@ -280,16 +279,12 @@ export default function Convalescente() {
                             <TableCell>
                                 <div className="flex flex-row w-full gap-2">
                                     <Link
-                                        onClick={() => setarListaConv({
-                                            ...item, convalescenca_prod: [...item.convalescenca_prod]
-                                        })}
                                         data-tooltip-id="toolId"
                                         data-tooltip-content={'Editar Dados'}
                                         className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white"
-                                        href='/servicos/convalescencia/novoregistro'>
+                                        href={`/dashboard/servicos/convalescencia/editar/${item.id_conv}`}>
                                         <LuFolderEdit size={18} />
                                     </Link>
-
                                     <button data-tooltip-id="toolId" data-tooltip-content={'Excluir'} onClick={() => { setExcluir(true); setarListaConv({ id_conv: item.id_conv }) }} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
                                         <MdDeleteOutline size={18} />
                                     </button>
