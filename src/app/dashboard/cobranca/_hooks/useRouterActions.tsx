@@ -3,6 +3,7 @@ import { CobrancaStats, RotaFilterProps, RouteProps } from "../types/types";
 import { api } from "@/lib/axios/apiClient";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Alert } from "flowbite-react";
 
 
 
@@ -37,7 +38,7 @@ const [routes, setRoutes] = useState<RouteProps[]>([]);
 
 
      const getRotas = async (data: RotaFilterProps) => {
-    
+  
         const {dataIni,dataFim} = ajustarData(data.dateRange?.from,data.dateRange?.to)
         try {
           const response = await api.post("/cobranca/rotas",
@@ -47,7 +48,9 @@ const [routes, setRoutes] = useState<RouteProps[]>([]);
             }
           );
           setRoutes(response.data);
-        } catch (error) {}
+        } catch (error) {
+          console.log(error)
+        }
       };
 
 
