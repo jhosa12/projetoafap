@@ -10,11 +10,12 @@ import { DadosCadastroProps } from "../../admcontrato/_types/dados-cadastro";
 import { AuthContext } from "@/store/AuthContext";
 import { useReactToPrint } from "react-to-print";
 import DocumentTemplate from '@/Documents/cobranca/DocumentTemplate';
-import { SelectProps } from '../../admcontrato/_types/select';
+import { ProdutosProps } from '../../admcontrato/_types/produtos';
 import { EstoqueNovoRegistroProps } from '../../estoque/types/estoque';
 import DocumentTemplateContrato from "@/Documents/convalescenca/contrato/DocumentTemplate";
 import { converterDataParaISO } from "@/utils/converterDataParaIso";
 import { useParams } from 'next/navigation'
+import { RowSelectionState } from '@tanstack/react-table';
 
 interface ActionsProps {
 
@@ -27,10 +28,12 @@ interface ActionsProps {
   data: Partial<DadosCadastroProps>;
   listaConv: Partial<ConvProps>;
   titular: boolean;
-  selectProdutos: Array<SelectProps>;
+  listarProdutos: Array<ProdutosProps>;
   componentRefComprovante: React.RefObject<HTMLDivElement>;
   componentRefContrato: React.RefObject<HTMLDivElement>;
   isLoading: boolean;
+  produtosAdicionados: ProdutosProps[]
+  selecionarProduto: ProdutosProps | null,
 
 
   // --- Funções para alterar o estado  ---
@@ -40,8 +43,16 @@ interface ActionsProps {
   setMaterial: (value: Array<Partial<ListaMaterial>>) => void;
   setIndex: (value: number) => void;
   handleSalvar: (value: boolean) => void;
-
-
+  handleSelecionarProduto: (produtoSelecionado: ProdutosProps) => void
+  usarDadosTitular: (value: boolean) => void;
+  isDependenteSelecionado: (value: boolean) => void;
+  isModalOpen: (value: boolean) => void;
+  rowSelection: (value: boolean) => void;
+  handleCheckboxTitularChange: (value: boolean) => void;
+  handleConfirmarSelecaoDependente: (value: boolean) => void;
+  setIsModalOpen: (value: boolean) => void;
+  setDependenteSelecionado: (value: boolean) => void;
+  setRowSelection: (value: boolean) => void;
 
   // --- Funções de Ação ---
   setarListaConv: (fields: Partial<ConvProps>) => void;
@@ -65,17 +76,27 @@ const useActionsNovoResgistro = () => {
   const componentRefComprovante = useRef<HTMLDivElement>(null);
   const componentRefContrato = useRef<HTMLDivElement>(null);
   const [componenteMounted, setMounted] = useState(false);
-  const [selectProdutos, setSelect] = useState<Array<SelectProps>>([]);
+  const [listarProdutos, setListarProdutos] = useState<Array<ProdutosProps>>([]);
   const [estoque, setEstoque] = useState<Array<EstoqueNovoRegistroProps>>([])
   const [titular, setTitular] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const params = useParams();
   const id = params.id as string | undefined;
   const isEditMode = !!id;
+  const [usarDadosTitular, setUsarDadosTitular] = useState(false);
+  const [isDependenteSelecionado, setDependenteSelecionado] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [selecionarProduto, setSelecionarProduto] = useState<ProdutosProps | null>(null)
+  const [produtosAdicionados, setProdutosAdicionados] = useState<ProdutosProps[]>([])
 
   const setarListaConv = useCallback((fields: Partial<ConvProps>) => {
     setLista(prev => ({ ...prev, ...fields }));
   }, []);
+
+
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
 
 
   const imprimirComprovante = useReactToPrint({
@@ -188,6 +209,14 @@ const useActionsNovoResgistro = () => {
       return;
     }
 
+
+    if (produtosAdicionados.length === 0) {
+
+      toast.info('Adicione pelo menos um produto/serviço.')
+      return
+
+    }
+
     const dataIso = converterDataParaISO(listaConv.data)
     const dataIsoInc = converterDataParaISO(listaConv.data_inc)
 
@@ -197,9 +226,14 @@ const useActionsNovoResgistro = () => {
       return;
     }
 
+    const produtosParaEnviar = produtosAdicionados.map(produto => ({
+      id_produto: produto.id_produto,
+      descricao: produto.descricao,
+    }))
+
     toast.promise(
 
-      
+
       api.put(`/convalescencia/editar/${id}`, {
 
         //id_conv: id,
@@ -234,9 +268,7 @@ const useActionsNovoResgistro = () => {
         hora_inc: new Date().toISOString(),
         usuario: listaConv.usuario,
         obs: listaConv.obs,
-        convalescenca_prod: listaMaterial
-
-
+        convalescenca_prod: produtosParaEnviar
 
       }),
       {
@@ -259,6 +291,13 @@ const useActionsNovoResgistro = () => {
       return;
     }
 
+    if (produtosAdicionados.length === 0) {
+
+      toast.info('Adicione pelo menos um produto/serviço.')
+      return
+
+    }
+
     const dataISO = converterDataParaISO(listaConv.data);
     const dataIsoNasc = converterDataParaISO(listaConv.data_inc);
 
@@ -267,6 +306,11 @@ const useActionsNovoResgistro = () => {
       toast.error("Formato de data inválido para 'Data' ou 'Data de Nascimento'. Use DD/MM/AAAA.");
       return;
     }
+
+    const produtosParaEnviar = produtosAdicionados.map(produto => ({
+      id_produto: produto.id_produto,
+      descricao: produto.descricao,
+    }))
 
     const payload = {
       id_contrato: dadosassociado?.contrato?.id_contrato,
@@ -298,9 +342,11 @@ const useActionsNovoResgistro = () => {
       cidade_r: listaConv.cidade_r,
       uf_r: listaConv.uf_r,
       data_inc: new Date().toISOString(), // Data de inclusão gerada no momento do salvamento
-      hora_inc: new Date().toISOString(), // Hora de inclusão
+      hora_inc: new Date().toISOString(), // Hora de inclusão gerada no momento do salvamento
       usuario: usuario?.nome,
       obs: listaConv.obs,
+      convalecenca_prod: produtosParaEnviar
+
     };
 
     const promise = api.post('/convalescencia/novo', payload);
@@ -319,8 +365,6 @@ const useActionsNovoResgistro = () => {
       console.error("Falha detalhada ao salvar registro:", error.response?.data || error.message || error);
     }
   }
-
-  
 
   useEffect(() => {
     if (titular) {
@@ -349,22 +393,39 @@ const useActionsNovoResgistro = () => {
 
 
   useEffect(() => {
-    const selectMateriais = async () => {
-      setIsLoading(true);
+    const selectProdutos = async () => {
+      setIsLoading(true)
+
       try {
-        const response = await api.post('/estoque/listar', {});
-        // ... sua lógica para tratar a resposta da API de estoque ...
-        setSelect(response.data.produtos || []);
-        setEstoque(response.data.estoque || []);
+        const response = await api.post('/produtos/listar')
+
+        setListarProdutos(response.data || [])
+
+
       } catch (error) {
-        console.error("Falha ao buscar dados do estoque:", error);
+        console.error("Falha ao buscar dados do produto:", error);
         toast.error("Não foi possível carregar os materiais.");
-      } finally {
-        setIsLoading(false);
       }
-    };
-    selectMateriais();
-  }, []); // Roda apenas uma vez
+    }
+    selectProdutos()
+  }, [])
+
+  // useEffect(() => {
+  //   const selectMateriais = async () => {
+  //     setIsLoading(true);
+  //     try {
+  //       const response = await api.post('/estoque/listar', {});
+
+  //       setEstoque(response.data.estoque || []);
+  //     } catch (error) {
+  //       console.error("Falha ao buscar dados do estoque:", error);
+  //       toast.error("Não foi possível carregar os materiais.");
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   selectMateriais();
+  // }, []);
 
   useEffect(() => {
 
@@ -402,9 +463,159 @@ const useActionsNovoResgistro = () => {
       editarRegistro()
     } else {
       adicionarNovoRegistro()
-      
+
     }
   }
+
+  const handleSelecionarProduto = (descricaoSelecionada: string) => {
+
+    const produtoCompleto = listarProdutos.find(
+      (p) => p.descricao === descricaoSelecionada
+
+    )
+
+    if (produtoCompleto) {
+      setSelecionarProduto(produtoCompleto)
+    }
+
+  }
+
+  const handleAdicionarProdutoNaLista = () => {
+
+    console.log('1. Tentando adicionar produto. O produto selecionado é:', selecionarProduto);
+
+    if (!selecionarProduto) {
+      toast.info('Por favor, selecione um produto para adicionar.')
+      return
+    }
+
+
+    const produtoExiste = produtosAdicionados.some(
+      produto => produto.id_produto === selecionarProduto.id_produto
+    )
+
+    if (produtoExiste) {
+      toast.warning('Este produto já foi adicionado.')
+      return
+    }
+    console.log('3. Tudo certo! Atualizando o estado da lista de produtos adicionados...');
+    setProdutosAdicionados(listaAnterior => {
+
+
+      const novaLista = [...listaAnterior, selecionarProduto]
+      console.log('4. Nova lista que será salva no estado:', novaLista);
+      return novaLista
+    })
+
+    setSelecionarProduto(null)
+  }
+
+  const handleConfirmarSelecaoDependente = () => {
+    // 1. Pega os índices das linhas selecionadas
+    const indicesSelecionados = Object.keys(rowSelection).map(Number);
+
+    // 2. Verifica se APENAS UM foi selecionado
+    if (indicesSelecionados.length === 1 && dadosassociado?.dependentes) {
+      const indice = indicesSelecionados[0];
+      const dependentesVisiveis = dadosassociado.dependentes.filter(d => !d.excluido);
+      const dependenteEscolhido = dependentesVisiveis[indice];
+
+      // 3. Se tivermos um dependente, chame a função do seu hook principal
+      if (dependenteEscolhido) {
+
+        const dataNascimento = dependenteEscolhido.data_nasc
+          ? new Date(dependenteEscolhido.data_nasc)
+          : undefined;
+
+        const dadosParaSetar = {
+          nome: dependenteEscolhido.nome,
+          data: dataNascimento,
+          id_dependente: dependenteEscolhido.id_dependente,
+        };
+
+
+        console.log('--- PASSO A: DEPENDENTE SELECIONADO ---');
+        console.log('Estou setando o seguinte ID de dependente:', dadosParaSetar.id_dependente);
+
+
+
+        setarListaConv(dadosParaSetar)
+
+        setDependenteSelecionado(true);
+        setIsModalOpen(false);
+      }
+    } else {
+      // 5. Mostra um aviso se nenhum ou mais de um for selecionado
+      toast.info("Por favor, selecione apenas um dependente.");
+    }
+  };
+
+  const handleCheckboxTitularChange = (checked: boolean) => {
+    const isChecked = !!checked;
+    setUsarDadosTitular(checked); // Atualiza o estado do checkbox
+
+    if (isChecked) {
+      // Se o checkbox foi MARCADO
+
+      // Validação: só preenche se houver um associado carregado
+      if (!dadosassociado?.id_global) {
+        toast.error("Nenhum associado selecionado. Por favor, busque um primeiro.");
+        setUsarDadosTitular(false); // Desmarca o checkbox se não houver dados
+        return;
+      }
+
+      setDependenteSelecionado(false);
+
+      // Preenche o formulário usando `setarListaConv` com os dados de `dadosassociado`
+      toast.info("Preenchendo formulário com dados do titular...");
+      setarListaConv({
+        nome: dadosassociado.nome,
+        data: new Date(dadosassociado.data_nasc ?? ''), // Converta a data se necessário
+        cpf_cnpj: dadosassociado.cpfcnpj,
+        logradouro: dadosassociado.endereco,
+        numero: dadosassociado.numero,
+        bairro: dadosassociado.bairro,
+        complemento: dadosassociado.guia_rua, // ou o campo correspondente
+        cep: dadosassociado.cep,
+        cidade: dadosassociado.cidade,
+        uf: dadosassociado.uf,
+        id_dependente: null,
+      });
+
+    } else {
+      // Se o checkbox foi DESMARCADO, limpa o formulário
+      toast.info("Limpando formulário.");
+      setarListaConv({
+        nome: "",
+        data: undefined,
+        cpf_cnpj: "",
+        logradouro: "",
+        numero: undefined,
+        bairro: "",
+        complemento: "",
+        cep: "",
+        cidade: "",
+        uf: "",
+        id_dependente: null,
+      });
+    }
+  };
+
+    useEffect(() => {
+  
+      if (isEditMode && listaConv.id_conv) {
+        if (listaConv.id_dependente !== null) {
+          setDependenteSelecionado(true)
+          setUsarDadosTitular(false)
+        } else {
+          setDependenteSelecionado(false)
+          setUsarDadosTitular(true)
+        }
+      }
+    }, [listaConv, isEditMode])
+
+
+
 
   return {
 
@@ -415,16 +626,30 @@ const useActionsNovoResgistro = () => {
     data,
     listaConv,
     titular,
-    selectProdutos,
+    listarProdutos,
     componentRefComprovante,
     componentRefContrato,
     isLoading,
+    produtosAdicionados,
+    selecionarProduto,
+    
 
     setTitular,
     closeModa,
     setMaterial,
     setIndex,
     handleSalvar,
+    handleSelecionarProduto,
+    handleAdicionarProdutoNaLista,
+    usarDadosTitular,
+    isDependenteSelecionado,
+    isModalOpen,
+    rowSelection,
+    handleCheckboxTitularChange,
+    handleConfirmarSelecaoDependente,
+    setIsModalOpen,
+    setDependenteSelecionado,
+    setRowSelection,
 
     setarListaConv,
     imprimirComprovante,

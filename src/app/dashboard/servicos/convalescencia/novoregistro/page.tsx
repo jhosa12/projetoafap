@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import FormularioConv from "../../_components/convalescentes/formulario-conv";
 import { X } from 'lucide-react';
+import { useParams } from "next/navigation";
 
 
 export default function ConvalescenciaNovo() {
@@ -24,15 +25,6 @@ export default function ConvalescenciaNovo() {
     const [open, setOpen] = React.useState(false)
     const [date, setDate] = React.useState<Date | undefined>(undefined)
 
-    const {
-        infoEmpresa,
-        dadosassociado,
-        carregarDados,
-        limparDados
-
-    } = useContext(AuthContext);
-
-
     const [modal, setModal] = useState<{ [key: string]: boolean }>({
         busca: false,
         altPlano: false,
@@ -40,24 +32,71 @@ export default function ConvalescenciaNovo() {
         impressao: false,
     });
 
+    const params = useParams()
+    const id = params.id as string | undefined;
+    const isEditMode = !!id;
+
 
     const {
+
 
         dataInputs,
         estoque,
         listaMaterial,
         indexProd,
+        data,
+        listaConv,
+        titular,
+        listarProdutos,
+        componentRefComprovante,
+        componentRefContrato,
         isLoading,
+        produtosAdicionados,
+        selecionarProduto,
 
+        setTitular,
+        closeModa,
+        setMaterial,
+        setIndex,
+        handleSalvar,
+        handleSelecionarProduto,
+        handleAdicionarProdutoNaLista,
+        usarDadosTitular,
+        isDependenteSelecionado,
+        isModalOpen,
+        rowSelection,
+        handleCheckboxTitularChange,
+        handleConfirmarSelecaoDependente,
+        setIsModalOpen,
+        setDependenteSelecionado,
+        setRowSelection,
+
+        setarListaConv,
+        imprimirComprovante,
+        imprimirContrato,
         setInputs,
+        adicionarProduto,
         receberDev,
+        editarRegistro,
+        adicionarNovoRegistro,
 
 
     } = useActionsNovoResgistro()
 
+    const {
+
+        infoEmpresa,
+        ufs,
+        dadosassociado,
+        carregarDados,
+        limparDados,
 
 
-  
+    } = useContext(AuthContext);
+
+
+
+
 
 
     const filtrosDaPagina = [
@@ -66,7 +105,7 @@ export default function ConvalescenciaNovo() {
     ];
 
     useEffect(() => {
-        
+
         return () => {
 
             limparDados()
@@ -260,7 +299,27 @@ export default function ConvalescenciaNovo() {
                 </div>
 
                 {/* Menu */}
-                <FormularioConv />
+                <FormularioConv
+                    listaConv={listaConv}
+                    produtosAdicionados={produtosAdicionados}
+                    listarProdutos={listarProdutos}
+                    selecionarProduto={selecionarProduto}
+                    dadosassociado={dadosassociado}
+                    ufs={ufs}
+                    isEditMode={isEditMode}
+                    usarDadosTitular={usarDadosTitular}
+                    isDependenteSelecionado={isDependenteSelecionado}
+                    isModalOpen={isModalOpen}
+                    rowSelection={rowSelection}
+                    setarListaConv={setarListaConv}
+                    handleAdicionarProdutoNaLista={handleAdicionarProdutoNaLista} // Nome original
+                    handleSelecionarProduto={handleSelecionarProduto} // Nome original
+                    handleCheckboxTitularChange={handleCheckboxTitularChange}
+                    handleConfirmarSelecaoDependente={handleConfirmarSelecaoDependente}
+                    setIsModalOpen={setIsModalOpen}
+                    setDependenteSelecionado={setDependenteSelecionado}
+                    setRowSelection={setRowSelection}
+                />
             </div >
         </>
     )

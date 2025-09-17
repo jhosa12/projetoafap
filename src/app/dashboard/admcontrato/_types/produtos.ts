@@ -1,4 +1,4 @@
-export type SelectProps = {
+export type ProdutosProps = {
 
     id_produto: number,
     descricao: string,
