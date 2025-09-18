@@ -53,6 +53,8 @@ export default function ConvalescenciaNovo() {
         isLoading,
         produtosAdicionados,
         selecionarProduto,
+        setSelecionarProduto,
+        setUsarDadosTitular,
 
         setTitular,
         closeModa,
@@ -198,35 +200,6 @@ export default function ConvalescenciaNovo() {
                 </div>
             </div>)}
 
-
-            {/*visible && <ModalBusca visible={visible} setVisible={()=>setVisible(false)} />*/}
-            {/* {modalDependente && dependente && (
-                <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-
-                    <div className="flex items-center justify-center p-2 w-full h-full bg-opacity-10 bg-gray-50 ">
-
-                        <div className="fixed flex flex-col p-4 max-h-96  rounded-lg shadow bg-gray-700">
-                            <div className="inline-flex border-b-[1px] text-white">
-                                <h1>SELECIONE O DEPENDENTE</h1>
-                                <button type="button" onClick={() => setModalDependente(false)} className="text-gray-400 bg-transparent rounded-lg text-sm h-4 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                                    <IoIosClose size={30} />
-                                </button>
-                            </div>
-                            <ul className="flex flex-col pt-2 overflow-y-auto text-gray-300 gap-2 ">
-                                {dadosAssociado?.dependentes.map((item, index) => {
-                                    return (
-                                        item.excluido !== true && <li onClick={() => { setarListaConv({ nome: item.nome, data: item.data_nasc, id_dependente: item.id_dependente }); setModalDependente(false) }} className="flex cursor-pointer hover:bg-gray-700 bg-gray-600 p-1 pl-2 pr-2 rounded-lg ">
-                                            {item.nome}
-                                        </li>
-                                    )
-
-                                })}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            )} */}
-
             <div className="flex flex-col w-full pl-10 pr-10 pt-4">
                 <div className="flex flex-row p-2 gap-4 items-center">
                     <h1 className="w-full justify-between scroll-m-20 text-gray-800 pb-2 
@@ -296,6 +269,10 @@ export default function ConvalescenciaNovo() {
 
                     </div>
 
+                    <Button onClick={handleSalvar}>
+                        {isEditMode ? 'Salvar Alterações' : 'Criar Registro'}
+                    </Button>
+
                 </div>
 
                 {/* Menu */}
@@ -303,6 +280,8 @@ export default function ConvalescenciaNovo() {
                     listaConv={listaConv}
                     produtosAdicionados={produtosAdicionados}
                     listarProdutos={listarProdutos}
+                    setSelecionarProduto={setSelecionarProduto}
+                    setUsarDadosTitular={setUsarDadosTitular}
                     selecionarProduto={selecionarProduto}
                     dadosassociado={dadosassociado}
                     ufs={ufs}

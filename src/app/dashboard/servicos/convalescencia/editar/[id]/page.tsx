@@ -30,6 +30,7 @@ export default function EditarConv() {
         isLoading,
         produtosAdicionados,
         selecionarProduto,
+        setSelecionarProduto,
 
         setTitular,
         closeModa,
@@ -90,16 +91,17 @@ export default function EditarConv() {
                     </div>
 
                     <FormularioConv
-
                         listaConv={listaConv}
                         produtosAdicionados={produtosAdicionados}
                         listarProdutos={listarProdutos}
                         selecionarProduto={selecionarProduto}
+                        setSelecionarProduto={setSelecionarProduto}
                         dadosassociado={dadosassociado}
                         ufs={ufs}
+                        setUsarDadosTitular={setUsarDadosTitular}
                         isEditMode={isEditMode}
                         usarDadosTitular={usarDadosTitular}
-                        isDependenteSelecionado={isDependenteSelecionado} 
+                        isDependenteSelecionado={isDependenteSelecionado}
                         isModalOpen={isModalOpen}
                         rowSelection={rowSelection}
                         setarListaConv={setarListaConv}

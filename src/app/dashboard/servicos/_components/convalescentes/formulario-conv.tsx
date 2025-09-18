@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import "react-datepicker/dist/react-datepicker.css";
 import { TbAlertTriangle, TbWheelchair } from "react-icons/tb";
 import { toast } from "sonner";
 import useActionsNovoResgistro from "../../_hooks/useActionsNovoRegistro";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, ChevronDownIcon, FileText, Search, Shield, User } from "lucide-react";
+import { AlertTriangle, ChevronDownIcon, FileText, Search, Shield, Trash, User } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -34,6 +34,17 @@ import {
   SelectValue,
   SelectGroup
 } from "@/components/ui/select"
+
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { Checkbox } from "@/components/ui/checkbox";
 import { RowSelectionState } from "@tanstack/react-table";
 
@@ -58,6 +69,7 @@ import { UfProps } from "@/types/ufs";
 import { useParams, useRouter } from "next/navigation";
 import { truncate } from "fs/promises";
 import { ProdutosProps } from "@/app/dashboard/admcontrato/_types/produtos";
+import { Separator } from "@/components/ui/separator";
 
 interface FormularioConvProps {
 
@@ -70,7 +82,7 @@ interface FormularioConvProps {
   ufs: UfProps[];
   isEditMode: boolean;
   usarDadosTitular: boolean;
-  isDependenteSelecionado: boolean;
+  isDependenteSelecionado?: boolean;
   isModalOpen: boolean;
   rowSelection: RowSelectionState;
 
@@ -84,6 +96,7 @@ interface FormularioConvProps {
   setDependenteSelecionado: (isSelected: boolean) => void;
   setRowSelection: React.Dispatch<React.SetStateAction<RowSelectionState>>;
   setUsarDadosTitular: (value: boolean) => void;
+  setSelecionarProduto: React.Dispatch<React.SetStateAction<ProdutosProps | null>>;
 
 }
 
@@ -94,6 +107,7 @@ export default function FormularioConv({
   produtosAdicionados,
   listarProdutos,
   selecionarProduto,
+  setSelecionarProduto,
   dadosassociado,
   ufs,
   isEditMode,
@@ -116,7 +130,12 @@ export default function FormularioConv({
   const [open, setOpen] = React.useState(false)
   const [date, setDate] = React.useState<Date | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(true);
- 
+  const quantidadeInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
+
   const dependentesVisiveis = React.useMemo(
     () => dadosassociado?.dependentes?.filter((d: Dependente) => d.excluido !== true) || [],
     [dadosassociado]
@@ -128,6 +147,21 @@ export default function FormularioConv({
     [setarListaConv, setModalDependente]
 
   )
+
+
+  useEffect(() => {
+
+    if (isEditMode && listaConv.id_conv) {
+      if (listaConv.id_dependente !== null) {
+        setDependenteSelecionado(true)
+        setUsarDadosTitular(false)
+      } else {
+        setDependenteSelecionado(false)
+        setUsarDadosTitular(true)
+      }
+    }
+  }, [listaConv, isEditMode])
+
 
 
 
@@ -213,7 +247,7 @@ export default function FormularioConv({
               <Label htmlFor="tabs-demo-name">Nome do Usuário</Label>
               <Input
                 id="tabs-demo-name"
-                value={listaConv.nome}
+                value={listaConv.nome ?? ''}
                 onChange={e => setarListaConv({ nome: e.target.value })}
               />
             </div>
@@ -255,7 +289,7 @@ export default function FormularioConv({
               <Label htmlFor="tabs-demo-name">CPF</Label>
               <Input
                 id="tabs-demo-name"
-                value={listaConv.cpf_cnpj}
+                value={listaConv.cpf_cnpj ?? ''}
                 onChange={e => setarListaConv({ cpf_cnpj: e.target.value })}
               />
             </div>
@@ -264,7 +298,7 @@ export default function FormularioConv({
               <Label htmlFor="tabs-demo-name">Endereço</Label>
               <Input
                 id="tabs-demo-name"
-                value={listaConv.logradouro}
+                value={listaConv.logradouro ?? ''}
                 onChange={e => setarListaConv({ logradouro: e.target.value })}
               />
             </div>
@@ -298,7 +332,7 @@ export default function FormularioConv({
                 <Label htmlFor="tabs-demo-name">CEP</Label>
                 <Input
                   id="tabs-demo-name"
-                  value={listaConv.cep}
+                  value={listaConv.cep ?? ''}
                   onChange={e => setarListaConv({ cep: e.target.value })}
                 />
               </div>
@@ -308,7 +342,7 @@ export default function FormularioConv({
               <Label htmlFor="tabs-demo-name">Cidade</Label>
               <Input
                 id="tabs-demo-name"
-                value={listaConv.cidade}
+                value={listaConv.cidade ?? ''}
                 onChange={e => setarListaConv({ cidade: e.target.value })}
               />
             </div>
@@ -502,51 +536,102 @@ export default function FormularioConv({
             </CardTitle>
 
 
-            <div className="grid gap-2 lg:col-span-2">
+            <div className="col-span-full justify-between">
+              <div className="grid grid-cols-2 gap-4 w-full">
+                <Table>
+                  <TableCaption>Lista de Produtos Adicionados</TableCaption>
 
-              <Label>Lista de Produtos Adicionados</Label>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Produtos</TableHead>
+                      <TableHead>Quantidade</TableHead>
+                      <TableHead>Ações</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {produtosAdicionados.map(produto => (
+                      <TableRow key={produto.id_produto}>
+                        <TableCell>{produto.descricao}</TableCell>
+                        <TableCell>{produto.quantidade}</TableCell>
+                        <TableCell>
+                          <button data-tooltip-id="toolId" data-tooltip-content={'Excluir'} onClick={() => { setExcluir(true); setarListaConv({ id_conv: item.id_conv }) }} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
+                            <Trash />
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
 
-              <ul>
-                {produtosAdicionados.map(produto => (
-                  <li key={produto.id_produto}>
-                    {produto.descricao}
-                  </li>
-                ))}
-              </ul>
 
-              <Label htmlFor="produto-select">Produto</Label>
-              <Select
-                value={selecionarProduto ? selecionarProduto.descricao : ""}
-                onValueChange={handleSelecionarProduto}
-              >
-                <SelectTrigger id="produto-select">
-                  <SelectValue placeholder="Selecione um produto do estoque" />
-                </SelectTrigger>
-                <SelectContent>
-                  {listarProdutos && listarProdutos.length > 0 ? (
-                    listarProdutos.map((produto) => (
-                      <SelectItem
-                        key={produto.id_produto}
-                        value={produto.descricao}
+                <div className="flex flex-col justify-between gap-4">
+                  <div className="flex w-full items-end gap-4">
+                    <div className="flex-grow ">
+                      <Label htmlFor="produto-select">Adicione o Produto</Label>
+                      <Select
+                        value={selecionarProduto ? selecionarProduto.descricao : ""}
+                        onValueChange={handleSelecionarProduto}
                       >
-                        {produto.descricao}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <SelectItem value="loading" disabled>
-                      Carregando Produtos...
-                    </SelectItem>
+                        <SelectTrigger id="produto-select">
+                          <SelectValue placeholder="Selecione um produto do estoque" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {listarProdutos && listarProdutos.length > 0 ? (
+                            listarProdutos.map((produto) => (
+                              <SelectItem
+                                key={produto.id_produto}
+                                value={produto.descricao}
+                              >
+                                {produto.descricao}
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <SelectItem value="loading" disabled>
+                              Carregando Produtos...
+                            </SelectItem>
 
-                  )}
-                </SelectContent>
-              </Select>
-              <Button
-              onClick={handleAdicionarProdutoNaLista}
-              >
-                Adicionar Produto 
-              </Button>
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
+                    <div className="w-36 flex-shrink-0">
+                      <Label>Adicione a Quantidade</Label>
+                      <Input
+                        id="quantidade-produto"
+                        type="number"
+                        placeholder="Quantidade"
+                        value={selecionarProduto?.quantidade || 1}
+                        disabled={!selecionarProduto}
+                        onChange={e => {
 
+                          const novaQuantidade = Number(e.target.value)
+
+                          setSelecionarProduto(produtoAtual => {
+                            if (!produtoAtual) return null
+
+                            return {
+                              ...produtoAtual,
+                              quantidade: isNaN(novaQuantidade) ? 0 : novaQuantidade
+                            }
+                          })
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 justify-end">
+                    <Button
+                      className="w-32"
+                      onClick={handleAdicionarProdutoNaLista}
+                    >
+                      Adicionar Produto
+                    </Button>
+                  </div>
+
+                </div>
+
+              </div>
             </div>
 
             {/* ------------------- Nova Seção ---------------------- */}
@@ -559,7 +644,7 @@ export default function FormularioConv({
               <Label htmlFor="tabs-demo-name">Endereço</Label>
               <Input
                 id="tabs-demo-name"
-                value={listaConv.logradouro_r}
+                value={listaConv.logradouro_r || ''}
                 onChange={e => setarListaConv({ logradouro_r: e.target.value })}
               />
             </div>
@@ -584,7 +669,7 @@ export default function FormularioConv({
               <Label htmlFor="tabs-demo-name">Cidade</Label>
               <Input
                 id="tabs-demo-name"
-                value={listaConv.cidade_r}
+                value={listaConv.cidade_r || ''}
                 onChange={e => setarListaConv({ cidade_r: e.target.value })}
               />
             </div>

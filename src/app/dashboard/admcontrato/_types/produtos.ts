@@ -1,6 +1,8 @@
 export type ProdutosProps = {
 
     id_produto: number,
+    id_conv: number,
+    id_estoque: number,
     descricao: string,
     unidade: string,
     valor_custo: number,

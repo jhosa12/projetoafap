@@ -1,3 +1,4 @@
+
 import { Navigation } from 'lucide-react';
 import DocumentTemplateComprovante from "@/Documents/convalescenca/comprovante/DocumentTemplate";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
@@ -53,6 +54,8 @@ interface ActionsProps {
   setIsModalOpen: (value: boolean) => void;
   setDependenteSelecionado: (value: boolean) => void;
   setRowSelection: (value: boolean) => void;
+  setUsarDadosTitular: (value: boolean) => void;
+  setSelecionarProduto: React.Dispatch<React.SetStateAction<ProdutosProps | null>>;
 
   // --- Funções de Ação ---
   setarListaConv: (fields: Partial<ConvProps>) => void;
@@ -113,8 +116,8 @@ const useActionsNovoResgistro = () => {
   });
 
 
-  const setInputs = (fields: Partial<ListaMaterial>) => {
-    setDataInputs((prev: Partial<ListaMaterial>) => {
+  const setInputs = (fields: Partial<ProdutosProps>) => {
+    setDataInputs((prev: Partial<ProdutosProps>) => {
       if (prev) {
         return { ...prev, ...fields }
       }
@@ -229,6 +232,7 @@ const useActionsNovoResgistro = () => {
     const produtosParaEnviar = produtosAdicionados.map(produto => ({
       id_produto: produto.id_produto,
       descricao: produto.descricao,
+      quantidade: produto.quantidade
     }))
 
     toast.promise(
@@ -236,7 +240,7 @@ const useActionsNovoResgistro = () => {
 
       api.put(`/convalescencia/editar/${id}`, {
 
-        //id_conv: id,
+        //id_conv: listaConv.id_conv,
         id_contrato: listaConv.id_contrato_global,
         id_associado: listaConv.id_associado,
         id_contrato_st: listaConv.id_contrato_st,
@@ -274,12 +278,7 @@ const useActionsNovoResgistro = () => {
       {
         error: 'Erro ao atualizar dados',
         loading: 'Atualizando Dados',
-        success: (response) => {
-
-          setarListaConv({ ...response.data })
-          setMaterial(response.data.convalescenca_prod)
-          return 'Dados Atualizados com Sucesso'
-        }
+        success: 'Dados registrados com sucesso!'
       }
     )
   }
@@ -310,9 +309,11 @@ const useActionsNovoResgistro = () => {
     const produtosParaEnviar = produtosAdicionados.map(produto => ({
       id_produto: produto.id_produto,
       descricao: produto.descricao,
+      quantidade: produto.quantidade
     }))
 
     const payload = {
+
       id_contrato: dadosassociado?.contrato?.id_contrato,
       id_associado: dadosassociado?.id_associado,
       id_dependente: listaConv?.id_dependente,
@@ -345,13 +346,14 @@ const useActionsNovoResgistro = () => {
       hora_inc: new Date().toISOString(), // Hora de inclusão gerada no momento do salvamento
       usuario: usuario?.nome,
       obs: listaConv.obs,
-      convalecenca_prod: produtosParaEnviar
+      convalescenca_prod: produtosParaEnviar
 
     };
 
     const promise = api.post('/convalescencia/novo', payload);
 
 
+    console.log('Payload dados:', payload)
     toast.promise(promise, {
       loading: 'Salvando dados...',
       success: 'Dados registrados com sucesso!',
@@ -366,6 +368,16 @@ const useActionsNovoResgistro = () => {
     }
   }
 
+  async function deletarProduto() {
+
+    toast.promise(
+      api.delete("/produto/deletar", {
+        data: {
+          
+        }
+      })
+    )
+  }
   useEffect(() => {
     if (titular) {
 
@@ -410,22 +422,7 @@ const useActionsNovoResgistro = () => {
     selectProdutos()
   }, [])
 
-  // useEffect(() => {
-  //   const selectMateriais = async () => {
-  //     setIsLoading(true);
-  //     try {
-  //       const response = await api.post('/estoque/listar', {});
 
-  //       setEstoque(response.data.estoque || []);
-  //     } catch (error) {
-  //       console.error("Falha ao buscar dados do estoque:", error);
-  //       toast.error("Não foi possível carregar os materiais.");
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-  //   selectMateriais();
-  // }, []);
 
   useEffect(() => {
 
@@ -436,16 +433,16 @@ const useActionsNovoResgistro = () => {
 
           const response = await api.get(`/convalescencia/${id}`);
 
-          // Usa sua função existente para preencher o estado do formulário
+          console.log('DADOS COMPLETOS RECEBIDOS DA API:', response.data);
+
           setarListaConv(response.data);
-          // Também preenche a lista de materiais/produtos
-          setMaterial(response.data.convalescenca_prod || []);
+
+          setProdutosAdicionados(response.data.convalescenca_prod || []);
 
         } catch (error) {
           console.error("Erro ao buscar dados para edição:", error);
           toast.error("Falha ao carregar os dados do registro.");
-          // Opcional: redirecionar para a lista se o ID for inválido
-          // router.push('/dashboard/servicos/convalescencia');
+
         } finally {
           setIsLoading(false);
         }
@@ -456,7 +453,7 @@ const useActionsNovoResgistro = () => {
       setarListaConv({ usuario: usuario?.nome, status: "ABERTO" });
       setIsLoading(false);
     }
-  }, [id, isEditMode, setarListaConv, usuario?.nome]);
+  }, [id, isEditMode, setarListaConv, setProdutosAdicionados, usuario?.nome]);
 
   const handleSalvar = () => {
     if (isEditMode) {
@@ -470,19 +467,23 @@ const useActionsNovoResgistro = () => {
   const handleSelecionarProduto = (descricaoSelecionada: string) => {
 
     const produtoCompleto = listarProdutos.find(
-      (p) => p.descricao === descricaoSelecionada
+      (p) => p.descricao === descricaoSelecionada,
 
     )
 
     if (produtoCompleto) {
-      setSelecionarProduto(produtoCompleto)
+      setSelecionarProduto({
+        ...produtoCompleto,
+        quantidade: 1,
+      }
+
+      )
     }
 
   }
 
   const handleAdicionarProdutoNaLista = () => {
 
-    console.log('1. Tentando adicionar produto. O produto selecionado é:', selecionarProduto);
 
     if (!selecionarProduto) {
       toast.info('Por favor, selecione um produto para adicionar.')
@@ -491,16 +492,16 @@ const useActionsNovoResgistro = () => {
 
 
     const produtoExiste = produtosAdicionados.some(
-      produto => produto.id_produto === selecionarProduto.id_produto
+      produto => produto.id_produto === selecionarProduto.id_produto,
+
     )
 
     if (produtoExiste) {
       toast.warning('Este produto já foi adicionado.')
       return
     }
-    console.log('3. Tudo certo! Atualizando o estado da lista de produtos adicionados...');
-    setProdutosAdicionados(listaAnterior => {
 
+    setProdutosAdicionados(listaAnterior => {
 
       const novaLista = [...listaAnterior, selecionarProduto]
       console.log('4. Nova lista que será salva no estado:', novaLista);
@@ -564,6 +565,7 @@ const useActionsNovoResgistro = () => {
         return;
       }
 
+
       setDependenteSelecionado(false);
 
       // Preenche o formulário usando `setarListaConv` com os dados de `dadosassociado`
@@ -580,6 +582,7 @@ const useActionsNovoResgistro = () => {
         cidade: dadosassociado.cidade,
         uf: dadosassociado.uf,
         id_dependente: null,
+
       });
 
     } else {
@@ -601,22 +604,6 @@ const useActionsNovoResgistro = () => {
     }
   };
 
-    useEffect(() => {
-  
-      if (isEditMode && listaConv.id_conv) {
-        if (listaConv.id_dependente !== null) {
-          setDependenteSelecionado(true)
-          setUsarDadosTitular(false)
-        } else {
-          setDependenteSelecionado(false)
-          setUsarDadosTitular(true)
-        }
-      }
-    }, [listaConv, isEditMode])
-
-
-
-
   return {
 
     dataInputs,
@@ -632,7 +619,9 @@ const useActionsNovoResgistro = () => {
     isLoading,
     produtosAdicionados,
     selecionarProduto,
-    
+    setUsarDadosTitular,
+    setSelecionarProduto,
+
 
     setTitular,
     closeModa,
