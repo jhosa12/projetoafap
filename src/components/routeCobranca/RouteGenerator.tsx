@@ -26,7 +26,7 @@ import {
 } from "../ui/dialog";
 import { api } from "@/lib/axios/apiClient";
 import { ConsultoresProps } from "@/types/consultores";
-import { RotaFilterProps } from "@/pages/dashboard/cobranca/rotas";
+import { RotaFilterProps } from "@/pages/dashboard/cobranca_t/rotas";
 
 export interface RouteFormData {
   districts: string[];

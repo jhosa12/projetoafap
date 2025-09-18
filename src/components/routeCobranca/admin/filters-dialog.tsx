@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DatePickerWithRange } from "@/components/dashboard/DatePickerWithRange"
 import { DateRange } from "react-day-picker"
 import { Controller, SubmitHandler, useForm, useFormContext } from "react-hook-form"
-import { RotaFilterProps } from "@/pages/dashboard/cobranca/rotas"
+import { RotaFilterProps } from "@/pages/dashboard/cobranca_t/rotas"
 
 interface FiltersDialogProps {
   open: boolean

@@ -1,12 +1,11 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Filter } from "lucide-react"
 import RouteGenerator from "../RouteGenerator"
 import { ConsultoresProps } from "@/types/consultores"
-import { RotaFilterProps } from "@/pages/dashboard/cobranca_t/rotas"
 import { useFormContext } from "react-hook-form"
+import { RotaFilterProps } from "../../_types/types"
 
 
 interface HeaderProps {

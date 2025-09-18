@@ -1,14 +1,12 @@
-'use client';
-
 import { Suspense, useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import { AuthContext } from "@/store/AuthContext";
 import { Tabs } from "flowbite-react";
 import { FaCalendarCheck } from "react-icons/fa";
+import { Cobranca } from "@/components/tabs/cobranca/cobranca/cobranca";
+import { Inadimplencia } from "@/components/tabs/cobranca/indimplencia/indimplencia";
 import { FaCalendarDays } from "react-icons/fa6";
 import { api } from "@/lib/axios/apiClient";
-import { Cobranca } from "../../../components/cobranca_new/_components/cobranca/cobranca/cobranca";
-import { Inadimplencia } from "../../../components/cobranca_new/_components/cobranca/indimplencia/indimplencia";
 
 export default function CobrancaScreen() {
   const [arrayBairros, setArrayBairros] = useState<
