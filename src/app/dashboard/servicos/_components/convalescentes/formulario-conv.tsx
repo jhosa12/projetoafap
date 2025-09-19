@@ -97,6 +97,7 @@ interface FormularioConvProps {
   setRowSelection: React.Dispatch<React.SetStateAction<RowSelectionState>>;
   setUsarDadosTitular: (value: boolean) => void;
   setSelecionarProduto: React.Dispatch<React.SetStateAction<ProdutosProps | null>>;
+  deletarProdutoConv:(idDeletarProduto: number) => void
 
 }
 
@@ -123,7 +124,8 @@ export default function FormularioConv({
   handleConfirmarSelecaoDependente,
   setIsModalOpen,
   setDependenteSelecionado,
-  setRowSelection
+  setRowSelection,
+  deletarProdutoConv
 }: FormularioConvProps) {
 
   const [modalDependente, setModalDependente] = useState(false);
@@ -554,7 +556,8 @@ export default function FormularioConv({
                         <TableCell>{produto.descricao}</TableCell>
                         <TableCell>{produto.quantidade}</TableCell>
                         <TableCell>
-                          <button data-tooltip-id="toolId" data-tooltip-content={'Excluir'} onClick={() => { setExcluir(true); setarListaConv({ id_conv: item.id_conv }) }} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
+                          <button data-tooltip-id="toolId" data-tooltip-content={'Excluir'}
+                            onClick={() => deletarProdutoConv(produto.id_produto)} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
                             <Trash />
                           </button>
                         </TableCell>

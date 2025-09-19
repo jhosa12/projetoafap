@@ -81,6 +81,7 @@ export default function ConvalescenciaNovo() {
         receberDev,
         editarRegistro,
         adicionarNovoRegistro,
+        deletarProdutoConv
 
 
     } = useActionsNovoResgistro()
@@ -298,6 +299,7 @@ export default function ConvalescenciaNovo() {
                     setIsModalOpen={setIsModalOpen}
                     setDependenteSelecionado={setDependenteSelecionado}
                     setRowSelection={setRowSelection}
+                    deletarProdutoConv={deletarProdutoConv}
                 />
             </div >
         </>

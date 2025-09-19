@@ -66,6 +66,7 @@ interface ActionsProps {
   receberDev: (status: string) => Promise<void>;
   editarRegistro: () => Promise<void>;
   adicionarNovoRegistro: () => Promise<void>;
+  deletarProdutoConv: (idDeletarProduto: number) => void
 
 }
 
@@ -368,16 +369,20 @@ const useActionsNovoResgistro = () => {
     }
   }
 
-  async function deletarProduto() {
+  async function deletarProdutoConv(idDeletarProduto: number) {
 
-    toast.promise(
-      api.delete("/produto/deletar", {
-        data: {
-          
-        }
-      })
+   
+    const novaLista = produtosAdicionados.filter(
+      (produto) => produto.id_produto !== idDeletarProduto
     )
+    
+    setProdutosAdicionados(novaLista)
+
+    toast.success("Produto removido da lista!");
+    
   }
+
+
   useEffect(() => {
     if (titular) {
 
@@ -621,6 +626,7 @@ const useActionsNovoResgistro = () => {
     selecionarProduto,
     setUsarDadosTitular,
     setSelecionarProduto,
+  
 
 
     setTitular,
@@ -648,6 +654,7 @@ const useActionsNovoResgistro = () => {
     receberDev,
     editarRegistro,
     adicionarNovoRegistro,
+    deletarProdutoConv
 
   }
 }

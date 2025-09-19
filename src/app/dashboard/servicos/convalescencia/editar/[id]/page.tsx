@@ -58,6 +58,7 @@ export default function EditarConv() {
         receberDev,
         editarRegistro,
         adicionarNovoRegistro,
+        deletarProdutoConv
 
 
     } = useActionsNovoResgistro()
@@ -112,6 +113,7 @@ export default function EditarConv() {
                         setIsModalOpen={setIsModalOpen}
                         setDependenteSelecionado={setDependenteSelecionado}
                         setRowSelection={setRowSelection}
+                        deletarProdutoConv={deletarProdutoConv}
 
                     />
                 </div>
