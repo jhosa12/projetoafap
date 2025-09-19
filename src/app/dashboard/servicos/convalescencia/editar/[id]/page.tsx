@@ -4,12 +4,13 @@ import React, { useContext, useState } from "react"
 import FormularioConv from "../../../_components/convalescentes/formulario-conv";
 import { Button } from "@/components/ui/button";
 import useActionsNovoResgistro from "../../../_hooks/useActionsNovoRegistro";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { AuthContext } from "@/store/AuthContext";
 
 
 export default function EditarConv() {
 
+    const router = useRouter()
     const params = useParams()
     const id = params.id as string | undefined;
     const isEditMode = !!id;

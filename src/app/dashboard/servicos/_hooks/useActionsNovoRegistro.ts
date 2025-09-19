@@ -15,8 +15,9 @@ import { ProdutosProps } from '../../admcontrato/_types/produtos';
 import { EstoqueNovoRegistroProps } from '../../estoque/types/estoque';
 import DocumentTemplateContrato from "@/Documents/convalescenca/contrato/DocumentTemplate";
 import { converterDataParaISO } from "@/utils/converterDataParaIso";
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { RowSelectionState } from '@tanstack/react-table';
+
 
 interface ActionsProps {
 
@@ -93,6 +94,7 @@ const useActionsNovoResgistro = () => {
 
   const [selecionarProduto, setSelecionarProduto] = useState<ProdutosProps | null>(null)
   const [produtosAdicionados, setProdutosAdicionados] = useState<ProdutosProps[]>([])
+  const router = useRouter()
 
   const setarListaConv = useCallback((fields: Partial<ConvProps>) => {
     setLista(prev => ({ ...prev, ...fields }));
@@ -461,12 +463,20 @@ const useActionsNovoResgistro = () => {
   }, [id, isEditMode, setarListaConv, setProdutosAdicionados, usuario?.nome]);
 
   const handleSalvar = () => {
-    if (isEditMode) {
-      editarRegistro()
-    } else {
-      adicionarNovoRegistro()
+   try {
+     if (isEditMode) {
+       editarRegistro()
+     } else {
+       adicionarNovoRegistro()
+     }
 
-    }
+     router.push('/dashboard/servicos/convalescencia/listagem')
+   } catch (error) {
+     
+     toast.error('A operação falhou!')
+    
+   }
+
   }
 
   const handleSelecionarProduto = (descricaoSelecionada: string) => {
