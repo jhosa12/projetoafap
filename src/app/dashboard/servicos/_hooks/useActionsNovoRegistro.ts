@@ -31,8 +31,6 @@ interface ActionsProps {
   listaConv: Partial<ConvProps>;
   titular: boolean;
   listarProdutos: Array<ProdutosProps>;
-  componentRefComprovante: React.RefObject<HTMLDivElement>;
-  componentRefContrato: React.RefObject<HTMLDivElement>;
   isLoading: boolean;
   produtosAdicionados: ProdutosProps[]
   selecionarProduto: ProdutosProps | null,
@@ -57,14 +55,12 @@ interface ActionsProps {
   setRowSelection: (value: boolean) => void;
   setUsarDadosTitular: (value: boolean) => void;
   setSelecionarProduto: React.Dispatch<React.SetStateAction<ProdutosProps | null>>;
+  setProdutosAdicionados: ProdutosProps[]
 
   // --- Funções de Ação ---
   setarListaConv: (fields: Partial<ConvProps>) => void;
-  imprimirComprovante: () => void;
-  imprimirContrato: () => void;
   setInputs: (fields: Partial<ListaMaterial>) => void;
   adicionarProduto: () => Promise<void>;
-  receberDev: (status: string) => Promise<void>;
   editarRegistro: () => Promise<void>;
   adicionarNovoRegistro: () => Promise<void>;
   deletarProdutoConv: (idDeletarProduto: number) => void
@@ -76,10 +72,7 @@ const useActionsNovoResgistro = () => {
   const [dataInputs, setDataInputs] = useState<Partial<ListaMaterial>>({})
   const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod: [] });
   const [listaMaterial, setMaterial] = useState<Array<Partial<ListaMaterial>>>([]);
-  const [indexProd, setIndex] = useState<number>(0);
   const [data, closeModa] = useState<Partial<DadosCadastroProps>>({});
-  const componentRefComprovante = useRef<HTMLDivElement>(null);
-  const componentRefContrato = useRef<HTMLDivElement>(null);
   const [componenteMounted, setMounted] = useState(false);
   const [listarProdutos, setListarProdutos] = useState<Array<ProdutosProps>>([]);
   const [estoque, setEstoque] = useState<Array<EstoqueNovoRegistroProps>>([])
@@ -91,7 +84,6 @@ const useActionsNovoResgistro = () => {
   const [usarDadosTitular, setUsarDadosTitular] = useState(false);
   const [isDependenteSelecionado, setDependenteSelecionado] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [selecionarProduto, setSelecionarProduto] = useState<ProdutosProps | null>(null)
   const [produtosAdicionados, setProdutosAdicionados] = useState<ProdutosProps[]>([])
   const router = useRouter()
@@ -104,19 +96,6 @@ const useActionsNovoResgistro = () => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
 
-
-  const imprimirComprovante = useReactToPrint({
-    contentRef: componentRefComprovante,
-    documentTitle: "Comprovante de Atendimento",
-    onAfterPrint: () => toast.success("Comprovante gerado com sucesso!"),
-  });
-
-  // --- Contrato ---
-  const imprimirContrato = useReactToPrint({
-    contentRef: componentRefContrato,
-    documentTitle: "Contrato de Convalescente",
-    onAfterPrint: () => toast.success("Contrato gerado com sucesso!"),
-  });
 
 
   const setInputs = (fields: Partial<ProdutosProps>) => {
@@ -169,41 +148,6 @@ const useActionsNovoResgistro = () => {
         }
       }
     )
-
-
-  }
-
-  async function receberDev(status: string) {
-
-    if (status === 'ABERTO') {
-      const novoArray = [...listaMaterial]
-      novoArray[indexProd].id_estoque = dataInputs.id_estoque
-      setMaterial(novoArray)
-    }
-
-    toast.promise(
-      api.put('/convalescencia/receber', {
-        id_conv_prod: listaMaterial[indexProd].id_conv_prod,
-        id_estoque: status === 'ABERTO' ? listaMaterial[indexProd].id_estoque : undefined,
-        status
-      }),
-      {
-        error: 'Erro ao Atualizar Dados',
-        loading: 'Atualizando Dados....',
-        success: (response) => {
-          const novoArray = [...listaMaterial]
-          novoArray[indexProd] = response.data
-          setMaterial(novoArray)
-
-          return 'Dados Atualizados com sucesso!'
-        }
-
-      }
-
-
-
-    )
-
 
 
   }
@@ -624,25 +568,22 @@ const useActionsNovoResgistro = () => {
     dataInputs,
     estoque,
     listaMaterial,
-    indexProd,
     data,
     listaConv,
     titular,
     listarProdutos,
-    componentRefComprovante,
-    componentRefContrato,
     isLoading,
     produtosAdicionados,
     selecionarProduto,
     setUsarDadosTitular,
     setSelecionarProduto,
+    setProdutosAdicionados,
   
 
 
     setTitular,
     closeModa,
     setMaterial,
-    setIndex,
     handleSalvar,
     handleSelecionarProduto,
     handleAdicionarProdutoNaLista,
@@ -657,11 +598,8 @@ const useActionsNovoResgistro = () => {
     setRowSelection,
 
     setarListaConv,
-    imprimirComprovante,
-    imprimirContrato,
     setInputs,
     adicionarProduto,
-    receberDev,
     editarRegistro,
     adicionarNovoRegistro,
     deletarProdutoConv

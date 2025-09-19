@@ -434,8 +434,7 @@ export default function FormularioConv({
                 <SelectContent>
                   <SelectItem value="ABERTO">Aberto</SelectItem>
                   <SelectItem value="PENDENTE">Pendente</SelectItem>
-                  <SelectItem value="FECHADO">Fechado</SelectItem>
-                  <SelectItem value="CANCELADO">Cancelado</SelectItem>
+                  <SelectItem value="ENTREGUE">Entregue</SelectItem>
                 </SelectContent>
               </Select>
             </div>

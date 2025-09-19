@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { ConvProps } from "../_types/convalescente"
 import { api } from "@/lib/axios/apiClient"
 import { toast } from "sonner"
+import { useReactToPrint } from "react-to-print"
 
 
 interface ActionsProps {
@@ -19,6 +20,8 @@ interface ActionsProps {
   arrayFiltro: Array<ConvProps>
   currentItems: Array<ConvProps>
   pageCount: number
+  componentRefComprovante: React.RefObject<HTMLDivElement>;
+  componentRefContrato: React.RefObject<HTMLDivElement>;
 
   // --- Funções para alterar o estado  ---
   setPendente: (value: boolean) => void
@@ -27,6 +30,7 @@ interface ActionsProps {
   setCriterio: (value: string) => void
   setInput: (value: string) => void
   setExcluir: (value: boolean) => void
+  setFiltro: Array<ConvProps>
 
   // --- Funções de Ação ---
   setarListaConv: (fields: Partial<ConvProps>) => void
@@ -34,6 +38,9 @@ interface ActionsProps {
   listarConv: () => Promise<void>
   deletarConv: () => Promise<void>
   receberDevolucao: (id_conv: number) => Promise<void>
+  imprimirComprovante: () => void;
+  imprimirContrato: () => void;
+  receberDev: (status: string) => Promise<void>;
 
 }
 
@@ -49,17 +56,26 @@ const useActionsListagem = () => {
   const [entregue, setEntregue] = useState(true)
   const [arrayFiltro, setFiltro] = useState<Array<ConvProps>>([])
   const [aberto, setAberto] = useState(true)
+  const componentRefComprovante = useRef<HTMLDivElement>(null);
+  const componentRefContrato = useRef<HTMLDivElement>(null);
 
   const setarListaConv = useCallback((fields: Partial<ConvProps>) => {
     setLista(prev => ({ ...prev, ...fields }));
   }, []);
 
-  // const handlePageClick = (selectdItem: { selected: number }) => {
-  //   setCurrentPage(selectdItem.selected)
-  // }
 
+  const imprimirComprovante = useReactToPrint({
+    contentRef: componentRefComprovante,
+    documentTitle: "Comprovante de Atendimento",
+    onAfterPrint: () => toast.success("Comprovante gerado com sucesso!"),
+  });
 
-  //const pageCount = Math.ceil(arrayFiltro.length / itemsPerPage);
+  // --- Contrato ---
+  const imprimirContrato = useReactToPrint({
+    contentRef: componentRefContrato,
+    documentTitle: "Contrato de Convalescente",
+    onAfterPrint: () => toast.success("Contrato gerado com sucesso!"),
+  });
 
 
   useEffect(() => {
@@ -147,40 +163,47 @@ const useActionsListagem = () => {
     listarConv()
   }
 
+
+
   useEffect(() => {
 
-    if (arrayConv.length > 0) {
-      let novoArray
-      if (pendente && entregue && aberto) {
-        setFiltro(arrayConv)
-      }
+    let dadosProcessados = arrayConv
 
-      else if (pendente && !aberto && !entregue) {
-        novoArray = arrayConv.filter(item => item.convalescenca_prod.some(dado => dado.status === 'PENDENTE'))
-      }
-      else if (aberto && !pendente && !entregue) {
-        novoArray = arrayConv.filter(item => item.convalescenca_prod.some(dado => dado.status === 'ABERTO'))
-      }
-      else if (entregue && !pendente && !aberto) {
-        novoArray = arrayConv.filter(item => item.convalescenca_prod.every(dado => dado.status === 'FECHADO'))
-      }
-      else if (pendente && aberto && !entregue) {
-        novoArray = arrayConv.filter(item => item.convalescenca_prod.some(dado => dado.status === 'PENDENTE' || dado.status === 'ABERTO'))
-      }
-      else if (pendente && entregue && !aberto) {
-        novoArray = arrayConv.filter(item => item.convalescenca_prod.some(dado => dado.status === 'PENDENTE' || dado.status === 'FECHADO'))
-      }
-      else if (aberto && entregue && !pendente) {
-        novoArray = arrayConv.filter(item => item.convalescenca_prod.some(dado => dado.status === 'FECHADO' || dado.status === 'ABERTO'))
-      }
+    if (input.trim() !== '') {
 
+      dadosProcessados = dadosProcessados.filter(item => {
 
-      novoArray && setFiltro(novoArray)
+        const termoBusca = input.toLowerCase()
 
+        if (criterio === 'Titular' && item.nome) {
+          return item.nome.toLowerCase().startsWith(termoBusca)
+        }
+
+        if (criterio === 'Contrato' && item.id_contrato) {
+          return String(item.id_contrato).startsWith(termoBusca)
+        }
+
+        if (criterio === 'Usuario' && item.usuario) {
+          return item.usuario.toLowerCase().startsWith(termoBusca)
+        }
+
+        return item.nome ? item.nome.toLowerCase().startsWith(termoBusca) : false
+      })
     }
 
+    if (pendente || aberto || entregue) {
+      dadosProcessados = dadosProcessados.filter(item => {
+        const statusDoItem = (item.status || '').trim().toUpperCase()
+        if (pendente && statusDoItem === 'PENDENTE') return true
+        if (aberto && statusDoItem === 'ABERTO') return true
+        if (entregue && statusDoItem === 'FECHADO') return true
+        return false
+      })
+    }
 
-  }, [pendente, entregue, aberto, arrayConv])
+    setFiltro(dadosProcessados);
+
+  }, [input, criterio, pendente, entregue, aberto, arrayConv]);
 
   return {
 
@@ -195,6 +218,8 @@ const useActionsListagem = () => {
     listaConv,
     excluir,
     arrayFiltro,
+    componentRefComprovante,
+    componentRefContrato,
 
 
     // --- Funções para alterar o estado  ---
@@ -204,12 +229,15 @@ const useActionsListagem = () => {
     setCriterio,
     setInput,
     setExcluir,
+    setFiltro,
 
     // --- Funções de Ação ---
     setarListaConv,
     listarConv,
     deletarConv,
-    receberDevolucao
+    receberDevolucao,
+    imprimirComprovante,
+    imprimirContrato
 
   }
 }

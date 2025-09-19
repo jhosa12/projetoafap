@@ -18,13 +18,6 @@ import { useParams } from "next/navigation";
 
 export default function ConvalescenciaNovo() {
 
-    const [modalDependente, setModalDependente] = useState(false);
-    const [modalComprovante, setComprovante] = useState(false);
-    const [modalContrato, setModalContrato] = useState(false)
-    const [visible, setVisible] = useState(false)
-    const [open, setOpen] = React.useState(false)
-    const [date, setDate] = React.useState<Date | undefined>(undefined)
-
     const [modal, setModal] = useState<{ [key: string]: boolean }>({
         busca: false,
         altPlano: false,
@@ -43,13 +36,10 @@ export default function ConvalescenciaNovo() {
         dataInputs,
         estoque,
         listaMaterial,
-        indexProd,
         data,
         listaConv,
         titular,
         listarProdutos,
-        componentRefComprovante,
-        componentRefContrato,
         isLoading,
         produtosAdicionados,
         selecionarProduto,
@@ -59,7 +49,6 @@ export default function ConvalescenciaNovo() {
         setTitular,
         closeModa,
         setMaterial,
-        setIndex,
         handleSalvar,
         handleSelecionarProduto,
         handleAdicionarProdutoNaLista,
@@ -74,11 +63,8 @@ export default function ConvalescenciaNovo() {
         setRowSelection,
 
         setarListaConv,
-        imprimirComprovante,
-        imprimirContrato,
         setInputs,
         adicionarProduto,
-        receberDev,
         editarRegistro,
         adicionarNovoRegistro,
         deletarProdutoConv
@@ -132,75 +118,7 @@ export default function ConvalescenciaNovo() {
                 />
             )}
 
-
-            {modalComprovante && (<div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                <div className="flex items-center justify-center p-2 w-full h-full">
-                    <div className="relative rounded-lg shadow bg-gray-800">
-                        <button type="button" onClick={() => setComprovante(!modalComprovante)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                            <button type="button" onClick={() => { }} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                                <IoIosClose size={30} />
-                            </button>
-                        </button>
-                        <div className="p-4 md:p-5 text-center">
-                            <div className="flex w-full justify-center items-center">
-                                <TbAlertTriangle className='text-gray-400' size={60} />
-                            </div>
-                            <h3 className="mb-5 text-lg font-normal  text-gray-400">Deseja Confirmar a devolução desse produto?</h3>
-                            <div className="flex flex-row gap-6 justify-center ">
-                                <button onClick={() => receberDev('FECHADO')} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2  focus:z-10 bg-green-700 text-gray-200 border-gray-500 hover:text-white hover:bg-green-600 focus:ring-gray-600">Sim, imprimir</button>
-
-                                <button onClick={() => setComprovante(false)} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2  focus:z-10 bg-red-700 text-gray-200 border-gray-500 hover:text-white hover:bg-red-600 focus:ring-gray-600">Não, cancelar</button>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>)}
-
-
-            {modalContrato && (<div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                <div className="flex items-center justify-center p-2 w-full h-full">
-                    <div className="relative rounded-lg shadow bg-gray-800">
-                        <button type="button" onClick={() => setModalContrato(!modalContrato)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                            <button type="button" onClick={() => { }} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                                <IoIosClose size={30} />
-                            </button>
-                        </button>
-                        <div className="p-4 md:p-5 text-center">
-                            <div className="flex w-full justify-center items-center">
-                                <TbAlertTriangle className='text-gray-400' size={60} />
-                            </div>
-                            <h3 className="mb-5 text-lg font-normal  text-gray-400">Deseja Confirmar a Entrega desse produto?</h3>
-                            <div className="my-2">
-                                <label className="block mb-1 text-sm  font-medium  text-white">Codigo do Produto</label>
-                                <select onChange={e => {
-
-                                    setInputs({ ...dataInputs, id_estoque: Number(e.target.value) })
-                                }}
-                                    className="block uppercase w-full pb-1 pt-1 pr-2 pl-2 sm:text-sm border  rounded-lg   bg-gray-700 border-gray-600 placeholder-gray-400 text-white " >
-                                    <option></option>
-                                    {
-                                        estoque.map((item, index) => {
-                                            return (
-                                                item.produto === listaMaterial[indexProd].descricao && <option key={index} value={item.id_estoque}>{item.codProd} - {item.estado}</option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                            </div>
-                            <div className="flex flex-row gap-6 justify-center ">
-                                <button onClick={() => receberDev('ABERTO')} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2  focus:z-10 bg-green-700 text-gray-200 border-gray-500 hover:text-white hover:bg-green-600 focus:ring-gray-600">Sim, imprimir</button>
-
-                                <button onClick={() => setModalContrato(false)} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2  focus:z-10 bg-red-700 text-gray-200 border-gray-500 hover:text-white hover:bg-red-600 focus:ring-gray-600">Não, cancelar</button>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>)}
-
+        
             <div className="flex flex-col w-full pl-10 pr-10 pt-4">
                 <div className="flex flex-row p-2 gap-4 items-center">
                     <h1 className="w-full justify-between scroll-m-20 text-gray-800 pb-2 
