@@ -14,7 +14,7 @@ export type ProdutosProps = {
     est_entradas: number,
     est_saidas: number,
     est_saldo: number,
-    situacao: string,
+    status: string,
     data_inc: Date,
     grupo: string,
     tipo: string,

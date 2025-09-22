@@ -70,7 +70,7 @@ const useActionsListagem = () => {
     onAfterPrint: () => toast.success("Comprovante gerado com sucesso!"),
   });
 
-  // --- Contrato ---
+
   const imprimirContrato = useReactToPrint({
     contentRef: componentRefContrato,
     documentTitle: "Contrato de Convalescente",
@@ -78,16 +78,6 @@ const useActionsListagem = () => {
   });
 
 
-  useEffect(() => {
-    try {
-
-      listarConv()
-
-    } catch (error) {
-
-
-    }
-  }, [])
 
   async function listarConv() {
 
@@ -140,13 +130,14 @@ const useActionsListagem = () => {
 
   }
 
-  async function receberDevolucao(id_conv: number) {
+  async function receberDevolucao(id_conv_prod: number | null) {
 
-    toast.promise(
+    await toast.promise(
       api.put("/convalescencia/receber",
         {
-          id_conv,
-          status: "FECHADO"
+          id_conv_prod,
+          status: "ENTREGUE",
+         
         }
       ),
       {
@@ -156,8 +147,6 @@ const useActionsListagem = () => {
       }
 
     )
-
-
 
     setInput('')
     listarConv()
@@ -196,7 +185,7 @@ const useActionsListagem = () => {
         const statusDoItem = (item.status || '').trim().toUpperCase()
         if (pendente && statusDoItem === 'PENDENTE') return true
         if (aberto && statusDoItem === 'ABERTO') return true
-        if (entregue && statusDoItem === 'FECHADO') return true
+        if (entregue && statusDoItem === 'ENTREGUE') return true
         return false
       })
     }

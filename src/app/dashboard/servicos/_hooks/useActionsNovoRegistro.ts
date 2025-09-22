@@ -1,6 +1,6 @@
 
 import { Navigation } from 'lucide-react';
-import DocumentTemplateComprovante from "@/Documents/convalescenca/comprovante/DocumentTemplate";
+import DocumentTemplateComprovante from "@/app/dashboard/servicos/_documents/convalescencia/comprovante/DocumentTemplate";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ConvProps } from "../_types/convalescente";
 import { toast } from "sonner";
@@ -13,7 +13,7 @@ import { useReactToPrint } from "react-to-print";
 import DocumentTemplate from '@/Documents/cobranca/DocumentTemplate';
 import { ProdutosProps } from '../../admcontrato/_types/produtos';
 import { EstoqueNovoRegistroProps } from '../../estoque/types/estoque';
-import DocumentTemplateContrato from "@/Documents/convalescenca/contrato/DocumentTemplate";
+import DocumentTemplateContrato from "@/app/dashboard/servicos/_documents/convalescencia/contrato/DocumentTemplate";
 import { converterDataParaISO } from "@/utils/converterDataParaIso";
 import { useParams, useRouter } from 'next/navigation'
 import { RowSelectionState } from '@tanstack/react-table';
@@ -179,7 +179,8 @@ const useActionsNovoResgistro = () => {
     const produtosParaEnviar = produtosAdicionados.map(produto => ({
       id_produto: produto.id_produto,
       descricao: produto.descricao,
-      quantidade: produto.quantidade
+      quantidade: produto.quantidade,
+      status: produto.status
     }))
 
     toast.promise(
@@ -256,7 +257,8 @@ const useActionsNovoResgistro = () => {
     const produtosParaEnviar = produtosAdicionados.map(produto => ({
       id_produto: produto.id_produto,
       descricao: produto.descricao,
-      quantidade: produto.quantidade
+      quantidade: produto.quantidade,
+      status: produto.status
     }))
 
     const payload = {
@@ -317,15 +319,15 @@ const useActionsNovoResgistro = () => {
 
   async function deletarProdutoConv(idDeletarProduto: number) {
 
-   
+
     const novaLista = produtosAdicionados.filter(
       (produto) => produto.id_produto !== idDeletarProduto
     )
-    
+
     setProdutosAdicionados(novaLista)
 
     toast.success("Produto removido da lista!");
-    
+
   }
 
 
@@ -407,19 +409,19 @@ const useActionsNovoResgistro = () => {
   }, [id, isEditMode, setarListaConv, setProdutosAdicionados, usuario?.nome]);
 
   const handleSalvar = () => {
-   try {
-     if (isEditMode) {
-       editarRegistro()
-     } else {
-       adicionarNovoRegistro()
-     }
+    try {
+      if (isEditMode) {
+        editarRegistro()
+      } else {
+        adicionarNovoRegistro()
+      }
 
-     router.push('/dashboard/servicos/convalescencia/listagem')
-   } catch (error) {
-     
-     toast.error('A operação falhou!')
-    
-   }
+      router.push('/dashboard/servicos/convalescencia/listagem')
+    } catch (error) {
+
+      toast.error('A operação falhou!')
+
+    }
 
   }
 
@@ -434,6 +436,7 @@ const useActionsNovoResgistro = () => {
       setSelecionarProduto({
         ...produtoCompleto,
         quantidade: 1,
+        status: 'ABERTO'
       }
 
       )
@@ -462,7 +465,10 @@ const useActionsNovoResgistro = () => {
 
     setProdutosAdicionados(listaAnterior => {
 
-      const novaLista = [...listaAnterior, selecionarProduto]
+      const novaLista = [
+        ...listaAnterior,
+        selecionarProduto,
+      ]
       console.log('4. Nova lista que será salva no estado:', novaLista);
       return novaLista
     })
@@ -578,7 +584,7 @@ const useActionsNovoResgistro = () => {
     setUsarDadosTitular,
     setSelecionarProduto,
     setProdutosAdicionados,
-  
+
 
 
     setTitular,

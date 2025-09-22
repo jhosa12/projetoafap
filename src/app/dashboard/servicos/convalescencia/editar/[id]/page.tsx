@@ -21,13 +21,11 @@ export default function EditarConv() {
         dataInputs,
         estoque,
         listaMaterial,
-        indexProd,
+
         data,
         listaConv,
         titular,
         listarProdutos,
-        componentRefComprovante,
-        componentRefContrato,
         isLoading,
         produtosAdicionados,
         selecionarProduto,
@@ -36,7 +34,6 @@ export default function EditarConv() {
         setTitular,
         closeModa,
         setMaterial,
-        setIndex,
         handleSalvar,
         handleSelecionarProduto,
         handleAdicionarProdutoNaLista,
@@ -52,13 +49,7 @@ export default function EditarConv() {
         setRowSelection,
 
         setarListaConv,
-        imprimirComprovante,
-        imprimirContrato,
-        setInputs,
-        adicionarProduto,
-        receberDev,
-        editarRegistro,
-        adicionarNovoRegistro,
+
         deletarProdutoConv
 
 

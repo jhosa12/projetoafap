@@ -1,3 +1,5 @@
+import { ImpressoesProps } from "../../admcontrato/_types/impressoes"
+
 export interface ConvProps {
   editar: boolean
   id_conv: number | null,
@@ -52,13 +54,14 @@ export interface ConvProps {
     retornavel: string,
     status: string
   }>>,
-  contrato: {
+  contrato: Partial<{
+    id_contrato_global: number | null,
     situacao: string,
     carencia: string,
+    impressoes: Array<ImpressoesProps>,
     associado: {
       nome: string
-    }
-
-  }
+    },
+  }>,
 
 }

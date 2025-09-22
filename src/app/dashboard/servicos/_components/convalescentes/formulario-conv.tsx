@@ -427,16 +427,11 @@ export default function FormularioConv({
 
             <div className="grid gap-2">
               <Label htmlFor="status-solicitacao">Status</Label>
-              <Select onValueChange={(value) => setarListaConv({ status: value })} value={listaConv.status}>
-                <SelectTrigger id="status-solicitacao">
-                  <SelectValue placeholder="Selecione o status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ABERTO">Aberto</SelectItem>
-                  <SelectItem value="PENDENTE">Pendente</SelectItem>
-                  <SelectItem value="ENTREGUE">Entregue</SelectItem>
-                </SelectContent>
-              </Select>
+              <Input
+                id="usuario"
+                value={listaConv.status ?? 'Sem Status'}
+                disabled
+              />
             </div>
 
             <div className="grid gap-2 lg:col-span-2">
@@ -546,6 +541,7 @@ export default function FormularioConv({
                     <TableRow>
                       <TableHead>Produtos</TableHead>
                       <TableHead>Quantidade</TableHead>
+                      <TableHead>Status</TableHead>
                       <TableHead>Ações</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -554,6 +550,7 @@ export default function FormularioConv({
                       <TableRow key={produto.id_produto}>
                         <TableCell>{produto.descricao}</TableCell>
                         <TableCell>{produto.quantidade}</TableCell>
+                        <TableCell>{produto.status}</TableCell>
                         <TableCell>
                           <button data-tooltip-id="toolId" data-tooltip-content={'Excluir'}
                             onClick={() => deletarProdutoConv(produto.id_produto)} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
