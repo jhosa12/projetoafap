@@ -6,16 +6,18 @@ import { useReactToPrint } from 'react-to-print';
 import DocumentTemplate from './DocumentTemplate';
 import { AuthContext } from '@/store/AuthContext';
 import { HiOutlineTicket } from "react-icons/hi";
+import { ProdutosProps } from '@/app/dashboard/admcontrato/_types/produtos';
 
 interface DadosProps {
   nome: string,
   condicao: string
-  material: string
+  material: ProdutosProps[]
 }
 
 export function PrintButton({
   nome,
-  material, condicao }: DadosProps) {
+  material,
+  condicao }: DadosProps) {
   const componentRef = useRef<HTMLDivElement>(null);
 
 
@@ -25,6 +27,7 @@ export function PrintButton({
     documentTitle: `Comprovante - ${nome}`, // É bom deixar o título dinâmico
     onAfterPrint: () => console.log('Impressão concluída ou cancelada.'),
   });
+  
   return (
     <div>
       <button onClick={handlePrint} type="button" className="relative inline-flex ">

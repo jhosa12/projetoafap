@@ -12,7 +12,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  RowSelectionState
+  RowSelectionState,
 } from "@tanstack/react-table"
 
 import {
@@ -40,7 +40,7 @@ interface DataTableProps<TData, TValue> {
   setRowSelection: React.Dispatch<React.SetStateAction<RowSelectionState>>
 }
 
-export function TabelaDependentesCompleta<TData, TValue>({
+export function TabelaCompleta<TData, TValue>({
   columns,
   data,
   rowSelection,
@@ -50,8 +50,7 @@ export function TabelaDependentesCompleta<TData, TValue>({
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-  //const [rowSelection, setRowSelection] = React.useState({})
-  
+  const [globalFilter, setGlobalFilter] = React.useState("")
 
   const table = useReactTable({
     data,
@@ -65,11 +64,14 @@ export function TabelaDependentesCompleta<TData, TValue>({
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     enableMultiRowSelection: false,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: "includesString",
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
+      globalFilter
     },
   })
 
@@ -77,10 +79,9 @@ export function TabelaDependentesCompleta<TData, TValue>({
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filtrar por nome..."
-          value={(table.getColumn("nome")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("nome")?.setFilterValue(event.target.value)
+          placeholder="Filtrar por ..."
+          value={globalFilter ?? ""}
+          onChange={(event) => setGlobalFilter(event.target.value)
           }
           className="max-w-sm"
         />
@@ -135,6 +136,8 @@ export function TabelaDependentesCompleta<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className="cursor-pointer"
+                  onClick={() => row.toggleSelected()}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

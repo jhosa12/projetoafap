@@ -9,9 +9,7 @@ import { Tooltip } from 'react-tooltip';
 import Link from "next/link";
 import useActionsListagem from "../../_hooks/useActionsListagem";
 import { format } from "date-fns";
-import { Search, Plus, FileText } from 'lucide-react';
-
-//Shadcn-ui
+import { Search, Plus, FileText, Printer, FileTextIcon, Receipt, ReceiptIcon, FileEditIcon, Trash } from 'lucide-react';
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label";
 import {
@@ -40,6 +38,15 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import {
+    ColumnDef,
+    flexRender,
+    getCoreRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    SortingState,
+    useReactTable,
+} from "@tanstack/react-table"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
 import useActionsNovoResgistro from "../../_hooks/useActionsNovoRegistro";
@@ -55,14 +62,21 @@ import { useActionsPrintConvalescenca } from "../../_hooks/useActionsPrintConval
 import { VerificarSituacao } from "@/app/dashboard/admcontrato/_utils/verificarSituacao";
 import DocumentTemplateComprovante from "../../_documents/convalescencia/comprovante/DocumentTemplate";
 import { AnyAaaaRecord } from "node:dns";
+import { TabelaCompleta } from "../../_components/convalescentes/data-table";
+import { ConvProps } from "../../_types/convalescente";
+import { columns } from "../../_components/convalescentes/colunas-listagem";
+
+
+
 
 export default function Convalescente() {
     const [modal, setModal] = useState(false)
     const [itemSelecionado, setItemSelecionado] = useState<any | null>(null);
     const [produtoSelecionadoId, setProdutoSelecionadoId] = useState<number | null>(null)
     const { usuario, infoEmpresa, dadosassociado } = useContext(AuthContext)
-    const [materialParaImpressao, setMaterialParaImpressao] = useState<any[]>([]); 
+    const [materialParaImpressao, setMaterialParaImpressao] = useState<any[]>([]);
 
+    const [rowSelection, setRowSelection] = useState({});
 
     const {
 
@@ -162,6 +176,25 @@ export default function Convalescente() {
         }
     }
 
+    const linhaSelecionada: ConvProps | null = React.useMemo(() => {
+        const indicesSelecionados = Object.keys(rowSelection)
+        if (indicesSelecionados.length !== 1) {
+            return null
+        }
+
+        const indice = parseInt(indicesSelecionados[0], 10)
+        return arrayFiltro[indice] || null 
+    }, [rowSelection])
+
+
+
+    const handleExcluir = () => {
+        if (!linhaSelecionada) {
+            toast("Por favor, selecione uma linha para Excluir")
+        }
+            deletarConv()
+    }
+
     useEffect(() => {
         listarConv();
     }, []);
@@ -245,6 +278,7 @@ export default function Convalescente() {
             <div className="flex flex-col w-full pl-10 pr-10 pt-4">
                 <Tooltip className="z-20" id="toolId" />
                 <div className="flex flex-row w-full p-2 border-b items-center">
+
                     <h1 className="scroll-m-20 text-gray-800 pb-2 text-2xl font-semibold tracking-tight first:mt-0">Controle Convalescente</h1>
                     <div className="flex items-end w-full gap-8">
                         <div className="inline-flex gap-x-6">
@@ -271,30 +305,23 @@ export default function Convalescente() {
                             </div>
                         </div>
 
-                        <div className="flex w-full">
-                            <Select onValueChange={(value) => {
-                                setCriterio(value);
-                                setInput('')
-                            }
-                            }>
-                                <SelectTrigger className="max-w-48 rounded-r-none">
-                                    <SelectValue placeholder="Selecione um criterio" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="Contrato">Contrato</SelectItem>
-                                    <SelectItem value="Titular">Titular</SelectItem>
-                                    <SelectItem value="Usuário">Usuário</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <div className="flex relative w-[350px] ">
-                                <Input
-                                    value={input}
-                                    onChange={e => setInput(e.target.value)}
-                                    type={criterio === "Contrato" ? "number" : "search"}
-                                    placeholder="Buscar lançamento"
-                                    className="rounded-none"
-                                />
-                            </div>
+                        <div className="flex w-full gap-8">
+                            <Button variant="outline">
+                                <Printer />
+                                Contrato
+                            </Button>
+                            <Button variant="outline">
+                                <ReceiptIcon />
+                                Comprovante
+                            </Button>
+                            <Button variant="outline">
+                                <FileEditIcon />
+                                Editar
+                            </Button>
+                            <Button variant="outline">
+                                <Trash/>
+                                Excluir
+                            </Button>
                         </div>
                         <Button
                             data-tooltip-id="toolId"
@@ -350,14 +377,24 @@ export default function Convalescente() {
                     {excluir && (
                         <ModalConfirmar
                             openModal={excluir}
-                            setOpenModal={() => setExcluir(!excluir) }
+                            setOpenModal={() => setExcluir(!excluir)}
                             handleConfirmar={() => deletarConv()}
                             pergunta="Realmente deseja deletar esse lançamento?"
                         />
                     )}
+
+                </div>
+                <div>
+                    <TabelaCompleta
+                        columns={columns}
+                        data={arrayFiltro}
+                        rowSelection={rowSelection}
+                        setRowSelection={setRowSelection}
+                    />
                 </div>
 
-                <Table>
+
+                {/* <Table>
                     <TableHeader>
                         <TableRow>
                             <TableHead>Contrato</TableHead>
@@ -420,48 +457,8 @@ export default function Convalescente() {
                             </TableRow>
                         ))}
                     </TableBody>
-                </Table>
-                <div className="flex flex-col w-full justify-center p-1 max-h-[calc(100vh-150px)]">
-                    <Pagination className="inline-flex text-gray-500 gap-4 mt-4 ml-auto justify-end font-semibold">
-                        <PaginationContent>
-                            <PaginationItem>
-                                <PaginationPrevious
-                                    href="#"
-                                    onClick={(e) => { e.preventDefault(); previousPage(); }}
-                                    className={isFirstPage ? "pointer-events-none text-gray-400" : undefined}
-                                >
-                                    Anterior
-                                </PaginationPrevious>
-                            </PaginationItem>
+                </Table> */}
 
-                            {paginationRange.map((pageNumber, index) => {
-                                if (pageNumber === DOTS) {
-                                    return <PaginationItem key={`dots-${index}`}><PaginationEllipsis /></PaginationItem>;
-                                }
-                                return (
-                                    <PaginationItem key={pageNumber}>
-                                        <PaginationLink
-                                            href="#"
-                                            onClick={(e) => { e.preventDefault(); goToPage(pageNumber as number); }}
-                                            isActive={pageNumber === currentPage}
-                                        >
-                                            {pageNumber}
-                                        </PaginationLink>
-                                    </PaginationItem>
-                                );
-                            })}
-                            <PaginationItem>
-                                <PaginationNext
-                                    href="#"
-                                    onClick={(e) => { e.preventDefault(); nextPage(); }}
-                                    className={isLastPage ? "pointer-events-none text-gray-400" : undefined}
-                                >
-                                    Próximo
-                                </PaginationNext>
-                            </PaginationItem>
-                        </PaginationContent>
-                    </Pagination>
-                </div>
 
                 <div style={{ display: "none" }}>
 
@@ -482,9 +479,9 @@ export default function Convalescente() {
                         />
                     )}
 
-                    
+
                     {printState.comprovante && (
-                        
+
                         <DocumentTemplateComprovante
 
                             nome={itemSelecionado?.nome ?? ""}

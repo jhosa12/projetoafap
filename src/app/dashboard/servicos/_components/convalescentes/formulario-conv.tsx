@@ -51,7 +51,7 @@ import { RowSelectionState } from "@tanstack/react-table";
 // Importe a função que gera as colunas e o tipo
 import { getColumns, Dependente } from "../../_components/convalescentes/colunas-dependentes";
 // Importe o componente da tabela
-import { TabelaDependentesCompleta } from "../../_components/convalescentes/data-table";
+import { TabelaCompleta } from "./data-table";
 import { AuthContext } from "@/store/AuthContext";
 import { AssociadoProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";
@@ -103,7 +103,7 @@ interface FormularioConvProps {
 
 
 export default function FormularioConv({
-  // Desestruturando as props para facilitar o uso no JSX
+  
   listaConv,
   produtosAdicionados,
   listarProdutos,
@@ -118,8 +118,8 @@ export default function FormularioConv({
   isModalOpen,
   rowSelection,
   setarListaConv,
-  handleAdicionarProdutoNaLista, // Nome original
-  handleSelecionarProduto, // Nome original
+  handleAdicionarProdutoNaLista, 
+  handleSelecionarProduto, 
   handleCheckboxTitularChange,
   handleConfirmarSelecaoDependente,
   setIsModalOpen,
@@ -218,7 +218,7 @@ export default function FormularioConv({
                     </DialogDescription>
                   </DialogHeader>
                   <div className="grid gap-4">
-                    <TabelaDependentesCompleta
+                    <TabelaCompleta
                       columns={columns}
                       data={dependentesVisiveis}
                       rowSelection={rowSelection}
