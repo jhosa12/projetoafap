@@ -7,10 +7,11 @@ import { ClientUpdateProps } from "../../../types/types"
 
 export function AtualizacoesTab({ atualizacoes }: { atualizacoes: Array<ClientUpdateProps> }) {
 
-return (
-    <div className="grid gap-4">
-                {atualizacoes?.map((update) => (
-                  <Card key={update.id_global}>
+
+
+
+const CardAtualizacao = ({update,index}:{update:ClientUpdateProps,index:number})=>(
+  <Card key={index}>
                     <CardHeader>
                       <CardTitle className="text-base">{update.nome}</CardTitle>
                     </CardHeader>
@@ -41,6 +42,13 @@ return (
                       </div>
                     </CardContent>
                   </Card>
+
+)
+
+return (
+    <div className="grid gap-4">
+                {atualizacoes?.map((update,index) => (
+                <CardAtualizacao index={index} update={update} />
                 ))}
               </div>
 )

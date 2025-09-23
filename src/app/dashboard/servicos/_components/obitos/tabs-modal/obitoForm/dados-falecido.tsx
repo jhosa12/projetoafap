@@ -16,20 +16,18 @@ import {
   import { Label } from "@radix-ui/react-label";
   import { Controller, useFormContext } from "react-hook-form";
   import { ObitoProps } from "@/app/dashboard/servicos/_types/obito";
+import { DatePickerInput } from "@/components/DatePickerInput";
 
 export const OSDadosFalecido = ()=>{
-
-
     const {control,register} = useFormContext<ObitoProps>()
 
-
     return(
-        <Card className="bg-white border-gray-200">
+        <Card className="bg-white border-gray-200 shadow-none ">
         <CardHeader>
           <CardTitle className="text-gray-900">Dados do Falecido</CardTitle>
           <CardDescription className="text-gray-600">Informações pessoais do falecido</CardDescription>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div className="space-y-2 md:col-span-1">
             <Label htmlFor="nome_falecido">Nome Completo *</Label>
             <Input
@@ -39,12 +37,18 @@ export const OSDadosFalecido = ()=>{
               required
             />
           </div>
-          <div className="space-y-2">
+          <div className="flex flex-col space-y-2">
             <Label htmlFor="data_nascimento">Data de Nascimento</Label>
-            <Input
-              id="data_nascimento"
-              type="date"
-             {...register('data_nascimento')}
+            <Controller
+            control={control}
+            name="data_nascimento"
+            render={({field})=>(
+          <DatePickerInput
+          onChange={field.onChange}
+          value={field.value}
+          className="h-9"
+          />
+            )}
             />
           </div>
           <div className="space-y-2">

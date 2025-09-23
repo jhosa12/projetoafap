@@ -155,6 +155,27 @@ export function HistoricoMensalidade({
     ));
   }, [dadosassociado?.mensalidade, checkMensal, linhasSelecionadas, onRowClick, onEditar, onBaixar, onRecibo]);
 
+  // Calculate summary values
+  const summary = useMemo(() => {
+    if (!Array.isArray(dadosassociado?.mensalidade)) {
+      return { totalAberto: 0, totalPago: 0, qtdAberto: 0, qtdPago: 0 };
+    }
+
+    return dadosassociado.mensalidade.reduce(
+      (acc, item) => {
+        if (item.status === 'P') {
+          acc.totalPago += Number(item.valor_total) || 0;
+          acc.qtdPago += 1;
+        } else {
+          acc.totalAberto += Number(item.valor_principal) || 0;
+          acc.qtdAberto += 1;
+        }
+        return acc;
+      },
+      { totalAberto: 0, totalPago: 0, qtdAberto: 0, qtdPago: 0 }
+    );
+  }, [dadosassociado?.mensalidade]);
+
   return (
     <div className="flex flex-col w-full">
       {mensalidadeRecibo?.id_mensalidade && (
@@ -233,6 +254,7 @@ export function HistoricoMensalidade({
           handleConfirmar={handleImpressao}
         />
       )}
+
 
       <div className="flex w-full  gap-2">
         <div className="flex items-center">
@@ -313,6 +335,46 @@ export function HistoricoMensalidade({
             </TableRow>
           </TableHeader>
           <TableBody>{rowsMemo}</TableBody>
+          <tfoot className="bg-gray-50 border-t">
+            <tr>
+              <td colSpan={13} className="px-4 py-2 text-xs text-gray-600">
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    <span className="font-medium">Aberto:</span>
+                    <span className="text-red-600">
+                      {new Intl.NumberFormat('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL',
+                      }).format(summary.totalAberto)}
+                    </span>
+                    <span className="text-gray-500">({summary.qtdAberto})</span>
+                  </div>
+                  <div className="h-4 w-px bg-gray-200"></div>
+                  <div className="flex items-center gap-1">
+                    <span className="font-medium">Pago:</span>
+                    <span className="text-green-600">
+                      {new Intl.NumberFormat('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL',
+                      }).format(summary.totalPago)}
+                    </span>
+                    <span className="text-gray-500">({summary.qtdPago})</span>
+                  </div>
+                  <div className="h-4 w-px bg-gray-200"></div>
+                  <div className="flex items-center gap-1">
+                    <span className="font-medium">Total:</span>
+                    <span className="text-blue-600">
+                      {new Intl.NumberFormat('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL',
+                      }).format(summary.totalAberto + summary.totalPago)}
+                    </span>
+                    <span className="text-gray-500">({summary.qtdAberto + summary.qtdPago})</span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tfoot>
         </Table>
       </div>
 

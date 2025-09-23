@@ -15,7 +15,7 @@ import { useRouterActions } from "../../_hooks/useRouterActions"
 
 
 interface Props{
-    routes: RouteProps[]
+
     empresa:{
         id_empresa:string,
         nome:string
@@ -26,14 +26,14 @@ interface Props{
     
 }
 
-export default function CobrancaAdmin({routes,empresa,cidadesEmpresa,cobradores}: Props) {
+export default function CobrancaAdmin({empresa,cidadesEmpresa,cobradores}: Props) {
   
   const [selectedRoute, setSelectedRoute] = useState<RouteProps | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
   const methods = useForm<RotaFilterProps>()
 
-  const {getRotas,handleSincData,initialFilters} = useRouterActions({})
+  const {getRotas,handleSincData,initialFilters,routes} = useRouterActions({})
 
 
   const handleViewDetails = (route: RouteProps) => {
@@ -49,15 +49,16 @@ const statsCobranca:CobrancaStats = {
     clientesVisitados:routes.reduce((total, route) => {
       return total+route.cobranca?.filter(c => c.check_in && c.check_out).length || 0
     }, 0),
-    mensalidadesPagas:routes.reduce((total,route)=>total+(route.pagamentos?.length||0),0),
-    valorRecebido:routes.reduce((total,route)=>total+(route.pagamentos?.reduce((sum,pag)=>sum+pag.valor_forma||0,0))||0,0)
+    mensalidadesPagas:routes.reduce((total,route)=>{
+      return route?.pagamentos?.length? total+(route.pagamentos?.length):total
+    },0),
+    valorRecebido:routes.reduce((total,route)=>total+(route.pagamentos?.reduce((sum,pag)=>sum+(pag.valor_forma??0),0) ??0),0)
 }
   return (
     <FormProvider {...methods}>
     <TooltipProvider>
       <div className=" bg-gray-50">
         <Header
-          //activeFiltersCount={activeFiltersCount}
           getRotas={getRotas}
           onOpenFilters={() => setFiltersOpen(true)}
           empresa={empresa}
@@ -76,7 +77,7 @@ const statsCobranca:CobrancaStats = {
           filters={initialFilters}
           getRotas={getRotas}
         />
-        <RouteDetailsDialog route={selectedRoute} open={dialogOpen} onOpenChange={setDialogOpen} />
+        <RouteDetailsDialog getRotas={()=>{getRotas(methods.getValues())}} route={selectedRoute} open={dialogOpen} onOpenChange={setDialogOpen} />
       </div>
     </TooltipProvider>
     </FormProvider>

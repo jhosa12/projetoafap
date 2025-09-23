@@ -1,7 +1,14 @@
 import { DateRange } from "react-day-picker";
 
 
+export type ConsultantStatus = "NÃO LOCALIZADO" | "NÃO QUER VISITA" | "NÃO ESTAVA EM CASA" | "LOCALIZADO"|"NAO DEFINIDO"
 
+export const CONSULTANT_STATUS_OPTIONS: { value: ConsultantStatus|"NAO DEFINIDO"; label: string }[] = [
+  { value: "LOCALIZADO", label: "Cliente Localizado" },
+  { value: "NÃO LOCALIZADO", label: "Não Localizado" },
+  { value: "NÃO QUER VISITA", label: "Não Quer Visita" },
+  { value: "NÃO ESTAVA EM CASA", label: "Não Estava em Casa" },
+]
 
 
 export interface InadimplenciaProps{
@@ -74,6 +81,11 @@ export interface InadimplenciaProps{
         };
         observacoes?: string;
       };
+      consultorRegistro?:{
+        nome_consultor:string,
+        status_consultor:ConsultantStatus,
+        dt_consultor:Date,
+      };
       associado: {
         nome: string,
         endereco: string,
@@ -108,7 +120,8 @@ export interface InadimplenciaProps{
       data: string;
       mensalidades: {id_mensalidade_global:number,valor:number,referencia:string}[];
       contrato: number;
-      id_global:number
+      id_global:number,
+      status:string
     }
     
     
@@ -147,6 +160,7 @@ export interface InadimplenciaProps{
       nome_cliente: string;
       descricao: string;
       categoria: string;
+      status:string
     }
   
   
@@ -228,7 +242,8 @@ export interface InadimplenciaProps{
      agendamentos:AgendamentoCobranca[]
      solicitacoes :Array<SolicitacaoCobradorProps>
      atualizacaoCadastral:Array<ClientUpdateProps>,
-     observacao :string
+     observacao :string,
+     dt_sinc:Date
    
     }
     

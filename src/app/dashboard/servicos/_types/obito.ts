@@ -6,6 +6,7 @@ export interface ObitoProps {
   id_contrato: number,
   id_contrato_st: string,
   id_titular: number,
+  id_empresa:string,
   plano: string,
   atendente: string,
   tipo_atendimento: string,

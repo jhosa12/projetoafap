@@ -28,14 +28,14 @@ return (
                         <TableHead>Contrato</TableHead>
                         <TableHead>Mensalidades</TableHead>
                         <TableHead>Valor Total</TableHead>
-                        <TableHead>Ações</TableHead>
+                        <TableHead>Status</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {agendamentos?.map((agendamento) => {
+                      {agendamentos?.map((agendamento,index) => {
                         const valorTotal = agendamento.mensalidades.reduce((sum, mens) => sum + mens.valor, 0)
                         return (
-                          <TableRow className="text-xs" key={agendamento.id_global}>
+                          <TableRow className="text-xs" key={index}>
                             <TableCell>
                               <div className="font-medium">{agendamento.cliente_nome}</div>
                             </TableCell>
@@ -61,28 +61,7 @@ return (
                               <span className="font-medium">R$ {valorTotal.toFixed(2)}</span>
                             </TableCell>
                             <TableCell>
-                              <div className="flex gap-1">
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button variant="outline" size="sm">
-                                      <CalendarDays className="h-4 w-4" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Reagendar</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button variant="outline" size="sm">
-                                      <Phone className="h-4 w-4" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Contatar cliente</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </div>
+                              {agendamento.status}
                             </TableCell>
                           </TableRow>
                         )

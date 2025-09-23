@@ -9,7 +9,7 @@ import { RotaFilterProps, RouteProps } from "../types/types";
 
 
 const RouteManagement = () => {
-  const [routes, setRoutes] = useState<RouteProps[]>([]);
+  
   const { infoEmpresa, cidadesEmpresa, consultores } = useContext(AuthContext);
 
 
@@ -46,7 +46,6 @@ const RouteManagement = () => {
   return (
     <CobrancaAdmin
       cobradores={consultores}
-      routes={routes}
       empresa={{id_empresa:infoEmpresa?.id!,nome:infoEmpresa?.nome??''}}
       cidadesEmpresa={cidadesEmpresa}
     />

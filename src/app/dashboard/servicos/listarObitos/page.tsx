@@ -1,23 +1,23 @@
 "use client"
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+
+import { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { HiPlusCircle } from "react-icons/hi2";
 import { DataTable } from "@/components/ui/data-table";
 import { getObitoColumns } from "@/app/dashboard/servicos/_components/obitos/ordemDeServico/obitosColumns";
 import useActionsObito from "../_hooks/useActionsObito";
 import { ObitoProps } from "../_types/obito";
 import { ModalObitoForm } from "../_components/obitos/tabs-modal/modal-obito-form";
-import { Newspaper, PlusCircle } from "lucide-react";
+import { PlusCircle } from "lucide-react";
+import { AuthContext } from "@/store/AuthContext";
 
 
 
 export default function ListarObitos() {
-  const router = useRouter()
-  const [selecionado, setSelecionado] = useState<ObitoProps | null>(null);
-  const [openOs, setOpenOs] = useState(false);
 
-  const { listaServicos, listar ,deletarObito } = useActionsObito()
+  
+  const [openOs, setOpenOs] = useState(false);
+  const {selectEmp} = useContext(AuthContext)
+  const { listaServicos,deletarObito,onSave,servico,setServico } = useActionsObito()
 
   return (
     <div className="px-6 mt-2 space-y-4">
@@ -30,7 +30,7 @@ export default function ListarObitos() {
         },
         onEdit(obito) {
           setOpenOs(true);
-          setSelecionado(obito);
+          setServico(obito);
         }
       })} data={listaServicos}>
         <Button onClick={()=>setOpenOs(true)} size={"sm"} variant={"outline"}>
@@ -40,10 +40,11 @@ export default function ListarObitos() {
 
 <ModalObitoForm
 isFormOpen={openOs}
-selectedObito={selecionado}
+selectedObito={servico}
 setIsFormOpen={()=>setOpenOs(false)}
-setSelectedObito={setSelecionado}
-
+setSelectedObito={setServico}
+selectEmp={selectEmp}
+onSave={onSave}
 />
     </div>
   );

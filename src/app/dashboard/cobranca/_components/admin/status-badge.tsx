@@ -2,9 +2,8 @@ import { Badge } from "@/components/ui/badge"
 
 export function StatusBadge({ status }: { status: string }) {
   const variants = {
-    ativa: "default",
-    pausada: "secondary",
-    concluida: "outline",
+    ATIVA: "warning",
+    CONCLUIDA: "success",
     pendente: "destructive",
     em_andamento: "default",
     concluida_visita: "outline",

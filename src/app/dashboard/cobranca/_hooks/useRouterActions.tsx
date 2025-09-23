@@ -27,12 +27,10 @@ export const useRouterActions = ({
 const [routes, setRoutes] = useState<RouteProps[]>([]);
 
 
+
     useEffect(()=>{
 
         getRotas(initialFilters)
-
-
-
 
     },[])
 
@@ -53,6 +51,9 @@ const [routes, setRoutes] = useState<RouteProps[]>([]);
         }
       };
 
+
+
+   
 
       
       const statsCobranca:CobrancaStats = {
@@ -121,6 +122,7 @@ const [routes, setRoutes] = useState<RouteProps[]>([]);
 
     return {
       getRotas,
+      routes,
       handleSincData,
       initialFilters
     }
