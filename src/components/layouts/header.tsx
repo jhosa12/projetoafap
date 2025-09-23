@@ -4,7 +4,33 @@ import { useContext, useState } from "react";
 import { Avatar, Label } from "flowbite-react";
 import { AuthContext } from "@/store/AuthContext";
 import Image from "next/image";
-import { LogIn, Menu } from "lucide-react";
+import {  
+  Menu, 
+  Settings, 
+  LayoutDashboard, 
+  Box, 
+  RefreshCw, 
+  CreditCard, 
+  Users, 
+  PieChart, 
+  Gift, 
+  ShoppingCart, 
+  FileText, 
+  UserCog, 
+  Building2,
+  FileSearch,
+  Activity,
+  BarChart2,
+  Bell,
+  LogOut,
+  User,
+  Home,
+  FileCheck,
+  FileClock,
+  Settings as SettingsIcon,
+  ChevronDown,
+  MapPin
+} from "lucide-react";
 
 import {
   Menubar,
@@ -17,21 +43,14 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ModalAtivosInativos } from "../modals/modalAtivosInativos";
 import LinkNavigate from "../Link";
-import { FaBell } from "react-icons/fa";
-import { Historico } from "@/components/vendas/historico/ScreenHistorico";
+import { Badge } from "../ui/badge";
+import { Historico } from "../vendas/historico/ScreenHistorico";
+import { CompanySelectionModal } from "./modal_filial";
 
 
 
@@ -48,37 +67,23 @@ export function Header({ path }: { path?: string }) {
     cidadesEmpresa,
   } = useContext(AuthContext);
 
-  const [open, setOpen] = useState(false);
+  const [openAtivos, setOpenAtivos] = useState(false);
+  const [openFilial,setOpenFilial] = useState(true)
+
+ const isAllDisable = !!!infoEmpresa?.id
+  const empresasPermitidas =  empresas
+  ?.filter((emp) => permissoes.includes(`EMP${emp.id}`))
 
   return (
-    <header className="w-full border-b border-gray-200 bg-white px-3 py-1">
+    <div className="w-full border-b border-gray-200 bg-white px-3 py-1">
       <div className="flex items-center w-full justify-between">
         {/* LOGO + Empresa */}
-       
+
         <div className="flex items-center gap-3">
           <Image width={40} height={40} src="/improved_logo.png" alt="Logo" />
           <div className="sm:flex flex-col">
             <Label className="text-xs" value="AFAP Gestão - V 2.0" />
-            <Select  value={selectEmp} onValueChange={setSelectEmp}>
-              <SelectTrigger className="w-[150px] h-5 text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {empresas
-                    ?.filter((emp) => permissoes.includes(`EMP${emp.id}`))
-                    .map((emp) => (
-                      <SelectItem
-                        key={emp.id}
-                        value={emp.id}
-                        className="text-xs"
-                      >
-                        {emp.nome}
-                      </SelectItem>
-                    ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            <Badge variant={'default'} className="justify-center" >{infoEmpresa?.nome}</Badge>
           </div>
         </div>
 
@@ -122,7 +127,7 @@ export function Header({ path }: { path?: string }) {
                   Comercial
                 </span>
                 <LinkNavigate href="/dashboard/vendas">Vendas</LinkNavigate>
-                <button onClick={() => setOpen(true)}>Ativos/Inativos</button>
+                <button onClick={() => setOpenAtivos(true)}>Ativos/Inativos</button>
                 <LinkNavigate href="/dashboard/conveniados">
                   Conveniados
                 </LinkNavigate>
@@ -131,10 +136,10 @@ export function Header({ path }: { path?: string }) {
                 {permissoes.includes(
                   "EMP4e61a06f-dee3-4c74-8b31-aca0d771dbff"
                 ) && (
-                  <LinkNavigate href="/dashboard/afap-saude">
-                    Afap Saúde
-                  </LinkNavigate>
-                )}
+                    <LinkNavigate href="/dashboard/afap-saude">
+                      Afap Saúde
+                    </LinkNavigate>
+                  )}
 
                 <span className="font-semibold text-gray-500 mt-4">
                   Serviços
@@ -151,10 +156,10 @@ export function Header({ path }: { path?: string }) {
                     <span className="font-semibold text-gray-500 mt-4">
                       Configurações
                     </span>
-                    <LinkNavigate href="/settings/usuario">
+                    <LinkNavigate href="/dashboard/usuarios">
                       Usuários
                     </LinkNavigate>
-                    <LinkNavigate href="/settings/empresas">
+                    <LinkNavigate href="/dashboard/empresa">
                       Empresa
                     </LinkNavigate>
                   </>
@@ -164,54 +169,80 @@ export function Header({ path }: { path?: string }) {
           </Sheet>
         </div>
 
-        {/* DESKTOP: Menubar normal */}
+        {/* DESKTOP: Menubar with Icons */}
         <div className="hidden lg:flex">
-          <Menubar>
+          <Menubar className="border-none shadow-none bg-transparent">
+            {/* Administrativo */}
             <MenubarMenu>
-              <MenubarTrigger>Administrativo</MenubarTrigger>
-              <MenubarContent>
-                <MenubarItem>
-                  <LinkNavigate href="/dashboard/admcontrato">
+              <MenubarTrigger 
+                disabled={isAllDisable}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md data-[highlighted]:bg-accent data-[state=open]:bg-accent hover:bg-accent/80 transition-colors"
+              >
+                <LayoutDashboard className="h-4 w-4" />
+                Administrativo
+              </MenubarTrigger>
+              <MenubarContent className="min-w-[220px] p-2">
+                <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                  <FileText className="h-4 w-4" />
+                  <LinkNavigate href="/dashboard/admcontrato" >
                     Administrar Contrato
                   </LinkNavigate>
                 </MenubarItem>
-                <MenubarItem>
-                  <LinkNavigate href="/dashboard/estoque">Estoque</LinkNavigate>
+                <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                  <Box className="h-4 w-4" />
+                  <LinkNavigate href="/dashboard/estoque" >
+                    Estoque
+                  </LinkNavigate>
                 </MenubarItem>
-                <MenubarItem>
-                  <LinkNavigate href="/dashboard/caixa">Caixa</LinkNavigate>
+                <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                  <CreditCard className="h-4 w-4" />
+                  <LinkNavigate href="/dashboard/caixa" >
+                    Caixa
+                  </LinkNavigate>
                 </MenubarItem>
-                <MenubarItem>
-                  <LinkNavigate href="/dashboard/renovacao">
+                <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                  <RefreshCw className="h-4 w-4" />
+                  <LinkNavigate href="/dashboard/renovacao" >
                     Renovação
                   </LinkNavigate>
                 </MenubarItem>
-                <MenubarItem>
-                  <LinkNavigate href="/dashboard/cobranca">
+                <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                  <FileSearch className="h-4 w-4" />
+                  <LinkNavigate href="/dashboard/cobranca" >
                     Cobrança
                   </LinkNavigate>
                 </MenubarItem>
-                <MenubarItem>
-                  <LinkNavigate href="/dashboard/gerenciarAdministrativo">
+                <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                  <UserCog className="h-4 w-4" />
+                  <LinkNavigate href="/dashboard/gerenciarAdministrativo" >
                     Gerenciar
                   </LinkNavigate>
                 </MenubarItem>
-                <MenubarItem>
-                  <LinkNavigate href="/dashboard/financeiro">
+                <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                  <PieChart className="h-4 w-4" />
+                  <LinkNavigate href="/dashboard/financeiro" >
                     Financeiro
                   </LinkNavigate>
                 </MenubarItem>
 
                 <MenubarSub>
-                  <MenubarSubTrigger>Sorteios</MenubarSubTrigger>
-                  <MenubarSubContent>
-                    <MenubarItem>
-                      <LinkNavigate href="/dashboard/sorteio">
+                  <MenubarSubTrigger 
+                    disabled={isAllDisable}
+                    className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer"
+                  >
+                    <Gift className="h-4 w-4" />
+                    <span>Sorteios</span>
+                  </MenubarSubTrigger>
+                  <MenubarSubContent className="ml-1">
+                    <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                      <Gift className="h-4 w-4" />
+                      <LinkNavigate href="/dashboard/sorteio" >
                         Sorteios
                       </LinkNavigate>
                     </MenubarItem>
-                    <MenubarItem>
-                      <LinkNavigate href="/dashboard/sorteio/configuracoes">
+                    <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                      <SettingsIcon className="h-4 w-4" />
+                      <LinkNavigate href="/dashboard/sorteio/configuracoes" >
                         Configurar Parâmetros
                       </LinkNavigate>
                     </MenubarItem>
@@ -220,86 +251,131 @@ export function Header({ path }: { path?: string }) {
               </MenubarContent>
             </MenubarMenu>
 
+            {/* Comercial */}
             <MenubarMenu>
-              <MenubarTrigger>Comercial</MenubarTrigger>
-              <MenubarContent>
-
-              <MenubarSub>
-                  <MenubarSubTrigger>Vendas</MenubarSubTrigger>
-                  <MenubarSubContent>
-                    <MenubarItem>
-                      <LinkNavigate href="/dashboard/vendas/acompanhamento">
+              <MenubarTrigger 
+                disabled={isAllDisable}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md data-[highlighted]:bg-accent data-[state=open]:bg-accent hover:bg-accent/80 transition-colors"
+              >
+                <ShoppingCart className="h-4 w-4" />
+                Comercial
+              </MenubarTrigger>
+              <MenubarContent className="min-w-[220px] p-2">
+                <MenubarSub>
+                  <MenubarSubTrigger className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                    <Activity className="h-4 w-4" />
+                    <span>Vendas</span>
+                  </MenubarSubTrigger>
+                  <MenubarSubContent className="ml-1">
+                    <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                      <FileCheck className="h-4 w-4" />
+                      <LinkNavigate href="/dashboard/vendas/acompanhamento" >
                         Acompanhamento
                       </LinkNavigate>
                     </MenubarItem>
                     <MenubarItem asChild>
-                      <Historico/>
+                      <div className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                        <FileClock className="h-4 w-4" />
+                        <Historico />
+                      </div>
                     </MenubarItem>
                   </MenubarSubContent>
                 </MenubarSub>
-             
+
                 <MenubarItem
-                  className="cursor-pointer"
-                  onClick={() => setOpen(true)}
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer"
+                  onClick={() => setOpenAtivos(true)}
                 >
-                  Ativos/Inativos
+                  <Users className="h-4 w-4" />
+                  <span>Ativos/Inativos</span>
                 </MenubarItem>
-                <MenubarItem>
-                  <LinkNavigate href="/dashboard/conveniados">
+                
+                <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                  <Users className="h-4 w-4" />
+                  <LinkNavigate href="/dashboard/conveniados" >
                     Conveniados
                   </LinkNavigate>
                 </MenubarItem>
-                <MenubarItem disabled={!permissoes?.includes("COM2.0")}>
-                  <LinkNavigate href="/dashboard/analyze">
+                
+                <MenubarItem 
+                  disabled={!permissoes?.includes("COM2.0")}
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <BarChart2 className="h-4 w-4" />
+                  <LinkNavigate href="/dashboard/analyze" >
                     DashBoard
                   </LinkNavigate>
                 </MenubarItem>
-                <MenubarItem>
-                  <LinkNavigate href="/dashboard/cobranca/rotas">
+                
+                <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                  <MapPin className="h-4 w-4" />
+                  <LinkNavigate href="/dashboard/cobranca/rotas" >
                     Rota de Cobrança
                   </LinkNavigate>
                 </MenubarItem>
               </MenubarContent>
             </MenubarMenu>
 
-            {/* <MenubarMenu>
-              <MenubarTrigger asChild>
-                <button
-                  className="disabled:cursor-not-allowed disabled:text-gray-400"
-                  onClick={() => Router.push("/dashboard/afap-saude")}
-                >
-                  Afap Saúde
-                </button>
-              </MenubarTrigger>
-            </MenubarMenu> */}
-
+            {/* Serviços */}
             <MenubarMenu>
-              <MenubarTrigger>Serviços</MenubarTrigger>
-              <MenubarContent>
-                <MenubarItem>
-                  <LinkNavigate href="/dashboard/servicos/listarObitos">
+              <MenubarTrigger 
+                disabled={isAllDisable}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md data-[highlighted]:bg-accent data-[state=open]:bg-accent hover:bg-accent/80 transition-colors"
+              >
+                <FileText className="h-4 w-4" />
+                Serviços
+              </MenubarTrigger>
+              <MenubarContent className="min-w-[180px] p-2">
+                <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                  <FileClock className="h-4 w-4" />
+                  <LinkNavigate href="/dashboard/servicos/listarObitos" >
                     Óbitos
                   </LinkNavigate>
                 </MenubarItem>
-                <MenubarItem>
-                  <LinkNavigate href="/dashboard/servicos/convalescencia/listagem">
+                <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                  <User className="h-4 w-4" />
+                  <LinkNavigate href="/dashboard/servicos/convalescencia/listagem" >
                     Convalescentes
                   </LinkNavigate>
                 </MenubarItem>
               </MenubarContent>
             </MenubarMenu>
 
+            {/* Configurações */}
             <MenubarMenu>
-              <MenubarTrigger>Configurações</MenubarTrigger>
-              <MenubarContent>
-                <MenubarItem disabled={!permissoes.includes("CFG1")}>
-                  <LinkNavigate href="/settings/usuario">Usuários</LinkNavigate>
+              <MenubarTrigger 
+                disabled={isAllDisable}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md data-[highlighted]:bg-accent data-[state=open]:bg-accent hover:bg-accent/80 transition-colors"
+              >
+                <Settings className="h-4 w-4" />
+                Configurações
+              </MenubarTrigger>
+              <MenubarContent className="min-w-[180px] p-2">
+                <MenubarItem 
+                  disabled={!permissoes.includes("CFG1")}
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Users className="h-4 w-4" />
+                  <LinkNavigate href="/dashboard/usuarios" >
+                    Usuários
+                  </LinkNavigate>
                 </MenubarItem>
-                <MenubarItem disabled={!permissoes.includes("CFG1")}>
-                  <LinkNavigate href="/settings/empresas">Empresa</LinkNavigate>
+                
+                <MenubarItem 
+                  disabled={!permissoes.includes("CFG1")}
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Building2 className="h-4 w-4" />
+                  <LinkNavigate href="/dashboard/empresa" >
+                    Empresa
+                  </LinkNavigate>
                 </MenubarItem>
-                <MenubarItem >
-                  <LinkNavigate href="/dashboard/auditoria">Auditoria</LinkNavigate>
+                
+                <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                  <FileSearch className="h-4 w-4" />
+                  <LinkNavigate href="/dashboard/auditoria" >
+                    Auditoria
+                  </LinkNavigate>
                 </MenubarItem>
               </MenubarContent>
             </MenubarMenu>
@@ -307,16 +383,39 @@ export function Header({ path }: { path?: string }) {
         </div>
 
         {/* USUÁRIO */}
-        <div className="hidden sm:flex items-center gap-4">
-          <button>
-            <FaBell size={14} />
+        <div className="hidden sm:flex items-center gap-3">
+          <button className="p-2 rounded-full hover:bg-accent transition-colors relative">
+            <Bell className="h-5 w-5 text-foreground" />
+            <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500"></span>
           </button>
-          <button onClick={signOut}>
-            <LogIn color="black" size={15} />
-          </button>
-          <Avatar size="sm" rounded img={usuario?.image} />
-
-          <span className="text-xs font-semibold">{usuario?.nome}</span>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setOpenFilial(true)}
+            className="hidden sm:flex items-center gap-2 px-3 py-1.5 h-8 text-xs font-medium rounded-md border-border/40 hover:bg-accent/80 transition-colors"
+          >
+            <Home className="h-3.5 w-3.5" />
+            <span>TROCAR FILIAL</span>
+          </Button>
+          
+          <div className="relative group">
+            <button className="flex items-center gap-2 p-1.5 pr-3 rounded-full hover:bg-accent transition-colors">
+              <Avatar size="sm" rounded img={usuario?.image} />
+              <span className="text-xs font-medium">{usuario?.nome}</span>
+              <ChevronDown className="h-4 w-4 opacity-70" />
+            </button>
+            
+            <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-popover border border-border/50 py-1 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              <button
+                onClick={signOut}
+                className="w-full text-left px-4 py-2 text-sm hover:bg-accent flex items-center gap-2"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Sair</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -325,12 +424,20 @@ export function Header({ path }: { path?: string }) {
       <ModalAtivosInativos
         usuario={usuario?.nome}
         logo={infoEmpresa?.logoUrl}
-        open={open}
-        onClose={() => setOpen(false)}
+        open={openAtivos}
+        onClose={() => setOpenAtivos(false)}
         id_empresa={selectEmp}
         cidadesEmpresa={cidadesEmpresa}
         bairrosEmpresa={bairrosEmpresa}
       />
-    </header>
+
+<CompanySelectionModal
+  companies={empresasPermitidas}
+  onOpenChange={()=>setOpenFilial(false)}
+  onSelectCompany={(emp)=>setSelectEmp(emp.id)}
+  open={openFilial}
+
+/>
+    </div>
   );
 }
