@@ -64,21 +64,6 @@ const useActionsListagem = () => {
   }, []);
 
 
-  const imprimirComprovante = useReactToPrint({
-    contentRef: componentRefComprovante,
-    documentTitle: "Comprovante de Atendimento",
-    onAfterPrint: () => toast.success("Comprovante gerado com sucesso!"),
-  });
-
-
-  const imprimirContrato = useReactToPrint({
-    contentRef: componentRefContrato,
-    documentTitle: "Contrato de Convalescente",
-    onAfterPrint: () => toast.success("Contrato gerado com sucesso!"),
-  });
-
-
-
   async function listarConv() {
 
     if (!input) {
@@ -152,8 +137,6 @@ const useActionsListagem = () => {
     listarConv()
   }
 
-
-
   useEffect(() => {
 
     let dadosProcessados = arrayConv
@@ -225,8 +208,6 @@ const useActionsListagem = () => {
     listarConv,
     deletarConv,
     receberDevolucao,
-    imprimirComprovante,
-    imprimirContrato
 
   }
 }

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import logo from "../../../../public/logoafap.png"
+
 
 // DocumentTemplate.js
 
@@ -20,7 +20,8 @@ export interface DadosProps {
 
 const DocumentTemplateContrato = forwardRef<HTMLDivElement, DadosProps>((props, ref) => {
 
-  const { nome,
+  const {
+    nome,
     cpf,
     rg,
     logradouro,
@@ -29,7 +30,8 @@ const DocumentTemplateContrato = forwardRef<HTMLDivElement, DadosProps>((props, 
     uf,
     telefone,
     contrato,
-    material } = props;
+    material
+  } = props;
 
   const options: Intl.DateTimeFormatOptions = {
     weekday: 'long', // Dia da semana por extenso
@@ -43,7 +45,8 @@ const DocumentTemplateContrato = forwardRef<HTMLDivElement, DadosProps>((props, 
   return (
     <div className='flex flex-col w-full '>
       <div className="flex w-full justify-center mt-4">
-        <Image className="flex w-40 h-16 mr-7 " src={logo} alt="" />
+        <Image className="flex w-40 h-16 mr-7 " src={"/logoafap.png"} alt="Logo da AFAP" width={160}
+          height={64} />
       </div>
 
       <h2 className=' mt-4 text-2xl uppercase text-center font-bold'>Assistência Familiar Paraíso</h2>

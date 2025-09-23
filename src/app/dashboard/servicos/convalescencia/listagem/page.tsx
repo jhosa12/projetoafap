@@ -52,34 +52,16 @@ import { usePrintDocsAssociado } from "@/hooks/usePrintDocsAssociado";
 import { AuthContext } from "@/store/AuthContext";
 import { DadosAssociado } from "@/app/dashboard/admcontrato/_components/dados-associados/screen";
 import { useActionsPrintConvalescenca } from "../../_hooks/useActionsPrintConvalescenca";
+import { VerificarSituacao } from "@/app/dashboard/admcontrato/_utils/verificarSituacao";
+import DocumentTemplateComprovante from "../../_documents/convalescencia/comprovante/DocumentTemplate";
+import { AnyAaaaRecord } from "node:dns";
 
 export default function Convalescente() {
-    const [modalContrato, setModalContrato] = useState(false)
+    const [modal, setModal] = useState(false)
     const [itemSelecionado, setItemSelecionado] = useState<any | null>(null);
     const [produtoSelecionadoId, setProdutoSelecionadoId] = useState<number | null>(null)
-
-    const { usuario, infoEmpresa } = useContext(AuthContext)
-
-    const handleConfirmarDevolucao = async () => {
-
-        if (!itemSelecionado) {
-            toast.error("Nenhum item selecionado para devolução.")
-            return
-        }
-
-        try {
-
-            await receberDevolucao(produtoSelecionadoId)
-
-            imprimirComprovante()
-
-            setModalContrato(false)
-            setItemSelecionado(null)
-
-        } catch (error) {
-            console.error("Falha no processo de devolução:", error)
-        }
-    }
+    const { usuario, infoEmpresa, dadosassociado } = useContext(AuthContext)
+    const [materialParaImpressao, setMaterialParaImpressao] = useState<any[]>([]); 
 
 
     const {
@@ -110,13 +92,9 @@ export default function Convalescente() {
         listarConv,
         deletarConv,
         receberDevolucao,
-        imprimirComprovante,
-        imprimirContrato
 
 
     } = useActionsListagem()
-
-
 
     const {
 
@@ -129,13 +107,21 @@ export default function Convalescente() {
 
     } = useActionsPrintConvalescenca(
         itemSelecionado,
-        setarListaConv,
         usuario?.nome ?? "",
         infoEmpresa?.id ?? "",
+        setarListaConv,
+        () => {
+
+            setModal(false),
+            setItemSelecionado(false)
+            setProdutoSelecionadoId(null)
+        }
+
     )
 
 
     const {
+
         currentPageData,
         currentPage,
         goToPage,
@@ -144,11 +130,37 @@ export default function Convalescente() {
         paginationRange,
         isFirstPage,
         isLastPage,
+
     } = usePaginatedData({
+
         data: arrayFiltro,
         itemsPerPage: 10,
         siblingCount: 2
+
     });
+
+    const handleConfirmarDevolucao = async () => {
+
+        if (!itemSelecionado) {
+            toast.error("Nenhum item selecionado para devolução.")
+            return
+        }
+
+        const materialFiltrado = (itemSelecionado.convalescenca_prod ?? []).filter(
+            (produto: any) => produto.id_conv_prod === produtoSelecionadoId
+        );
+
+        setMaterialParaImpressao(materialFiltrado);
+        try {
+
+            await receberDevolucao(produtoSelecionadoId)
+
+            handleImpressaoConvalescenca()
+
+        } catch (error) {
+            toast.error("Não foi possível alterar o status.");
+        }
+    }
 
     useEffect(() => {
         listarConv();
@@ -183,13 +195,13 @@ export default function Convalescente() {
             </div>)} */}
 
 
-            {modalContrato && itemSelecionado && (
+            {modal && itemSelecionado && (
 
                 <ModalConfirmar
 
-                    openModal={modalContrato}
+                    openModal={modal}
                     setOpenModal={() => {
-                        setModalContrato(false)
+                        setModal(false)
                         setProdutoSelecionadoId(null)
                     }}
                     handleConfirmar={handleConfirmarDevolucao}
@@ -201,7 +213,6 @@ export default function Convalescente() {
                         <Label htmlFor="estoque-select">Selecione o produto:</Label>
                         <Select
                             onValueChange={(value) => {
-
                                 setProdutoSelecionadoId(Number(value))
                             }}
                         >
@@ -220,14 +231,16 @@ export default function Convalescente() {
                             </SelectContent>
                         </Select>
                     </div>
+
+                    <div className="flex items-center gap-3">
+                        <Checkbox id="terms"
+                            checked={printState.comprovante}
+                            onCheckedChange={() => handlePrint('comprovante')} />
+                        <Label htmlFor="terms">Imprimir Comprovante</Label>
+                    </div>
                 </ModalConfirmar>
 
             )}
-
-            {
-
-            }
-
 
             <div className="flex flex-col w-full pl-10 pr-10 pt-4">
                 <Tooltip className="z-20" id="toolId" />
@@ -333,28 +346,15 @@ export default function Convalescente() {
 
                         </Button>
                     </div>
-                    {excluir && (<div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                        <div className="flex items-center justify-center p-2 w-full h-full">
-                            <div className="relative rounded-lg shadow bg-gray-800">
-                                <button type="button" onClick={() => setExcluir(!excluir)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                                    <button type="button" onClick={() => { }} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                                        <IoIosClose size={30} />
-                                    </button>
-                                </button>
-                                <div className="p-4 md:p-5 text-center">
-                                    <div className="flex w-full justify-center items-center">
-                                        <TbAlertTriangle className='text-gray-400' size={60} />
-                                    </div>
-                                    <h3 className="mb-5 text-lg font-normal  text-gray-400">Realmente deseja deletar esse lançamento?</h3>
 
-                                    <button onClick={() => deletarConv()} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
-                                        Sim, tenho certeza
-                                    </button>
-                                    <button onClick={() => setExcluir(!excluir)} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>)}
+                    {excluir && (
+                        <ModalConfirmar
+                            openModal={excluir}
+                            setOpenModal={() => setExcluir(!excluir) }
+                            handleConfirmar={() => deletarConv()}
+                            pergunta="Realmente deseja deletar esse lançamento?"
+                        />
+                    )}
                 </div>
 
                 <Table>
@@ -405,7 +405,7 @@ export default function Convalescente() {
                                             onClick={() => {
 
                                                 setItemSelecionado(item)
-                                                setModalContrato(true)
+                                                setModal(true)
 
                                             }}
                                             type="button"
@@ -461,6 +461,38 @@ export default function Convalescente() {
                             </PaginationItem>
                         </PaginationContent>
                     </Pagination>
+                </div>
+
+                <div style={{ display: "none" }}>
+
+                    {printState.contrato && (
+                        <DocumentTemplateContrato
+                            bairro={dadosassociado?.bairro ?? ""}//
+                            cidade={dadosassociado?.cidade ?? ""}//                          
+                            cpf={dadosassociado?.cpfcnpj ?? ""}//                           
+                            uf={dadosassociado?.uf ?? ""}//
+                            nome={dadosassociado?.nome ?? ""} // 
+                            rg={dadosassociado?.rg ?? ""}//
+                            telefone={dadosassociado?.celular1 ?? ""}//
+                            ref={componentRefs.contrato}
+                            contrato={dadosassociado?.contrato?.id_contrato ?? 0}
+                            logradouro={dadosassociado?.endereco ?? ""}
+                            material={itemSelecionado?.convalescenca_prod.filter(
+                                (produto: any) => produto.id_conv_prod === Number(produtoSelecionadoId))}
+                        />
+                    )}
+
+                    
+                    {printState.comprovante && (
+                        
+                        <DocumentTemplateComprovante
+
+                            nome={itemSelecionado?.nome ?? ""}
+                            condicao={itemSelecionado?.status ?? ""}
+                            material={materialParaImpressao}
+                            ref={componentRefs.comprovante}
+                        />
+                    )}
                 </div>
             </div>
         </>

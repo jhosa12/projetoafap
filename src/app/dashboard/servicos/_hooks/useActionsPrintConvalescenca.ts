@@ -10,13 +10,14 @@ import { toast } from "sonner";
 import { pageStyle } from "@/utils/pageStyle";
 
 type Docs = 'contrato' | 'comprovante'
+type SetarListaConvType = (item: Partial<ConvProps>) => void
 
 export function useActionsPrintConvalescenca(
 
-  dadosConvalescenca: Partial<ConvProps | null>,
+  itemSelecionado: Partial<ConvProps | null>,
   usuario: string,
   id_empresa: string,
-  setarListaConva: (fields: Partial<ConvProps>) => void,
+  setarListaConv: SetarListaConvType,
   onClose?: Function
 
 ) {
@@ -53,13 +54,8 @@ export function useActionsPrintConvalescenca(
 
   const handleRegisterImpressao = useCallback(async (arquivo: Docs) => {
     const { newDate } = removerFusoDate(new Date())
-    const impressoes = [...(dadosConvalescenca?.contrato?.impressoes || [])]
+    const impressoes = [...(itemSelecionado?.contrato?.impressoes || [])]
     const index = impressoes.findIndex((imp) => imp.arquivo === arquivo)
-
-    if (!dadosConvalescenca || !dadosConvalescenca.contrato) {
-      toast.error("Dados da convalescença ou do contrato estão ausentes. Não é possível registrar.");
-      return; // Interrompe a execução se os dados não estiverem prontos
-    }
 
     if (index === -1) {
       impressoes.push({ arquivo, date: newDate, user: usuario })
@@ -69,29 +65,33 @@ export function useActionsPrintConvalescenca(
     try {
 
       const response = await api.put("/contrato/impressoes", {
-        id_contrato_global: dadosConvalescenca?.contrato?.id_contrato_global,
+        id_contrato_global: itemSelecionado?.contrato?.id_contrato_global,
         impressoes,
       });
+
+      
       handlePrint(arquivo)
 
       const novasImpressoes = response.data.impressoes
 
       const convAtualizada: Partial<ConvProps> = {
-        ...dadosConvalescenca,
+        ...itemSelecionado,
         contrato: {
-          ...dadosConvalescenca?.contrato,
+          ...itemSelecionado?.contrato,
           impressoes: novasImpressoes
 
         }
 
       }
-      setarListaConva(convAtualizada);
+      setarListaConv(convAtualizada);
+
       onClose?.()
 
     } catch (error) {
+      console.error("ERRO CAPTURADO:", error);
       toast.error("Erro ao registrar impressão");
     }
-  }, [dadosConvalescenca, usuario, setarListaConva])
+  }, [itemSelecionado, usuario, setarListaConv])
 
 
   const imprimirContrato = useReactToPrint({
@@ -106,9 +106,13 @@ export function useActionsPrintConvalescenca(
   const imprimirComprovante = useReactToPrint({
     pageStyle: pageStyle,
     documentTitle: "COMPROVANTE",
-    contentRef: componentRefs.contrato,
+    contentRef: componentRefs.comprovante,
     onBeforePrint: async () => {
       await handleRegisterImpressao('comprovante');
+    },
+    onAfterPrint: () => {
+      handlePrint('comprovante'); 
+      onClose?.(); 
     },
   })
 

@@ -1,15 +1,14 @@
+import { ProdutosProps } from "@/app/dashboard/admcontrato/_types/produtos";
 import Image from "next/image";
-import logo from "../../../../public/logoafap.png"
 
 // DocumentTemplate.js
 
 import React, { forwardRef } from 'react';
 interface DadosProps {
   nome: string,
-  material: string,
-  condicao: string
+  material: ProdutosProps[],
+  condicao?: string
 }
-
 
 const DocumentTemplateComprovante = forwardRef<HTMLDivElement, DadosProps>((props, ref) => {
   const { nome, material, condicao } = props;
@@ -17,16 +16,23 @@ const DocumentTemplateComprovante = forwardRef<HTMLDivElement, DadosProps>((prop
     return (
       <div ref={ref} className='flex flex-col w-full p-2 border-[1px] '>
       <div className="flex  w-full justify-center items-center mt-4">
-        <Image className="flex w-44 h-16  " src={logo} alt="" />
+          <Image className="flex w-44 h-16  " src={"/logoafap.png"} alt="Logo da AFAP" width={160} height={64} />
       </div>
       <h2 className='text-xl text-center font-semibold mt-2'>COMPROVANTE</h2>
       <span className="px-2 pt-2" >Nome do Cliente:{nome}</span>
-      <span className="px-2 pt-2" >Data de Devolução:{new Date().toLocaleDateString('pt-BR')}</span>
-      <span className="px-2 pt-2 mx-5">Itens Devolvidos:</span>
-      <ul className="list-item px-2 mx-3 font-semibold">
-        <li className="p-2 mx-2 ">{material}</li>
+        <span className="px-2 pt-2" >Data de Devolução:{new Date().toLocaleDateString('pt-BR')}</span>
+        
 
-      </ul>
+        <div className="my-4">
+          <span className="px-2 font-semibold">Itens Devolvidos:</span>
+          <ul className="list-disc pl-10 mt-2">
+            {material?.map((produto) => (
+              <li key={produto.id_produto} className="py-1">
+                {produto.quantidade} - {produto.descricao}
+              </li>
+            ))}
+          </ul>
+        </div>
       <span className="p-2">Condição do(s) Item(s):{condicao}</span>
       <div className="flex flex-row w-full p-2">
         <div className="flex flex-col w-1/2 p-2 justify-center items-center " >
