@@ -47,6 +47,7 @@ import { AuthContext } from "@/store/AuthContext";
 import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";
 import CarteirasDep from "@/app/dashboard/admcontrato/_components/carteiras/carteirasDep";
 import { HistoricoMensalidade } from "./_components/mensalidades/historico-mensalidade";
+import { HeadAssociado } from "../servicos/_components/obitos/tabs-modal/head-associado";
 
 export default function AdmContrato() {
   const {
@@ -199,45 +200,13 @@ export default function AdmContrato() {
 
       {dadosassociado.id_global && (
         <div className="flex flex-wrap w-full justify-between gap-2 mb-1 pl-2 text-sm font-semibold text-black">
-          <div className="inline-flex gap-3 items-center">
-            <span>
-              {dadosassociado?.contrato?.id_contrato} - {dadosassociado?.nome}
-            </span>
-            <span>
-              CATEGORIA:
-              <span className="pl-3 text-[#c5942b]">
-                {dadosassociado?.contrato?.plano}
-              </span>
-            </span>
-            <Badge
-              size="sm"
-              color={
-                dadosassociado.contrato?.situacao === "ATIVO"
-                  ? "success"
-                  : "failure"
-              }
-            >
-              {dadosassociado?.contrato?.situacao}
-            </Badge>
-            {dadosassociado?.contrato?.convalescencia?.map((item) => (
-              <>
-                {item.convalescenca_prod?.map(
-                  (dados, index) =>
-                    !item.id_dependente &&
-                    item.status === "ABERTO" && (
-                      <button
-                        key={index}
-                        data-tooltip-id="my-tooltip"
-                        data-tooltip-content={dados?.descricao ?? ""}
-                        className="text-yellow-500"
-                      >
-                        <TbWheelchair size={20} />
-                      </button>
-                    )
-                )}
-              </>
-            ))}
-          </div>
+            <HeadAssociado
+                   associado={dadosassociado.nome}
+                   convalescencia={dadosassociado.contrato?.convalescencia}
+                   id_contrato={dadosassociado.contrato?.id_contrato}
+                   plano={dadosassociado.contrato?.plano}
+                   situacao={dadosassociado.contrato?.situacao}
+                 />
           <div className="inline-flex gap-2">
             <Button
               variant={"outline"}

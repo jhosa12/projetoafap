@@ -28,36 +28,14 @@ export const OSDadosGerais = () => {
           Dados básicos do contrato e atendimento
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="id_contrato">Número do Contrato *</Label>
-
-          <Input {...register('id_contrato')} placeholder="CT-2024-001" required />
-        </div>
+      <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+       
         <div className="space-y-2">
           <Label htmlFor="dec_obito_num">Número da Declaração *</Label>
 
           <Input {...register('dec_obito_num')} placeholder="DO-2024-001" required />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="plano">Plano</Label>
-          <Controller
-            control={control}
-            name="plano"
-            render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione o plano" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Básico">Básico</SelectItem>
-                  <SelectItem value="Premium">Premium</SelectItem>
-                  <SelectItem value="Executivo">Executivo</SelectItem>
-                </SelectContent>
-              </Select>
-            )}
-          />
-        </div>
+       
         <div className="space-y-2">
           <Label htmlFor="atendente">Atendente</Label>
 

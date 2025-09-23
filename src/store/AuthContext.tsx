@@ -149,12 +149,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [selectEmp]);
 
-  useEffect(() => {
-    if (permissoes && permissoes.length > 0) {
-      const emp = permissoes?.find((item: string) => item.startsWith("EMP"));
-      emp && setSelectEmp(emp?.split("EMP")[1] ?? "");
-    }
-  }, [permissoes]);
+  // useEffect(() => {
+  //   if (permissoes && permissoes.length > 0) {
+  //     const emp = permissoes?.find((item: string) => item.startsWith("EMP"));
+  //     emp && setSelectEmp(emp?.split("EMP")[1] ?? "");
+  //   }
+  // }, [permissoes]);
 
   const carregarDados = async (id: number) => {
     console.log("2. Dentro de carregarDados no AuthContext...");

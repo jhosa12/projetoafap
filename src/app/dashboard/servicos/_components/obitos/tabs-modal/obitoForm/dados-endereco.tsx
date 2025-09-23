@@ -19,12 +19,12 @@ const {register,control} = useFormContext<ObitoProps>()
 
 
     return(
-        <Card className="bg-white border-gray-200">
+        <Card className="bg-white border-gray-200 shadow-none ">
         <CardHeader>
           <CardTitle className="text-gray-900">Endereço e Contato</CardTitle>
           <CardDescription className="text-gray-600">Dados de endereço e contato</CardDescription>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div className="space-y-2">
             <Label htmlFor="end_rua">Rua/Logradouro</Label>
             <Input

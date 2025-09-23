@@ -66,13 +66,13 @@ export const OSDadosFinanceiros = ()=>{
       }
 
     return(
-        <Fragment>
-        <Card className="bg-white border-gray-200">
+        <div className="space-y-2" >
+        <Card className="bg-white border-gray-200 shadow-none ">
         <CardHeader>
           <CardTitle className="text-gray-900">Serviços Prestados</CardTitle>
           <CardDescription className="text-gray-600">Adicione e gerencie os serviços prestados</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="text-xs">
           <div className="space-y-4">
             <Button type="button" onClick={addServico} className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
@@ -170,12 +170,12 @@ export const OSDadosFinanceiros = ()=>{
         </CardContent>
       </Card>
 
-      <Card className="bg-white border-gray-200">
+      <Card className="bg-white border-gray-200 shadow-none">
         <CardHeader>
           <CardTitle className="text-gray-900">Resumo Financeiro</CardTitle>
           <CardDescription className="text-gray-600">Valores totais e saldo</CardDescription>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div className="space-y-2">
             <Label htmlFor="vl_servicos">Valor dos Serviços</Label>
             <Input
@@ -222,6 +222,6 @@ export const OSDadosFinanceiros = ()=>{
           </div>
         </CardContent>
       </Card>
-      </Fragment>
+      </div>
     )
 }

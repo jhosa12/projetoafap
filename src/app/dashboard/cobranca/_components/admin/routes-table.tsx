@@ -18,16 +18,16 @@ interface RoutesTableProps {
 
 export function RoutesTable({ routes, onViewDetails, onOpenFilters }: RoutesTableProps) {
   return (
-    <div className="px-4 py-2">
+    <div className="px-4 py-2 ">
       <Card>
-        <CardHeader>
+        <CardHeader> 
           <CardTitle>Rotas de Cobrança</CardTitle>
           <CardDescription>
             {routes.length} rota{routes.length !== 1 ? "s" : ""} encontrada
             {routes.length !== 1 ? "s" : ""}
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="max-h-[calc(100vh-300px)] overflow-y-auto">
           {routes.length > 0 ? (
             <Table>
               <TableHeader>

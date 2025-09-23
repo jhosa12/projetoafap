@@ -93,8 +93,6 @@ export function ModalBusca({
           return;
       }
 
-      // Adicione este log para ter certeza do que está sendo enviado
-      console.log("Enviando payload final para a API:", payload);
 
       const response = await api.post<Cliente[]>("/buscar", payload);
       setClientes(response.data || []);
@@ -134,7 +132,7 @@ export function ModalBusca({
             carregarDados(cliente.id_global);
             setVisible();
           }}
-          className="flex items-center justify-between w-full px-4 py-2 rounded-xl border border-gray-300 bg-gray-100 hover:bg-gray-300 transition-all shadow-sm cursor-pointer"
+          className="flex items-center justify-between w-full px-4 py-2 rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-300 transition-all shadow-sm cursor-pointer"
         >
           <div className="space-y-1">
             <div className="font-semibold ">
