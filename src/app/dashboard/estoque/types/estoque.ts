@@ -13,5 +13,4 @@ export type EstoqueProps = {
   empresa: string
   produtos: { grupo: string, descricao: string, cod_prod: true, tipo: string },
 
-  // estoque:Array<EstoqueProps>
 }

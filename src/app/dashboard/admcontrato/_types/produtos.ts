@@ -1,6 +1,8 @@
-export type SelectProps = {
+export type ProdutosProps = {
 
     id_produto: number,
+    id_conv: number,
+    id_estoque: number,
     descricao: string,
     unidade: string,
     valor_custo: number,
@@ -12,7 +14,7 @@ export type SelectProps = {
     est_entradas: number,
     est_saidas: number,
     est_saldo: number,
-    situacao: string,
+    status: string,
     data_inc: Date,
     grupo: string,
     tipo: string,

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import { LuFolderEdit } from "react-icons/lu";
 import { MdDeleteOutline } from "react-icons/md";
 import { IoIosClose } from "react-icons/io";
@@ -9,7 +9,7 @@ import { Tooltip } from 'react-tooltip';
 import Link from "next/link";
 import useActionsListagem from "../../_hooks/useActionsListagem";
 import { format } from "date-fns";
-import { Search, Plus } from 'lucide-react';
+import { Search, Plus, FileText } from 'lucide-react';
 
 //Shadcn-ui
 import { Checkbox } from "@/components/ui/checkbox"
@@ -42,9 +42,45 @@ import {
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
+import useActionsNovoResgistro from "../../_hooks/useActionsNovoRegistro";
+import { toast } from "sonner";
+import { api } from "@/lib/axios/apiClient";
+import { FileUp } from 'lucide-react';
+import { ModalConfirmar } from "@/components/modals/modalConfirmar";
+import DocumentTemplateContrato from "@/app/dashboard/servicos/_documents/convalescencia/contrato/DocumentTemplate";
+import { usePrintDocsAssociado } from "@/hooks/usePrintDocsAssociado";
+import { AuthContext } from "@/store/AuthContext";
+import { DadosAssociado } from "@/app/dashboard/admcontrato/_components/dados-associados/screen";
+import { useActionsPrintConvalescenca } from "../../_hooks/useActionsPrintConvalescenca";
 
 export default function Convalescente() {
-    const [dropOpen, setDrop] = useState(false)
+    const [modalContrato, setModalContrato] = useState(false)
+    const [itemSelecionado, setItemSelecionado] = useState<any | null>(null);
+    const [produtoSelecionadoId, setProdutoSelecionadoId] = useState<number | null>(null)
+
+    const { usuario, infoEmpresa } = useContext(AuthContext)
+
+    const handleConfirmarDevolucao = async () => {
+
+        if (!itemSelecionado) {
+            toast.error("Nenhum item selecionado para devolução.")
+            return
+        }
+
+        try {
+
+            await receberDevolucao(produtoSelecionadoId)
+
+            imprimirComprovante()
+
+            setModalContrato(false)
+            setItemSelecionado(null)
+
+        } catch (error) {
+            console.error("Falha no processo de devolução:", error)
+        }
+    }
+
 
     const {
 
@@ -67,14 +103,37 @@ export default function Convalescente() {
         setCriterio,
         setInput,
         setExcluir,
+        setFiltro,
 
         // --- Funções de Ação ---
         setarListaConv,
         listarConv,
         deletarConv,
-        receberDevolucao
+        receberDevolucao,
+        imprimirComprovante,
+        imprimirContrato
+
 
     } = useActionsListagem()
+
+
+
+    const {
+
+        chaveAtiva,
+        handleImpressaoConvalescenca,
+        handlePrint,
+        printState,
+        componentRefs,
+
+
+    } = useActionsPrintConvalescenca(
+        itemSelecionado,
+        setarListaConv,
+        usuario?.nome ?? "",
+        infoEmpresa?.id ?? "",
+    )
+
 
     const {
         currentPageData,
@@ -88,258 +147,322 @@ export default function Convalescente() {
     } = usePaginatedData({
         data: arrayFiltro,
         itemsPerPage: 10,
-        siblingCount: 2 // Equivalente ao seu pageRangeDisplayed={5}
+        siblingCount: 2
     });
 
-    const handleBuscaSubmit = (event: React.FormEvent) => {
-        event.preventDefault(); // Impede o recarregamento da página
-        listarConv();           // Chama sua função de busca do hook
-    };
-
+    useEffect(() => {
+        listarConv();
+    }, []);
 
     return (
-        <div className="flex flex-col w-full pl-10 pr-10 pt-4">
-            <Tooltip className="z-20" id="toolId" />
-            <div className="flex flex-row w-full p-2 border-b items-center">
-                <h1 className="scroll-m-20 text-gray-800 pb-2 text-2xl font-semibold tracking-tight first:mt-0">Controle Convalescente</h1>
-                <div className="flex items-end w-full gap-8">
-                    <div className="inline-flex gap-x-6">
-                        <div className="flex items-center gap-x-2">
-                            <Checkbox
-                                checked={pendente}
-                                onCheckedChange={() => { setPendente(!pendente) }}
-                            />
-                            <Label htmlFor="terms">ENTREGA PENDENTE</Label>
-                            {/* <input type="checkbox" checked={pendente} onChange={() => { setPendente(!pendente) }} className="w-4 h-4 text-blue-600  rounded    bg-gray-700 border-gray-600" />
-                            <label className="ms-2 text-sm font-medium whitespace-nowrap  text-gray-300">ENTREGA PENDENTE</label> */}
-                        </div>
-                        <div className="flex items-center gap-x-2">
-                            <Checkbox
-                                checked={aberto}
-                                onCheckedChange={() => { setAberto(!aberto) }}
-                            />
-                            <Label htmlFor="terms">ABERTO</Label>
-                        </div>
-                        <div className="flex items-center gap-x-2">
-                            <Checkbox
-                                checked={entregue}
-                                onCheckedChange={() => { setEntregue(!entregue) }}
-                            />
-                            <Label htmlFor="terms">ENTREGUE</Label>
+        <>
+
+            {/* {modalComprovante && (<div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                <div className="flex items-center justify-center p-2 w-full h-full">
+                    <div className="relative rounded-lg shadow bg-gray-800">
+                        <button type="button" onClick={() => setComprovante(!modalComprovante)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                            <button type="button" onClick={() => { }} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                                <IoIosClose size={30} />
+                            </button>
+                        </button>
+                        <div className="p-4 md:p-5 text-center">
+                            <div className="flex w-full justify-center items-center">
+                                <TbAlertTriangle className='text-gray-400' size={60} />
+                            </div>
+                            <h3 className="mb-5 text-lg font-normal  text-gray-400">Deseja Confirmar a devolução desse produto?</h3>
+                            <div className="flex flex-row gap-6 justify-center ">
+                                <button onClick={() => receberDev('FECHADO')} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2  focus:z-10 bg-green-700 text-gray-200 border-gray-500 hover:text-white hover:bg-green-600 focus:ring-gray-600">Sim, imprimir</button>
+
+                                <button onClick={() => setComprovante(false)} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2  focus:z-10 bg-red-700 text-gray-200 border-gray-500 hover:text-white hover:bg-red-600 focus:ring-gray-600">Não, cancelar</button>
+
+                            </div>
+
                         </div>
                     </div>
+                </div>
+            </div>)} */}
 
-                    <form className="flex w-full">
-                        <Select>
-                            <SelectTrigger className="max-w-48 rounded-r-none">
-                                <SelectValue placeholder="Selecione um criterio"/>
+
+            {modalContrato && itemSelecionado && (
+
+                <ModalConfirmar
+
+                    openModal={modalContrato}
+                    setOpenModal={() => {
+                        setModalContrato(false)
+                        setProdutoSelecionadoId(null)
+                    }}
+                    handleConfirmar={handleConfirmarDevolucao}
+                    pergunta="Qual produto você deseja fazer a devolução?"
+
+                >
+
+                    <div className="my-4 text-left">
+                        <Label htmlFor="estoque-select">Selecione o produto:</Label>
+                        <Select
+                            onValueChange={(value) => {
+
+                                setProdutoSelecionadoId(Number(value))
+                            }}
+                        >
+                            <SelectTrigger id="estoque-select">
+                                <SelectValue placeholder="Selecione um produto..." />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem onClick={() => { setCriterio('Contrato'), setDrop(false) }} value="Contrato">Contrato</SelectItem>
-                                <SelectItem onClick={() => { setCriterio('Titular'), setDrop(false) }} value="Titular">Titular</SelectItem>
-                                <SelectItem onClick={() => { setCriterio('Usuario'), setDrop(false) }} value="Usuário">Usuário</SelectItem>
+                                {itemSelecionado.convalescenca_prod?.map((produto: any) => (
+                                    <SelectItem
+                                        key={produto.id_produto}
+                                        value={produto.id_conv_prod}
+                                    >
+                                        {produto.descricao}
+                                    </SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
-                        <div className="flex relative w-[350px] ">
-                            <Input
-                                onChange={e => setInput(e.target.value)}
-                                type={criterio === "Contrato" ? "number" : "search"}
-                                placeholder="Buscar lançamento"
-                                className="rounded-none"
-                            />
-                            <Button
-                                onClick={() => listarConv()}
-                                className="rounded-l-none"
-                            >
-                                <Search />
-                            </Button>
-                        </div>
-
-
-
-                        {/* <button onClick={() => setDrop(!dropOpen)} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center rounded-s-lg focus:outline-none  bg-gray-600 hover:bg-gray-600 focus:ring-gray-700 text-white border-gray-600" type="button">{criterio}
-                            <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
-                            </svg>
-                        </button>
-                        {dropOpen && (
-                            <div className="absolute top-[134px] divide-gray-100 z-20 rounded-lg shadow  bg-gray-700">
-                                <ul className="py-2 text-sm text-gray-200">
-                                    <li >
-                                        <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={() => { setCriterio('Contrato'), setDrop(false) }}>Contrato</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={() => { setCriterio('Titular'), setDrop(false) }}>Titular</a>
-                                    </li>
-
-                                    <li>
-                                        <a href="#" className="block px-4 py-2  hover:bg-gray-600 hover:text-white" onClick={() => { setCriterio('Usuario'), setDrop(false) }}>Usuário</a>
-                                    </li>
-
-                                </ul>
-                            </div>
-                        )} */}
-                        {/* <div className=" relative w-[350px]">
-                            {/* <input value={input} onChange={e => setInput(e.target.value)} type={criterio === "Contrato" ? "number" : "search"} autoComplete="off" className="uppercase flex justify-center  p-2.5 w-full z-20 text-sm  rounded-e-lg rounded-s-gray-100 rounded-s-2 border bg-gray-700 border-gray-600 placeholder-gray-400 text-white " placeholder="Buscar Lançamento" required /> */}
-                        {/* <button onClick={() => listarConv()} type="button" className="absolute top-0 end-0 p-2.5 h-full text-sm font-medium text-white  rounded-e-lg border border-blue-700 focus:ring-4 focus:outline-none  bg-blue-600 hover:bg-blue-700 ">
-                                <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                </svg></button>
-                        </div> */}
-                    </form>
-                    <Button>
-                        <Link
-                            onClick={() => setarListaConv({
-                                bairro: '',
-                                bairro_r: '',
-                                cep: '',
-                                cep_r: '',
-                                cidade: '',
-                                cidade_r: '',
-                                complemento: '',
-                                complemento_r: '',
-                                contrato: { associado: { nome: '' }, carencia: '', situacao: '' },
-                                convalescenca_prod: [],
-                                cpf_cnpj: '',
-                                data: undefined,
-                                data_inc: undefined,
-                                descontos: undefined,
-                                forma_pag: '',
-                                hora_inc: undefined,
-                                id_associado: undefined,
-                                id_contrato: undefined,
-                                id_contrato_st: '',
-                                id_conv: undefined,
-                                logradouro: '',
-                                logradouro_r: '',
-                                nome: '',
-                                numero: undefined,
-                                numero_r: undefined,
-                                obs: '',
-                                status: '',
-                                subtotal: undefined,
-                                tipo_entrada: '',
-                                total: undefined,
-                                uf: '',
-                                uf_r: '',
-                                usuario: '',
-                                //  editar: false
-                            })}
-                            className="inline-flex justify-center items-center p-1 px-2 rounded-lg gap-2 text-sm"
-                            href='/dashboard/servicos/convalescencia/novoregistro'>
-                            <Plus size={36}/> Add
-                        </Link>
-                        
-                    </Button>
-                </div>
-                {excluir && (<div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                    <div className="flex items-center justify-center p-2 w-full h-full">
-                        <div className="relative rounded-lg shadow bg-gray-800">
-                            <button type="button" onClick={() => setExcluir(!excluir)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                                <button type="button" onClick={() => { }} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                                    <IoIosClose size={30} />
-                                </button>
-                            </button>
-                            <div className="p-4 md:p-5 text-center">
-                                <div className="flex w-full justify-center items-center">
-                                    <TbAlertTriangle className='text-gray-400' size={60} />
-                                </div>
-                                <h3 className="mb-5 text-lg font-normal  text-gray-400">Realmente deseja deletar esse lançamento?</h3>
-
-                                <button onClick={() => deletarConv()} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
-                                    Sim, tenho certeza
-                                </button>
-                                <button onClick={() => setExcluir(!excluir)} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
-                            </div>
-                        </div>
                     </div>
-                </div>)}
-            </div>
+                </ModalConfirmar>
 
-            <Table>
-                <TableCaption>A lista</TableCaption>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Contrato</TableHead>
-                        <TableHead>Titular</TableHead>
-                        <TableHead>Usuário</TableHead>
-                        <TableHead>Data</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Ações</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {currentPageData?.map((item, index) => (
-                        <TableRow key={index}>
-                            <TableCell>{item.id_contrato}</TableCell>
-                            <TableCell>{item.contrato?.associado.nome}</TableCell>
-                            <TableCell>{item.nome}</TableCell>
-                            <TableCell>{item.data ? format(new Date(item.data), 'dd/MM/yyyy') : '--/--/----'}  </TableCell>
-                            <TableCell>{item.convalescenca_prod.some((dados) => dados.status === 'PENDENTE') ?
-                                'PENDENTE' : item.convalescenca_prod.some(dados => dados.status === 'ABERTO') ? 'ABERTO' : 'FECHADO'}</TableCell>
-                            <TableCell>
-                                <div className="flex flex-row w-full gap-2">
-                                    <Link
-                                        onClick={() => setarListaConv({
-                                            ...item, convalescenca_prod: [...item.convalescenca_prod]
-                                        })}
-                                        data-tooltip-id="toolId"
-                                        data-tooltip-content={'Editar Dados'}
-                                        className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white"
-                                        href='/servicos/convalescencia/novoregistro'>
-                                        <LuFolderEdit size={18} />
-                                    </Link>
+            )}
 
-                                    <button data-tooltip-id="toolId" data-tooltip-content={'Excluir'} onClick={() => { setExcluir(true); setarListaConv({ id_conv: item.id_conv }) }} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
-                                        <MdDeleteOutline size={18} />
-                                    </button>
-                                </div>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-            <div className="flex flex-col w-full justify-center p-1 max-h-[calc(100vh-150px)]">
-                <Pagination className="inline-flex text-gray-500 gap-4 mt-4 ml-auto justify-end font-semibold">
-                    <PaginationContent>
-                        <PaginationItem>
-                            <PaginationPrevious
-                                href="#"
-                                onClick={(e) => { e.preventDefault(); previousPage(); }}
-                                className={isFirstPage ? "pointer-events-none text-gray-400" : undefined}
-                            >
-                                Anterior
-                            </PaginationPrevious>
-                        </PaginationItem>
+            {
 
-                        {paginationRange.map((pageNumber, index) => {
-                            if (pageNumber === DOTS) {
-                                return <PaginationItem key={`dots-${index}`}><PaginationEllipsis /></PaginationItem>;
+            }
+
+
+            <div className="flex flex-col w-full pl-10 pr-10 pt-4">
+                <Tooltip className="z-20" id="toolId" />
+                <div className="flex flex-row w-full p-2 border-b items-center">
+                    <h1 className="scroll-m-20 text-gray-800 pb-2 text-2xl font-semibold tracking-tight first:mt-0">Controle Convalescente</h1>
+                    <div className="flex items-end w-full gap-8">
+                        <div className="inline-flex gap-x-6">
+                            <div className="flex items-center gap-x-2">
+                                <Checkbox
+                                    checked={pendente}
+                                    onCheckedChange={() => { setPendente(!pendente) }}
+                                />
+                                <Label htmlFor="terms">ENTREGA PENDENTE</Label>
+                            </div>
+                            <div className="flex items-center gap-x-2">
+                                <Checkbox
+                                    checked={aberto}
+                                    onCheckedChange={() => { setAberto(!aberto) }}
+                                />
+                                <Label htmlFor="terms">ABERTO</Label>
+                            </div>
+                            <div className="flex items-center gap-x-2">
+                                <Checkbox
+                                    checked={entregue}
+                                    onCheckedChange={() => { setEntregue(!entregue) }}
+                                />
+                                <Label htmlFor="terms">ENTREGUE</Label>
+                            </div>
+                        </div>
+
+                        <div className="flex w-full">
+                            <Select onValueChange={(value) => {
+                                setCriterio(value);
+                                setInput('')
                             }
-                            return (
-                                <PaginationItem key={pageNumber}>
-                                    <PaginationLink
-                                        href="#"
-                                        onClick={(e) => { e.preventDefault(); goToPage(pageNumber as number); }}
-                                        isActive={pageNumber === currentPage}
-                                    >
-                                        {pageNumber}
-                                    </PaginationLink>
-                                </PaginationItem>
-                            );
-                        })}
-                        <PaginationItem>
-                            <PaginationNext
-                                href="#"
-                                onClick={(e) => { e.preventDefault(); nextPage(); }}
-                                className={isLastPage ? "pointer-events-none text-gray-400" : undefined}
+                            }>
+                                <SelectTrigger className="max-w-48 rounded-r-none">
+                                    <SelectValue placeholder="Selecione um criterio" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Contrato">Contrato</SelectItem>
+                                    <SelectItem value="Titular">Titular</SelectItem>
+                                    <SelectItem value="Usuário">Usuário</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <div className="flex relative w-[350px] ">
+                                <Input
+                                    value={input}
+                                    onChange={e => setInput(e.target.value)}
+                                    type={criterio === "Contrato" ? "number" : "search"}
+                                    placeholder="Buscar lançamento"
+                                    className="rounded-none"
+                                />
+                            </div>
+                        </div>
+                        <Button
+                            data-tooltip-id="toolId"
+                            data-tooltip-content={'Adicionar Novo Registro'}
+                        >
+                            <Link
+                                onClick={() => setarListaConv({
+                                    bairro: '',
+                                    bairro_r: '',
+                                    cep: '',
+                                    cep_r: '',
+                                    cidade: '',
+                                    cidade_r: '',
+                                    complemento: '',
+                                    complemento_r: '',
+                                    contrato: { associado: { nome: '' }, carencia: '', situacao: '' },
+                                    convalescenca_prod: [],
+                                    cpf_cnpj: '',
+                                    data: undefined,
+                                    data_inc: undefined,
+                                    descontos: undefined,
+                                    forma_pag: '',
+                                    hora_inc: undefined,
+                                    id_associado: undefined,
+                                    id_contrato: undefined,
+                                    id_contrato_st: '',
+                                    id_conv: undefined,
+                                    logradouro: '',
+                                    logradouro_r: '',
+                                    nome: '',
+                                    numero: undefined,
+                                    numero_r: undefined,
+                                    obs: '',
+                                    status: '',
+                                    subtotal: undefined,
+                                    tipo_entrada: '',
+                                    total: undefined,
+                                    uf: '',
+                                    uf_r: '',
+                                    usuario: '',
+                                    //  editar: false
+                                })}
+                                className="inline-flex justify-center items-center p-1 px-2 rounded-lg gap-2 text-sm"
+                                href='/dashboard/servicos/convalescencia/novoregistro'
+
                             >
-                                Próximo
-                            </PaginationNext>
-                        </PaginationItem>
-                    </PaginationContent>
-                </Pagination>
+                                <Plus size={36} /> Add
+                            </Link>
+
+                        </Button>
+                    </div>
+                    {excluir && (<div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                        <div className="flex items-center justify-center p-2 w-full h-full">
+                            <div className="relative rounded-lg shadow bg-gray-800">
+                                <button type="button" onClick={() => setExcluir(!excluir)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                                    <button type="button" onClick={() => { }} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
+                                        <IoIosClose size={30} />
+                                    </button>
+                                </button>
+                                <div className="p-4 md:p-5 text-center">
+                                    <div className="flex w-full justify-center items-center">
+                                        <TbAlertTriangle className='text-gray-400' size={60} />
+                                    </div>
+                                    <h3 className="mb-5 text-lg font-normal  text-gray-400">Realmente deseja deletar esse lançamento?</h3>
+
+                                    <button onClick={() => deletarConv()} data-modal-hide="popup-modal" type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none  focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+                                        Sim, tenho certeza
+                                    </button>
+                                    <button onClick={() => setExcluir(!excluir)} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2.5  focus:z-10 bg-gray-700 text-gray-300 border-gray-500 hover:text-white hover:bg-gray-600 focus:ring-gray-600">Não, cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>)}
+                </div>
+
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Contrato</TableHead>
+                            <TableHead>Titular</TableHead>
+                            <TableHead>Usuário</TableHead>
+                            <TableHead>Data</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Ações</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {currentPageData?.map((item, index) => (
+                            <TableRow key={index}>
+                                <TableCell>{item.id_contrato}</TableCell>
+                                <TableCell>{item.contrato?.associado?.nome}</TableCell>
+                                <TableCell>{item.nome}</TableCell>
+                                <TableCell>{item.data ? format(new Date(item.data), 'dd/MM/yyyy') : '--/--/----'}  </TableCell>
+                                <TableCell> {
+                                    item.status.toUpperCase() === 'PENDENTE'
+                                        ? 'PENDENTE'
+                                        : item.status.toUpperCase() === 'ABERTO'
+                                            ? 'ABERTO'
+                                            : 'ENTREGUE'
+                                }</TableCell>
+                                <TableCell>
+                                    <div className="flex flex-row w-full gap-2">
+                                        <Link
+                                            data-tooltip-id="toolId"
+                                            data-tooltip-content={'Editar Dados'}
+                                            className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white"
+                                            href={`/dashboard/servicos/convalescencia/editar/${item.id_conv}`}>
+                                            <LuFolderEdit size={18} />
+                                        </Link>
+                                        <button data-tooltip-id="toolId" data-tooltip-content={'Excluir'} onClick={() => { setExcluir(true); setarListaConv({ id_conv: item.id_conv }) }} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
+                                            <MdDeleteOutline size={18} />
+                                        </button>
+
+
+
+
+                                        <button
+
+                                            data-tooltip-id="toolId"
+                                            data-tooltip-content={'Devolver produto'}
+                                            onClick={() => {
+
+                                                setItemSelecionado(item)
+                                                setModalContrato(true)
+
+                                            }}
+                                            type="button"
+                                        >
+                                            <FileUp />
+                                        </button>
+
+
+
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+                <div className="flex flex-col w-full justify-center p-1 max-h-[calc(100vh-150px)]">
+                    <Pagination className="inline-flex text-gray-500 gap-4 mt-4 ml-auto justify-end font-semibold">
+                        <PaginationContent>
+                            <PaginationItem>
+                                <PaginationPrevious
+                                    href="#"
+                                    onClick={(e) => { e.preventDefault(); previousPage(); }}
+                                    className={isFirstPage ? "pointer-events-none text-gray-400" : undefined}
+                                >
+                                    Anterior
+                                </PaginationPrevious>
+                            </PaginationItem>
+
+                            {paginationRange.map((pageNumber, index) => {
+                                if (pageNumber === DOTS) {
+                                    return <PaginationItem key={`dots-${index}`}><PaginationEllipsis /></PaginationItem>;
+                                }
+                                return (
+                                    <PaginationItem key={pageNumber}>
+                                        <PaginationLink
+                                            href="#"
+                                            onClick={(e) => { e.preventDefault(); goToPage(pageNumber as number); }}
+                                            isActive={pageNumber === currentPage}
+                                        >
+                                            {pageNumber}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                );
+                            })}
+                            <PaginationItem>
+                                <PaginationNext
+                                    href="#"
+                                    onClick={(e) => { e.preventDefault(); nextPage(); }}
+                                    className={isLastPage ? "pointer-events-none text-gray-400" : undefined}
+                                >
+                                    Próximo
+                                </PaginationNext>
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                </div>
             </div>
-        </div>
+        </>
     )
 }

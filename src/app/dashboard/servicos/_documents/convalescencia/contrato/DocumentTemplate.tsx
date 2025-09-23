@@ -5,7 +5,7 @@ import logo from "../../../../public/logoafap.png"
 
 import React, { forwardRef } from 'react';
 
-interface DadosProps {
+export interface DadosProps {
   nome: string,
   cpf: string,
   rg: string,
