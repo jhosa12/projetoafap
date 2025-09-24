@@ -320,35 +320,15 @@ export default function Convalescente() {
 
             <div className="flex flex-col w-full pl-10 pr-10 pt-4">
                 <Tooltip className="z-20" id="toolId" />
-                <div className="flex flex-row w-full p-2 border-b items-center">
+                <div className="flex flex-col lg:flex-row w-full p-2 border-b items-start lg:items-center justify-between gap-4">
 
-                    <h1 className="scroll-m-20 text-gray-800 pb-2 text-2xl font-semibold tracking-tight first:mt-0">Controle Convalescente</h1>
-                    <div className="flex items-end w-full gap-8">
-                        <div className="inline-flex gap-x-6">
-                            <div className="flex items-center gap-x-2">
-                                <Checkbox
-                                    checked={pendente}
-                                    onCheckedChange={() => { setPendente(!pendente) }}
-                                />
-                                <Label htmlFor="terms">ENTREGA PENDENTE</Label>
-                            </div>
-                            <div className="flex items-center gap-x-2">
-                                <Checkbox
-                                    checked={aberto}
-                                    onCheckedChange={() => { setAberto(!aberto) }}
-                                />
-                                <Label htmlFor="terms">ABERTO</Label>
-                            </div>
-                            <div className="flex items-center gap-x-2">
-                                <Checkbox
-                                    checked={entregue}
-                                    onCheckedChange={() => { setEntregue(!entregue) }}
-                                />
-                                <Label htmlFor="terms">ENTREGUE</Label>
-                            </div>
-                        </div>
+                    <h1 className="scroll-m-20 text-gray-800 text-2xl font-semibold tracking-tight whitespace-nowrap">
+                        Controle Convalescente
+                    </h1>
 
-                        <div className="flex w-full gap-8">
+                    <div className="flex flex-col md:flex-row w-full md:w-auto items-end gap-4">
+
+                        <div className="flex flex-wrap gap-4 w-full justify-start md:w-auto md:justify-end">
                             <Button
                                 variant="outline"
                                 onClick={() => handleImprimirModal('contrato')}
@@ -386,55 +366,56 @@ export default function Convalescente() {
                                 Excluir
                             </Button>
                         </div>
-                        <Button
-                            data-tooltip-id="toolId"
-                            data-tooltip-content={'Adicionar Novo Registro'}
-                        >
-                            <Link
-                                onClick={() => setarListaConv({
-                                    bairro: '',
-                                    bairro_r: '',
-                                    cep: '',
-                                    cep_r: '',
-                                    cidade: '',
-                                    cidade_r: '',
-                                    complemento: '',
-                                    complemento_r: '',
-                                    contrato: { associado: { nome: '' }, carencia: '', situacao: '' },
-                                    convalescenca_prod: [],
-                                    cpf_cnpj: '',
-                                    data: undefined,
-                                    data_inc: undefined,
-                                    descontos: undefined,
-                                    forma_pag: '',
-                                    hora_inc: undefined,
-                                    id_associado: undefined,
-                                    id_contrato: undefined,
-                                    id_contrato_st: '',
-                                    id_conv: undefined,
-                                    logradouro: '',
-                                    logradouro_r: '',
-                                    nome: '',
-                                    numero: undefined,
-                                    numero_r: undefined,
-                                    obs: '',
-                                    status: '',
-                                    subtotal: undefined,
-                                    tipo_entrada: '',
-                                    total: undefined,
-                                    uf: '',
-                                    uf_r: '',
-                                    usuario: '',
-                                    //  editar: false
-                                })}
-                                className="inline-flex justify-center items-center p-1 px-2 rounded-lg gap-2 text-sm"
-                                href='/dashboard/servicos/convalescencia/novoregistro'
 
+                        <div className="flex-shrink-0">
+                            <Button
+                                data-tooltip-id="toolId"
+                                data-tooltip-content={'Adicionar Novo Registro'}
                             >
-                                <Plus size={36} /> Add
-                            </Link>
-
-                        </Button>
+                                <Link
+                                    onClick={() => setarListaConv({
+                                        bairro: '',
+                                        bairro_r: '',
+                                        cep: '',
+                                        cep_r: '',
+                                        cidade: '',
+                                        cidade_r: '',
+                                        complemento: '',
+                                        complemento_r: '',
+                                        contrato: { associado: { nome: '' }, carencia: '', situacao: '' },
+                                        convalescenca_prod: [],
+                                        cpf_cnpj: '',
+                                        data: undefined,
+                                        data_inc: undefined,
+                                        descontos: undefined,
+                                        forma_pag: '',
+                                        hora_inc: undefined,
+                                        id_associado: undefined,
+                                        id_contrato: undefined,
+                                        id_contrato_st: '',
+                                        id_conv: undefined,
+                                        logradouro: '',
+                                        logradouro_r: '',
+                                        nome: '',
+                                        numero: undefined,
+                                        numero_r: undefined,
+                                        obs: '',
+                                        status: '',
+                                        subtotal: undefined,
+                                        tipo_entrada: '',
+                                        total: undefined,
+                                        uf: '',
+                                        uf_r: '',
+                                        usuario: '',
+                                        //  editar: false
+                                    })}
+                                    className="inline-flex justify-center items-center p-1 px-2 rounded-lg gap-2 text-sm"
+                                    href='/dashboard/servicos/convalescencia/novoregistro'
+                                >
+                                    <Plus size={36} /> Add
+                                </Link>
+                            </Button>
+                        </div>
                     </div>
                 </div>
                 <div>
