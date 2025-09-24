@@ -1,5 +1,5 @@
 import useApiGet from "@/hooks/useApiGet";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ModalItem } from "./modalItem/modalItem";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import useApiPost from "@/hooks/useApiPost";
@@ -107,9 +107,16 @@ interface CadastroRequest {
 }
 
 
+interface Props{
+  open:boolean,
+  setOpen:Dispatch<SetStateAction<boolean>>
 
-export function Historico() {
-  const [open,setOpen] = useState(false)
+}
+
+
+
+export function Historico({open,setOpen}:Props) {
+ 
   const {
     postData,
     data,
@@ -333,9 +340,7 @@ try{
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="ml-2 text-sm ">
-        Histórico
-      </DialogTrigger>
+      
       <DialogContent className="max-w-6xl">
         <DialogHeader>
           <DialogTitle>Leads/Prospecões/Vendas</DialogTitle>
