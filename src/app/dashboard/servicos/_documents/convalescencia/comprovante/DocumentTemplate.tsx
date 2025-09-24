@@ -36,8 +36,6 @@ const DocumentTemplateComprovante = forwardRef<HTMLDivElement, DadosProps>((prop
       <span className="p-2">Condição do(s) Item(s):{condicao}</span>
       <div className="flex flex-row w-full p-2">
         <div className="flex flex-col w-1/2 p-2 justify-center items-center " >
-
-
           <span className="flex w-full border-b-[1px]  border-black"></span>
           <span className="pt-2  text-center ">Assinatura do Recebedor</span>
         </div>

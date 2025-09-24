@@ -1,3 +1,4 @@
+import { ProdutosProps } from "@/app/dashboard/admcontrato/_types/produtos";
 import Image from "next/image";
 
 
@@ -15,7 +16,7 @@ export interface DadosProps {
   uf: string,
   telefone: string,
   contrato: number,
-  material: string
+  material: ProdutosProps[]
 }
 
 const DocumentTemplateContrato = forwardRef<HTMLDivElement, DadosProps>((props, ref) => {
@@ -42,8 +43,10 @@ const DocumentTemplateContrato = forwardRef<HTMLDivElement, DadosProps>((props, 
   const dataAtual = new Date();
   const dt = dataAtual.toLocaleDateString('pt-BR', options)
 
+  console.log("Conteudo chegado no documento contrato", props)
+
   return (
-    <div className='flex flex-col w-full '>
+    <div className='flex flex-col w-full' ref={ref}>
       <div className="flex w-full justify-center mt-4">
         <Image className="flex w-40 h-16 mr-7 " src={"/logoafap.png"} alt="Logo da AFAP" width={160}
           height={64} />
@@ -81,10 +84,18 @@ const DocumentTemplateContrato = forwardRef<HTMLDivElement, DadosProps>((props, 
         os pacientes que fazem uso do mesmo.<br /><br />
         3- Será cobrado o valor de R$ ___________ mensalmente.<br /><br />
         Assinam este contrato em duas vias de igual teor.<br /><br />
-        Material: {material}<br /><br /><br />
-        CEDRO-CE, {dt}.
       </p>
-
+      <div className="my-4">
+        <span className="px-2 font-semibold">Materiais:</span>
+        <ul className="list-disc pl-10 mt-2">
+          {material?.map((produto) => (
+            <li key={produto.id_produto} className="py-1">
+               {produto.descricao}
+            </li>
+          ))}
+        </ul>
+      </div><br /><br /><br />
+      CEDRO-CE, {dt}.
     </div>
   );
 })

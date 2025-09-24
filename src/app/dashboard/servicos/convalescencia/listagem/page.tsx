@@ -102,11 +102,9 @@ export default function Convalescente() {
 
     const {
 
-        chaveAtiva,
-        handleImpressaoConvalescenca,
-        handlePrint,
-        printState,
+        iniciarImpressao,
         componentRefs,
+        documentoAtivo
 
 
     } = useActionsPrintConvalescenca(
@@ -120,7 +118,6 @@ export default function Convalescente() {
             setModal(false),
             setItemSelecionado(false)
             setProdutoSelecionadoId(null)
-            setModalImprimirBotoes(false)
             setTentandoImprimir(null)
             setDocumentoImprimir(null);
         },
@@ -145,28 +142,28 @@ export default function Convalescente() {
 
     });
 
-    const handleConfirmarDevolucao = async () => {
+    // const handleConfirmarDevolucao = async () => {
 
-        if (!itemSelecionado) {
-            toast.error("Nenhum item selecionado para devolução.")
-            return
-        }
+    //     if (!itemSelecionado) {
+    //         toast.error("Nenhum item selecionado para devolução.")
+    //         return
+    //     }
 
-        const materialFiltrado = (itemSelecionado.convalescenca_prod ?? []).filter(
-            (produto: any) => produto.id_conv_prod === produtoSelecionadoId
-        );
+    //     const materialFiltrado = (itemSelecionado.convalescenca_prod ?? []).filter(
+    //         (produto: any) => produto.id_conv_prod === produtoSelecionadoId
+    //     );
 
-        setMaterialParaImpressao(materialFiltrado);
-        try {
+    //     setMaterialParaImpressao(materialFiltrado);
+    //     try {
 
-            await receberDevolucao(produtoSelecionadoId)
+    //         await receberDevolucao(produtoSelecionadoId)
 
-            handleImpressaoConvalescenca()
+    //         iniciarImpressao(documentoImprimir)
 
-        } catch (error) {
-            toast.error("Não foi possível alterar o status.");
-        }
-    }
+    //     } catch (error) {
+    //         toast.error("Não foi possível alterar o status.");
+    //     }
+    // }
 
     const linhaSelecionada: ConvProps | null = React.useMemo(() => {
         const indicesSelecionados = Object.keys(rowSelection)
@@ -190,6 +187,7 @@ export default function Convalescente() {
         console.log("Objeto completo:", linhaSelecionada);
         console.log("Nome:", linhaSelecionada.nome);
         console.log("ID Contrato Global:", linhaSelecionada.id_contrato_global);
+
         console.log("-----------------------------------------");
 
         setItemSelecionado(linhaSelecionada)
@@ -202,20 +200,10 @@ export default function Convalescente() {
     const handleExecutarImpressao = async () => {
         if (!documentoImprimir) return;
 
-        if (documentoImprimir === 'comprovanteGenerico') {
-            try {
-                console.log("CALLBACK REF ACIONADO! Iniciando processo de impressão...");
-                handleImpressaoConvalescenca()
-                console.log("Processo de impressão concluído. Limpando estados.");
-            } catch (error) {
-
-                toast.error("Ocorreu um erro durante a impressão.")
-
-            }
+        if (documentoImprimir) {
+            iniciarImpressao(documentoImprimir)
         }
-
-        setTentandoImprimir(documentoImprimir)
-
+    
         setModalImprimirBotoes(false);
     };
 
@@ -232,18 +220,6 @@ export default function Convalescente() {
         }
     }
 
-    useEffect(() => {
-        console.log("--- ETAPA 3: useEffect ACIONADO ---");
-        console.log("Valor de 'tentandoImprimir':", tentandoImprimir);
-        console.log("Valor de 'itemSelecionado':", itemSelecionado);
-        if (tentandoImprimir && itemSelecionado?.nome) {
-            console.log("%cSUCESSO: Condição atendida! CHAMANDO handlePrint() AGORA!", "color: green; font-weight: bold;");
-            handlePrint(tentandoImprimir);
-        } else {
-            console.warn("AVISO: A condição para imprimir não foi atendida.");
-        }
-    }, [tentandoImprimir, itemSelecionado]);
-
 
     useEffect(() => {
         listarConv();
@@ -251,7 +227,7 @@ export default function Convalescente() {
 
     return (
         <>
-            {modal && itemSelecionado && (
+            {/* {modal && itemSelecionado && (
 
                 <ModalConfirmar
 
@@ -295,7 +271,7 @@ export default function Convalescente() {
                         <Label htmlFor="terms">Imprimir Comprovante</Label>
                     </div>
                 </ModalConfirmar>
-            )}
+            )} */}
 
             {excluir && (
                 <ModalConfirmar
@@ -311,7 +287,7 @@ export default function Convalescente() {
                     openModal={modalImprimirBotoes}
                     setOpenModal={() => setModalImprimirBotoes(false)}
                     handleConfirmar={handleExecutarImpressao}
-                    pergunta="Realmente deseja imprimir este comprovante?"
+                    pergunta={`Realmente deseja imprimir: ${documentoImprimir}?`}
                 />
             )}
 
@@ -347,13 +323,17 @@ export default function Convalescente() {
                         </div>
 
                         <div className="flex w-full gap-8">
-                            <Button variant="outline">
+                            <Button
+                                variant="outline"
+                                onClick={() => handleImprimirModal('contrato')}
+                                className="flex items-center gap-2">
                                 <Printer />
                                 Contrato
                             </Button>
                             <Button
                                 variant="outline"
                                 onClick={() => handleImprimirModal('comprovanteGenerico')}
+                                className="flex items-center gap-2"
                             >
                                 <ReceiptIcon />
                                 Comprovante
@@ -364,18 +344,18 @@ export default function Convalescente() {
                                 asChild
                             >
                                 <Link
-                                    href={`/dashboard/servicos/convalescencia/editar/${linhaSelecionada?.id_conv}`}
-                                >
-                                    <span>
-                                        <FileEditIcon />
-                                        Editar
-                                    </span>
+                                    href={`/dashboard/servicos/convalescencia/editar/${linhaSelecionada?.id_conv}`}>
+                                    <div className="flex items-center gap-2">
+                                        <FileEditIcon /> Editar
+                                    </div>
                                 </Link>
                             </Button>
 
                             <Button
                                 variant="outline"
-                                onClick={handleExcluir}>
+                                onClick={handleExcluir}
+                                className="flex items-center gap-2"
+                            >
                                 <Trash />
                                 Excluir
                             </Button>
@@ -430,8 +410,6 @@ export default function Convalescente() {
 
                         </Button>
                     </div>
-
-
                 </div>
                 <div>
                     <TabelaCompleta
@@ -442,91 +420,26 @@ export default function Convalescente() {
                     />
                 </div>
 
-
-                {/* <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Contrato</TableHead>
-                            <TableHead>Titular</TableHead>
-                            <TableHead>Usuário</TableHead>
-                            <TableHead>Data</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Ações</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {currentPageData?.map((item, index) => (
-                            <TableRow key={index}>
-                                <TableCell>{item.id_contrato}</TableCell>
-                                <TableCell>{item.contrato?.associado?.nome}</TableCell>
-                                <TableCell>{item.nome}</TableCell>
-                                <TableCell>{item.data ? format(new Date(item.data), 'dd/MM/yyyy') : '--/--/----'}  </TableCell>
-                                <TableCell> {
-                                    item.status.toUpperCase() === 'PENDENTE'
-                                        ? 'PENDENTE'
-                                        : item.status.toUpperCase() === 'ABERTO'
-                                            ? 'ABERTO'
-                                            : 'ENTREGUE'
-                                }</TableCell>
-                                <TableCell>
-                                    <div className="flex flex-row w-full gap-2">
-                                        <Link
-                                            data-tooltip-id="toolId"
-                                            data-tooltip-content={'Editar Dados'}
-                                            className="text-yellow-500 hover:bg-yellow-500 p-1 rounded-lg hover:text-white"
-                                            href={`/dashboard/servicos/convalescencia/editar/${item.id_conv}`}>
-                                            <LuFolderEdit size={18} />
-                                        </Link>
-                                        <button data-tooltip-id="toolId" data-tooltip-content={'Excluir'} onClick={() => { setExcluir(true); setarListaConv({ id_conv: item.id_conv }) }} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
-                                            <MdDeleteOutline size={18} />
-                                        </button>
-
-
-
-
-                                        <button
-
-                                            data-tooltip-id="toolId"
-                                            data-tooltip-content={'Devolver produto'}
-                                            onClick={() => {
-
-                                                setItemSelecionado(item)
-                                                setModal(true)
-
-                                            }}
-                                            type="button"
-                                        >
-                                            <FileUp />
-                                        </button>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table> */}
-
-
                 <div style={{ display: "none" }}>
 
-                    {printState.contrato && (
+                    {documentoAtivo  === 'contrato' && itemSelecionado &&(
                         <DocumentTemplateContrato
-                            bairro={dadosassociado?.bairro ?? ""}//
-                            cidade={dadosassociado?.cidade ?? ""}//                          
-                            cpf={dadosassociado?.cpfcnpj ?? ""}//                           
-                            uf={dadosassociado?.uf ?? ""}//
-                            nome={dadosassociado?.nome ?? ""} // 
-                            rg={dadosassociado?.rg ?? ""}//
-                            telefone={dadosassociado?.celular1 ?? ""}//
+                            bairro={itemSelecionado?.bairro ?? ""}
+                            cidade={itemSelecionado?.cidade ?? ""}                        
+                            cpf={itemSelecionado?.cpfcnpj ?? ""}                           
+                            uf={itemSelecionado?.uf ?? ""}
+                            nome={itemSelecionado?.nome ?? ""} 
+                            rg={itemSelecionado?.rg ?? ""}
+                            telefone={itemSelecionado?.celular1 ?? ""}
+                            contrato={itemSelecionado?.contrato?.id_contrato ?? 0}
+                            logradouro={itemSelecionado?.endereco ?? ""}
+                            material={itemSelecionado?.convalescenca_prod ?? []}
                             ref={componentRefs.contrato}
-                            contrato={dadosassociado?.contrato?.id_contrato ?? 0}
-                            logradouro={dadosassociado?.endereco ?? ""}
-                            material={itemSelecionado?.convalescenca_prod.filter(
-                                (produto: any) => produto.id_conv_prod === Number(produtoSelecionadoId))}
                         />
                     )}
 
 
-                    {printState.comprovante && (
+                    {documentoAtivo === 'comprovante' && itemSelecionado && (
 
                         <DocumentTemplateComprovante
 
@@ -537,7 +450,7 @@ export default function Convalescente() {
                         />
                     )}
 
-                    {printState.comprovanteGenerico && (
+                    {documentoAtivo === 'comprovanteGenerico' && itemSelecionado && (
 
                         <DocumentTemplateComprovanteGenerico
                             nome={itemSelecionado?.nome ?? ""}

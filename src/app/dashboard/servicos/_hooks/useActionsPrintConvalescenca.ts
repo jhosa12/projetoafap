@@ -1,7 +1,7 @@
 import { ImpressoesProps } from './../../admcontrato/_types/impressoes';
 import { ConvProps } from "../_types/convalescente";
 import DocumentTemplateContrato from "../_documents/convalescencia/contrato/DocumentTemplate";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { boolean } from "zod";
 import { removerFusoDate } from "@/utils/removerFusoDate";
@@ -23,17 +23,7 @@ export function useActionsPrintConvalescenca(
 
 
 ) {
-
-  const [printState, setPrintState] = useState<{ [key in Docs]: boolean }>({
-    contrato: false,
-    comprovante: false,
-    comprovanteGenerico: false
-  })
-
-  const chaveAtiva = printState
-    ? Object.entries(printState).find(([_, valor]) => valor === true)?.[0]
-    : null
-
+  const [documentoAtivo, setDocumentoAtivo] = useState<Docs | null>(null);
 
   const componentRefs = {
     contrato: useRef<HTMLDivElement>(null),
@@ -41,21 +31,7 @@ export function useActionsPrintConvalescenca(
     comprovanteGenerico: useRef<HTMLDivElement>(null)
   }
 
-  const handlePrint = (doc: Docs) => {
-    
-    setPrintState((prev) => ({ ...prev, [doc]: !prev[doc] }))
-  }
-
-  const handleImpressaoConvalescenca = useCallback(async () => {
-
-    if (printState.contrato) imprimirContrato();
-    if (printState.comprovante) imprimirComprovante();
-    if (printState.comprovanteGenerico) imprimirComprovanteGenerico();
-
-  }, [printState])
-
-
-  const handleRegisterImpressao = useCallback(async (arquivo: Docs) => {
+  const handleRegisterImpressao = async (arquivo: Docs) => {
     const { newDate } = removerFusoDate(new Date())
     const impressoes = [...(itemSelecionado?.contrato?.impressoes || [])]
     const index = impressoes.findIndex((imp) => imp.arquivo === arquivo)
@@ -67,76 +43,75 @@ export function useActionsPrintConvalescenca(
     }
     try {
 
-      const response = await api.put("/contrato/impressoes", {
-        id_contrato_global: idContratoGlobal,
+       await api.put("/contrato/impressoes", {
+        id_contrato_global: itemSelecionado?.id_contrato_global,
         impressoes,
       });
 
-      
-      handlePrint(arquivo)
-
-      const novasImpressoes = response.data.impressoes
-
-      const convAtualizada: Partial<ConvProps> = {
-        ...itemSelecionado,
-        contrato: {
-          ...itemSelecionado?.contrato,
-          impressoes: novasImpressoes
-
-        }
-
-      }
-      setarListaConv(convAtualizada);
-
-      onClose?.()
-
+      toast.success(`Registro de impressão para ${arquivo} salvo.`)
+    
     } catch (error) {
       console.error("ERRO CAPTURADO:", error);
       toast.error("Erro ao registrar impressão");
+      throw error;
     }
-  }, [itemSelecionado, usuario, setarListaConv])
+  }
+
+  const limparEstadoPosImpressao = () => {
+    console.log("Impressão concluída ou cancelada. Limpando estado.")
+    setDocumentoAtivo(null)
+    onClose?.()
+
+  }
 
 
   const imprimirContrato = useReactToPrint({
     pageStyle: pageStyle,
     documentTitle: "CONTRATO",
     contentRef: componentRefs.contrato,
-    onBeforePrint: async () => {
-      await handleRegisterImpressao('contrato');
-    },
+    onBeforePrint: () => handleRegisterImpressao('contrato'),
+    onAfterPrint: limparEstadoPosImpressao,
   })
 
   const imprimirComprovante = useReactToPrint({
     pageStyle: pageStyle,
     documentTitle: "COMPROVANTE",
     contentRef: componentRefs.comprovante,
-    onBeforePrint: async () => {
-      await handleRegisterImpressao('comprovante');
-    },
-    onAfterPrint: () => {
-      handlePrint('comprovante'); 
-      onClose?.(); 
-    },
+    onBeforePrint: () =>  handleRegisterImpressao('comprovante'),
+    onAfterPrint: limparEstadoPosImpressao,
   })
+
   const imprimirComprovanteGenerico = useReactToPrint({
     pageStyle: pageStyle,
     documentTitle: "COMPROVANTE",
     contentRef: componentRefs.comprovanteGenerico,
-    onBeforePrint: async () => {
-      await handleRegisterImpressao('comprovanteGenerico');
-    },
-    onAfterPrint: () => {
-      handlePrint('comprovante'); 
-      onClose?.(); 
-    },
+    onBeforePrint: () =>  handleRegisterImpressao('comprovanteGenerico'),
+    onAfterPrint:  limparEstadoPosImpressao 
+
   })
 
+  useEffect(() => {
+    if (documentoAtivo) {
+      console.log(`useEffect do hook detectou: '${documentoAtivo}'. Acionando a impressão.`);
+      if (documentoAtivo === 'contrato') {
+        imprimirContrato();
+      } else if (documentoAtivo === 'comprovanteGenerico') {
+        imprimirComprovanteGenerico();
+      } else if (documentoAtivo === 'comprovante') {
+        imprimirComprovante()
+      }
+    }
+  }, [documentoAtivo]);
+
+  const iniciarImpressao = (doc: Docs) => {
+    console.log(`Componente solicitou impressão para: '${doc}'`);
+    setDocumentoAtivo(doc);
+  };
+
   return {
-    printState,
-    handleImpressaoConvalescenca,
-    chaveAtiva,
-    handlePrint,
-    componentRefs
+    iniciarImpressao,      
+    componentRefs,
+    documentoAtivo
   }
 
 }
