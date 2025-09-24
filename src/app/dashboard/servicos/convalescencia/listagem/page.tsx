@@ -12,25 +12,7 @@ import { format } from "date-fns";
 import { Search, Plus, FileText, Printer, FileTextIcon, Receipt, ReceiptIcon, FileEditIcon, Trash } from 'lucide-react';
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label";
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
 import { usePaginatedData, DOTS } from "../../_hooks/useActionsPaginacao";
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination"
 import {
     Select,
     SelectContent,
@@ -65,16 +47,24 @@ import { AnyAaaaRecord } from "node:dns";
 import { TabelaCompleta } from "../../_components/convalescentes/data-table";
 import { ConvProps } from "../../_types/convalescente";
 import { columns } from "../../_components/convalescentes/colunas-listagem";
-
+import { truncate } from "node:fs";
+import DocumentTemplateComprovanteGenerico from "../../_documents/convalescencia/comprovante/DocumentTemplateGenerico";
+import { Docs } from "../../_hooks/useActionsPrintConvalescenca";
+import { useTimeout } from "usehooks-ts";
 
 
 
 export default function Convalescente() {
     const [modal, setModal] = useState(false)
+    const [modalImprimirBotoes, setModalImprimirBotoes] = useState(false)
+    const [documentoImprimir, setDocumentoImprimir] = useState<Docs | null>(null)
     const [itemSelecionado, setItemSelecionado] = useState<any | null>(null);
     const [produtoSelecionadoId, setProdutoSelecionadoId] = useState<number | null>(null)
-    const { usuario, infoEmpresa, dadosassociado } = useContext(AuthContext)
     const [materialParaImpressao, setMaterialParaImpressao] = useState<any[]>([]);
+    const [idContratoParaImpressao, setIdContratoParaImpressao] = useState<number | null>(null);
+    const [tentandoImprimir, setTentandoImprimir] = useState<Docs | null>(null);
+
+    const { usuario, infoEmpresa, dadosassociado } = useContext(AuthContext)
 
     const [rowSelection, setRowSelection] = useState({});
 
@@ -121,6 +111,7 @@ export default function Convalescente() {
 
     } = useActionsPrintConvalescenca(
         itemSelecionado,
+        idContratoParaImpressao,
         usuario?.nome ?? "",
         infoEmpresa?.id ?? "",
         setarListaConv,
@@ -129,10 +120,11 @@ export default function Convalescente() {
             setModal(false),
             setItemSelecionado(false)
             setProdutoSelecionadoId(null)
-        }
-
+            setModalImprimirBotoes(false)
+            setTentandoImprimir(null)
+            setDocumentoImprimir(null);
+        },
     )
-
 
     const {
 
@@ -183,17 +175,75 @@ export default function Convalescente() {
         }
 
         const indice = parseInt(indicesSelecionados[0], 10)
-        return arrayFiltro[indice] || null 
+        return arrayFiltro[indice] || null
     }, [rowSelection])
 
 
+    const handleImprimirModal = (tipoDocumento: Docs) => {
+
+        if (!linhaSelecionada) {
+            toast("Por favor, selecione uma linha para Imprimir um Comprovante!")
+            return
+        }
+
+        console.log("--- DADOS DA FONTE (linhaSelecionada) ---");
+        console.log("Objeto completo:", linhaSelecionada);
+        console.log("Nome:", linhaSelecionada.nome);
+        console.log("ID Contrato Global:", linhaSelecionada.id_contrato_global);
+        console.log("-----------------------------------------");
+
+        setItemSelecionado(linhaSelecionada)
+        setIdContratoParaImpressao(linhaSelecionada?.id_contrato_global ?? null)
+        setDocumentoImprimir(tipoDocumento)
+        setModalImprimirBotoes(true)
+
+    }
+
+    const handleExecutarImpressao = async () => {
+        if (!documentoImprimir) return;
+
+        if (documentoImprimir === 'comprovanteGenerico') {
+            try {
+                console.log("CALLBACK REF ACIONADO! Iniciando processo de impressão...");
+                handleImpressaoConvalescenca()
+                console.log("Processo de impressão concluído. Limpando estados.");
+            } catch (error) {
+
+                toast.error("Ocorreu um erro durante a impressão.")
+
+            }
+        }
+
+        setTentandoImprimir(documentoImprimir)
+
+        setModalImprimirBotoes(false);
+    };
 
     const handleExcluir = () => {
+
         if (!linhaSelecionada) {
-            toast("Por favor, selecione uma linha para Excluir")
+            toast("Por favor, selecione uma linha para Excluir!")
+            return
+        } else {
+
+            setExcluir(true);
+            setarListaConv({ id_conv: linhaSelecionada?.id_conv })
+
         }
-            deletarConv()
     }
+
+    useEffect(() => {
+        console.log("--- ETAPA 3: useEffect ACIONADO ---");
+        console.log("Valor de 'tentandoImprimir':", tentandoImprimir);
+        console.log("Valor de 'itemSelecionado':", itemSelecionado);
+        if (tentandoImprimir && itemSelecionado?.nome) {
+            console.log("%cSUCESSO: Condição atendida! CHAMANDO handlePrint() AGORA!", "color: green; font-weight: bold;");
+            handlePrint(tentandoImprimir);
+        } else {
+            console.warn("AVISO: A condição para imprimir não foi atendida.");
+        }
+    }, [tentandoImprimir, itemSelecionado]);
+
 
     useEffect(() => {
         listarConv();
@@ -201,33 +251,6 @@ export default function Convalescente() {
 
     return (
         <>
-
-            {/* {modalComprovante && (<div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                <div className="flex items-center justify-center p-2 w-full h-full">
-                    <div className="relative rounded-lg shadow bg-gray-800">
-                        <button type="button" onClick={() => setComprovante(!modalComprovante)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent  rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                            <button type="button" onClick={() => { }} className="text-gray-400 bg-transparent rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" >
-                                <IoIosClose size={30} />
-                            </button>
-                        </button>
-                        <div className="p-4 md:p-5 text-center">
-                            <div className="flex w-full justify-center items-center">
-                                <TbAlertTriangle className='text-gray-400' size={60} />
-                            </div>
-                            <h3 className="mb-5 text-lg font-normal  text-gray-400">Deseja Confirmar a devolução desse produto?</h3>
-                            <div className="flex flex-row gap-6 justify-center ">
-                                <button onClick={() => receberDev('FECHADO')} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2  focus:z-10 bg-green-700 text-gray-200 border-gray-500 hover:text-white hover:bg-green-600 focus:ring-gray-600">Sim, imprimir</button>
-
-                                <button onClick={() => setComprovante(false)} type="button" className=" focus:ring-4 focus:outline-none  rounded-lg border  text-sm font-medium px-5 py-2  focus:z-10 bg-red-700 text-gray-200 border-gray-500 hover:text-white hover:bg-red-600 focus:ring-gray-600">Não, cancelar</button>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>)} */}
-
-
             {modal && itemSelecionado && (
 
                 <ModalConfirmar
@@ -272,8 +295,26 @@ export default function Convalescente() {
                         <Label htmlFor="terms">Imprimir Comprovante</Label>
                     </div>
                 </ModalConfirmar>
-
             )}
+
+            {excluir && (
+                <ModalConfirmar
+                    openModal={excluir}
+                    setOpenModal={() => setExcluir(!excluir)}
+                    handleConfirmar={() => deletarConv()}
+                    pergunta="Realmente deseja deletar esse lançamento?"
+                />
+            )}
+
+            {modalImprimirBotoes && itemSelecionado && (
+                <ModalConfirmar
+                    openModal={modalImprimirBotoes}
+                    setOpenModal={() => setModalImprimirBotoes(false)}
+                    handleConfirmar={handleExecutarImpressao}
+                    pergunta="Realmente deseja imprimir este comprovante?"
+                />
+            )}
+
 
             <div className="flex flex-col w-full pl-10 pr-10 pt-4">
                 <Tooltip className="z-20" id="toolId" />
@@ -310,16 +351,32 @@ export default function Convalescente() {
                                 <Printer />
                                 Contrato
                             </Button>
-                            <Button variant="outline">
+                            <Button
+                                variant="outline"
+                                onClick={() => handleImprimirModal('comprovanteGenerico')}
+                            >
                                 <ReceiptIcon />
                                 Comprovante
                             </Button>
-                            <Button variant="outline">
-                                <FileEditIcon />
-                                Editar
+
+                            <Button
+                                variant="outline"
+                                asChild
+                            >
+                                <Link
+                                    href={`/dashboard/servicos/convalescencia/editar/${linhaSelecionada?.id_conv}`}
+                                >
+                                    <span>
+                                        <FileEditIcon />
+                                        Editar
+                                    </span>
+                                </Link>
                             </Button>
-                            <Button variant="outline">
-                                <Trash/>
+
+                            <Button
+                                variant="outline"
+                                onClick={handleExcluir}>
+                                <Trash />
                                 Excluir
                             </Button>
                         </div>
@@ -374,14 +431,6 @@ export default function Convalescente() {
                         </Button>
                     </div>
 
-                    {excluir && (
-                        <ModalConfirmar
-                            openModal={excluir}
-                            setOpenModal={() => setExcluir(!excluir)}
-                            handleConfirmar={() => deletarConv()}
-                            pergunta="Realmente deseja deletar esse lançamento?"
-                        />
-                    )}
 
                 </div>
                 <div>
@@ -449,9 +498,6 @@ export default function Convalescente() {
                                         >
                                             <FileUp />
                                         </button>
-
-
-
                                     </div>
                                 </TableCell>
                             </TableRow>
@@ -488,6 +534,14 @@ export default function Convalescente() {
                             condicao={itemSelecionado?.status ?? ""}
                             material={materialParaImpressao}
                             ref={componentRefs.comprovante}
+                        />
+                    )}
+
+                    {printState.comprovanteGenerico && (
+
+                        <DocumentTemplateComprovanteGenerico
+                            nome={itemSelecionado?.nome ?? ""}
+                            ref={componentRefs.comprovanteGenerico}
                         />
                     )}
                 </div>

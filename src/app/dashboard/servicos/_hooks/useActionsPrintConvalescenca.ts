@@ -9,23 +9,25 @@ import { api } from "@/lib/axios/apiClient";
 import { toast } from "sonner";
 import { pageStyle } from "@/utils/pageStyle";
 
-type Docs = 'contrato' | 'comprovante'
+export type Docs = 'contrato' | 'comprovante' | 'comprovanteGenerico'
 type SetarListaConvType = (item: Partial<ConvProps>) => void
 
 export function useActionsPrintConvalescenca(
 
   itemSelecionado: Partial<ConvProps | null>,
+  idContratoGlobal: number | null,
   usuario: string,
   id_empresa: string,
   setarListaConv: SetarListaConvType,
-  onClose?: Function
+  onClose?: Function,
+
 
 ) {
-
 
   const [printState, setPrintState] = useState<{ [key in Docs]: boolean }>({
     contrato: false,
     comprovante: false,
+    comprovanteGenerico: false
   })
 
   const chaveAtiva = printState
@@ -35,10 +37,12 @@ export function useActionsPrintConvalescenca(
 
   const componentRefs = {
     contrato: useRef<HTMLDivElement>(null),
-    comprovante: useRef<HTMLDivElement>(null)
+    comprovante: useRef<HTMLDivElement>(null),
+    comprovanteGenerico: useRef<HTMLDivElement>(null)
   }
 
   const handlePrint = (doc: Docs) => {
+    
     setPrintState((prev) => ({ ...prev, [doc]: !prev[doc] }))
   }
 
@@ -46,8 +50,7 @@ export function useActionsPrintConvalescenca(
 
     if (printState.contrato) imprimirContrato();
     if (printState.comprovante) imprimirComprovante();
-
-
+    if (printState.comprovanteGenerico) imprimirComprovanteGenerico();
 
   }, [printState])
 
@@ -65,7 +68,7 @@ export function useActionsPrintConvalescenca(
     try {
 
       const response = await api.put("/contrato/impressoes", {
-        id_contrato_global: itemSelecionado?.contrato?.id_contrato_global,
+        id_contrato_global: idContratoGlobal,
         impressoes,
       });
 
@@ -109,6 +112,18 @@ export function useActionsPrintConvalescenca(
     contentRef: componentRefs.comprovante,
     onBeforePrint: async () => {
       await handleRegisterImpressao('comprovante');
+    },
+    onAfterPrint: () => {
+      handlePrint('comprovante'); 
+      onClose?.(); 
+    },
+  })
+  const imprimirComprovanteGenerico = useReactToPrint({
+    pageStyle: pageStyle,
+    documentTitle: "COMPROVANTE",
+    contentRef: componentRefs.comprovanteGenerico,
+    onBeforePrint: async () => {
+      await handleRegisterImpressao('comprovanteGenerico');
     },
     onAfterPrint: () => {
       handlePrint('comprovante'); 
