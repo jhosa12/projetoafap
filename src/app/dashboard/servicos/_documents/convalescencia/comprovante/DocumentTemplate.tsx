@@ -12,7 +12,7 @@ interface DadosProps {
 
 const DocumentTemplateComprovante = forwardRef<HTMLDivElement, DadosProps>((props, ref) => {
   const { nome, material, condicao } = props;
-   
+
     return (
       <div ref={ref} className='flex flex-col w-full p-2 border-[1px] '>
       <div className="flex  w-full justify-center items-center mt-4">

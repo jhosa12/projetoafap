@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useContext, useEffect, useRef, useState } from "react"
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react"
 import { LuFolderEdit } from "react-icons/lu";
 import { MdDeleteOutline } from "react-icons/md";
 import { IoIosClose } from "react-icons/io";
@@ -62,7 +62,7 @@ export default function Convalescente() {
     const [produtoSelecionadoId, setProdutoSelecionadoId] = useState<number | null>(null)
     const [materialParaImpressao, setMaterialParaImpressao] = useState<any[]>([]);
     const [idContratoParaImpressao, setIdContratoParaImpressao] = useState<number | null>(null);
-    const [tentandoImprimir, setTentandoImprimir] = useState<Docs | null>(null);
+    const [selecionarImpressaoModal, setSelecionarImpressaoModal] = useState(false);
 
     const { usuario, infoEmpresa, dadosassociado } = useContext(AuthContext)
 
@@ -115,11 +115,11 @@ export default function Convalescente() {
         setarListaConv,
         () => {
 
-            setModal(false),
+            setModal(false)
             setItemSelecionado(false)
             setProdutoSelecionadoId(null)
-            setTentandoImprimir(null)
-            setDocumentoImprimir(null);
+            setDocumentoImprimir(null)
+            
         },
     )
 
@@ -142,28 +142,39 @@ export default function Convalescente() {
 
     });
 
-    // const handleConfirmarDevolucao = async () => {
+    const handleConfirmarDevolucao = async () => {
+       
+        if (!itemSelecionado) {
+            toast.error("Nenhum item selecionado para devolução.")
+            return
+        }
 
-    //     if (!itemSelecionado) {
-    //         toast.error("Nenhum item selecionado para devolução.")
-    //         return
-    //     }
+        const materialFiltrado = (itemSelecionado.convalescenca_prod ?? []).filter(
+            (produto: any) => produto.id_conv_prod === produtoSelecionadoId
+        );
 
-    //     const materialFiltrado = (itemSelecionado.convalescenca_prod ?? []).filter(
-    //         (produto: any) => produto.id_conv_prod === produtoSelecionadoId
-    //     );
+        setMaterialParaImpressao(materialFiltrado);
+        try {
 
-    //     setMaterialParaImpressao(materialFiltrado);
-    //     try {
+            await receberDevolucao(produtoSelecionadoId)
 
-    //         await receberDevolucao(produtoSelecionadoId)
+            if (selecionarImpressaoModal) {
 
-    //         iniciarImpressao(documentoImprimir)
+                iniciarImpressao('comprovante')
 
-    //     } catch (error) {
-    //         toast.error("Não foi possível alterar o status.");
-    //     }
-    // }
+            }
+
+        } catch (error) {
+            toast.error("Não foi possível alterar o status.");
+        }
+        
+    }
+
+    const handleDevolverProdutoClick = (item: ConvProps) => {
+        console.log("Ação 'Devolver Produto' disparada para:", item);
+        setItemSelecionado(item);
+        setModal(true);
+    };
 
     const linhaSelecionada: ConvProps | null = React.useMemo(() => {
         const indicesSelecionados = Object.keys(rowSelection)
@@ -203,7 +214,7 @@ export default function Convalescente() {
         if (documentoImprimir) {
             iniciarImpressao(documentoImprimir)
         }
-    
+
         setModalImprimirBotoes(false);
     };
 
@@ -220,6 +231,10 @@ export default function Convalescente() {
         }
     }
 
+    const getColumns = useMemo(
+        () => columns({
+            onDevolverProduto: handleDevolverProdutoClick
+        }),[])
 
     useEffect(() => {
         listarConv();
@@ -227,7 +242,7 @@ export default function Convalescente() {
 
     return (
         <>
-            {/* {modal && itemSelecionado && (
+            {modal && itemSelecionado && (
 
                 <ModalConfirmar
 
@@ -235,6 +250,7 @@ export default function Convalescente() {
                     setOpenModal={() => {
                         setModal(false)
                         setProdutoSelecionadoId(null)
+                        setSelecionarImpressaoModal(false)
                     }}
                     handleConfirmar={handleConfirmarDevolucao}
                     pergunta="Qual produto você deseja fazer a devolução?"
@@ -266,12 +282,16 @@ export default function Convalescente() {
 
                     <div className="flex items-center gap-3">
                         <Checkbox id="terms"
-                            checked={printState.comprovante}
-                            onCheckedChange={() => handlePrint('comprovante')} />
+                            checked={selecionarImpressaoModal}
+                            onCheckedChange={(checked) => {
+                                console.log("EVENTO: Checkbox clicado! Novo valor recebido:", checked);
+                                setSelecionarImpressaoModal(Boolean(checked))
+                            }
+                            } />
                         <Label htmlFor="terms">Imprimir Comprovante</Label>
                     </div>
                 </ModalConfirmar>
-            )} */}
+            )}
 
             {excluir && (
                 <ModalConfirmar
@@ -413,7 +433,7 @@ export default function Convalescente() {
                 </div>
                 <div>
                     <TabelaCompleta
-                        columns={columns}
+                        columns={getColumns}
                         data={arrayFiltro}
                         rowSelection={rowSelection}
                         setRowSelection={setRowSelection}
@@ -422,13 +442,13 @@ export default function Convalescente() {
 
                 <div style={{ display: "none" }}>
 
-                    {documentoAtivo  === 'contrato' && itemSelecionado &&(
+                    {documentoAtivo === 'contrato' && itemSelecionado && (
                         <DocumentTemplateContrato
                             bairro={itemSelecionado?.bairro ?? ""}
-                            cidade={itemSelecionado?.cidade ?? ""}                        
-                            cpf={itemSelecionado?.cpfcnpj ?? ""}                           
+                            cidade={itemSelecionado?.cidade ?? ""}
+                            cpf={itemSelecionado?.cpfcnpj ?? ""}
                             uf={itemSelecionado?.uf ?? ""}
-                            nome={itemSelecionado?.nome ?? ""} 
+                            nome={itemSelecionado?.nome ?? ""}
                             rg={itemSelecionado?.rg ?? ""}
                             telefone={itemSelecionado?.celular1 ?? ""}
                             contrato={itemSelecionado?.contrato?.id_contrato ?? 0}
