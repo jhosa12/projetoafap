@@ -268,14 +268,20 @@ export default function Convalescente() {
                                 <SelectValue placeholder="Selecione um produto..." />
                             </SelectTrigger>
                             <SelectContent>
-                                {itemSelecionado.convalescenca_prod?.map((produto: any) => (
-                                    <SelectItem
+
+                                {itemSelecionado.convalescenca_prod.map((produto: any) => (
+                                    produto.status === 'ABERTO' ? (
+                                        <SelectItem
                                         key={produto.id_produto}
                                         value={produto.id_conv_prod}
                                     >
                                         {produto.descricao}
-                                    </SelectItem>
+                                        </SelectItem>
+                                    ) : (
+                                            <p className=" text-red-700">Não possui nenhum produto pendente!</p>
+                                        )
                                 ))}
+                                
                             </SelectContent>
                         </Select>
                     </div>
