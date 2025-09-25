@@ -51,6 +51,7 @@ import { truncate } from "node:fs";
 import DocumentTemplateComprovanteGenerico from "../../_documents/convalescencia/comprovante/DocumentTemplateGenerico";
 import { Docs } from "../../_hooks/useActionsPrintConvalescenca";
 import { useTimeout } from "usehooks-ts";
+import { useRouter } from "next/navigation";
 
 
 
@@ -64,6 +65,7 @@ export default function Convalescente() {
     const [idContratoParaImpressao, setIdContratoParaImpressao] = useState<number | null>(null);
     const [selecionarImpressaoModal, setSelecionarImpressaoModal] = useState(false);
 
+    const router = useRouter()
     const { usuario, infoEmpresa, dadosassociado } = useContext(AuthContext)
 
     const [rowSelection, setRowSelection] = useState({});
@@ -119,7 +121,7 @@ export default function Convalescente() {
             setItemSelecionado(false)
             setProdutoSelecionadoId(null)
             setDocumentoImprimir(null)
-            
+
         },
     )
 
@@ -143,7 +145,7 @@ export default function Convalescente() {
     });
 
     const handleConfirmarDevolucao = async () => {
-       
+
         if (!itemSelecionado) {
             toast.error("Nenhum item selecionado para devolução.")
             return
@@ -167,7 +169,7 @@ export default function Convalescente() {
         } catch (error) {
             toast.error("Não foi possível alterar o status.");
         }
-        
+
     }
 
     const handleDevolverProdutoClick = (item: ConvProps) => {
@@ -193,13 +195,6 @@ export default function Convalescente() {
             toast("Por favor, selecione uma linha para Imprimir um Comprovante!")
             return
         }
-
-        console.log("--- DADOS DA FONTE (linhaSelecionada) ---");
-        console.log("Objeto completo:", linhaSelecionada);
-        console.log("Nome:", linhaSelecionada.nome);
-        console.log("ID Contrato Global:", linhaSelecionada.id_contrato_global);
-
-        console.log("-----------------------------------------");
 
         setItemSelecionado(linhaSelecionada)
         setIdContratoParaImpressao(linhaSelecionada?.id_contrato_global ?? null)
@@ -231,10 +226,23 @@ export default function Convalescente() {
         }
     }
 
+    const handleEditar = () => {
+
+        if (!linhaSelecionada) {
+            toast.error("Por favor, selecione uma linha  para Editar!")
+            return
+        } else {
+            router.push(`/dashboard/servicos/convalescencia/editar/${linhaSelecionada.id_conv}`)
+        }
+
+
+    }
+
     const getColumns = useMemo(
         () => columns({
             onDevolverProduto: handleDevolverProdutoClick
-        }),[])
+        }), [])
+
 
     useEffect(() => {
         listarConv();
@@ -268,20 +276,27 @@ export default function Convalescente() {
                                 <SelectValue placeholder="Selecione um produto..." />
                             </SelectTrigger>
                             <SelectContent>
+                                {(() => {
+                                    const produtosAbertos = itemSelecionado.convalescenca_prod.filter(
+                                        (produto: any) => produto.status === 'ABERTO'
+                                    );
 
-                                {itemSelecionado.convalescenca_prod.map((produto: any) => (
-                                    produto.status === 'ABERTO' ? (
-                                        <SelectItem
-                                        key={produto.id_produto}
-                                        value={produto.id_conv_prod}
-                                    >
-                                        {produto.descricao}
-                                        </SelectItem>
-                                    ) : (
-                                            <p className=" text-red-700">Não possui nenhum produto pendente!</p>
-                                        )
-                                ))}
-                                
+                                    if (produtosAbertos.length > 0) {
+
+                                        return produtosAbertos.map((produto: any) => (
+                                            <SelectItem
+                                                key={produto.id_produto}
+                                                value={produto.id_conv_prod}
+                                            >
+                                                {produto.descricao}
+                                            </SelectItem>
+                                        ));
+                                    } else {
+                                        return (
+                                            <p className="px-4 text-red-700">Não possui nenhum produto pendente!</p>
+                                        );
+                                    }
+                                })()}
                             </SelectContent>
                         </Select>
                     </div>
@@ -341,20 +356,15 @@ export default function Convalescente() {
                                 onClick={() => handleImprimirModal('comprovanteGenerico')}
                                 className="flex items-center gap-2"
                             >
-                                <ReceiptIcon />
-                                Comprovante
+                                <ReceiptIcon /> Comprovante
                             </Button>
 
                             <Button
                                 variant="outline"
-                                asChild
+                                onClick={handleEditar}
+                                className="flex items-center gap-2"
                             >
-                                <Link
-                                    href={`/dashboard/servicos/convalescencia/editar/${linhaSelecionada?.id_conv}`}>
-                                    <div className="flex items-center gap-2">
-                                        <FileEditIcon /> Editar
-                                    </div>
-                                </Link>
+                                <FileEditIcon /> Editar
                             </Button>
 
                             <Button
@@ -362,8 +372,7 @@ export default function Convalescente() {
                                 onClick={handleExcluir}
                                 className="flex items-center gap-2"
                             >
-                                <Trash />
-                                Excluir
+                                <Trash /> Excluir
                             </Button>
                         </div>
 
