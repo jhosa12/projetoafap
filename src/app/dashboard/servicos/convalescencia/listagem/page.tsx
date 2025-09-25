@@ -38,11 +38,12 @@ export default function Convalescente() {
     const [materialParaImpressao, setMaterialParaImpressao] = useState<any[]>([]);
     const [idContratoParaImpressao, setIdContratoParaImpressao] = useState<number | null>(null);
     const [selecionarImpressaoModal, setSelecionarImpressaoModal] = useState(false);
-
+    const [rowSelection, setRowSelection] = useState({});
     const router = useRouter()
     const { usuario, infoEmpresa, dadosassociado } = useContext(AuthContext)
 
-    const [rowSelection, setRowSelection] = useState({});
+    
+
 
     const {
 
@@ -147,6 +148,7 @@ export default function Convalescente() {
     const handleExecutarImpressao = async () => {
         if (!documentoImprimir) return;
 
+
         if (documentoImprimir) {
             iniciarImpressao(documentoImprimir)
         }
@@ -181,6 +183,12 @@ export default function Convalescente() {
             setarListaConv({ id_conv: linhaSelecionada?.id_conv })
         }
     }
+    const nomesDocumentos = {
+        contrato: 'Contrato',
+        comprovanteGenerico: 'Comprovante'
+    }
+
+    
 
     const getColumns = useMemo(
         () => columns({
@@ -298,7 +306,9 @@ export default function Convalescente() {
             </div>
 
             <div style={{ display: "none" }}>
-                
+
+                {/* Modais de Confirmação*/}
+
                 {modal && itemSelecionado && (
 
                     <ModalConfirmar
@@ -377,9 +387,11 @@ export default function Convalescente() {
                         openModal={modalImprimirBotoes}
                         setOpenModal={() => setModalImprimirBotoes(false)}
                         handleConfirmar={handleExecutarImpressao}
-                        pergunta={`Realmente deseja imprimir: ${documentoImprimir}?`}
+                        pergunta={`Realmente deseja imprimir ${documentoImprimir === 'contrato' ? nomesDocumentos.contrato : nomesDocumentos.comprovanteGenerico}?`}
                     />
                 )}
+
+                {/* Documentos para Imprimir */}
 
                 {documentoAtivo === 'contrato' && itemSelecionado && (
                     <DocumentTemplateContrato
