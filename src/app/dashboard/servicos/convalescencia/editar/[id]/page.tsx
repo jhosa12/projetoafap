@@ -69,7 +69,7 @@ export default function EditarConv() {
     return (
         <>
             <div className="flex flex-col w-full pl-10 pr-10 pt-4">
-                {/* Cabeçalho da página */}
+                
                 <div className="flex flex-col p-2 gap-4 items-center">
 
                     <div className="flex w-full justify-between">

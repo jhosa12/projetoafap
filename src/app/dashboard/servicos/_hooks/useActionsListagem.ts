@@ -2,11 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { ConvProps } from "../_types/convalescente"
 import { api } from "@/lib/axios/apiClient"
 import { toast } from "sonner"
-import { useReactToPrint } from "react-to-print"
-
 
 interface ActionsProps {
-
 
   // --- Estados que a UI irá ler ---
   pendente: boolean

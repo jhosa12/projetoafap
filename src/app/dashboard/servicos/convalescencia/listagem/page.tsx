@@ -1,18 +1,26 @@
 'use client';
 
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react"
-import { LuFolderEdit } from "react-icons/lu";
-import { MdDeleteOutline } from "react-icons/md";
-import { IoIosClose } from "react-icons/io";
-import { TbAlertTriangle } from "react-icons/tb";
 import { Tooltip } from 'react-tooltip';
 import Link from "next/link";
 import useActionsListagem from "../../_hooks/useActionsListagem";
-import { format } from "date-fns";
-import { Search, Plus, FileText, Printer, FileTextIcon, Receipt, ReceiptIcon, FileEditIcon, Trash } from 'lucide-react';
+import { Plus, Printer, ReceiptIcon, FileEditIcon, Trash } from 'lucide-react';
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label";
-import { usePaginatedData, DOTS } from "../../_hooks/useActionsPaginacao";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { ModalConfirmar } from "@/components/modals/modalConfirmar";
+import DocumentTemplateContrato from "@/app/dashboard/servicos/_documents/convalescencia/contrato/DocumentTemplate";
+import { AuthContext } from "@/store/AuthContext";
+import { useActionsPrintConvalescenca } from "../../_hooks/useActionsPrintConvalescenca";
+import DocumentTemplateComprovante from "../../_documents/convalescencia/comprovante/DocumentTemplate";
+import { TabelaCompleta } from "../../_components/convalescentes/data-table";
+import { ConvProps } from "../../_types/convalescente";
+import { columns } from "../../_components/convalescentes/colunas-listagem";
+import DocumentTemplateComprovanteGenerico from "../../_documents/convalescencia/comprovante/DocumentTemplateGenerico";
+import { Docs } from "../../_hooks/useActionsPrintConvalescenca";
+import { useRouter } from "next/navigation";
+
 import {
     Select,
     SelectContent,
@@ -20,40 +28,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import {
-    ColumnDef,
-    flexRender,
-    getCoreRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    SortingState,
-    useReactTable,
-} from "@tanstack/react-table"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button";
-import useActionsNovoResgistro from "../../_hooks/useActionsNovoRegistro";
-import { toast } from "sonner";
-import { api } from "@/lib/axios/apiClient";
-import { FileUp } from 'lucide-react';
-import { ModalConfirmar } from "@/components/modals/modalConfirmar";
-import DocumentTemplateContrato from "@/app/dashboard/servicos/_documents/convalescencia/contrato/DocumentTemplate";
-import { usePrintDocsAssociado } from "@/hooks/usePrintDocsAssociado";
-import { AuthContext } from "@/store/AuthContext";
-import { DadosAssociado } from "@/app/dashboard/admcontrato/_components/dados-associados/screen";
-import { useActionsPrintConvalescenca } from "../../_hooks/useActionsPrintConvalescenca";
-import { VerificarSituacao } from "@/app/dashboard/admcontrato/_utils/verificarSituacao";
-import DocumentTemplateComprovante from "../../_documents/convalescencia/comprovante/DocumentTemplate";
-import { AnyAaaaRecord } from "node:dns";
-import { TabelaCompleta } from "../../_components/convalescentes/data-table";
-import { ConvProps } from "../../_types/convalescente";
-import { columns } from "../../_components/convalescentes/colunas-listagem";
-import { truncate } from "node:fs";
-import DocumentTemplateComprovanteGenerico from "../../_documents/convalescencia/comprovante/DocumentTemplateGenerico";
-import { Docs } from "../../_hooks/useActionsPrintConvalescenca";
-import { useTimeout } from "usehooks-ts";
-import { useRouter } from "next/navigation";
-
-
 
 export default function Convalescente() {
     const [modal, setModal] = useState(false)
@@ -74,24 +48,11 @@ export default function Convalescente() {
 
 
         // --- Estados que a UI irá ler ---
-        pendente,
-        aberto,
-        entregue,
-        criterio,
-        input,
-        arrayConv,
-        listaConv,
         excluir,
         arrayFiltro,
 
         // --- Funções para alterar o estado  ---
-        setPendente,
-        setAberto,
-        setEntregue,
-        setCriterio,
-        setInput,
         setExcluir,
-        setFiltro,
 
         // --- Funções de Ação ---
         setarListaConv,
@@ -108,7 +69,6 @@ export default function Convalescente() {
         componentRefs,
         documentoAtivo
 
-
     } = useActionsPrintConvalescenca(
         itemSelecionado,
         idContratoParaImpressao,
@@ -124,25 +84,6 @@ export default function Convalescente() {
 
         },
     )
-
-    const {
-
-        currentPageData,
-        currentPage,
-        goToPage,
-        nextPage,
-        previousPage,
-        paginationRange,
-        isFirstPage,
-        isLastPage,
-
-    } = usePaginatedData({
-
-        data: arrayFiltro,
-        itemsPerPage: 10,
-        siblingCount: 2
-
-    });
 
     const handleConfirmarDevolucao = async () => {
 
@@ -169,11 +110,10 @@ export default function Convalescente() {
         } catch (error) {
             toast.error("Não foi possível alterar o status.");
         }
-
     }
 
     const handleDevolverProdutoClick = (item: ConvProps) => {
-        console.log("Ação 'Devolver Produto' disparada para:", item);
+
         setItemSelecionado(item);
         setModal(true);
     };
@@ -192,7 +132,8 @@ export default function Convalescente() {
     const handleImprimirModal = (tipoDocumento: Docs) => {
 
         if (!linhaSelecionada) {
-            toast("Por favor, selecione uma linha para Imprimir um Comprovante!")
+
+            toast.error("Por favor, selecione uma linha para Imprimir um Comprovante!")
             return
         }
 
@@ -213,29 +154,32 @@ export default function Convalescente() {
         setModalImprimirBotoes(false);
     };
 
-    const handleExcluir = () => {
 
-        if (!linhaSelecionada) {
-            toast("Por favor, selecione uma linha para Excluir!")
-            return
-        } else {
-
-            setExcluir(true);
-            setarListaConv({ id_conv: linhaSelecionada?.id_conv })
-
-        }
-    }
 
     const handleEditar = () => {
 
         if (!linhaSelecionada) {
-            toast.error("Por favor, selecione uma linha  para Editar!")
+
+            toast.error("Por favor, selecione uma linha para Editar.")
             return
+
         } else {
             router.push(`/dashboard/servicos/convalescencia/editar/${linhaSelecionada.id_conv}`)
         }
+    }
+    
+    const handleExcluir = () => {
 
+        if (!linhaSelecionada) {
 
+            toast.error("Por favor, selecione uma linha para Excluir.")
+            return
+
+        } else {
+
+            setExcluir(true);
+            setarListaConv({ id_conv: linhaSelecionada?.id_conv })
+        }
     }
 
     const getColumns = useMemo(
@@ -249,232 +193,231 @@ export default function Convalescente() {
     }, []);
 
     return (
-        <>
-            {modal && itemSelecionado && (
 
-                <ModalConfirmar
+        <div className="flex flex-col w-full h-screen p-4 lg:p-6 gap-4">
+            <Tooltip className="z-20" id="toolId" />
 
-                    openModal={modal}
-                    setOpenModal={() => {
-                        setModal(false)
-                        setProdutoSelecionadoId(null)
-                        setSelecionarImpressaoModal(false)
-                    }}
-                    handleConfirmar={handleConfirmarDevolucao}
-                    pergunta="Qual produto você deseja fazer a devolução?"
+            <div className="flex-shrink-0 flex flex-col lg:flex-row w-full items-start lg:items-center justify-between gap-4 p-2 border-b">
+                <h1 className="scroll-m-20 text-gray-800 text-2xl font-semibold tracking-tight whitespace-nowrap">
+                    Controle Convalescente
+                </h1>
 
-                >
+                <div className="flex flex-col md:flex-row w-full md:w-auto items-end gap-4">
 
-                    <div className="my-4 text-left">
-                        <Label htmlFor="estoque-select">Selecione o produto:</Label>
-                        <Select
-                            onValueChange={(value) => {
-                                setProdutoSelecionadoId(Number(value))
-                            }}
+                    <div className="flex flex-wrap gap-4 w-full justify-start md:w-auto md:justify-end">
+                        <Button
+                            variant="outline"
+                            onClick={() => handleImprimirModal('contrato')}
+                            className="flex items-center gap-2">
+                            <Printer />
+                            Contrato
+                        </Button>
+                        <Button
+                            variant="outline"
+                            onClick={() => handleImprimirModal('comprovanteGenerico')}
+                            className="flex items-center gap-2"
                         >
-                            <SelectTrigger id="estoque-select">
-                                <SelectValue placeholder="Selecione um produto..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {(() => {
-                                    const produtosAbertos = itemSelecionado.convalescenca_prod.filter(
-                                        (produto: any) => produto.status === 'ABERTO'
-                                    );
+                            <ReceiptIcon /> Comprovante
+                        </Button>
 
-                                    if (produtosAbertos.length > 0) {
+                        <Button
+                            variant="outline"
+                            onClick={handleEditar}
+                            className="flex items-center gap-2"
+                        >
+                            <FileEditIcon /> Editar
+                        </Button>
 
-                                        return produtosAbertos.map((produto: any) => (
-                                            <SelectItem
-                                                key={produto.id_produto}
-                                                value={produto.id_conv_prod}
-                                            >
-                                                {produto.descricao}
-                                            </SelectItem>
-                                        ));
-                                    } else {
-                                        return (
-                                            <p className="px-4 text-red-700">Não possui nenhum produto pendente!</p>
-                                        );
-                                    }
-                                })()}
-                            </SelectContent>
-                        </Select>
+                        <Button
+                            variant="outline"
+                            onClick={handleExcluir}
+                            className="flex items-center gap-2"
+                        >
+                            <Trash /> Excluir
+                        </Button>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                        <Checkbox id="terms"
-                            checked={selecionarImpressaoModal}
-                            onCheckedChange={(checked) => {
-                                console.log("EVENTO: Checkbox clicado! Novo valor recebido:", checked);
-                                setSelecionarImpressaoModal(Boolean(checked))
-                            }
-                            } />
-                        <Label htmlFor="terms">Imprimir Comprovante</Label>
+                    <div className="flex-shrink-0">
+                        <Button
+                            data-tooltip-id="toolId"
+                            data-tooltip-content={'Adicionar Novo Registro'}
+                        >
+                            <Link
+                                onClick={() => setarListaConv({
+                                    bairro: '',
+                                    bairro_r: '',
+                                    cep: '',
+                                    cep_r: '',
+                                    cidade: '',
+                                    cidade_r: '',
+                                    complemento: '',
+                                    complemento_r: '',
+                                    contrato: { associado: { nome: '' }, carencia: '', situacao: '' },
+                                    convalescenca_prod: [],
+                                    cpf_cnpj: '',
+                                    data: undefined,
+                                    data_inc: undefined,
+                                    descontos: undefined,
+                                    forma_pag: '',
+                                    hora_inc: undefined,
+                                    id_associado: undefined,
+                                    id_contrato: undefined,
+                                    id_contrato_st: '',
+                                    id_conv: undefined,
+                                    logradouro: '',
+                                    logradouro_r: '',
+                                    nome: '',
+                                    numero: undefined,
+                                    numero_r: undefined,
+                                    obs: '',
+                                    status: '',
+                                    subtotal: undefined,
+                                    tipo_entrada: '',
+                                    total: undefined,
+                                    uf: '',
+                                    uf_r: '',
+                                    usuario: '',
+                                    //  editar: false
+                                })}
+                                className="inline-flex justify-center items-center p-1 px-2 rounded-lg gap-2 text-sm"
+                                href='/dashboard/servicos/convalescencia/novoregistro'
+                            >
+                                <Plus size={36} /> Add
+                            </Link>
+                        </Button>
                     </div>
-                </ModalConfirmar>
-            )}
-
-            {excluir && (
-                <ModalConfirmar
-                    openModal={excluir}
-                    setOpenModal={() => setExcluir(!excluir)}
-                    handleConfirmar={() => deletarConv()}
-                    pergunta="Realmente deseja deletar esse lançamento?"
-                />
-            )}
-
-            {modalImprimirBotoes && itemSelecionado && (
-                <ModalConfirmar
-                    openModal={modalImprimirBotoes}
-                    setOpenModal={() => setModalImprimirBotoes(false)}
-                    handleConfirmar={handleExecutarImpressao}
-                    pergunta={`Realmente deseja imprimir: ${documentoImprimir}?`}
-                />
-            )}
-
-
-            <div className="flex flex-col w-full pl-10 pr-10 pt-4">
-                <Tooltip className="z-20" id="toolId" />
-                <div className="flex flex-col lg:flex-row w-full p-2 border-b items-start lg:items-center justify-between gap-4">
-
-                    <h1 className="scroll-m-20 text-gray-800 text-2xl font-semibold tracking-tight whitespace-nowrap">
-                        Controle Convalescente
-                    </h1>
-
-                    <div className="flex flex-col md:flex-row w-full md:w-auto items-end gap-4">
-
-                        <div className="flex flex-wrap gap-4 w-full justify-start md:w-auto md:justify-end">
-                            <Button
-                                variant="outline"
-                                onClick={() => handleImprimirModal('contrato')}
-                                className="flex items-center gap-2">
-                                <Printer />
-                                Contrato
-                            </Button>
-                            <Button
-                                variant="outline"
-                                onClick={() => handleImprimirModal('comprovanteGenerico')}
-                                className="flex items-center gap-2"
-                            >
-                                <ReceiptIcon /> Comprovante
-                            </Button>
-
-                            <Button
-                                variant="outline"
-                                onClick={handleEditar}
-                                className="flex items-center gap-2"
-                            >
-                                <FileEditIcon /> Editar
-                            </Button>
-
-                            <Button
-                                variant="outline"
-                                onClick={handleExcluir}
-                                className="flex items-center gap-2"
-                            >
-                                <Trash /> Excluir
-                            </Button>
-                        </div>
-
-                        <div className="flex-shrink-0">
-                            <Button
-                                data-tooltip-id="toolId"
-                                data-tooltip-content={'Adicionar Novo Registro'}
-                            >
-                                <Link
-                                    onClick={() => setarListaConv({
-                                        bairro: '',
-                                        bairro_r: '',
-                                        cep: '',
-                                        cep_r: '',
-                                        cidade: '',
-                                        cidade_r: '',
-                                        complemento: '',
-                                        complemento_r: '',
-                                        contrato: { associado: { nome: '' }, carencia: '', situacao: '' },
-                                        convalescenca_prod: [],
-                                        cpf_cnpj: '',
-                                        data: undefined,
-                                        data_inc: undefined,
-                                        descontos: undefined,
-                                        forma_pag: '',
-                                        hora_inc: undefined,
-                                        id_associado: undefined,
-                                        id_contrato: undefined,
-                                        id_contrato_st: '',
-                                        id_conv: undefined,
-                                        logradouro: '',
-                                        logradouro_r: '',
-                                        nome: '',
-                                        numero: undefined,
-                                        numero_r: undefined,
-                                        obs: '',
-                                        status: '',
-                                        subtotal: undefined,
-                                        tipo_entrada: '',
-                                        total: undefined,
-                                        uf: '',
-                                        uf_r: '',
-                                        usuario: '',
-                                        //  editar: false
-                                    })}
-                                    className="inline-flex justify-center items-center p-1 px-2 rounded-lg gap-2 text-sm"
-                                    href='/dashboard/servicos/convalescencia/novoregistro'
-                                >
-                                    <Plus size={36} /> Add
-                                </Link>
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <TabelaCompleta
-                        columns={getColumns}
-                        data={arrayFiltro}
-                        rowSelection={rowSelection}
-                        setRowSelection={setRowSelection}
-                    />
-                </div>
-
-                <div style={{ display: "none" }}>
-
-                    {documentoAtivo === 'contrato' && itemSelecionado && (
-                        <DocumentTemplateContrato
-                            bairro={itemSelecionado?.bairro ?? ""}
-                            cidade={itemSelecionado?.cidade ?? ""}
-                            cpf={itemSelecionado?.cpfcnpj ?? ""}
-                            uf={itemSelecionado?.uf ?? ""}
-                            nome={itemSelecionado?.nome ?? ""}
-                            rg={itemSelecionado?.rg ?? ""}
-                            telefone={itemSelecionado?.celular1 ?? ""}
-                            contrato={itemSelecionado?.contrato?.id_contrato ?? 0}
-                            logradouro={itemSelecionado?.endereco ?? ""}
-                            material={itemSelecionado?.convalescenca_prod ?? []}
-                            ref={componentRefs.contrato}
-                        />
-                    )}
-
-
-                    {documentoAtivo === 'comprovante' && itemSelecionado && (
-
-                        <DocumentTemplateComprovante
-
-                            nome={itemSelecionado?.nome ?? ""}
-                            condicao={itemSelecionado?.status ?? ""}
-                            material={materialParaImpressao}
-                            ref={componentRefs.comprovante}
-                        />
-                    )}
-
-                    {documentoAtivo === 'comprovanteGenerico' && itemSelecionado && (
-
-                        <DocumentTemplateComprovanteGenerico
-                            nome={itemSelecionado?.nome ?? ""}
-                            ref={componentRefs.comprovanteGenerico}
-                        />
-                    )}
                 </div>
             </div>
-        </>
+            <div className="flex-grow min-h-0">
+                <TabelaCompleta
+                    columns={getColumns}
+                    data={arrayFiltro}
+                    rowSelection={rowSelection}
+                    setRowSelection={setRowSelection}
+                />
+            </div>
+
+            <div style={{ display: "none" }}>
+                
+                {modal && itemSelecionado && (
+
+                    <ModalConfirmar
+
+                        openModal={modal}
+                        setOpenModal={() => {
+                            setModal(false)
+                            setProdutoSelecionadoId(null)
+                            setSelecionarImpressaoModal(false)
+                        }}
+                        handleConfirmar={handleConfirmarDevolucao}
+                        pergunta="Qual produto você deseja fazer a devolução?"
+
+                    >
+
+                        <div className="my-4 text-left">
+                            <Label htmlFor="estoque-select">Selecione o produto:</Label>
+                            <Select
+                                onValueChange={(value) => {
+                                    setProdutoSelecionadoId(Number(value))
+                                }}
+                            >
+                                <SelectTrigger id="estoque-select">
+                                    <SelectValue placeholder="Selecione um produto..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {(() => {
+                                        const produtosAbertos = itemSelecionado.convalescenca_prod.filter(
+                                            (produto: any) => produto.status === 'ABERTO'
+                                        );
+
+                                        if (produtosAbertos.length > 0) {
+
+                                            return produtosAbertos.map((produto: any) => (
+                                                <SelectItem
+                                                    key={produto.id_produto}
+                                                    value={produto.id_conv_prod}
+                                                >
+                                                    {produto.descricao}
+                                                </SelectItem>
+                                            ));
+                                        } else {
+                                            return (
+                                                <p className="px-4 text-red-700">Não possui nenhum produto pendente!</p>
+                                            );
+                                        }
+                                    })()}
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                            <Checkbox id="terms"
+                                checked={selecionarImpressaoModal}
+                                onCheckedChange={(checked) => {
+                                    console.log("EVENTO: Checkbox clicado! Novo valor recebido:", checked);
+                                    setSelecionarImpressaoModal(Boolean(checked))
+                                }
+                                } />
+                            <Label htmlFor="terms">Imprimir Comprovante</Label>
+                        </div>
+                    </ModalConfirmar>
+                )}
+
+                {excluir && (
+                    <ModalConfirmar
+                        openModal={excluir}
+                        setOpenModal={() => setExcluir(!excluir)}
+                        handleConfirmar={() => deletarConv()}
+                        pergunta="Realmente deseja deletar esse lançamento?"
+                    />
+                )}
+
+                {modalImprimirBotoes && itemSelecionado && (
+                    <ModalConfirmar
+                        openModal={modalImprimirBotoes}
+                        setOpenModal={() => setModalImprimirBotoes(false)}
+                        handleConfirmar={handleExecutarImpressao}
+                        pergunta={`Realmente deseja imprimir: ${documentoImprimir}?`}
+                    />
+                )}
+
+                {documentoAtivo === 'contrato' && itemSelecionado && (
+                    <DocumentTemplateContrato
+                        bairro={itemSelecionado?.bairro ?? ""}
+                        cidade={itemSelecionado?.cidade ?? ""}
+                        cpf={itemSelecionado?.cpfcnpj ?? ""}
+                        uf={itemSelecionado?.uf ?? ""}
+                        nome={itemSelecionado?.nome ?? ""}
+                        rg={itemSelecionado?.rg ?? ""}
+                        telefone={itemSelecionado?.celular1 ?? ""}
+                        contrato={itemSelecionado?.contrato?.id_contrato ?? 0}
+                        logradouro={itemSelecionado?.endereco ?? ""}
+                        material={itemSelecionado?.convalescenca_prod ?? []}
+                        ref={componentRefs.contrato}
+                    />
+                )}
+
+
+                {documentoAtivo === 'comprovante' && itemSelecionado && (
+
+                    <DocumentTemplateComprovante
+
+                        nome={itemSelecionado?.nome ?? ""}
+                        condicao={itemSelecionado?.status ?? ""}
+                        material={materialParaImpressao}
+                        ref={componentRefs.comprovante}
+                    />
+                )}
+
+                {documentoAtivo === 'comprovanteGenerico' && itemSelecionado && (
+
+                    <DocumentTemplateComprovanteGenerico
+                        nome={itemSelecionado?.nome ?? ""}
+                        ref={componentRefs.comprovanteGenerico}
+                    />
+                )}
+            </div>
+        </div>
+
     )
 }

@@ -1,8 +1,5 @@
 import { ProdutosProps } from "@/app/dashboard/admcontrato/_types/produtos";
 import Image from "next/image";
-
-// DocumentTemplate.js
-
 import React, { forwardRef } from 'react';
 interface DadosProps {
   nome: string,

@@ -32,7 +32,7 @@ export function ModalConfirmar({ openModal, setOpenModal, handleConfirmar, pergu
             Confirmar ação
             </div>
             </AlertDialogTitle>
-          <AlertDialogDescription >
+          <AlertDialogDescription className="flex justify-center">
             
              
               {pergunta}

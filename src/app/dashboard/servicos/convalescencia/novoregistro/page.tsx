@@ -1,12 +1,10 @@
 'use client';
 
 import React, { useContext, useEffect, useState } from "react";
-import { IoIosClose } from "react-icons/io";
 import "react-datepicker/dist/react-datepicker.css";
-import { TbAlertTriangle, TbWheelchair } from "react-icons/tb";
 import useActionsNovoResgistro from "../../_hooks/useActionsNovoRegistro";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, ChevronDownIcon, FileText, Search, Shield, User } from "lucide-react";
+import { AlertTriangle, FileText, Search, Shield, User } from "lucide-react";
 import { AuthContext } from "@/store/AuthContext";
 import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";
 import { Badge } from "@/components/ui/badge";
@@ -72,6 +70,7 @@ export default function ConvalescenciaNovo() {
 
     } = useActionsNovoResgistro()
 
+
     const {
 
         infoEmpresa,
@@ -82,10 +81,6 @@ export default function ConvalescenciaNovo() {
 
 
     } = useContext(AuthContext);
-
-
-
-
 
 
     const filtrosDaPagina = [

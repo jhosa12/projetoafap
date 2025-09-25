@@ -1,19 +1,12 @@
-
-import { Navigation } from 'lucide-react';
-import DocumentTemplateComprovante from "@/app/dashboard/servicos/_documents/convalescencia/comprovante/DocumentTemplate";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ConvProps } from "../_types/convalescente";
 import { toast } from "sonner";
 import { api } from "@/lib/axios/apiClient";
 import { ListaMaterial } from "../../admcontrato/_types/lista-material";
-import { AssociadoProps } from "../../admcontrato/_types/associado";
 import { DadosCadastroProps } from "../../admcontrato/_types/dados-cadastro";
 import { AuthContext } from "@/store/AuthContext";
-import { useReactToPrint } from "react-to-print";
-import DocumentTemplate from '@/Documents/cobranca/DocumentTemplate';
 import { ProdutosProps } from '../../admcontrato/_types/produtos';
 import { EstoqueNovoRegistroProps } from '../../estoque/types/estoque';
-import DocumentTemplateContrato from "@/app/dashboard/servicos/_documents/convalescencia/contrato/DocumentTemplate";
 import { converterDataParaISO } from "@/utils/converterDataParaIso";
 import { useParams, useRouter } from 'next/navigation'
 import { RowSelectionState } from '@tanstack/react-table';
@@ -112,7 +105,6 @@ const useActionsNovoResgistro = () => {
   async function adicionarProduto() {
 
     if (!listaConv.id_conv) {
-      toast.info('SALVE OS DADOS DO SOLICITANTE!')
       return;
     }
 
@@ -149,20 +141,19 @@ const useActionsNovoResgistro = () => {
       }
     )
 
-
   }
 
   async function editarRegistro() {
 
     if (!listaConv.nome || !listaConv.logradouro) {
-      toast.info('Preencha os campos obrigatórios');
+      toast.error('Preencha os campos obrigatórios');
       return;
     }
 
 
     if (produtosAdicionados.length === 0) {
 
-      toast.info('Adicione pelo menos um produto/serviço.')
+      toast.error('Adicione pelo menos um produto/serviço.')
       return
 
     }
@@ -234,13 +225,12 @@ const useActionsNovoResgistro = () => {
   async function adicionarNovoRegistro() {
 
     if (!listaConv.nome || !listaConv.logradouro) {
-      toast.info('Preencha os campos obrigatórios');
+      toast.error('Preencha os campos obrigatórios');
       return;
     }
 
     if (produtosAdicionados.length === 0) {
-
-      toast.info('Adicione pelo menos um produto/serviço.')
+      console.log("Os produtos não foram adicionados")
       return
 
     }
@@ -348,7 +338,7 @@ const useActionsNovoResgistro = () => {
           id_dependente: null
         });
       } else {
-        // Se não há associado (ex: o usuário limpou a busca), limpamos o formulário
+        
         setarListaConv({});
       }
     }
@@ -368,7 +358,7 @@ const useActionsNovoResgistro = () => {
 
 
       } catch (error) {
-        console.error("Falha ao buscar dados do produto:", error);
+
         toast.error("Não foi possível carregar os materiais.");
       }
     }
@@ -386,14 +376,13 @@ const useActionsNovoResgistro = () => {
 
           const response = await api.get(`/convalescencia/${id}`);
 
-          console.log('DADOS COMPLETOS RECEBIDOS DA API:', response.data);
 
           setarListaConv(response.data);
 
           setProdutosAdicionados(response.data.convalescenca_prod || []);
 
         } catch (error) {
-          console.error("Erro ao buscar dados para edição:", error);
+
           toast.error("Falha ao carregar os dados do registro.");
 
         } finally {
@@ -416,7 +405,12 @@ const useActionsNovoResgistro = () => {
         adicionarNovoRegistro()
       }
 
-      router.push('/dashboard/servicos/convalescencia/listagem')
+      if (selecionarProduto){
+        router.push('/dashboard/servicos/convalescencia/listagem')
+      } else {
+        toast.error("Por favor, adicione um produto!")
+      }
+      
     } catch (error) {
 
       toast.error('A operação falhou!')
@@ -448,7 +442,7 @@ const useActionsNovoResgistro = () => {
 
 
     if (!selecionarProduto) {
-      toast.info('Por favor, selecione um produto para adicionar.')
+      toast.error('Por favor, selecione um produto para adicionar.')
       return
     }
 
@@ -469,7 +463,7 @@ const useActionsNovoResgistro = () => {
         ...listaAnterior,
         selecionarProduto,
       ]
-      console.log('4. Nova lista que será salva no estado:', novaLista);
+
       return novaLista
     })
 

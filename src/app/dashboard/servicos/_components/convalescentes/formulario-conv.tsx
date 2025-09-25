@@ -1,19 +1,14 @@
 'use client';
 
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { IoIosClose } from "react-icons/io";
+import React, { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { TbAlertTriangle, TbWheelchair } from "react-icons/tb";
-import { toast } from "sonner";
-import useActionsNovoResgistro from "../../_hooks/useActionsNovoRegistro";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, ChevronDownIcon, FileText, Search, Shield, Trash, User } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChevronDownIcon, Trash} from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   Dialog,
@@ -48,11 +43,10 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { RowSelectionState } from "@tanstack/react-table";
 
-// Importe a função que gera as colunas e o tipo
+
 import { getColumns, Dependente } from "../../_components/convalescentes/colunas-dependentes";
-// Importe o componente da tabela
+
 import { TabelaCompleta } from "./data-table";
-import { AuthContext } from "@/store/AuthContext";
 import { AssociadoProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";
 import { VerificarSituacao } from "@/app/dashboard/admcontrato/_utils/verificarSituacao";
@@ -132,7 +126,6 @@ export default function FormularioConv({
   const [open, setOpen] = React.useState(false)
   const [date, setDate] = React.useState<Date | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(true);
-  const quantidadeInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setIsLoading(false);
@@ -194,7 +187,7 @@ export default function FormularioConv({
                     <Checkbox
                       id="dependente"
                       checked={isDependenteSelecionado}
-                      // A lógica de clique é a seguinte:
+                      
                       onCheckedChange={(checked) => {
 
                         if (checked) {

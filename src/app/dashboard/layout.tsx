@@ -2,25 +2,19 @@
 
 import { MenuLateral } from "@/components/layouts/menu";
 
-
-
-
-
-
-
 export default function DashboardLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-   // const {loadingInfo} = useContext(AuthContext);
+    // const {loadingInfo} = useContext(AuthContext);
     return (
-       <>
-       <MenuLateral/>
+        <>
+            <MenuLateral />
 
-       { children}
-     
-       </>
+            {children}
+
+        </>
 
     );
 }
