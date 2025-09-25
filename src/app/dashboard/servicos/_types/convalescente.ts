@@ -7,6 +7,7 @@ export interface ConvProps {
   id_contrato_global: number | null,
   id_associado: number | null,
   id_dependente?: number | null,
+  id_empresa: string,
   id_contrato_st: string,
   tipo_entrada: string,
   nome: string,

@@ -61,7 +61,7 @@ interface ActionsProps {
 }
 
 const useActionsNovoResgistro = () => {
-  const { usuario, dadosassociado } = useContext(AuthContext)
+  const { usuario, dadosassociado, infoEmpresa } = useContext(AuthContext)
   const [dataInputs, setDataInputs] = useState<Partial<ListaMaterial>>({})
   const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod: [] });
   const [listaMaterial, setMaterial] = useState<Array<Partial<ListaMaterial>>>([]);
@@ -140,7 +140,6 @@ const useActionsNovoResgistro = () => {
         }
       }
     )
-
   }
 
   async function editarRegistro() {
@@ -174,52 +173,60 @@ const useActionsNovoResgistro = () => {
       status: produto.status
     }))
 
-    toast.promise(
+    const payload = {
 
 
-      api.put(`/convalescencia/editar/${id}`, {
+      id_contrato: listaConv.id_contrato_global,
+      id_associado: listaConv.id_associado,
+      id_contrato_st: listaConv.id_contrato_st,
+      tipo_entrada: listaConv.tipo_entrada,
+      id_dependente: listaConv.id_dependente,
+      id_empresa: infoEmpresa?.id,
+      nome: listaConv.nome,
+      cpf_cnpj: listaConv.cpf_cnpj,
+      data: new Date(listaConv.data ?? '').toISOString(),
+      status: listaConv.status,
+      forma_pag: listaConv.forma_pag,
+      logradouro: listaConv.logradouro,
+      numero: listaConv.numero,
+      complemento: listaConv.complemento,
+      bairro: listaConv.bairro,
+      cep: listaConv.cep,
+      cidade: listaConv.cidade,
+      uf: listaConv.uf,
+      subtotal: listaConv.subtotal,
+      descontos: listaConv.descontos,
+      total: listaConv.total,
+      logradouro_r: listaConv.logradouro_r,
+      numero_r: listaConv.numero_r,
+      complemento_r: listaConv.complemento_r,
+      bairro_r: listaConv.bairro_r,
+      cep_r: listaConv.cep_r,
+      cidade_r: listaConv.cidade_r,
+      uf_r: listaConv.uf_r,
+      data_inc: new Date().toISOString(),
+      hora_inc: new Date().toISOString(),
+      usuario: listaConv.usuario,
+      obs: listaConv.obs,
+      convalescenca_prod: produtosParaEnviar
 
-        //id_conv: listaConv.id_conv,
-        id_contrato: listaConv.id_contrato_global,
-        id_associado: listaConv.id_associado,
-        id_contrato_st: listaConv.id_contrato_st,
-        tipo_entrada: listaConv.tipo_entrada,
-        id_dependente: listaConv.id_dependente,
-        nome: listaConv.nome,
-        cpf_cnpj: listaConv.cpf_cnpj,
-        data: new Date(listaConv.data ?? '').toISOString(),
-        status: listaConv.status,
-        forma_pag: listaConv.forma_pag,
-        logradouro: listaConv.logradouro,
-        numero: listaConv.numero,
-        complemento: listaConv.complemento,
-        bairro: listaConv.bairro,
-        cep: listaConv.cep,
-        cidade: listaConv.cidade,
-        uf: listaConv.uf,
-        subtotal: listaConv.subtotal,
-        descontos: listaConv.descontos,
-        total: listaConv.total,
-        logradouro_r: listaConv.logradouro_r,
-        numero_r: listaConv.numero_r,
-        complemento_r: listaConv.complemento_r,
-        bairro_r: listaConv.bairro_r,
-        cep_r: listaConv.cep_r,
-        cidade_r: listaConv.cidade_r,
-        uf_r: listaConv.uf_r,
-        data_inc: new Date().toISOString(),
-        hora_inc: new Date().toISOString(),
-        usuario: listaConv.usuario,
-        obs: listaConv.obs,
-        convalescenca_prod: produtosParaEnviar
+    }
 
-      }),
-      {
-        error: 'Erro ao atualizar dados',
-        loading: 'Atualizando Dados',
-        success: 'Dados registrados com sucesso!'
-      }
-    )
+    const promise = api.put(`/convalescencia/editar/${id}`, payload)
+
+    toast.promise(promise, {
+
+      loading: 'Atualizando Dados',
+      success: 'Dados registrados com sucesso!',
+      error: (err) => err.response?.data?.message || 'Erro ao atualizar dados. Tente novamente.',
+    }) 
+
+    try {
+      await promise;
+      router.push('/dashboard/servicos/convalescencia/listagem')
+    } catch (error: any) {
+      console.log("Falha detalhada ao salvar registro:", error.response?.data || error.message || error);
+    }
   }
 
   async function adicionarNovoRegistro() {
@@ -229,12 +236,6 @@ const useActionsNovoResgistro = () => {
       return;
     }
 
-    if (produtosAdicionados.length === 0) {
-      console.log("Os produtos não foram adicionados")
-      return
-
-    }
-
     const dataISO = converterDataParaISO(listaConv.data);
     const dataIsoNasc = converterDataParaISO(listaConv.data_inc);
 
@@ -242,6 +243,12 @@ const useActionsNovoResgistro = () => {
     if (!dataISO) {
       toast.error("Formato de data inválido para 'Data' ou 'Data de Nascimento'. Use DD/MM/AAAA.");
       return;
+    }
+
+    if (produtosAdicionados.length === 0) {
+      toast.error("Os produtos não foram adicionados")
+      return
+
     }
 
     const produtosParaEnviar = produtosAdicionados.map(produto => ({
@@ -256,6 +263,7 @@ const useActionsNovoResgistro = () => {
       id_contrato: dadosassociado?.contrato?.id_contrato,
       id_associado: dadosassociado?.id_associado,
       id_dependente: listaConv?.id_dependente,
+      id_empresa: infoEmpresa?.id,
       id_contrato_st: listaConv.id_contrato_st,
       tipo_entrada: listaConv.tipo_entrada,
       nome: listaConv.nome,
@@ -302,8 +310,9 @@ const useActionsNovoResgistro = () => {
 
     try {
       await promise;
+      router.push('/dashboard/servicos/convalescencia/listagem')
     } catch (error: any) {
-      console.error("Falha detalhada ao salvar registro:", error.response?.data || error.message || error);
+      console.log("Falha detalhada ao salvar registro:", error.response?.data || error.message || error);
     }
   }
 
@@ -338,7 +347,7 @@ const useActionsNovoResgistro = () => {
           id_dependente: null
         });
       } else {
-        
+
         setarListaConv({});
       }
     }
@@ -405,12 +414,6 @@ const useActionsNovoResgistro = () => {
         adicionarNovoRegistro()
       }
 
-      if (selecionarProduto){
-        router.push('/dashboard/servicos/convalescencia/listagem')
-      } else {
-        toast.error("Por favor, adicione um produto!")
-      }
-      
     } catch (error) {
 
       toast.error('A operação falhou!')
@@ -471,16 +474,14 @@ const useActionsNovoResgistro = () => {
   }
 
   const handleConfirmarSelecaoDependente = () => {
-    // 1. Pega os índices das linhas selecionadas
+
     const indicesSelecionados = Object.keys(rowSelection).map(Number);
 
-    // 2. Verifica se APENAS UM foi selecionado
     if (indicesSelecionados.length === 1 && dadosassociado?.dependentes) {
       const indice = indicesSelecionados[0];
       const dependentesVisiveis = dadosassociado.dependentes.filter(d => !d.excluido);
       const dependenteEscolhido = dependentesVisiveis[indice];
 
-      // 3. Se tivermos um dependente, chame a função do seu hook principal
       if (dependenteEscolhido) {
 
         const dataNascimento = dependenteEscolhido.data_nasc
@@ -493,50 +494,42 @@ const useActionsNovoResgistro = () => {
           id_dependente: dependenteEscolhido.id_dependente,
         };
 
-
-        console.log('--- PASSO A: DEPENDENTE SELECIONADO ---');
-        console.log('Estou setando o seguinte ID de dependente:', dadosParaSetar.id_dependente);
-
-
-
         setarListaConv(dadosParaSetar)
 
         setDependenteSelecionado(true);
         setIsModalOpen(false);
       }
     } else {
-      // 5. Mostra um aviso se nenhum ou mais de um for selecionado
+
       toast.info("Por favor, selecione apenas um dependente.");
+
     }
   };
 
   const handleCheckboxTitularChange = (checked: boolean) => {
     const isChecked = !!checked;
-    setUsarDadosTitular(checked); // Atualiza o estado do checkbox
+    setUsarDadosTitular(checked);
 
     if (isChecked) {
-      // Se o checkbox foi MARCADO
 
-      // Validação: só preenche se houver um associado carregado
       if (!dadosassociado?.id_global) {
         toast.error("Nenhum associado selecionado. Por favor, busque um primeiro.");
-        setUsarDadosTitular(false); // Desmarca o checkbox se não houver dados
+        setUsarDadosTitular(false);
         return;
       }
 
 
       setDependenteSelecionado(false);
 
-      // Preenche o formulário usando `setarListaConv` com os dados de `dadosassociado`
-      toast.info("Preenchendo formulário com dados do titular...");
+      toast.loading("Preenchendo formulário com dados do titular...");
       setarListaConv({
         nome: dadosassociado.nome,
-        data: new Date(dadosassociado.data_nasc ?? ''), // Converta a data se necessário
+        data: new Date(dadosassociado.data_nasc ?? ''),
         cpf_cnpj: dadosassociado.cpfcnpj,
         logradouro: dadosassociado.endereco,
         numero: dadosassociado.numero,
         bairro: dadosassociado.bairro,
-        complemento: dadosassociado.guia_rua, // ou o campo correspondente
+        complemento: dadosassociado.guia_rua,
         cep: dadosassociado.cep,
         cidade: dadosassociado.cidade,
         uf: dadosassociado.uf,
@@ -544,9 +537,11 @@ const useActionsNovoResgistro = () => {
 
       });
 
+      toast.success("Formulário preenchido!")
+
     } else {
-      // Se o checkbox foi DESMARCADO, limpa o formulário
-      toast.info("Limpando formulário.");
+
+      toast.loading("Limpando formulário...");
       setarListaConv({
         nome: "",
         data: undefined,
@@ -560,6 +555,7 @@ const useActionsNovoResgistro = () => {
         uf: "",
         id_dependente: null,
       });
+      toast.success("Formulário limpado!")
     }
   };
 

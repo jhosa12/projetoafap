@@ -144,6 +144,7 @@ export default function FormularioConv({
   )
 
 
+
   useEffect(() => {
 
     if (isEditMode && listaConv.id_conv) {
@@ -375,9 +376,8 @@ export default function FormularioConv({
             <div className="grid gap-2">
               <Label>Tipo de Entrada</Label>
               <Select
-                // O valor selecionado é lido do estado 'listaConv'
                 value={listaConv.tipo_entrada || ''}
-                // Quando o usuário muda a seleção, o estado 'listaConv' é atualizado
+
                 onValueChange={(novoValor) => {
                   setarListaConv({ tipo_entrada: novoValor });
                 }}
