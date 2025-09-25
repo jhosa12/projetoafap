@@ -67,6 +67,7 @@ export function TabelaCompleta<TData, TValue>({
   })
 
   const table = useReactTable({
+
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),

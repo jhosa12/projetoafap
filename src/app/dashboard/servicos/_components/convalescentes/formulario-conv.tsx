@@ -143,8 +143,6 @@ export default function FormularioConv({
 
   )
 
-
-
   useEffect(() => {
 
     if (isEditMode && listaConv.id_conv) {

@@ -216,7 +216,7 @@ const useActionsNovoResgistro = () => {
 
     toast.promise(promise, {
 
-      loading: 'Atualizando Dados',
+      loading: 'Atualizando Dados...',
       success: 'Dados registrados com sucesso!',
       error: (err) => err.response?.data?.message || 'Erro ao atualizar dados. Tente novamente.',
     }) 
@@ -521,7 +521,6 @@ const useActionsNovoResgistro = () => {
 
       setDependenteSelecionado(false);
 
-      toast.loading("Preenchendo formulário com dados do titular...");
       setarListaConv({
         nome: dadosassociado.nome,
         data: new Date(dadosassociado.data_nasc ?? ''),
@@ -541,7 +540,6 @@ const useActionsNovoResgistro = () => {
 
     } else {
 
-      toast.loading("Limpando formulário...");
       setarListaConv({
         nome: "",
         data: undefined,
