@@ -87,14 +87,14 @@ export function getObitoColumns({
       id: "actions",
       header: "Ações",
       cell: ({ row }) => {
-        const exame = row.original;
+        const obito = row.original;
 
         return (
           <div className="flex gap-2">
             <Button
               variant="outline"
               size="icon"
-              onClick={() => onEdit?.(exame)}
+              onClick={() => onEdit?.(obito)}
               className="h-6 w-6"
             >
               <HiPencil className="h-3 w-3" />
@@ -102,7 +102,7 @@ export function getObitoColumns({
             <Button
               variant="destructive"
               size="icon"
-              onClick={() => onDelete?.(exame)}
+              onClick={() => onDelete?.(obito)}
               className="h-6 w-6"
             >
               <IoMdTrash className="h-3 w-3" />

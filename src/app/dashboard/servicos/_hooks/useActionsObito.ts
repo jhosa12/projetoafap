@@ -20,7 +20,7 @@ interface ActionsProps {
 const useActionsObito = () => {
   const { usuario, signOut, infoEmpresa, dadosassociado } = useContext(AuthContext);
   const [listaServicos, setServicos] = useState<ObitoProps[]>([]);
-  const [servico, setServico] = useState<ObitoProps>({} as ObitoProps)
+  const [servico, setServico] = useState<ObitoProps | null>(null)
   const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod: [] });
 
   const setarListaConv = useCallback((fields: Partial<ConvProps>) => {
@@ -67,14 +67,7 @@ const useActionsObito = () => {
     );
   }
 
-
-
   const cadastrarObito = async (data: ObitoProps) => {
-
-    if (!data.nome_falecido || !data.rd_nome) {
-      toast.info("Preencha todos os campos obrigatórios");
-      return;
-    }
 
     let horaVelorioFormatada = null;
     if (data.hr_velorio && typeof data.hr_velorio === 'string' && data.hr_velorio.includes(':')) {
@@ -82,7 +75,7 @@ const useActionsObito = () => {
       const dataParaHora = new Date();
       dataParaHora.setHours(parseInt(hours, 10));
       dataParaHora.setMinutes(parseInt(minutes, 10));
-      // Se a data for válida após o parse, converte para ISO string
+
       if (!isNaN(dataParaHora.getTime())) {
         horaVelorioFormatada = dataParaHora.toISOString();
       }
@@ -131,36 +124,51 @@ const useActionsObito = () => {
       error: (err) => err.resposne?.data?.message || 'Erro ao cadastrar. Tente novamente.'
     })
 
-    try {
-
-      await promise
-
-    } catch (error) {
-
-      console.log("Falha na chamada a API:", error)
-
-    }
   }
 
   async function editarObito(data: ObitoProps) {
-    toast.promise(
-      api.put('/obitos/editarObito', {
-        ...data,
-        status: data.listacheckida?.find(item => item.status === false) || data.listacheckvolta?.find(item => item.status === false) ? 'PENDENTE' : 'FECHADO'
 
-      }),
-      {
-        error: 'Erro ao atualizar os dados',
-        loading: 'Atualizando dados',
-        success: 'Dados atualizados com sucesso'
-      }
-    )
+    const payload = {
+      ...data,
+      status: data.listacheckida?.find(item => item.status === false) || data.listacheckvolta?.find(item => item.status === false) ? 'PENDENTE' : 'FECHADO'
+    }
+
+    const promise = api.put('/obitos/editarObito', payload)
+
+    console.log("Dados de editar para api:", payload)
+    toast.promise(promise, {
+      loading: 'Atualizando dados',
+      success: 'Dados atualizados com sucesso',
+      error: (err) => err.response?.data?.message || 'Erro ao atualizar os dados',
+    })
+
+   return promise
   }
-
-
   const onSave: SubmitHandler<ObitoProps> = async (data) => {
-    data.id_obitos ? await editarObito(data) : await cadastrarObito(data)
-  }
+
+    if (!data.nome_falecido || !data.rd_nome) {
+
+      toast.error("Preencha os campos obrigatórios.");
+      return false; 
+    }
+
+    try {
+      if (data.id_obitos) {
+        await editarObito(data);
+      } else {
+
+        await cadastrarObito(data);
+      }
+
+      console.log("onSave no hook: Operação bem-sucedida.");
+      return true; 
+
+    } catch (error) {
+      console.error("onSave no hook: A operação da API falhou.", error);
+
+      return false; 
+    }
+  };
 
   return {
 

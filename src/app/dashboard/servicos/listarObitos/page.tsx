@@ -19,6 +19,9 @@ export default function ListarObitos() {
   const { selectEmp } = useContext(AuthContext)
   const { listaServicos, deletarObito, onSave, servico, setServico } = useActionsObito()
 
+
+
+
   return (
     <div className="px-6 mt-2 space-y-4">
       <h1 className="text-2xl font-semibold border-b border-b-gray-300 text-gray-900">
@@ -29,17 +32,20 @@ export default function ListarObitos() {
         onDelete(obito) {
           deletarObito(obito);
         },
-        onEdit(obito) {
+          onEdit(obito) {
+            console.log("DADOS DO ÓBITO AO CLICAR EM EDITAR:", obito); 
           setOpenOs(true);
           setServico(obito);
         }
         })}
         data={listaServicos}>
-        <Button onClick={() => setOpenOs(true)} size={"sm"} variant={"outline"}>
+        <Button onClick={() => {
+
+          setServico(null)
+          setOpenOs(true)
+        
+        }} size={"sm"} variant={"outline"}>
           <PlusCircle /> Adicionar
-        </Button>
-        <Button onClick={() => setOpenOs(true)} size={"sm"} variant={"outline"}>
-          <Pencil/> Editar
         </Button>
       </DataTable>
 

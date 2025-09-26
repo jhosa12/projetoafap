@@ -59,7 +59,7 @@ export const HeadAssociado = ({
                   <>
                     {item.convalescenca_prod?.map(
                       (dados, index) =>
-                        !item.id_dependente_global &&
+                        !item.id_dependente &&
                         item.status === "ABERTO" && (
                           <button
                             key={index}
