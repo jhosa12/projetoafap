@@ -21,12 +21,6 @@ const useActionsObito = () => {
   const { usuario, signOut, infoEmpresa, dadosassociado } = useContext(AuthContext);
   const [listaServicos, setServicos] = useState<ObitoProps[]>([]);
   const [servico, setServico] = useState<ObitoProps | null>(null)
-  const [listaConv, setLista] = useState<Partial<ConvProps>>({ convalescenca_prod: [] });
-
-  const setarListaConv = useCallback((fields: Partial<ConvProps>) => {
-    setLista(prev => ({ ...prev, ...fields }));
-  }, []);
-
 
   useEffect(() => {
     if (!usuario) return signOut();
@@ -97,6 +91,8 @@ const useActionsObito = () => {
       ...data,
       id_contrato_global: dadosassociado.contrato?.id_contrato_global,
       id_empresa: infoEmpresa?.id,
+      id_contrato: dadosassociado.contrato?.id_contrato,
+      id_titular: dadosassociado.id_associado,
       tipo_atendimento: data.tipo_atendimento ?? "ASSOCIADO",
       status: data.listacheckida?.find(item => item.status === false) || data.listacheckvolta?.find(item => item.status === false) ? 'PENDENTE' : 'FECHADO',
 
@@ -155,6 +151,7 @@ const useActionsObito = () => {
     try {
       if (data.id_obitos) {
         await editarObito(data);
+        
       } else {
 
         await cadastrarObito(data);
