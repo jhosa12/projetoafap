@@ -81,7 +81,9 @@ const itemsPerPage = 20;
 const componentRef = useRef<HTMLDivElement>(null);
 
 
-
+useEffect(()=>{
+    setArray([])
+},[infoEmpresa?.id])
 const imprimirCarne =useReactToPrint({
     pageStyle:pageStyle,
     documentTitle:'CARNÊ ASSOCIADO',

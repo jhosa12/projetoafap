@@ -2,22 +2,23 @@
 
 import { api } from "@/lib/axios/apiClient";
 import { MdOutlineLaunch } from "react-icons/md";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState, memo } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { Modal, Spinner } from "flowbite-react";
 
 import { ModalLancamentosCaixa } from "@/app/dashboard/caixa/_components/modalLancamentosCaixa";
 import { AuthContext } from "@/store/AuthContext";
-import { Modal, Spinner } from "flowbite-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ajustarData } from "@/utils/ajusteData";
-import { ScreenCloseCaixa } from "@/app/dashboard/caixa/_components/screenCloseCaixa";
+import { ScreenCloseCaixa } from "./_components/screenCloseCaixa";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import { toast } from "sonner";
-import { TableCaixa } from "@/app/dashboard/caixa/_components/table-caixa";
-import { ModalFechamento } from "@/app/dashboard/caixa/_components/modalFechamento";
+import { TableCaixa } from "./_components/table-caixa";
+import { ModalFechamento } from "./_components/modalFechamento";
 import HeaderCaixa from "./_components/header-caixa";
+import { CardValuesCaixa } from "./_components/card-values-caixa";
 import {
   FormCaixaProps,
   LancamentosProps,
@@ -26,7 +27,7 @@ import {
 import useActionsCaixa from "./_hooks/useActionsCaixa";
 import { ModalMensalidade } from "../admcontrato/_components/mensalidades/modal-mensalidade";
 
-export default function CaixaMovimentar() {
+function CaixaMovimentar() {
 
   const [saldo, setSaldo] = useState(0);
   const { usuario, permissoes, infoEmpresa } = useContext(AuthContext);
@@ -60,6 +61,55 @@ export default function CaixaMovimentar() {
     setMov,
   } = useActionsCaixa();
 
+
+  // Otimização: useMemo para cálculos pesados
+  const { saldoCalculado, despesasCalculadas, valoresPorForma } = useMemo(() => {
+    if (!data?.lista?.length) {
+      return { saldoCalculado: 0, despesasCalculadas: 0, valoresPorForma: {} };
+    }
+
+    const totalPorFormaPagamento = data.lista.reduce((acc, lancamento) => {
+      if (lancamento.lancamentoForma && typeof lancamento.lancamentoForma === "object") {
+        Object.entries(lancamento.lancamentoForma).forEach(([forma, dados]) => {
+          lancamento.tipo === "RECEITA"
+            ? (acc[dados.forma] = (acc[dados.forma] || 0) + Number(dados.valor))
+            : (acc[dados.forma] = (acc[dados.forma] || 0) - Number(dados.valor));
+        });
+      }
+      return acc;
+    }, {} as Record<string, number>);
+
+    const soma = data.lista.reduce((total, item) => {
+      return item.tipo === "RECEITA" 
+        ? total + Number(item.valor) 
+        : total - Number(item.valor);
+    }, 0);
+
+    const somadespesas = data.lista.reduce((total, item) => {
+      return item.tipo === "DESPESA" 
+        ? total + Number(item.valor) 
+        : total;
+    }, 0);
+
+    return {
+      saldoCalculado: soma,
+      despesasCalculadas: somadespesas,
+      valoresPorForma: totalPorFormaPagamento
+    };
+  }, [data?.lista]);
+
+  // Atualiza os estados com os valores calculados
+  useEffect(() => {
+    if (data?.lista) {
+      setSaldo(saldoCalculado);
+      setDespesas(despesasCalculadas);
+      setValorForma(valoresPorForma);
+    } else {
+      setSaldo(0);
+      setDespesas(0);
+      setValorForma({});
+    }
+  }, [data?.lista, saldoCalculado, despesasCalculadas, valoresPorForma]);
 
   const handleExcluir = useCallback(async () => {
     toast.promise(
@@ -172,82 +222,35 @@ export default function CaixaMovimentar() {
   };
 
   const listarLancamentos: SubmitHandler<FormCaixaProps> = useCallback(
-    async (data) => {
-      if (data.startDate > data.endDate) {
+    async (formData) => {
+      if (formData.startDate > formData.endDate) {
         toast.info("Data final deve ser maior que a data inicial");
         return;
       }
 
-      const { dataIni, dataFim } = ajustarData(data.startDate, data.endDate);
+      const { dataIni, dataFim } = ajustarData(formData.startDate, formData.endDate);
       try {
         setLoading(true);
         const response = await api.post("/listarLancamentos", {
           id_empresa: infoEmpresa?.id,
           dataInicial: dataIni,
           dataFinal: dataFim,
-          descricao: data.descricao,
-          // id_user:usuario?.id
+          descricao: formData.descricao,
         });
-
-        //console.log(response.data)
 
         setData(response.data);
         setFilteredData(response.data);
-        // setLancamentos(lista)
-        // setPlanos(plano_de_contas)
-        // setGrupos(grupos)
-        // setFechado(fechamento)
       } catch (err) {
-        console.log(err);
+        console.error("Erro ao listar lançamentos:", err);
+        toast.error("Erro ao carregar os lançamentos");
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     },
-    [infoEmpresa?.id, usuario]
+    [infoEmpresa?.id]
   );
 
-  useEffect(() => {
-    if (data?.lista && data?.lista.length > 0) {
-      const totalPorFormaPagamento = data?.lista?.reduce((acc, lancamento) => {
-        if (
-          lancamento.lancamentoForma &&
-          typeof lancamento.lancamentoForma === "object"
-        ) {
-          Object?.entries(lancamento?.lancamentoForma)?.forEach(
-            ([forma, dados]) => {
-              lancamento.tipo === "RECEITA"
-                ? (acc[dados.forma] =
-                  (acc[dados.forma] || 0) + Number(dados.valor))
-                : (acc[dados.forma] =
-                  (acc[dados.forma] || 0) - Number(dados.valor));
-            }
-          );
-        }
-        return acc;
-      }, {} as Record<string, number>);
-
-      setValorForma(totalPorFormaPagamento);
-
-      const soma = data.lista?.reduce((total, item) => {
-        if (item.tipo === "RECEITA") {
-          return (total = total + Number(item.valor));
-        } else return (total = total - Number(item.valor));
-      }, 0);
-      setSaldo(soma);
-      const somadespesas = data.lista?.reduce((total, item) => {
-        if (item.tipo === "DESPESA") {
-          return (total = total + Number(item.valor));
-        } else {
-          return total;
-        }
-      }, 0);
-      setDespesas(somadespesas);
-    } else {
-      setSaldo(0);
-      setDespesas(0);
-      setValorForma({});
-    }
-  }, [data?.lista]);
+  // Removido o useEffect redundante que foi movido para useMemo
 
   return (
     <>
@@ -264,7 +267,7 @@ export default function CaixaMovimentar() {
 
       {modalDados && (
         <ModalMensalidade
-          handleAtualizar={()=>
+          handleAtualizar={() =>
             listarLancamentos({
               startDate: watch("startDate"),
               endDate: watch("endDate"),
@@ -280,21 +283,19 @@ export default function CaixaMovimentar() {
         />
       )}
 
-      <Modal size={"sm"} popup show={loading}>
+      {/* Loading Modal */}
+      <Modal size="sm" popup show={loading}>
         <Modal.Body>
-          <div className=" flex flex-col mt-6 w-full justify-center items-center">
-            <Spinner size={"lg"} color={"warning"} />
+          <div className="flex flex-col mt-6 w-full justify-center items-center">
+            <Spinner size="lg" color="warning" />
             <span>Localizando dados....</span>
           </div>
         </Modal.Body>
       </Modal>
 
-      <div className="flex flex-col  w-full ">
-        <HeaderCaixa
-          setFilteredData={setFilteredData}
-          setModal={setModal}
-          setMov={setMov}
-          setSelectRelatorio={setSelectRelatorio}
+      {/* Conteúdo principal */}
+      <div className="flex flex-col w-full">
+        <HeaderCaixa 
           saldo={saldo}
           despesas={despesas}
           valorForma={valorForma}
@@ -306,24 +307,26 @@ export default function CaixaMovimentar() {
           tipoFiltro={tipoFiltro}
           setTipoFiltro={setTipoFiltro}
           infoEmpresa={infoEmpresa}
+          setFilteredData={setFilteredData}
+          setModal={setModal}
+          setMov={setMov}
+          setSelectRelatorio={setSelectRelatorio}
         />
+        
         {!!data?.fechamento ? (
           <ScreenCloseCaixa fechamento={data.fechamento} />
         ) : (
-          <TableCaixa
-            setModal={setModal}
-            setMov={setMov}
-            permissoes={permissoes}
-            data={filteredData || data}
-          />
+          <div className="flex flex-col w-full">
+            <TableCaixa 
+              data={filteredData} 
+              permissoes={permissoes} 
+              setModal={setModal} 
+              setMov={setMov} 
+            />
+          </div>
         )}
 
-        {!data?.fechamento && (
-          <div className="inline-flex gap-3   text-black w-full bg-white p-2"></div>
-        )}
-      </div>
-
-      {openModal.fecharCaixa && (
+        {openModal.fecharCaixa && (
         <ModalFechamento
           listar={() =>
             listarLancamentos({
@@ -355,22 +358,9 @@ export default function CaixaMovimentar() {
           grupo={data?.grupo ?? []}
         />
       )}
-      {/* 
-      <div style={{ display: "none" }}>
-      
-        {selectRelatorio && (
-          <RelatorioSintetico
-            infoEmpresa={infoEmpresa}
-            tipoRelatorio={selectRelatorio}
-            soma={handleGerirRelatorio() ?? ({} as SomaProps)}
-            usuario={usuario?.nome ?? ""}
-            startDate={watch("startDate")}
-            endDate={watch("endDate")}
-            array={data?.lista ?? []}
-            ref={currentPage}
-          />
-        )}
-      </div> */}
+      </div>
     </>
   );
 }
+
+export default memo(CaixaMovimentar);

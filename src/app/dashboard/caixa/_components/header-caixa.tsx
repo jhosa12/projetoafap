@@ -1,4 +1,4 @@
-
+import { memo, useCallback } from 'react';
 import { CardValuesCaixa } from "./card-values-caixa"
 import { Control, Controller, SubmitHandler, UseFormHandleSubmit } from "react-hook-form"
 import { DatePickerInput } from "@/components/DatePickerInput";
@@ -30,7 +30,23 @@ interface CaixaHeaderProps {
 }
 
 
-const HeaderCaixa = ({ saldo, despesas, valorForma, data, control, handleSubmit, listarLancamentos, register, tipoFiltro, setTipoFiltro, infoEmpresa, setFilteredData, setModal, setMov, setSelectRelatorio }: CaixaHeaderProps) => {
+const HeaderCaixaComponent = memo(({ 
+  saldo, 
+  despesas, 
+  valorForma, 
+  data, 
+  control, 
+  handleSubmit, 
+  listarLancamentos, 
+  register, 
+  tipoFiltro, 
+  setTipoFiltro, 
+  infoEmpresa, 
+  setFilteredData, 
+  setModal, 
+  setMov, 
+  setSelectRelatorio 
+}: CaixaHeaderProps) => {
     return (
         <div>
 
@@ -150,7 +166,9 @@ const HeaderCaixa = ({ saldo, despesas, valorForma, data, control, handleSubmit,
             </form>
 
         </div>
-    )
-}
+    );
+});
 
-export default HeaderCaixa
+const HeaderCaixa = memo(HeaderCaixaComponent);
+
+export default HeaderCaixa;

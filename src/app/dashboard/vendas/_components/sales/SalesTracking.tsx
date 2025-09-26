@@ -314,6 +314,7 @@ const dadosVendas = async () => {
       leads={reqData?.leads??[]}
       usuario={''}
       logoUrl={'logoUrl'}
+      id_empresa={empresa}
       />}
     </div>
   );

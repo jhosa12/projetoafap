@@ -132,10 +132,11 @@ export default function AdmContrato() {
   }, [dadosassociado?.id_global]);
 
   useEffect(() => {
+    limparDados()
     return () => {
       limparDados();
     };
-  }, []);
+  }, [infoEmpresa?.id]);
 
   return (
     <div className={`flex flex-col px-2 w-full justify-center`}>
