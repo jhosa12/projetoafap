@@ -38,15 +38,15 @@ export default function Convalescente() {
     const [materialParaImpressao, setMaterialParaImpressao] = useState<any[]>([]);
     const [idContratoParaImpressao, setIdContratoParaImpressao] = useState<number | null>(null);
     const [selecionarImpressaoModal, setSelecionarImpressaoModal] = useState(false);
+    const [atualizacao, setAtualizacao] = useState(0)
     const [rowSelection, setRowSelection] = useState({});
     const router = useRouter()
-    const { usuario, infoEmpresa, dadosassociado } = useContext(AuthContext)
+    const { usuario, infoEmpresa } = useContext(AuthContext)
 
-    
+
 
 
     const {
-
 
         // --- Estados que a UI irá ler ---
         excluir,
@@ -60,7 +60,6 @@ export default function Convalescente() {
         listarConv,
         deletarConv,
         receberDevolucao,
-
 
     } = useActionsListagem()
 
@@ -101,6 +100,8 @@ export default function Convalescente() {
         try {
 
             await receberDevolucao(produtoSelecionadoId)
+
+            setAtualizacao(v => v + 1);
 
             if (selecionarImpressaoModal) {
 
@@ -154,9 +155,8 @@ export default function Convalescente() {
         }
 
         setModalImprimirBotoes(false);
+        setRowSelection({})
     };
-
-
 
     const handleEditar = () => {
 
@@ -166,10 +166,16 @@ export default function Convalescente() {
             return
 
         } else {
+
             router.push(`/dashboard/servicos/convalescencia/editar/${linhaSelecionada.id_conv}`)
+
         }
     }
-    
+
+    useEffect(() => {
+        listarConv();
+    }, [atualizacao]);
+
     const handleExcluir = () => {
 
         if (!linhaSelecionada) {
@@ -179,26 +185,39 @@ export default function Convalescente() {
 
         } else {
 
-            setExcluir(true);
+            
             setarListaConv({ id_conv: linhaSelecionada?.id_conv })
+            setExcluir(true);
+
         }
     }
+
+    const handleConfirmarExclusao = async () => {
+        try {
+            await deletarConv()
+
+            setAtualizacao(v => v + 1)
+            
+            setExcluir(false)
+
+            setRowSelection({})
+        } catch (error) {
+            console.error("Erro ao deletar:", error);
+        }
+    }
+
+
     const nomesDocumentos = {
         contrato: 'Contrato',
         comprovanteGenerico: 'Comprovante'
     }
 
-    
-
-    const getColumns = useMemo(
-        () => columns({
+    const getColumns = useMemo(() => columns({
             onDevolverProduto: handleDevolverProdutoClick
         }), [])
 
 
-    useEffect(() => {
-        listarConv();
-    }, []);
+  
 
     return (
 
@@ -337,7 +356,7 @@ export default function Convalescente() {
                                 <SelectContent>
                                     {(() => {
                                         const produtosAbertos = itemSelecionado.convalescenca_prod.filter(
-                                            (produto: any) => produto.status === 'ABERTO'
+                                            (produto: any) => produto.status === "ABERTO"
                                         );
 
                                         if (produtosAbertos.length > 0) {
@@ -377,7 +396,7 @@ export default function Convalescente() {
                     <ModalConfirmar
                         openModal={excluir}
                         setOpenModal={() => setExcluir(!excluir)}
-                        handleConfirmar={() => deletarConv()}
+                        handleConfirmar={handleConfirmarExclusao}
                         pergunta="Realmente deseja deletar esse lançamento?"
                     />
                 )}

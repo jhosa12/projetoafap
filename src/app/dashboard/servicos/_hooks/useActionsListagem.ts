@@ -66,8 +66,6 @@ const useActionsListagem = () => {
     if (!input) {
       const response = await api.post("/convalescencia/listar")
       setConv(response.data)
-
-
     }
     else if (criterio === 'Contrato') {
       const response = await api.post("/convalescencia/listar", {
@@ -100,8 +98,8 @@ const useActionsListagem = () => {
         }
       }),
       {
-        error: 'Erro ao deletar lançamento',
-        loading: 'Efetuando Exclusão',
+        error: 'Não foi possível excluir o registro. Tente novamente.',
+        loading: 'Efetuando Exclusão...',
         success: 'Excluido com sucesso!'
 
       }

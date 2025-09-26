@@ -90,7 +90,7 @@ const DocumentTemplateContrato = forwardRef<HTMLDivElement, DadosProps>((props, 
         <ul className="list-disc pl-10 mt-2">
           {material?.map((produto) => (
             <li key={produto.id_produto} className="py-1">
-               {produto.descricao}
+              {produto.descricao} - {produto.quantidade}
             </li>
           ))}
         </ul>
