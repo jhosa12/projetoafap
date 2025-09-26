@@ -3,6 +3,7 @@ import { ArrayProdutoProps } from "../../admcontrato/_types/array-produtos"
 
 export interface ObitoProps {
   id_obitos: number,
+  id_contrato_global: number,
   id_contrato: number,
   id_contrato_st: string,
   id_titular: number,

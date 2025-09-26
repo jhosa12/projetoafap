@@ -53,8 +53,7 @@ import {
         {children}
           
         </div>
-      
-       
+    
         <div  className={` overflow-y-auto w-full ${maxHeight}`}>
           <Table >
             <TableHeader className="text-xs uppercase">

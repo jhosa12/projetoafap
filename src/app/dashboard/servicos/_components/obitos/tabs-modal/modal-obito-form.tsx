@@ -29,7 +29,7 @@ export const ModalObitoForm = ({isFormOpen,selectedObito,setIsFormOpen,setSelect
         <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent className="max-w-[95vw] !max-h-[93vh] overflow-y-auto p-4">
           <DialogHeader>
-            <DialogTitle>{selectedObito ? "Editar Óbito" : "Novo Óbito"}</DialogTitle>
+            <DialogTitle>{selectedObito ? "Novo Óbito" : "Editar Óbito"}</DialogTitle>
 
             <DialogDescription asChild>
               <div className="flex w-full justify-between ">

@@ -88,9 +88,6 @@ const useActionsNovoResgistro = () => {
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-
-
-
   const setInputs = (fields: Partial<ProdutosProps>) => {
     setDataInputs((prev: Partial<ProdutosProps>) => {
       if (prev) {
