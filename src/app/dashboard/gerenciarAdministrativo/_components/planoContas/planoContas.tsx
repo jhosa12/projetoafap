@@ -11,6 +11,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { PlanoContasProps } from "@/app/dashboard/financeiro/page";
+import ReactInputMask from "react-input-mask";
 
 
 
@@ -403,11 +404,11 @@ export const ModalAdicionar = ({open,onClose,adicionar}:ModalProps) =>{
      
 
         const handleOnSubmit:SubmitHandler<NovoPlanoProps> = (data)=>{
-            let conta = data.conta.replace(/[_]/g,"")
-            conta = conta.replace(/\.$/,"")
+           // let conta = data.conta.replace(/[_]/g,"")
+           // conta = conta.replace(/\.$/,"")
 
            // console.log(data)
-            adicionar({...data,conta:conta})
+            adicionar({...data})
         }
 
 
@@ -422,8 +423,8 @@ export const ModalAdicionar = ({open,onClose,adicionar}:ModalProps) =>{
                 <DialogTitle>ADICIONAR CONTA</DialogTitle>
             </DialogHeader>
                 <form onSubmit={handleSubmit(handleOnSubmit)} className="flex flex-col gap-4">
-              {/*  <InputMask mask={'9.99.999'}  {...register('conta')} placeholder="CONTA" autoComplete="off" type="text" required className="h-8 pb-1 pt-1 pr-2 pl-2 text-sm border  rounded-md   border-gray-200 placeholder-gray-500  "/>*/
-      }
+                <Input   {...register('conta')} placeholder="CONTA" autoComplete="off" type="text" required />
+      
                     <Input {...register('descricao')} className="h-8" placeholder="DESCRIÇÃO"/>
 
                     <Controller

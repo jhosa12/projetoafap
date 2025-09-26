@@ -1,22 +1,20 @@
+import { memo } from 'react';
 import { ResponseCaixaProps } from "../_types/types"
 
-
-
-interface Props{
-    saldo:number,
-    despesas:number,
-    valorForma:Record<string, number>|undefined,
-    data:Partial<ResponseCaixaProps>|undefined
+interface Props {
+    saldo: number;
+    despesas: number;
+    valorForma: Record<string, number> | undefined;
+    data: Partial<ResponseCaixaProps> | undefined;
 }
 
-
-export const CardValuesCaixa = ({saldo,despesas,valorForma,data}:Props) => {
+const CardValuesCaixaComponent = memo(({ saldo, despesas, valorForma, data }: Props) => {
 
 
 
 
     return(
-         <div className="flex flex-col whitespace-nowrap ml-4 bg-gray-50 px-2 py-1 text-[11px] rounded-md font-semibold">
+        <div className="flex flex-col whitespace-nowrap ml-4 bg-gray-50 px-2 py-1 text-[11px] rounded-md font-semibold">
                       <div className="inline-flex items-center gap-4">
                         <div>
                           <span>SALDO:</span>
@@ -83,5 +81,7 @@ export const CardValuesCaixa = ({saldo,despesas,valorForma,data}:Props) => {
                           ))}
                       </ul>
                     </div>
-    )
-}
+    );
+});
+
+export const CardValuesCaixa = CardValuesCaixaComponent;

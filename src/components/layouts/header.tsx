@@ -4,13 +4,11 @@ import { useContext, useState } from "react";
 import { Avatar, Label } from "flowbite-react";
 import { AuthContext } from "@/store/AuthContext";
 import Image from "next/image";
-import { 
-  LogIn, 
+import {  
   Menu, 
   Settings, 
   LayoutDashboard, 
   Box, 
-  Wallet, 
   RefreshCw, 
   CreditCard, 
   Users, 
@@ -45,14 +43,6 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";

@@ -1,5 +1,5 @@
-
 import { Delete, Edit } from "lucide-react";
+import { memo } from "react";
 import {
   Table,
   TableBody,
@@ -10,23 +10,22 @@ import {
 } from "@/components/ui/table";
 import { LancamentosProps, ResponseCaixaProps } from "../_types/types";
 
-interface Props{
-    data:Partial<ResponseCaixaProps>|undefined
-    permissoes:string[]
-    setModal:(modal:{ [key: string]: boolean })=>void
-    setMov:(mov:Partial<LancamentosProps>)=>void
+interface Props {
+  data: Partial<ResponseCaixaProps> | undefined;
+  permissoes: string[];
+  setModal: (modal: { [key: string]: boolean }) => void;
+  setMov: (mov: Partial<LancamentosProps>) => void;
 }
 
-export const TableCaixa = ({data,permissoes,setModal,setMov}:Props)=>{
-    return(
-        
-        <div className=" flex flex-col bg-white overflow-y-auto mt-2 px-2 h-[calc(100vh-130px)]">
-          <Table >
-            <TableHeader className="sticky top-0 bg-white z-5 border-b-[1px] border-gray-300">
-              <TableRow className="h-8">
-                <TableHead className="h-8 px-2 text-[11px] font-medium bg-gray-50 border border-gray-300">
-                  Nº
-                </TableHead>
+const TableCaixaComponent = memo(({ data, permissoes, setModal, setMov }: Props) => {
+    return (
+    <div className="flex flex-col bg-white overflow-y-auto mt-2 px-2 h-[calc(100vh-130px)]">
+      <Table>
+        <TableHeader className="sticky top-0 bg-white z-5 border-b-[1px] border-gray-300">
+          <TableRow className="h-8">
+            <TableHead className="h-8 px-2 text-[11px] font-medium bg-gray-50 border border-gray-300">
+              Nº
+            </TableHead>
                 <TableHead className="h-8 px-2 text-[11px] font-medium bg-gray-50 border border-gray-300">
                   DATA
                 </TableHead>
@@ -113,24 +112,25 @@ export const TableCaixa = ({data,permissoes,setModal,setMov}:Props)=>{
                       <Edit size={14} />
                     </button>
                     <button
-                      disabled={
-                        item.conta === "1.01.002" ||
-                        !permissoes.includes("ADM2.1.4")
-                      }
-                      onClick={() => {
-                        setMov({ lanc_id: item.lanc_id }),
-                        setModal({ excluir: true });
-                      }}
-                      className="font-medium text-gray-500 hover:text-red-600 disabled:cursor-not-allowed"
-                    >
-                      <Delete size={16} />
-                    </button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-     
-    )
-}
+                    disabled={
+                      item.conta === "1.01.002" ||
+                      !permissoes.includes("ADM2.1.4")
+                    }
+                    onClick={() => {
+                      setMov({ lanc_id: item.lanc_id });
+                      setModal({ excluir: true });
+                    }}
+                    className="font-medium text-gray-500 hover:text-red-600 disabled:cursor-not-allowed"
+                  >
+                    <Delete size={16} />
+                  </button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+  );
+});
+
+export const TableCaixa = TableCaixaComponent;

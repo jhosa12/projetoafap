@@ -15,7 +15,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableBody, TableCell, TableHead, TableRow } from "@/components/ui/table";
@@ -31,7 +30,8 @@ interface DataProps {
   endDate: Date,
   leads: Array<ConsultorLeads>
   usuario: string,
-  logoUrl: string
+  logoUrl: string,
+  id_empresa:string
 }
 
 
@@ -57,10 +57,10 @@ interface ResumoVendedorProps {
 }
 
 
-export function ModalVendedor({ endDate, setModalVend, show, startDate, vendedor, usuario, logoUrl }: DataProps) {
+export function ModalVendedor({ endDate, setModalVend, show, startDate, vendedor, usuario, logoUrl,id_empresa }: DataProps) {
 
 
-  const { data, postData, loading } = useApiGet<ResumoVendedorProps, { startDate: Date, endDate: Date, id_consultor: number | null, consultor: string }>("/vendas/resumoVendedor")
+  const { data, postData, loading } = useApiGet<ResumoVendedorProps, { startDate: Date, endDate: Date, id_consultor: number | null, consultor: string,id_empresa:string }>("/vendas/resumoVendedor")
   const componenteRef = useRef<HTMLDivElement>(null);
   const [print, setPrint] = useState(false)
 
@@ -71,7 +71,7 @@ export function ModalVendedor({ endDate, setModalVend, show, startDate, vendedor
 
   useEffect(() => {
 
-    postData({ startDate, endDate, id_consultor: vendedor.id_consultor, consultor: vendedor.consultor })
+    postData({ startDate, endDate, id_consultor: vendedor.id_consultor, consultor: vendedor.consultor,id_empresa })
 
   }, [vendedor.id_consultor])
 
@@ -85,7 +85,7 @@ export function ModalVendedor({ endDate, setModalVend, show, startDate, vendedor
   const handlePrint = useReactToPrint({
     contentRef: componenteRef,
     pageStyle: pageStyle,
-    onBeforePrint: async() => setPrint(false),
+   // onBeforePrint: async() => setPrint(false),
   })
 
 

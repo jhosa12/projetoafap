@@ -6,13 +6,13 @@ import { PlanoContas } from "@/app/dashboard/gerenciarAdministrativo/_components
 import { GerenciarPlanos } from "@/app/dashboard/gerenciarAdministrativo/_components/planos/planos";
 import { AuthContext } from "@/store/AuthContext";
 import { api } from "@/lib/axios/apiClient"
-import { Tabs } from "flowbite-react";
 import Head from "next/head"
 import React, {useContext, useEffect, useState } from "react"
 import { BiSolidInjection } from "react-icons/bi";
 import { FaCalendarAlt } from "react-icons/fa";
 import { HiClipboardList } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlanoContasProps } from "../financeiro/page";
 import { Veiculos } from "@/app/dashboard/gerenciarAdministrativo/_components/veiculos/veiculos";
 import { toast } from "sonner";
@@ -122,29 +122,71 @@ async function carregarDados() {
     <title>Gerenciar setor Administrativo</title>
 </Head>
 
-  <Tabs theme={{base: 'bg-white rounded-b-lg',tabpanel:'bg-white rounded-b-lg h-[calc(100vh-70px)]',tablist:{tabitem:{base: "flex items-center  justify-center rounded-t-lg px-4 py-3 text-xs font-medium first:ml-0  disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500",variant:{underline:{active:{
-        on:"active rounded-t-lg border-b-2 border-blue-600 text-blue-500 ",
-        off:"border-b-2 border-transparent text-black hover:border-gray-700 hover:text-gray-600 "
-      }}}}}}}  variant="underline">
+  <Tabs defaultValue="plano-contas" className="w-full">
+    <TabsList className="grid w-full grid-cols-5 bg-white">
+      <TabsTrigger value="plano-contas" className="flex items-center gap-2">
+        <FaCalendarAlt className="h-4 w-4" />
+        PLANO DE CONTAS
+      </TabsTrigger>
+      <TabsTrigger value="planos" className="flex items-center gap-2">
+        <HiClipboardList className="h-4 w-4" />
+        PLANOS
+      </TabsTrigger>
+      <TabsTrigger value="convalescentes" className="flex items-center gap-2">
+        <BiSolidInjection className="h-4 w-4" />
+        CONVALESCENTES
+      </TabsTrigger>
+      <TabsTrigger value="metas" className="flex items-center gap-2">
+        <IoMdSettings className="h-4 w-4" />
+        METAS CONTAS
+      </TabsTrigger>
+      <TabsTrigger value="veiculos" className="flex items-center gap-2">
+        <IoMdSettings className="h-4 w-4" />
+        VEÍCULOS
+      </TabsTrigger>
+    </TabsList>
 
-<Tabs.Item  active title="PLANO DE CONTAS" icon={()=><FaCalendarAlt className="mr-2 h-4 w-4"/>}>
+    <TabsContent value="plano-contas" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
+      <PlanoContas 
+        carregarDados={carregarDados} 
+        arrayPlanoContas={arrayPlanoContas} 
+        arraygrupos={arraygrupos} 
+        setarDados={setarDados}
+      />
+    </TabsContent>
 
-<PlanoContas carregarDados={carregarDados} arrayPlanoContas={arrayPlanoContas} arraygrupos={arraygrupos} setarDados={setarDados}/>
-     
-      </Tabs.Item>
-      <Tabs.Item title="PLANOS" icon={()=><HiClipboardList className="mr-2 h-4 w-4"/>}>
-      <GerenciarPlanos carregarDados={carregarDados}  setarPlanos={setarPlanos} arrayPlanos={arrayPlanos}/>
-      </Tabs.Item>
-      <Tabs.Item title="CONVALESCENTES" icon={()=><BiSolidInjection className="mr-2 h-4 w-4"/>}>
-      <GerenciarConvalescenca carregarDados={carregarDados}  setarConv={setarConv} arrayConv={arrayConv}/>
-      </Tabs.Item>
-      <Tabs.Item  icon={()=><IoMdSettings className="mr-2 h-4 w-4"/>}  title="METAS CONTAS">
-      <GerenciarMetas planoContas={arrayPlanoContas} empresas={empresas} id_empresa={selectEmp} setores={arraygrupos} />
-      </Tabs.Item>
-      <Tabs.Item  icon={()=><IoMdSettings className="mr-2 h-4 w-4"/>}  title="VEICULOS">
-      <Veiculos empresas={empresas} id_empresa={selectEmp}  />
-      </Tabs.Item>
-    </Tabs>
+    <TabsContent value="planos" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
+      <GerenciarPlanos 
+        carregarDados={carregarDados}  
+        setarPlanos={setarPlanos} 
+        arrayPlanos={arrayPlanos}
+      />
+    </TabsContent>
+
+    <TabsContent value="convalescentes" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
+      <GerenciarConvalescenca 
+        carregarDados={carregarDados}  
+        setarConv={setarConv} 
+        arrayConv={arrayConv}
+      />
+    </TabsContent>
+
+    <TabsContent value="metas" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
+      <GerenciarMetas 
+        planoContas={arrayPlanoContas} 
+        empresas={empresas} 
+        id_empresa={selectEmp} 
+        setores={arraygrupos} 
+      />
+    </TabsContent>
+
+    <TabsContent value="veiculos" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
+      <Veiculos 
+        empresas={empresas} 
+        id_empresa={selectEmp}  
+      />
+    </TabsContent>
+  </Tabs>
 
 
 
