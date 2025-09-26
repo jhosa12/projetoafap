@@ -93,6 +93,7 @@ const useActionsObito = () => {
       id_empresa: infoEmpresa?.id,
       id_contrato: dadosassociado.contrato?.id_contrato,
       id_titular: dadosassociado.id_associado,
+      situacao_contrato: dadosassociado.contrato?.situacao,
       tipo_atendimento: data.tipo_atendimento ?? "ASSOCIADO",
       status: data.listacheckida?.find(item => item.status === false) || data.listacheckvolta?.find(item => item.status === false) ? 'PENDENTE' : 'FECHADO',
 
@@ -151,7 +152,7 @@ const useActionsObito = () => {
     try {
       if (data.id_obitos) {
         await editarObito(data);
-        
+
       } else {
 
         await cadastrarObito(data);
