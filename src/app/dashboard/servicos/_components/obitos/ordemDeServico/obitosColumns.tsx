@@ -35,7 +35,7 @@ export function getObitoColumns({
       header: "NOME FALECIDO",
     },
     {
-      accessorKey: "id_contrato_st",
+      accessorKey: "situacao_contrato",
       header: "SITUAÇÃO",
     },
     {

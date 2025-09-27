@@ -27,6 +27,9 @@ export const OSDadosFalecido = ()=>{
           <CardTitle className="text-gray-900">Dados do Falecido</CardTitle>
           <CardDescription className="text-gray-600">Informações pessoais do falecido</CardDescription>
         </CardHeader>
+
+
+        
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div className="space-y-2 md:col-span-1">
             <Label htmlFor="nome_falecido">Nome Completo *</Label>
