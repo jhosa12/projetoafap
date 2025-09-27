@@ -14,11 +14,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import setarListaConv from "@/app/dashboard/servicos/_hooks/useActionsNovoRegistro"
 import { ConvProps } from "../../_types/convalescente"
+import { AssociadoProps } from "@/app/dashboard/admcontrato/_types/associado"
+import { DependentesProps } from "@/app/dashboard/admcontrato/_types/dependentes"
 
 export type Dependente = {
-  id_dependente?: number
-  nome?: string
-  data_nasc?: Date
+  dependentes: DependentesProps[] 
+  nome: string
+  data_nasc: Date | null
   // Adicionei parentesco para um exemplo mais rico, ajuste se necessário
   parentesco?: string
   excluido?: boolean
@@ -26,12 +28,12 @@ export type Dependente = {
 
 
 interface ActionsProps {
-  setarListaConv: (fields: Partial<ConvProps>) => void;
+  setarCampoAssociado: (fields: Partial<AssociadoProps>) => void;
   setModalDependente: (value: boolean) => void
 }
 
 
-export const getColumns = ({ setarListaConv, setModalDependente }: ActionsProps): ColumnDef<Dependente>[] => [
+export const getColumnsDepObito = ({ setarCampoAssociado, setModalDependente }: ActionsProps): ColumnDef<DependentesProps>[] => [
 
   {
     id: "select",
@@ -95,10 +97,10 @@ export const getColumns = ({ setarListaConv, setModalDependente }: ActionsProps)
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => {
-                setarListaConv({
+                setarCampoAssociado({
                   nome: dependente.nome,
-                  data: dependente.data_nasc,
-                  id_dependente: dependente.id_dependente
+                  data_nasc: dependente.data_nasc,
+                  dependentes: [dependente]
                 });
                 setModalDependente(false);
               }}

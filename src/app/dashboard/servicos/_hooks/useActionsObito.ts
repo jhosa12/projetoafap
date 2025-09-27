@@ -5,22 +5,50 @@ import { api } from "@/lib/axios/apiClient";
 import { toast } from "sonner";
 import { SubmitHandler } from "react-hook-form";
 import { ConvProps } from "../_types/convalescente";
+import { AssociadoProps } from "../../admcontrato/_types/associado";
+import { RowSelectionState } from "@tanstack/react-table";
 
 interface ActionsProps {
 
   // --- Estados que a UI irá ler ---
+  titular: boolean;
   listaServicos: ObitoProps[];
+  listaAssociado: Partial<AssociadoProps>
+  usarDadosTitular: (value: boolean) => void;
+  isDependenteSelecionado: (value: boolean) => void;
+  isModalOpen: (value: boolean) => void;
+  rowSelection: (value: boolean) => void;
+  handleCheckboxTitularChange: (value: boolean) => void;
+  handleConfirmarSelecaoDependente: (value: boolean) => void;
+
+  //Funções para alterar o estado
+  setIsModalOpen: (value: boolean) => void;
+  setDependenteSelecionado: (value: boolean) => void;
+  setRowSelection: (value: boolean) => void;
+  setUsarDadosTitular: (value: boolean) => void;
+  setTitular: (value: boolean) => void;
+  
 
   // --- Funções de Ação (handlers) ---
   listar(): Promise<void>;
   deletarObito(os: ObitoProps): Promise<void>;
+  setarCampoAssociado: (fields: Partial<AssociadoProps>) => void
 
 }
 
 const useActionsObito = () => {
-  const { usuario, signOut, infoEmpresa, dadosassociado } = useContext(AuthContext);
+  const { usuario, signOut, infoEmpresa, dadosassociado, limparDados } = useContext(AuthContext);
   const [listaServicos, setServicos] = useState<ObitoProps[]>([]);
   const [servico, setServico] = useState<ObitoProps | null>(null)
+  const [isDependenteSelecionado, setDependenteSelecionado] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [listaAssociado, setListaAssociado] = useState<Partial<AssociadoProps>>({})
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+  const [usarDadosTitular, setUsarDadosTitular] = useState(false)
+  const [titular, setTitular] = useState(false)
+  const setarCampoAssociado = useCallback((fields: Partial<AssociadoProps>) => {
+    setListaAssociado(prev => ({ ...prev, ...fields }));
+  }, []);
 
   useEffect(() => {
     if (!usuario) return signOut();
@@ -139,14 +167,98 @@ const useActionsObito = () => {
       error: (err) => err.response?.data?.message || 'Erro ao atualizar os dados',
     })
 
-   return promise
+    return promise
   }
+  const handleCheckboxTitularChange = (checked: boolean) => {
+    const isChecked = !!checked;
+    setUsarDadosTitular(checked);
+
+    if (isChecked) {
+
+      if (!dadosassociado?.id_global) {
+        toast.error("Nenhum associado selecionado. Por favor, busque um primeiro.");
+        setUsarDadosTitular(false);
+        return;
+      }
+
+
+      setDependenteSelecionado(false);
+
+      setarCampoAssociado({
+        nome: dadosassociado.nome,
+        data_nasc: new Date(dadosassociado.data_nasc ?? ''),
+        cpfcnpj: dadosassociado.cpfcnpj,
+        endereco: dadosassociado.endereco,
+        numero: dadosassociado.numero,
+        bairro: dadosassociado.bairro,
+        guia_rua: dadosassociado.guia_rua,
+        cep: dadosassociado.cep,
+        cidade: dadosassociado.cidade,
+        uf: dadosassociado.uf,
+        dependentes: [],
+
+      });
+
+      toast.success("Formulário preenchido!")
+
+    } else {
+
+      setarCampoAssociado({
+        nome: "",
+        data_nasc: undefined,
+        cpfcnpj: "",
+        endereco: "",
+        numero: undefined,
+        bairro: "",
+        guia_rua: "",
+        cep: "",
+        cidade: "",
+        uf: "",
+        dependentes: [],
+      });
+      toast.success("Formulário limpado!")
+    }
+  };
+
+  const handleConfirmarSelecaoDependente = () => {
+
+    const indicesSelecionados = Object.keys(rowSelection).map(Number);
+
+    if (indicesSelecionados.length === 1 && dadosassociado?.dependentes) {
+      const indice = indicesSelecionados[0];
+      const dependentesVisiveis = dadosassociado.dependentes.filter(d => !d.excluido);
+      const dependenteEscolhido = dependentesVisiveis[indice];
+
+      if (dependenteEscolhido) {
+
+        const dataNascimento = dependenteEscolhido.data_nasc
+          ? new Date(dependenteEscolhido.data_nasc)
+          : undefined;
+
+        const dadosParaSetar = {
+          nome: dependenteEscolhido.nome,
+          data: dataNascimento,
+          id_dependente: dependenteEscolhido.id_dependente,
+        };
+
+        setarCampoAssociado(dadosParaSetar)
+
+        setDependenteSelecionado(true);
+        setIsModalOpen(false);
+      }
+    } else {
+
+      toast.info("Por favor, selecione apenas um dependente.");
+
+    }
+  };
+
   const onSave: SubmitHandler<ObitoProps> = async (data) => {
 
     if (!data.nome_falecido || !data.rd_nome) {
 
       toast.error("Preencha os campos obrigatórios.");
-      return false; 
+      return false;
     }
 
     try {
@@ -159,23 +271,62 @@ const useActionsObito = () => {
       }
 
       console.log("onSave no hook: Operação bem-sucedida.");
-      return true; 
+      return true;
 
     } catch (error) {
       console.error("onSave no hook: A operação da API falhou.", error);
 
-      return false; 
+      return false;
     }
   };
+
+  useEffect(() => {
+    if (titular) {
+
+      if (dadosassociado?.id_global) {
+
+        setarCampoAssociado({
+          nome: dadosassociado.nome ?? '',
+          data_nasc: dadosassociado.data_nasc ? new Date(dadosassociado.data_nasc) : undefined,
+          endereco: dadosassociado.endereco ?? '',
+          bairro: dadosassociado.bairro ?? '',
+          numero: dadosassociado.numero ?? undefined,
+          cidade: dadosassociado.cidade ?? '',
+          cpfcnpj: dadosassociado.cpfcnpj ?? '',
+          uf: dadosassociado.uf ?? '',
+          dependentes: []
+        });
+      } else {
+
+        setarCampoAssociado({});
+      }
+    }
+
+  }, [titular, dadosassociado, setarCampoAssociado]);
+
 
   return {
 
     listaServicos,
     listar,
+    setIsModalOpen,
+    setDependenteSelecionado,
+    setRowSelection,
+    setUsarDadosTitular,
+    listaAssociado,
+    usarDadosTitular,
+    isDependenteSelecionado,
+    isModalOpen,
+    rowSelection,
+    handleCheckboxTitularChange,
+    handleConfirmarSelecaoDependente,
     deletarObito,
+    titular,
+    setTitular,
     servico,
     setServico,
-    onSave
+    onSave,
+    setarCampoAssociado
   }
 }
 

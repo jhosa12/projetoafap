@@ -28,7 +28,7 @@ export type AssociadoProps = {
     empresa: string,
     mensalidade: Array<MensalidadeProps> | [],
     contrato: Partial<ContratoProps>,
-    dependentes: Array<DependentesProps>
+    dependentes?: Array<DependentesProps>,
     acordo: Array<AcordoProps>
 
 
