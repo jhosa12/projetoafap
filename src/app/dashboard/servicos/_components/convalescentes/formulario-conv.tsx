@@ -186,7 +186,7 @@ export default function FormularioConv({
                     <Checkbox
                       id="dependente"
                       checked={isDependenteSelecionado}
-
+                      
                       onCheckedChange={(checked) => {
 
                         if (checked) {
@@ -242,11 +242,10 @@ export default function FormularioConv({
               <Input
                 id="tabs-demo-name"
                 value={listaConv.nome ?? ''}
-                onChange={e => setarListaConv({ nome: e.target.value })}
+                onChange={(e: any) => setarListaConv({ nome: e.target.value })}
               />
             </div>
 
-            {/* Data atual  */}
             <div className="grid gap-2 ">
               <Label htmlFor="tabs-demo-username">Data de Nascimento</Label>
               <Popover open={open} onOpenChange={setOpen}>

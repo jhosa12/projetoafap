@@ -12,6 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import { Controller, useFormContext } from "react-hook-form";
@@ -31,19 +33,22 @@ import {
 } from "@/components/ui/dialog"
 import { TabelaCompleta } from "../../../convalescentes/data-table";
 import { columns } from "../../../convalescentes/colunas-listagem";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { getColumns } from "../../../convalescentes/colunas-dependentes";
 import { Dependente, getColumnsDepObito } from "../../colunas-dependentes-obitos";
 import { AuthContext } from "@/store/AuthContext";
 import { Button } from "@/components/ui/button";
+import { ChevronDownIcon } from "lucide-react";
 
 export const OSDadosFalecido = () => {
   const { control, register } = useFormContext<ObitoProps>()
   const [modalDependente, setModalDependente] = useState(false);
   const { dadosassociado } = useContext(AuthContext)
+  const [date, setDate] = React.useState<Date | undefined>(undefined)
+  const [open, setOpen] = React.useState(false)
   
   const {
-    
+
     isDependenteSelecionado,
     usarDadosTitular,
     handleCheckboxTitularChange,
@@ -53,20 +58,36 @@ export const OSDadosFalecido = () => {
     isModalOpen,
     setarCampoAssociado,
     rowSelection,
-    setRowSelection
-    
+    setRowSelection,
+    listaAssociado,
+    setUsarDadosTitular
+
   } = useActionsObito()
 
-    const columnsDep = React.useMemo(
-      () => getColumnsDepObito({ setarCampoAssociado, setModalDependente }),
-      [setarCampoAssociado, setModalDependente]
-  
+  const columnsDep = React.useMemo(
+    () => getColumnsDepObito({ setarCampoAssociado, setModalDependente }),
+    [setarCampoAssociado, setModalDependente]
+
   )
-  
-    const dependentesVisiveis = React.useMemo(
-      () => dadosassociado?.dependentes?.filter((d) => d.excluido !== true) || [],
-      [dadosassociado]
-    )
+
+  const dependentesVisiveis = React.useMemo(
+    () => dadosassociado?.dependentes?.filter((d) => d.excluido !== true) || [],
+    [dadosassociado]
+  )
+
+  useEffect(() => {
+
+    if (listaAssociado?.id_associado) {
+      if (listaAssociado.dependentes !== null) {
+        setDependenteSelecionado(true);
+        setUsarDadosTitular(false);
+      } else {
+        setDependenteSelecionado(false);
+        setUsarDadosTitular(true);
+      }
+    }
+  }, [listaAssociado]);
+
 
   return (
     <Card className="bg-white border-gray-200 shadow-none ">
@@ -79,7 +100,7 @@ export const OSDadosFalecido = () => {
               <div className="flex items-center gap-2">
                 <Checkbox
                   id="titular"
-                  disabled={ isDependenteSelecionado}
+                  disabled={isDependenteSelecionado}
                   checked={usarDadosTitular}
                   onCheckedChange={handleCheckboxTitularChange}
                 />
@@ -140,22 +161,41 @@ export const OSDadosFalecido = () => {
             id="nome_falecido"
             {...register('nome_falecido')}
             placeholder="Nome completo do falecido"
+            value={listaAssociado.nome ?? ''}
+            onChange={(e: any) => setarCampoAssociado({ nome: e.target.value })}
             required
           />
         </div>
-        <div className="flex flex-col space-y-2">
-          <Label htmlFor="data_nascimento">Data de Nascimento</Label>
-          <Controller
-            control={control}
-            name="data_nascimento"
-            render={({ field }) => (
-              <DatePickerInput
-                onChange={field.onChange}
-                value={field.value}
-                className="h-9"
+        <div className="grid gap-2 ">
+          <Label htmlFor="tabs-demo-username">Data de Nascimento</Label>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                id="date"
+                className="lg:col-span-1 justify-between font-normal text-gray-500"
+              >
+                {listaAssociado.data_nasc ? new Date(listaAssociado.data_nasc).toLocaleDateString('pt-BR') : 'Data não definida'}
+                <ChevronDownIcon />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={listaAssociado.data_nasc ?? undefined}
+                captionLayout="dropdown"
+                onSelect={(date) => {
+                  if (date) {
+
+                    setarCampoAssociado({ data_nasc: date });
+
+                    setDate(date);
+                  }
+                  setOpen(false);
+                }}
               />
-            )}
-          />
+            </PopoverContent>
+          </Popover>
         </div>
         <div className="space-y-2">
           <Label htmlFor="sexo">Sexo</Label>

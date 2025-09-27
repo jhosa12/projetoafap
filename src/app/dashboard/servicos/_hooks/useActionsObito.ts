@@ -187,14 +187,23 @@ const useActionsObito = () => {
       setarCampoAssociado({
         nome: dadosassociado.nome,
         data_nasc: new Date(dadosassociado.data_nasc ?? ''),
+        sexo: dadosassociado.sexo,
+        //estado civil ---> falta na rota, props 
+        profissao: dadosassociado.profissao,
+        rg: dadosassociado.rg,
         cpfcnpj: dadosassociado.cpfcnpj,
+        //religiao,
+        naturalidade: dadosassociado.naturalidade,
+        //nome do pai e da mãe
+
+        // Aba Endereço
         endereco: dadosassociado.endereco,
         numero: dadosassociado.numero,
         bairro: dadosassociado.bairro,
-        guia_rua: dadosassociado.guia_rua,
-        cep: dadosassociado.cep,
         cidade: dadosassociado.cidade,
         uf: dadosassociado.uf,
+        telefone: dadosassociado.telefone,
+        celular1: dadosassociado.celular1,
         dependentes: [],
 
       });
