@@ -36,7 +36,6 @@ export default function CaixaMovimentar() {
   const [mov, setMov] = useState<Partial<LancamentosProps>>();
   const [saldo, setSaldo] = useState(0);
   const { usuario, permissoes, infoEmpresa } = useContext(AuthContext);
-  const [selectRelatorio, setSelectRelatorio] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [mensalidade, setMensalidade] =useState<Partial<MensalidadeBaixaProps>>();
   const [modalDados, setModalDados] = useState<boolean>(false);
@@ -429,7 +428,7 @@ export default function CaixaMovimentar() {
               infoEmpresa={infoEmpresa}
               id_empresa={infoEmpresa?.id ?? ""}
               data={data}
-              setSelectRelatorio={setSelectRelatorio}
+             
             />
           </form>
         </div>

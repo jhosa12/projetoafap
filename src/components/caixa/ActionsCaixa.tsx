@@ -16,12 +16,12 @@ import { IoMdOptions } from "react-icons/io";
 import useVerifyPermission from "@/hooks/useVerifyPermission";
 import ModalSelectCaixa from "./ModalSelectCaixa";
 import { EmpresaProps } from "@/types/empresa";
-import { openSync } from "fs";
+
 
 
 
 interface ActionsCaixaProps {
-  setSelectRelatorio: (relatorio: string) => void;
+
   data: any;
   id_empresa: string
   infoEmpresa: EmpresaProps|null
@@ -29,67 +29,44 @@ interface ActionsCaixaProps {
 }
 
 
-export default function ActionsCaixa({data,setSelectRelatorio,id_empresa,infoEmpresa}: ActionsCaixaProps) {
-    const [open,setOpen] = useState(false)
-    const {verify} =useVerifyPermission()
-    return(
-        
-         <DropdownMenu  defaultOpen={false} open={open} onOpenChange={setOpen}>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant={"outline"}
-                          disabled={
-                            verify("ADM2.1.1")
-                          }
-                          color={"success"}
-                          size={"sm"}
-                        >
-                          <IoMdOptions />
-                          Ações
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent  >
-                        <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        {/* <DropdownMenuItem
-                          asChild
-                          disabled={
-                            verify("ADM2.1.1") 
-                          }
-                        ></DropdownMenuItem> */}
-                         
-                          <DropdownMenuItem asChild onClick={() => {setSelectRelatorio("ANALITICO")}}>
-                            <ModalSelectCaixa infoEmpresa={infoEmpresa} id_empresa={id_empresa} />
-                          </DropdownMenuItem>
-
-
-
-
-
-                        {/* <DropdownMenuSub>
-                      
-                         <DropdownMenuPortal>
-                            <DropdownMenuSubContent>
-                              <DropdownMenuItem
-                                onClick={() => setSelectRelatorio("ANALITICO")}
-                              >
-                                Analitico
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => setSelectRelatorio("SINTETICO")}
-                              >
-                                Sintético
-                              </DropdownMenuItem>
-                            </DropdownMenuSubContent>
-                          </DropdownMenuPortal> 
-                        </DropdownMenuSub> */}
-        
-                        <DropdownMenuItem
-                        //onClick={() => setModal({ fecharCaixa: true })}
-                        >
-                          Fechar Caixa
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-    )
-}
+export default function ActionsCaixa({data,id_empresa,infoEmpresa}: ActionsCaixaProps) {
+    const [open, setOpen] = useState(false)
+    const [showModal, setShowModal] = useState(false)
+    const {verify} = useVerifyPermission()
+    return (
+        <>
+            <DropdownMenu  open={open} onOpenChange={setOpen}>
+                <DropdownMenuTrigger asChild>
+                    <Button
+                        variant={"outline"}
+                        disabled={verify("ADM2.1.1")}
+                        color={"success"}
+                        size={"sm"}
+                    >
+                        <IoMdOptions className="mr-2 h-4 w-4" />
+                        Ações
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent  align="end" className="w-[160px]">
+                    <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onSelect={() => {
+                        setOpen(false);
+                        setShowModal(true);
+                    }}>
+                        Relatório de Caixa
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                        Fechar Caixa
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+            
+            <ModalSelectCaixa 
+                open={showModal} 
+                onOpenChange={setShowModal}
+                infoEmpresa={infoEmpresa} 
+                id_empresa={id_empresa} 
+            />
+        </>
+    )}

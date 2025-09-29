@@ -41,7 +41,7 @@ export function Combobox({ items, value, onChange, placeholder='Selecione um ite
         sideOffset={4}
         //onInteractOutside={e => e.preventDefault()}
        // onOpenAutoFocus={e => e.preventDefault()}
-        onCloseAutoFocus={e => e.preventDefault()}
+onCloseAutoFocus={e => e.preventDefault()}
         className="p-0 pt-1  z-20"
       >
         <Command  className={`shadow-sm border border-gray-200 ${className}`}>

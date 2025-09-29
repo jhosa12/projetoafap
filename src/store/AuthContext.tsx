@@ -89,9 +89,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const getDadosFixos = async () => {
     if (
-      empresas.length > 0 &&
+      (empresas.length > 0 &&
       cidades.length > 0 &&
-      consultores.length > 0
+      consultores.length > 0) || !usuario?.nome
       // planos.length > 0
     )
       return;
@@ -109,7 +109,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    if (!usuario) signOut();
+    //if (!usuario) signOut();
     if(usuario) getBairros()
   }, [usuario]);
 

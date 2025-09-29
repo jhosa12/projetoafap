@@ -28,17 +28,18 @@ interface FilterCaixaProps{
 }
 
 
-interface ModalPropsRelatorios{
-    id_empresa:string
-    infoEmpresa:EmpresaProps|null
+interface ModalPropsRelatorios {
+    id_empresa: string;
+    infoEmpresa: EmpresaProps | null;
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
 }
 
 
 
 
 
-export default function ModalSelectCaixa({id_empresa,infoEmpresa}:ModalPropsRelatorios) {
-    const [open, setOpen] = useState(false)
+export default function ModalSelectCaixa({id_empresa, infoEmpresa, open, onOpenChange}: ModalPropsRelatorios) {
      const currentPage = useRef<HTMLDivElement|null>(null);
      const [ccustos,setCcustos] = useState<Array<CcustosProps>>([])
     const {control,handleSubmit,watch} = useForm<FilterCaixaProps>({
@@ -63,7 +64,7 @@ export default function ModalSelectCaixa({id_empresa,infoEmpresa}:ModalPropsRela
     onAfterPrint: () => {},
     onBeforeGetContent: () => {
       setData([]);
-      setOpen(false);
+      onOpenChange(false);
     },
     //  removeAfterPrint:false
   });
@@ -178,8 +179,8 @@ export default function ModalSelectCaixa({id_empresa,infoEmpresa}:ModalPropsRela
     return(
 
  
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger className="text-sm px-2">Relatório</DialogTrigger>
+        <Dialog open={open} onOpenChange={onOpenChange}>
+           
             <DialogContent>
                <DialogHeader>
           <DialogTitle>Relatório de Caixa</DialogTitle>
@@ -199,6 +200,7 @@ export default function ModalSelectCaixa({id_empresa,infoEmpresa}:ModalPropsRela
                             items={ccustos?.map(item=>{return {label:item.descricao,value:item.descricao}})??[]}
                             onChange={onChange}
                             value={value}
+                            modal={true}
                            />
                         )}/>
 
