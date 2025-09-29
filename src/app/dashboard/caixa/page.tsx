@@ -26,12 +26,12 @@ import {
 } from "./_types/types";
 import useActionsCaixa from "./_hooks/useActionsCaixa";
 import { ModalMensalidade } from "../admcontrato/_components/mensalidades/modal-mensalidade";
+import { PlanoContasProps } from "../financeiro/page";
 
 function CaixaMovimentar() {
 
   const [saldo, setSaldo] = useState(0);
   const { usuario, permissoes, infoEmpresa } = useContext(AuthContext);
-  const [selectRelatorio, setSelectRelatorio] = useState<string | null>(null);
   const [despesas, setDespesas] = useState<number>(0);
   const [data, setData] = useState<Partial<ResponseCaixaProps>>();
   const [filteredData, setFilteredData] =
@@ -296,6 +296,7 @@ function CaixaMovimentar() {
       {/* Conteúdo principal */}
       <div className="flex flex-col w-full">
         <HeaderCaixa 
+        planoContas={data?.plano_de_contas as Array<PlanoContasProps>}
           saldo={saldo}
           despesas={despesas}
           valorForma={valorForma}
@@ -310,7 +311,6 @@ function CaixaMovimentar() {
           setFilteredData={setFilteredData}
           setModal={setModal}
           setMov={setMov}
-          setSelectRelatorio={setSelectRelatorio}
         />
         
         {!!data?.fechamento ? (

@@ -16,14 +16,15 @@ registerLocale("pt", pt);
 import { EmpresaProps } from "@/types/empresa";
 import { useReactToPrint } from "react-to-print";
 import { pageStyle } from "@/utils/pageStyle";
-import { CcustosProps } from "../../financeiro/page";
+import { CcustosProps, PlanoContasProps } from "../../financeiro/page";
 import RelatorioMovimentacao from "../_documents/relatorioMovimentacao";
 import { LancamentosProps } from "../_types/types";
 import { SomaProps } from "../../financeiro/_components/tabs/caixa/caixa";
 
 
 interface FilterCaixaProps {
-  caixa: string
+  caixa: string,
+  conta?:string,
   start: Date,
   end: Date
 }
@@ -31,14 +32,15 @@ interface FilterCaixaProps {
 
 interface ModalPropsRelatorios {
   id_empresa: string
-  infoEmpresa: EmpresaProps | null
+  infoEmpresa: EmpresaProps | null,
+  planoContas:Array<PlanoContasProps>
 }
 
 
 
 
 
-export default function ModalSelectCaixa({ id_empresa, infoEmpresa }: ModalPropsRelatorios) {
+export default function ModalSelectCaixa({ id_empresa, infoEmpresa,planoContas }: ModalPropsRelatorios) {
   const [open, setOpen] = useState(false)
   const currentPage = useRef<HTMLDivElement | null>(null);
   const [ccustos, setCcustos] = useState<Array<CcustosProps>>([])
@@ -99,7 +101,7 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa }: ModalProps
           // id_user:usuario?.id
         });
 
-        console.log(response.data)
+      
 
         setData(response.data);
         // setLancamentos(lista)
@@ -200,6 +202,18 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa }: ModalProps
                 items={ccustos?.map(item => { return { label: item.descricao, value: item.descricao } }) ?? []}
                 onChange={onChange}
                 value={value}
+              />
+            )} />
+
+<Controller
+            name="conta"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <Combobox
+                placeholder="Selecione a conta"
+                items={planoContas?.map(item => { return { label: item.descricao, value: item.conta } }) ?? []}
+                onChange={onChange}
+                value={value ??null}
               />
             )} />
 
