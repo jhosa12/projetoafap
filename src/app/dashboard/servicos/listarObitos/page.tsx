@@ -17,10 +17,24 @@ export default function ListarObitos() {
 
   const [openOs, setOpenOs] = useState(false);
   const { selectEmp } = useContext(AuthContext)
-  const { listaServicos, deletarObito, onSave, servico, setServico } = useActionsObito()
+  const { listaServicos, deletarObito, onSave, servico, setServico, listar } = useActionsObito()
 
 
+  const handleSalvar = async (data: ObitoProps) => {
 
+    const sucesso = await onSave(data);
+
+    if (sucesso) {
+      
+      listar()
+
+      setOpenOs(false);
+      
+    } else {
+
+      console.log("Falha! O modal permanecerá aberto.");
+    }
+  };
 
   return (
     <div className="px-6 mt-2 space-y-4">
@@ -55,7 +69,7 @@ export default function ListarObitos() {
         setIsFormOpen={() => setOpenOs(false)}
         setSelectedObito={setServico}
         selectEmp={selectEmp}
-        onSave={onSave}
+        onSave={handleSalvar}
       />
     </div>
   );

@@ -10,10 +10,14 @@ export type AssociadoProps = {
     nome: string,
     data_nasc: Date,
     sexo: string,
-    celular1: string, celular2: string, telefone: string,
+    celular1: string,
+    celular2: string,
+    telefone: string,
     id_associado: number,
     id_empresa: string
     naturalidade: string,
+    uf_naturalidade: string,
+    religiao: string,
     endereco: string,
     bairro: string,
     numero: number,
@@ -22,13 +26,20 @@ export type AssociadoProps = {
     cpfcnpj: string,
     rg: string
     email: string,
+    tipo_pessoa: string,
+    fantasia: string,
+    estado_civil: string,
     profissao: string,
+    nome_pai: string,
+    nome_mae: string,
     guia_rua: string,
+    dt_emissao_rg: Date,
+    emissor_rg: string,
     uf: string,
     empresa: string,
     mensalidade: Array<MensalidadeProps> | [],
     contrato: Partial<ContratoProps>,
-    dependentes: Array<DependentesProps>
+    dependentes?: Array<DependentesProps>,
     acordo: Array<AcordoProps>
 
 
