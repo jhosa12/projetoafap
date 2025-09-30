@@ -9,6 +9,7 @@ import { ObitoProps } from "../_types/obito";
 import { ModalObitoForm } from "../_components/obitos/tabs-modal/modal-obito-form";
 import { Pencil, PlusCircle } from "lucide-react";
 import { AuthContext } from "@/store/AuthContext";
+import { SubmitHandler } from "react-hook-form";
 
 
 
@@ -16,23 +17,24 @@ export default function ListarObitos() {
 
 
   const [openOs, setOpenOs] = useState(false);
-  const { selectEmp } = useContext(AuthContext)
+  const { selectEmp, limparDados } = useContext(AuthContext)
   const { listaServicos, deletarObito, onSave, servico, setServico, listar } = useActionsObito()
 
 
-  const handleSalvar = async (data: ObitoProps) => {
+  const handleSalvar: SubmitHandler<ObitoProps> = async (data) => {
 
-    const sucesso = await onSave(data);
+    const sucesso = await onSave(data)
 
     if (sucesso) {
-      
-      listar()
 
-      setOpenOs(false);
+      console.log("Salvo com sucesso!!")
+
+      limparDados()
+      setOpenOs(false)
+      listar()
       
     } else {
-
-      console.log("Falha! O modal permanecerá aberto.");
+      console.log("Erro ao salvar!!")
     }
   };
 
@@ -43,13 +45,16 @@ export default function ListarObitos() {
       </h1>
       <DataTable
         columns={getObitoColumns({
-        onDelete(obito) {
-          deletarObito(obito);
+          onDelete(obito) {
+            
+            deletarObito(obito);
+            
         },
           onEdit(obito) {
-            console.log("DADOS DO ÓBITO AO CLICAR EM EDITAR:", obito); 
+
           setOpenOs(true);
-          setServico(obito);
+            setServico(obito);
+            
         }
         })}
         data={listaServicos}>
@@ -66,7 +71,10 @@ export default function ListarObitos() {
       <ModalObitoForm
         isFormOpen={openOs}
         selectedObito={servico}
-        setIsFormOpen={() => setOpenOs(false)}
+        setIsFormOpen={() => {
+          limparDados()
+          setOpenOs(false)
+        }}
         setSelectedObito={setServico}
         selectEmp={selectEmp}
         onSave={handleSalvar}

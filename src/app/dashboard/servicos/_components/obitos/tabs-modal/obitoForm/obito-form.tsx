@@ -23,16 +23,24 @@ interface ObitoFormProps {
 }
 
 export function ObitoForm({ obito, onSave, onCancel }: ObitoFormProps) {
-  const form = useForm<ObitoProps>();
-  const { dadosassociado } = useContext(AuthContext);
+  const form = useForm<ObitoProps>({
+    defaultValues: {
+      nome_falecido: '',
+      data_nascimento: undefined,
+    }
+  });
+  const { dadosassociado, limparDados } = useContext(AuthContext)
+  const isEditing = !!obito
 
   useEffect(() => {
     if (obito) {
+      
       form.reset(obito);
+      limparDados()
     }
   }, [obito]);
 
-  
+
   return (
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onSave)} className="space-y-6">
@@ -61,8 +69,10 @@ export function ObitoForm({ obito, onSave, onCancel }: ObitoFormProps) {
           <TabsContent value="responsavel" >
             <OSDadosDeclarante />
           </TabsContent>
-          <TabsContent value="falecido" >
-            <OSDadosFalecido />
+          <TabsContent
+            value="falecido">
+            <OSDadosFalecido
+              isEditing={isEditing} />
           </TabsContent>
 
           <TabsContent value="endereco" >

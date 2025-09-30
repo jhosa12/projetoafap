@@ -15,9 +15,6 @@ interface Props {
   convalescencia: Array<ConvProps>
 }
 
-
-
-
 export const HeadAssociado = ({
   associado,
   convalescencia,
@@ -26,9 +23,6 @@ export const HeadAssociado = ({
   situacao
 
 }: Partial<Props>) => {
-  const { limparDados } = useContext(AuthContext)
-
-
 
   const getStatusBadge = (status?: string) => {
     switch (status?.toUpperCase()) {
@@ -76,15 +70,7 @@ export const HeadAssociado = ({
           )}
         </>
       ))}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-6 w-6 rounded-full text-gray-500 hover:bg-red-100 hover:text-red-600"
-        onClick={limparDados}
-      >
-
-        <X className="h-4 w-4" />
-      </Button>
+      
     </div>
   )
 }

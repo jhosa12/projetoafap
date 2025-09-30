@@ -27,7 +27,7 @@ interface ActionsProps {
   setRowSelection: (value: boolean) => void;
   setUsarDadosTitular: (value: boolean) => void;
   setTitular: (value: boolean) => void;
-  
+
 
   // --- Funções de Ação (handlers) ---
   listar(): Promise<void>;
@@ -40,15 +40,6 @@ const useActionsObito = () => {
   const { usuario, signOut, infoEmpresa, dadosassociado, limparDados } = useContext(AuthContext);
   const [listaServicos, setServicos] = useState<ObitoProps[]>([]);
   const [servico, setServico] = useState<ObitoProps | null>(null)
-  const [isDependenteSelecionado, setDependenteSelecionado] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [listaAssociado, setListaAssociado] = useState<Partial<AssociadoProps>>({})
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
-  const [usarDadosTitular, setUsarDadosTitular] = useState(false)
-  const [titular, setTitular] = useState(false)
-  const setarCampoAssociado = useCallback((fields: Partial<AssociadoProps>) => {
-    setListaAssociado(prev => ({ ...prev, ...fields }));
-  }, []);
 
   useEffect(() => {
     if (!usuario) return signOut();
@@ -60,9 +51,9 @@ const useActionsObito = () => {
     try {
       const { data } = await api.get<ObitoProps[]>("/obitos/listarServicos");
       setServicos(data);
-      console.log("Lista de obitos", data)
+
     } catch (err) {
-      //console.error(err);
+
       toast.error("Não foi possível carregar os registros.");
     }
   }
@@ -88,7 +79,6 @@ const useActionsObito = () => {
       }
     );
   }
-
   const cadastrarObito = async (data: ObitoProps) => {
 
     let horaVelorioFormatada = null;
@@ -119,8 +109,9 @@ const useActionsObito = () => {
       ...data,
       id_contrato_global: dadosassociado.contrato?.id_contrato_global,
       id_empresa: infoEmpresa?.id,
+      id_titular: dadosassociado?.id_associado,
+      id_associado_global: dadosassociado?.id_global,
       id_contrato: dadosassociado.contrato?.id_contrato,
-      id_titular: dadosassociado.id_associado,
       situacao_contrato: dadosassociado.contrato?.situacao,
       tipo_atendimento: data.tipo_atendimento ?? "ASSOCIADO",
       status: data.listacheckida?.find(item => item.status === false) || data.listacheckvolta?.find(item => item.status === false) ? 'PENDENTE' : 'FECHADO',
@@ -140,8 +131,6 @@ const useActionsObito = () => {
     };
 
     const promise = api.post("/obitos/adicionarObito", payload)
-
-    console.log("Dados para api de obito:", payload)
 
     toast.promise(promise, {
       loading: "Salvando dados...",
@@ -169,102 +158,12 @@ const useActionsObito = () => {
 
     return promise
   }
-  const handleCheckboxTitularChange = (checked: boolean) => {
-    const isChecked = !!checked;
-    setUsarDadosTitular(checked);
-
-    if (isChecked) {
-
-      if (!dadosassociado?.id_global) {
-        toast.error("Nenhum associado selecionado. Por favor, busque um primeiro.");
-        setUsarDadosTitular(false);
-        return;
-      }
-
-
-      setDependenteSelecionado(false);
-
-      setarCampoAssociado({
-        nome: dadosassociado.nome,
-        data_nasc: new Date(dadosassociado.data_nasc ?? ''),
-        sexo: dadosassociado.sexo,
-        //estado civil ---> falta na rota, props 
-        profissao: dadosassociado.profissao,
-        rg: dadosassociado.rg,
-        cpfcnpj: dadosassociado.cpfcnpj,
-        //religiao,
-        naturalidade: dadosassociado.naturalidade,
-        //nome do pai e da mãe
-
-        // Aba Endereço
-        endereco: dadosassociado.endereco,
-        numero: dadosassociado.numero,
-        bairro: dadosassociado.bairro,
-        cidade: dadosassociado.cidade,
-        uf: dadosassociado.uf,
-        telefone: dadosassociado.telefone,
-        celular1: dadosassociado.celular1,
-        dependentes: [],
-
-      });
-
-      toast.success("Formulário preenchido!")
-
-    } else {
-
-      setarCampoAssociado({
-        nome: "",
-        data_nasc: undefined,
-        cpfcnpj: "",
-        endereco: "",
-        numero: undefined,
-        bairro: "",
-        guia_rua: "",
-        cep: "",
-        cidade: "",
-        uf: "",
-        dependentes: [],
-      });
-      toast.success("Formulário limpado!")
-    }
-  };
-
-  const handleConfirmarSelecaoDependente = () => {
-
-    const indicesSelecionados = Object.keys(rowSelection).map(Number);
-
-    if (indicesSelecionados.length === 1 && dadosassociado?.dependentes) {
-      const indice = indicesSelecionados[0];
-      const dependentesVisiveis = dadosassociado.dependentes.filter(d => !d.excluido);
-      const dependenteEscolhido = dependentesVisiveis[indice];
-
-      if (dependenteEscolhido) {
-
-        const dataNascimento = dependenteEscolhido.data_nasc
-          ? new Date(dependenteEscolhido.data_nasc)
-          : undefined;
-
-        const dadosParaSetar = {
-          nome: dependenteEscolhido.nome,
-          data: dataNascimento,
-          id_dependente: dependenteEscolhido.id_dependente,
-        };
-
-        setarCampoAssociado(dadosParaSetar)
-
-        setDependenteSelecionado(true);
-        setIsModalOpen(false);
-      }
-    } else {
-
-      toast.info("Por favor, selecione apenas um dependente.");
-
-    }
-  };
 
   const onSave: SubmitHandler<ObitoProps> = async (data) => {
 
-    if (!data.nome_falecido || !data.rd_nome) {
+    
+
+    if (!data.nome_falecido || !data.rd_nome || !data.end_data_falecimento) {
 
       toast.error("Preencha os campos obrigatórios.");
       return false;
@@ -272,11 +171,12 @@ const useActionsObito = () => {
 
     try {
       if (data.id_obitos) {
-        await editarObito(data);
+
+        await editarObito(data as ObitoProps);
 
       } else {
 
-        await cadastrarObito(data);
+        await cadastrarObito(data as ObitoProps);
       }
 
       console.log("onSave no hook: Operação bem-sucedida.");
@@ -289,53 +189,14 @@ const useActionsObito = () => {
     }
   };
 
-  useEffect(() => {
-    if (titular) {
-
-      if (dadosassociado?.id_global) {
-
-        setarCampoAssociado({
-          nome: dadosassociado.nome ?? '',
-          data_nasc: dadosassociado.data_nasc ? new Date(dadosassociado.data_nasc) : undefined,
-          endereco: dadosassociado.endereco ?? '',
-          bairro: dadosassociado.bairro ?? '',
-          numero: dadosassociado.numero ?? undefined,
-          cidade: dadosassociado.cidade ?? '',
-          cpfcnpj: dadosassociado.cpfcnpj ?? '',
-          uf: dadosassociado.uf ?? '',
-          dependentes: []
-        });
-      } else {
-
-        setarCampoAssociado({});
-      }
-    }
-
-  }, [titular, dadosassociado, setarCampoAssociado]);
-
-
   return {
 
     listaServicos,
     listar,
-    setIsModalOpen,
-    setDependenteSelecionado,
-    setRowSelection,
-    setUsarDadosTitular,
-    listaAssociado,
-    usarDadosTitular,
-    isDependenteSelecionado,
-    isModalOpen,
-    rowSelection,
-    handleCheckboxTitularChange,
-    handleConfirmarSelecaoDependente,
     deletarObito,
-    titular,
-    setTitular,
     servico,
     setServico,
     onSave,
-    setarCampoAssociado
   }
 }
 
