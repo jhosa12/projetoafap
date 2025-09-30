@@ -10,6 +10,7 @@ import { IoSearchSharp } from "react-icons/io5";
 import { MdOutlineLaunch } from "react-icons/md";
 import ActionsCaixa from "./ActionsCaixa";
 import { FormCaixaProps, LancamentosProps, ResponseCaixaProps } from "../_types/types";
+import { PlanoContasProps } from '../../financeiro/page';
 
 interface CaixaHeaderProps {
     saldo: number,
@@ -26,7 +27,7 @@ interface CaixaHeaderProps {
     setFilteredData: (value: Partial<ResponseCaixaProps>) => void;
     setModal: (props:{ [key: string]: boolean }) => void;
     setMov: (value: Partial<LancamentosProps>) => void;
-    setSelectRelatorio: (value: string | null) => void;
+    planoContas:Array<PlanoContasProps>
 }
 
 
@@ -45,7 +46,7 @@ const HeaderCaixaComponent = memo(({
   setFilteredData, 
   setModal, 
   setMov, 
-  setSelectRelatorio 
+  planoContas
 }: CaixaHeaderProps) => {
     return (
         <div>
@@ -158,10 +159,11 @@ const HeaderCaixaComponent = memo(({
                     Lançar
                 </Button>
                 <ActionsCaixa
+                planoContas={planoContas}
                     infoEmpresa={infoEmpresa}
                     id_empresa={infoEmpresa?.id ?? ""}
                     data={data}
-                    setSelectRelatorio={setSelectRelatorio}
+                   
                 />
             </form>
 
