@@ -43,7 +43,7 @@ export interface SetAssociadoProps {
 
 
 interface DadosProps {
-    usuario: { id?: string, nome: string }
+    usuario: { nome: string }
     carregarDados: (id: number) => Promise<void>
     dadosassociado: Partial<AssociadoProps>,
     setarDadosAssociado: (dados: Partial<AssociadoProps>) => void,

@@ -358,7 +358,7 @@ export function Header({ path }: { path?: string }) {
                   className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Users className="h-4 w-4" />
-                  <LinkNavigate href="/dashboard/usuarios" >
+                  <LinkNavigate href="/settings/usuario" >
                     Usuários
                   </LinkNavigate>
                 </MenubarItem>

@@ -24,7 +24,6 @@ import {
 import { useMediaQuery } from "usehooks-ts"; // ou qualquer hook de media query
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { User, Users, Wallet } from "lucide-react";
-import { UsuarioProps } from "@/pages/settings/usuario";
 import { UserProps } from "@/types/user";
 import { TbWheelchair } from "react-icons/tb";
 import { usePrintDocsAssociado } from "@/hooks/usePrintDocsAssociado";
@@ -426,7 +425,7 @@ export default function AdmContrato() {
               carregarDados={carregarDados}
               dadosassociado={dadosassociado ?? {}}
               infoEmpresa={infoEmpresa}
-              usuario={usuario ?? ({} as UsuarioProps)}
+              usuario={usuario ?? ({} as UserProps)}
               permissoes={permissoes}
               setarDadosAssociado={setarDadosAssociado}
             />
