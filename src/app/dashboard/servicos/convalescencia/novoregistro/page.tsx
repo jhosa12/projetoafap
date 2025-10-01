@@ -11,10 +11,20 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import FormularioConv from "../../_components/convalescentes/formulario-conv";
 import { X } from 'lucide-react';
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useForm, FormProvider, useFieldArray } from "react-hook-form";
+import { ConvProps } from "../../_types/convalescente";
+import { ProdutosProps } from "@/app/dashboard/admcontrato/_types/produtos";
 
 
 export default function ConvalescenciaNovo() {
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [rowSelection, setRowSelection] = useState({});
+    const [isDependenteSelecionado, setIsDependenteSelecionado] = useState(false);
+    const [usarDadosTitular, setUsarDadosTitular] = useState(true);
+    const [listaConv, setarListaConv] = useState<Partial<ConvProps>>({});
+
 
     const [modal, setModal] = useState<{ [key: string]: boolean }>({
         busca: false,
@@ -23,53 +33,10 @@ export default function ConvalescenciaNovo() {
         impressao: false,
     });
 
-    const params = useParams()
+    const params = useParams();
+    const router = useRouter();
     const id = params.id as string | undefined;
     const isEditMode = !!id;
-
-
-    const {
-
-
-        dataInputs,
-        estoque,
-        listaMaterial,
-        data,
-        listaConv,
-        titular,
-        listarProdutos,
-        isLoading,
-        produtosAdicionados,
-        selecionarProduto,
-        setSelecionarProduto,
-        setUsarDadosTitular,
-
-        setTitular,
-        closeModa,
-        setMaterial,
-        handleSalvar,
-        handleSelecionarProduto,
-        handleAdicionarProdutoNaLista,
-        usarDadosTitular,
-        isDependenteSelecionado,
-        isModalOpen,
-        rowSelection,
-        handleCheckboxTitularChange,
-        handleConfirmarSelecaoDependente,
-        setIsModalOpen,
-        setDependenteSelecionado,
-        setRowSelection,
-
-        setarListaConv,
-        setInputs,
-        adicionarProduto,
-        editarRegistro,
-        adicionarNovoRegistro,
-        deletarProdutoConv
-
-
-    } = useActionsNovoResgistro()
-
 
     const {
 
@@ -81,6 +48,13 @@ export default function ConvalescenciaNovo() {
 
 
     } = useContext(AuthContext);
+
+    const {
+        listarProdutos,
+        isLoading,
+        enviarNovoRegistro,
+        editarRegistro,
+    } = useActionsNovoResgistro();
 
 
     const filtrosDaPagina = [
@@ -95,6 +69,82 @@ export default function ConvalescenciaNovo() {
             limparDados()
         }
     }, [limparDados])
+
+
+
+    // Valores iniciais mínimos para ConvProps
+    const methods = useForm<ConvProps>({
+        defaultValues: {
+            nome: '',
+            logradouro: '',
+            numero: 0,
+            bairro: '',
+            cidade: '',
+            uf: '',
+            status: '',
+            subtotal: 0,
+            descontos: 0,
+            total: 0,
+            data_inc: undefined,
+            hora_inc: undefined,
+            usuario: '',
+            obs: '',
+            convalescenca_prod: [],
+            // ...adicione outros campos obrigatórios de ConvProps se necessário
+        },
+    });
+
+    // FieldArray para produtos
+    const { fields: produtosAdicionados, append, remove } = useFieldArray({
+        control: methods.control,
+        name: "convalescenca_prod"
+    });
+
+    // Carregar dados para edição
+    useEffect(() => {
+        if (isEditMode && id) {
+            (async () => {
+                try {
+                    const response = await fetch(`/convalescencia/${id}`);
+                    if (!response.ok) throw new Error('Erro ao buscar dados');
+                    const data = await response.json();
+                    methods.reset(data);
+                } catch (error) {
+                    console.error('Erro ao buscar registro:', error);
+                }
+            })();
+        }
+    }, [isEditMode, id, methods]);
+
+
+
+    const onSubmit = (data: ConvProps) => {
+        // Corrigir campos de data inválidos
+        const fixDate = (date: any) => {
+            if (!date) return null;
+            const d = new Date(date);
+            return isNaN(d.getTime()) ? null : d.toISOString();
+        };
+
+        const toIntOrNull = (val: any) => {
+            if (val === undefined || val === null || val === '') return null;
+            const n = Number(val);
+            return isNaN(n) ? null : n;
+        };
+
+        const payload = {
+            ...data,
+            numero_r: toIntOrNull((data as any).numero_r),
+            data_inc: fixDate(data.data_inc),
+            hora_inc: fixDate(data.hora_inc),
+            produtosAdicionados
+        };
+        if (isEditMode && id) {
+            editarRegistro(id, payload);
+        } else {
+            enviarNovoRegistro(payload);
+        }
+    };
 
     if (isLoading) {
         return <p>Carregando...</p>;
@@ -113,7 +163,7 @@ export default function ConvalescenciaNovo() {
                 />
             )}
 
-        
+
             <div className="flex flex-col w-full pl-10 pr-10 pt-4">
                 <div className="flex flex-row p-2 gap-4 items-center">
                     <h1 className="w-full justify-between scroll-m-20 text-gray-800 pb-2 
@@ -151,15 +201,6 @@ export default function ConvalescenciaNovo() {
                                 >
                                     {dadosassociado.contrato?.situacao}
                                 </Badge>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-6 w-6 rounded-full text-gray-500 hover:bg-red-100 hover:text-red-600"
-                                    onClick={limparDados}
-                                >
-
-                                    <X className="h-4 w-4" />
-                                </Button>
                             </>
                         ) : (
 
@@ -180,40 +221,35 @@ export default function ConvalescenciaNovo() {
                             <Search />
                             Buscar
                         </Button>
-
                     </div>
-
-                    <Button onClick={handleSalvar}>
-                        {isEditMode ? 'Salvar Alterações' : 'Criar Registro'}
-                    </Button>
 
                 </div>
 
                 {/* Menu */}
-                <FormularioConv
-                    listaConv={listaConv}
-                    produtosAdicionados={produtosAdicionados}
-                    listarProdutos={listarProdutos}
-                    setSelecionarProduto={setSelecionarProduto}
-                    setUsarDadosTitular={setUsarDadosTitular}
-                    selecionarProduto={selecionarProduto}
-                    dadosassociado={dadosassociado}
-                    ufs={ufs}
-                    isEditMode={isEditMode}
-                    usarDadosTitular={usarDadosTitular}
-                    isDependenteSelecionado={isDependenteSelecionado}
-                    isModalOpen={isModalOpen}
-                    rowSelection={rowSelection}
-                    setarListaConv={setarListaConv}
-                    handleAdicionarProdutoNaLista={handleAdicionarProdutoNaLista} // Nome original
-                    handleSelecionarProduto={handleSelecionarProduto} // Nome original
-                    handleCheckboxTitularChange={handleCheckboxTitularChange}
-                    handleConfirmarSelecaoDependente={handleConfirmarSelecaoDependente}
-                    setIsModalOpen={setIsModalOpen}
-                    setDependenteSelecionado={setDependenteSelecionado}
-                    setRowSelection={setRowSelection}
-                    deletarProdutoConv={deletarProdutoConv}
-                />
+                <FormProvider {...methods}>
+                    <form onSubmit={methods.handleSubmit(onSubmit)}>
+                        <div className="flex w-full justify-end mb-4">
+                            <Button type="submit">
+                                {isEditMode ? 'Salvar Alterações' : 'Criar Registro'}
+                            </Button>
+                        </div>
+                        <FormularioConv
+                            isEditMode={isEditMode}
+                            listarProdutos={listarProdutos}
+                            dadosassociado={dadosassociado}
+                            ufs={ufs}
+                            usarDadosTitular={usarDadosTitular}
+                            setUsarDadosTitular={setUsarDadosTitular}
+                            isDependenteSelecionado={isDependenteSelecionado}
+                            isModalOpen={isModalOpen}
+                            rowSelection={rowSelection}
+                            setarListaConv={setarListaConv}
+                            setIsModalOpen={setIsModalOpen}
+                            setDependenteSelecionado={setIsDependenteSelecionado}
+                            setRowSelection={setRowSelection}
+                        />
+                    </form>
+                </FormProvider>
             </div >
         </>
     )

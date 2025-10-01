@@ -16,6 +16,9 @@ import setarListaConv from "@/app/dashboard/servicos/_hooks/useActionsNovoRegist
 import { ConvProps } from "../../_types/convalescente"
 import { AssociadoProps } from "@/app/dashboard/admcontrato/_types/associado"
 import { DependentesProps } from "@/app/dashboard/admcontrato/_types/dependentes"
+import { ObitoProps } from "../../_types/obito"
+import { UseFormReset, UseFormWatch, UseWatchProps } from "react-hook-form"
+import { toast } from "sonner"
 
 export type Dependente = {
   dependentes: DependentesProps[] 
@@ -28,12 +31,15 @@ export type Dependente = {
 
 
 interface ActionsProps {
-  setarCampoAssociado: (fields: Partial<AssociadoProps>) => void;
   setModalDependente: (value: boolean) => void
+
+  reset: UseFormReset<ObitoProps>
+
+  watch: UseFormWatch<ObitoProps>
 }
 
 
-export const getColumnsDepObito = ({ setarCampoAssociado, setModalDependente }: ActionsProps): ColumnDef<DependentesProps>[] => [
+export const getColumnsDepObito = ({ setModalDependente, reset, watch }: ActionsProps): ColumnDef<DependentesProps>[] => [
 
   {
     id: "select",
@@ -97,12 +103,16 @@ export const getColumnsDepObito = ({ setarCampoAssociado, setModalDependente }: 
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => {
-                setarCampoAssociado({
-                  nome: dependente.nome,
-                  data_nasc: dependente.data_nasc,
-                  dependentes: [dependente]
-                });
+                const dadosMapeados: Partial<ObitoProps> = {
+                  nome_falecido: dependente.nome,
+                  data_nascimento: dependente.data_nasc,
+                  id_dependente: dependente.id_dependente
+                };
+
+                reset({ ...watch(), ...dadosMapeados })
+                
                 setModalDependente(false);
+                toast.success("Dados do dependente selecionados!")
               }}
             >
               Selecionar este dependente

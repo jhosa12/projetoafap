@@ -3,12 +3,15 @@ import { ImpressoesProps } from "../../admcontrato/_types/impressoes"
 export interface ConvProps {
   editar: boolean
   id_conv: number | null,
-  id_contrato: number | null,
-  id_contrato_global: number | null,
-  id_associado: number | null,
+  id_contrato?: number | null,
+  id_contrato_global?: number | null,
+  id_associado?: number | null,
+  //id_global?: number | null,
+  id_dependente_global?: number | null,
   id_dependente?: number | null,
   id_empresa: string,
   id_contrato_st: string,
+  tipo_convalescente: 'TITULAR' | 'DEPENDENTE' | 'PARTICULAR' | null,
   tipo_entrada: string,
   nome: string,
   cpf_cnpj: string,

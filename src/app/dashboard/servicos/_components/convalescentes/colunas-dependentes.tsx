@@ -25,13 +25,16 @@ export type Dependente = {
 }
 
 
+import { UseFormReset, UseFormWatch } from "react-hook-form"
+
 interface ActionsProps {
-  setarListaConv: (fields: Partial<ConvProps>) => void;
-  setModalDependente: (value: boolean) => void
+  setModalDependente: (value: boolean) => void;
+  reset: UseFormReset<ConvProps>;
+  watch: UseFormWatch<ConvProps>;
 }
 
 
-export const getColumns = ({ setarListaConv, setModalDependente }: ActionsProps): ColumnDef<Dependente>[] => [
+export const getColumns = ({ setModalDependente, reset, watch }: ActionsProps): ColumnDef<Dependente>[] => [
 
   {
     id: "select",
@@ -65,12 +68,12 @@ export const getColumns = ({ setarListaConv, setModalDependente }: ActionsProps)
     accessorKey: "data_nasc",
     header: "Nascimento",
     cell: ({ row }) => {
-      
+
       const data = row.getValue("data_nasc") as Date | null
       if (!data) {
         return <span>-</span>
       }
-      
+
       return <div>{new Date(data).toLocaleDateString('pt-BR')}</div>
     }
   },
@@ -95,11 +98,12 @@ export const getColumns = ({ setarListaConv, setModalDependente }: ActionsProps)
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => {
-                setarListaConv({
+                const dadosMapeados: Partial<ConvProps> = {
                   nome: dependente.nome,
-                  data: dependente.data_nasc,
+                  data_nasc: dependente.data_nasc,
                   id_dependente: dependente.id_dependente
-                });
+                };
+                reset({ ...watch(), ...dadosMapeados });
                 setModalDependente(false);
               }}
             >
