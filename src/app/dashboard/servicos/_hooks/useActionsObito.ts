@@ -131,17 +131,19 @@ const useActionsObito = () => {
 
     };
 
-    console.log("Dados mandados para a api:", payload)
+    console.log("Dados mandados para a api:", payload);
 
     return toast.promise(
-      api.post("/obitos/adicionarObito", payload),
+      api.post("/obitos/adicionarObito", payload).then((response) => {
+        setServicos(prev => [...prev, response.data]);
+        return response;
+      }),
       {
         loading: "Salvando dados...",
         success: "Dados registrados com sucesso!",
         error: (err) => err.response?.data?.message || 'Erro ao cadastrar. Tente novamente.'
       }
-    )
-
+    );
   }
 
   async function editarObito(data: ObitoProps) {
