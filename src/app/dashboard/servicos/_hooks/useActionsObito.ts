@@ -174,10 +174,11 @@ const useActionsObito = () => {
 
     try {
       if (data.id_obitos) {
-        // Aguarda a conclusão da operação de edição
+        
         await editarObito(data as ObitoProps);
+        
       } else {
-        // Aguarda a conclusão da operação de cadastro
+        
         await cadastrarObito(data as ObitoProps);
       }
 

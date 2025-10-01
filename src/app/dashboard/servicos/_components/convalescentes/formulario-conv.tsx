@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "@/components/ui/button";
-import { ChevronDownIcon, Trash} from "lucide-react";
+import { ChevronDownIcon, Trash } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -64,14 +64,15 @@ import { useParams, useRouter } from "next/navigation";
 import { truncate } from "fs/promises";
 import { ProdutosProps } from "@/app/dashboard/admcontrato/_types/produtos";
 import { Separator } from "@/components/ui/separator";
+import { useFormContext, Controller, useFieldArray } from "react-hook-form";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { toast } from "sonner";
+import { AuthContext } from "@/store/AuthContext";
+import { ModalSelecaoDependente } from "../modal-dependentes";
 
 interface FormularioConvProps {
-
-  // Estados (Dados)
-  listaConv: Partial<ConvProps>;
-  produtosAdicionados: ProdutosProps[];
   listarProdutos: ProdutosProps[];
-  selecionarProduto: ProdutosProps | null;
   dadosassociado: AssociadoProps | Partial<AssociadoProps> | null;
   ufs: UfProps[];
   isEditMode: boolean;
@@ -79,620 +80,723 @@ interface FormularioConvProps {
   isDependenteSelecionado?: boolean;
   isModalOpen: boolean;
   rowSelection: RowSelectionState;
-
-  // Funções (Handlers de Evento com os mesmos nomes)
   setarListaConv: (dados: Partial<ConvProps>) => void;
-  handleAdicionarProdutoNaLista: () => void; // Renomeado de onAdicionarProduto
-  handleSelecionarProduto: (descricao: string) => void; // Renomeado de onSelecaoChange
-  handleCheckboxTitularChange: (checked: boolean) => void;
-  handleConfirmarSelecaoDependente: () => void;
   setIsModalOpen: (isOpen: boolean) => void;
   setDependenteSelecionado: (isSelected: boolean) => void;
   setRowSelection: React.Dispatch<React.SetStateAction<RowSelectionState>>;
   setUsarDadosTitular: (value: boolean) => void;
-  setSelecionarProduto: React.Dispatch<React.SetStateAction<ProdutosProps | null>>;
-  deletarProdutoConv:(idDeletarProduto: number) => void
-
 }
 
 
 export default function FormularioConv({
-  
-  listaConv,
-  produtosAdicionados,
   listarProdutos,
-  selecionarProduto,
-  setSelecionarProduto,
   dadosassociado,
   ufs,
   isEditMode,
   usarDadosTitular,
-  setUsarDadosTitular,
   isDependenteSelecionado,
   isModalOpen,
   rowSelection,
-  setarListaConv,
-  handleAdicionarProdutoNaLista, 
-  handleSelecionarProduto, 
-  handleCheckboxTitularChange,
-  handleConfirmarSelecaoDependente,
   setIsModalOpen,
   setDependenteSelecionado,
   setRowSelection,
-  deletarProdutoConv
 }: FormularioConvProps) {
 
-  const [modalDependente, setModalDependente] = useState(false);
-  const [open, setOpen] = React.useState(false)
-  const [date, setDate] = React.useState<Date | undefined>(undefined)
-  const [isLoading, setIsLoading] = useState(true);
+  const { infoEmpresa } = useContext(AuthContext);
+  const { register, control, reset, watch } = useFormContext<ConvProps>();
+  const { fields: produtos, append, remove } = useFieldArray({
+    control,
+    name: "convalescenca_prod"
+  });
+  const [produtoSelecionado, setProdutoSelecionado] = React.useState<string>("");
+  const [quantidadeSelecionada, setQuantidadeSelecionada] = React.useState<number>(1);
+  const [modalDependente, setModalDependente] = React.useState(false);
+  const prevTipoSelecionadoRef = useRef<'TITULAR' | 'DEPENDENTE' | 'PARTICULAR' | null>(null)
+  const tipoSelecionado = watch('tipo_convalescente')
 
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
+  const handleConfirmarSelecao = () => {
+    const indicesSelecionados = Object.keys(rowSelection).map(Number)[0];
 
-  const dependentesVisiveis = React.useMemo(
-    () => dadosassociado?.dependentes?.filter((d: Dependente) => d.excluido !== true) || [],
-    [dadosassociado]
-  )
-
-
-  const columns = React.useMemo(
-    () => getColumns({ setarListaConv, setModalDependente }),
-    [setarListaConv, setModalDependente]
-
-  )
-
-  useEffect(() => {
-
-    if (isEditMode && listaConv.id_conv) {
-      if (listaConv.id_dependente !== null) {
-        setDependenteSelecionado(true)
-        setUsarDadosTitular(false)
-      } else {
-        setDependenteSelecionado(false)
-        setUsarDadosTitular(true)
-      }
+    if (indicesSelecionados === undefined || !dadosassociado?.dependentes) {
+      toast.error('Por favor, selecione um dependente da lista!')
+      return
     }
-  }, [listaConv, isEditMode])
+    const dependentesVisiveis = dadosassociado.dependentes.filter(d => !d.excluido)
+    const dependenteEscolhido = dependentesVisiveis[indicesSelecionados]
 
+    if (!dependenteEscolhido) {
+      toast.error("Não foi possível encontrar o dependente selecionado.")
+      return
+    }
+    const dadosMapeados = {
+      nome_falecido: dependenteEscolhido.nome,
+      data_nascimento: dependenteEscolhido.data_nasc,
+      id_dependente: dependenteEscolhido.id_dependente,
+      id_dependente_global: dependenteEscolhido.id_dependente_global
+    }
 
+    reset({ ...watch(), ...dadosMapeados })
 
+    toast.success("Dados do dependente preenchidos!")
 
-  if (isLoading) {
-    return ("Carregando...")
+    setModalDependente(false)
+    setRowSelection({})
   }
 
+  useEffect(() => {
+
+    console.log("Está sendo disparado", tipoSelecionado)
+    if (isEditMode) return
+
+    const limparCamposPessoais = () => {
+      reset({
+        ...watch(),
+        nome: "",
+        data_nasc: undefined,
+
+      })
+    }
+    const prevTipo = prevTipoSelecionadoRef.current
+
+    if (tipoSelecionado === 'TITULAR') {
+
+      if (!dadosassociado?.id_global) {
+        toast.error("Nenhum associado selecionado para buscar os dados")
+        reset({ ...watch(), tipo_convalescente: null })
+        return
+      }
+
+      const dadosMapeados = {
+        nome: dadosassociado.nome,
+        data_nasc: dadosassociado.data_nasc,
+        id_associado: dadosassociado.id_associado,
+        id_global: dadosassociado.id_global
+
+      }
+
+      reset({ ...watch(), ...dadosMapeados })
+      toast.success("Dados do titular foram preenchidos!")
+
+    } else if (tipoSelecionado === "DEPENDENTE") {
+
+      setModalDependente(true)
+
+    } else if (tipoSelecionado === "PARTICULAR") {
+
+      if (!infoEmpresa?.id) {
+        toast.error("A seleção da empresa é obrigatória")
+        reset({ ...watch(), tipo_convalescente: null })
+        return
+      }
+
+      if (tipoSelecionado !== prevTipo && prevTipo !== null) {
+        limparCamposPessoais();
+      }
+
+    } else {
+      if (tipoSelecionado !== prevTipo && prevTipo !== null) {
+
+        limparCamposPessoais()
+
+      }
+    }
+
+    prevTipoSelecionadoRef.current = tipoSelecionado
+
+  }, [tipoSelecionado, dadosassociado, watch, reset])
+
+  const columns = React.useMemo(
+    () => getColumns({ setModalDependente, reset, watch }),
+    [setModalDependente, reset, watch]
+  );
+
   return (
-    <div className="flex-col w-full mt-2 ">
-      <ScrollArea className="h-[300px] md:h-[500px] lg:h-[70vh] rounded-md">
-        <Card>
-          <CardHeader>
-            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-              <form>
+    <>
+      <div className="flex-col w-full mt-2 ">
+        <ScrollArea className="h-[300px] md:h-[500px] lg:h-[70vh] rounded-md">
+          <Card>
+            <CardHeader>
+              <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                 <div className="flex justify-start w-full gap-10">
                   <CardTitle className="text-xl">Informações Pessoais</CardTitle>
-
-
-                  <div className="flex items-center gap-2">
-                    <Checkbox id="titular"
-                      disabled={isEditMode || isDependenteSelecionado}
-                      checked={usarDadosTitular}
-                      onCheckedChange={handleCheckboxTitularChange}
-                    />
-                    <Label htmlFor="titular">TITULAR</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="dependente"
-                      checked={isDependenteSelecionado}
-                      
-                      onCheckedChange={(checked) => {
-
-                        if (checked) {
-                          setIsModalOpen(true)
-                        } else {
-                          setDependenteSelecionado(false)
-                        }
-                      }}
-                      disabled={isEditMode || usarDadosTitular}
-                    />
-                    <Label htmlFor="dependente">DEPENDENTES</Label>
-
-                  </div>
-                </div>
-                <DialogContent className="sm:max-w-4xl">
-                  <DialogHeader>
-                    <DialogTitle>Selecione o Dependente</DialogTitle>
-                    <DialogDescription>
-                      Selecione o dependente desejado na lista abaixo.
-                      Clique em 'Salvar Mudanças' para finalizar a seleção.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4">
-                    <TabelaCompleta
-                      columns={columns}
-                      data={dependentesVisiveis}
-                      rowSelection={rowSelection}
-                      setRowSelection={setRowSelection}
-                    />
-                  </div>
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button variant="outline">Cancelar</Button>
-                    </DialogClose>
-                    <Button
-                      type="submit"
-                      onClick={handleConfirmarSelecaoDependente}
-                    >Salvar Mudanças</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </form>
-            </Dialog>
-
-            <CardDescription>
-            </CardDescription>
-          </CardHeader>
-
-          {/* Formulário de Usuário */}
-          <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-
-            <div className="grid gap-2 lg:col-span-2">
-              <Label htmlFor="tabs-demo-name">Nome do Usuário</Label>
-              <Input
-                id="tabs-demo-name"
-                value={listaConv.nome ?? ''}
-                onChange={(e: any) => setarListaConv({ nome: e.target.value })}
-              />
-            </div>
-
-            <div className="grid gap-2 ">
-              <Label htmlFor="tabs-demo-username">Data de Nascimento</Label>
-              <Popover open={open} onOpenChange={setOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    id="date"
-                    className="lg:col-span-1 justify-between font-normal text-gray-500"
-                  >
-                    {listaConv.data ? new Date(listaConv.data).toLocaleDateString('pt-BR') : 'Data não definida'}
-                    <ChevronDownIcon />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={listaConv.data ?? undefined}
-                    captionLayout="dropdown"
-                    onSelect={(date) => {
-                      if (date) {
-
-                        setarListaConv({ data: date });
-
-                        setDate(date);
-                      }
-                      setOpen(false);
-                    }}
+                  <Controller
+                    control={control}
+                    name="tipo_convalescente"
+                    render={({ field }) => (
+                      <div className="flex items-center gap-6">
+                        <label className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            value="TITULAR"
+                            checked={field.value === 'TITULAR'}
+                            onChange={() => field.onChange('TITULAR')}
+                            disabled={isEditMode}
+                          />
+                          <span>TITULAR</span>
+                        </label>
+                        <label className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            value="DEPENDENTE"
+                            checked={field.value === 'DEPENDENTE'}
+                            onChange={() => field.onChange('DEPENDENTE')}
+                            disabled={isEditMode}
+                          />
+                          <span>DEPENDENTE</span>
+                        </label>
+                        <label className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            value="PARTICULAR"
+                            checked={field.value === 'PARTICULAR'}
+                            onChange={() => field.onChange('PARTICULAR')}
+                            disabled={isEditMode}
+                          />
+                          <span>PARTICULAR</span>
+                        </label>
+                      </div>
+                    )}
                   />
-                </PopoverContent>
-              </Popover>
-            </div>
+                </div>
+              </Dialog>
 
-            <div className="grid gap-2">
-              <Label htmlFor="tabs-demo-name">CPF</Label>
-              <Input
-                id="tabs-demo-name"
-                value={listaConv.cpf_cnpj ?? ''}
-                onChange={e => setarListaConv({ cpf_cnpj: e.target.value })}
-              />
-            </div>
+              <CardDescription>
+              </CardDescription>
+            </CardHeader>
 
-            <div className="grid gap-2 lg:col-span-2">
-              <Label htmlFor="tabs-demo-name">Endereço</Label>
-              <Input
-                id="tabs-demo-name"
-                value={listaConv.logradouro ?? ''}
-                onChange={e => setarListaConv({ logradouro: e.target.value })}
-              />
-            </div>
+            {/* Formulário de Usuário */}
+            <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
-            <div className="grid gap-2">
-              <Label htmlFor="tabs-demo-name">Número</Label>
-              <Input
-                id="tabs-demo-name"
-                value={listaConv.numero ?? ''}
-                onChange={e => setarListaConv({ numero: Number(e.target.value) })}
-              />
-            </div>
-            <div className="grid gap-2 lg:col-span-2">
-              <Label htmlFor="tabs-demo-name">Bairro</Label>
-              <Input
-                id="tabs-demo-name"
-                value={listaConv.bairro ?? ''}
-                onChange={e => setarListaConv({ bairro: e.target.value })}
-              />
-            </div>
-            <div className="grid gap-2 lg:col-span-2">
-              <Label htmlFor="tabs-demo-name">Complemento</Label>
-              <Input
-                id="tabs-demo-name"
-                value={listaConv.complemento ?? ''}
-                onChange={e => setarListaConv({ complemento: e.target.value })}
-              />
-            </div>
-            <div className="grid gap-2">
-              <div className="grid gap-3 w-64">
-                <Label htmlFor="tabs-demo-name">CEP</Label>
+              <div className="grid gap-2 lg:col-span-2">
+                <Label htmlFor="nome">Nome do Usuário</Label>
                 <Input
-                  id="tabs-demo-name"
-                  value={listaConv.cep ?? ''}
-                  onChange={e => setarListaConv({ cep: e.target.value })}
+                  id="nome"
+                  {...register('nome')}
+                  placeholder="Nome Completo"
+                  
+                  
                 />
               </div>
-            </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="tabs-demo-name">Cidade</Label>
-              <Input
-                id="tabs-demo-name"
-                value={listaConv.cidade ?? ''}
-                onChange={e => setarListaConv({ cidade: e.target.value })}
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="uf-select">UF</Label>
-              <Select
-                onValueChange={(valorUf) => {
-                  setarListaConv({ uf: valorUf })
-                }}>
-                <SelectTrigger id="uf-select" className="w-[180px]">
-                  <SelectValue placeholder="Selecione..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {ufs && ufs.length > 0 ? (
-                    ufs.map((uf) => (
-                      <SelectItem key={uf.id} value={uf.sigla}>
-                        {uf.sigla}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    // Mostra uma mensagem de carregamento enquanto os dados não chegam
-                    <SelectItem value="loading" disabled>
-                      Carregando UFs...
-                    </SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* ------------------- Nova Seção ---------------------- */}
-            <CardTitle className="text-xl col-span-full mt-4 border-t pt-8 pb-2">
-              Outras Informações
-            </CardTitle>
-            <div className="grid gap-2">
-              <Label>Tipo de Entrada</Label>
-              <Select
-                value={listaConv.tipo_entrada || ''}
-
-                onValueChange={(novoValor) => {
-                  setarListaConv({ tipo_entrada: novoValor });
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione o tipo de atendimento" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="CONVENIO">Convênio</SelectItem>
-                  <SelectItem value="PARTICULAR">Particular</SelectItem>
-                  <SelectItem value="CORTESIA">Cortesia</SelectItem>
-                  <SelectItem value="EMPRESA">Empresa</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="data-solicitacao">Data de Entrega</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    id="data-solicitacao"
-                    className="w-full justify-between font-normal text-gray-500"
-                  >
-                    {listaConv.data ? new Date(listaConv.data).toLocaleDateString('pt-BR') : "Selecione a data"}
-                    <ChevronDownIcon className="h-4 w-4" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={listaConv.data ? new Date(listaConv.data) : undefined}
-                    onSelect={(date) => setarListaConv({ data: date })}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="status-solicitacao">Status</Label>
-              <Input
-                id="usuario"
-                value={listaConv.status ?? 'Sem Status'}
-                disabled
-              />
-            </div>
-
-            <div className="grid gap-2 lg:col-span-2">
-              <Label htmlFor="forma-pagamento">Formas de Pagamento</Label>
-              <Select onValueChange={(value) => setarListaConv({ forma_pag: value })} value={listaConv.forma_pag}>
-                <SelectTrigger id="forma-pagamento">
-                  <SelectValue placeholder="Selecione a forma de pagamento" />
-                </SelectTrigger>
-                <SelectContent>
-
-                  <SelectItem value="PIX">Pix</SelectItem>
-                  <SelectItem value="DINHEIRO">Dinheiro</SelectItem>
-                  <SelectItem value="CARTAO CREDITO">Cartão Crédito</SelectItem>
-                  <SelectItem value="CARTAO DEBITO">Cartão Débito</SelectItem>
-                  <SelectItem value="DEPOSITO">Depósito</SelectItem>
-                  <SelectItem value="BOLETO">Boleto</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="subtotal">Subtotal</Label>
-              <Input
-                id="subtotal"
-                type="number"
-                placeholder="R$ 0,00"
-                value={listaConv.subtotal ?? ''}
-                onChange={e => setarListaConv({ subtotal: Number(e.target.value) })}
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="descontos">Descontos</Label>
-              <Input
-                id="descontos"
-                type="number"
-                placeholder="R$ 0,00"
-                value={listaConv.descontos ?? ''}
-                onChange={e => setarListaConv({ descontos: Number(e.target.value) })}
-              />
-            </div>
-
-            <div className="grid gap-2 lg:col-span-2">
-              <Label htmlFor="total">Total</Label>
-              <Input
-                id="total"
-                type="number"
-                placeholder="R$ 0,00"
-                value={(listaConv.subtotal || 0) - (listaConv.descontos || 0)}
-                readOnly
-                onChange={e => setarListaConv({ total: Number(e.target.value) })}
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="data-inc">Data de Inclusão</Label>
-              <Input
-                id="data-inc"
-                value={listaConv.data_inc ? new Date(listaConv.data_inc).toLocaleDateString('pt-BR') : 'Não definido'}
-                disabled
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="hora-inc">Hora de Inclusão</Label>
-              <Input
-                id="hora-inc"
-                value={listaConv.hora_inc ? new Date(listaConv.hora_inc).toLocaleTimeString('pt-BR') : 'Não definido'}
-                disabled
-              />
-            </div>
-
-            <div className="grid gap-2 lg:col-span-2">
-              <Label htmlFor="usuario">Usuário Responsável</Label>
-              <Input
-                id="usuario"
-                value={listaConv.usuario ?? 'Não definido'}
-                disabled
-              />
-            </div>
-
-            {/* --- Seção de Observações --- */}
-            <div className="grid gap-2 col-span-full">
-              <Label htmlFor="observacoes">Observações</Label>
-              <Textarea
-                id="observacoes"
-                placeholder="Digite as observações aqui..."
-                value={listaConv.obs ?? ''}
-                onChange={e => setarListaConv({ obs: e.target.value })}
-                className="min-h-[100px]"
-              />
-            </div>
-
-            {/* ------------------- Nova Seção ---------------------- */}
-
-            <CardTitle className="text-xl col-span-full mt-4 border-t pt-8 pb-2">
-              Materiais
-            </CardTitle>
-
-
-            <div className="col-span-full justify-between">
-              <div className="grid grid-cols-2 gap-4 w-full">
-                <Table>
-                  <TableCaption>Lista de Produtos Adicionados</TableCaption>
-
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Produtos</TableHead>
-                      <TableHead>Quantidade</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Ações</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {produtosAdicionados.map(produto => (
-                      <TableRow key={produto.id_produto}>
-                        <TableCell>{produto.descricao}</TableCell>
-                        <TableCell>{produto.quantidade}</TableCell>
-                        <TableCell>{produto.status}</TableCell>
-                        <TableCell>
-                          <button data-tooltip-id="toolId" data-tooltip-content={'Excluir'}
-                            onClick={() => deletarProdutoConv(produto.id_produto)} className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white">
-                            <Trash />
-                          </button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-
-
-                <div className="flex flex-col justify-between gap-4">
-                  <div className="flex w-full items-end gap-4">
-                    <div className="flex-grow ">
-                      <Label htmlFor="produto-select">Adicione o Produto</Label>
-                      <Select
-                        value={selecionarProduto ? selecionarProduto.descricao : ""}
-                        onValueChange={handleSelecionarProduto}
-                      >
-                        <SelectTrigger id="produto-select">
-                          <SelectValue placeholder="Selecione um produto do estoque" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {listarProdutos && listarProdutos.length > 0 ? (
-                            listarProdutos.map((produto) => (
-                              <SelectItem
-                                key={produto.id_produto}
-                                value={produto.descricao}
-                              >
-                                {produto.descricao}
-                              </SelectItem>
-                            ))
+              <div className="grid gap-2 ">
+                <Label htmlFor="data_nasc">Data de Nascimento</Label>
+                <Controller
+                  control={control}
+                  name="data_nasc"
+                  render={({ field }) =>
+                    <Popover>
+                      <PopoverTrigger>
+                        <Button
+                          variant="outline"
+                          id="date_nasc"
+                          className="lg:col-span-1 justify-between font-normal text-gray-500"
+                        >
+                          {field.value ? (
+                            format(new Date(field.value), "PPP", { locale: ptBR })
                           ) : (
-                            <SelectItem value="loading" disabled>
-                              Carregando Produtos...
-                            </SelectItem>
-
+                            <span>Selecione um data</span>
                           )}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                          <ChevronDownIcon />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value ? new Date(field.value) : undefined}
+                          captionLayout="dropdown"
+                          onSelect={field.onChange}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  }
 
-                    <div className="w-36 flex-shrink-0">
-                      <Label>Adicione a Quantidade</Label>
-                      <Input
-                        id="quantidade-produto"
-                        type="number"
-                        placeholder="Quantidade"
-                        value={selecionarProduto?.quantidade || 1}
-                        disabled={!selecionarProduto}
-                        onChange={e => {
+                />
+              </div>
 
-                          const novaQuantidade = Number(e.target.value)
+              <div className="grid gap-2">
+                <Label htmlFor="cpf_cnpj">CPF</Label>
+                <Input
+                  id="cpf_cnpj"
+                  {...register('cpf_cnpj')}
+                  placeholder="000.000.000-00"
+                  
+                  
+                />
+              </div>
 
-                          setSelecionarProduto(produtoAtual => {
-                            if (!produtoAtual) return null
+              <div className="grid gap-2 lg:col-span-2">
+                <Label htmlFor="tabs-demo-name">Endereço</Label>
+                <Input
+                  id="tabs-demo-name"
+                  {...register('logradouro')}
+                  placeholder="Digite aqui..."
+                  
+                  
+                />
+              </div>
 
-                            return {
-                              ...produtoAtual,
-                              quantidade: isNaN(novaQuantidade) ? 0 : novaQuantidade
-                            }
-                          })
-                        }}
-                      />
-                    </div>
-                  </div>
+              <div className="grid gap-2">
+                <Label htmlFor="numero">Número</Label>
+                <Input
+                  id="numero"
+                  {...register('numero')}
+                  placeholder="Nº"
+                  
+                  
+                />
+              </div>
+              <div className="grid gap-2 lg:col-span-2">
+                <Label htmlFor="bairro">Bairro</Label>
+                <Input
+                  id="bairro"
+                  {...register('bairro')}
+                  placeholder="Digite o bairro"
+                  
+                  
+                />
+              </div>
+              <div className="grid gap-2 lg:col-span-2">
+                <Label htmlFor="complemento">Complemento</Label>
+                <Input
+                  id="complemento"
+                  {...register('complemento')}
+                  placeholder="Apartamento, bloco, ponto de referência"
+                  
+                  
+                />
+              </div>
+              <div className="grid gap-2">
+                <div className="grid gap-3 w-64">
+                  <Label htmlFor="cep">CEP</Label>
+                  <Input
+                    id="cep"
+                    {...register('cep')}
+                    placeholder="00000-000"
+                    
+                    
+                  />
+                </div>
+              </div>
 
-                  <div className="flex gap-4 justify-end">
-                    <Button
-                      className="w-32"
-                      onClick={handleAdicionarProdutoNaLista}
+              <div className="grid gap-2">
+                <Label htmlFor="cidade">Cidade</Label>
+                <Input
+                  id="cidade"
+                  {...register('cidade')}
+                  placeholder="Digite a cidade" />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="uf">UF</Label>
+                <Controller
+                  control={control}
+                  name="uf"
+                  render={({ field }) => (
+                    <Select
+                      value={field.value || ''}
+                      onValueChange={field.onChange}
                     >
-                      Adicionar Produto
-                    </Button>
+                      <SelectTrigger id="uf" className="w-[180px]">
+                        <SelectValue placeholder="Selecione..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ufs && ufs.length > 0 ? (
+                          ufs.map((uf) => (
+                            <SelectItem key={uf.id} value={uf.sigla}>
+                              {uf.sigla}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <SelectItem value="loading" disabled>
+                            Carregando UFs...
+                          </SelectItem>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+
+              {/* ------------------- Nova Seção ---------------------- */}
+              <CardTitle className="text-xl col-span-full mt-4 border-t pt-8 pb-2">
+                Outras Informações
+              </CardTitle>
+              <div className="grid gap-2">
+                <Label htmlFor="tipo_entrada">Tipo de Entrada</Label>
+                <Controller
+
+                  control={control}
+                  name="tipo_entrada"
+                  render={({ field }) =>
+
+                    <Select
+                      value={field.value || ''}
+                      onValueChange={field.onChange}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione o tipo de atendimento" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="CONVENIO">Convênio</SelectItem>
+                        <SelectItem value="PARTICULAR">Particular</SelectItem>
+                        <SelectItem value="CORTESIA">Cortesia</SelectItem>
+                        <SelectItem value="EMPRESA">Empresa</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  }
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="data">Data de Entrega</Label>
+                <Controller
+                  control={control}
+                  name="data"
+                  render={({ field }) =>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          id="data"
+                          className="w-full justify-between font-normal text-gray-500"
+                        >
+                          {field.value ? (
+                            format(new Date(field.value), "PPP", { locale: ptBR })
+                          ) : (
+                            <span>Selecione um data</span>
+                          )}
+                          <ChevronDownIcon className="h-4 w-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value ? new Date(field.value) : undefined}
+                          onSelect={field.onChange}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>}
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="status">Status</Label>
+                <Input
+                  id="status"
+                  {...register('status')}
+                  disabled
+                />
+              </div>
+
+              <div className="grid gap-2 lg:col-span-2">
+                <Label htmlFor="forma_pag">Formas de Pagamento</Label>
+                <Controller
+                  control={control}
+                  name="forma_pag"
+                  render={({ field }) =>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger id="forma_pag">
+                        <SelectValue
+                          placeholder="Selecione a forma de pagamento"
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+
+                        <SelectItem value="PIX">Pix</SelectItem>
+                        <SelectItem value="DINHEIRO">Dinheiro</SelectItem>
+                        <SelectItem value="CARTAO CREDITO">Cartão Crédito</SelectItem>
+                        <SelectItem value="CARTAO DEBITO">Cartão Débito</SelectItem>
+                        <SelectItem value="DEPOSITO">Depósito</SelectItem>
+                        <SelectItem value="BOLETO">Boleto</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  }
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="subtotal">Subtotal</Label>
+                <Input
+                  id="subtotal"
+                  type="number"
+                  placeholder="R$ 0,00"
+                  {...register('subtotal')}
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="descontos">Descontos</Label>
+                <Input
+                  id="descontos"
+                  type="number"
+                  placeholder="R$ 0,00"
+                  {...register('descontos')}
+                />
+              </div>
+
+              <div className="grid gap-2 lg:col-span-2">
+                <Label htmlFor="total">Total</Label>
+                <Input
+                  id="total"
+                  type="number"
+                  placeholder="R$ 0,00"
+                  {...register('total')}
+                  readOnly
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="data_inc">Data de Inclusão</Label>
+                <Input
+                  id="data_inc"
+                  {...register('data_inc')}
+                  disabled
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="hora_inc">Hora de Inclusão</Label>
+                <Input
+                  id="hora_inc"
+                  {...register('hora_inc')}
+                  disabled
+                />
+              </div>
+
+              <div className="grid gap-2 lg:col-span-2">
+                <Label htmlFor="usuario">Usuário Responsável</Label>
+                <Input
+                  id="usuario"
+                  {...register('usuario')}
+                  disabled
+                />
+              </div>
+
+              {/* --- Seção de Observações --- */}
+              <div className="grid gap-2 col-span-full">
+                <Label htmlFor="obs">Observações</Label>
+                <Textarea
+                  id="obs"
+                  placeholder="Digite as observações aqui..."
+                  {...register('obs')}
+                  className="min-h-[100px]"
+                />
+              </div>
+
+              {/* ------------------- Nova Seção ---------------------- */}
+
+              <CardTitle className="text-xl col-span-full mt-4 border-t pt-8 pb-2">
+                Materiais
+              </CardTitle>
+
+
+              <div className="col-span-full justify-between">
+                <div className="grid grid-cols-2 gap-4 w-full">
+                  <Table>
+                    <TableCaption>Lista de Produtos Adicionados</TableCaption>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Produtos</TableHead>
+                        <TableHead>Quantidade</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Ações</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {produtos.map((produto, index) => (
+                        <TableRow key={produto.id_produto || index}>
+                          <TableCell>
+                            <Input
+                              value={produto.descricao}
+                              disabled
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              value={produto.quantidade}
+                              disabled
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              value={produto.status}
+                              disabled
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <button
+                              data-tooltip-id="toolId"
+                              data-tooltip-content={'Excluir'}
+                              onClick={() => remove(index)}
+                              className="text-red-500 hover:bg-red-500 p-1 rounded-lg hover:text-white"
+                              type="button"
+                            >
+                              <Trash />
+                            </button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+
+
+                  <div className="flex flex-col justify-between gap-4">
+                    <div className="flex w-full items-end gap-4">
+                      <div className="flex-grow ">
+                        <Label htmlFor="produto-select">Adicione o Produto</Label>
+                        <Select
+                          value={produtoSelecionado}
+                          onValueChange={setProdutoSelecionado}
+                        >
+                          <SelectTrigger id="produto-select">
+                            <SelectValue placeholder="Selecione um produto do estoque" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {listarProdutos && listarProdutos.length > 0 ? (
+                              listarProdutos.map((produto) => (
+                                <SelectItem
+                                  key={produto.id_produto}
+                                  value={produto.id_produto.toString()}
+                                >
+                                  {produto.descricao}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              <SelectItem value="loading" disabled>
+                                Carregando Produtos...
+                              </SelectItem>
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="w-36 flex-shrink-0">
+                        <Label>Adicione a Quantidade</Label>
+                        <Input
+                          id="quantidade-produto"
+                          type="number"
+                          placeholder="Quantidade"
+                          value={quantidadeSelecionada}
+                          min={1}
+                          onChange={e => setQuantidadeSelecionada(Number(e.target.value))}
+                          disabled={!produtoSelecionado}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-4 justify-end">
+                      <Button
+                        className="w-32"
+                        type="button"
+                        onClick={() => {
+                          const produto = listarProdutos.find(p => p.id_produto.toString() === produtoSelecionado);
+                          if (produto) {
+                            append({
+                              ...produto,
+                              quantidade: quantidadeSelecionada,
+                              status: "PENDENTE"
+                            });
+                            setProdutoSelecionado("");
+                            setQuantidadeSelecionada(1);
+                          }
+                        }}
+                        disabled={!produtoSelecionado}
+                      >
+                        Adicionar Produto
+                      </Button>
+                    </div>
                   </div>
 
                 </div>
-
               </div>
-            </div>
 
-            {/* ------------------- Nova Seção ---------------------- */}
+              {/* ------------------- Nova Seção ---------------------- */}
 
-            <CardTitle className="text-xl col-span-full mt-4 border-t pt-8 pb-2">
-              Endereço de Retirada
-            </CardTitle>
+              <CardTitle className="text-xl col-span-full mt-4 border-t pt-8 pb-2">
+                Endereço de Retirada
+              </CardTitle>
 
-            <div className="grid gap-2 lg:col-span-2">
-              <Label htmlFor="tabs-demo-name">Endereço</Label>
-              <Input
-                id="tabs-demo-name"
-                value={listaConv.logradouro_r || ''}
-                onChange={e => setarListaConv({ logradouro_r: e.target.value })}
-              />
-            </div>
-            <div className="grid gap-3 w-64">
-              <Label htmlFor="tabs-demo-name">Número</Label>
-              <Input
-                id="tabs-demo-name"
-                value={listaConv.numero_r ?? ''}
-                onChange={e => setarListaConv({ numero_r: Number(e.target.value) })}
-              />
-            </div>
-            <div className="grid gap-2 lg:col-span-2">
-              <Label htmlFor="tabs-demo-name">Bairro</Label>
-              <Input
-                id="tabs-demo-name"
-                value={listaConv.bairro_r ?? ''}
-                onChange={e => setarListaConv({ bairro_r: e.target.value })}
-              />
-            </div>
+              <div className="grid gap-2 lg:col-span-2">
+                <Label htmlFor="logradouro_r">Endereço</Label>
+                <Input
+                  id="logradouro_r"
+                  {...register('logradouro_r')}
+                  placeholder="Digite aqui o endereço"
 
-            <div className="grid gap-2">
-              <Label htmlFor="tabs-demo-name">Cidade</Label>
-              <Input
-                id="tabs-demo-name"
-                value={listaConv.cidade_r || ''}
-                onChange={e => setarListaConv({ cidade_r: e.target.value })}
-              />
-            </div>
+                />
+              </div>
+              <div className="grid gap-3 w-64">
+                <Label htmlFor="numero_r">Número</Label>
+                <Input
+                  id="numero_r"
+                  {...register('numero_r')}
+                  placeholder="Nº"
 
-            <div className="grid gap-2">
-              <Label htmlFor="uf-select">UF</Label>
-              <Select
-                onValueChange={(valorUf) => {
-                  setarListaConv({ uf: valorUf })
-                }}>
-                <SelectTrigger id="uf-select" className="w-[180px]">
-                  <SelectValue placeholder="Selecione..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {ufs && ufs.length > 0 ? (
-                    ufs.map((uf) => (
-                      <SelectItem key={uf.id} value={uf.sigla}>
-                        {uf.sigla}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    // Mostra uma mensagem de carregamento enquanto os dados não chegam
-                    <SelectItem value="loading" disabled>
-                      Carregando UFs...
-                    </SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
-            </div>
+                />
+              </div>
+              <div className="grid gap-2 lg:col-span-2">
+                <Label htmlFor="bairro_r">Bairro</Label>
+                <Input
+                  id="bairro_r"
+                  {...register('bairro_r')}
+                  placeholder="Digite aqui o bairro"
+                />
+              </div>
 
-          </CardContent>
-        </Card>
-        <ScrollBar orientation="vertical" />
-      </ScrollArea>
-    </div>
+              <div className="grid gap-2">
+                <Label htmlFor="cidade_r">Cidade</Label>
+                <Input
+                  id="cidade_r"
+                  {...register('cidade_r')}
+                  placeholder="Digite aqui a cidade"
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="uf-select">UF</Label>
+                <Controller
+                  control={control}
+                  name="uf_r"
+                  render={({ field }) =>
+                    <Select value={field.value || ''} onValueChange={field.onChange}>
+                      <SelectTrigger id="uf_r" className="w-[180px]">
+                        <SelectValue placeholder="Selecione..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ufs && ufs.length > 0 ? (
+                          ufs.map((uf) => (
+                            <SelectItem key={uf.id} value={uf.sigla}>
+                              {uf.sigla}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <SelectItem value="loading" disabled>
+                            Carregando UFs...
+                          </SelectItem>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  }
+                />
+              </div>
+
+            </CardContent>
+          </Card>
+          <ScrollBar orientation="vertical" />
+        </ScrollArea>
+      </div>
+
+
+      <ModalSelecaoDependente
+        isOpen={modalDependente}
+        onClose={() => setModalDependente(false)}
+        onConfirm={handleConfirmarSelecao}
+        dependentes={dadosassociado?.dependentes?.filter(d => !d.excluido) || []}
+        columns={columns}
+        rowSelection={rowSelection}
+        setRowSelection={setRowSelection}
+      />
+    </>
   )
 }

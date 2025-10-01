@@ -18,21 +18,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import { Controller, useFormContext } from "react-hook-form";
 import { ObitoProps } from "@/app/dashboard/servicos/_types/obito";
-import { DatePickerInput } from "@/components/DatePickerInput";
-import { Checkbox } from "@/components/ui/checkbox";
-import useActionsObito from "@/app/dashboard/servicos/_hooks/useActionsObito";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { TabelaCompleta } from "../../../convalescentes/data-table";
-import { columns } from "../../../convalescentes/colunas-listagem";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Dependente, getColumnsDepObito } from "../../colunas-dependentes-obitos";
 import { AuthContext } from "@/store/AuthContext";
@@ -85,7 +70,7 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
   }
 
   useEffect(() => {
-    
+
     console.log("Está sendo disparado", tipoSelecionado)
     if (isEditing) return
 
@@ -94,7 +79,7 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
         ...watch(),
         nome_falecido: "",
         data_nascimento: undefined,
-        
+
       })
     }
     const prevTipo = prevTipoSelecionadoRef.current
@@ -112,7 +97,7 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
         data_nascimento: dadosassociado.data_nasc,
         id_titular: dadosassociado.id_associado,
         id_associado_global: dadosassociado.id_global
-    
+
       }
 
       reset({ ...watch(), ...dadosMapeados })
@@ -123,7 +108,7 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
       setModalDependente(true)
 
     } else if (tipoSelecionado === "PARTICULAR") {
-      
+
       if (!infoEmpresa?.id) {
         toast.error("A seleção da empresa é obrigatória")
         reset({ ...watch(), falecido: null })
@@ -139,7 +124,7 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
 
         limparCamposPessoais()
 
-     }
+      }
     }
 
     prevTipoSelecionadoRef.current = tipoSelecionado
@@ -159,7 +144,7 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
           <CardTitle className="text-gray-900">Dados do Falecido</CardTitle>
           <CardDescription className="text-gray-600">Informações pessoais do falecido</CardDescription>
           <Controller
-            name="falecido" 
+            name="falecido"
             control={control}
             render={({ field }) => (
               <RadioGroup
@@ -170,7 +155,7 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem
-                    value="TITULAR" id="TITULAR"/>
+                    value="TITULAR" id="TITULAR" />
                   <Label htmlFor="TITULAR">Titular</Label>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -197,11 +182,11 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
             />
           </div>
           <div className="grid gap-2 ">
-            <Label htmlFor="tabs-demo-username">Data de Nascimento</Label>
+            <Label htmlFor="data_nascimento">Data de Nascimento</Label>
             <Controller
               control={control}
               name="data_nascimento"
-              render={({ field }) => 
+              render={({ field }) =>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -210,9 +195,9 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
                       className="lg:col-span-1 justify-between font-normal text-gray-500"
                     >
                       {field.value ? (
-                        format(new Date(field.value), "PPP", {locale: ptBR})
+                        format(new Date(field.value), "PPP", { locale: ptBR })
                       ) : (
-                          <span>Selecione uma data</span>
+                        <span>Selecione uma data</span>
                       )}
                       <ChevronDownIcon />
                     </Button>
@@ -350,7 +335,7 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
         rowSelection={rowSelection}
         setRowSelection={setRowSelection}
       />
-      
+
     </>
   )
 }
