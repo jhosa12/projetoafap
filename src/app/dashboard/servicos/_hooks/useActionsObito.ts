@@ -50,6 +50,7 @@ const useActionsObito = () => {
   async function listar() {
     try {
       const { data } = await api.get<ObitoProps[]>("/obitos/listarServicos");
+      console.log("Dados recebidos da API:", data)
       setServicos(data);
 
     } catch (err) {
@@ -130,13 +131,16 @@ const useActionsObito = () => {
 
     };
 
-    const promise = api.post("/obitos/adicionarObito", payload)
+    console.log("Dados mandados para a api:", payload)
 
-    toast.promise(promise, {
-      loading: "Salvando dados...",
-      success: "Dados registrados com sucesso!",
-      error: (err) => err.resposne?.data?.message || 'Erro ao cadastrar. Tente novamente.'
-    })
+    return toast.promise(
+      api.post("/obitos/adicionarObito", payload),
+      {
+        loading: "Salvando dados...",
+        success: "Dados registrados com sucesso!",
+        error: (err) => err.response?.data?.message || 'Erro ao cadastrar. Tente novamente.'
+      }
+    )
 
   }
 
@@ -147,35 +151,31 @@ const useActionsObito = () => {
       status: data.listacheckida?.find(item => item.status === false) || data.listacheckvolta?.find(item => item.status === false) ? 'PENDENTE' : 'FECHADO'
     }
 
-    const promise = api.put('/obitos/editarObito', payload)
-
     console.log("Dados de editar para api:", payload)
-    toast.promise(promise, {
-      loading: 'Atualizando dados',
-      success: 'Dados atualizados com sucesso',
-      error: (err) => err.response?.data?.message || 'Erro ao atualizar os dados',
-    })
 
-    return promise
+    return toast.promise(
+      api.put('/obitos/editarObito', payload),
+      {
+        loading: 'Atualizando dados',
+        success: 'Dados atualizados com sucesso',
+        error: (err) => err.response?.data?.message || 'Erro ao atualizar os dados',
+      }
+    )
   }
 
   const onSave: SubmitHandler<ObitoProps> = async (data) => {
 
-    
-
     if (!data.nome_falecido || !data.rd_nome || !data.end_data_falecimento) {
-
       toast.error("Preencha os campos obrigatórios.");
       return false;
     }
 
     try {
       if (data.id_obitos) {
-
+        // Aguarda a conclusão da operação de edição
         await editarObito(data as ObitoProps);
-
       } else {
-
+        // Aguarda a conclusão da operação de cadastro
         await cadastrarObito(data as ObitoProps);
       }
 
@@ -183,8 +183,8 @@ const useActionsObito = () => {
       return true;
 
     } catch (error) {
-      console.error("onSave no hook: A operação da API falhou.", error);
 
+      console.error("onSave no hook: A operação da API falhou.", error);
       return false;
     }
   };
