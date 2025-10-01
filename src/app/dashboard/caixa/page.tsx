@@ -26,7 +26,8 @@ import {
 } from "./_types/types";
 import useActionsCaixa from "./_hooks/useActionsCaixa";
 import { ModalMensalidade } from "../admcontrato/_components/mensalidades/modal-mensalidade";
-import { PlanoContasProps } from "../financeiro/page";
+import { PlanoContasProps } from "../financeiro/_types/types";
+
 
 function CaixaMovimentar() {
 

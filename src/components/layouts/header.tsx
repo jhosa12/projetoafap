@@ -219,6 +219,18 @@ export function Header({ path }: { path?: string }) {
                     Gerenciar
                   </LinkNavigate>
                 </MenubarItem>
+
+                <MenubarSub>
+                  <MenubarSubTrigger  className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                  <PieChart className="h-4 w-4" />
+                    Financeiro
+                  </MenubarSubTrigger>
+                  <MenubarSubContent>
+                    <MenubarItem><LinkNavigate  href="/dashboard/financeiro/plano_contas">Plano de Contas</LinkNavigate></MenubarItem>
+                    <MenubarItem>Fechamento de Caixa</MenubarItem>
+                    <MenubarItem>Contas a Pagar/Receber</MenubarItem>
+                  </MenubarSubContent>
+                </MenubarSub>
                 <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
                   <PieChart className="h-4 w-4" />
                   <LinkNavigate href="/dashboard/financeiro" >

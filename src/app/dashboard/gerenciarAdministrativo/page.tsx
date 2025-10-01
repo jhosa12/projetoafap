@@ -13,9 +13,9 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { HiClipboardList } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PlanoContasProps } from "../financeiro/page";
 import { Veiculos } from "@/app/dashboard/gerenciarAdministrativo/_components/veiculos/veiculos";
 import { toast } from "sonner";
+import { PlanoContasProps } from "../financeiro/_types/types";
 
 interface MetasProps{
     id_meta:number,

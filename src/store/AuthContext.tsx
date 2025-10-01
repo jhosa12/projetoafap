@@ -20,6 +20,8 @@ import { useAuthActions } from "@/hooks/useAuthActions";
 import useApiGet from "@/hooks/useApiGet";
 import { toast } from "sonner";
 import { UfProps } from "@/types/ufs"
+import { PlanoContasProps } from "@/app/dashboard/financeiro/_types/types";
+import useActionsPlanoContas from "@/app/dashboard/financeiro/_hooks/use_actions_planoContas";
 
 
 type AuthContextData = {
@@ -45,7 +47,12 @@ type AuthContextData = {
   cidadesEmpresa: Array<string>
   bairrosUnicos: Array<string>
   getBairrosUnicos: () => Promise<void>
-  ufs: UfProps[]
+  ufs: UfProps[],
+  actions_plano_contas:{
+    array_plano_contas:Array<PlanoContasProps>|undefined,
+    post_conta:()=>Promise<void>
+    put_conta:()=>Promise<void>
+  }
 };
 
 export const AuthContext = createContext({} as AuthContextData);
@@ -66,6 +73,7 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const { permissoes, signIn, usuario, signOut } = useAuthActions();
   const [dadosassociado, setDadosAssociado] = useState<Partial<AssociadoProps>>(
     {}
   );
@@ -76,13 +84,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [selectEmp, setSelectEmp] = useState("");
   const [loading, setLoading] = useState(false);
   const [ufs, setUfs] = useState<UfProps[]>([]);
+  const actions_plano_contas = useActionsPlanoContas(usuario)
 
   const {
     data: infoEmpresa,
     loading: loadingInfo,
     postData: reqInfoEmpresa,
   } = useApiGet<EmpresaProps, { id: string }>("/empresa/infoEmpresa");
-  const { permissoes, signIn, usuario, signOut } = useAuthActions();
+  
 
   const getBairros = async () => {
     const res = await api.post("/bairro/listar", { id_empresa: selectEmp })
@@ -91,9 +100,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const getDadosFixos = async () => {
     if (
-      empresas.length > 0 &&
+     ( empresas.length > 0 &&
       cidades.length > 0 &&
-      consultores.length > 0
+      consultores.length > 0 )
       // planos.length > 0
     )
       return;
@@ -231,7 +240,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         dadosassociado,
         carregarDados,
         bairrosEmpresa: infoEmpresa?.bairrosCidades ?? [],
-        cidadesEmpresa: [...new Set(infoEmpresa?.bairrosCidades?.map((item) => item.cidade))]
+        cidadesEmpresa: [...new Set(infoEmpresa?.bairrosCidades?.map((item) => item.cidade))],
+        actions_plano_contas
       }}
     >
       {children}
