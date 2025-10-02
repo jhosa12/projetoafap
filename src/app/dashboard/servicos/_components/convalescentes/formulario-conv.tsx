@@ -70,21 +70,17 @@ import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
 import { AuthContext } from "@/store/AuthContext";
 import { ModalSelecaoDependente } from "../modal-dependentes";
+import { useFormularioConv } from "../../_hooks/useFormularioConv";
 
 interface FormularioConvProps {
   listarProdutos: ProdutosProps[];
   dadosassociado: AssociadoProps | Partial<AssociadoProps> | null;
   ufs: UfProps[];
   isEditMode: boolean;
-  usarDadosTitular: boolean;
-  isDependenteSelecionado?: boolean;
   isModalOpen: boolean;
   rowSelection: RowSelectionState;
-  setarListaConv: (dados: Partial<ConvProps>) => void;
   setIsModalOpen: (isOpen: boolean) => void;
-  setDependenteSelecionado: (isSelected: boolean) => void;
   setRowSelection: React.Dispatch<React.SetStateAction<RowSelectionState>>;
-  setUsarDadosTitular: (value: boolean) => void;
 }
 
 
@@ -93,12 +89,9 @@ export default function FormularioConv({
   dadosassociado,
   ufs,
   isEditMode,
-  usarDadosTitular,
-  isDependenteSelecionado,
   isModalOpen,
   rowSelection,
   setIsModalOpen,
-  setDependenteSelecionado,
   setRowSelection,
 }: FormularioConvProps) {
 
@@ -113,35 +106,15 @@ export default function FormularioConv({
   const [modalDependente, setModalDependente] = React.useState(false);
   const prevTipoSelecionadoRef = useRef<'TITULAR' | 'DEPENDENTE' | 'PARTICULAR' | null>(null)
   const tipoSelecionado = watch('tipo_convalescente')
+  const { handleConfirmarSelecao } = useFormularioConv({
+    rowSelection,
+    dadosassociado,
+    reset,
+    watch,
+    setModalDependente,
+    setRowSelection,
+})
 
-  const handleConfirmarSelecao = () => {
-    const indicesSelecionados = Object.keys(rowSelection).map(Number)[0];
-
-    if (indicesSelecionados === undefined || !dadosassociado?.dependentes) {
-      toast.error('Por favor, selecione um dependente da lista!')
-      return
-    }
-    const dependentesVisiveis = dadosassociado.dependentes.filter(d => !d.excluido)
-    const dependenteEscolhido = dependentesVisiveis[indicesSelecionados]
-
-    if (!dependenteEscolhido) {
-      toast.error("Não foi possível encontrar o dependente selecionado.")
-      return
-    }
-    const dadosMapeados = {
-      nome_falecido: dependenteEscolhido.nome,
-      data_nascimento: dependenteEscolhido.data_nasc,
-      id_dependente: dependenteEscolhido.id_dependente,
-      id_dependente_global: dependenteEscolhido.id_dependente_global
-    }
-
-    reset({ ...watch(), ...dadosMapeados })
-
-    toast.success("Dados do dependente preenchidos!")
-
-    setModalDependente(false)
-    setRowSelection({})
-  }
 
   useEffect(() => {
 
@@ -695,7 +668,7 @@ export default function FormularioConv({
                             append({
                               ...produto,
                               quantidade: quantidadeSelecionada,
-                              status: "PENDENTE"
+                              status: "ABERTO"
                             });
                             setProdutoSelecionado("");
                             setQuantidadeSelecionada(1);

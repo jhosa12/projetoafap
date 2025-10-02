@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useContext, useEffect, useState } from "react";
+import { useActionsSubmit } from "../../_hooks/novo-registro/useActionsSubmit";
 import "react-datepicker/dist/react-datepicker.css";
 import useActionsNovoResgistro from "../../_hooks/useActionsNovoRegistro";
 import { Button } from "@/components/ui/button";
@@ -11,19 +12,22 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import FormularioConv from "../../_components/convalescentes/formulario-conv";
 import { X } from 'lucide-react';
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 import { ConvProps } from "../../_types/convalescente";
 import { ProdutosProps } from "@/app/dashboard/admcontrato/_types/produtos";
+import { api } from "@/lib/axios/apiClient";
+import { useSelecionarTitular } from "@/app/dashboard/servicos/_hooks/novo-registro/useSelecionarTitular";
+import { ModalBuscaConv } from "../../_components/convalescentes/modal-busca-titular";
 
 
 export default function ConvalescenciaNovo() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [rowSelection, setRowSelection] = useState({});
-    const [isDependenteSelecionado, setIsDependenteSelecionado] = useState(false);
-    const [usarDadosTitular, setUsarDadosTitular] = useState(true);
-    const [listaConv, setarListaConv] = useState<Partial<ConvProps>>({});
+    const searchParams = useSearchParams();
+    const id = searchParams.get("id") || undefined;
+    const isEditMode = !!id;
 
 
     const [modal, setModal] = useState<{ [key: string]: boolean }>({
@@ -33,10 +37,6 @@ export default function ConvalescenciaNovo() {
         impressao: false,
     });
 
-    const params = useParams();
-    const router = useRouter();
-    const id = params.id as string | undefined;
-    const isEditMode = !!id;
 
     const {
 
@@ -56,6 +56,9 @@ export default function ConvalescenciaNovo() {
         editarRegistro,
     } = useActionsNovoResgistro();
 
+    // Corrigir uso do hook: pegue a função do objeto retornado e passe waitMs se quiser customizar
+    const { handleSelecionarTitular } = useSelecionarTitular(carregarDados, limparDados, 200);
+
 
     const filtrosDaPagina = [
         { value: "Contrato", label: "Contrato" },
@@ -69,7 +72,6 @@ export default function ConvalescenciaNovo() {
             limparDados()
         }
     }, [limparDados])
-
 
 
     // Valores iniciais mínimos para ConvProps
@@ -94,56 +96,60 @@ export default function ConvalescenciaNovo() {
         },
     });
 
+
     // FieldArray para produtos
     const { fields: produtosAdicionados, append, remove } = useFieldArray({
         control: methods.control,
         name: "convalescenca_prod"
     });
 
+
     // Carregar dados para edição
     useEffect(() => {
         if (isEditMode && id) {
             (async () => {
                 try {
-                    const response = await fetch(`/convalescencia/${id}`);
-                    if (!response.ok) throw new Error('Erro ao buscar dados');
-                    const data = await response.json();
-                    methods.reset(data);
+                    const response = await api.get(`/convalescencia/${id}`);
+                    // axios retorna os dados em response.data
+                    methods.reset(response.data);
                 } catch (error) {
                     console.error('Erro ao buscar registro:', error);
                 }
             })();
+        } else {
+            // Limpa o formulário ao criar novo registro
+            methods.reset({
+                nome: '',
+                logradouro: '',
+                numero: 0,
+                bairro: '',
+                cidade: '',
+                uf: '',
+                status: '',
+                subtotal: 0,
+                descontos: 0,
+                total: 0,
+                data_inc: undefined,
+                hora_inc: undefined,
+                usuario: '',
+                obs: '',
+                convalescenca_prod: [],
+                // ...adicione outros campos obrigatórios de ConvProps se necessário
+            });
         }
     }, [isEditMode, id, methods]);
 
 
 
-    const onSubmit = (data: ConvProps) => {
-        // Corrigir campos de data inválidos
-        const fixDate = (date: any) => {
-            if (!date) return null;
-            const d = new Date(date);
-            return isNaN(d.getTime()) ? null : d.toISOString();
-        };
-
-        const toIntOrNull = (val: any) => {
-            if (val === undefined || val === null || val === '') return null;
-            const n = Number(val);
-            return isNaN(n) ? null : n;
-        };
-
-        const payload = {
-            ...data,
-            numero_r: toIntOrNull((data as any).numero_r),
-            data_inc: fixDate(data.data_inc),
-            hora_inc: fixDate(data.hora_inc),
+    const submitConvalescencia = (data: ConvProps) => {
+        useActionsSubmit(
+            data,
+            isEditMode,
+            id,
+            editarRegistro,
+            enviarNovoRegistro,
             produtosAdicionados
-        };
-        if (isEditMode && id) {
-            editarRegistro(id, payload);
-        } else {
-            enviarNovoRegistro(payload);
-        }
+        );
     };
 
     if (isLoading) {
@@ -153,104 +159,88 @@ export default function ConvalescenciaNovo() {
     return (
         <>
 
+
             {modal.busca && (
-                <ModalBusca
+                <ModalBuscaConv
                     carregarDados={carregarDados}
                     selectEmp={infoEmpresa?.id ?? ""}
                     visible={modal.busca}
-                    setVisible={() => setModal({ busca: false })}
+                    setVisible={() => setModal({ ...modal, busca: false })}
                     filtros={filtrosDaPagina}
                 />
             )}
 
 
             <div className="flex flex-col w-full pl-10 pr-10 pt-4">
-                <div className="flex flex-row p-2 gap-4 items-center">
-                    <h1 className="w-full justify-between scroll-m-20 text-gray-800 pb-2 
-                    text-2xl font-semibold tracking-tight first:mt-0">
-                        Solicitar Convalescente
-                    </h1>
-
-                    <div className="flex items-center gap-3 flex-nowrap">
-
-                        {dadosassociado?.id_global ? (
-
-                            <>
-                                <Badge variant="outline" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0">
-                                    <User className="h-4 w-4 mr-2" />
-                                    {dadosassociado.nome}
-                                </Badge>
-
-                                <Badge variant="secondary" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0">
-                                    <FileText className="h-4 w-4 mr-2" />
-                                    Contrato: {dadosassociado.contrato?.id_contrato}
-                                </Badge>
-
-                                <Badge variant="outline" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0 border-[#c5942b] text-[#c5942b]">
-                                    <Shield className="h-4 w-4 mr-2" />
-                                    {dadosassociado.contrato?.plano}
-                                </Badge>
-
-                                <Badge
-                                    className={cn(
-                                        "px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0",
-                                        dadosassociado.contrato?.situacao === "ATIVO"
-                                            ? "bg-green-100 text-green-800 border-green-200"
-                                            : "bg-red-100 text-red-800 border-red-200"
-                                    )}
-                                >
-                                    {dadosassociado.contrato?.situacao}
-                                </Badge>
-                            </>
-                        ) : (
-
-                            <Badge variant="destructive" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0">
-                                <AlertTriangle className="h-4 w-4 mr-1.5" />
-                                Nenhum Titular Selecionado
-                            </Badge>
-                        )}
-                    </div>
-
-                    <div className="flex flex-row gap-8">
-                        <Button
-                            disabled={!infoEmpresa}
-                            size={"sm"}
-                            onClick={() => setModal({ busca: true })}
-                            type="button"
-                        >
-                            <Search />
-                            Buscar
-                        </Button>
-                    </div>
-
-                </div>
-
-                {/* Menu */}
                 <FormProvider {...methods}>
-                    <form onSubmit={methods.handleSubmit(onSubmit)}>
-                        <div className="flex w-full justify-end mb-4">
-                            <Button type="submit">
-                                {isEditMode ? 'Salvar Alterações' : 'Criar Registro'}
-                            </Button>
+                    <form onSubmit={methods.handleSubmit(submitConvalescencia)}>
+                        <div className="flex flex-row p-2 items-center w-full">
+                            <h1 className="flex-1 scroll-m-20 text-gray-800 pb-2 text-2xl font-semibold tracking-tight first:mt-0">
+                                {isEditMode ? 'Editar Convalescença' : 'Nova Convalescença'}
+                            </h1>
+                            <div className="flex flex-row gap-2 items-center justify-end w-full">
+                                {!isEditMode && (
+                                    <>
+                                        {dadosassociado && dadosassociado.id_global ? (
+                                            <>
+                                                <Badge variant="outline" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0">
+                                                    <User className="h-4 w-4 mr-2" />
+                                                    {dadosassociado.nome}
+                                                </Badge>
+                                                <Badge variant="secondary" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0">
+                                                    <FileText className="h-4 w-4 mr-2" />
+                                                    Contrato: {dadosassociado.contrato?.id_contrato}
+                                                </Badge>
+                                                <Badge variant="outline" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0 border-[#c5942b] text-[#c5942b]">
+                                                    <Shield className="h-4 w-4 mr-2" />
+                                                    {dadosassociado.contrato?.plano}
+                                                </Badge>
+                                                <Badge
+                                                    className={cn(
+                                                        "px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0",
+                                                        dadosassociado.contrato?.situacao === "ATIVO"
+                                                            ? "bg-green-100 text-green-800 border-green-200"
+                                                            : "bg-red-100 text-red-800 border-red-200"
+                                                    )}
+                                                >
+                                                    {dadosassociado.contrato?.situacao}
+                                                </Badge>
+                                            </>
+                                        ) : (
+                                            <Badge variant="destructive" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0">
+                                                <AlertTriangle className="h-4 w-4 mr-1.5" />
+                                                Nenhum Titular Selecionado
+                                            </Badge>
+                                        )}
+                                        <Button
+                                            disabled={!infoEmpresa}
+                                            size={"sm"}
+                                            onClick={() => setModal({ busca: true })}
+                                            type="button"
+                                        >
+                                            <Search />
+                                            Buscar
+                                        </Button>
+                                    </>
+                                )}
+                                <Button type="submit">
+                                    {isEditMode ? 'Salvar Alterações' : 'Criar Registro'}
+                                </Button>
+                            </div>
                         </div>
                         <FormularioConv
                             isEditMode={isEditMode}
                             listarProdutos={listarProdutos}
                             dadosassociado={dadosassociado}
                             ufs={ufs}
-                            usarDadosTitular={usarDadosTitular}
-                            setUsarDadosTitular={setUsarDadosTitular}
-                            isDependenteSelecionado={isDependenteSelecionado}
                             isModalOpen={isModalOpen}
                             rowSelection={rowSelection}
-                            setarListaConv={setarListaConv}
                             setIsModalOpen={setIsModalOpen}
-                            setDependenteSelecionado={setIsDependenteSelecionado}
                             setRowSelection={setRowSelection}
                         />
                     </form>
                 </FormProvider>
-            </div >
+            </div>
         </>
     )
 }

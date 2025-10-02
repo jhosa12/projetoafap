@@ -51,7 +51,7 @@ const useActionsNovoResgistro = () => {
   async function enviarNovoRegistro(dadosForm: any) {
 
     const { convalescenca_prod, ...rest } = dadosForm;
-    
+
     if (!rest.nome || !rest.logradouro) {
       toast.error('Preencha os campos obrigatórios');
       return;
@@ -66,8 +66,12 @@ const useActionsNovoResgistro = () => {
       quantidade: produto.quantidade,
       status: produto.status
     }));
+    
+    // Remover id_global do payload
+    // Remover id_global e produtosAdicionados do payload
+    const { id_global, produtosAdicionados, ...restSemIdGlobal } = rest;
     const payload = {
-      ...rest,
+      ...restSemIdGlobal,
       id_contrato: rest.id_contrato || dadosassociado?.contrato?.id_contrato,
       id_associado: rest.id_associado || dadosassociado?.id_associado,
       id_empresa: rest.id_empresa || infoEmpresa?.id,
