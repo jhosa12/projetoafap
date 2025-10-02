@@ -114,8 +114,8 @@ export function DadosTitular({
               Bairro
             </Label>
           </div>
-           <div className="col-span-2">
-                  <Label className="text-xs">Bairro</Label>
+          
+                 
                   <Controller
                     control={control}
                     name="bairro"
@@ -125,7 +125,7 @@ export function DadosTitular({
                     )}
                   />
                   {/* <Input className="text-xs" {...register('bairro',{required:'Bairro é obrigatório'})} placeholder="Bairro" /> */}
-                </div>
+              
         </div>
 
         <div className="col-span-2">
