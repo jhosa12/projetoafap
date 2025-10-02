@@ -109,7 +109,7 @@ class ImpressaoCarne extends React.Component<DadosProps> {
 
 
                         <div className="flex flex-col  space-y-3 pl-8  " style={{ width: '70%' }}>
-                            <h1 className="mt-2  " style={{ fontSize: '13px', fontWeight: 'bold' }} >{infoEmpresa?.razao_social}</h1>
+                            <h1 className="mt-2  " style={{ fontSize: '13px', fontWeight: 'bold' }} >{infoEmpresa?.fantasia}</h1>
 
                             <div style={{ display: 'flex',width:'100%'}}>
                                 <span style={{display:'flex',whiteSpace: 'nowrap',width:"68%"}}>{infoEmpresa?.endereco}</span>
