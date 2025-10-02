@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SelectBairroEmpresa } from "@/components/selectBairrosEmpresa";
 
 export function DadosTitular({
   register,
@@ -113,7 +114,18 @@ export function DadosTitular({
               Bairro
             </Label>
           </div>
-          <Input id="bairro" {...register("bairro")} type="text" required />
+           <div className="col-span-2">
+                  <Label className="text-xs">Bairro</Label>
+                  <Controller
+                    control={control}
+                    name="bairro"
+                    rules={{required:'Bairro é obrigatório'}}
+                    render={({ field }) => (
+                     <SelectBairroEmpresa value={field.value} onChange={field.onChange} />
+                    )}
+                  />
+                  {/* <Input className="text-xs" {...register('bairro',{required:'Bairro é obrigatório'})} placeholder="Bairro" /> */}
+                </div>
         </div>
 
         <div className="col-span-2">
