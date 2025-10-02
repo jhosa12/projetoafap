@@ -1,4 +1,5 @@
-import { PlanoContasProps } from "@/app/dashboard/financeiro/page"
+import { PlanoContasProps } from "../../financeiro/_types/types"
+
 
 
 
