@@ -59,7 +59,7 @@ class ImpressaoCarne extends React.Component<DadosProps> {
                         {//  <Image src={carne} className=" object-cover  h-[250px]" alt="modeloCarne"  />
                         }
                         <img
-                            src="/carneAtualizado.png"
+                            src="/carneAtualizado2.webp"
                             alt="Fundo do carnê"
                             fetchPriority="high"
                             style={{

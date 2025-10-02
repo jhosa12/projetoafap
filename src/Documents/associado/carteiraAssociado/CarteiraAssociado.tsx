@@ -1,11 +1,10 @@
-import Image from "next/image";
-import carteiraDep from "../../../public/carteiraDep.jpeg";
+
 
 // DocumentTemplate.js
 
 import React from 'react';
 import { EmpresaProps } from "@/types/empresa";
-import { space } from "postcss/lib/list";
+
 interface DadosProps {
   dependentes: Array<Partial<{
     nome: string,

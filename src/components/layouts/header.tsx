@@ -368,7 +368,7 @@ export function Header({ path }: { path?: string }) {
                   className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Building2 className="h-4 w-4" />
-                  <LinkNavigate href="/dashboard/empresa" >
+                  <LinkNavigate href="/settings/empresas" >
                     Empresa
                   </LinkNavigate>
                 </MenubarItem>

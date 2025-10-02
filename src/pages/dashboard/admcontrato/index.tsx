@@ -515,6 +515,8 @@ export default function AdmContrato() {
             numero={Number(dadosassociado?.numero)}
             titular={dadosassociado?.nome ?? ""}
             uf={dadosassociado?.uf ?? ""}
+       
+
           />
         )}
 
