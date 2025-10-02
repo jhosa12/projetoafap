@@ -15,6 +15,7 @@ import { AdhesionCancellationChart } from "@/components/dashboard/AdhesionCancel
 import { api } from "@/lib/axios/apiClient";
 import { ajustarData } from "@/utils/ajusteData";
 import { DateRange } from "react-day-picker";
+import { useAuth } from "@/store/AuthContext";
 
 export interface RevenueData {
   month: string;
@@ -38,6 +39,7 @@ const Index = () => {
     from: startOfMonth(new Date()),
     to: endOfMonth(new Date()),
   });
+  const {infoEmpresa} = useAuth()
 
   const [revenueData, setRevenueData] = useState<RevenueData[]>([]);
   const [adhesionData, setAdhesionData] = useState<AdhesionData[]>([]);
@@ -45,7 +47,7 @@ const Index = () => {
   const [assets, setAssets] = useState<number | undefined>(undefined);
 
   useEffect(() => {
-    console.log(dateRange);
+    
     if (!dateRange?.from || !dateRange?.to) {
       return;
     }
@@ -57,14 +59,14 @@ const Index = () => {
         const [revenueRes, adhesionRes, defaultRes, assetsRes] =
           await Promise.all([
             await api.get(
-              `/dashboard/mensalidades?from=${dataIni}&to=${dataFim}`
+              `/dashboard/mensalidades?from=${dataIni}&to=${dataFim}&id=${infoEmpresa?.id}`
             ),
             await api.get(
-              `/dashboard/adhesionsCancellations?from=${dataIni}&to=${dataFim}`
+              `/dashboard/adhesionsCancellations?from=${dataIni}&to=${dataFim}&id=${infoEmpresa?.id}`
             ),
-            await api.get(`/dashboard/default?from=${dataIni}&to=${dataFim}`),
+            await api.get(`/dashboard/default?from=${dataIni}&to=${dataFim}&id=${infoEmpresa?.id}`),
 
-            await api.get("/dashboard/assets"),
+            await api.get(`/dashboard/assets?id=${infoEmpresa?.id}`),
           ]);
 
         setRevenueData(revenueRes.data ?? []);
@@ -77,7 +79,7 @@ const Index = () => {
     };
 
     fetchData();
-  }, [dateRange]);
+  }, [dateRange,infoEmpresa?.id]);
 
   // Totais para os cards
   const totalRevenueValue = revenueData.reduce(

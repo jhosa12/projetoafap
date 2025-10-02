@@ -3,9 +3,6 @@ import { AuthContext } from "@/store/AuthContext";
 
 import {
   Controller,
-  UseFormRegister,
-  UseFormSetValue,
-  UseFormWatch,
 } from "react-hook-form";
 import { ChildrenProps } from "@/components/modals/admContrato/cadastro/modalCadastro";
 import { CepMaskInput } from "@/components/CepMaskInput";
@@ -25,7 +22,6 @@ import { SelectBairroEmpresa } from "@/components/selectBairrosEmpresa";
 
 export function DadosTitular({
   register,
-  setValue,
   watch,
   control,
 }: ChildrenProps) {
@@ -114,8 +110,6 @@ export function DadosTitular({
               Bairro
             </Label>
           </div>
-          
-                 
                   <Controller
                     control={control}
                     name="bairro"

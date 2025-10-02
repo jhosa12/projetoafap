@@ -99,7 +99,7 @@ export default function ModalSelectCaixa({id_empresa, infoEmpresa, open, onOpenC
             // id_user:usuario?.id
           });
   
-          console.log(response.data)
+       
   
           setData(response.data);
           // setLancamentos(lista)
@@ -112,7 +112,7 @@ export default function ModalSelectCaixa({id_empresa, infoEmpresa, open, onOpenC
   
         ///setLoading(false);
       },
-      []
+      [id_empresa]
     );
 
 
