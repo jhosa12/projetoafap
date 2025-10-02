@@ -19,6 +19,7 @@ import { ProdutosProps } from "@/app/dashboard/admcontrato/_types/produtos";
 import { api } from "@/lib/axios/apiClient";
 import { useSelecionarTitular } from "@/app/dashboard/servicos/_hooks/novo-registro/useSelecionarTitular";
 import { ModalBuscaConv } from "../../_components/convalescentes/modal-busca-titular";
+import { toast } from "sonner";
 
 
 export default function ConvalescenciaNovo() {
@@ -56,10 +57,7 @@ export default function ConvalescenciaNovo() {
         editarRegistro,
     } = useActionsNovoResgistro();
 
-    // Corrigir uso do hook: pegue a função do objeto retornado e passe waitMs se quiser customizar
-    const { handleSelecionarTitular } = useSelecionarTitular(carregarDados, limparDados, 200);
-
-
+    // Filtros da página
     const filtrosDaPagina = [
         { value: "Contrato", label: "Contrato" },
         { value: "Titular", label: "Titular" },
@@ -72,6 +70,7 @@ export default function ConvalescenciaNovo() {
             limparDados()
         }
     }, [limparDados])
+
 
 
     // Valores iniciais mínimos para ConvProps
@@ -96,12 +95,8 @@ export default function ConvalescenciaNovo() {
         },
     });
 
-
-    // FieldArray para produtos
-    const { fields: produtosAdicionados, append, remove } = useFieldArray({
-        control: methods.control,
-        name: "convalescenca_prod"
-    });
+    // Corrigir uso do hook: agora passa setModal e reset do formulário para reset imediato
+    const handleSelecionarTitular = useSelecionarTitular(carregarDados, limparDados, setModal, methods.reset);
 
 
     // Carregar dados para edição
@@ -141,16 +136,16 @@ export default function ConvalescenciaNovo() {
 
 
 
-    const submitConvalescencia = (data: ConvProps) => {
-        useActionsSubmit(
-            data,
-            isEditMode,
-            id,
-            editarRegistro,
-            enviarNovoRegistro,
-            produtosAdicionados
-        );
-    };
+
+    // Hook deve ser chamado no topo do componente
+    const { handleSubmit } = useActionsSubmit(
+        methods.getValues(),
+        isEditMode,
+        id,
+        editarRegistro,
+        enviarNovoRegistro,
+        
+    );
 
     if (isLoading) {
         return <p>Carregando...</p>;
@@ -159,7 +154,6 @@ export default function ConvalescenciaNovo() {
     return (
         <>
 
-
             {modal.busca && (
                 <ModalBuscaConv
                     carregarDados={carregarDados}
@@ -167,13 +161,14 @@ export default function ConvalescenciaNovo() {
                     visible={modal.busca}
                     setVisible={() => setModal({ ...modal, busca: false })}
                     filtros={filtrosDaPagina}
+                    onSelecionar={handleSelecionarTitular}
                 />
             )}
 
 
             <div className="flex flex-col w-full pl-10 pr-10 pt-4">
                 <FormProvider {...methods}>
-                    <form onSubmit={methods.handleSubmit(submitConvalescencia)}>
+                    <form onSubmit={handleSubmit}>
                         <div className="flex flex-row p-2 items-center w-full">
                             <h1 className="flex-1 scroll-m-20 text-gray-800 pb-2 text-2xl font-semibold tracking-tight first:mt-0">
                                 {isEditMode ? 'Editar Convalescença' : 'Nova Convalescença'}
@@ -181,7 +176,7 @@ export default function ConvalescenciaNovo() {
                             <div className="flex flex-row gap-2 items-center justify-end w-full">
                                 {!isEditMode && (
                                     <>
-                                        {dadosassociado && dadosassociado.id_global ? (
+                                        {dadosassociado && dadosassociado.id_global && dadosassociado.contrato?.situacao === "ATIVO" ? (
                                             <>
                                                 <Badge variant="outline" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0">
                                                     <User className="h-4 w-4 mr-2" />
@@ -198,9 +193,7 @@ export default function ConvalescenciaNovo() {
                                                 <Badge
                                                     className={cn(
                                                         "px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0",
-                                                        dadosassociado.contrato?.situacao === "ATIVO"
-                                                            ? "bg-green-100 text-green-800 border-green-200"
-                                                            : "bg-red-100 text-red-800 border-red-200"
+                                                        "bg-green-100 text-green-800 border-green-200"
                                                     )}
                                                 >
                                                     {dadosassociado.contrato?.situacao}

@@ -113,8 +113,7 @@ export default function FormularioConv({
     watch,
     setModalDependente,
     setRowSelection,
-})
-
+  })
 
   useEffect(() => {
 
@@ -246,8 +245,8 @@ export default function FormularioConv({
                   id="nome"
                   {...register('nome')}
                   placeholder="Nome Completo"
-                  
-                  
+
+
                 />
               </div>
 
@@ -258,7 +257,7 @@ export default function FormularioConv({
                   name="data_nasc"
                   render={({ field }) =>
                     <Popover>
-                      <PopoverTrigger>
+                      <PopoverTrigger asChild>
                         <Button
                           variant="outline"
                           id="date_nasc"
@@ -293,8 +292,8 @@ export default function FormularioConv({
                   id="cpf_cnpj"
                   {...register('cpf_cnpj')}
                   placeholder="000.000.000-00"
-                  
-                  
+
+
                 />
               </div>
 
@@ -304,8 +303,8 @@ export default function FormularioConv({
                   id="tabs-demo-name"
                   {...register('logradouro')}
                   placeholder="Digite aqui..."
-                  
-                  
+
+
                 />
               </div>
 
@@ -315,8 +314,8 @@ export default function FormularioConv({
                   id="numero"
                   {...register('numero')}
                   placeholder="Nº"
-                  
-                  
+
+
                 />
               </div>
               <div className="grid gap-2 lg:col-span-2">
@@ -325,8 +324,8 @@ export default function FormularioConv({
                   id="bairro"
                   {...register('bairro')}
                   placeholder="Digite o bairro"
-                  
-                  
+
+
                 />
               </div>
               <div className="grid gap-2 lg:col-span-2">
@@ -335,8 +334,8 @@ export default function FormularioConv({
                   id="complemento"
                   {...register('complemento')}
                   placeholder="Apartamento, bloco, ponto de referência"
-                  
-                  
+
+
                 />
               </div>
               <div className="grid gap-2">
@@ -346,8 +345,8 @@ export default function FormularioConv({
                     id="cep"
                     {...register('cep')}
                     placeholder="00000-000"
-                    
-                    
+
+
                   />
                 </div>
               </div>

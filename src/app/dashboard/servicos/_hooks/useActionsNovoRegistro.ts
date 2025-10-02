@@ -69,7 +69,7 @@ const useActionsNovoResgistro = () => {
     
     // Remover id_global do payload
     // Remover id_global e produtosAdicionados do payload
-    const { id_global, produtosAdicionados, ...restSemIdGlobal } = rest;
+    const { id_global,  ...restSemIdGlobal } = rest;
     const payload = {
       ...restSemIdGlobal,
       id_contrato: rest.id_contrato || dadosassociado?.contrato?.id_contrato,

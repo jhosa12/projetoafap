@@ -3,30 +3,32 @@ import { toast } from "sonner";
 import { AuthContext } from "@/store/AuthContext";
 
 export function useSelecionarTitular(
-  carregarDados: (id: number) => Promise<void>,
+  carregarDados: (id: number) => Promise<any>,
   limparDados: () => void,
-  waitMs: number = 150 // permite customizar o tempo de espera
+  setModal: (modal: any) => void,
+  resetForm?: (values: any) => void
 ) {
-  const { dadosassociado } = useContext(AuthContext);
-
-  // Retorna true se pode fechar o modal, false se não pode
   const handleSelecionarTitular = async (id: number) => {
-    await carregarDados(id);
-    // Aguarda atualização do contexto
-    await new Promise((resolve) => setTimeout(resolve, waitMs));
-    const situacao = dadosassociado?.contrato?.situacao?.toUpperCase().trim();
-    if (!dadosassociado?.contrato) {
-      toast.error("Contrato não encontrado para o associado.");
-      limparDados();
-      return false;
+    const toastId = toast.loading("Carregando dados do associado...");
+    const dados = await carregarDados(id);
+    toast.dismiss(toastId);
+    const situacao = dados?.contrato?.situacao?.toUpperCase().trim();
+    if (situacao !== "ATIVO") {
+      toast.error(`Contrato com status \"${dados?.contrato?.situacao || 'desconhecido'}\". Não é possível selecionar.`);
+      return;
     }
-    if (situacao === "INATIVO") {
-      toast.error("Contrato inativo. Não é possível selecionar.");
-      limparDados();
-      return false;
+    if (resetForm) {
+      // Preenche os campos do formulário imediatamente
+      resetForm({
+        nome: dados.nome,
+        data_nasc: dados.data_nasc,
+        id_associado: dados.id_associado,
+        id_global: dados.id_global,
+        // ...adicione outros campos necessários
+      });
     }
-    return true;
+    setModal((prev: any) => ({ ...prev, busca: false }));
   };
 
-  return { handleSelecionarTitular };
+  return handleSelecionarTitular;
 }

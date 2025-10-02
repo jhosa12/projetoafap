@@ -35,13 +35,13 @@ export function useFormularioConv({
       return;
     }
     const dadosMapeados = {
-      nome_falecido: dependenteEscolhido.nome,
-      data_nascimento: dependenteEscolhido.data_nasc,
+      nome: dependenteEscolhido.nome,
+      data_nasc: dependenteEscolhido.data_nasc,
       id_dependente: dependenteEscolhido.id_dependente,
       id_dependente_global: dependenteEscolhido.id_dependente_global
     };
 
-    reset({ ...watch(), ...dadosMapeados });
+    reset({ ...watch(), ...dadosMapeados, tipo_contrato: 'DEPENDENTE' });
 
     toast.success("Dados do dependente preenchidos!");
 
