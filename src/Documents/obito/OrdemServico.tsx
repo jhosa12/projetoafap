@@ -109,16 +109,13 @@ class OrdemServico extends React.Component<Partial<DadosProps>> {
        <span className="px-2 " >Plano:{plano}</span>
        <span className="px-2 " >Situação:{situacao}</span>
        </div>
-
-    
-  
+       
         <span className="px-2 ">Falecido</span>
 
         <div  className="flex w-full justify-between">
         <span className="px-2 ">Nome Cliente:{nome_dec}</span>
         <span className="px-2 ">CNPJ/CPF:{cpf_dec}</span>
        </div>
-       
         <span className="px-2 ">Endereço:{endereco_dec}-{bairro_dec} N°{numero_dec}-{cidade_dec}/{uf_dec}</span>
         <h2 className='flex w-full bg-gray-300 font-semibold mt-2'>DADOS DO FALECIDO</h2>
         <div  className="flex w-full justify-between">

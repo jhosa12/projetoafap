@@ -68,7 +68,7 @@ class DocumentTemplate extends Component<DadosProps> {
 
 
     return (
-      <div  className='flex flex-col w-full   text-black'>
+      <div  className={` ${timesNewRoman.className} flex flex-col w-full   text-black`}>
 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
         <div className="flex justify-center items-center
          mt-4">
@@ -199,7 +199,7 @@ class DocumentTemplate extends Component<DadosProps> {
 
        
         <br /><br /><br /><br />
-        <div className="inline-flex w-full gap-6 pt-8">
+        <div className="inline-flex w-full gap-3 pt-4">
           <div className="flex flex-col w-1/2 justify-center items-center">
             <span style={{borderColor:'black'}} className="flex w-full border-b-[1px]  "></span>
             <span>TESTEMUNHA</span>
