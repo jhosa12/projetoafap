@@ -74,7 +74,7 @@ export function DataTable<TData,>({ columns, data, children, maxHeight }: DataTa
         <div className="flex gap-2 items-center w-full sm:w-auto">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="w-full sm:w-auto">
+              <Button variant="outline" size="sm" className="w-full sm:w-auto">
                 <span className="hidden sm:inline">Linhas: </span>{table.getState().pagination.pageSize}
                 <ChevronDown className="ml-2 h-4 w-4" />
               </Button>

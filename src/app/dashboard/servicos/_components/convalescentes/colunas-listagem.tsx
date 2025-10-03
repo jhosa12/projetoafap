@@ -6,6 +6,7 @@ import { format, isValid, parseISO } from "date-fns"
 import { ptBR } from "date-fns/locale";
 
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox" // 1. Importe o Checkbox
 import { ConvProps } from "../../_types/convalescente"
 
@@ -67,7 +68,22 @@ export const columns = (actions: ColumnActions): ColumnDef<ConvProps>[] => [
         Contrato <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="text-sm">{row.getValue("id_contrato")}</div>,
+    cell: ({ row }) => {
+      const contratoId = row.getValue("id_contrato");
+
+      if (!contratoId || contratoId === null || contratoId === undefined || contratoId === "") {
+        return (
+          <Badge
+            className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 border-gray-200"
+            variant="outline"
+          >
+            SEM CONTRATO
+          </Badge>
+        );
+      }
+
+      return <div className="text-sm">{String(contratoId)}</div>;
+    },
   },
   {
     id: "titular",
@@ -98,7 +114,31 @@ export const columns = (actions: ColumnActions): ColumnDef<ConvProps>[] => [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => <div className="text-sm">{String(row.getValue("status")).toUpperCase()}</div>
+    cell: ({ row }) => {
+      const status = String(row.getValue("status")).toUpperCase();
+
+      const getStatusColor = (status: string) => {
+        switch (status) {
+          case "ENTREGUE":
+            return "bg-green-100 text-green-800 border-green-200";
+          case "ABERTO":
+            return "bg-blue-100 text-blue-800 border-blue-200";
+          case "PENDENTE":
+            return "bg-red-100 text-red-800 border-red-200";
+          default:
+            return "bg-gray-100 text-gray-800 border-gray-200";
+        }
+      };
+
+      return (
+        <Badge
+          className={`px-2 py-1 text-xs font-medium ${getStatusColor(status)}`}
+          variant="outline"
+        >
+          {status}
+        </Badge>
+      );
+    }
   },
   {
     id: "actions",

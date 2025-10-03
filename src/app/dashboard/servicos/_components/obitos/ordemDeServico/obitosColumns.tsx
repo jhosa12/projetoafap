@@ -1,12 +1,11 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { IoMdTrash } from "react-icons/io";
 import { format, isValid, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ObitoProps } from "../../../_types/obito";
-
-const formatDate = (value: any): string => {
+import { ObitoProps } from "../../../_types/obito"; const formatDate = (value: any): string => {
   if (!value) return "-";
 
   try {
@@ -57,7 +56,22 @@ export function getObitoColumns({
     {
       accessorKey: "id_contrato",
       header: "CONTRATO",
-      cell: ({ row }) => <div className="text-sm">{row.getValue("id_contrato")}</div>,
+      cell: ({ row }) => {
+        const contratoId = row.getValue("id_contrato");
+
+        if (!contratoId || contratoId === null || contratoId === undefined || contratoId === "") {
+          return (
+            <Badge
+              className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 border-gray-200"
+              variant="outline"
+            >
+              SEM CONTRATO
+            </Badge>
+          );
+        }
+
+        return <div className="text-sm">{String(contratoId)}</div>;
+      },
     },
     {
       accessorKey: "rd_nome",
@@ -72,7 +86,32 @@ export function getObitoColumns({
     {
       accessorKey: "situacao_contrato",
       header: "SITUAÇÃO",
-      cell: ({ row }) => <div className="text-sm">{row.getValue("situacao_contrato")}</div>,
+      cell: ({ row }) => {
+        const situacaoValue = row.getValue("situacao_contrato");
+        const situacao = situacaoValue === null || situacaoValue === undefined || situacaoValue === ""
+          ? "SEM CONTRATO"
+          : String(situacaoValue).toUpperCase();
+
+        const getSituacaoColor = (situacao: string) => {
+          switch (situacao) {
+            case "ATIVO":
+              return "bg-green-100 text-green-800 border-green-200";
+            case "INATIVO":
+              return "bg-red-100 text-red-800 border-red-200";
+            default:
+              return "bg-gray-100 text-gray-800 border-gray-200";
+          }
+        };
+
+        return (
+          <Badge
+            className={`px-2 py-1 text-xs font-medium ${getSituacaoColor(situacao)}`}
+            variant="outline"
+          >
+            {situacao}
+          </Badge>
+        );
+      },
     },
     {
       accessorKey: "falecido",
@@ -90,7 +129,29 @@ export function getObitoColumns({
     {
       accessorKey: "status",
       header: "STATUS",
-      cell: ({ row }) => <div className="text-sm">{row.getValue("status")}</div>,
+      cell: ({ row }) => {
+        const status = String(row.getValue("status")).toUpperCase();
+
+        const getStatusColor = (status: string) => {
+          switch (status) {
+            case "PENDENTE":
+              return "bg-red-100 text-red-800 border-red-200";
+            case "FECHADO":
+              return "bg-green-100 text-green-800 border-green-200";
+            default:
+              return "bg-gray-100 text-gray-800 border-gray-200";
+          }
+        };
+
+        return (
+          <Badge
+            className={`px-2 py-1 text-xs font-medium ${getStatusColor(status)}`}
+            variant="outline"
+          >
+            {status}
+          </Badge>
+        );
+      },
     },
 
     // {
