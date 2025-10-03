@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useContext, useEffect, useState } from "react";
-import { useActionsSubmit } from "../../_hooks/novo-registro/useActionsSubmit";
+
 import "react-datepicker/dist/react-datepicker.css";
 import useActionsNovoResgistro from "../../_hooks/useActionsNovoRegistro";
 import { Button } from "@/components/ui/button";
@@ -53,9 +53,8 @@ export default function ConvalescenciaNovo() {
     const {
         listarProdutos,
         isLoading,
-        enviarNovoRegistro,
-        editarRegistro,
-    } = useActionsNovoResgistro();
+        handleSubmit: handleFormSubmit,
+    } = useActionsNovoResgistro(isEditMode, id);
 
     // Filtros da página
     const filtrosDaPagina = [
@@ -175,17 +174,22 @@ export default function ConvalescenciaNovo() {
 
 
 
-    // Hook deve ser chamado no topo do componente
-    const { handleSubmit: handleFormSubmit } = useActionsSubmit(
-        isEditMode,
-        id,
-        editarRegistro,
-        enviarNovoRegistro,
 
-    );
 
     if (isLoading) {
-        return <p>Carregando...</p>;
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-gray-50">
+                <div className="flex flex-col items-center space-y-4">
+                    <div className="relative">
+                        <div className="w-12 h-12 border-4 border-blue-200 rounded-full animate-spin border-t-blue-600"></div>
+                    </div>
+                    <div className="text-center">
+                        <h2 className="text-lg font-semibold text-gray-700">Carregando...</h2>
+                        <p className="text-sm text-gray-500 mt-1">Aguarde um momento</p>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -206,11 +210,20 @@ export default function ConvalescenciaNovo() {
             <div className="flex flex-col w-full pl-10 pr-10 pt-4">
                 <FormProvider {...methods}>
                     <form onSubmit={methods.handleSubmit(handleFormSubmit)}>
-                        <div className="flex flex-row p-2 items-center w-full">
-                            <h1 className="flex-1 scroll-m-20 text-gray-800 pb-2 text-2xl font-semibold tracking-tight first:mt-0">
-                                {isEditMode ? 'Editar Convalescença' : 'Nova Convalescença'}
-                            </h1>
-                            <div className="flex flex-row gap-2 items-center justify-end w-full">
+                        {/* Header separado em duas linhas para evitar quebra */}
+                        <div className="flex flex-col gap-4 p-2 w-full">
+                            {/* Linha do título */}
+                            <div className="flex justify-between items-baseline">
+                                <h1 className="scroll-m-20 text-gray-800 text-2xl font-semibold tracking-tight whitespace-nowrap leading-none">
+                                    {isEditMode ? 'Editar Convalescência' : 'Nova Convalescência'}
+                                </h1>
+                                <Button type="submit" className="ml-4 flex-shrink-0">
+                                    {isEditMode ? 'Salvar Alterações' : 'Criar Registro'}
+                                </Button>
+                            </div>
+
+                            {/* Linha dos badges e botão buscar */}
+                            <div className="flex flex-wrap gap-2 items-center justify-start">
                                 {!isEditMode && (
                                     <>
                                         {dadosassociado && dadosassociado.id_global && dadosassociado.contrato?.situacao === "ATIVO" ? (
@@ -253,9 +266,6 @@ export default function ConvalescenciaNovo() {
                                         </Button>
                                     </>
                                 )}
-                                <Button type="submit">
-                                    {isEditMode ? 'Salvar Alterações' : 'Criar Registro'}
-                                </Button>
                             </div>
                         </div>
                         <FormularioConv

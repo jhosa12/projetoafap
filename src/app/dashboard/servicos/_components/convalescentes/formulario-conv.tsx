@@ -29,6 +29,7 @@ import {
   SelectValue,
   SelectGroup
 } from "@/components/ui/select"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 import {
   Table,
@@ -95,7 +96,7 @@ export default function FormularioConv({
   setRowSelection,
 }: FormularioConvProps) {
 
-  const { infoEmpresa, usuario } = useContext(AuthContext);
+  const { infoEmpresa, usuario, limparDados } = useContext(AuthContext);
   const { register, control, reset, watch, setValue } = useFormContext<ConvProps>();
   const { fields: produtos, append, remove } = useFieldArray({
     control,
@@ -126,9 +127,33 @@ export default function FormularioConv({
       reset({
         ...watch(),
         nome: "",
-        data_nasc: undefined,
+        data_nasc: null,
+        cpf_cnpj: '',
+        logradouro: '',
+        numero: null,
+        complemento: '',
+        bairro: '',
+        cep: '',
+        cidade: '',
+        uf: '',
+      })
+    }
 
+    const limparCamposParticular = () => {
 
+      reset({
+        ...watch(),
+        id_associado: null,
+        nome: '',
+        cpf_cnpj: '',
+        data_nasc: null,
+        logradouro: '',
+        numero: null,
+        complemento: '',
+        bairro: '',
+        cep: '',
+        cidade: '',
+        uf: '',
       })
     }
     const prevTipo = prevTipoSelecionadoRef.current
@@ -142,9 +167,17 @@ export default function FormularioConv({
       }
 
       const dadosMapeados = {
+
+        //Informações Pessoais
         nome: dadosassociado.nome,
         data_nasc: dadosassociado.data_nasc,
         logradouro: dadosassociado.endereco,
+        numero: dadosassociado.numero,
+        bairro: dadosassociado.bairro,
+        cep: dadosassociado.cep,
+        cidade: dadosassociado.cidade,
+        uf: dadosassociado.uf,
+
         id_associado: dadosassociado.id_associado,
         id_global: dadosassociado.id_global
 
@@ -166,12 +199,13 @@ export default function FormularioConv({
       }
 
       if (tipoSelecionado !== prevTipo && prevTipo !== null) {
+        limparDados();
         limparCamposPessoais();
       }
 
     } else {
       if (tipoSelecionado !== prevTipo && prevTipo !== null) {
-
+        limparDados();
         limparCamposPessoais()
 
       }
@@ -179,7 +213,7 @@ export default function FormularioConv({
 
     prevTipoSelecionadoRef.current = tipoSelecionado
 
-  }, [tipoSelecionado, dadosassociado, watch, reset])
+  }, [tipoSelecionado, dadosassociado, watch, reset, limparDados, infoEmpresa])
 
   // Preencher automaticamente o usuário logado
   useEffect(() => {
@@ -216,38 +250,25 @@ export default function FormularioConv({
                     control={control}
                     name="tipo_convalescente"
                     render={({ field }) => (
-                      <div className="flex items-center gap-6">
-                        <label className="flex items-center gap-2">
-                          <input
-                            type="radio"
-                            value="TITULAR"
-                            checked={field.value === 'TITULAR'}
-                            onChange={() => field.onChange('TITULAR')}
-                            disabled={isEditMode}
-                          />
-                          <span>TITULAR</span>
-                        </label>
-                        <label className="flex items-center gap-2">
-                          <input
-                            type="radio"
-                            value="DEPENDENTE"
-                            checked={field.value === 'DEPENDENTE'}
-                            onChange={() => field.onChange('DEPENDENTE')}
-                            disabled={isEditMode}
-                          />
-                          <span>DEPENDENTE</span>
-                        </label>
-                        <label className="flex items-center gap-2">
-                          <input
-                            type="radio"
-                            value="PARTICULAR"
-                            checked={field.value === 'PARTICULAR'}
-                            onChange={() => field.onChange('PARTICULAR')}
-                            disabled={isEditMode}
-                          />
-                          <span>PARTICULAR</span>
-                        </label>
-                      </div>
+                      <RadioGroup
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        disabled={isEditMode}
+                        className="flex items-center gap-6"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="TITULAR" id="titular" />
+                          <Label htmlFor="titular">TITULAR</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="DEPENDENTE" id="dependente" />
+                          <Label htmlFor="dependente">DEPENDENTE</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="PARTICULAR" id="particular" />
+                          <Label htmlFor="particular">PARTICULAR</Label>
+                        </div>
+                      </RadioGroup>
                     )}
                   />
                 </div>

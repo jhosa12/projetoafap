@@ -1,6 +1,5 @@
-import { useContext } from "react";
 import { toast } from "sonner";
-import { AuthContext } from "@/store/AuthContext";
+
 
 export function useSelecionarTitular(
   carregarDados: (id: number) => Promise<any>,
