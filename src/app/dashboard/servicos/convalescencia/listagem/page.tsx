@@ -9,7 +9,13 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useConfirmarDevolucao } from "../../_hooks/listagem/useConfirmarDevolucao";
+import { useDevolverProduto } from "@/app/dashboard/servicos/_hooks/listagem/useDevolverProduto";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
+import { useImprimirModal } from "@/app/dashboard/servicos/_hooks/listagem/useImprimirModal";
+import { useExecutarImpressao } from "@/app/dashboard/servicos/_hooks/listagem/useExecutarImpressao";
+import { useEditar } from "@/app/dashboard/servicos/_hooks/listagem/useEditar";
+import { useExcluir } from "@/app/dashboard/servicos/_hooks/listagem/useExcluir";
 import DocumentTemplateContrato from "@/app/dashboard/servicos/_documents/convalescencia/contrato/DocumentTemplate";
 import { AuthContext } from "@/store/AuthContext";
 import { useActionsPrintConvalescenca } from "../../_hooks/useActionsPrintConvalescenca";
@@ -30,45 +36,37 @@ import {
 } from "@/components/ui/select"
 
 export default function Convalescente() {
-    const [modal, setModal] = useState(false)
-    const [modalImprimirBotoes, setModalImprimirBotoes] = useState(false)
-    const [documentoImprimir, setDocumentoImprimir] = useState<Docs | null>(null)
+    // 1. Estados
+    const [modal, setModal] = useState(false);
+    const [modalImprimirBotoes, setModalImprimirBotoes] = useState(false);
+    const [documentoImprimir, setDocumentoImprimir] = useState<Docs | null>(null);
     const [itemSelecionado, setItemSelecionado] = useState<any | null>(null);
-    const [produtoSelecionadoId, setProdutoSelecionadoId] = useState<number | null>(null)
+    const [produtoSelecionadoId, setProdutoSelecionadoId] = useState<number | null>(null);
     const [materialParaImpressao, setMaterialParaImpressao] = useState<any[]>([]);
     const [idContratoParaImpressao, setIdContratoParaImpressao] = useState<number | null>(null);
     const [selecionarImpressaoModal, setSelecionarImpressaoModal] = useState(false);
-    const [atualizacao, setAtualizacao] = useState(0)
+    const [atualizacao, setAtualizacao] = useState(0);
     const [rowSelection, setRowSelection] = useState({});
-    const router = useRouter()
-    const { usuario, infoEmpresa } = useContext(AuthContext)
 
+    // 2. Contextos
+    const router = useRouter();
+    const { usuario, infoEmpresa } = useContext(AuthContext);
 
-
-
+    // 3. Hooks de ações
     const {
-
-        // --- Estados que a UI irá ler ---
         excluir,
         arrayFiltro,
-
-        // --- Funções para alterar o estado  ---
         setExcluir,
-
-        // --- Funções de Ação ---
         setarListaConv,
         listarConv,
         deletarConv,
         receberDevolucao,
-
-    } = useActionsListagem()
+    } = useActionsListagem();
 
     const {
-
         iniciarImpressao,
         componentRefs,
         documentoAtivo
-
     } = useActionsPrintConvalescenca(
         itemSelecionado,
         idContratoParaImpressao,
@@ -76,148 +74,58 @@ export default function Convalescente() {
         infoEmpresa?.id ?? "",
         setarListaConv,
         () => {
-
-            setModal(false)
-            setItemSelecionado(false)
-            setProdutoSelecionadoId(null)
-            setDocumentoImprimir(null)
-
+            setModal(false);
+            setItemSelecionado(false);
+            setProdutoSelecionadoId(null);
+            setDocumentoImprimir(null);
         },
-    )
+    );
 
-    const handleConfirmarDevolucao = async () => {
-
-        if (!itemSelecionado) {
-            toast.error("Nenhum item selecionado para devolução.")
-            return
-        }
-
-        const materialFiltrado = (itemSelecionado.convalescenca_prod ?? []).filter(
-            (produto: any) => produto.id_conv_prod === produtoSelecionadoId
-        );
-
-        setMaterialParaImpressao(materialFiltrado);
-        try {
-
-            await receberDevolucao(produtoSelecionadoId)
-
-            setAtualizacao(v => v + 1);
-
-            if (selecionarImpressaoModal) {
-
-                iniciarImpressao('comprovante')
-
-            }
-
-        } catch (error) {
-            toast.error("Não foi possível alterar o status.");
-        }
-    }
-
-    const handleDevolverProdutoClick = (item: ConvProps) => {
-
-        setItemSelecionado(item);
-        setModal(true);
-    };
-
+    // 4. Handlers customizados
+    const handleConfirmarDevolucao = useConfirmarDevolucao();
+    const handleDevolverProdutoClick = useDevolverProduto({ setItemSelecionado, setModal });
     const linhaSelecionada: ConvProps | null = React.useMemo(() => {
-        const indicesSelecionados = Object.keys(rowSelection)
-        if (indicesSelecionados.length !== 1) {
-            return null
-        }
-
-        const indice = parseInt(indicesSelecionados[0], 10)
-        return arrayFiltro[indice] || null
-    }, [rowSelection])
-
-
-    const handleImprimirModal = (tipoDocumento: Docs) => {
-
-        if (!linhaSelecionada) {
-
-            toast.error("Por favor, selecione uma linha para Imprimir um Comprovante!")
-            return
-        }
-
-        setItemSelecionado(linhaSelecionada)
-        setIdContratoParaImpressao(linhaSelecionada?.id_contrato_global ?? null)
-        setDocumentoImprimir(tipoDocumento)
-        setModalImprimirBotoes(true)
-
-    }
-
-    const handleExecutarImpressao = async () => {
-        if (!documentoImprimir) return;
-
-
-        if (documentoImprimir) {
-            iniciarImpressao(documentoImprimir)
-        }
-
-        setModalImprimirBotoes(false);
-        setRowSelection({})
-    };
-
-    const handleEditar = () => {
-
-        if (!linhaSelecionada) {
-
-            toast.error("Por favor, selecione uma linha para Editar.")
-            return
-
-        } else {
-
-            router.push(`/dashboard/servicos/convalescencia/editar/${linhaSelecionada.id_conv}`)
-
-        }
-    }
+        const indicesSelecionados = Object.keys(rowSelection);
+        if (indicesSelecionados.length !== 1) return null;
+        const indice = parseInt(indicesSelecionados[0], 10);
+        return arrayFiltro[indice] || null;
+    }, [rowSelection, arrayFiltro]);
+    const handleImprimirModal = useImprimirModal({
+        linhaSelecionada,
+        setItemSelecionado,
+        setIdContratoParaImpressao,
+        setDocumentoImprimir,
+        setModalImprimirBotoes,
+    });
+    const handleExecutarImpressao = useExecutarImpressao({
+        documentoImprimir,
+        iniciarImpressao,
+        setModalImprimirBotoes,
+        setRowSelection,
+    });
+    const handleEditar = useEditar(linhaSelecionada);
+    const { handleExcluir, handleConfirmarExclusao } = useExcluir({
+        linhaSelecionada,
+        setarListaConv,
+        setExcluir,
+        deletarConv,
+        setAtualizacao,
+        setRowSelection,
+    });
 
     useEffect(() => {
         listarConv();
     }, [atualizacao]);
 
-    const handleExcluir = () => {
-
-        if (!linhaSelecionada) {
-
-            toast.error("Por favor, selecione uma linha para Excluir.")
-            return
-
-        } else {
-
-            
-            setarListaConv({ id_conv: linhaSelecionada?.id_conv })
-            setExcluir(true);
-
-        }
-    }
-
-    const handleConfirmarExclusao = async () => {
-        try {
-            await deletarConv()
-
-            setAtualizacao(v => v + 1)
-            
-            setExcluir(false)
-
-            setRowSelection({})
-        } catch (error) {
-            console.error("Erro ao deletar:", error);
-        }
-    }
-
-
+    // 5. Constantes utilitárias
     const nomesDocumentos = {
         contrato: 'Contrato',
         comprovanteGenerico: 'Comprovante'
-    }
-
+    };
     const getColumns = useMemo(() => columns({
-            onDevolverProduto: handleDevolverProdutoClick
-        }), [])
+        onDevolverProduto: handleDevolverProdutoClick
+    }), [handleDevolverProdutoClick]);
 
-
-  
 
     return (
 
@@ -338,7 +246,15 @@ export default function Convalescente() {
                             setProdutoSelecionadoId(null)
                             setSelecionarImpressaoModal(false)
                         }}
-                        handleConfirmar={handleConfirmarDevolucao}
+                        handleConfirmar={() => handleConfirmarDevolucao({
+                            itemSelecionado,
+                            produtoSelecionadoId,
+                            setMaterialParaImpressao,
+                            receberDevolucao,
+                            setAtualizacao,
+                            selecionarImpressaoModal,
+                            iniciarImpressao,
+                        })}
                         pergunta="Qual produto você deseja fazer a devolução?"
 
                     >

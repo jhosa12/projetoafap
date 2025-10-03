@@ -29,6 +29,7 @@ import { RowSelectionState } from "@tanstack/react-table";
 import { ModalSelecaoDependente } from "../../../modal-dependentes";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useConfirmarSelecaoFalecido } from "@/app/dashboard/servicos/_hooks/obitos/useConfirmarSelecaoFalecido";
 
 
 export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
@@ -36,38 +37,18 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
   const [modalDependente, setModalDependente] = useState(false);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   const { dadosassociado, infoEmpresa } = useContext(AuthContext)
-  const prevTipoSelecionadoRef = useRef<'TITULAR' | 'DEPENDENTE' | 'PARTICULAR' | null>(null)
+  const prevTipoSelecionadoRef = useRef<'TITULAR' | 'DEPENDENTE' | 'PARTICULAR' | ''>('')
 
   const tipoSelecionado = watch('falecido')
 
-  const handleConfirmarSelecao = () => {
-    const indicesSelecionados = Object.keys(rowSelection).map(Number)[0];
-
-    if (indicesSelecionados === undefined || !dadosassociado?.dependentes) {
-      toast.error('Por favor, selecione um dependente da lista!')
-      return
-    }
-    const dependentesVisiveis = dadosassociado.dependentes.filter(d => !d.excluido)
-    const dependenteEscolhido = dependentesVisiveis[indicesSelecionados]
-
-    if (!dependenteEscolhido) {
-      toast.error("Não foi possível encontrar o dependente selecionado.")
-      return
-    }
-    const dadosMapeados = {
-      nome_falecido: dependenteEscolhido.nome,
-      data_nascimento: dependenteEscolhido.data_nasc,
-      id_dependente: dependenteEscolhido.id_dependente,
-      id_dependente_global: dependenteEscolhido.id_dependente_global
-    }
-
-    reset({ ...watch(), ...dadosMapeados })
-
-    toast.success("Dados do dependente preenchidos!")
-
-    setModalDependente(false)
-    setRowSelection({})
-  }
+  const { handleConfirmarSelecao } = useConfirmarSelecaoFalecido({
+    rowSelection,
+    dadosassociado,
+    reset,
+    watch,
+    setModalDependente,
+    setRowSelection
+  })
 
   useEffect(() => {
 
@@ -88,7 +69,7 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
 
       if (!dadosassociado?.id_global) {
         toast.error("Nenhum associado selecionado para buscar os dados")
-        reset({ ...watch(), falecido: null })
+        reset({ ...watch(), falecido: '' })
         return
       }
 
@@ -111,16 +92,16 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
 
       if (!infoEmpresa?.id) {
         toast.error("A seleção da empresa é obrigatória")
-        reset({ ...watch(), falecido: null })
+        reset({ ...watch(), falecido: '' })
         return
       }
 
-      if (tipoSelecionado !== prevTipo && prevTipo !== null) {
+      if (tipoSelecionado !== prevTipo && prevTipo) {
         limparCamposPessoais();
       }
 
     } else {
-      if (tipoSelecionado !== prevTipo && prevTipo !== null) {
+      if (tipoSelecionado !== prevTipo && prevTipo) {
 
         limparCamposPessoais()
 
@@ -149,7 +130,7 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
             render={({ field }) => (
               <RadioGroup
                 onValueChange={field.onChange}
-                value={field.value}
+                value={field.value || ''}
                 disabled={isEditing}
                 className="flex gap-6 mt-4"
               >

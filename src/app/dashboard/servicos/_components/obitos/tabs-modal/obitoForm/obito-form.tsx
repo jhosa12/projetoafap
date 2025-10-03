@@ -27,6 +27,7 @@ export function ObitoForm({ obito, onSave, onCancel }: ObitoFormProps) {
     defaultValues: {
       nome_falecido: '',
       data_nascimento: undefined,
+      falecido: '',
     }
   });
   const { dadosassociado, limparDados } = useContext(AuthContext)
@@ -34,7 +35,7 @@ export function ObitoForm({ obito, onSave, onCancel }: ObitoFormProps) {
 
   useEffect(() => {
     if (obito) {
-      
+
       form.reset(obito);
       limparDados()
     }

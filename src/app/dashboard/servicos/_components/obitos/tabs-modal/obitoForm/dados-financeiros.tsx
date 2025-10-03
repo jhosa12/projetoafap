@@ -131,10 +131,11 @@ export const OSDadosFinanceiros = () => {
                           <Input
                             type="number"
                             step="0.01"
-                            value={servico.valor_unit}
-                            onChange={(e) =>
-                              updateServico(servico.id, "valor_unit", Number.parseFloat(e.target.value) || 0)
-                            }
+                            value={servico.valor_unit === 0 ? "" : servico.valor_unit}
+                            onChange={(e) => {
+                              const value = e.target.value === "" ? 0 : Number.parseFloat(e.target.value);
+                              updateServico(servico.id, "valor_unit", isNaN(value) ? 0 : value);
+                            }}
                             placeholder="0.00"
                           />
                         </TableCell>
@@ -142,10 +143,11 @@ export const OSDadosFinanceiros = () => {
                           <Input
                             type="number"
                             step="0.01"
-                            value={servico.acrescimo}
-                            onChange={(e) =>
-                              updateServico(servico.id, "acrescimo", Number.parseFloat(e.target.value) || 0)
-                            }
+                            value={servico.acrescimo === 0 ? "" : servico.acrescimo}
+                            onChange={(e) => {
+                              const value = e.target.value === "" ? 0 : Number.parseFloat(e.target.value);
+                              updateServico(servico.id, "acrescimo", isNaN(value) ? 0 : value);
+                            }}
                             placeholder="0.00"
                           />
                         </TableCell>
@@ -153,10 +155,11 @@ export const OSDadosFinanceiros = () => {
                           <Input
                             type="number"
                             step="0.01"
-                            value={servico.desconto}
-                            onChange={(e) =>
-                              updateServico(servico.id, "desconto", Number.parseFloat(e.target.value) || 0)
-                            }
+                            value={servico.desconto === 0 ? "" : servico.desconto}
+                            onChange={(e) => {
+                              const value = e.target.value === "" ? 0 : Number.parseFloat(e.target.value);
+                              updateServico(servico.id, "desconto", isNaN(value) ? 0 : value);
+                            }}
                             placeholder="0.00"
                           />
                         </TableCell>
@@ -203,12 +206,22 @@ export const OSDadosFinanceiros = () => {
           </div>
           <div className="space-y-2">
             <Label htmlFor="vl_produtos">Valor dos Produtos</Label>
-            <Input
-              id="vl_produtos"
-              type="number"
-              step="0.01"
-              {...register('vl_produtos', { valueAsNumber: true })}
-              placeholder="0.00"
+            <Controller
+              name="vl_produtos"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  id="vl_produtos"
+                  type="number"
+                  step="0.01"
+                  value={field.value === 0 || field.value === null || field.value === undefined ? "" : field.value}
+                  onChange={(e) => {
+                    const value = e.target.value === "" ? 0 : Number.parseFloat(e.target.value);
+                    field.onChange(isNaN(value) ? 0 : value);
+                  }}
+                  placeholder="0.00"
+                />
+              )}
             />
           </div>
           <div className="space-y-2">
@@ -226,12 +239,22 @@ export const OSDadosFinanceiros = () => {
           </div>
           <div className="space-y-2">
             <Label htmlFor="saldo">Saldo em Aberto</Label>
-            <Input
-              id="saldo"
-              type="number"
-              step="0.01"
-              {...register('saldo', { valueAsNumber: true })}
-              placeholder="0.00"
+            <Controller
+              name="saldo"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  id="saldo"
+                  type="number"
+                  step="0.01"
+                  value={field.value === 0 || field.value === null || field.value === undefined ? "" : field.value}
+                  onChange={(e) => {
+                    const value = e.target.value === "" ? 0 : Number.parseFloat(e.target.value);
+                    field.onChange(isNaN(value) ? 0 : value);
+                  }}
+                  placeholder="0.00"
+                />
+              )}
             />
           </div>
         </CardContent>

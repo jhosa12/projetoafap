@@ -1,19 +1,60 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 import { api } from "@/lib/axios/apiClient";
 import { AuthContext } from "@/store/AuthContext";
 import { ProdutosProps } from '../../admcontrato/_types/produtos';
 import { useRouter } from 'next/navigation';
+import { SubmitHandler } from 'react-hook-form';
+import { ConvProps } from '../_types/convalescente';
 
-const useActionsNovoResgistro = () => {
+const useActionsNovoResgistro = (isEditMode?: boolean, id?: string) => {
   const { usuario, dadosassociado, infoEmpresa } = useContext(AuthContext);
   const [listarProdutos, setListarProdutos] = useState<Array<ProdutosProps>>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  // Função helper para editar registro, recebe id e dados do formulário
+  const fixDate = (date: any) => {
+    if (!date) return undefined;
+    const d = new Date(date);
+    return isNaN(d.getTime()) ? undefined : d.toISOString();
+  };
+
+  const toIntOrNull = (val: any) => {
+    if (val === undefined || val === null || val === '') return null;
+    const n = Number(val);
+    return isNaN(n) ? null : n;
+  };
+
+
   async function editarRegistro(id: string, dadosForm: any) {
-    const { convalescenca_prod, ...rest } = dadosForm;
+    // Tratamento inicial dos dados
+    const dadosTratados = {
+      ...dadosForm,
+      numero_r: toIntOrNull(dadosForm.numero_r),
+      data: dadosForm.data ? new Date(dadosForm.data) : null,
+      data_inc: fixDate(dadosForm.data_inc),
+      hora_inc: fixDate(dadosForm.hora_inc),
+    };
+
+    // Remove campos indesejados
+    delete (dadosTratados as any).situacao_contrato;
+    delete (dadosTratados as any).tipo_contrato;
+    delete (dadosTratados as any).id_conv;
+    delete (dadosTratados as any).editar;
+    delete (dadosTratados as any).contrato;
+
+    // Remove chaves com valor undefined
+    Object.keys(dadosTratados).forEach(key => {
+      if ((dadosTratados as any)[key] === undefined) {
+        delete (dadosTratados as any)[key];
+      }
+    });
+
+    const { convalescenca_prod, ...rest } = dadosTratados;
+
+    console.log('Dados recebidos no editarRegistro:', dadosTratados);
+    console.log('Produtos encontrados:', convalescenca_prod);
+
     if (!rest.nome || !rest.logradouro) {
       toast.error('Preencha os campos obrigatórios');
       return;
@@ -26,7 +67,7 @@ const useActionsNovoResgistro = () => {
       id_produto: produto.id_produto,
       descricao: produto.descricao,
       quantidade: produto.quantidade,
-      status: produto.status
+      status: produto.status || "ABERTO"
     }));
     const payload = {
       ...rest,
@@ -49,9 +90,34 @@ const useActionsNovoResgistro = () => {
   }
 
   async function enviarNovoRegistro(dadosForm: any) {
+    // Tratamento inicial dos dados
+    const dadosTratados = {
+      ...dadosForm,
+      numero_r: toIntOrNull(dadosForm.numero_r),
+      data: dadosForm.data ? new Date(dadosForm.data) : null,
+      data_inc: fixDate(dadosForm.data_inc),
+      hora_inc: fixDate(dadosForm.hora_inc),
+    };
 
-    const { convalescenca_prod, ...rest } = dadosForm;
-    
+    // Remove campos indesejados
+    delete (dadosTratados as any).situacao_contrato;
+    delete (dadosTratados as any).tipo_contrato;
+    delete (dadosTratados as any).id_conv;
+    delete (dadosTratados as any).editar;
+    delete (dadosTratados as any).contrato;
+
+    // Remove chaves com valor undefined
+    Object.keys(dadosTratados).forEach(key => {
+      if ((dadosTratados as any)[key] === undefined) {
+        delete (dadosTratados as any)[key];
+      }
+    });
+
+    const { convalescenca_prod, ...rest } = dadosTratados;
+
+    console.log('Dados recebidos no enviarNovoRegistro:', dadosTratados);
+    console.log('Produtos encontrados:', convalescenca_prod);
+
     if (!rest.nome || !rest.logradouro) {
       toast.error('Preencha os campos obrigatórios');
       return;
@@ -64,12 +130,17 @@ const useActionsNovoResgistro = () => {
       id_produto: produto.id_produto,
       descricao: produto.descricao,
       quantidade: produto.quantidade,
-      status: produto.status
+      status: produto.status || "ABERTO"
     }));
+
+
+
     const payload = {
       ...rest,
-      id_contrato: rest.id_contrato || dadosassociado?.contrato?.id_contrato,
-      id_associado: rest.id_associado || dadosassociado?.id_associado,
+
+      id_contrato_global: dadosassociado.contrato?.id_contrato_global,
+      id_associado: dadosassociado?.id_associado,
+      id_contrato: dadosassociado.contrato?.id_contrato,
       id_empresa: rest.id_empresa || infoEmpresa?.id,
       status: 'ABERTO',
       data_inc: new Date().toISOString(),
@@ -77,17 +148,23 @@ const useActionsNovoResgistro = () => {
       usuario: rest.usuario || usuario?.nome,
       convalescenca_prod: produtosParaEnviar
     };
+
     const promise = api.post('/convalescencia/novo', payload);
     toast.promise(promise, {
       loading: 'Salvando dados...',
       success: 'Dados registrados com sucesso!',
       error: (err) => err.response?.data?.message || 'Erro ao cadastrar. Tente novamente.',
     });
+
     try {
+
       await promise;
       router.push('/dashboard/servicos/convalescencia/listagem');
+
     } catch (error: any) {
+
       console.log("Falha detalhada ao salvar registro:", error.response?.data || error.message || error);
+
     }
   }
 
@@ -129,6 +206,15 @@ const useActionsNovoResgistro = () => {
     selectProdutos();
   }, []);
 
+  // HandleSubmit unificado
+  const handleSubmit: SubmitHandler<ConvProps> = useCallback(async (data: ConvProps) => {
+    if (isEditMode && id) {
+      await editarRegistro(id, data);
+    } else {
+      await enviarNovoRegistro(data);
+    }
+  }, [isEditMode, id]);
+
   return {
     listarProdutos,
     isLoading,
@@ -136,6 +222,7 @@ const useActionsNovoResgistro = () => {
     editarRegistro,
     adicionarProduto,
     deletarProdutoConv,
+    handleSubmit,
   };
 };
 

@@ -29,6 +29,7 @@ import {
   SelectValue,
   SelectGroup
 } from "@/components/ui/select"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 import {
   Table,
@@ -70,21 +71,17 @@ import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
 import { AuthContext } from "@/store/AuthContext";
 import { ModalSelecaoDependente } from "../modal-dependentes";
+import { useFormularioConv } from "../../_hooks/useFormularioConv";
 
 interface FormularioConvProps {
   listarProdutos: ProdutosProps[];
   dadosassociado: AssociadoProps | Partial<AssociadoProps> | null;
   ufs: UfProps[];
   isEditMode: boolean;
-  usarDadosTitular: boolean;
-  isDependenteSelecionado?: boolean;
   isModalOpen: boolean;
   rowSelection: RowSelectionState;
-  setarListaConv: (dados: Partial<ConvProps>) => void;
   setIsModalOpen: (isOpen: boolean) => void;
-  setDependenteSelecionado: (isSelected: boolean) => void;
   setRowSelection: React.Dispatch<React.SetStateAction<RowSelectionState>>;
-  setUsarDadosTitular: (value: boolean) => void;
 }
 
 
@@ -93,17 +90,14 @@ export default function FormularioConv({
   dadosassociado,
   ufs,
   isEditMode,
-  usarDadosTitular,
-  isDependenteSelecionado,
   isModalOpen,
   rowSelection,
   setIsModalOpen,
-  setDependenteSelecionado,
   setRowSelection,
 }: FormularioConvProps) {
 
-  const { infoEmpresa } = useContext(AuthContext);
-  const { register, control, reset, watch } = useFormContext<ConvProps>();
+  const { infoEmpresa, usuario, limparDados } = useContext(AuthContext);
+  const { register, control, reset, watch, setValue } = useFormContext<ConvProps>();
   const { fields: produtos, append, remove } = useFieldArray({
     control,
     name: "convalescenca_prod"
@@ -113,35 +107,16 @@ export default function FormularioConv({
   const [modalDependente, setModalDependente] = React.useState(false);
   const prevTipoSelecionadoRef = useRef<'TITULAR' | 'DEPENDENTE' | 'PARTICULAR' | null>(null)
   const tipoSelecionado = watch('tipo_convalescente')
-
-  const handleConfirmarSelecao = () => {
-    const indicesSelecionados = Object.keys(rowSelection).map(Number)[0];
-
-    if (indicesSelecionados === undefined || !dadosassociado?.dependentes) {
-      toast.error('Por favor, selecione um dependente da lista!')
-      return
-    }
-    const dependentesVisiveis = dadosassociado.dependentes.filter(d => !d.excluido)
-    const dependenteEscolhido = dependentesVisiveis[indicesSelecionados]
-
-    if (!dependenteEscolhido) {
-      toast.error("Não foi possível encontrar o dependente selecionado.")
-      return
-    }
-    const dadosMapeados = {
-      nome_falecido: dependenteEscolhido.nome,
-      data_nascimento: dependenteEscolhido.data_nasc,
-      id_dependente: dependenteEscolhido.id_dependente,
-      id_dependente_global: dependenteEscolhido.id_dependente_global
-    }
-
-    reset({ ...watch(), ...dadosMapeados })
-
-    toast.success("Dados do dependente preenchidos!")
-
-    setModalDependente(false)
-    setRowSelection({})
-  }
+  const subtotal = watch('subtotal')
+  const descontos = watch('descontos')
+  const { handleConfirmarSelecao } = useFormularioConv({
+    rowSelection,
+    dadosassociado,
+    reset,
+    watch,
+    setModalDependente,
+    setRowSelection,
+  })
 
   useEffect(() => {
 
@@ -152,10 +127,18 @@ export default function FormularioConv({
       reset({
         ...watch(),
         nome: "",
-        data_nasc: undefined,
-
+        data_nasc: null,
+        cpf_cnpj: '',
+        logradouro: '',
+        numero: null,
+        complemento: '',
+        bairro: '',
+        cep: '',
+        cidade: '',
+        uf: '',
       })
     }
+
     const prevTipo = prevTipoSelecionadoRef.current
 
     if (tipoSelecionado === 'TITULAR') {
@@ -167,8 +150,17 @@ export default function FormularioConv({
       }
 
       const dadosMapeados = {
+
+        //Informações Pessoais
         nome: dadosassociado.nome,
         data_nasc: dadosassociado.data_nasc,
+        logradouro: dadosassociado.endereco,
+        numero: dadosassociado.numero,
+        bairro: dadosassociado.bairro,
+        cep: dadosassociado.cep,
+        cidade: dadosassociado.cidade,
+        uf: dadosassociado.uf,
+
         id_associado: dadosassociado.id_associado,
         id_global: dadosassociado.id_global
 
@@ -190,12 +182,13 @@ export default function FormularioConv({
       }
 
       if (tipoSelecionado !== prevTipo && prevTipo !== null) {
+        limparDados();
         limparCamposPessoais();
       }
 
     } else {
       if (tipoSelecionado !== prevTipo && prevTipo !== null) {
-
+        limparDados();
         limparCamposPessoais()
 
       }
@@ -203,17 +196,34 @@ export default function FormularioConv({
 
     prevTipoSelecionadoRef.current = tipoSelecionado
 
-  }, [tipoSelecionado, dadosassociado, watch, reset])
+  }, [tipoSelecionado, dadosassociado, watch, reset, limparDados, infoEmpresa])
 
-  const columns = React.useMemo(
+  // Preencher automaticamente o usuário logado
+  useEffect(() => {
+    if (usuario?.nome && !isEditMode) {
+      setValue('usuario', usuario.nome);
+    }
+  }, [usuario, setValue, isEditMode]);
+
+  // Cálculo automático do total
+  useEffect(() => {
+    const subtotalValue = Number(subtotal) || 0;
+    const descontosValue = Number(descontos) || 0;
+    const totalCalculado = subtotalValue - descontosValue;
+
+    // Garantir que o total não seja negativo
+    const totalFinal = Math.max(0, totalCalculado);
+
+    setValue('total', totalFinal);
+  }, [subtotal, descontos, setValue]); const columns = React.useMemo(
     () => getColumns({ setModalDependente, reset, watch }),
     [setModalDependente, reset, watch]
   );
 
   return (
     <>
-      <div className="flex-col w-full mt-2 ">
-        <ScrollArea className="h-[300px] md:h-[500px] lg:h-[70vh] rounded-md">
+      <div className="flex-col w-full mt-2 flex-1">
+        <ScrollArea className="h-[calc(100vh-200px)] rounded-md">
           <Card>
             <CardHeader>
               <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -223,38 +233,25 @@ export default function FormularioConv({
                     control={control}
                     name="tipo_convalescente"
                     render={({ field }) => (
-                      <div className="flex items-center gap-6">
-                        <label className="flex items-center gap-2">
-                          <input
-                            type="radio"
-                            value="TITULAR"
-                            checked={field.value === 'TITULAR'}
-                            onChange={() => field.onChange('TITULAR')}
-                            disabled={isEditMode}
-                          />
-                          <span>TITULAR</span>
-                        </label>
-                        <label className="flex items-center gap-2">
-                          <input
-                            type="radio"
-                            value="DEPENDENTE"
-                            checked={field.value === 'DEPENDENTE'}
-                            onChange={() => field.onChange('DEPENDENTE')}
-                            disabled={isEditMode}
-                          />
-                          <span>DEPENDENTE</span>
-                        </label>
-                        <label className="flex items-center gap-2">
-                          <input
-                            type="radio"
-                            value="PARTICULAR"
-                            checked={field.value === 'PARTICULAR'}
-                            onChange={() => field.onChange('PARTICULAR')}
-                            disabled={isEditMode}
-                          />
-                          <span>PARTICULAR</span>
-                        </label>
-                      </div>
+                      <RadioGroup
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        disabled={isEditMode}
+                        className="flex items-center gap-6"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="TITULAR" id="titular" />
+                          <Label htmlFor="titular">TITULAR</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="DEPENDENTE" id="dependente" />
+                          <Label htmlFor="dependente">DEPENDENTE</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="PARTICULAR" id="particular" />
+                          <Label htmlFor="particular">PARTICULAR</Label>
+                        </div>
+                      </RadioGroup>
                     )}
                   />
                 </div>
@@ -273,8 +270,8 @@ export default function FormularioConv({
                   id="nome"
                   {...register('nome')}
                   placeholder="Nome Completo"
-                  
-                  
+
+
                 />
               </div>
 
@@ -285,7 +282,7 @@ export default function FormularioConv({
                   name="data_nasc"
                   render={({ field }) =>
                     <Popover>
-                      <PopoverTrigger>
+                      <PopoverTrigger asChild>
                         <Button
                           variant="outline"
                           id="date_nasc"
@@ -320,8 +317,8 @@ export default function FormularioConv({
                   id="cpf_cnpj"
                   {...register('cpf_cnpj')}
                   placeholder="000.000.000-00"
-                  
-                  
+
+
                 />
               </div>
 
@@ -331,8 +328,8 @@ export default function FormularioConv({
                   id="tabs-demo-name"
                   {...register('logradouro')}
                   placeholder="Digite aqui..."
-                  
-                  
+
+
                 />
               </div>
 
@@ -340,10 +337,11 @@ export default function FormularioConv({
                 <Label htmlFor="numero">Número</Label>
                 <Input
                   id="numero"
-                  {...register('numero')}
+                  type="number"
+                  {...register('numero', { valueAsNumber: true })}
                   placeholder="Nº"
-                  
-                  
+
+
                 />
               </div>
               <div className="grid gap-2 lg:col-span-2">
@@ -352,8 +350,8 @@ export default function FormularioConv({
                   id="bairro"
                   {...register('bairro')}
                   placeholder="Digite o bairro"
-                  
-                  
+
+
                 />
               </div>
               <div className="grid gap-2 lg:col-span-2">
@@ -362,8 +360,8 @@ export default function FormularioConv({
                   id="complemento"
                   {...register('complemento')}
                   placeholder="Apartamento, bloco, ponto de referência"
-                  
-                  
+
+
                 />
               </div>
               <div className="grid gap-2">
@@ -373,8 +371,8 @@ export default function FormularioConv({
                     id="cep"
                     {...register('cep')}
                     placeholder="00000-000"
-                    
-                    
+
+
                   />
                 </div>
               </div>
@@ -522,7 +520,7 @@ export default function FormularioConv({
                   id="subtotal"
                   type="number"
                   placeholder="R$ 0,00"
-                  {...register('subtotal')}
+                  {...register('subtotal', { valueAsNumber: true })}
                 />
               </div>
 
@@ -532,7 +530,7 @@ export default function FormularioConv({
                   id="descontos"
                   type="number"
                   placeholder="R$ 0,00"
-                  {...register('descontos')}
+                  {...register('descontos', { valueAsNumber: true })}
                 />
               </div>
 
@@ -692,11 +690,14 @@ export default function FormularioConv({
                         onClick={() => {
                           const produto = listarProdutos.find(p => p.id_produto.toString() === produtoSelecionado);
                           if (produto) {
-                            append({
+                            const novoProduto = {
                               ...produto,
                               quantidade: quantidadeSelecionada,
-                              status: "PENDENTE"
-                            });
+                              status: "ABERTO"
+                            };
+                            console.log('Adicionando produto:', novoProduto);
+                            append(novoProduto);
+                            console.log('Produtos após adicionar:', watch('convalescenca_prod'));
                             setProdutoSelecionado("");
                             setQuantidadeSelecionada(1);
                           }
@@ -730,7 +731,8 @@ export default function FormularioConv({
                 <Label htmlFor="numero_r">Número</Label>
                 <Input
                   id="numero_r"
-                  {...register('numero_r')}
+                  type="number"
+                  {...register('numero_r', { valueAsNumber: true })}
                   placeholder="Nº"
 
                 />
