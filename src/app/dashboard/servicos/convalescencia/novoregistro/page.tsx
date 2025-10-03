@@ -207,9 +207,9 @@ export default function ConvalescenciaNovo() {
             )}
 
 
-            <div className="flex flex-col w-full pl-10 pr-10 pt-4">
+            <div className="flex flex-col w-full min-h-screen pl-10 pr-10 pt-4 pb-6">
                 <FormProvider {...methods}>
-                    <form onSubmit={methods.handleSubmit(handleFormSubmit)}>
+                    <form onSubmit={methods.handleSubmit(handleFormSubmit)} className="flex-1">
                         {/* Header separado em duas linhas para evitar quebra */}
                         <div className="flex flex-col gap-4 p-2 w-full">
                             {/* Linha do título */}

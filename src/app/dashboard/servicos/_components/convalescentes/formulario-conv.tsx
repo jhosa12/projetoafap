@@ -239,8 +239,8 @@ export default function FormularioConv({
 
   return (
     <>
-      <div className="flex-col w-full mt-2 ">
-        <ScrollArea className="h-[300px] md:h-[500px] lg:h-[70vh] rounded-md">
+      <div className="flex-col w-full mt-2 flex-1">
+        <ScrollArea className="h-[calc(100vh-200px)] rounded-md">
           <Card>
             <CardHeader>
               <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
