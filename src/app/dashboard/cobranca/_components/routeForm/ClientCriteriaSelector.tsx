@@ -17,7 +17,7 @@ const operators = [
    { value: "<", label: "< (menor que)" }
 ];
 
-const monthOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+const monthOptions = [0,1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 const ClientCriteriaSelector = ({consultores}:Props) => {
   // Assuming the format is "operator:value" for simplicity, defaulting to ">=" for display

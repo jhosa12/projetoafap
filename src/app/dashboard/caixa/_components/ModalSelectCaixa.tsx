@@ -16,10 +16,10 @@ registerLocale("pt", pt);
 import { EmpresaProps } from "@/types/empresa";
 import { useReactToPrint } from "react-to-print";
 import { pageStyle } from "@/utils/pageStyle";
-import { CcustosProps, PlanoContasProps } from "../../financeiro/page";
 import RelatorioMovimentacao from "../_documents/relatorioMovimentacao";
 import { LancamentosProps } from "../_types/types";
 import { SomaProps } from "../../financeiro/_components/tabs/caixa/caixa";
+import { CcustosProps, PlanoContasProps } from "../../financeiro/_types/types";
 
 
 interface FilterCaixaProps {
@@ -114,7 +114,7 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa,planoContas }
 
       ///setLoading(false);
     },
-    []
+    [id_empresa]
   );
 
 
