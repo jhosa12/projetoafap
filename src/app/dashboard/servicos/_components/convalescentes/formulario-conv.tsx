@@ -95,8 +95,8 @@ export default function FormularioConv({
   setRowSelection,
 }: FormularioConvProps) {
 
-  const { infoEmpresa } = useContext(AuthContext);
-  const { register, control, reset, watch } = useFormContext<ConvProps>();
+  const { infoEmpresa, usuario } = useContext(AuthContext);
+  const { register, control, reset, watch, setValue } = useFormContext<ConvProps>();
   const { fields: produtos, append, remove } = useFieldArray({
     control,
     name: "convalescenca_prod"
@@ -106,6 +106,8 @@ export default function FormularioConv({
   const [modalDependente, setModalDependente] = React.useState(false);
   const prevTipoSelecionadoRef = useRef<'TITULAR' | 'DEPENDENTE' | 'PARTICULAR' | null>(null)
   const tipoSelecionado = watch('tipo_convalescente')
+  const subtotal = watch('subtotal')
+  const descontos = watch('descontos')
   const { handleConfirmarSelecao } = useFormularioConv({
     rowSelection,
     dadosassociado,
@@ -126,6 +128,7 @@ export default function FormularioConv({
         nome: "",
         data_nasc: undefined,
 
+
       })
     }
     const prevTipo = prevTipoSelecionadoRef.current
@@ -141,6 +144,7 @@ export default function FormularioConv({
       const dadosMapeados = {
         nome: dadosassociado.nome,
         data_nasc: dadosassociado.data_nasc,
+        logradouro: dadosassociado.endereco,
         id_associado: dadosassociado.id_associado,
         id_global: dadosassociado.id_global
 
@@ -177,7 +181,24 @@ export default function FormularioConv({
 
   }, [tipoSelecionado, dadosassociado, watch, reset])
 
-  const columns = React.useMemo(
+  // Preencher automaticamente o usuário logado
+  useEffect(() => {
+    if (usuario?.nome && !isEditMode) {
+      setValue('usuario', usuario.nome);
+    }
+  }, [usuario, setValue, isEditMode]);
+
+  // Cálculo automático do total
+  useEffect(() => {
+    const subtotalValue = Number(subtotal) || 0;
+    const descontosValue = Number(descontos) || 0;
+    const totalCalculado = subtotalValue - descontosValue;
+
+    // Garantir que o total não seja negativo
+    const totalFinal = Math.max(0, totalCalculado);
+
+    setValue('total', totalFinal);
+  }, [subtotal, descontos, setValue]); const columns = React.useMemo(
     () => getColumns({ setModalDependente, reset, watch }),
     [setModalDependente, reset, watch]
   );
@@ -312,7 +333,8 @@ export default function FormularioConv({
                 <Label htmlFor="numero">Número</Label>
                 <Input
                   id="numero"
-                  {...register('numero')}
+                  type="number"
+                  {...register('numero', { valueAsNumber: true })}
                   placeholder="Nº"
 
 
@@ -494,7 +516,7 @@ export default function FormularioConv({
                   id="subtotal"
                   type="number"
                   placeholder="R$ 0,00"
-                  {...register('subtotal')}
+                  {...register('subtotal', { valueAsNumber: true })}
                 />
               </div>
 
@@ -504,7 +526,7 @@ export default function FormularioConv({
                   id="descontos"
                   type="number"
                   placeholder="R$ 0,00"
-                  {...register('descontos')}
+                  {...register('descontos', { valueAsNumber: true })}
                 />
               </div>
 
@@ -664,11 +686,14 @@ export default function FormularioConv({
                         onClick={() => {
                           const produto = listarProdutos.find(p => p.id_produto.toString() === produtoSelecionado);
                           if (produto) {
-                            append({
+                            const novoProduto = {
                               ...produto,
                               quantidade: quantidadeSelecionada,
                               status: "ABERTO"
-                            });
+                            };
+                            console.log('Adicionando produto:', novoProduto);
+                            append(novoProduto);
+                            console.log('Produtos após adicionar:', watch('convalescenca_prod'));
                             setProdutoSelecionado("");
                             setQuantidadeSelecionada(1);
                           }
@@ -702,7 +727,8 @@ export default function FormularioConv({
                 <Label htmlFor="numero_r">Número</Label>
                 <Input
                   id="numero_r"
-                  {...register('numero_r')}
+                  type="number"
+                  {...register('numero_r', { valueAsNumber: true })}
                   placeholder="Nº"
 
                 />

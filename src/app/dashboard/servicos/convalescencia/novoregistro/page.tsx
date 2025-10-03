@@ -76,22 +76,41 @@ export default function ConvalescenciaNovo() {
     // Valores iniciais mínimos para ConvProps
     const methods = useForm<ConvProps>({
         defaultValues: {
+            editar: false,
+            id_conv: null,
+            id_empresa: infoEmpresa?.id || '',
+            id_contrato_st: '',
+            tipo_convalescente: null,
+            tipo_entrada: '',
             nome: '',
+            cpf_cnpj: '',
+            data: null,
+            data_nasc: null,
+            status: 'ABERTO',
+            forma_pag: '',
             logradouro: '',
-            numero: 0,
+            numero: null,
+            complemento: '',
             bairro: '',
+            cep: '',
             cidade: '',
             uf: '',
-            status: '',
-            subtotal: 0,
-            descontos: 0,
-            total: 0,
-            data_inc: undefined,
-            hora_inc: undefined,
+            subtotal: null,
+            descontos: null,
+            total: null,
+            logradouro_r: '',
+            numero_r: null,
+            complemento_r: '',
+            bairro_r: '',
+            cep_r: '',
+            cidade_r: '',
+            uf_r: '',
+            data_inc: new Date(),
+            hora_inc: new Date(),
             usuario: '',
             obs: '',
             convalescenca_prod: [],
-            // ...adicione outros campos obrigatórios de ConvProps se necessário
+            contrato: {},
         },
     });
 
@@ -114,22 +133,41 @@ export default function ConvalescenciaNovo() {
         } else {
             // Limpa o formulário ao criar novo registro
             methods.reset({
+                editar: false,
+                id_conv: null,
+                id_empresa: infoEmpresa?.id || '',
+                id_contrato_st: '',
+                tipo_convalescente: null,
+                tipo_entrada: '',
                 nome: '',
+                cpf_cnpj: '',
+                data: null,
+                data_nasc: null,
+                status: 'ABERTO',
+                forma_pag: '',
                 logradouro: '',
-                numero: 0,
+                numero: null,
+                complemento: '',
                 bairro: '',
+                cep: '',
                 cidade: '',
                 uf: '',
-                status: '',
-                subtotal: 0,
-                descontos: 0,
-                total: 0,
-                data_inc: undefined,
-                hora_inc: undefined,
+                subtotal: null,
+                descontos: null,
+                total: null,
+                logradouro_r: '',
+                numero_r: null,
+                complemento_r: '',
+                bairro_r: '',
+                cep_r: '',
+                cidade_r: '',
+                uf_r: '',
+                data_inc: new Date(),
+                hora_inc: new Date(),
                 usuario: '',
                 obs: '',
                 convalescenca_prod: [],
-                // ...adicione outros campos obrigatórios de ConvProps se necessário
+                contrato: {},
             });
         }
     }, [isEditMode, id, methods]);
@@ -138,13 +176,12 @@ export default function ConvalescenciaNovo() {
 
 
     // Hook deve ser chamado no topo do componente
-    const { handleSubmit } = useActionsSubmit(
-        methods.getValues(),
+    const { handleSubmit: handleFormSubmit } = useActionsSubmit(
         isEditMode,
         id,
         editarRegistro,
         enviarNovoRegistro,
-        
+
     );
 
     if (isLoading) {
@@ -168,7 +205,7 @@ export default function ConvalescenciaNovo() {
 
             <div className="flex flex-col w-full pl-10 pr-10 pt-4">
                 <FormProvider {...methods}>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={methods.handleSubmit(handleFormSubmit)}>
                         <div className="flex flex-row p-2 items-center w-full">
                             <h1 className="flex-1 scroll-m-20 text-gray-800 pb-2 text-2xl font-semibold tracking-tight first:mt-0">
                                 {isEditMode ? 'Editar Convalescença' : 'Nova Convalescença'}

@@ -17,16 +17,6 @@ export function useSelecionarTitular(
       toast.error(`Contrato com status \"${dados?.contrato?.situacao || 'desconhecido'}\". Não é possível selecionar.`);
       return;
     }
-    if (resetForm) {
-      // Preenche os campos do formulário imediatamente
-      resetForm({
-        nome: dados.nome,
-        data_nasc: dados.data_nasc,
-        id_associado: dados.id_associado,
-        id_global: dados.id_global,
-        // ...adicione outros campos necessários
-      });
-    }
     setModal((prev: any) => ({ ...prev, busca: false }));
   };
 

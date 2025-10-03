@@ -13,7 +13,11 @@ const useActionsNovoResgistro = () => {
 
   // Função helper para editar registro, recebe id e dados do formulário
   async function editarRegistro(id: string, dadosForm: any) {
-    const { convalescenca_prod, ...rest } = dadosForm;
+    const { convalescenca_prod, editar, id_conv, ...rest } = dadosForm;
+
+    console.log('Dados recebidos no editarRegistro:', dadosForm);
+    console.log('Produtos encontrados:', convalescenca_prod);
+
     if (!rest.nome || !rest.logradouro) {
       toast.error('Preencha os campos obrigatórios');
       return;
@@ -26,7 +30,7 @@ const useActionsNovoResgistro = () => {
       id_produto: produto.id_produto,
       descricao: produto.descricao,
       quantidade: produto.quantidade,
-      status: produto.status
+      status: produto.status || "ABERTO"
     }));
     const payload = {
       ...rest,
@@ -50,7 +54,10 @@ const useActionsNovoResgistro = () => {
 
   async function enviarNovoRegistro(dadosForm: any) {
 
-    const { convalescenca_prod, ...rest } = dadosForm;
+    const { convalescenca_prod, id_global, editar, id_conv, ...rest } = dadosForm;
+
+    console.log('Dados recebidos no enviarNovoRegistro:', dadosForm);
+    console.log('Produtos encontrados:', convalescenca_prod);
 
     if (!rest.nome || !rest.logradouro) {
       toast.error('Preencha os campos obrigatórios');
@@ -64,14 +71,12 @@ const useActionsNovoResgistro = () => {
       id_produto: produto.id_produto,
       descricao: produto.descricao,
       quantidade: produto.quantidade,
-      status: produto.status
+      status: produto.status || "ABERTO"
     }));
-    
-    // Remover id_global do payload
-    // Remover id_global e produtosAdicionados do payload
-    const { id_global,  ...restSemIdGlobal } = rest;
+
+
     const payload = {
-      ...restSemIdGlobal,
+      ...rest,
       id_contrato: rest.id_contrato || dadosassociado?.contrato?.id_contrato,
       id_associado: rest.id_associado || dadosassociado?.id_associado,
       id_empresa: rest.id_empresa || infoEmpresa?.id,
@@ -81,17 +86,23 @@ const useActionsNovoResgistro = () => {
       usuario: rest.usuario || usuario?.nome,
       convalescenca_prod: produtosParaEnviar
     };
+
     const promise = api.post('/convalescencia/novo', payload);
     toast.promise(promise, {
       loading: 'Salvando dados...',
       success: 'Dados registrados com sucesso!',
       error: (err) => err.response?.data?.message || 'Erro ao cadastrar. Tente novamente.',
     });
+
     try {
+
       await promise;
       router.push('/dashboard/servicos/convalescencia/listagem');
+
     } catch (error: any) {
+
       console.log("Falha detalhada ao salvar registro:", error.response?.data || error.message || error);
+
     }
   }
 
