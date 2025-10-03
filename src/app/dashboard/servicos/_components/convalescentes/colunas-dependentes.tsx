@@ -68,12 +68,10 @@ export const getColumns = ({ setModalDependente, reset, watch }: ActionsProps): 
     accessorKey: "data_nasc",
     header: "Nascimento",
     cell: ({ row }) => {
-
       const data = row.getValue("data_nasc") as Date | null
       if (!data) {
         return <span>-</span>
       }
-
       return <div>{new Date(data).toLocaleDateString('pt-BR')}</div>
     }
   },

@@ -21,7 +21,7 @@ import { UseFormReset, UseFormWatch, UseWatchProps } from "react-hook-form"
 import { toast } from "sonner"
 
 export type Dependente = {
-  dependentes: DependentesProps[] 
+  dependentes: DependentesProps[]
   nome: string
   data_nasc: Date | null
   // Adicionei parentesco para um exemplo mais rico, ajuste se necessário
@@ -73,12 +73,10 @@ export const getColumnsDepObito = ({ setModalDependente, reset, watch }: Actions
     accessorKey: "data_nasc",
     header: "Nascimento",
     cell: ({ row }) => {
-      
       const data = row.getValue("data_nasc") as Date | null
       if (!data) {
         return <span>-</span>
       }
-      
       return <div>{new Date(data).toLocaleDateString('pt-BR')}</div>
     }
   },
@@ -110,7 +108,7 @@ export const getColumnsDepObito = ({ setModalDependente, reset, watch }: Actions
                 };
 
                 reset({ ...watch(), ...dadosMapeados })
-                
+
                 setModalDependente(false);
                 toast.success("Dados do dependente selecionados!")
               }}
