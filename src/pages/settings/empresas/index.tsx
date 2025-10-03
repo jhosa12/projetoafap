@@ -15,9 +15,7 @@ import { TabContratoEmpresa } from "@/components/tabs/configuracoes/empresas/mod
 
 export default function Empresas() {
     const { infoEmpresa } = useContext(AuthContext)
-    // const [empresas,setEmpresas] = useState<Array<EmpresaProps>>([])
-    // const [empresa,setEmpresa] = useState<EmpresaProps>({} as EmpresaProps)
-    // const [open,onClose]=useState(false)
+
     const { register, watch, control, setValue, handleSubmit, reset } = useForm<EmpresaProps>({
 
     })
@@ -95,6 +93,7 @@ export default function Empresas() {
     return (
         <div className={`flex flex-col mt-2 px-4 w-full overflow-y-auto max-h-[calc(100vh-85px)]`}>
     <form onSubmit={handleSubmit(handleEditarEmpresa)}>
+        <span className="whitespace-pre-line">{"teste\nteste"} </span>
                 <Tabs defaultValue="info">
                     <TabsList className="grid w-full grid-cols-4">
                         <TabsTrigger value="info">Informações da Empresa</TabsTrigger>

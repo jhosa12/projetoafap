@@ -34,7 +34,6 @@ import { TableCaixa } from "@/components/caixa/table-caixa";
 
 export default function CaixaMovimentar() {
   const [mov, setMov] = useState<Partial<LancamentosProps>>();
-  const [saldo, setSaldo] = useState(0);
   const { usuario, permissoes, infoEmpresa } = useContext(AuthContext);
   const [loading, setLoading] = useState<boolean>(false);
   const [mensalidade, setMensalidade] =useState<Partial<MensalidadeBaixaProps>>();
@@ -252,12 +251,7 @@ export default function CaixaMovimentar() {
 
       setValorForma(totalPorFormaPagamento);
 
-      const soma = data.lista?.reduce((total, item) => {
-        if (item.tipo === "RECEITA") {
-          return (total = total + Number(item.valor));
-        } else return (total = total - Number(item.valor));
-      }, 0);
-      setSaldo(soma);
+   
       const somadespesas = data.lista?.reduce((total, item) => {
         if (item.tipo === "DESPESA") {
           return (total = total + Number(item.valor));
@@ -267,11 +261,21 @@ export default function CaixaMovimentar() {
       }, 0);
       setDespesas(somadespesas);
     } else {
-      setSaldo(0);
+      
       setDespesas(0);
       setValorForma({});
     }
   }, [data?.lista]);
+
+
+
+  const saldo = data?.lista?.reduce((total, item) => {
+    if (item.tipo === "RECEITA") {
+      return (total = total + Number(item.valor));
+    } else return (total = total - Number(item.valor));
+  }, 0)??0;
+
+ 
 
   return (
     <>
