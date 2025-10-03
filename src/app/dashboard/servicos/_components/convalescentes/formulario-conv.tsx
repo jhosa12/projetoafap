@@ -139,23 +139,6 @@ export default function FormularioConv({
       })
     }
 
-    const limparCamposParticular = () => {
-
-      reset({
-        ...watch(),
-        id_associado: null,
-        nome: '',
-        cpf_cnpj: '',
-        data_nasc: null,
-        logradouro: '',
-        numero: null,
-        complemento: '',
-        bairro: '',
-        cep: '',
-        cidade: '',
-        uf: '',
-      })
-    }
     const prevTipo = prevTipoSelecionadoRef.current
 
     if (tipoSelecionado === 'TITULAR') {
