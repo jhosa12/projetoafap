@@ -106,7 +106,7 @@ export type ContratoProps = {
     impressoes:Array<ImpressoesProps>,
     acrescimo:number|null,
     desconto:number|null,
-    planos:{limite_dep:number|null,informacoes_plano:string}
+    planos:{limite_dep:number|null,informacoes_plano?:string}
 }
 
 export type AssociadoProps = {
