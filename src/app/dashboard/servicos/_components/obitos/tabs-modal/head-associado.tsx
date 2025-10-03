@@ -1,5 +1,5 @@
+import React, { useContext } from "react"
 import { AuthContext } from "@/store/AuthContext"
-import { useContext } from "react"
 import { Badge } from "@/components/ui/badge"
 import { TbWheelchair } from "react-icons/tb"
 import { ConvProps } from "../../../_types/convalescente"
@@ -52,14 +52,14 @@ export const HeadAssociado = ({
       <div className="px-2">
         {getStatusBadge(situacao)}
       </div>
-      {convalescencia?.map((item) => (
-        <>
+      {convalescencia?.map((item, itemIndex) => (
+        <React.Fragment key={item.id_conv || itemIndex}>
           {item.convalescenca_prod?.map(
             (dados, index) =>
               !item.id_dependente &&
               item.status === "ABERTO" && (
                 <button
-                  key={index}
+                  key={`${itemIndex}-${index}`}
                   data-tooltip-id="my-tooltip"
                   data-tooltip-content={dados?.descricao ?? ""}
                   className="text-yellow-500"
@@ -68,9 +68,9 @@ export const HeadAssociado = ({
                 </button>
               )
           )}
-        </>
+        </React.Fragment>
       ))}
-      
+
     </div>
   )
 }
