@@ -12,7 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import setarListaConv from "@/app/dashboard/servicos/_hooks/useActionsNovoRegistro"
+import setarListaConv from "@/app/dashboard/servicos/_hooks/novo-registro/useActionsNovoRegistro"
 import { ConvProps } from "../../_types/convalescente"
 import { AssociadoProps } from "@/app/dashboard/admcontrato/_types/associado"
 import { DependentesProps } from "@/app/dashboard/admcontrato/_types/dependentes"

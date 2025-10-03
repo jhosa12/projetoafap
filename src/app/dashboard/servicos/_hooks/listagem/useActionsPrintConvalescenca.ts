@@ -1,9 +1,6 @@
-import { ImpressoesProps } from './../../admcontrato/_types/impressoes';
-import { ConvProps } from "../_types/convalescente";
-import DocumentTemplateContrato from "../_documents/convalescencia/contrato/DocumentTemplate";
+import { ConvProps } from "../../_types/convalescente";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
-import { boolean } from "zod";
 import { removerFusoDate } from "@/utils/removerFusoDate";
 import { api } from "@/lib/axios/apiClient";
 import { toast } from "sonner";
@@ -43,13 +40,13 @@ export function useActionsPrintConvalescenca(
     }
     try {
 
-       await api.put("/contrato/impressoes", {
+      await api.put("/contrato/impressoes", {
         id_contrato_global: itemSelecionado?.id_contrato_global,
         impressoes,
       });
 
       toast.success(`Registro de impressão para ${arquivo} salvo.`)
-    
+
     } catch (error) {
       console.error("ERRO CAPTURADO:", error);
       toast.error("Erro ao registrar impressão");
@@ -77,7 +74,7 @@ export function useActionsPrintConvalescenca(
     pageStyle: pageStyle,
     documentTitle: "COMPROVANTE",
     contentRef: componentRefs.comprovante,
-    onBeforePrint: () =>  handleRegisterImpressao('comprovante'),
+    onBeforePrint: () => handleRegisterImpressao('comprovante'),
     onAfterPrint: limparEstadoPosImpressao,
   })
 
@@ -85,8 +82,8 @@ export function useActionsPrintConvalescenca(
     pageStyle: pageStyle,
     documentTitle: "COMPROVANTE",
     contentRef: componentRefs.comprovanteGenerico,
-    onBeforePrint: () =>  handleRegisterImpressao('comprovanteGenerico'),
-    onAfterPrint:  limparEstadoPosImpressao 
+    onBeforePrint: () => handleRegisterImpressao('comprovanteGenerico'),
+    onAfterPrint: limparEstadoPosImpressao
 
   })
 
@@ -109,7 +106,7 @@ export function useActionsPrintConvalescenca(
   };
 
   return {
-    iniciarImpressao,      
+    iniciarImpressao,
     componentRefs,
     documentoAtivo
   }

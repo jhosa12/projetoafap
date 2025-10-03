@@ -30,12 +30,12 @@ interface UseActionsProps {
   data: Partial<DependentesProps>
 }
 
-const useActionsDependentes = ( {dadosassociado, usuario, setarDadosAssociado, setModalAdd, data }:Partial<UseActionsProps>): ActionsProps => {
+const useActionsDependentes = ({ dadosassociado, usuario, setarDadosAssociado, setModalAdd, data }: Partial<UseActionsProps>): ActionsProps => {
 
   const { carregarDados } = useContext(AuthContext)
   const [dadosDep, setDadosDep] = useState<Partial<DependentesProps>>({})
   const componentRef = useRef<HTMLDivElement>(null)
-  
+
   const [modal, setModal] = useState<{ [key: string]: boolean }>({
     dependente: false,
     excluir: false,
@@ -52,7 +52,7 @@ const useActionsDependentes = ( {dadosassociado, usuario, setarDadosAssociado, s
     pageStyle: pageStyle,
     documentTitle: 'DECLARAÇÃO DE EXCLUSÃO DEPENDENTE',
     contentRef: componentRef,
-    onBeforePrint: async() => setModal({ print: false })
+    onBeforePrint: async () => setModal({ print: false })
 
   })
 
@@ -71,7 +71,7 @@ const useActionsDependentes = ( {dadosassociado, usuario, setarDadosAssociado, s
           id_contrato_global: dadosassociado?.contrato?.id_contrato_global,
           id_contrato: dadosassociado?.contrato?.id_contrato,
           id_associado: dadosassociado?.id_associado,
-          nome: dados.nome.toUpperCase(),
+          nome: dados.nome?.toUpperCase() || '',
           data_nasc: dados.data_nasc,
           grau_parentesco: dados.grau_parentesco,
           data_adesao: dados.data_adesao,
@@ -114,7 +114,7 @@ const useActionsDependentes = ( {dadosassociado, usuario, setarDadosAssociado, s
       api.put('/atualizarDependente', {
         id_dependente_global: data.id_dependente_global,
         id_dependente: data.id_dependente,
-        nome: dados.nome.toUpperCase(),
+        nome: dados.nome?.toUpperCase() || '',
         data_nasc: dados.data_nasc,
         grau_parentesco: dados.grau_parentesco,
         data_adesao: dados.data_adesao,

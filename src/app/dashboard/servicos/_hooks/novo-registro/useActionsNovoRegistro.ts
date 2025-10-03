@@ -2,10 +2,10 @@ import { useContext, useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 import { api } from "@/lib/axios/apiClient";
 import { AuthContext } from "@/store/AuthContext";
-import { ProdutosProps } from '../../admcontrato/_types/produtos';
+import { ProdutosProps } from '../../../admcontrato/_types/produtos';
 import { useRouter } from 'next/navigation';
 import { SubmitHandler } from 'react-hook-form';
-import { ConvProps } from '../_types/convalescente';
+import { ConvProps } from '../../_types/convalescente';
 
 const useActionsNovoResgistro = (isEditMode?: boolean, id?: string) => {
   const { usuario, dadosassociado, infoEmpresa } = useContext(AuthContext);

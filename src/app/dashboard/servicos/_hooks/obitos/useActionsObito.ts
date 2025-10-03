@@ -1,11 +1,11 @@
 import { AuthContext } from "@/store/AuthContext";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { ObitoProps } from "../_types/obito";
+import { ObitoProps } from "../../_types/obito";
 import { api } from "@/lib/axios/apiClient";
 import { toast } from "sonner";
 import { SubmitHandler } from "react-hook-form";
-import { ConvProps } from "../_types/convalescente";
-import { AssociadoProps } from "../../admcontrato/_types/associado";
+import { ConvProps } from "../../_types/convalescente";
+import { AssociadoProps } from "../../../admcontrato/_types/associado";
 import { RowSelectionState } from "@tanstack/react-table";
 
 interface ActionsProps {
@@ -174,11 +174,11 @@ const useActionsObito = () => {
 
     try {
       if (data.id_obitos) {
-        
+
         await editarObito(data as ObitoProps);
-        
+
       } else {
-        
+
         await cadastrarObito(data as ObitoProps);
       }
 

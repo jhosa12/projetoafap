@@ -3,7 +3,7 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react"
 import { Tooltip } from 'react-tooltip';
 import Link from "next/link";
-import useActionsListagem from "../../_hooks/useActionsListagem";
+import useActionsListagem from "../../_hooks/listagem/useActionsListagem";
 import { Plus, Printer, ReceiptIcon, FileEditIcon, Trash } from 'lucide-react';
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label";
@@ -18,13 +18,13 @@ import { useEditar } from "@/app/dashboard/servicos/_hooks/listagem/useEditar";
 import { useExcluir } from "@/app/dashboard/servicos/_hooks/listagem/useExcluir";
 import DocumentTemplateContrato from "@/app/dashboard/servicos/_documents/convalescencia/contrato/DocumentTemplate";
 import { AuthContext } from "@/store/AuthContext";
-import { useActionsPrintConvalescenca } from "../../_hooks/useActionsPrintConvalescenca";
+import { useActionsPrintConvalescenca } from "../../_hooks/listagem/useActionsPrintConvalescenca";
 import DocumentTemplateComprovante from "../../_documents/convalescencia/comprovante/DocumentTemplate";
 import { TabelaCompleta } from "../../_components/convalescentes/data-table";
 import { ConvProps } from "../../_types/convalescente";
 import { columns } from "../../_components/convalescentes/colunas-listagem";
 import DocumentTemplateComprovanteGenerico from "../../_documents/convalescencia/comprovante/DocumentTemplateGenerico";
-import { Docs } from "../../_hooks/useActionsPrintConvalescenca";
+import { Docs } from "../../_hooks/listagem/useActionsPrintConvalescenca";
 import { useRouter } from "next/navigation";
 
 import {

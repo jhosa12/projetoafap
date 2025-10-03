@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { Docs } from "../useActionsPrintConvalescenca";
+import { Docs } from "./useActionsPrintConvalescenca";
 
 interface ActionsProps {
   itemSelecionado: any;

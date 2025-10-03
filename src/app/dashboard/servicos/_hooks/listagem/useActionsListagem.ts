@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { ConvProps } from "../_types/convalescente"
+import { ConvProps } from "../../_types/convalescente"
 import { api } from "@/lib/axios/apiClient"
 import { toast } from "sonner"
 
@@ -117,7 +117,7 @@ const useActionsListagem = () => {
         {
           id_conv_prod,
           status: "ENTREGUE",
-         
+
         }
       ),
       {

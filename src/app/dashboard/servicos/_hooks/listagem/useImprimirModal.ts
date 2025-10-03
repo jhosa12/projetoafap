@@ -1,6 +1,6 @@
 
 import { toast } from "sonner";
-import { Docs } from "@/app/dashboard/servicos/_hooks/useActionsPrintConvalescenca";
+import { Docs } from "@/app/dashboard/servicos/_hooks/listagem/useActionsPrintConvalescenca";
 import { ConvProps } from "@/app/dashboard/servicos/_types/convalescente";
 
 interface ActionsProps {
