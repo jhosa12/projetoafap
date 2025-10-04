@@ -197,27 +197,27 @@ class DocumentTemplate extends Component<DadosProps> {
         
         
                 {/* Assinaturas */}
-        <div className="mt-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div className="mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
             {/* Assinatura da Empresa */}
-            <div className="text-center">
-              <div className="h-24  mb-2 flex items-end justify-center">
+            <div className="text-center ">
+              <div className="h-24  mb-1 flex items-end justify-center">
                 <img 
-                  src="/assinatura.jpg" 
+                  src="/assinatura.webp" 
                   alt="Assinatura" 
-                  className="object-contain"
-                  style={{height:15,width:50}}
+                  className="object-fill "
+                  style={{height:90,width:200}}
                 />
               </div>
-              <p className="text-sm font-medium">_________________________________</p>
+              <p className="text-sm font-medium">________________________________________________________</p>
               <p className="text-sm font-medium mt-1">{infoEmpresa?.fantasia || 'REPRESENTANTE LEGAL'}</p>
               <p className="text-xs text-gray-600">CONTRATADA</p>
             </div>
 
             {/* Assinatura do Contratante */}
-            <div className="text-center">
-              <div className="h-24 mb-2"></div>
-              <p className="text-sm font-medium">_________________________________</p>
+            <div className="text-center ">
+              <div className="h-16 mb-2"></div>
+              <p className="text-sm font-medium">________________________________________________________</p>
               <p className="text-sm font-medium mt-1">{nome}</p>
               <p className="text-xs text-gray-600">CONTRATANTE</p>
               <p className="text-xs mt-1">CPF: {cpf}</p>
@@ -225,16 +225,16 @@ class DocumentTemplate extends Component<DadosProps> {
           </div>
 
           {/* Testemunhas */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
             <div className="text-center">
-              <div className="h-16 border-b-2 border-gray-300 mb-1"></div>
-              <p className="text-sm font-medium">_________________________________</p>
+              <div className="h-16  mb-1"></div>
+              <p className="text-sm font-medium">________________________________________________________</p>
               <p className="text-xs text-gray-600">TESTEMUNHA 1</p>
-              <p className="text-xs mt-1">CPF: ________________________</p>
+              <p className="text-xs mt-1">CPF: _____________________________</p>
             </div>
             <div className="text-center">
-              <div className="h-16 border-b-2 border-gray-300 mb-1"></div>
-              <p className="text-sm font-medium">_________________________________</p>
+              <div className="h-16  mb-1"></div>
+              <p className="text-sm font-medium">________________________________________________________</p>
               <p className="text-xs text-gray-600">TESTEMUNHA 2</p>
               <p className="text-xs mt-1">CPF: ________________________</p>
             </div>
@@ -242,7 +242,7 @@ class DocumentTemplate extends Component<DadosProps> {
         </div>
 
         {/* Rodapé */}
-        <footer className="mt-12 pt-4 border-t border-gray-200 text-xs text-center text-gray-500">
+        <footer className="mt-4 pt-4  text-xs text-center text-gray-500">
           <p>Documento gerado em: {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</p>
           <p className="mt-1">{infoEmpresa?.fantasia || 'Contrato de Adesão'} - Página 1 de 1</p>
         </footer>
