@@ -244,7 +244,7 @@ class DocumentTemplate extends Component<DadosProps> {
         {/* Rodapé */}
         <footer className="mt-4 pt-4  text-xs text-center text-gray-500">
           <p>Documento gerado em: {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</p>
-          <p className="mt-1">{infoEmpresa?.fantasia || 'Contrato de Adesão'} - Página 1 de 1</p>
+          <p className="mt-1">{infoEmpresa?.fantasia || 'Contrato de Adesão'}</p>
         </footer>
 
 

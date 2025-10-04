@@ -19,6 +19,8 @@ import { ConsultoresProps } from "@/types/consultores";
 import { useAuthActions } from "@/hooks/useAuthActions";
 import useApiGet from "@/hooks/useApiGet";
 import { toast } from "sonner";
+import { PlanoContasProps } from "@/pages/dashboard/financeiro";
+import useActionsPlanoContas from "@/hooks/plano_contas/use_actions_planoContas";
 
 type AuthContextData = {
   usuario?: UserProps;
@@ -43,6 +45,11 @@ type AuthContextData = {
   cidadesEmpresa:Array<string>
   bairrosUnicos:Array<string>
   getBairrosUnicos:()=>Promise<void>
+  actions_plano_contas:{
+    array_plano_contas?:Array<PlanoContasProps>,
+    post_conta:()=>Promise<void>,
+    put_conta:()=>Promise<void>
+  }
 };
 
 export const AuthContext = createContext({} as AuthContextData);
@@ -83,6 +90,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const res = await api.post("/bairro/listar",{id_empresa:selectEmp})
     setBairrosUnicos(res.data)
   }
+  const actions_plano_contas = useActionsPlanoContas(usuario)
 
 
   
@@ -200,7 +208,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         dadosassociado,
         carregarDados,
         bairrosEmpresa:infoEmpresa?.bairrosCidades??[],
-        cidadesEmpresa:[...new Set(infoEmpresa?.bairrosCidades?.map((item) => item.cidade))]
+        cidadesEmpresa:[...new Set(infoEmpresa?.bairrosCidades?.map((item) => item.cidade))],
+        actions_plano_contas
       }}
     >
       {children}
