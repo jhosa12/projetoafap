@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { IoMdTrash } from "react-icons/io";
 import { format, isValid, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Tooltip } from "react-tooltip";
 import { ObitoProps } from "../../../_types/obito"; const formatDate = (value: any): string => {
   if (!value) return "-";
 
@@ -215,7 +216,10 @@ export function getObitoColumns({
 
         return (
           <div className="flex gap-2">
+            <Tooltip className="z-20" id="toolId" />
             <Button
+              data-tooltip-id="toolId"
+              data-tooltip-content={'Editar'}
               variant="outline"
               size="icon"
               onClick={() => onEdit?.(obito)}
@@ -224,6 +228,8 @@ export function getObitoColumns({
               <HiPencil className="h-3 w-3" />
             </Button>
             <Button
+              data-tooltip-id="toolId"
+              data-tooltip-content={'Excluir'}
               variant="destructive"
               size="icon"
               onClick={() => onDelete?.(obito)}

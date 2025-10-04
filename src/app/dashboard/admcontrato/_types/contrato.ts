@@ -8,6 +8,7 @@ export type ContratoProps = {
     plano: string,
     id_plano: number,
     id_empresa: string
+    informacoes_plano: string
     valor_mensalidade: number,
     dt_adesao: Date,
     dt_carencia: Date,

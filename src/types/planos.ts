@@ -1,5 +1,27 @@
 export type PlanosProps = {
     id_plano: number,
+    id_empresa: string,
     descricao: string,
+    limite_dep: number,
     valor: number
+    vl_percentual: number,
+    pontuacao: number,
+    vl_adesao: number,
+    n_guias: number,
+    data_ultimo_reajuste: Date,
+    ultimo_valor: number,
+    informacoes_plano: string,
+    mens_atraso: number,
+    nome_contrato: string,
+    period_parcelas: string,
+    fe_ida1: number,
+    fe_vlr1: number,
+    fe_ida2: number,
+    fe_vlr2: number,
+    fe_ida3: number,
+    fe_vlr3: number,
+    fe_ida4: number,
+    fe_vlr4: number,
+    fe_ida5: number,
+    fe_vlr5: number
 }
