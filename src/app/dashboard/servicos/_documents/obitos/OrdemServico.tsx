@@ -4,6 +4,8 @@ import logo from "../../../../../../public/novaLogo.png"
 // DocumentTemplate.js
 
 import React from 'react';
+import { ObitoProps } from "../../_types/obito";
+import { ArrayProdutoProps } from "@/app/dashboard/admcontrato/_types/array-produtos";
 interface DadosProps {
  tipo_atendimento:string,
  atendente:string,
@@ -41,7 +43,8 @@ interface DadosProps {
  crm:string,
  data_sepultamento:Date,
  hora_sepultamento:Date,
- observacoes:string
+  observacoes: string
+  obito_itens:  Array<Partial<ArrayProdutoProps>>
 }
 
 
@@ -85,7 +88,8 @@ class OrdemServico extends React.Component<Partial<DadosProps>> {
       data_sepultamento,
       hora_sepultamento,
       crm,
-      observacoes
+      observacoes,
+      obito_itens
      } = this.props;
 
     return (
@@ -105,9 +109,9 @@ class OrdemServico extends React.Component<Partial<DadosProps>> {
         <span className="px-2 pt-2" >Atendente:{atendente}</span>
         </div>
        <div  className="flex w-full justify-between">
-       <span className="px-2 " >Contrato:{contrato}</span>
-       <span className="px-2 " >Plano:{plano}</span>
-       <span className="px-2 " >Situação:{situacao}</span>
+       <span className="px-2 " >Contrato: {contrato}</span>
+       <span className="px-2 " >Plano: {plano}</span>
+       <span className="px-2 " >Situação: {situacao}</span>
        </div>
 
     
@@ -115,20 +119,20 @@ class OrdemServico extends React.Component<Partial<DadosProps>> {
         <span className="px-2 ">Falecido</span>
 
         <div  className="flex w-full justify-between">
-        <span className="px-2 ">Nome Cliente:{nome_dec}</span>
-        <span className="px-2 ">CNPJ/CPF:{cpf_dec}</span>
+        <span className="px-2 ">Nome Cliente: {nome_dec}</span>
+        <span className="px-2 ">CNPJ/CPF: {cpf_dec}</span>
        </div>
        
         <span className="px-2 ">Endereço:{endereco_dec}-{bairro_dec} N°{numero_dec}-{cidade_dec}/{uf_dec}</span>
         <h2 className='flex w-full bg-gray-300 font-semibold mt-2'>DADOS DO FALECIDO</h2>
         <div  className="flex w-full justify-between">
-        <span className="px-2 ">Nome:{nome_falecido}</span>
-        <span className="px-2 ">Data Nasc:{data_nasc_falecido && new Date(data_nasc_falecido).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+        <span className="px-2 ">Nome: {nome_falecido}</span>
+        <span className="px-2 ">Data Nasc: {data_nasc_falecido && new Date(data_nasc_falecido).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
        </div>
        <span className="px-2 ">Naturalidade:{naturalidade_falecido}</span>
        <div  className="flex w-full justify-between">
-        <span className="px-2 ">Nome do Pai:{nome_pai}</span>
-        <span className="px-2 ">Nome da Mãe:{nome_mae}</span>
+        <span className="px-2 ">Nome do Pai: {nome_pai}</span>
+        <span className="px-2 ">Nome da Mãe: {nome_mae}</span>
        </div>
 
        <div  className="flex w-full justify-between">
@@ -137,44 +141,61 @@ class OrdemServico extends React.Component<Partial<DadosProps>> {
         <span className="px-2 ">Profissão:{profissao}</span>
        </div>
        <div  className="flex w-full justify-between">
-        <span className="px-2 ">Endereço:{endereco_falecido}</span>
-        <span className="px-2 ">N°:{numero_falecido}</span>
-        <span className="px-2 ">Bairro:{bairro_falecido}</span>
-        <span className="px-2 ">Cidade:{cidade_falecido}</span>
-        <span className="px-2 ">UF:{uf_falecido}</span>
+        <span className="px-2 ">Endereço: {endereco_falecido}</span>
+        <span className="px-2 ">N°: {numero_falecido}</span>
+        <span className="px-2 ">Bairro: {bairro_falecido}</span>
+        <span className="px-2 ">Cidade: {cidade_falecido}</span>
+        <span className="px-2 ">UF: {uf_falecido}</span>
        </div>
-       <span className="px-2 ">Inumado:{inumado}</span>
+       <span className="px-2 ">Inumado: {inumado}</span>
        <div  className="flex w-full justify-between">
-        <span className="px-2 ">Data Falecimento:{data_falecimento && new Date(data_falecimento).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
-        <span className="px-2 ">Hora Falecimento:{hora_falecimento && new Date(hora_falecimento).toLocaleTimeString('pt-BR',{timeZone:'UTC'})}</span>
+        <span className="px-2 ">Data Falecimento: {data_falecimento && new Date(data_falecimento).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+        <span className="px-2 ">Hora Falecimento: {hora_falecimento && new Date(hora_falecimento).toLocaleTimeString('pt-BR',{timeZone:'UTC'})}</span>
        </div>
     
-        <span className="px-2 ">Local Falecimento:{local_falecimento}</span>
-        <span className="px-2 ">Cemitério:{cemiterio}</span>
-        <span className="px-2 ">Laudo Médico:{laudo_medico}</span>
+        <span className="px-2 ">Local Falecimento: {local_falecimento}</span>
+        <span className="px-2 ">Cemitério: {cemiterio}</span>
+        <span className="px-2 ">Laudo Médico: {laudo_medico}</span>
         <div  className="flex w-full justify-between">
-        <span className="px-2 ">Médico:{medico}</span>
-        <span className="px-2 ">CRM:{crm}</span>
+        <span className="px-2 ">Médico: {medico}</span>
+        <span className="px-2 ">CRM: {crm}</span>
        </div>
       
 
         <div  className="flex w-full justify-between">
-        <span className="px-2 ">Data Sepultamento:{data_sepultamento && new Date(data_sepultamento).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
-        <span className="px-2 ">Hora Sepultamento:{hora_sepultamento && new Date(hora_sepultamento).toLocaleTimeString('pt-BR',{timeZone:'UTC'})}</span>
+        <span className="px-2 ">Data Sepultamento: {data_sepultamento && new Date(data_sepultamento).toLocaleDateString('pt-BR',{timeZone:'UTC'})}</span>
+        <span className="px-2 ">Hora Sepultamento: {hora_sepultamento && new Date(hora_sepultamento).toLocaleTimeString('pt-BR',{timeZone:'UTC'})}</span>
        </div>
 
-       <span className="px-2 ">Observações:{observacoes}</span>
+       <span className="px-2 ">Observações: {observacoes}</span>
       
-       <h2 className='flex w-full bg-gray-300 font-semibold mt-2'>PRODUTOS/SERVIÇOS</h2>
-       <ul className="flex flex-col w-full">
-          <li className="inline-flex w-full">
-            <span>Descrição</span>
-            <span>Qtd</span>
-            <span>Valor Unit.</span>
-            <span>Desconto</span>
-            <span>Acréscimo</span>
-            <span>Total</span>
-          </li>
+        <h2 className='flex w-full bg-gray-300 font-semibold mt-2'>PRODUTOS/SERVIÇOS</h2>
+
+        {/* Cabeçalho da tabela */}
+        <div className="flex w-full bg-gray-100 border-b border-gray-300">
+          <span className="flex-1 px-2 py-1 font-semibold border-r border-gray-300">Descrição</span>
+          <span className="w-16 px-2 py-1 font-semibold text-center border-r border-gray-300">Qtd</span>
+          <span className="w-24 px-2 py-1 font-semibold text-center border-r border-gray-300">Valor Unit.</span>
+          <span className="w-20 px-2 py-1 font-semibold text-center border-r border-gray-300">Desconto</span>
+          <span className="w-20 px-2 py-1 font-semibold text-center border-r border-gray-300">Acréscimo</span>
+          <span className="w-24 px-2 py-1 font-semibold text-center">Total</span>
+        </div>
+
+        {/* Dados da tabela */}
+        <ul className="flex flex-col w-full">
+          {obito_itens?.map((servico) => (
+            <li
+              key={servico.id_ob_itens}
+              className="flex w-full border-b border-gray-200 hover:bg-gray-50"
+            >
+              <span className="flex-1 px-2 py-1 border-r border-gray-300">{servico.descricao_item}</span>
+              <span className="w-16 px-2 py-1 text-center border-r border-gray-300">{servico.quantidade}</span>
+              <span className="w-24 px-2 py-1 text-center border-r border-gray-300">R$ {servico.valor_unit}</span>
+              <span className="w-20 px-2 py-1 text-center border-r border-gray-300">R$ {servico.desconto}</span>
+              <span className="w-20 px-2 py-1 text-center border-r border-gray-300">R$ {servico.acrescimo}</span>
+              <span className="w-24 px-2 py-1 text-center font-semibold">R$ {servico.valor_total}</span>
+            </li>
+          ))}
         </ul>
 
         <h1 className='flex w-full bg-gray-300 font-semibold mt-2'>RECEBIMENTOS</h1>

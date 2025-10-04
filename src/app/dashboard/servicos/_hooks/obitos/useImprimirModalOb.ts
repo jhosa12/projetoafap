@@ -19,10 +19,6 @@ export function useImprimirModal({
   setModalImprimir,
 }: ActionsProps) {
   return (tipoDocumento: DocsObito) => {
-    if (!linhaSelecionada) {
-      toast.error("Por favor, selecione uma linha para Imprimir um Comprovante!");
-      return;
-    }
     setItemSelecionado(linhaSelecionada);
     setIdObitoParaImpressao(linhaSelecionada?.id_contrato_global ?? null);
     setDocumentoImprimir(tipoDocumento);
