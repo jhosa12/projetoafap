@@ -181,8 +181,6 @@ export default function ListarObitos() {
                 nome_falecido={itemSelecionado?.nome_falecido ?? ""}
                 atendente={itemSelecionado?.atendente ?? ""}
                 contrato={itemSelecionado?.id_contrato ?? 0}
-                descricao_plano={itemSelecionado?.descricao_plano ?? ""}
-                informacoes_plano={itemSelecionado?.informacoes_plano ?? ""}
                 situacao={itemSelecionado?.situacao_contrato ?? ""}
                 falecido={itemSelecionado?.falecido ?? ""}
                 nome_dec={itemSelecionado?.rd_nome ?? ""}
@@ -214,6 +212,8 @@ export default function ListarObitos() {
                 hora_sepultamento={itemSelecionado?.hr_sepultamento}
                 crm={itemSelecionado?.dc_crm ?? ""}
                 obito_itens={itemSelecionado?.obito_itens ?? []}
+                informacoes_plano={itemSelecionado?.contrato?.planos?.informacoes_plano}
+                descricao_plano={itemSelecionado?.contrato?.planos?.descricao}
               />
             </div>
 

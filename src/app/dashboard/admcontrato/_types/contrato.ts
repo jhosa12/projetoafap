@@ -8,7 +8,6 @@ export type ContratoProps = {
     plano: string,
     id_plano: number,
     id_empresa: string
-    informacoes_plano: string
     valor_mensalidade: number,
     dt_adesao: Date,
     dt_carencia: Date,
@@ -28,5 +27,8 @@ export type ContratoProps = {
     impressoes: Array<ImpressoesProps>,
     acrescimo: number | null,
     desconto: number | null,
-    planos: { limite_dep: number | null }
+    planos: {
+        limite_dep: number | null,
+        informacoes_plano: string
+    }
 }
