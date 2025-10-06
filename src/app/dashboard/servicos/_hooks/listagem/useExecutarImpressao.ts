@@ -1,5 +1,5 @@
 
-import { Docs } from "@/app/dashboard/servicos/_hooks/useActionsPrintConvalescenca";
+import { Docs } from "@/app/dashboard/servicos/_hooks/listagem/useActionsPrintConvalescenca";
 
 interface ActionsProps {
   documentoImprimir: Docs | null;

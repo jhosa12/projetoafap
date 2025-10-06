@@ -3,7 +3,7 @@
 import React, { useContext, useEffect, useState } from "react";
 
 import "react-datepicker/dist/react-datepicker.css";
-import useActionsNovoResgistro from "../../_hooks/useActionsNovoRegistro";
+import useActionsNovoResgistro from "../../_hooks/novo-registro/useActionsNovoRegistro";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, FileText, Search, Shield, User } from "lucide-react";
 import { AuthContext } from "@/store/AuthContext";

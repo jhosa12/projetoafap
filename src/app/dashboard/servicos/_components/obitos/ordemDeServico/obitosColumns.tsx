@@ -1,10 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox" 
 import { Badge } from "@/components/ui/badge";
 import { IoMdTrash } from "react-icons/io";
 import { format, isValid, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Tooltip } from "react-tooltip";
 import { ObitoProps } from "../../../_types/obito"; const formatDate = (value: any): string => {
   if (!value) return "-";
 
@@ -33,17 +35,37 @@ import { ObitoProps } from "../../../_types/obito"; const formatDate = (value: a
 type ActionsProps = {
   onEdit?: (obito: ObitoProps) => void;
   onDelete?: (obito: ObitoProps) => void;
+  onRowClick?: (obito: ObitoProps) => void
 };
 
 export function getObitoColumns({
   onEdit,
   onDelete,
+  onRowClick
 }: ActionsProps): ColumnDef<ObitoProps>[] {
   return [
+  
+    {
+      id: "select",
+      header: () => null,
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Selecionar linha"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+  
     {
       accessorKey: "tipo_atendimento",
       header: "TIPO",
-      cell: ({ row }) => <div className="text-sm">{row.getValue("tipo_atendimento")}</div>,
+      cell: ({ row }) =>
+        <div className="text-sm">
+          {row.getValue("tipo_atendimento")}
+        </div>,
     },
     {
       accessorKey: "end_data_falecimento",
@@ -194,7 +216,10 @@ export function getObitoColumns({
 
         return (
           <div className="flex gap-2">
+            <Tooltip className="z-20" id="toolId" />
             <Button
+              data-tooltip-id="toolId"
+              data-tooltip-content={'Editar'}
               variant="outline"
               size="icon"
               onClick={() => onEdit?.(obito)}
@@ -203,6 +228,8 @@ export function getObitoColumns({
               <HiPencil className="h-3 w-3" />
             </Button>
             <Button
+              data-tooltip-id="toolId"
+              data-tooltip-content={'Excluir'}
               variant="destructive"
               size="icon"
               onClick={() => onDelete?.(obito)}

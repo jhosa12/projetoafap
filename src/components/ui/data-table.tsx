@@ -15,6 +15,7 @@ import {
   ColumnDef,
   PaginationState,
   getPaginationRowModel,
+  RowSelectionState,
 } from "@tanstack/react-table";
 import {
   DropdownMenu,
@@ -36,9 +37,18 @@ interface DataTableProps<TData> {
   data: TData[];
   children?: React.ReactNode;
   maxHeight?: string
+  rowSelection: RowSelectionState
+  setRowSelection: React.Dispatch<React.SetStateAction<RowSelectionState>>
 }
 
-export function DataTable<TData,>({ columns, data, children, maxHeight }: DataTableProps<TData>) {
+export function DataTable<TData,>({
+  columns,
+  data,
+  children,
+  maxHeight,
+  rowSelection,
+  setRowSelection
+}: DataTableProps<TData>) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
@@ -50,13 +60,16 @@ export function DataTable<TData,>({ columns, data, children, maxHeight }: DataTa
     columns,
     state: {
       globalFilter,
-      pagination
+      pagination,
+      rowSelection
     },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: setPagination,
+    onRowSelectionChange: setRowSelection,
+    enableMultiRowSelection: false,
     globalFilterFn: "includesString",
   });
 
@@ -124,7 +137,12 @@ export function DataTable<TData,>({ columns, data, children, maxHeight }: DataTa
             <TableBody className="text-xs">
               {table.getRowModel().rows.length > 0 ? (
                 table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id}>
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    onClick={() => row.toggleSelected()}
+                    className="cursor-pointer"
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id} className="px-2 py-2 sm:px-4 sm:py-3 whitespace-nowrap">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}

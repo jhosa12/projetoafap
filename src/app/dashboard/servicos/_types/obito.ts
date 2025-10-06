@@ -1,5 +1,7 @@
 import { CheckListProps } from "../../admcontrato/_types/checklist"
 import { ArrayProdutoProps } from "../../admcontrato/_types/array-produtos"
+import { PlanosProps } from "@/types/planos"
+import { ContratoProps } from "../../admcontrato/_types/contrato"
 
 export interface ObitoProps {
   id_obitos: number,
@@ -11,7 +13,6 @@ export interface ObitoProps {
   id_dependente_global: number,
   id_dependente: number,
   id_empresa: string,
-  plano: string,
   atendente: string,
   tipo_atendimento: string,
   situacao_contrato: string,
@@ -121,5 +122,12 @@ export interface ObitoProps {
   status: string,
   listacheckida: Array<CheckListProps>,
   listacheckvolta: Array<CheckListProps>,
-  obito_itens: Array<Partial<ArrayProdutoProps>>
+  obito_itens: Array<Partial<ArrayProdutoProps>>,
+  contrato?: {
+    planos?: {
+      descricao: string,
+      informacoes_plano: string,
+
+    }
+  }
 }
