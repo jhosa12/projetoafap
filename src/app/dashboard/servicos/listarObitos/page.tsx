@@ -70,15 +70,22 @@ export default function ListarObitos() {
   });
 
   const handleSalvar: SubmitHandler<ObitoProps> = async (data) => {
-    const sucesso = await onSave(data)
+    try {
+      const resultado = await onSave(data);
 
-    if (sucesso) {
-      console.log("Salvo com sucesso!!")
-      limparDados()
-      setOpenOs(false)
-      listar()
-    } else {
-      console.log("Erro ao salvar!!")
+      if (resultado === true) {
+        toast.success("Salvo com sucesso!");
+        limparDados();
+        setOpenOs(false);
+        listar();
+      }
+
+    } catch (error: any) {
+
+
+      toast.error("Já existe um óbito para esta pessoa.");
+
+      return;
     }
   };
 

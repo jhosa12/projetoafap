@@ -133,17 +133,16 @@ const useActionsObito = () => {
 
     console.log("Dados mandados para a api:", payload);
 
-    return toast.promise(
-      api.post("/obitos/adicionarObito", payload).then((response) => {
-        setServicos(prev => [...prev, response.data]);
-        return response;
-      }),
-      {
-        loading: "Salvando dados...",
-        success: "Dados registrados com sucesso!",
-        error: (err) => err.response?.data?.message || 'Erro ao cadastrar. Tente novamente.'
+    try {
+      const response = await api.post("/obitos/adicionarObito", payload);
+      setServicos(prev => [...prev, response.data]);
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.status === 400) {
+        throw error.response.data;
       }
-    );
+      throw error;
+    }
   }
 
   async function editarObito(data: ObitoProps) {
@@ -175,20 +174,21 @@ const useActionsObito = () => {
     try {
       if (data.id_obitos) {
 
-        await editarObito(data as ObitoProps);
+        const response = await editarObito(data as ObitoProps);
+        await listar(); 
+        return true;
 
       } else {
 
-        await cadastrarObito(data as ObitoProps);
+        const response = await cadastrarObito(data as ObitoProps);
+        await listar(); 
+        return true;
       }
 
-      console.log("onSave no hook: Operação bem-sucedida.");
-      return true;
 
     } catch (error) {
 
-      console.error("onSave no hook: A operação da API falhou.", error);
-      return false;
+      throw error;
     }
   };
 
