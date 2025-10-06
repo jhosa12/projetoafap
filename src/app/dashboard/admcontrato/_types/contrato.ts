@@ -6,6 +6,7 @@ export type ContratoProps = {
     id_contrato_global: number | null,
     id_contrato: number,
     plano: string,
+    informacoes_plano?:string
     id_plano: number,
     id_empresa: string
     valor_mensalidade: number,

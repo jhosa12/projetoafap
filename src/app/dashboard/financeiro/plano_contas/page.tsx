@@ -15,13 +15,15 @@ import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import pt from 'date-fns/locale/pt-BR'
 import { api } from "@/lib/axios/apiClient"
-import { SubmitHandler, useForm } from "react-hook-form"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { EmpresaProps } from "@/types/empresa"
 import { ajustarData } from "@/utils/ajusteData"
 import { LancamentosProps } from "@/app/dashboard/caixa/_types/types"
 import { GruposProps, PlanoContasProps } from "../_types/types"
 import { useAuth } from "@/store/AuthContext"
 import { endOfMonth, startOfMonth } from "date-fns"
+import { MultiSelects } from "@/components/ui/multiSelect"
+import { DatePickerInput } from "@/components/DatePickerInput"
 
 
 
@@ -69,7 +71,7 @@ export default function PlanodeContas({setListaContas}:DataProps){
     const {empresas,actions_plano_contas,infoEmpresa} = useAuth()
     
 
-const {watch,setValue,handleSubmit,register} = useForm<FiltroFormProps>({
+const {watch,setValue,handleSubmit,control} = useForm<FiltroFormProps>({
   defaultValues:{
     startDate:startOfMonth(new Date()),
     endDate:endOfMonth(new Date()),
@@ -212,11 +214,11 @@ const {watch,setValue,handleSubmit,register} = useForm<FiltroFormProps>({
             </div>
 
 
-            <form onSubmit={handleSubmit(handleFiltrar)} className="flex items-center gap-2 mb-4 p-4 bg-card rounded-lg border">
+            <form onSubmit={handleSubmit(handleFiltrar)} className="flex w-full items-center gap-2 mb-4 p-4 bg-card rounded-lg border">
               <Label className="bg-muted px-3 py-2 rounded-md text-sm font-medium">FILTROS</Label>
 
               <Select value={setorSelect.toString()} onValueChange={(value) => setSetor(Number(value))}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-[180px] h-9">
                   <SelectValue placeholder="SETOR (TODOS)" />
                 </SelectTrigger>
                 <SelectContent>
@@ -243,49 +245,52 @@ const {watch,setValue,handleSubmit,register} = useForm<FiltroFormProps>({
                 </SelectContent>
               </Select> */}
 
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-[200px] justify-between">
-                    PLANO DE CONTAS
-                    <ArrowDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-[300px] p-0" align="start">
-                  <ScrollArea className="h-72">
-                    <div className="p-2">
-                      {actions_plano_contas.array_plano_contas?.map((item, index) => (
-                        <div key={index} className="flex items-center space-x-2 p-2 hover:bg-muted rounded-md">
-                          <Checkbox
-                            id={`conta-${index}`}
-                            checked={item.check}
-                           // onCheckedChange={() => togglePlanoContas(index)}
-                          />
-                          <Label htmlFor={`conta-${index}`} className="text-sm font-normal cursor-pointer">
-                            {item.descricao}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                </PopoverContent>
-              </Popover>
+                <Controller
+                control={control}
+                name="contas"
+                render={({field:{onChange,value}})=>
+                  <MultiSelects
+                  maxDisplayItems={2}
+                placeholder="PLANO DE CONTAS"
+                onChange={onChange}
+                selected={value}
+                options={actions_plano_contas.array_plano_contas?.map(item=>{return{value:item.conta,label:item.descricao}})??[]}
+                className="flex w-full min-h-9 min-w-[200px]"
+              />
+                }
+                
+                />
+                
+          
 
               <div className="flex items-center gap-2">
-                <DatePicker
-                  dateFormat="dd/MM/yyyy"
-                  locale={pt}
-                  selected={watch('startDate')}
-                  onChange={(date) => date && setValue('startDate', date)}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                <Controller
+                control={control}
+                name="startDate"
+                render={
+                  ({field:{onChange,value}})=>
+                    <DatePickerInput
+                 
+                  value={value}
+                  onChange={onChange}
+                  className="h-9"
                 />
+                }
+                />
+              
                 <span>até</span>
-                <DatePicker
-                  dateFormat="dd/MM/yyyy"
-                  locale={pt}
-                  selected={watch('endDate')}
-                  onChange={(date) => date && setValue('endDate', date)}
-                  selectsEnd
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                <Controller
+                control={control}
+                name="endDate"
+                render={
+                  ({field:{onChange,value}})=>
+                    <DatePickerInput
+                 
+                  value={value}
+                  onChange={onChange}
+                  className="h-9"
+                />
+                }
                 />
               </div>
 

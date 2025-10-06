@@ -31,7 +31,6 @@ import { useMediaQuery } from "usehooks-ts"; // ou qualquer hook de media query
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { User, Users, Wallet } from "lucide-react";
 import { UserProps } from "@/types/user";
-import { TbWheelchair } from "react-icons/tb";
 import { usePrintDocsAssociado } from "@/hooks/usePrintDocsAssociado";
 import DocumentTemplate from "@/Documents/associado/contratoAdesão/DocumentTemplate";
 import CarteiraAssociado from "@/Documents/associado/carteiraAssociado/CarteiraAssociado";
@@ -48,6 +47,7 @@ import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";
 import CarteirasDep from "@/app/dashboard/admcontrato/_components/carteiras/carteirasDep";
 import { HistoricoMensalidade } from "./_components/mensalidades/historico-mensalidade";
 import { HeadAssociado } from "../servicos/_components/obitos/tabs-modal/head-associado";
+import { DependentesProps } from "./_types/dependentes";
 
 export default function AdmContrato() {
   const {
@@ -472,6 +472,7 @@ export default function AdmContrato() {
             telefone={dadosassociado?.celular1 ?? ""}
             infoEmpresa={infoEmpresa}
             ref={componentRefs.contrato}
+            informacoes_plano={dadosassociado?.contrato?.informacoes_plano}
           />
         )}
 

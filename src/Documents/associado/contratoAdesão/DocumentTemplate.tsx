@@ -4,6 +4,7 @@ import React, { forwardRef } from 'react';
 import { EmpresaProps } from "@/types/empresa";
 import { SanitizeHtml } from "@/utils/sanitizeHtml";
 import { timesNewRoman } from "@/fonts/fonts";
+import { DependentesProps } from '@/app/dashboard/admcontrato/_types/dependentes';
 interface DadosProps {
   nome: string,
   cpf: string,
@@ -17,22 +18,8 @@ interface DadosProps {
   adesao: Date,
   telefone: string,
   contrato: number,
-  dependentes: Array<{
-    nome: string,
-    data_nasc: Date|null,
-    grau_parentesco: string,
-    data_adesao: Date,
-    carencia: Date,
-    id_dependente: number,
-    cad_dh: Date,
-    sexo: string,
-    saveAdd: boolean,
-    excluido: boolean,
-    dt_exclusao: Date,
-    user_exclusao: string,
-    exclusao_motivo: string
-   
-  }>
+  informacoes_plano?:string
+  dependentes: Array<Partial<DependentesProps>>
   infoEmpresa:EmpresaProps|null
 }
 
@@ -50,94 +37,116 @@ const DocumentTemplate = React.forwardRef<HTMLDivElement, DadosProps>(({
   adesao,
   telefone,
   contrato,
-  dependentes
+  dependentes,
+  informacoes_plano
 }, ref) => {
 
   return (
-    <div ref={ref} className='flex flex-col w-full   text-black'>
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-        <div className="flex justify-center items-center
-         mt-4">
-          <img style={{ width: '250px', height: '150px' }}  src={infoEmpresa?.logoUrl} alt="logo" />
-        </div>
-        <div style={{fontSize: '13px'}} className="flex flex-col w-full items-start">
-          <h2 style={{ fontSize: '25px' }} className=' mt-4  uppercase text-center font-bold'>{infoEmpresa?.fantasia}</h2>
-          <p className='text-center'>CNPJ: {infoEmpresa?.cnpj} INSC. EST.:</p>
-          <p className='text-center'>{infoEmpresa?.endereco}</p>
-          <p className='text-center'>TELEFONES: {infoEmpresa?.fone} {infoEmpresa?.celular}</p>
-        </div>
-        </div>
-        <br />
+    <div className={`${timesNewRoman.className} text-black   px-8 `}>
+        {/* Page Header */}
+        <header className="border-b-2 border-gray-200 pb-6 mb-8">
+          <div className="flex flex-col items-center">
+            {infoEmpresa?.logoUrl && (
+              <div className="mb-4">
+                <img 
+                  src={infoEmpresa.logoUrl} 
+                  alt="Logo da Empresa" 
+                  className="h-24 w-auto object-contain"
+                />
+              </div>
+            )}
+            <h1 className="text-2xl font-bold uppercase text-center text-gray-800 mb-2">
+              {infoEmpresa?.fantasia || 'CONTRATO DE ADESÃO'}
+            </h1>
+            <div className="text-sm text-center text-gray-600 space-y-1">
+              <p>CNPJ: {infoEmpresa?.cnpj}</p>
+              <p>{infoEmpresa?.endereco}</p>
+              <p>{infoEmpresa?.cidade_uf} | CEP: {infoEmpresa?.ins_estadual || 'N/I'}</p>
+              <p>Telefones: {infoEmpresa?.fone} {infoEmpresa?.celular && `| ${infoEmpresa.celular}`}</p>
+            </div>
+          </div>
+        </header>
+        {/* Dados do Contratante - Layout Compacto */}
+        <section className="mb-4 uppercase">
+          <h2 className="text-base font-semibold border-b border-gray-200 pb-1 mb-2">DADOS DO CONTRATANTE</h2>
+          
+          <div className="">
+            <div className="flex flex-wrap gap-6">
+              <p className="whitespace-nowrap font-semibold"><span >Contrato:</span> {contrato}</p>
+              <p className="whitespace-nowrap"><span className="font-medium">Data:</span> {new Date(adesao).toLocaleDateString('pt-BR')}</p>
+            </div>
+            
+            <div className="flex flex-wrap gap-6">
+            <p  className="font-medium">CONTRATANTE: {nome}</p>
+            <p className="whitespace-nowrap"><span className="font-medium">CPF:</span> {cpf}</p>
+           
+            </div>
 
-        <div className="flex flex-col gap-3 w-full" style={{ fontSize: '15px' }}>
-        <span  className="font-semibold ">Contrato: {contrato}</span>
-        <div  className="inline-flex justify-between ">
-          <span>Contratante: {nome}</span>
-          <span>Data Adesão: {new Date(adesao).toLocaleDateString()}</span>
-        </div>
-
-        <div  className="inline-flex justify-between">
-          <span>Endereço: {endereco}</span>
-          <span>Bairro: {bairro}</span>
-        </div>
-
-        <div  className="inline-flex justify-between ">
-          <span>Cidade: {cidade}</span>
-          <span>Est.: {estado}</span>
-          <span>Compl.: {complemento}</span>
-        </div>
-        <div  className="inline-flex justify-between ">
-          <span>RG: {rg}</span>
-          <span>CPF: {cpf}</span>
-          <span>Telefone: {telefone}</span>
-        </div>
-        </div>
+            <div className="flex flex-wrap gap-6">
+            <p className="whitespace-nowrap"><span className="font-medium">RG:</span> {rg}</p>
+             <p className="whitespace-nowrap"><span className="font-medium">Fone:</span> {telefone}</p>
+             
+           </div>
+            
+            
+            <div className="flex flex-wrap gap-4">
+             
+              
+              <p className="whitespace-nowrap"><span className="font-medium">Endereço:</span> {endereco}, {numero}</p>
+              <p className="whitespace-nowrap"><span className="font-medium">Bairro:</span> {bairro}</p>
+              <p className="whitespace-nowrap"><span className="font-medium">Cidade/UF:</span> {cidade}/{estado}</p>
+           
+            </div>
+          
+          </div>
+        </section>
        
 
 <br/><br/>
 
 
 
-        <div style={{ fontSize: '14px' }} className="flex flex-col  justify-center items-center w-full">
-        <h1 style={{ fontSize: '14px' }} className=' text-center font-semibold mt-2'>RELAÇÃO DE DEPENDENTES</h1>
-          <table style={{borderColor:'black',borderWidth:'1px'}} className="text-left rtl:text-center  ">
-            <thead className="top-0 uppercase ">
-              <tr >
-              <th scope="col" className="px-10 py-1 ">
-                  
-                </th>
-                <th scope="col" className="px-10 py-1 ">
-                  NOME
-                </th>
-                <th scope="col" className="px-10 py-1">
-                  PARENTESCO
-                </th>
-                <th scope="col" className="px-10 py-1">
-                  NASC.
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divider-y">
-              {dependentes?.filter(item=>!item.excluido)?.map((item, index) => (
-                <tr key={index} className={` border-t border-black`}>
-                    <td className="px-10 py-1 border-r border-black">
-                    {index + 1}
-                  </td>
-                  <td className="px-10 py-1 border-r border-black">
-                    {item.nome}
-                  </td>
-                  <td className="px-10 py-1 border-r border-black">
-                    {item.grau_parentesco}
-                  </td>
-                  <td className="px-10 py-1">
-                    {item.data_nasc && new Date(item.data_nasc).toLocaleDateString()}
-                  </td>
+        {/* Relação de Dependentes */}
+        <section style={{paddingBottom:8}}>
+          <h2 className="text-lg font-semibold border-b border-gray-200 pb-1 mb-4">RELAÇÃO DE DEPENDENTES</h2>
+          
+          <div className="overflow-x-auto">
+            <table className="min-w-full border border-gray-200 text-sm">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="border border-gray-300 px-4 py-2 text-left font-medium text-gray-700">#</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left font-medium text-gray-700">NOME COMPLETO</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left font-medium text-gray-700">GRAU DE PARENTESCO</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left font-medium text-gray-700">DATA DE NASCIMENTO</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {dependentes?.filter(item => !item.excluido)?.map((item, index) => (
+                  <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                    <td className="border border-gray-300 px-4 py-2">{index + 1}</td>
+                    <td className="border border-gray-300 px-4 py-2">{item.nome}</td>
+                    <td className="border border-gray-300 px-4 py-2">{item.grau_parentesco}</td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {item.data_nasc ? new Date(item.data_nasc).toLocaleDateString('pt-BR') : 'N/I'}
+                    </td>
+                  </tr>
+                ))}
+                {(!dependentes || dependentes.length === 0) && (
+                  <tr>
+                    <td colSpan={4} className="border border-gray-300 px-4 py-2 text-center text-gray-500">
+                      Nenhum dependente cadastrado
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
 
-        </div><br/><br/>
+
+      {informacoes_plano &&  <section>
+              <span className='whitespace-pre-line'>{informacoes_plano}</span>
+        </section>}
 
   
 
@@ -145,9 +154,17 @@ const DocumentTemplate = React.forwardRef<HTMLDivElement, DadosProps>(({
 
 
 
-<div  className={timesNewRoman.className}>
-{infoEmpresa?.cont_clausuras && parse(SanitizeHtml(infoEmpresa?.cont_clausuras))}
-</div>
+        {/* Cláusulas do Contrato */}
+        <section className="mb-8">
+          <h2 className="text-lg font-semibold border-b border-gray-200 pb-1 mb-4">CLÁUSULAS CONTRATUAIS</h2>
+          <div className="text-justify text-sm leading-relaxed space-y-3">
+            {infoEmpresa?.cont_clausuras ? (
+              parse(SanitizeHtml(infoEmpresa.cont_clausuras))
+            ) : (
+              <p className="text-gray-500 italic">Cláusulas do contrato não disponíveis.</p>
+            )}
+          </div>
+        </section>
 
 
        
@@ -156,46 +173,56 @@ const DocumentTemplate = React.forwardRef<HTMLDivElement, DadosProps>(({
         
         
         
-        <br /><br />
-
-       
-      
-          <div className="inline-flex   w-full gap-6 ">
-
-
-            <div className="flex flex-col  w-1/2  justify-center items-center "style={{paddingTop:85,position:'relative'}}>
-            <div  style={{position:'absolute', top:5}}>
-            <img fetchPriority="high" className=" object-cover" width={300} alt="imagemAss" src={"/assinatura.jpg"} />
-            </div>
-           
-           
-          
-            <span style={{borderColor:'black'}} className="absolute top-[20px] flex w-full border-b-[1px]  " ></span>
-            <span   style={{position:'absolute',top:85}}>CONTRATADA(O)</span>
-           
-
-            </div>
-            <div className="flex flex-col w-1/2 justify-center items-center" style={{paddingTop:85,position:'relative'}}>
-              <span style={{borderColor:'black'}} className=" absolute top-[20px]  flex  w-full border-b-[1px]  "></span>
-              <span  style={{position:'absolute',top:85}} >CONTRATANTE</span>
+                {/* Assinaturas */}
+        <div className="mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
+            {/* Assinatura da Empresa */}
+            <div className="text-center ">
+              <div className="h-24  mb-1 flex items-end justify-center">
+                <img 
+                  src="/assinatura.webp" 
+                  alt="Assinatura" 
+                  className="object-fill "
+                  style={{height:90,width:200}}
+                />
+              </div>
+              <p className="text-sm font-medium">________________________________________________________</p>
+              <p className="text-sm font-medium mt-1">{infoEmpresa?.fantasia || 'REPRESENTANTE LEGAL'}</p>
+              <p className="text-xs text-gray-600">CONTRATADA</p>
             </div>
 
-
+            {/* Assinatura do Contratante */}
+            <div className="text-center ">
+              <div className="h-16 mb-2"></div>
+              <p className="text-sm font-medium">________________________________________________________</p>
+              <p className="text-sm font-medium mt-1">{nome}</p>
+              <p className="text-xs text-gray-600">CONTRATANTE</p>
+              <p className="text-xs mt-1">CPF: {cpf}</p>
+            </div>
           </div>
 
-       
-        <br /><br /><br /><br />
-        <div className="inline-flex w-full gap-6 pt-8">
-          <div className="flex flex-col w-1/2 justify-center items-center">
-            <span style={{borderColor:'black'}} className="flex w-full border-b-[1px]  "></span>
-            <span>TESTEMUNHA</span>
+          {/* Testemunhas */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+            <div className="text-center">
+              <div className="h-16  mb-1"></div>
+              <p className="text-sm font-medium">________________________________________________________</p>
+              <p className="text-xs text-gray-600">TESTEMUNHA 1</p>
+              <p className="text-xs mt-1">CPF: _____________________________</p>
+            </div>
+            <div className="text-center">
+              <div className="h-16  mb-1"></div>
+              <p className="text-sm font-medium">________________________________________________________</p>
+              <p className="text-xs text-gray-600">TESTEMUNHA 2</p>
+              <p className="text-xs mt-1">CPF: ________________________</p>
+            </div>
           </div>
-          <div className="flex flex-col w-1/2 justify-center items-center">
-            <span style={{borderColor:'black'}} className="flex w-full border-b-[1px]  "></span>
-            <span>TESTEMUNHA</span>
-          </div>
-
         </div>
+
+        {/* Rodapé */}
+        <footer className="mt-4 pt-4  text-xs text-center text-gray-500">
+          <p>Documento gerado em: {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</p>
+          <p className="mt-1">{infoEmpresa?.fantasia || 'Contrato de Adesão'}</p>
+        </footer>
 
 
       </div>
