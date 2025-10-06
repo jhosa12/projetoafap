@@ -108,8 +108,8 @@ class OrdemServico extends React.Component<Partial<DadosProps>> {
         </div>
         <h2 className='flex w-full bg-gray-300 justify-center font-semibold mt-2'>FICHA DE ATENDIMENTO/AUTORIZAÇÃO DE SERVIÇO</h2>
         <div className="flex w-full justify-between">
-          <span className="px-2 pt-2" >Tipo Atendimento:{tipo_atendimento}</span>
-          <span className="px-2 pt-2" >Atendente:{atendente}</span>
+          <span className="px-2 pt-2" >Tipo Atendimento: {tipo_atendimento}</span>
+          <span className="px-2 pt-2" >Atendente: {atendente}</span>
         </div>
         <div className="flex w-full justify-between">
           <span className="px-2 " >Contrato: {contrato}</span>
@@ -126,7 +126,7 @@ class OrdemServico extends React.Component<Partial<DadosProps>> {
           <span className="px-2 ">CNPJ/CPF: {cpf_dec}</span>
         </div>
 
-        <span className="px-2 ">Endereço:{endereco_dec}-{bairro_dec} N°{numero_dec}-{cidade_dec}/{uf_dec}</span>
+        <span className="px-2 ">Endereço: {endereco_dec}-{bairro_dec} N°{numero_dec}-{cidade_dec}/{uf_dec}</span>
         <h2 className='flex w-full bg-gray-300 font-semibold mt-2'>DADOS DO FALECIDO</h2>
         <div className="flex w-full justify-between">
           <span className="px-2 ">Nome: {nome_falecido}</span>

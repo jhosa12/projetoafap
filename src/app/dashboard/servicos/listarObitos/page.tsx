@@ -74,14 +74,12 @@ export default function ListarObitos() {
       const resultado = await onSave(data);
 
       if (resultado === true) {
-        toast.success("Salvo com sucesso!");
         limparDados();
         setOpenOs(false);
         listar();
       }
 
     } catch (error: any) {
-
 
       toast.error("Já existe um óbito para esta pessoa.");
 
@@ -177,7 +175,7 @@ export default function ListarObitos() {
             handleConfirmar={async () => confirmarImpressao()}
             pergunta={`Realmente deseja imprimir
                ${documentoImprimir === 'ordemDeServico' ?
-                nomesDocumentos.ordemDeServico : nomesDocumentos.tanato}`}
+                nomesDocumentos.ordemDeServico : nomesDocumentos.tanato}?`}
           />
         )}
 
