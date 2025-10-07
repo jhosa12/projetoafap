@@ -32,10 +32,10 @@ interface Cliente {
 interface ModalBuscaProps {
   visible: boolean;
   setVisible: () => void;
-  carregarDados: (id: number) => Promise<void>;
+ // carregarDados: (id: number) => Promise<void>;
   selectEmp: string;
   filtros?: { value: string; label: string }[];
-  onSelecionar?: (id: number, cliente: Cliente) => void | Promise<void>;
+  onSelecionar: (id: number) => void | Promise<void>;
 }
 
 const filtrosPadrao = [
@@ -49,7 +49,7 @@ const filtrosPadrao = [
 export function ModalBuscaConv({
   visible,
   setVisible,
-  carregarDados,
+ // carregarDados,
   selectEmp,
   filtros = filtrosPadrao,
   onSelecionar,
@@ -125,14 +125,7 @@ export function ModalBuscaConv({
                 return (
                   <li
                     key={cliente.id_global}
-                    onClick={async () => {
-                      if (onSelecionar) {
-                        await onSelecionar(cliente.id_global, cliente);
-                      } else {
-                        await carregarDados(cliente.id_global);
-                        setVisible();
-                      }
-                    }}
+                    onClick={() =>onSelecionar(cliente.id_global)}
                     className={`flex items-center justify-between w-full px-4 py-2 
                       rounded-md border border-gray-300 transition-all shadow-sm ${isInativo
                         ? 'bg-gray-50 opacity-50 cursor-not-allowed border-gray-200'
