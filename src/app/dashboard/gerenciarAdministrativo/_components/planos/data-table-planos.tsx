@@ -41,13 +41,11 @@ interface DataTableProps<TData> {
   setRowSelection?: React.Dispatch<React.SetStateAction<RowSelectionState>>
 }
 
-export function DataTable<TData,>({
+export function DataTablePlanos<TData,>({
   columns,
   data,
   children,
   maxHeight,
-  rowSelection,
-  setRowSelection
 }: DataTableProps<TData>) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [pagination, setPagination] = React.useState<PaginationState>({
@@ -61,15 +59,12 @@ export function DataTable<TData,>({
     state: {
       globalFilter,
       pagination,
-      rowSelection
     },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: setPagination,
-    onRowSelectionChange: setRowSelection,
-    enableMultiRowSelection: false,
     globalFilterFn: "includesString",
   });
 
@@ -118,14 +113,17 @@ export function DataTable<TData,>({
         </div>
       </div>
 
-      <div className={"relative w-full overflow-hidden border rounded-md"}>
+      <div className={`relative w-full overflow-hidden border rounded-md`}>
         <div className="overflow-x-auto overflow-y-auto h-full w-full">
           <Table className="min-w-full relative">
             <TableHeader className="text-xs uppercase">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <TableHead className="sticky top-0 z-10 bg-white text-black whitespace-nowrap px-2 py-2 sm:px-4 sm:py-3 border-b" key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      className="sticky top-0 z-10 bg-white text-black whitespace-nowrap px-1 py-1 sm:px-1 sm:py-1 border-b text-left"
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(header.column.columnDef.header, header.getContext())}
@@ -139,12 +137,12 @@ export function DataTable<TData,>({
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                    onClick={() => row.toggleSelected()}
-                    className="cursor-pointer"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="px-2 py-2 sm:px-4 sm:py-3 whitespace-nowrap">
+                      <TableCell
+                        key={cell.id}
+                        className="px-2 py-2 sm:px-4 sm:py-3 whitespace-nowrap text-left"
+                      >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}

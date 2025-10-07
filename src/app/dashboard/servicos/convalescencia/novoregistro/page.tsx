@@ -123,7 +123,7 @@ export default function ConvalescenciaNovo() {
             (async () => {
                 try {
                     const response = await api.get(`/convalescencia/${id}`);
-                    // axios retorna os dados em response.data
+                  
                     methods.reset(response.data);
                 } catch (error) {
                     console.error('Erro ao buscar registro:', error);
@@ -210,9 +210,9 @@ export default function ConvalescenciaNovo() {
             <div className="flex flex-col w-full min-h-screen pl-10 pr-10 pt-4 pb-6">
                 <FormProvider {...methods}>
                     <form onSubmit={methods.handleSubmit(handleFormSubmit)} className="flex-1">
-                        {/* Header separado em duas linhas para evitar quebra */}
+                        
                         <div className="flex flex-col gap-4 p-2 w-full">
-                            {/* Linha do título */}
+                            
                             <div className="flex justify-between items-baseline">
                                 <h1 className="scroll-m-20 text-gray-800 text-2xl font-semibold tracking-tight whitespace-nowrap leading-none">
                                     {isEditMode ? 'Editar Convalescência' : 'Nova Convalescência'}

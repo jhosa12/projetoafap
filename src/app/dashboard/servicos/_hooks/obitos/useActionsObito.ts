@@ -181,6 +181,7 @@ const useActionsObito = () => {
       } else {
 
         const response = await cadastrarObito(data as ObitoProps);
+        toast.success("Dados cadastrados com sucesso!")
         await listar(); 
         return true;
       }

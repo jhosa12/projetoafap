@@ -1,6 +1,7 @@
 import { ConvProps } from "../../servicos/_types/convalescente"
 import { ImpressoesProps } from "./impressoes"
 import { ObitoProps } from "../../servicos/_types/obito"
+import { PlanosProps } from "@/types/planos"
 
 export type ContratoProps = {
     id_contrato_global: number | null,
@@ -28,8 +29,5 @@ export type ContratoProps = {
     impressoes: Array<ImpressoesProps>,
     acrescimo: number | null,
     desconto: number | null,
-    planos: {
-        limite_dep: number | null,
-        informacoes_plano: string
-    }
+    planos: Partial<PlanosProps>
 }

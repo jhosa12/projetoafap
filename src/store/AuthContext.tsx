@@ -176,7 +176,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       setDadosAssociado(response.data);
-      return response.data; 
+      //return response.data; 
     } catch (error) {
       toast.error("Erro na requisição");
     }
