@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 interface PlanosFormProps {
   plano?: PlanosProps | null
@@ -24,10 +25,11 @@ export function PlanosForm({ plano, onSave, onCancel }: PlanosFormProps) {
   const { limparDados } = useContext(AuthContext)
   const form = useForm<PlanosProps>({
     defaultValues: {
-      descricao:  '',
+      descricao: '',
       limite_dep: 0,
       valor: 0,
-      acrescimo: 0
+      acrescimo: 0,
+      informacoes_plano: ''
     }
   })
 
@@ -40,7 +42,9 @@ export function PlanosForm({ plano, onSave, onCancel }: PlanosFormProps) {
         id_plano: plano.id_plano,
         descricao: plano.descricao,
         limite_dep: plano.limite_dep,
-        valor: plano.valor
+        valor: plano.valor,
+        acrescimo: plano.acrescimo,
+        informacoes_plano: plano.informacoes_plano
       });
       limparDados()
     }
@@ -62,46 +66,59 @@ export function PlanosForm({ plano, onSave, onCancel }: PlanosFormProps) {
               required
             />
           </Field>
+          <div className="grid grid-cols-3 gap-4 items-end align-bottom">
+            <Field>
+              <FieldLabel htmlFor="limite_dep">
+                Limite de Dependentes
+              </FieldLabel>
+              <Input
+                id="limite_dep"
+                placeholder="Digite aqui..."
+                type="number"
+                {...register('limite_dep', {
+                  valueAsNumber: true,
+                  min: 0
+                })}
+                required
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="valor">
+                Valor
+              </FieldLabel>
+              <Input
+                id="valor"
+                type="number"
+                {...register('valor', {
+                  valueAsNumber: true,
+                  min: 0
+                })}
+                required
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="acrescimo">
+                Acréscimo
+              </FieldLabel>
+              <Input
+                id="acrescimo"
+                type="number"
+                {...register('acrescimo', {
+                  valueAsNumber: true,
+                  min: 0
+                })}
+                required
+              />
+            </Field>
+          </div>
           <Field>
-            <FieldLabel htmlFor="limite_dep">
-              Limite de Dependentes
+            <FieldLabel htmlFor="informacoes_plano">
+              Informações do Plano
             </FieldLabel>
-            <Input
-              id="limite_dep"
+            <Textarea
+              id="informacoes_plano"
+              {...register('informacoes_plano')}
               placeholder="Digite aqui..."
-              type="number"
-              {...register('limite_dep', {
-                valueAsNumber: true,
-                min:0
-              })}
-              required
-            />
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="valor">
-              Valor
-            </FieldLabel>
-            <Input
-              id="valor"
-              type="number"
-              {...register('valor', {
-                valueAsNumber: true,
-                min: 0
-              })}
-              required
-            />
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="acrescimo">
-              Acréscimo
-            </FieldLabel>
-            <Input
-              id="acrescimo"
-              type="number"
-              {...register('acrescimo', {
-                valueAsNumber: true,
-                min: 0
-              })}
               required
             />
           </Field>
@@ -114,7 +131,7 @@ export function PlanosForm({ plano, onSave, onCancel }: PlanosFormProps) {
             </div>
           </Field>
         </FieldGroup>
-        
+
       </form>
     </FormProvider >
   )

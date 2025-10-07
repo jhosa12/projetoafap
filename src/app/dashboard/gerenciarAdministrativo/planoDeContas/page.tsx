@@ -1,6 +1,6 @@
 'use client';
 
-import { GerenciarConvalescenca } from "@/app/dashboard/servicos/_components/convalescentes/convalescencia";
+import { GerenciarConvalescenca } from "@/app/dashboard/gerenciarAdministrativo/_components/convalescenca/convalescencia";
 import { GerenciarMetas } from "@/app/dashboard/gerenciarAdministrativo/_components/metas/metas";
 import { PlanoContas } from "@/app/dashboard/gerenciarAdministrativo/_components/planoContas/planoContas";
 import { GerenciarPlanos } from "@/app/dashboard/gerenciarAdministrativo/_components/planos/planos";

@@ -53,7 +53,8 @@ const useActionsPlanos = () => {
         descricao: data.descricao,
         limite_dep: data.limite_dep,
         valor: data.valor,
-        acrescimo: data.acrescimo
+        acrescimo: data.acrescimo,
+        informacoes_plano: data.informacoes_plano
 
       }),
       {
@@ -104,7 +105,8 @@ const useActionsPlanos = () => {
       limite_dep: Number(data.limite_dep),
       descricao: data.descricao.toUpperCase(),
       valor: Number(data.valor),
-      acrescimo: Number(data.acrescimo)
+      acrescimo: Number(data.acrescimo),
+      informacoes_plano: data.informacoes_plano
     }
 
     console.log("Dados para a api:", payload)
