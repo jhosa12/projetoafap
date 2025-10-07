@@ -1,4 +1,4 @@
-import { GruposProps } from "../../financeiro/_types/types";
+
 
   export interface MetaProps{
     id_meta: number;

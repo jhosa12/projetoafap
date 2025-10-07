@@ -35,7 +35,7 @@ interface ModalBuscaProps {
  // carregarDados: (id: number) => Promise<void>;
   selectEmp: string;
   filtros?: { value: string; label: string }[];
-  onSelecionar: (id: number) => void | Promise<void>;
+  onSelecionar: (id: number) => Promise<void>;
 }
 
 const filtrosPadrao = [

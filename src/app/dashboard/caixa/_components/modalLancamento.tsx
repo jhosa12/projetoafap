@@ -20,7 +20,8 @@ import { AuthContext } from "@/store/AuthContext";
 import { removerFusoDate } from "@/utils/removerFusoDate";
 
 import { LancamentosProps } from "@/app/dashboard/caixa/_types/types";
-import { GruposProps } from "../../financeiro/_types/types";
+import { GruposProps } from "@/types/grupos";
+
 
 
 
