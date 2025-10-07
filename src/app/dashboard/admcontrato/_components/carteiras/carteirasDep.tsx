@@ -135,8 +135,8 @@ const CarteirasDep = ({
                 className={`text-black font-semibold cursor-pointer hover:bg-gray-200 border-b ${linhasSelecionadas.includes(item) ? "bg-gray-300" : ""} border-gray-300`}
               >
                 <Table.Cell>{item.nome}</Table.Cell>
-                <Table.Cell>{new Date(item.data_adesao).toLocaleDateString()}</Table.Cell>
-                <Table.Cell>{new Date(item.carencia).toLocaleDateString() ?? ''}</Table.Cell>
+                <Table.Cell>{item.data_adesao && new Date(item.data_adesao).toLocaleDateString()}</Table.Cell>
+                <Table.Cell>{item.carencia && new Date(item.carencia).toLocaleDateString()}</Table.Cell>
                 <Table.Cell>{item?.data_nasc ? new Date(item.data_nasc).toLocaleDateString() : ''}</Table.Cell>
                 <Table.Cell>{item.grau_parentesco}</Table.Cell>
                 <Table.Cell>

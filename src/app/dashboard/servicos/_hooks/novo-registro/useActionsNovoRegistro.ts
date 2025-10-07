@@ -40,6 +40,7 @@ const useActionsNovoResgistro = (isEditMode?: boolean, id?: string) => {
     delete (dadosTratados as any).situacao_contrato;
     delete (dadosTratados as any).tipo_contrato;
     delete (dadosTratados as any).id_conv;
+    delete (dadosTratados as any).id_conv_global;
     delete (dadosTratados as any).editar;
     delete (dadosTratados as any).contrato;
 

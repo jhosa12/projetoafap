@@ -3,7 +3,8 @@ import OrdemServico from "@/app/dashboard/servicos/_documents/obitos/OrdemServic
 import { useRef, useState } from "react"
 import AutTanato from "@/app/dashboard/servicos/_documents/obitos/Tanato"
 import { LiaFileContractSolid } from "react-icons/lia"
-import { ObitoProps } from "@/app/dashboard/admcontrato/_types/associado"
+import { ObitoProps } from "../../_types/obito"
+
 
 
 
@@ -37,17 +38,17 @@ interface DadosProps {
 
 
 export default function DocumentacaoOS({ servico }: DadosProps) {
-    const componentRefOs = useRef<OrdemServico>(null);
-    const componentRefTanato = useRef<AutTanato>(null)
+    const componentRefOs = useRef<HTMLDivElement>(null);
+    const componentRefTanato = useRef<HTMLDivElement>(null)
     const [autorizado, setAutorizado] = useState<boolean>(true)
 
 
 
     const imprimirOS = useReactToPrint({
-        content: () => componentRefOs.current
+        contentRef: componentRefOs
     })
     const imprimirTanato = useReactToPrint({
-        content: () => componentRefTanato.current
+        contentRef:  componentRefTanato
     })
     return (
 
@@ -106,15 +107,15 @@ export default function DocumentacaoOS({ servico }: DadosProps) {
                     contrato={Number(servico.id_contrato)}
                     cpf_dec={servico.cpf_cnpj ?? ''}
                     data_nasc_falecido={servico.data_nascimento}
-                    endereco_dec={servico.rd_endereco}
-                    endereco_falecido={servico.end_rua}
-                    nome_dec={servico.rd_nome}
-                    nome_falecido={servico.nome_falecido}
+                    endereco_dec={servico.rd_endereco ??''}
+                    endereco_falecido={servico.end_rua??''}
+                    nome_dec={servico.rd_nome??''}
+                    nome_falecido={servico.nome_falecido??''}
                     numero_dec={Number(servico.rd_numero)}
                     numero_falecido={Number(servico.end_numero)}
-                    uf_dec={servico.rd_uf}
-                    uf_falecido={servico.end_uf}
-
+                    uf_dec={servico.rd_uf??''}
+                    uf_falecido={servico.end_uf??''}
+                    rg_dec={servico.rd_rg ??''}
                     ref={componentRefTanato}
                 />
             </div>
@@ -132,10 +133,10 @@ export default function DocumentacaoOS({ servico }: DadosProps) {
                     data_falecimento={servico.end_data_falecimento}
                     data_nasc_falecido={servico.data_nascimento}
                     data_sepultamento={servico.dt_sepultamento}
-                    endereco_dec={servico.rd_endereco}
-                    endereco_falecido={servico.end_rua}
-                    estado_civil={servico.estado_civil}
-                    falecido={servico.falecido}
+                    endereco_dec={servico.rd_endereco ??''}
+                    endereco_falecido={servico.end_rua??''}
+                    estado_civil={servico.estado_civil??''}
+                    falecido={servico.falecido??''}
                     hora_falecimento={servico.end_hora_falecimento}
                     hora_sepultamento={servico.hr_sepultamento}
                     inumado={servico.jazigo}
@@ -150,7 +151,7 @@ export default function DocumentacaoOS({ servico }: DadosProps) {
                     numero_dec={Number(servico.rd_numero)}
                     numero_falecido={Number(servico.end_numero)}
                     observacoes={servico.caracterista_corporal}
-                    plano={servico.plano}
+                    plano={servico.contrato?.planos?.descricao}
                     profissao={servico.profissao}
                     religiao={servico.religiao}
                     situacao={servico.situacao_contrato}

@@ -1,5 +1,5 @@
 import useApiGet from "@/hooks/useApiGet";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ModalItem } from "./modalItem/modalItem";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import useApiPost from "@/hooks/useApiPost";
@@ -67,6 +67,7 @@ export interface ReqLeadsProps {
   startDate?: string;
   endDate?: string;
   consultores?: Array<string> | [];
+  id_empresa:string
 }
 
 interface CadastroRequest {
@@ -108,10 +109,13 @@ interface CadastroRequest {
   id_lead: number;
 }
 
+interface PropsHistorico{
+ open:boolean
+ setOpen:Dispatch<SetStateAction<boolean>>
+}
 
-
-export function Historico() {
-  const [open, setOpen] = useState(false)
+export function Historico({open,setOpen}:PropsHistorico) {
+ 
   const {
     postData,
     data,
@@ -245,7 +249,7 @@ export function Historico() {
           cpfcnpj: data.cpfcnpj,
           data_nasc: data.data_nasc,
           endereco: upperCaseString(data.endereco),
-          id_empresa: selectEmp,
+          id_empresa: data.id_empresa,
           nome: upperCaseString(data.nome),
           numero: data.numero,
           uf: data.uf,
@@ -261,6 +265,7 @@ export function Historico() {
             origem: data.origem,
             consultor: data.consultor,
             cobrador: data.cobrador,
+            acrescimo:data.acrescimo
             // form_pag: lead.form_pag,
           },
           mensalidades: gerarMensalidade({
@@ -316,6 +321,7 @@ export function Historico() {
         status: data.statusSelected ? data?.statusSelected?.split(",") : [],
         startDate: dataIni,
         endDate: dataFim,
+        id_empresa:selectEmp
       });
 
       setModal(prev => ({ ...prev, filtro: false }));
@@ -331,14 +337,13 @@ export function Historico() {
     //  end?new Date(end):undefined)
     reqDados({
       statusSelected: "VENDA",
+      id_empresa:selectEmp
     });
   }, []);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="ml-2 text-sm ">
-        Histórico
-      </DialogTrigger>
+     
       <DialogContent className="max-w-6xl">
         <DialogHeader>
           <DialogTitle>Leads/Prospecões/Vendas</DialogTitle>

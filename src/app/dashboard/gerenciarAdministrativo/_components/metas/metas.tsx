@@ -10,11 +10,12 @@ import { EmpresaProps } from "@/types/empresa";
 import { MdEdit } from "react-icons/md";
 
 import { api } from "@/lib/axios/apiClient";
-import { MetasProps, SetorProps } from "@/app/dashboard/vendas/_components/acompanhamento";
 import { FormProps, ModalMetas } from "@/app/dashboard/vendas/_components/modalMetas";
 import { ModalFiltroMetas } from "@/app/dashboard/vendas/_components/modalFiltro";
-import { PlanoContasProps } from "@/app/dashboard/financeiro/page";
 import { toast } from "sonner";
+import { PlanoContasProps } from "@/app/dashboard/financeiro/_types/types";
+import { SetorProps } from "@/app/dashboard/vendas/_components/sales/FilterModal";
+import { MetaProps } from "../../_types/types";
 
 interface FormFiltro {
     startDate: string | undefined,
@@ -35,10 +36,10 @@ export function GerenciarMetas({ id_empresa, empresas, setores, planoContas }: D
 
     const [modalFiltro, setModalFiltro] = useState(false)
     const [modalNovaMeta, setModalNovaMeta] = useState(false)
-    const { data, postData, loading } = useApiPost<Array<MetasProps>, FormFiltro>("/vendas/filtroMetas")
+    const { data, postData, loading } = useApiPost<Array<MetaProps>, FormFiltro>("/vendas/filtroMetas")
     const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
     const [endDate, setEndDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0))
-    const [meta, setMeta] = useState<Partial<MetasProps>>()
+    const [meta, setMeta] = useState<Partial<MetaProps>>()
 
 
 
@@ -160,7 +161,7 @@ export function GerenciarMetas({ id_empresa, empresas, setores, planoContas }: D
                                 </Table.Cell>
 
                                 <Table.Cell >
-                                    {new Date(item.dateFimMeta || '').toLocaleDateString()}
+                                    {item.dateFimMeta && new Date(item.dateFimMeta).toLocaleDateString()}
                                 </Table.Cell>
                                 <Table.Cell >
                                     {Number(item.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}

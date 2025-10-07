@@ -80,6 +80,7 @@ export function Header({ path }: { path?: string }) {
 
   const [openAtivos, setOpenAtivos] = useState(false);
   const [openFilial,setOpenFilial] = useState(true)
+  const [openHistorico,setOpenHistorico]=useState(false)
 
  const isAllDisable = !!!infoEmpresa?.id
   const empresasPermitidas =  empresas
@@ -332,11 +333,12 @@ export function Header({ path }: { path?: string }) {
                         Acompanhamento
                       </LinkNavigate>
                     </MenubarItem>
-                    <MenubarItem asChild>
-                      <div className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                    <MenubarItem   className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer"
+                  onClick={() => setOpenHistorico(true)}>
+                      
                         <FileClock className="h-4 w-4" />
-                        <Historico />
-                      </div>
+                        <span>Historico</span>
+                     
                     </MenubarItem>
                   </MenubarSubContent>
                 </MenubarSub>
@@ -489,6 +491,8 @@ export function Header({ path }: { path?: string }) {
         cidadesEmpresa={cidadesEmpresa}
         bairrosEmpresa={bairrosEmpresa}
       />
+
+<Historico open={openHistorico} setOpen={setOpenHistorico} />
 
 <CompanySelectionModal
   companies={empresasPermitidas}

@@ -144,7 +144,7 @@ export function Dependentes({ dadosassociado, infoEmpresa, setarDadosAssociado, 
                             {item.nome}
                         </Table.Cell>
                         <Table.Cell>
-                            {new Date(item.data_adesao).toLocaleDateString()}
+                            {item.data_adesao && new Date(item.data_adesao).toLocaleDateString()}
                         </Table.Cell>
                         <Table.Cell>
                             {item?.carencia && new Date(item.carencia).toLocaleDateString()}

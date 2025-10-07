@@ -38,8 +38,8 @@ export default function PrintDocComponent({
 
   const print = useReactToPrint({
     pageStyle: pageOrientation,
-    content: () => ref.current,
-    onBeforeGetContent: async () => {
+    contentRef:  ref,
+    onBeforePrint: async () => {
       await new Promise((resolve) => setTimeout(resolve, 500));
     },
     documentTitle: documentTitle ?? "Documento",

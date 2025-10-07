@@ -5,7 +5,8 @@ import React, { forwardRef } from 'react';
 import { Table } from "flowbite-react";
 
 import { roboto_Mono } from '@/fonts/fonts';
-import { EstoqueProps } from '@/app/dashboard/estoque/page';
+import { EstoqueProps } from '@/app/dashboard/estoque/types/estoque';
+
 
 
 interface DadosProps {

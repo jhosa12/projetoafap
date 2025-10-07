@@ -13,7 +13,7 @@ const useActionsProdutos = () => {
     toast.promise(
 
       api.post('/produtos/listar',
-        descricao,
+       
       )
 
     )

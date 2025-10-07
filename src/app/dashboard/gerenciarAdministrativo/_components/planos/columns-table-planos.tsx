@@ -30,7 +30,7 @@ export function columnsPlanos({
       accessorKey: "limite_dep",
       header: "Limite de Dependentes",
       cell: ({ row }) => {
-        return <div className="text-left">{row.getValue("limite_dep")}</div>
+        return <div className="pl-2 text-left">{row.getValue("limite_dep")}</div>
       },
     },
     {

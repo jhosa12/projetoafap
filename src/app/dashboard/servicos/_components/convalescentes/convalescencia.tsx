@@ -6,7 +6,8 @@ import { IoMdAddCircle } from "react-icons/io";
 import { toast } from "sonner";
 
 interface ConvProps{
-    id_conv: number,
+    id_conv_global:number,
+     id_conv: number,
     id_produto: number,
     descricao: string,
     unidade: number,
@@ -163,7 +164,7 @@ const adicionarPlano = async()=>{
                 {arrayConv?.map((item,index)=>(
                <tr key={index}  className={ `border-b bg-gray-800 border-gray-700 w-full hover:bg-gray-600`}>
                 <th scope="row"  className="px-5 py-1 font-medium  whitespace-nowrap">
-                       {item.id_conv}
+                       {item.id_conv_global}
                 </th>
                 <td className="px-10 py-1 w-full whitespace-nowrap">
                     <input onChange={(event)=>handleDescricao(index,event)}  value={item.descricao} className="flex bg-transparent w-full " type="text" />
@@ -177,7 +178,7 @@ const adicionarPlano = async()=>{
                 </td>
                 <td className="px-10 py-1 inline-flex text-right gap-2">
                     <button onClick={()=>editarPlano(index)} className="font-semibold rounded-lg bg-blue-600 px-2 py-1 text-white hover:underline"><RiSaveFill size={17}/></button>
-                    <button onClick={()=>deletarPlano(item.id_conv)} className=" rounded-lg bg-red-600 px-1 py-1 text-white hover:underline"><MdDelete size={17}/></button>
+                    <button onClick={()=>deletarPlano(item.id_conv_global)} className=" rounded-lg bg-red-600 px-1 py-1 text-white hover:underline"><MdDelete size={17}/></button>
                 </td>
                </tr>
                ))}

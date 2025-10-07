@@ -3,9 +3,11 @@ import { Button, Label, Modal, Radio, Select, TextInput } from "flowbite-react"
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { MetasProps, SetorProps } from "./acompanhamento";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { PlanoContasProps } from "../../financeiro/page";
+import { PlanoContasProps } from "../../financeiro/_types/types";
+import { SetorProps } from "./sales/FilterModal";
+import { MetaProps } from "../../gerenciarAdministrativo/_types/types";
+
 
 
 
@@ -14,8 +16,8 @@ interface DataProps{
     show:boolean,
     setModalMetas:(open:boolean)=>void
     arraySetores:Array<SetorProps>
-    meta:Partial<MetasProps>
-    arrayMetas :Array<MetasProps>
+    meta:Partial<MetaProps>
+    arrayMetas :Array<MetaProps>
     id_empresa:string,
     handleNovaMeta:(data:FormProps)=>Promise<void>
 }

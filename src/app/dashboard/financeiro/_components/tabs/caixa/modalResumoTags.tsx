@@ -2,7 +2,8 @@
 import { Button, Modal, Table } from "flowbite-react";
 import {  useMemo, useState } from "react";
 import { SomaProps } from "./caixa";
-import { CaixaProps } from "../../../page";
+import { CaixaProps } from "../../../_types/types";
+
 
 interface DataProps {
     openModal: boolean;

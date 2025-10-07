@@ -182,6 +182,7 @@ export default function Usuario() {
                     columns={columns}
                     data={userDados || []}
                     maxHeight="h-[calc(100vh-300px)]"
+                    
                   >
                     <Button variant="outline" size="sm" className="h-8">
                       <Plus className="mr-2 h-4 w-4" />

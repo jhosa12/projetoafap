@@ -2,7 +2,8 @@
 import { Button, Modal, Select, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { ContaProps } from "./contasPagarReceber";
-import { PlanoContasProps } from "../../../page";
+import { PlanoContasProps } from "../../../_types/types";
+
 
 
 interface DataProps{

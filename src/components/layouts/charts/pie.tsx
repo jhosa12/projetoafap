@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -16,8 +15,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { ChatProps } from "../../../app/dashboard/vendas/_components/acompanhamento"
-import { useEffect } from "react"
+
+import { ChatProps } from "@/app/dashboard/vendas/_components/sales/SalesChart"
 
 /*const chartData = [
   { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },

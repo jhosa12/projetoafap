@@ -2,7 +2,8 @@ import { ImpressoesProps } from "../../admcontrato/_types/impressoes"
 
 export interface ConvProps {
   editar: boolean
-  id_conv: number | null,
+  id_conv_global:number|null
+ id_conv: number | null,
   id_contrato?: number | null,
   id_contrato_global?: number | null,
   id_associado?: number | null,

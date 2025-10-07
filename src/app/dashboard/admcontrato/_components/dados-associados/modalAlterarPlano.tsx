@@ -1,11 +1,11 @@
 import { AuthContext } from "@/store/AuthContext"
-import { api } from "@/lib/axios/apiClient"
 import { Button, Modal, Select } from "flowbite-react"
 import { useContext } from "react"
-import { SubmitHandler, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { HiOutlineExclamationCircle } from "react-icons/hi2"
-import { toast } from "sonner"
+
 import useActionsAssociado from "@/app/dashboard/admcontrato/_hooks/associado/useActionsAssociado"
+import { PlanosProps } from "@/types/planos"
 
 
 
@@ -16,17 +16,12 @@ interface DataProps {
 
 }
 
-interface PlanoProps {
-  id_plano: number
-  descricao: string
-  valor: number
-}
 
 
 
 export function ModalAlterarPlano({ openModal, setOpenModal }: DataProps) {
 
-  const { setValue, handleSubmit } = useForm<PlanoProps>({})
+  const { setValue, handleSubmit } = useForm<PlanosProps>({})
   const { planos } = useContext(AuthContext)
 
   const hookProps = {

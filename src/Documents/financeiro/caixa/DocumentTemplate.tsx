@@ -9,7 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from 
 
 import { roboto_Mono } from "@/fonts/fonts";
 import { ArrayGeral } from "@/app/dashboard/financeiro/_components/tabs/caixa/modalRelatorio";
-import { CcustosProps } from "@/app/dashboard/financeiro/page";
+import { CcustosProps } from "@/app/dashboard/financeiro/_types/types";
+
 
 
 interface DadosProps {
