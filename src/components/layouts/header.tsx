@@ -15,7 +15,6 @@ import {
   PieChart, 
   Gift, 
   ShoppingCart, 
-  FileText, 
   UserCog, 
   Building2,
   FileSearch,
@@ -29,7 +28,17 @@ import {
   FileClock,
   Settings as SettingsIcon,
   ChevronDown,
-  MapPin
+  MapPin,
+  ListTree,
+  FileText,
+  NotepadText,
+  Notebook,
+  NotebookIcon,
+  ListCollapse,
+  NotebookText,
+  ClipboardPlus,
+  PiggyBank,
+  Car
 } from "lucide-react";
 
 import {
@@ -52,6 +61,7 @@ import LinkNavigate from "../Link";
 import { Historico } from "@/app/dashboard/vendas/_components/historico/ScreenHistorico";
 import { CompanySelectionModal } from "@/app/dashboard/empresa/_components/modal_filial";
 import { Badge } from "../ui/badge";
+import { NotBeforeError } from "jsonwebtoken";
 
 
 
@@ -214,19 +224,55 @@ export function Header({ path }: { path?: string }) {
                     Cobrança
                   </LinkNavigate>
                 </MenubarItem>
-                <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
-                  <UserCog className="h-4 w-4" />
-                  <LinkNavigate href="/dashboard/gerenciarAdministrativo" >
+
+                <MenubarSub>
+                  <MenubarSubTrigger className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                    <UserCog className="h-4 w-4" />
                     Gerenciar
-                  </LinkNavigate>
-                </MenubarItem>
+                  </MenubarSubTrigger>
+                  <MenubarSubContent className="ml-1">
+                    <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                      <ListCollapse className="h-6 w-6" />
+                      <LinkNavigate href="/dashboard/gerenciarAdministrativo/planoDeContas">
+                        Plano de Contas
+                      </LinkNavigate>
+                    </MenubarItem>
+                    <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                      <NotebookText className="h-6 w-6" />
+                      <LinkNavigate href="/dashboard/gerenciarAdministrativo/planos">
+                        Planos
+                      </LinkNavigate>
+                    </MenubarItem>
+                    <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                      <ClipboardPlus className="h-6 w-6" />
+                      <LinkNavigate href="/dashboard/gerenciarAdministrativo/convalescentes">
+                        Convalescentes
+                      </LinkNavigate>
+                    </MenubarItem>
+                    <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                      <PiggyBank className="h-6 w-6" />
+                      <LinkNavigate href="/dashboard/gerenciarAdministrativo/metasContas">
+                        Metas Contas
+                      </LinkNavigate>
+                    </MenubarItem>
+                    <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                      <Car className="h-6 w-6" />
+                      <LinkNavigate href="/dashboard/gerenciarAdministrativo/veiculos">
+                        Veículos
+                      </LinkNavigate>
+                    </MenubarItem>
+                  </MenubarSubContent>
+                </MenubarSub>
+
+                
+
 
                 <MenubarSub>
                   <MenubarSubTrigger  className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
                   <PieChart className="h-4 w-4" />
                     Financeiro
                   </MenubarSubTrigger>
-                  <MenubarSubContent>
+                  <MenubarSubContent >
                     <MenubarItem><LinkNavigate  href="/dashboard/financeiro/plano_contas">Plano de Contas</LinkNavigate></MenubarItem>
                     <MenubarItem>Fechamento de Caixa</MenubarItem>
                     <MenubarItem>Contas a Pagar/Receber</MenubarItem>

@@ -54,7 +54,3 @@ export interface PlanoContasProps {
     check:boolean
   }
   
-  export interface GruposProps {
-    id_grupo: number;
-    descricao: string;
-  }

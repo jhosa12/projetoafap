@@ -15,34 +15,14 @@ import { IoMdSettings } from "react-icons/io";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Veiculos } from "@/app/dashboard/gerenciarAdministrativo/_components/veiculos/veiculos";
 import { toast } from "sonner";
-import { PlanoContasProps } from "../financeiro/_types/types";
+import { PlanoContasProps } from "../../financeiro/_types/types";
+import { GruposProps } from "@/types/grupos";
+import { MetasProps } from "@/types/metas";
+import { PlanosProps } from "@/types/planos";
 
 
-interface MetasProps {
-  id_meta: number,
-  id_conta: string,
-  id_grupo: number,
-  descricao: string,
-  valor: number,
-  date: Date,
-  grupo: GruposProps
-}
-
-
-interface GruposProps {
-  id_grupo: number,
-  descricao: string
-}
-interface PlanosProps {
-  id_plano: number,
-  descricao: string,
-  limite_dep: number,
-  valor: number,
-  acrescimo: number
-
-}
+// Já tem seu type 
 interface ConvProps {
-  id_conv_global: number,
   id_conv: number,
   id_produto: number,
   descricao: string,
@@ -58,8 +38,6 @@ interface ConvProps {
   retornavel: string,
   status: string
 }
-
-
 
 
 export default function gerenciarAdministrativo() {
@@ -130,6 +108,10 @@ export default function gerenciarAdministrativo() {
           <TabsTrigger value="plano-contas" className="flex items-center gap-2">
             <FaCalendarAlt className="h-4 w-4" />
             PLANO DE CONTAS
+          </TabsTrigger>
+          <TabsTrigger value="planos" className="flex items-center gap-2">
+            <HiClipboardList className="h-4 w-4" />
+            PLANOS
           </TabsTrigger>
           <TabsTrigger value="convalescentes" className="flex items-center gap-2">
             <BiSolidInjection className="h-4 w-4" />
