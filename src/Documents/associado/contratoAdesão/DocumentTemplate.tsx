@@ -42,7 +42,7 @@ const DocumentTemplate = React.forwardRef<HTMLDivElement, DadosProps>(({
 }, ref) => {
 
   return (
-    <div className={`${timesNewRoman.className} text-black   px-8 `}>
+    <div ref={ref} className={`${timesNewRoman.className} text-black   px-8 `}>
         {/* Page Header */}
         <header className="border-b-2 border-gray-200 pb-6 mb-8">
           <div className="flex flex-col items-center">

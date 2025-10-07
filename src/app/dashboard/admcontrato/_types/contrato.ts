@@ -30,6 +30,6 @@ export type ContratoProps = {
     desconto: number | null,
     planos: {
         limite_dep: number | null,
-        informacoes_plano: string
+        informacoes_plano?: string
     }
 }
