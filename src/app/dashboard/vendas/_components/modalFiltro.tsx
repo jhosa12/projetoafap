@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
 import { HiFilter } from "react-icons/hi"
 import { } from "flowbite-react";
-import { SetorProps } from "./acompanhamento";
+
 import { Label } from "@/components/ui/label";
 import {
   Dialog,
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SetorProps } from "./sales/FilterModal";
 interface DataProps{
     show:boolean,
     setFiltro:(open:boolean)=>void,

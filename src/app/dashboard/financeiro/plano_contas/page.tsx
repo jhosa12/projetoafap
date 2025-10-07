@@ -1,5 +1,5 @@
 "use client"
-import { useCallback, useContext, useMemo, useState } from "react"
+import { Dispatch, SetStateAction, useCallback, useContext, useMemo, useState } from "react"
 import { ArrowDown, ArrowUp, Search, AlertTriangle, Scale, ArrowRightLeft, ArrowUpRight, ArrowDownRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -39,11 +39,6 @@ interface MetaProps{
   metas:Array<{valor:number}>
 }
 
-interface DataProps{
-  
-  setListaContas:(array:Array<PlanoContasProps>)=>void
- 
-}
 
 interface TotalProps{
   despesa:number,
@@ -59,7 +54,7 @@ interface FiltroFormProps{
 
 
 
-export default function PlanodeContas({setListaContas}:DataProps){
+export default function PlanodeContas(){
   const [subListaLanc, setSubLista] = useState<Array<LancamentosProps>>()
     const [setorSelect, setSetor] = useState<number>(0)
     const [gruposSelect, setGruposSelect] = useState<Array<GruposProps>>()

@@ -1,7 +1,7 @@
 // DocumentTemplate.js
 
 import React, { forwardRef } from 'react';
-import { AssociadoProps, ContratoProps } from "@/app/dashboard/admcontrato/_types/associado";
+import { AssociadoProps } from "@/app/dashboard/admcontrato/_types/associado";
 import { EmpresaProps } from "@/types/empresa";
 import { roboto_Mono } from '@/fonts/fonts';
 interface DadosProps {

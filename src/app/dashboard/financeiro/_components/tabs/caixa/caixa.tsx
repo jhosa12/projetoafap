@@ -18,7 +18,8 @@ import useApiPost from "@/hooks/useApiPost";
 import { ajustarData } from "@/utils/ajusteData";
 import { Button } from "@/components/ui/button";
 import { BsSearch } from "react-icons/bs";
-import { CaixaProps, CcustosProps } from "../../../page";
+import { CaixaProps, CcustosProps } from "../../../_types/types";
+
 
 
 interface DataProps {

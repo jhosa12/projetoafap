@@ -37,8 +37,8 @@ interface DataTableProps<TData> {
   data: TData[];
   children?: React.ReactNode;
   maxHeight?: string
-  rowSelection: RowSelectionState
-  setRowSelection: React.Dispatch<React.SetStateAction<RowSelectionState>>
+  rowSelection?: RowSelectionState
+  setRowSelection?: React.Dispatch<React.SetStateAction<RowSelectionState>>
 }
 
 export function DataTable<TData,>({

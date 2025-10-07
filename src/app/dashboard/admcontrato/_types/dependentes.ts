@@ -1,7 +1,7 @@
 export type DependentesProps = {
     id_dependente_global: number,
     nome?: string,
-    data_nasc?: Date,
+    data_nasc?: Date|null,
     grau_parentesco?: string,
     celular?: string,
     data_adesao?: Date,

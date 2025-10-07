@@ -17,6 +17,7 @@ import { Veiculos } from "@/app/dashboard/gerenciarAdministrativo/_components/ve
 import { toast } from "sonner";
 import { PlanoContasProps } from "../financeiro/_types/types";
 
+
 interface MetasProps{
     id_meta:number,
     id_conta:string,
@@ -40,23 +41,25 @@ valor:number,
 acrescimo:number
     
 }
-
 interface ConvProps{
-id_conv: number,
-id_produto: number,
-descricao: string,
-unidade: number,
-grupo: number,
-data: Date,
-data_dev: Date,
-quantidade: number,
-valor:number,
-desconto: number,
-total: number,
-cortesia:string,
-retornavel: string,
-status: string
-}
+  id_conv_global:number,
+   id_conv: number,
+  id_produto: number,
+  descricao: string,
+  unidade: number,
+  grupo: number,
+  data: Date,
+  data_dev: Date,
+  quantidade: number,
+  valor:number,
+  desconto: number,
+  total: number,
+  cortesia:string,
+  retornavel: string,
+  status: string
+  }
+
+
 
 
 export default function gerenciarAdministrativo(){

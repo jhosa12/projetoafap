@@ -1,11 +1,7 @@
 
 import { AuthContext } from "@/store/AuthContext";
-import { useContext, useEffect} from "react";
-import DatePicker,{registerLocale} from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import pt from 'date-fns/locale/pt-BR';
+import { useContext, useEffect} from "react";;
 import { api } from "@/lib/axios/apiClient";
-import {  Modal, TextInput } from "flowbite-react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { removerFusoDate } from "@/utils/removerFusoDate";
 import { toast } from "sonner";
@@ -254,8 +250,7 @@ export function ModalLancamentosCaixa({id_empresa,planos,grupo,openModal,setOpen
               <DatePickerInput
                 onChange={onChange}
                 value={value}
-                dateFormat={"dd/MM/yyyy"}
-                locale={pt}
+                
                 required
                 className="h-9"
                

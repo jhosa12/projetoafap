@@ -21,7 +21,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { ChatProps } from "../../../app/dashboard/vendas/_components/acompanhamento"
+import { ChatProps } from "@/app/dashboard/vendas/_components/sales/SalesChart"
+
 
 
 /*const chartData = [

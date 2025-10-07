@@ -1,8 +1,8 @@
 
-import { Component, forwardRef } from 'react';
+import { forwardRef } from 'react';
 import BarCode from 'react-barcode';
 import { roboto_Mono } from "@/fonts/fonts";
-import Image from 'next/image';
+
 
 interface DataProps {
     valor: number

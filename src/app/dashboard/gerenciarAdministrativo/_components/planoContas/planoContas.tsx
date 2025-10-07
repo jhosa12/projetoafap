@@ -10,8 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { PlanoContasProps } from "@/app/dashboard/financeiro/page";
-import ReactInputMask from "react-input-mask";
+import { PlanoContasProps } from "@/app/dashboard/financeiro/_types/types";
 
 
 

@@ -15,7 +15,8 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import { EmpresaProps } from "@/types/empresa"
 import { ajustarData } from "@/utils/ajusteData"
 import { LancamentosProps } from "@/app/dashboard/caixa/_types/types"
-import { GruposProps, PlanoContasProps } from "../../../page"
+import { GruposProps, PlanoContasProps } from "../../../_types/types"
+
 
 
 

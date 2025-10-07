@@ -10,7 +10,8 @@ import { IoSearchSharp } from "react-icons/io5";
 import { MdOutlineLaunch } from "react-icons/md";
 import ActionsCaixa from "./ActionsCaixa";
 import { FormCaixaProps, LancamentosProps, ResponseCaixaProps } from "../_types/types";
-import { PlanoContasProps } from '../../financeiro/page';
+import { PlanoContasProps } from '../../financeiro/_types/types';
+
 
 interface CaixaHeaderProps {
     saldo: number,

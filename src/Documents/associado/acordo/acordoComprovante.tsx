@@ -1,4 +1,5 @@
-import { AcordoProps } from "@/types/financeiro";
+
+import { AcordoProps } from "@/app/dashboard/admcontrato/_types/acordos";
 import { forwardRef } from "react";
 
 

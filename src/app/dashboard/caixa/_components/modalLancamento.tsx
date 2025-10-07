@@ -18,8 +18,9 @@ import { api } from "@/lib/axios/apiClient";
 import { useCallback, useContext, useEffect } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { removerFusoDate } from "@/utils/removerFusoDate";
-import { GruposProps } from "@/app/dashboard/financeiro/page";
+
 import { LancamentosProps } from "@/app/dashboard/caixa/_types/types";
+import { GruposProps } from "../../financeiro/_types/types";
 
 
 

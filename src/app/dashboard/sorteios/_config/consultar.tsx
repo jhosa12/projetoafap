@@ -1,19 +1,15 @@
 import { useContext, useEffect, useRef, useState } from "react"
-import { MdDelete } from "react-icons/md";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt-BR';
-import { IoIosArrowDown, IoIosPrint } from "react-icons/io";
-import { MdModeEditOutline } from "react-icons/md";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { IoSearch } from "react-icons/io5";
 import React from 'react';
-import PrintButton from "@/Documents/sorteados/PrintButton";
 import { Button, Select } from "flowbite-react";
 import { AuthContext } from "@/store/AuthContext";
 import { api } from "@/lib/axios/apiClient";
 import DocumentTemplate from "@/Documents/sorteados/DocumentTemplate";
 import { useReactToPrint } from "react-to-print";
+import { Printer } from "lucide-react";
 interface GanhadoresProps{
     id_contrato:number,
     titular:string,
@@ -129,7 +125,7 @@ const impressao = useReactToPrint({
               color='green' 
               onClick={impressao}
               className=""
-               ><IoIosPrint  className="mr-2 h-5 w-5"/> Imprimir
+               ><Printer className="mr-2 h-5 w-5"/> Imprimir
                </Button>
               
            
