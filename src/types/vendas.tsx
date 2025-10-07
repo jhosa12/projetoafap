@@ -1,6 +1,8 @@
-import { DependentesProps } from "../app/dashboard/admcontrato/_types/associado";
+import { DependentesProps } from "@/app/dashboard/admcontrato/_types/dependentes";
+
 
 export interface LeadProps {
+  id_empresa:string,
   index: number;
   id_lead: number;
   visita: Date;
@@ -39,6 +41,7 @@ export interface LeadProps {
   form_pag?: string;
   adesao?: Date;
   dataVenda: Date;
+  acrescimo:number|null;
   cobrador: string;
   bairroPlano?: string
 }

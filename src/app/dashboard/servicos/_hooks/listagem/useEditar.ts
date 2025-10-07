@@ -11,6 +11,6 @@ export function useEditar(linhaSelecionada: ConvProps | null) {
       toast.error("Por favor, selecione uma linha para Editar.");
       return;
     }
-    router.push(`/dashboard/servicos/convalescencia/novoregistro?id=${linhaSelecionada.id_conv}`);
+    router.push(`/dashboard/servicos/convalescencia/novoregistro?id=${linhaSelecionada.id_conv_global}`);
   }, [linhaSelecionada, router]);
 }

@@ -179,6 +179,7 @@ export default function Convalescente() {
                         >
                             <Link
                                 onClick={() => setarListaConv({
+                                    id_conv_global:undefined,
                                     bairro: '',
                                     bairro_r: '',
                                     cep: '',

@@ -4,7 +4,7 @@ import { ConvProps } from "@/app/dashboard/servicos/_types/convalescente";
 
 interface ActionsProps {
   linhaSelecionada: ConvProps | null;
-  setarListaConv: (obj: { id_conv: number | undefined }) => void;
+  setarListaConv: (obj: { id_conv_global: number | undefined }) => void;
   setExcluir: (val: boolean) => void;
   deletarConv: () => Promise<void>;
   setAtualizacao: React.Dispatch<React.SetStateAction<number>>;
@@ -24,7 +24,7 @@ export function useExcluir({
       toast.error("Por favor, selecione uma linha para Excluir.");
       return;
     }
-    setarListaConv({ id_conv: linhaSelecionada?.id_conv ?? undefined });
+    setarListaConv({ id_conv_global: linhaSelecionada?.id_conv_global ?? undefined });
     setExcluir(true);
   };
 

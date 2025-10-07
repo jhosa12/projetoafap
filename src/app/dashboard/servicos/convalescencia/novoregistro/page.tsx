@@ -1,25 +1,21 @@
 'use client';
 
 import React, { useContext, useEffect, useState } from "react";
-
 import "react-datepicker/dist/react-datepicker.css";
 import useActionsNovoResgistro from "../../_hooks/novo-registro/useActionsNovoRegistro";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, FileText, Search, Shield, User } from "lucide-react";
 import { AuthContext } from "@/store/AuthContext";
-import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import FormularioConv from "../../_components/convalescentes/formulario-conv";
-import { X } from 'lucide-react';
-import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useForm, FormProvider, useFieldArray } from "react-hook-form";
+import { useSearchParams } from "next/navigation";
+import { useForm, FormProvider} from "react-hook-form";
 import { ConvProps } from "../../_types/convalescente";
-import { ProdutosProps } from "@/app/dashboard/admcontrato/_types/produtos";
 import { api } from "@/lib/axios/apiClient";
 import { useSelecionarTitular } from "@/app/dashboard/servicos/_hooks/novo-registro/useSelecionarTitular";
 import { ModalBuscaConv } from "../../_components/convalescentes/modal-busca-titular";
-import { toast } from "sonner";
+
 
 
 export default function ConvalescenciaNovo() {
@@ -76,6 +72,7 @@ export default function ConvalescenciaNovo() {
     const methods = useForm<ConvProps>({
         defaultValues: {
             editar: false,
+            id_conv_global:null,
             id_conv: null,
             id_empresa: infoEmpresa?.id || '',
             id_contrato_st: '',
@@ -133,6 +130,7 @@ export default function ConvalescenciaNovo() {
             // Limpa o formulário ao criar novo registro
             methods.reset({
                 editar: false,
+                id_conv_global:null,
                 id_conv: null,
                 id_empresa: infoEmpresa?.id || '',
                 id_contrato_st: '',

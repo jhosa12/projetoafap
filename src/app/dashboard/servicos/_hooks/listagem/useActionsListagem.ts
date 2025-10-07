@@ -34,7 +34,7 @@ interface ActionsProps {
   handlePageClick: (selectdItem: { selected: number }) => void
   listarConv: () => Promise<void>
   deletarConv: () => Promise<void>
-  receberDevolucao: (id_conv: number) => Promise<void>
+  receberDevolucao: (id_conv_global: number) => Promise<void>
   imprimirComprovante: () => void;
   imprimirContrato: () => void;
   receberDev: (status: string) => Promise<void>;
@@ -94,7 +94,7 @@ const useActionsListagem = () => {
     toast.promise(
       api.delete("/convalescencia/deletar", {
         data: {
-          id_conv: listaConv.id_conv
+          id_conv_global: listaConv.id_conv_global
         }
       }),
       {
@@ -105,7 +105,7 @@ const useActionsListagem = () => {
       }
     )
     listarConv()
-    setarListaConv({ id_conv: undefined })
+    setarListaConv({ id_conv_global: undefined })
     setExcluir(false)
 
   }
