@@ -1,6 +1,0 @@
-const useActionsConvalescenca = () => {
-  
-  return {
-
-  }
-}

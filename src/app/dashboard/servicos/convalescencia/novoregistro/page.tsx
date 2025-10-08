@@ -15,7 +15,7 @@ import { X } from 'lucide-react';
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 import { ConvProps } from "../../_types/convalescente";
-import { ProdutosProps } from "@/app/dashboard/admcontrato/_types/produtos";
+import { ProdutosProps } from "@/types/produtos";
 import { api } from "@/lib/axios/apiClient";
 import { useSelecionarTitular } from "@/app/dashboard/servicos/_hooks/novo-registro/useSelecionarTitular";
 import { ModalBuscaConv } from "../../_components/convalescentes/modal-busca-titular";

@@ -1,9 +1,7 @@
 'use client';
 
-import { GerenciarConvalescenca } from "@/app/dashboard/gerenciarAdministrativo/_components/convalescenca/convalescencia";
 import { GerenciarMetas } from "@/app/dashboard/gerenciarAdministrativo/_components/metas/metas";
 import { PlanoContas } from "@/app/dashboard/gerenciarAdministrativo/_components/planoContas/planoContas";
-import { GerenciarPlanos } from "@/app/dashboard/gerenciarAdministrativo/_components/planos/planos";
 import { AuthContext } from "@/store/AuthContext";
 import { api } from "@/lib/axios/apiClient"
 import Head from "next/head"
@@ -136,14 +134,6 @@ export default function gerenciarAdministrativo() {
           />
         </TabsContent>
 
-
-        <TabsContent value="convalescentes" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
-          <GerenciarConvalescenca
-            carregarDados={carregarDados}
-            setarConv={setarConv}
-            arrayConv={arrayConv}
-          />
-        </TabsContent>
 
         <TabsContent value="metas" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
           <GerenciarMetas

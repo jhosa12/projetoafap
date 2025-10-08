@@ -5,14 +5,6 @@ import { useContext, useEffect, useState } from "react"
 import { SubmitHandler } from "react-hook-form"
 import { toast } from "sonner"
 
-interface ActionsProps {
-
-
-  arrayPlanos: Array<PlanosProps>,
-  setarPlanos: (planoContas: Array<PlanosProps>) => void
-
-}
-
 const useActionsPlanos = () => {
 
   const { usuario, signOut, infoEmpresa } = useContext(AuthContext)
