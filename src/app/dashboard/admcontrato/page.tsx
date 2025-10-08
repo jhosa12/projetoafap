@@ -8,10 +8,6 @@ import "react-tabs/style/react-tabs.css";
 import React, { useState, useContext, useEffect } from "react";
 
 import "react-tooltip/dist/react-tooltip.css";
-
-
-
-
 import { Badge, Dropdown, Modal, Spinner } from "flowbite-react";
 import { HiOutlineIdentification, HiUserCircle } from "react-icons/hi2";
 import { DadosAssociado } from "@/app/dashboard/admcontrato/_components/dados-associados/screen";
@@ -47,7 +43,7 @@ import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";
 import CarteirasDep from "@/app/dashboard/admcontrato/_components/carteiras/carteirasDep";
 import { HistoricoMensalidade } from "./_components/mensalidades/historico-mensalidade";
 import { HeadAssociado } from "../servicos/_components/obitos/tabs-modal/head-associado";
-import { DependentesProps } from "./_types/dependentes";
+
 
 export default function AdmContrato() {
   const {

@@ -492,7 +492,7 @@ export function Header({ path }: { path?: string }) {
         bairrosEmpresa={bairrosEmpresa}
       />
 
-<Historico open={openHistorico} setOpen={setOpenHistorico} />
+{ openHistorico && <Historico open={openHistorico} setOpen={setOpenHistorico} />}
 
 <CompanySelectionModal
   companies={empresasPermitidas}

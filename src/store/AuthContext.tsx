@@ -166,7 +166,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // }, [permissoes]);
 
   const carregarDados = async (id: number) => {
-    console.log("2. Dentro de carregarDados no AuthContext...");
+  
     setLoading(true);
     limparDados();
     try {
@@ -176,7 +176,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       setDadosAssociado(response.data);
-      //return response.data; 
+     // return response.data; 
     } catch (error) {
       toast.error("Erro na requisição");
     }

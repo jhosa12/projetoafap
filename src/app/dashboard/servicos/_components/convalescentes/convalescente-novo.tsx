@@ -15,6 +15,8 @@ import { ConvProps } from "../../_types/convalescente";
 import { api } from "@/lib/axios/apiClient";
 import { useSelecionarTitular } from "@/app/dashboard/servicos/_hooks/novo-registro/useSelecionarTitular";
 import { ModalBuscaConv } from "../../_components/convalescentes/modal-busca-titular";
+import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";
+import { HeadAssociado } from "../obitos/tabs-modal/head-associado";
 
 
 
@@ -112,7 +114,7 @@ export default function ConvalescenciaNovo() {
     });
 
     // Corrigir uso do hook: agora passa setModal e reset do formulário para reset imediato
-    const handleSelecionarTitular = useSelecionarTitular(carregarDados, limparDados, setModal, methods.reset);
+    const {handleSelecionarTitular} = useSelecionarTitular(carregarDados, limparDados, setModal, methods.reset);
 
 
     // Carregar dados para edição
@@ -194,16 +196,24 @@ export default function ConvalescenciaNovo() {
     return (
         <>
 
-            {modal.busca && (
+            {/* {modal.busca && (
                 <ModalBuscaConv
-                    carregarDados={carregarDados}
+                   // carregarDados={carregarDados}
                     selectEmp={infoEmpresa?.id ?? ""}
                     visible={modal.busca}
                     setVisible={() => setModal({ ...modal, busca: false })}
                     filtros={filtrosDaPagina}
                     onSelecionar={handleSelecionarTitular}
                 />
-            )}
+            )} */}
+
+            <ModalBusca
+                carregarDados={carregarDados}
+                selectEmp={infoEmpresa?.id??''}
+                setVisible={() => setModal({ ...modal, busca: false })}
+                visible ={modal.busca??false}
+            
+            />
 
 
             <div className="flex flex-col w-full min-h-screen pl-10 pr-10 pt-4 pb-6">
@@ -225,29 +235,14 @@ export default function ConvalescenciaNovo() {
                             <div className="flex flex-wrap gap-2 items-center justify-start">
                                 {!isEditMode && (
                                     <>
-                                        {dadosassociado && dadosassociado.id_global && dadosassociado.contrato?.situacao === "ATIVO" ? (
-                                            <>
-                                                <Badge variant="outline" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0">
-                                                    <User className="h-4 w-4 mr-2" />
-                                                    {dadosassociado.nome}
-                                                </Badge>
-                                                <Badge variant="secondary" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0">
-                                                    <FileText className="h-4 w-4 mr-2" />
-                                                    Contrato: {dadosassociado.contrato?.id_contrato}
-                                                </Badge>
-                                                <Badge variant="outline" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0 border-[#c5942b] text-[#c5942b]">
-                                                    <Shield className="h-4 w-4 mr-2" />
-                                                    {dadosassociado.contrato?.plano}
-                                                </Badge>
-                                                <Badge
-                                                    className={cn(
-                                                        "px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0",
-                                                        "bg-green-100 text-green-800 border-green-200"
-                                                    )}
-                                                >
-                                                    {dadosassociado.contrato?.situacao}
-                                                </Badge>
-                                            </>
+                                        {dadosassociado && dadosassociado.id_global ? (
+                                         <HeadAssociado
+                                         associado={dadosassociado.nome}
+                                         convalescencia={dadosassociado.contrato?.convalescencia}
+                                         id_contrato={dadosassociado.contrato?.id_contrato}
+                                         plano={dadosassociado.contrato?.plano}
+                                         situacao={dadosassociado.contrato?.situacao}
+                                         />
                                         ) : (
                                             <Badge variant="destructive" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0">
                                                 <AlertTriangle className="h-4 w-4 mr-1.5" />
