@@ -49,7 +49,8 @@ export function ModalMetas({ show, setModalMetas, meta, arraySetores, arrayMetas
         defaultValues: {
             ...meta,
             data_lanc: meta?.data_lanc ?? new Date(),
-            radio: radioTipo
+            radio: radioTipo,
+            id_conta: meta?.id_conta ?? ""
         }
     })
 
@@ -61,7 +62,8 @@ export function ModalMetas({ show, setModalMetas, meta, arraySetores, arrayMetas
             reset({
                 ...meta,
                 data_lanc: meta?.data_lanc ?? new Date(),
-                radio: meta?.id_conta ? "GASTOS" : "VENDAS"
+                radio: meta?.id_conta ? "GASTOS" : "VENDAS",
+                id_conta: meta?.id_conta ?? ""
             });
         }
     }, [meta, show, reset]);
@@ -93,28 +95,31 @@ export function ModalMetas({ show, setModalMetas, meta, arraySetores, arrayMetas
                     </RadioGroup>
 
                     {watch('radio') === 'GASTOS' && (
-                        <div>
-                            <Label className="mb-1 block">Plano de Contas</Label>
-                            <Select
-                                onValueChange={value => setValue('id_conta', String(value))}
-                                value={meta?.id_conta !== undefined && meta?.id_conta !== null ? String(meta.id_conta) : "0"}
-
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Selecione..." />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="0">PLANO DE CONTAS</SelectItem>
-                                    {planoContas?.map((item) => (
-                                        <SelectItem key={item.conta} value={String(item.conta)}>
-                                            {item.descricao}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
+                        <Controller
+                            control={control}
+                            name="id_conta"
+                            render={({ field }) =>
+                                <div>
+                                    <Label className="mb-1 block">Plano de Contas</Label>
+                                    <Select
+                                        onValueChange={value => setValue('id_conta', String(value))}
+                                        value={field.value !== undefined ? String(field.value) : ""}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Selecione o plano" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {planoContas?.map((item) => (
+                                                <SelectItem key={item.conta} value={String(item.conta)}>
+                                                    {item.descricao}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            }
+                        />
                     )}
-
 
 
 
