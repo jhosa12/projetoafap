@@ -70,7 +70,8 @@ export default function GerenciarMetas() {
 
   const dataCompleta = (arrayMetas ?? []).map((item: any) => ({
     ...item,
-    nome_empresa: nome_empresa
+    nome_empresa: nome_empresa,
+    categoria: item?.id_conta ? "gastos" : "vendas"
   }));
 
   const linhaSelecionada: MetaProps | null = React.useMemo(() => {
@@ -115,7 +116,7 @@ export default function GerenciarMetas() {
           planoContas={actions_plano_contas?.array_plano_contas}
           setModalMetas={setModalNovaMeta}
           show={modalNovaMeta}
-          handleSalvar={handleSalvar} 
+          handleSalvar={handleSalvar}
         />}
 
       {

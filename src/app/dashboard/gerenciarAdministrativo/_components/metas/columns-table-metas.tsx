@@ -3,27 +3,61 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { MetaProps } from "../../_types/types"
 import { Checkbox } from "@/components/ui/checkbox"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 export const columnsMetas: ColumnDef<MetaProps>[] = [
-   {
-      id: "select",
-      header: () => null,
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Selecionar linha"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
+  {
+    id: "select",
+    header: () => null,
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Selecionar linha"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: "descricao",
     header: "Descrição",
     cell: ({ row }) => (
       <div className="text-left w-full">{row.getValue("descricao")}</div>
     ),
+  },
+  {
+    accessorKey: "categoria",
+    header: ({ column }) => (
+      <div className="flex items-center gap-2">
+        Categoria
+        <Select
+          onValueChange={value => column.setFilterValue(value === "todas" ? undefined : value)}
+          defaultValue="todas"
+        >
+          <SelectTrigger className="w-[100px] h-8 text-xs border rounded">
+            <SelectValue placeholder="Todas" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todas">Todas</SelectItem>
+            <SelectItem value="vendas">Vendas</SelectItem>
+            <SelectItem value="gastos">Gastos</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+    ),
+    cell: ({ row }) => {
+      const meta = row.original as MetaProps
+      return meta.id_conta ? "Gastos" : "Vendas"
+    },
   },
   {
     accessorKey: "date",

@@ -48,22 +48,9 @@ export default function gerenciarAdministrativo() {
 
 
 
-
   const setarDados = (planoContas: Array<PlanoContasProps>, grupos: Array<GruposProps>) => {
     setArrayPlanoContas(planoContas)
     setArrayGrupos(grupos)
-  }
-  const setarPlanos = (planos: Array<PlanosProps>) => {
-    setArrayPlanos(planos)
-
-  }
-  const setarConv = (conv: Array<ConvProps>) => {
-    setArrayConv(conv)
-
-  }
-  const setarMetas = (met: Array<MetasProps>) => {
-    setArrayMetas(met)
-
   }
 
   useEffect(() => {

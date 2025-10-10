@@ -14,7 +14,7 @@ export default function ProdutosConvalescentes() {
 
   const { limparDados } = useContext(AuthContext)
   const [open, setOpen] = useState(false)
-  const {produto, deletarProduto, listarProdutos, setProduto, onSave, listaProdutos } = useActionsProdConvalescenca()
+  const { produto, deletarProduto, listarProdutos, setProduto, onSave, listaProdutos } = useActionsProdConvalescenca()
 
   const handleSalvar = useHandleSalvarProduto({
 
@@ -26,11 +26,11 @@ export default function ProdutosConvalescentes() {
   })
 
   return (
-    <div className="px-6 mt-4 space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-semibold border-b-gray-300 text-gray-900">
+    <div className="flex flex-col w-full h-screen lg:p-6 gap-2">
+      <div className="flex-shrink-0 flex flex-col lg:flex-row w-full items-start lg:items-center justify-between gap-4 p-2">
+        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
           Produtos Convalescença
-        </h2>
+        </h3>
         <Button
           onClick={() => {
             setProduto(null);

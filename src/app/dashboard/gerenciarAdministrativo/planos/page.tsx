@@ -25,11 +25,11 @@ export default function Planos() {
 
 
   return (
-    <div className="px-6 mt-4 space-y-4">
+    <div className="flex flex-col w-full h-screen lg:p-6 gap-2">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-semibold border-b-gray-300 text-gray-900">
+        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
           Planos
-        </h2>
+        </h3>
         <Button
           onClick={() => {
             setPlano(null);
@@ -50,7 +50,7 @@ export default function Planos() {
           onEdit: (plano: PlanosProps) => {
             setOpen(true)
             setPlano(plano)
-            
+
           }
         })}
         data={listaPlanos}

@@ -89,14 +89,14 @@ export function columnsProdutos({
 
         return (
           <div className="flex gap-2">
-             <Tooltip className="z-20" id="toolId" />
+            <Tooltip className="z-20" id="toolId" />
             <Button
               data-tooltip-id="toolId"
               data-tooltip-content={'Editar'}
               variant="outline"
               size="icon"
               onClick={() => onEdit?.(plano)}
-              className="h-8 w-8"
+              className="h-6 w-6"
             >
               <HiPencil className="h-4 w-4" />
             </Button>
@@ -106,7 +106,7 @@ export function columnsProdutos({
               variant="destructive"
               size="icon"
               onClick={() => onDelete?.(plano)}
-              className="h-8 w-8"
+              className="h-6 w-6"
             >
               <IoMdTrash className="h-4 w-4" />
             </Button>

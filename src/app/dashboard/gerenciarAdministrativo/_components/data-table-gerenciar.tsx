@@ -122,7 +122,6 @@ export function DataTableGerenciar<TData,>({
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
-                      className="sticky top-0 z-10 bg-white text-black whitespace-nowrap px-1 py-1 sm:px-1 sm:py-1 border-b text-left"
                     >
                       {header.isPlaceholder
                         ? null
