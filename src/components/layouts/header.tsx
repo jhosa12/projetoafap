@@ -4,18 +4,18 @@ import { useContext, useState } from "react";
 import { Avatar, Label } from "flowbite-react";
 import { AuthContext } from "@/store/AuthContext";
 import Image from "next/image";
-import {  
-  Menu, 
-  Settings, 
-  LayoutDashboard, 
-  Box, 
-  RefreshCw, 
-  CreditCard, 
-  Users, 
-  PieChart, 
-  Gift, 
-  ShoppingCart, 
-  UserCog, 
+import {
+  Menu,
+  Settings,
+  LayoutDashboard,
+  Box,
+  RefreshCw,
+  CreditCard,
+  Users,
+  PieChart,
+  Gift,
+  ShoppingCart,
+  UserCog,
   Building2,
   FileSearch,
   Activity,
@@ -58,7 +58,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ModalAtivosInativos } from "../modals/modalAtivosInativos";
 import LinkNavigate from "../Link";
 
-import { Historico } from "@/app/dashboard/vendas/_components/historico/ScreenHistorico";
+import { Historico } from "@/app/dashboard/gerenciarAdministrativo/_components/metas/historico/ScreenHistorico";
 import { CompanySelectionModal } from "@/app/dashboard/empresa/_components/modal_filial";
 import { Badge } from "../ui/badge";
 import { NotBeforeError } from "jsonwebtoken";
@@ -79,12 +79,12 @@ export function Header({ path }: { path?: string }) {
   } = useContext(AuthContext);
 
   const [openAtivos, setOpenAtivos] = useState(false);
-  const [openFilial,setOpenFilial] = useState(true)
-  const [openHistorico,setOpenHistorico]=useState(false)
+  const [openFilial, setOpenFilial] = useState(true)
+  const [openHistorico, setOpenHistorico] = useState(false)
 
- const isAllDisable = !!!infoEmpresa?.id
-  const empresasPermitidas =  empresas
-  ?.filter((emp) => permissoes.includes(`EMP${emp.id}`))
+  const isAllDisable = !!!infoEmpresa?.id
+  const empresasPermitidas = empresas
+    ?.filter((emp) => permissoes.includes(`EMP${emp.id}`))
 
   return (
     <div className="w-full border-b border-gray-200 bg-white px-3 py-1">
@@ -186,7 +186,7 @@ export function Header({ path }: { path?: string }) {
           <Menubar className="border-none shadow-none bg-transparent">
             {/* Administrativo */}
             <MenubarMenu>
-              <MenubarTrigger 
+              <MenubarTrigger
                 disabled={isAllDisable}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md data-[highlighted]:bg-accent data-[state=open]:bg-accent hover:bg-accent/80 transition-colors"
               >
@@ -264,16 +264,16 @@ export function Header({ path }: { path?: string }) {
                   </MenubarSubContent>
                 </MenubarSub>
 
-                
+
 
 
                 <MenubarSub>
-                  <MenubarSubTrigger  className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
-                  <PieChart className="h-4 w-4" />
+                  <MenubarSubTrigger className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
+                    <PieChart className="h-4 w-4" />
                     Financeiro
                   </MenubarSubTrigger>
                   <MenubarSubContent >
-                    <MenubarItem><LinkNavigate  href="/dashboard/financeiro/plano_contas">Plano de Contas</LinkNavigate></MenubarItem>
+                    <MenubarItem><LinkNavigate href="/dashboard/financeiro/plano_contas">Plano de Contas</LinkNavigate></MenubarItem>
                     <MenubarItem>Fechamento de Caixa</MenubarItem>
                     <MenubarItem>Contas a Pagar/Receber</MenubarItem>
                   </MenubarSubContent>
@@ -286,7 +286,7 @@ export function Header({ path }: { path?: string }) {
                 </MenubarItem>
 
                 <MenubarSub>
-                  <MenubarSubTrigger 
+                  <MenubarSubTrigger
                     disabled={isAllDisable}
                     className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer"
                   >
@@ -313,7 +313,7 @@ export function Header({ path }: { path?: string }) {
 
             {/* Comercial */}
             <MenubarMenu>
-              <MenubarTrigger 
+              <MenubarTrigger
                 disabled={isAllDisable}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md data-[highlighted]:bg-accent data-[state=open]:bg-accent hover:bg-accent/80 transition-colors"
               >
@@ -333,12 +333,12 @@ export function Header({ path }: { path?: string }) {
                         Acompanhamento
                       </LinkNavigate>
                     </MenubarItem>
-                    <MenubarItem   className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer"
-                  onClick={() => setOpenHistorico(true)}>
-                      
-                        <FileClock className="h-4 w-4" />
-                        <span>Historico</span>
-                     
+                    <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer"
+                      onClick={() => setOpenHistorico(true)}>
+
+                      <FileClock className="h-4 w-4" />
+                      <span>Historico</span>
+
                     </MenubarItem>
                   </MenubarSubContent>
                 </MenubarSub>
@@ -350,15 +350,15 @@ export function Header({ path }: { path?: string }) {
                   <Users className="h-4 w-4" />
                   <span>Ativos/Inativos</span>
                 </MenubarItem>
-                
+
                 <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
                   <Users className="h-4 w-4" />
                   <LinkNavigate href="/dashboard/conveniados" >
                     Conveniados
                   </LinkNavigate>
                 </MenubarItem>
-                
-                <MenubarItem 
+
+                <MenubarItem
                   disabled={!permissoes?.includes("COM2.0")}
                   className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -367,7 +367,7 @@ export function Header({ path }: { path?: string }) {
                     DashBoard
                   </LinkNavigate>
                 </MenubarItem>
-                
+
                 <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
                   <MapPin className="h-4 w-4" />
                   <LinkNavigate href="/dashboard/cobranca/rotas" >
@@ -379,7 +379,7 @@ export function Header({ path }: { path?: string }) {
 
             {/* Serviços */}
             <MenubarMenu>
-              <MenubarTrigger 
+              <MenubarTrigger
                 disabled={isAllDisable}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md data-[highlighted]:bg-accent data-[state=open]:bg-accent hover:bg-accent/80 transition-colors"
               >
@@ -404,7 +404,7 @@ export function Header({ path }: { path?: string }) {
 
             {/* Configurações */}
             <MenubarMenu>
-              <MenubarTrigger 
+              <MenubarTrigger
                 disabled={isAllDisable}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md data-[highlighted]:bg-accent data-[state=open]:bg-accent hover:bg-accent/80 transition-colors"
               >
@@ -412,7 +412,7 @@ export function Header({ path }: { path?: string }) {
                 Configurações
               </MenubarTrigger>
               <MenubarContent className="min-w-[180px] p-2">
-                <MenubarItem 
+                <MenubarItem
                   disabled={!permissoes.includes("CFG1")}
                   className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -421,8 +421,8 @@ export function Header({ path }: { path?: string }) {
                     Usuários
                   </LinkNavigate>
                 </MenubarItem>
-                
-                <MenubarItem 
+
+                <MenubarItem
                   disabled={!permissoes.includes("CFG1")}
                   className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -431,7 +431,7 @@ export function Header({ path }: { path?: string }) {
                     Empresa
                   </LinkNavigate>
                 </MenubarItem>
-                
+
                 <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
                   <FileSearch className="h-4 w-4" />
                   <LinkNavigate href="/dashboard/auditoria" >
@@ -449,7 +449,7 @@ export function Header({ path }: { path?: string }) {
             <Bell className="h-5 w-5 text-foreground" />
             <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500"></span>
           </button>
-          
+
           <Button
             variant="outline"
             size="sm"
@@ -459,14 +459,14 @@ export function Header({ path }: { path?: string }) {
             <Home className="h-3.5 w-3.5" />
             <span>TROCAR FILIAL</span>
           </Button>
-          
+
           <div className="relative group">
             <button className="flex items-center gap-2 p-1.5 pr-3 rounded-full hover:bg-accent transition-colors">
               <Avatar size="sm" rounded img={usuario?.image} />
               <span className="text-xs font-medium">{usuario?.nome}</span>
               <ChevronDown className="h-4 w-4 opacity-70" />
             </button>
-            
+
             <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-popover border border-border/50 py-1 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
               <button
                 onClick={signOut}
@@ -492,15 +492,15 @@ export function Header({ path }: { path?: string }) {
         bairrosEmpresa={bairrosEmpresa}
       />
 
-{ openHistorico && <Historico open={openHistorico} setOpen={setOpenHistorico} />}
+      {openHistorico && <Historico open={openHistorico} setOpen={setOpenHistorico} />}
 
-<CompanySelectionModal
-  companies={empresasPermitidas}
-  onOpenChange={()=>setOpenFilial(false)}
-  onSelectCompany={(emp)=>setSelectEmp(emp.id)}
-  open={openFilial}
+      <CompanySelectionModal
+        companies={empresasPermitidas}
+        onOpenChange={() => setOpenFilial(false)}
+        onSelectCompany={(emp) => setSelectEmp(emp.id)}
+        open={openFilial}
 
-/>
+      />
     </div>
   );
 }

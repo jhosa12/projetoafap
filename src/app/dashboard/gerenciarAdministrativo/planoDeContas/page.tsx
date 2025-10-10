@@ -1,6 +1,5 @@
 'use client';
 
-import { GerenciarMetas } from "@/app/dashboard/gerenciarAdministrativo/_components/metas/metas";
 import { PlanoContas } from "@/app/dashboard/gerenciarAdministrativo/_components/planoContas/planoContas";
 import { AuthContext } from "@/store/AuthContext";
 import { api } from "@/lib/axios/apiClient"
@@ -83,10 +82,6 @@ export default function gerenciarAdministrativo() {
   }, [usuario]);
 
 
-
-
-
-
   async function carregarDados() {
     const response = await api.get('/gerenciarAdministrativo')
     setarDados(response.data.plano_contas, response.data.grupos)
@@ -131,16 +126,6 @@ export default function gerenciarAdministrativo() {
             arrayPlanoContas={arrayPlanoContas}
             arraygrupos={arraygrupos}
             setarDados={setarDados}
-          />
-        </TabsContent>
-
-
-        <TabsContent value="metas" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
-          <GerenciarMetas
-            planoContas={arrayPlanoContas}
-            empresas={empresas}
-            id_empresa={selectEmp}
-            setores={arraygrupos}
           />
         </TabsContent>
 

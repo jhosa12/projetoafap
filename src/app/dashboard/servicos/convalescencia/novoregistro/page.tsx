@@ -114,7 +114,7 @@ export default function ConvalescenciaNovo() {
     });
 
     // Corrigir uso do hook: agora passa setModal e reset do formulário para reset imediato
-    const {handleSelecionarTitular} = useSelecionarTitular(carregarDados, limparDados, setModal, methods.reset);
+    const { handleSelecionarTitular } = useSelecionarTitular(carregarDados, limparDados, setModal, methods.reset);
 
 
     // Carregar dados para edição
@@ -197,12 +197,12 @@ export default function ConvalescenciaNovo() {
 
             {modal.busca && (
                 <ModalBuscaConv
-                  //  carregarDados={carregarDados}
+                    //  carregarDados={carregarDados}
                     selectEmp={infoEmpresa?.id ?? ""}
                     visible={modal.busca}
                     setVisible={() => setModal({ ...modal, busca: false })}
                     filtros={filtrosDaPagina}
-                      onSelecionar={handleSelecionarTitular}
+                    onSelecionar={handleSelecionarTitular}
                 />
             )}
 

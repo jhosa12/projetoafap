@@ -34,6 +34,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { ButtonGroup } from "@/components/ui/button-group";
 
 export default function Convalescente() {
     // 1. Estados
@@ -129,17 +130,16 @@ export default function Convalescente() {
 
     return (
 
-        <div className="flex flex-col w-full h-screen p-4 lg:p-6 gap-4">
+        <div className="flex flex-col w-full h-screen lg:p-6 gap-4">
             <Tooltip className="z-20" id="toolId" />
 
-            <div className="flex-shrink-0 flex flex-col lg:flex-row w-full items-start lg:items-center justify-between gap-4 p-2 border-b">
+            <div className="flex-shrink-0 flex flex-col lg:flex-row w-full items-start lg:items-center justify-between gap-4 p-2">
                 <h1 className="scroll-m-20 text-gray-800 text-2xl font-semibold tracking-tight whitespace-nowrap">
                     Controle Convalescente
                 </h1>
 
                 <div className="flex flex-col md:flex-row w-full md:w-auto items-end gap-4">
-
-                    <div className="flex flex-wrap gap-4 w-full justify-start md:w-auto md:justify-end">
+                    <ButtonGroup className="ml-auto">
                         <Button
                             variant="outline"
                             onClick={() => handleImprimirModal('contrato')}
@@ -168,18 +168,18 @@ export default function Convalescente() {
                             onClick={handleExcluir}
                             className="flex items-center gap-2"
                         >
-                            <Trash /> Excluir
+                            <span className="flex items-center text-red-600">
+                                <Trash className="mr-1 h-4 w-4 text-red-600" />
+                                Excluir
+                            </span>
                         </Button>
-                    </div>
-
-                    <div className="flex-shrink-0">
                         <Button
                             data-tooltip-id="toolId"
                             data-tooltip-content={'Adicionar Novo Registro'}
                         >
                             <Link
                                 onClick={() => setarListaConv({
-                                    id_conv_global:undefined,
+                                    id_conv_global: undefined,
                                     bairro: '',
                                     bairro_r: '',
                                     cep: '',
@@ -221,7 +221,7 @@ export default function Convalescente() {
                                 <Plus size={36} /> Add
                             </Link>
                         </Button>
-                    </div>
+                    </ButtonGroup>
                 </div>
             </div>
             <div className="flex-grow min-h-0">
