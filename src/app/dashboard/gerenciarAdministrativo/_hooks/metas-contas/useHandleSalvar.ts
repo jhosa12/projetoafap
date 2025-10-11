@@ -10,7 +10,7 @@ export function useHandleSalvar(
   listarMetas: () => void,
   setLinhaSelecionada: (open: boolean) => void
 ) {
-  
+
   const handleSalvar: SubmitHandler<MetaProps> = async (data) => {
     try {
       const resultado = await onSave(data);
@@ -23,7 +23,7 @@ export function useHandleSalvar(
 
       }
     } catch (error: any) {
-      toast.error("Já existe um óbito para esta pessoa.");
+      toast.error("Erro ao salvar meta. Por favor, tente novamente!");
     }
   };
 

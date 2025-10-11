@@ -10,7 +10,6 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { HiClipboardList } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Veiculos } from "@/app/dashboard/gerenciarAdministrativo/_components/veiculos/veiculos";
 import { toast } from "sonner";
 import { PlanoContasProps } from "../../financeiro/_types/types";
 import { GruposProps } from "@/types/grupos";
@@ -113,13 +112,6 @@ export default function gerenciarAdministrativo() {
             arrayPlanoContas={arrayPlanoContas}
             arraygrupos={arraygrupos}
             setarDados={setarDados}
-          />
-        </TabsContent>
-
-        <TabsContent value="veiculos" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
-          <Veiculos
-            empresas={empresas}
-            id_empresa={selectEmp}
           />
         </TabsContent>
       </Tabs>

@@ -41,7 +41,7 @@ interface DataTableProps<TData> {
   setRowSelection?: React.Dispatch<React.SetStateAction<RowSelectionState>>
 }
 
-export function DataTableGerenciar<TData,>({
+export function DataTableSemSelecao<TData,>({
   columns,
   data,
   children,

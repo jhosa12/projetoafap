@@ -1,6 +1,6 @@
 'use client'
 import { ProdutosProps } from "@/types/produtos";
-import { DataTableGerenciar } from "../_components/data-table-gerenciar";
+import { DataTableGerenciar } from "../../../../components/data-table-sem-selecao";
 import { columnsProdutos } from "../_components/produtosConvalescenca/columns-table-produtos";
 import useActionsProdConvalescenca from "../_hooks/produtos-convalescenca/useActionsProdConvalescenca";
 import { useContext, useState } from "react";

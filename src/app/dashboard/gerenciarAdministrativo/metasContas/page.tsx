@@ -189,7 +189,6 @@ export default function GerenciarMetas() {
 
             }}
             variant="outline"
-            className="flex items-center gap-2"
           >
             <span className="flex items-center text-red-600">
               <Trash className="mr-1 h-4 w-4 text-red-600" />

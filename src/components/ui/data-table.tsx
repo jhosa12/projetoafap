@@ -121,11 +121,11 @@ export function DataTable<TData,>({
       <div className={"relative w-full overflow-hidden border rounded-md"}>
         <div className="overflow-x-auto overflow-y-auto h-full w-full">
           <Table className="min-w-full relative">
-            <TableHeader className="text-xs uppercase">
+            <TableHeader className="text-xs capitalize">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <TableHead className="sticky top-0 z-10 bg-white text-black whitespace-nowrap px-2 py-2 sm:px-4 sm:py-3 border-b" key={header.id}>
+                    <TableHead className="sticky top-0 z-10 bg-white whitespace-nowrap px-2 py-2 sm:px-4 sm:py-3 border-b" key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(header.column.columnDef.header, header.getContext())}

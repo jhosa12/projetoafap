@@ -8,7 +8,7 @@ import { AuthContext } from "@/store/AuthContext";
 import { useHandleSalvar } from "../_hooks/planos/useHandleSalvar";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DataTableGerenciar } from "../_components/data-table-gerenciar";
+import { DataTableSemSelecao } from "@/components/data-table-sem-selecao";
 
 
 export default function Planos() {
@@ -43,7 +43,7 @@ export default function Planos() {
         </Button>
       </div>
 
-      <DataTableGerenciar
+      <DataTableSemSelecao
         columns={columnsPlanos({
           onDelete: (plano: PlanosProps) => deletarPlano(plano.id_plano),
 
