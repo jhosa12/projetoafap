@@ -1,6 +1,5 @@
 'use client';
 
-import { PlanoContas } from "@/app/dashboard/gerenciarAdministrativo/_components/planoContas/planoContas";
 import { AuthContext } from "@/store/AuthContext";
 import { api } from "@/lib/axios/apiClient"
 import Head from "next/head"
@@ -15,6 +14,7 @@ import { PlanoContasProps } from "../../financeiro/_types/types";
 import { GruposProps } from "@/types/grupos";
 import { MetasProps } from "@/types/metas";
 import { PlanosProps } from "@/types/planos";
+import { PlanoContas } from "../_components/plano-contas/modal-adicionar-conta";
 
 
 // Já tem seu type 

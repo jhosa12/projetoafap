@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { SubmitHandler } from "react-hook-form";
 import { MetaProps } from "../../_types/types";
-import useApiPost from "@/hooks/useApiPost";
 import { AuthContext } from "@/store/AuthContext";
 
 export interface FormFiltro {
@@ -16,13 +15,13 @@ export interface FormFiltro {
 export const useActionsMetas = (id_empresa: string | undefined, isEditMode?: boolean, filtros?: FormFiltro) => {
   const [arrayMetas, setArrayMetas] = useState<MetaProps[]>([]);
   const { usuario, signOut } = useContext(AuthContext)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (!usuario) return signOut();
     listarMetas();
   }, [usuario]);
 
-  const [loading, setLoading] = useState(false)
 
   const listarMetas = async () => {
     if (!id_empresa) {

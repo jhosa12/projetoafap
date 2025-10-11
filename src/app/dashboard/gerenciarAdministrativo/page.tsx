@@ -1,7 +1,5 @@
 'use client';
 
-import { GerenciarMetas } from "@/app/dashboard/gerenciarAdministrativo/_components/metas/metas";
-import { PlanoContas } from "@/app/dashboard/gerenciarAdministrativo/_components/planoContas/planoContas";
 import { AuthContext } from "@/store/AuthContext";
 import { api } from "@/lib/axios/apiClient"
 import Head from "next/head"
@@ -10,9 +8,10 @@ import { BiSolidInjection } from "react-icons/bi";
 import { FaCalendarAlt } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Veiculos } from "@/app/dashboard/gerenciarAdministrativo/_components/veiculos/veiculos";
 import { toast } from "sonner";
 import { PlanoContasProps } from "../financeiro/_types/types";
+import { PlanoContas } from "./_components/plano-contas/modal-adicionar-conta";
+
 
 
 interface MetasProps {
@@ -148,22 +147,6 @@ export default function gerenciarAdministrativo() {
             arrayPlanoContas={arrayPlanoContas}
             arraygrupos={arraygrupos}
             setarDados={setarDados}
-          />
-        </TabsContent>
-
-        <TabsContent value="metas" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
-          <GerenciarMetas
-            planoContas={arrayPlanoContas}
-            empresas={empresas}
-            id_empresa={selectEmp}
-            setores={arraygrupos}
-          />
-        </TabsContent>
-
-        <TabsContent value="veiculos" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
-          <Veiculos
-            empresas={empresas}
-            id_empresa={selectEmp}
           />
         </TabsContent>
       </Tabs>

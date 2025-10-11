@@ -1,6 +1,6 @@
 import { api } from "@/lib/axios/apiClient"
-import {  useEffect, useState } from "react"
-import { IoIosAddCircle} from "react-icons/io";
+import { useEffect, useState } from "react"
+import { IoIosAddCircle } from "react-icons/io";
 import { construirHierarquia, NodoConta } from "@/utils/listaContas";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { roboto_Mono } from "@/fonts/fonts";
@@ -14,227 +14,227 @@ import { PlanoContasProps } from "@/app/dashboard/financeiro/_types/types";
 
 
 
-interface GruposProps{
-    id_grupo:number,
-    descricao:string
+interface GruposProps {
+    id_grupo: number,
+    descricao: string
 }
-interface DadosProps{
-    carregarDados:()=>Promise<void>
-    arrayPlanoContas:Array<PlanoContasProps>,
-    arraygrupos:Array<GruposProps>
-    setarDados:(planoContas:Array<PlanoContasProps>,grupos:Array<GruposProps>)=>void
+interface DadosProps {
+    carregarDados: () => Promise<void>
+    arrayPlanoContas: Array<PlanoContasProps>,
+    arraygrupos: Array<GruposProps>
+    setarDados: (planoContas: Array<PlanoContasProps>, grupos: Array<GruposProps>) => void
 }
 
 
-export function PlanoContas({carregarDados,arrayPlanoContas,arraygrupos,setarDados}:DadosProps){
-    const [descricaoGrupo,setDescricaoGrupo] =useState('')
-    const [modal,setModal] = useState<{[key:string]:boolean}>({
-        conta:false
+export function PlanoContas({ carregarDados, arrayPlanoContas, arraygrupos, setarDados }: DadosProps) {
+    const [descricaoGrupo, setDescricaoGrupo] = useState('')
+    const [modal, setModal] = useState<{ [key: string]: boolean }>({
+        conta: false
     })
- 
+
 
 
     const handleTipoChange = (index: number, event: React.ChangeEvent<HTMLSelectElement>) => {
         const newPlanoContas = [...arrayPlanoContas];
         newPlanoContas[index].tipo = event.target.value;
-        setarDados(newPlanoContas,arraygrupos);
+        setarDados(newPlanoContas, arraygrupos);
     };
 
-    const handleDescricaoChange=(index:number,event:React.ChangeEvent<HTMLInputElement>)=>{
+    const handleDescricaoChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
         const newPlanoContas = [...arrayPlanoContas];
-        newPlanoContas[index].descricao =event.target.value;
-        setarDados(newPlanoContas,arraygrupos)
+        newPlanoContas[index].descricao = event.target.value;
+        setarDados(newPlanoContas, arraygrupos)
     }
-    const handleGrupoChange=(index:number,event:React.ChangeEvent<HTMLInputElement>)=>{
+    const handleGrupoChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
         const newgrupo = [...arraygrupos];
-        newgrupo[index].descricao =event.target.value;
-        setarDados(arrayPlanoContas,newgrupo)
+        newgrupo[index].descricao = event.target.value;
+        setarDados(arrayPlanoContas, newgrupo)
     }
 
 
 
- 
 
-    const editarPlanoConta = async(index:number)=>{
+
+    const editarPlanoConta = async (index: number) => {
         const conta = arrayPlanoContas[index]
 
         toast.promise(
-            api.put('/gerenciarAdministrativo/editarplanoconta',{
-                conta:conta.conta,
+            api.put('/gerenciarAdministrativo/editarplanoconta', {
+                conta: conta.conta,
                 id_grupo: conta.id_grupo,
                 descricao: conta.descricao,
                 tipo: conta.tipo,
-                perm_lanc:conta.perm_lanc,
-                data: conta.data, 
-               
+                perm_lanc: conta.perm_lanc,
+                data: conta.data,
+
 
             }),
             {
-                loading:'Editando...',
-                success:()=>{
+                loading: 'Editando...',
+                success: () => {
                     carregarDados()
-                    return'Editado com sucesso'
+                    return 'Editado com sucesso'
                 },
-                error:'Erro ao editar plano de conta'
+                error: 'Erro ao editar plano de conta'
             }
         )
     }
 
-const deletarPlanoConta = async(conta:string)=>{
+    const deletarPlanoConta = async (conta: string) => {
 
 
-    toast.promise(
-        api.delete('/gerenciarAdministrativo/deletarplanoconta',{
-            data:{
-                conta,
-            }
-        }),{
-            loading:'Deletando',
-            success:()=>{
-                carregarDados()
-                return'Deletado com sucesso!'
-            },
-            error:'Erro ao deletar plano de conta'
-        }
-    )
-}
-
-
-
-const editarGrupo = async(index:number)=>{
-    const grupo = arraygrupos[index]
-
-    toast.promise(
-        api.put('/gerenciarAdministrativo/editarGrupo',{
-           
-            id_grupo: grupo.id_grupo,
-            descricao: grupo.descricao,
-          
-        
-
-        }),
-        {
-            loading:'Editando',
-            success:()=>{
-                carregarDados()
-                return'Editado com sucesso'
-            },
-            error:'Erro ao editar setor'
-        }
-    )
-}
-
-const deletarGrupo = async(id_grupo:number)=>{
-
-    toast.promise(
-        api.delete('/gerenciarAdministrativo/deletarGrupo',{
-            data:{
-                id_grupo,
-            }
-        }),{
-            loading:'Deletando',
-            success:()=>{
-                carregarDados()
-                return'Deletado com sucesso!'
-            },
-            error:'Erro ao deletar setor'
-        }
-    )
-
-}
-const adicionarGrupo = async()=>{
-    if(!descricaoGrupo){
-        toast.info('Preencha todos os campos!')
-        return;
-    }
-    
-    toast.promise(
-        api.post('/gerenciarAdministrativo/adicionarGrupo',{
-               
-            descricao:descricaoGrupo.toUpperCase(),
-            userId:3
-        
-    }),{
-        loading:'Adicionando....',
-        success:(response)=>{
-            setarDados(arrayPlanoContas,[...arraygrupos,response.data])
-            return'Adicionado com sucesso'
-        }
-
-    }
-    )
- 
-    
-}
-
-const adicionarPlanoContas = async(data:NovoPlanoProps)=>{
-    if(!data.conta||!data.tipo||!data.descricao){
-        toast.info('Preencha todos os campos!')
-        return;
-    }
-
-    const dataAtual = new Date();
-    dataAtual.setTime(dataAtual.getTime() - dataAtual.getTimezoneOffset() * 60 * 1000);
-    const horaAtual = dataAtual.toLocaleTimeString('pt-BR', { hour12: false, timeZone: 'UTC' });
-    
         toast.promise(
-            api.post('/gerenciarAdministrativo/adicionarPlanoContas',{
-                conta:data.conta,
-                descricao:data?.descricao?.toUpperCase(),
-                tipo:data.tipo,
-                perm_lanc:data.perm_lanc,
-                data:dataAtual,
-                hora:horaAtual
-            
-        }),{
-            loading:'Adicionando....',
-            success:(response)=>{
+            api.delete('/gerenciarAdministrativo/deletarplanoconta', {
+                data: {
+                    conta,
+                }
+            }), {
+            loading: 'Deletando',
+            success: () => {
                 carregarDados()
-                return'Adicionado com sucesso'
+                return 'Deletado com sucesso!'
             },
-            error:'Erro ao adicionar Conta'
+            error: 'Erro ao deletar plano de conta'
+        }
+        )
+    }
+
+
+
+    const editarGrupo = async (index: number) => {
+        const grupo = arraygrupos[index]
+
+        toast.promise(
+            api.put('/gerenciarAdministrativo/editarGrupo', {
+
+                id_grupo: grupo.id_grupo,
+                descricao: grupo.descricao,
+
+
+
+            }),
+            {
+                loading: 'Editando',
+                success: () => {
+                    carregarDados()
+                    return 'Editado com sucesso'
+                },
+                error: 'Erro ao editar setor'
+            }
+        )
+    }
+
+    const deletarGrupo = async (id_grupo: number) => {
+
+        toast.promise(
+            api.delete('/gerenciarAdministrativo/deletarGrupo', {
+                data: {
+                    id_grupo,
+                }
+            }), {
+            loading: 'Deletando',
+            success: () => {
+                carregarDados()
+                return 'Deletado com sucesso!'
+            },
+            error: 'Erro ao deletar setor'
+        }
+        )
+
+    }
+    const adicionarGrupo = async () => {
+        if (!descricaoGrupo) {
+            toast.info('Preencha todos os campos!')
+            return;
+        }
+
+        toast.promise(
+            api.post('/gerenciarAdministrativo/adicionarGrupo', {
+
+                descricao: descricaoGrupo.toUpperCase(),
+                userId: 3
+
+            }), {
+            loading: 'Adicionando....',
+            success: (response) => {
+                setarDados(arrayPlanoContas, [...arraygrupos, response.data])
+                return 'Adicionado com sucesso'
+            }
+
+        }
+        )
+
+
+    }
+
+    const adicionarPlanoContas = async (data: NovoPlanoProps) => {
+        if (!data.conta || !data.tipo || !data.descricao) {
+            toast.info('Preencha todos os campos!')
+            return;
+        }
+
+        const dataAtual = new Date();
+        dataAtual.setTime(dataAtual.getTime() - dataAtual.getTimezoneOffset() * 60 * 1000);
+        const horaAtual = dataAtual.toLocaleTimeString('pt-BR', { hour12: false, timeZone: 'UTC' });
+
+        toast.promise(
+            api.post('/gerenciarAdministrativo/adicionarPlanoContas', {
+                conta: data.conta,
+                descricao: data?.descricao?.toUpperCase(),
+                tipo: data.tipo,
+                perm_lanc: data.perm_lanc,
+                data: dataAtual,
+                hora: horaAtual
+
+            }), {
+            loading: 'Adicionando....',
+            success: (response) => {
+                carregarDados()
+                return 'Adicionado com sucesso'
+            },
+            error: 'Erro ao adicionar Conta'
         }
         )
 
 
 
-       // setarDados([...arrayPlanoContas,response.data],arraygrupos)
-}
+        // setarDados([...arrayPlanoContas,response.data],arraygrupos)
+    }
 
 
 
-useEffect(()=>{
-    console.log(construirHierarquia(arrayPlanoContas))
-},[arrayPlanoContas])
+    useEffect(() => {
+        console.log(construirHierarquia(arrayPlanoContas))
+    }, [arrayPlanoContas])
 
 
 
 
 
 
-    return(
+    return (
         <div className="gap-2 p-2">
             <div className="inline-flex gap-2">
-                <Button size={'sm'} variant={'outline'} onClick={()=>setModal({conta:true})}>
+                <Button size={'sm'} variant={'outline'} onClick={() => setModal({ conta: true })}>
                     <IoIosAddCircle />Adicionar Conta</Button>
             </div>
-            <ModalAdicionar adicionar={adicionarPlanoContas} open={modal.conta} onClose={()=>setModal({conta:false})}/>
-        <div className="inline-flex rounded-lg gap-2 overflow-y-auto bg-white justify-between p-2 w-full max-h-[calc(100vh-120px)]  ">
+            <ModalAdicionar adicionar={adicionarPlanoContas} open={modal.conta} onClose={() => setModal({ conta: false })} />
+            <div className="inline-flex rounded-lg gap-2 overflow-y-auto bg-white justify-between p-2 w-full max-h-[calc(100vh-120px)]  ">
 
 
-<Accordion type="single" collapsible className="w-full px-2">
-            {construirHierarquia(arrayPlanoContas)?.map((item, index) => (
-                <GrupoItem key={item.id} item={item} />
-            ))}
-</Accordion>
-
-
-
+                <Accordion type="single" collapsible className="w-full px-2">
+                    {construirHierarquia(arrayPlanoContas)?.map((item, index) => (
+                        <GrupoItem key={item.id} item={item} />
+                    ))}
+                </Accordion>
 
 
 
 
-       {/* <Card className="w-full text-black font-semibold" theme={{root:{children:"flex h-full flex-col  gap-2 p-4"}}}>
+
+
+
+                {/* <Card className="w-full text-black font-semibold" theme={{root:{children:"flex h-full flex-col  gap-2 p-4"}}}>
         <h1 className="flex w-full text-gray-800 font-medium">SETORES</h1>
             <div className="flex flex-row p-2 gap-2">
           
@@ -346,7 +346,7 @@ useEffect(()=>{
         </table>
     
         </Card>*/}
-        </div>
+            </div>
         </div>
     )
 }
@@ -355,105 +355,101 @@ useEffect(()=>{
 
 
 
-const GrupoItem = ({ item }: {item:NodoConta}) => {
-  return (
+const GrupoItem = ({ item }: { item: NodoConta }) => {
+    return (
+        <AccordionItem value={item.id} >
+            <AccordionTrigger className={`${roboto_Mono.className} flex flex-row-reverse justify-end items-center gap-2 text-[11px] uppercase`}>
+                {item.id}-{item.descricao}
+            </AccordionTrigger>
+            <AccordionContent>
+                {item.subcontas && item.subcontas.length > 0 ? (
+                    <Accordion type="single" collapsible className="pl-8">
+                        {item.subcontas.map((subgrupo, index) => (
+                            <GrupoItem key={subgrupo.id} item={subgrupo} />
+                        ))}
+                    </Accordion>
+                ) : <p className="text-[10px] italic">Nenhum subgrupo</p>
+                }
+            </AccordionContent>
+        </AccordionItem>
 
- 
-        
-         
-               <AccordionItem value={item.id} >
-                <AccordionTrigger className={`${roboto_Mono.className} flex flex-row-reverse justify-end items-center gap-2 text-[11px] uppercase`}>
-                    {item.id}-{item.descricao}
-                    </AccordionTrigger>
-                <AccordionContent>
-                    {item.subcontas && item.subcontas.length > 0 ?(
-                        <Accordion type="single" collapsible className="pl-8">
-                           {item.subcontas.map((subgrupo, index) => (
-                               <GrupoItem key={subgrupo.id} item={subgrupo} />
-                           ))}
-                        </Accordion>
-                    ):<p className="text-[10px] italic">Nenhum subgrupo</p>
-                    }
-                </AccordionContent>
-               </AccordionItem>
-
-  )
+    )
 }
 
 
-interface NovoPlanoProps{
-    conta:string,
-    descricao:string,
-    tipo:string,
-    perm_lanc:string,
-    data:string,
-    hora:string
+interface NovoPlanoProps {
+    conta: string,
+    descricao: string,
+    tipo: string,
+    perm_lanc: string,
+    data: string,
+    hora: string
 }
 
-interface ModalProps{
-    open:boolean,
-    onClose:()=>void
-    adicionar:(data:NovoPlanoProps)=>Promise<void>
+interface ModalProps {
+    open: boolean,
+    onClose: () => void
+    adicionar: (data: NovoPlanoProps) => Promise<void>
 }
 
-export const ModalAdicionar = ({open,onClose,adicionar}:ModalProps) =>{
-    const {register,setValue,handleSubmit,control} = useForm<NovoPlanoProps>()
-
-
-     
-
-        const handleOnSubmit:SubmitHandler<NovoPlanoProps> = (data)=>{
-           // let conta = data.conta.replace(/[_]/g,"")
-           // conta = conta.replace(/\.$/,"")
-
-           // console.log(data)
-            adicionar({...data})
-        }
+export const ModalAdicionar = ({ open, onClose, adicionar }: ModalProps) => {
+    const { register, setValue, handleSubmit, control } = useForm<NovoPlanoProps>()
 
 
 
 
+    const handleOnSubmit: SubmitHandler<NovoPlanoProps> = (data) => {
+        // let conta = data.conta.replace(/[_]/g,"")
+        // conta = conta.replace(/\.$/,"")
+
+        // console.log(data)
+        adicionar({ ...data })
+    }
 
 
-    return(
+
+
+
+
+    return (
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="max-w-sm">
-            <DialogHeader>
-                <DialogTitle>ADICIONAR CONTA</DialogTitle>
-            </DialogHeader>
+                <DialogHeader>
+                    <DialogTitle>ADICIONAR CONTA</DialogTitle>
+                </DialogHeader>
                 <form onSubmit={handleSubmit(handleOnSubmit)} className="flex flex-col gap-4">
-                <Input   {...register('conta')} placeholder="CONTA" autoComplete="off" type="text" required />
-      
-                    <Input {...register('descricao')} className="h-8" placeholder="DESCRIÇÃO"/>
+                    <Input   {...register('conta')} placeholder="CONTA" autoComplete="off" type="text" required />
+
+                    <Input {...register('descricao')} className="h-8" placeholder="DESCRIÇÃO" />
 
                     <Controller
                         control={control}
                         name="tipo"
-                        render={({ field:{onChange,value} }) => (
+                        render={({ field: { onChange, value } }) => (
                             <Select value={value} onValueChange={onChange}>
-                              <SelectTrigger className="h-8">
-                                <SelectValue placeholder="TIPO" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="RECEITA">RECEITA</SelectItem>
-                                <SelectItem value="DESPESA">DESPESA</SelectItem>
-                              </SelectContent>
+                                <SelectTrigger className="h-8">
+                                    <SelectValue placeholder="TIPO" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="RECEITA">RECEITA</SelectItem>
+                                    <SelectItem value="DESPESA">DESPESA</SelectItem>
+                                </SelectContent>
                             </Select>
                         )}
                     />
 
-<Controller
+                    <Controller
                         control={control}
                         name="perm_lanc"
-                        render={({ field:{onChange,value} }) => (
+                        render={({ field: { onChange, value } }) => (
                             <Select value={value} onValueChange={onChange}>
-                              <SelectTrigger className="h-8">
-                                <SelectValue placeholder="LANÇAVEL ?" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="S">SIM</SelectItem>
-                                <SelectItem value="N">NÃO</SelectItem>
-                              </SelectContent>
+                                <SelectTrigger className="h-8">
+                                    <SelectValue placeholder="LANÇAVEL ?" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="S">SIM</SelectItem>
+                                    <SelectItem value="N">NÃO</SelectItem>
+                                </SelectContent>
                             </Select>
                         )}
                     />
