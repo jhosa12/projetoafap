@@ -1,5 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../../../../components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../../../../components/ui/dialog";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { api } from "@/lib/axios/apiClient";
 import { toast } from "sonner";
@@ -21,38 +29,34 @@ import { LancamentosProps } from "../_types/types";
 import { SomaProps } from "../../financeiro/_components/tabs/caixa/caixa";
 import { CcustosProps, PlanoContasProps } from "../../financeiro/_types/types";
 
-
 interface FilterCaixaProps {
-  caixa: string,
-  conta?:string,
-  start: Date,
-  end: Date
+  caixa: string;
+  conta?: string;
+  start: Date;
+  end: Date;
 }
-
 
 interface ModalPropsRelatorios {
-  id_empresa: string
-  infoEmpresa: EmpresaProps | null,
-  planoContas:Array<PlanoContasProps>
+  id_empresa: string;
+  infoEmpresa: EmpresaProps | null;
+  planoContas: Array<PlanoContasProps>;
 }
 
-
-
-
-
-export default function ModalSelectCaixa({ id_empresa, infoEmpresa,planoContas }: ModalPropsRelatorios) {
-  const [open, setOpen] = useState(false)
+export default function ModalSelectCaixa({
+  id_empresa,
+  infoEmpresa,
+  planoContas,
+}: ModalPropsRelatorios) {
+  const [open, setOpen] = useState(false);
   const currentPage = useRef<HTMLDivElement | null>(null);
-  const [ccustos, setCcustos] = useState<Array<CcustosProps>>([])
+  const [ccustos, setCcustos] = useState<Array<CcustosProps>>([]);
   const { control, handleSubmit, watch } = useForm<FilterCaixaProps>({
     defaultValues: {
       start: new Date(),
-      end: new Date()
-    }
-  })
-  const [data, setData] = useState<Array<LancamentosProps>>([])
-
-
+      end: new Date(),
+    },
+  });
+  const [data, setData] = useState<Array<LancamentosProps>>([]);
 
   useEffect(() => {
     if (data.length > 0) {
@@ -63,8 +67,8 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa,planoContas }
   const ImprimirRelatorio = useReactToPrint({
     pageStyle: pageStyle,
     contentRef: currentPage,
-    onAfterPrint: () => { },
-    onBeforePrint: async() => {
+    onAfterPrint: () => {},
+    onBeforePrint: async () => {
       setData([]);
       setOpen(false);
     },
@@ -73,15 +77,13 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa,planoContas }
 
   const handleReqCcustos = async () => {
     try {
+      const response = await api.get("/financeiro/caixa/listarCcustos");
 
-      const response = await api.get('/financeiro/caixa/listarCcustos')
-
-      setCcustos(response.data)
-
+      setCcustos(response.data);
     } catch (error) {
-      toast.error('Erro ao carregar plano de contas.');
+      toast.error("Erro ao carregar plano de contas.");
     }
-  }
+  };
 
   const listarLancamentos: SubmitHandler<FilterCaixaProps> = useCallback(
     async (data) => {
@@ -101,8 +103,6 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa,planoContas }
           // id_user:usuario?.id
         });
 
-      
-
         setData(response.data);
         // setLancamentos(lista)
         // setPlanos(plano_de_contas)
@@ -116,7 +116,6 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa,planoContas }
     },
     [id_empresa]
   );
-
 
   const handleGerirRelatorio = useCallback(() => {
     return data.reduce(
@@ -166,56 +165,53 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa,planoContas }
     );
   }, [data]);
 
-
-
-
-
-
   useEffect(() => {
-    handleReqCcustos()
-  }, [])
-
-
-
+    handleReqCcustos();
+  }, []);
 
   return (
-
-
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger className="text-sm px-2">Relatório</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Relatório de Caixa</DialogTitle>
-          <DialogDescription>
-            Selecione o caixa
-          </DialogDescription>
+          <DialogDescription>Selecione o caixa</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(listarLancamentos)} className="space-y-4">
-
           <Controller
             name="caixa"
             control={control}
             render={({ field: { onChange, value } }) => (
               <Combobox
                 placeholder="Selecione o Caixa"
-                items={ccustos?.map(item => { return { label: item.descricao, value: item.descricao } }) ?? []}
+                items={
+                  ccustos?.map((item) => {
+                    return { label: item.descricao, value: item.descricao };
+                  }) ?? []
+                }
                 onChange={onChange}
                 value={value}
               />
-            )} />
+            )}
+          />
 
-<Controller
+          <Controller
             name="conta"
             control={control}
             render={({ field: { onChange, value } }) => (
               <Combobox
                 placeholder="Selecione a conta"
-                items={planoContas?.map(item => { return { label: item.descricao, value: item.conta } }) ?? []}
+                items={
+                  planoContas?.map((item) => {
+                    return { label: item.descricao, value: item.conta };
+                  }) ?? []
+                }
                 onChange={onChange}
-                value={value ??null}
+                value={value ?? null}
               />
-            )} />
+            )}
+          />
 
           <div className="flex items-center gap-2">
             <div>
@@ -229,7 +225,6 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa,planoContas }
                     dateFormat={"dd/MM/yyyy"}
                     locale={pt}
                     required
-
                   />
                 )}
               />
@@ -248,29 +243,21 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa,planoContas }
                     dateFormat={"dd/MM/yyyy"}
                     locale={pt}
                     required
-
                   />
                 )}
               />
             </div>
           </div>
 
-
-
-
           <DialogFooter>
-            <Button type="submit" >Buscar</Button>
+            <Button type="submit">Buscar</Button>
           </DialogFooter>
-
         </form>
-
       </DialogContent>
       <div style={{ display: "none" }}>
-
-
         <RelatorioMovimentacao
           infoEmpresa={infoEmpresa}
-          tipoRelatorio={'ANALITICO'}
+          tipoRelatorio={"ANALITICO"}
           soma={handleGerirRelatorio() ?? ({} as SomaProps)}
           usuario={watch("caixa")}
           startDate={watch("start")}
@@ -278,10 +265,7 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa,planoContas }
           array={data ?? []}
           ref={currentPage}
         />
-
       </div>
-
     </Dialog>
-
-  )
+  );
 }
