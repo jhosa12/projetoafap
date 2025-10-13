@@ -7,9 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import "react-datepicker/dist/react-datepicker.css";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { PlanoContasProps } from "../../../financeiro/_types/types";
+import { PlanoContasProps } from "@/app/dashboard/financeiro/_types/plano-contas";
 import { SetorProps } from "../../../vendas/_components/sales/FilterModal";
-import { MetaProps } from "../../_types/types";
+import { MetaProps } from "../../_types/meta";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";

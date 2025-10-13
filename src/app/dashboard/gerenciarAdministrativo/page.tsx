@@ -9,7 +9,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { PlanoContasProps } from "../financeiro/_types/types";
+import { PlanoContasProps } from "../financeiro/_types/ccustos";
 import { PlanoContas } from "./_components/plano-contas/modal-adicionar-conta";
 
 

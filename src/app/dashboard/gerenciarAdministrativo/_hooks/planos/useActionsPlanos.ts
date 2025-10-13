@@ -16,13 +16,13 @@ const useActionsPlanos = () => {
 
   async function listar() {
     try {
-      const response = await api.get("/gerenciarAdministrativo");
+      const response = await api.get("/planos");
 
-      if (response.data?.planos) {
+      if (response.data) {
 
-        const planos = response.data.planos
+        const planos = response.data
         setListaPlanos(planos)
-        console.log("Dados recebidos da API:", planos)
+
       }
 
 
@@ -40,7 +40,7 @@ const useActionsPlanos = () => {
   const editarPlano = async (data: PlanosProps) => {
 
     return toast.promise(
-      api.put('/gerenciarAdministrativo/editarplano', {
+      api.put('/plano/editar', {
         id_plano: data.id_plano,
         descricao: data.descricao,
         limite_dep: data.limite_dep,
@@ -62,7 +62,7 @@ const useActionsPlanos = () => {
 
 
     toast.promise(
-      api.delete('/gerenciarAdministrativo/deletarplano', {
+      api.delete('/plano/deletar', {
         data: {
           id_plano,
         }
@@ -78,7 +78,7 @@ const useActionsPlanos = () => {
     )
   }
 
-  const adicionarPlano = async (data: PlanosProps) => {
+  async function adicionarPlano(data: PlanosProps) {
 
     if (!data.descricao && !data.limite_dep
       && !data.valor && !data.acrescimo) {
@@ -103,7 +103,7 @@ const useActionsPlanos = () => {
 
     console.log("Dados para a api:", payload)
     toast.promise(
-      api.post('/gerenciarAdministrativo/adicionarPlano', payload),
+      api.post('/plano/adicionar', payload),
       {
         error: (error) => error.response?.data?.error || 'Erro ao adicionar plano',
         loading: 'Adicionando...',

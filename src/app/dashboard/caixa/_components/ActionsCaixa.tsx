@@ -16,22 +16,22 @@ import { IoMdOptions } from "react-icons/io";
 import useVerifyPermission from "@/hooks/useVerifyPermission";
 import ModalSelectCaixa from "./ModalSelectCaixa";
 import { EmpresaProps } from "@/types/empresa";
-import { PlanoContasProps } from "../../financeiro/_types/types";
+import { PlanoContasProps } from "../../financeiro/_types/ccustos";
 
 
 
 
 interface ActionsCaixaProps {
- 
+
   data: any;
   id_empresa: string
   infoEmpresa: EmpresaProps | null
-  planoContas:Array<PlanoContasProps>
+  planoContas: Array<PlanoContasProps>
 
 }
 
 
-export default function ActionsCaixa({ data, id_empresa, infoEmpresa,planoContas }: ActionsCaixaProps) {
+export default function ActionsCaixa({ data, id_empresa, infoEmpresa, planoContas }: ActionsCaixaProps) {
   const [open, setOpen] = useState(false)
   const { verify } = useVerifyPermission()
   return (
@@ -60,7 +60,7 @@ export default function ActionsCaixa({ data, id_empresa, infoEmpresa,planoContas
                           }
                         ></DropdownMenuItem> */}
 
-        <DropdownMenuItem asChild onSelect={()=>setOpen(false)}>
+        <DropdownMenuItem asChild onSelect={() => setOpen(false)}>
           <ModalSelectCaixa planoContas={planoContas} infoEmpresa={infoEmpresa} id_empresa={id_empresa} />
         </DropdownMenuItem>
 

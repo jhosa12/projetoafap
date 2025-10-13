@@ -1,5 +1,3 @@
-
-
 export interface MetaProps {
   id_meta: number;
   id_empresa: string | undefined;

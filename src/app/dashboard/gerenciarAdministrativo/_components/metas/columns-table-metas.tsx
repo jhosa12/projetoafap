@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { MetaProps } from "../../_types/types"
+import { MetaProps } from "../../_types/meta"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   Select,

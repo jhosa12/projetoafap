@@ -12,7 +12,7 @@ import { EmpresaProps } from "@/types/empresa";
 import { ModalMetas } from "@/app/dashboard/gerenciarAdministrativo/_components/metas/modalMetas";
 import { ModalFiltroMetas } from "@/app/dashboard/gerenciarAdministrativo/_components/metas/modalFiltro";
 import { toast } from "sonner";
-import { MetaProps } from "../_types/types";
+import { MetaProps } from "../_types/meta";
 import { TabelaCompleta } from "@/app/dashboard/servicos/_components/convalescentes/data-table";
 import { columnsMetas } from "../_components/metas/columns-table-metas";
 import { AuthContext } from "@/store/AuthContext";
@@ -117,7 +117,8 @@ export default function GerenciarMetas() {
           setModalMetas={setModalNovaMeta}
           show={modalNovaMeta}
           handleSalvar={handleSalvar}
-        />}
+        />
+      }
 
       {
         modalFiltro && <ModalFiltroMetas

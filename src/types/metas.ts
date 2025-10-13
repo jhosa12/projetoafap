@@ -1,4 +1,4 @@
-import { GruposProps } from "./grupos";
+import { GruposProps } from "./setores";
 
 export interface MetasProps {
 

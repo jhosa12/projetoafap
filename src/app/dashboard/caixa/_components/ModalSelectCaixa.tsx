@@ -19,12 +19,12 @@ import { pageStyle } from "@/utils/pageStyle";
 import RelatorioMovimentacao from "../_documents/relatorioMovimentacao";
 import { LancamentosProps } from "../_types/types";
 import { SomaProps } from "../../financeiro/_components/tabs/caixa/caixa";
-import { CcustosProps, PlanoContasProps } from "../../financeiro/_types/types";
+import { CcustosProps, PlanoContasProps } from "../../financeiro/_types/ccustos";
 
 
 interface FilterCaixaProps {
   caixa: string,
-  conta?:string,
+  conta?: string,
   start: Date,
   end: Date
 }
@@ -33,14 +33,14 @@ interface FilterCaixaProps {
 interface ModalPropsRelatorios {
   id_empresa: string
   infoEmpresa: EmpresaProps | null,
-  planoContas:Array<PlanoContasProps>
+  planoContas: Array<PlanoContasProps>
 }
 
 
 
 
 
-export default function ModalSelectCaixa({ id_empresa, infoEmpresa,planoContas }: ModalPropsRelatorios) {
+export default function ModalSelectCaixa({ id_empresa, infoEmpresa, planoContas }: ModalPropsRelatorios) {
   const [open, setOpen] = useState(false)
   const currentPage = useRef<HTMLDivElement | null>(null);
   const [ccustos, setCcustos] = useState<Array<CcustosProps>>([])
@@ -64,7 +64,7 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa,planoContas }
     pageStyle: pageStyle,
     contentRef: currentPage,
     onAfterPrint: () => { },
-    onBeforePrint: async() => {
+    onBeforePrint: async () => {
       setData([]);
       setOpen(false);
     },
@@ -101,7 +101,7 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa,planoContas }
           // id_user:usuario?.id
         });
 
-      
+
 
         setData(response.data);
         // setLancamentos(lista)
@@ -205,7 +205,7 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa,planoContas }
               />
             )} />
 
-<Controller
+          <Controller
             name="conta"
             control={control}
             render={({ field: { onChange, value } }) => (
@@ -213,7 +213,7 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa,planoContas }
                 placeholder="Selecione a conta"
                 items={planoContas?.map(item => { return { label: item.descricao, value: item.conta } }) ?? []}
                 onChange={onChange}
-                value={value ??null}
+                value={value ?? null}
               />
             )} />
 

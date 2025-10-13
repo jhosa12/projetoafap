@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import { useCallback } from "react";
-import { MetaProps } from "../../_types/types";
+import { MetaProps } from "../../_types/meta";
 
 export function useEditarMeta(linhaSelecionada: MetaProps | null, setModalOpen: (open: boolean) => void) {
   return useCallback(() => {
@@ -8,6 +8,6 @@ export function useEditarMeta(linhaSelecionada: MetaProps | null, setModalOpen: 
       toast.error("Por favor, selecione uma linha para Editar.");
       return;
     }
-    setModalOpen(true); 
+    setModalOpen(true);
   }, [linhaSelecionada, setModalOpen]);
 }

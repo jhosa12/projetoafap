@@ -1,5 +1,5 @@
 import { SubmitHandler } from "react-hook-form";
-import { MetaProps } from "../../_types/types";
+import { MetaProps } from "../../_types/meta";
 import { toast } from "sonner";
 
 

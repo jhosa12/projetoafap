@@ -1,9 +1,9 @@
-import { MetaProps } from './../_types/types';
+import { MetaProps } from '../_types/meta';
 import { ConvProps } from './../../servicos/_types/convalescente';
 import { PlanosProps } from './../../../../types/planos';
 import { useCallback, useState } from "react";
-import { PlanoContasProps } from "@/app/dashboard/financeiro/_types/types";
-import { GruposProps } from "@/types/grupos";
+import { PlanoContasProps } from "@/app/dashboard/financeiro/_types/ccustos";
+import { GruposProps } from "@/types/setores";
 import { api } from '@/lib/axios/apiClient';
 
 export function useHandleCarregarDados() {

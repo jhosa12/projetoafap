@@ -1,4 +1,4 @@
-import { PlanoContasProps } from "../../financeiro/_types/types"
+import { PlanoContasProps } from "../../financeiro/_types/ccustos"
 
 
 

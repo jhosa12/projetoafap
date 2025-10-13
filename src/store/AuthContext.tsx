@@ -20,7 +20,7 @@ import { useAuthActions } from "@/hooks/useAuthActions";
 import useApiGet from "@/hooks/useApiGet";
 import { toast } from "sonner";
 import { UfProps } from "@/types/ufs"
-import { PlanoContasProps } from "@/app/dashboard/financeiro/_types/types";
+import { PlanoContasProps } from "@/app/dashboard/financeiro/_types/plano-contas";
 import useActionsPlanoContas from "@/app/dashboard/financeiro/_hooks/use_actions_planoContas";
 
 
@@ -48,10 +48,10 @@ type AuthContextData = {
   bairrosUnicos: Array<string>
   getBairrosUnicos: () => Promise<void>
   ufs: UfProps[]
-  actions_plano_contas:{
-    array_plano_contas?:Array<PlanoContasProps>,
-    post_conta:()=>Promise<void>,
-    put_conta:()=>Promise<void>
+  actions_plano_contas: {
+    array_plano_contas?: Array<PlanoContasProps>,
+    post_conta: () => Promise<void>,
+    put_conta: () => Promise<void>
   }
 };
 
@@ -59,7 +59,7 @@ export const AuthContext = createContext({} as AuthContextData);
 
 export function signOut() {
 
-  try { 
+  try {
     window.location.href = "/";
     destroyCookie(undefined, "@nextauth.token");
     delete api.defaults.headers["Authorization"];
@@ -87,11 +87,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const actions_plano_contas = useActionsPlanoContas(usuario)
 
   const {
-    data: infoEmpresa, 
+    data: infoEmpresa,
     loading: loadingInfo,
     postData: reqInfoEmpresa,
   } = useApiGet<EmpresaProps, { id: string }>("/empresa/infoEmpresa");
-  
+
 
   const getBairros = async () => {
     const res = await api.post("/bairro/listar", { id_empresa: selectEmp })
@@ -127,7 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             ufsMap.set(cidade.estado, {
               id: cidade.estado,
               sigla: cidade.uf,
-             
+
             });
           }
         });
@@ -166,7 +166,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // }, [permissoes]);
 
   const carregarDados = async (id: number) => {
-  
+
     setLoading(true);
     limparDados();
     try {
@@ -176,7 +176,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       setDadosAssociado(response.data);
-     // return response.data; 
+      // return response.data; 
     } catch (error) {
       toast.error("Erro na requisição");
     }

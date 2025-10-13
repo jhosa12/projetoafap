@@ -2,7 +2,7 @@ import { api } from "@/lib/axios/apiClient";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { SubmitHandler } from "react-hook-form";
-import { MetaProps } from "../../_types/types";
+import { MetaProps } from "../../_types/meta";
 import { AuthContext } from "@/store/AuthContext";
 
 export interface FormFiltro {
@@ -23,7 +23,7 @@ export const useActionsMetas = (id_empresa: string | undefined, isEditMode?: boo
   }, [usuario]);
 
 
-  const listarMetas = async () => {
+  async function listarMetas() {
     if (!id_empresa) {
       toast.error("Selecione uma empresa.");
       return;
