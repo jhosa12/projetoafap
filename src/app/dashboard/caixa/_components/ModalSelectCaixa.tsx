@@ -89,6 +89,7 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa, planoContas 
   const listarLancamentos: SubmitHandler<FilterCaixaProps> = useCallback(
     async (data) => {
       if (data.start > data.end) {
+       
         toast.info("Data final deve ser maior que a data inicial");
         return;
       }
