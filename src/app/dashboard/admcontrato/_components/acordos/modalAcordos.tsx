@@ -75,7 +75,6 @@ export function ModalAcordos({
   const [mensalidadeSelect, setMensalidade] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-
   const {
     register,
     handleSubmit,
@@ -117,7 +116,8 @@ export function ModalAcordos({
             id_global && (await carregarDados(id_global));
             const array = watch("mensalidadeAcordo") || [];
             const newArray = array.filter(
-              (item) => item.mensalidade.id_mensalidade_global !== id_mensalidade_global
+              (item) =>
+                item.mensalidade.id_mensalidade_global !== id_mensalidade_global
             );
             setValue("mensalidadeAcordo", newArray);
 
@@ -131,13 +131,13 @@ export function ModalAcordos({
   };
 
   const handleRemoverMensalidade = async (id_mensal_acordo?: number) => {
-
-    if (!id_mensal_acordo) { return }
-
+    if (!id_mensal_acordo) {
+      return;
+    }
 
     toast.promise(
       await api.put(`/acordo/removerMensalidade`, {
-        id_mensal_acordo: id_mensal_acordo
+        id_mensal_acordo: id_mensal_acordo,
       }),
       {
         loading: "Removendo...",
@@ -158,7 +158,7 @@ export function ModalAcordos({
         error: "Erro ao remover mensalidade",
       }
     );
-  }
+  };
 
   const handleNovaRef = async () => {
     const mensalidade = mensalidades.find(
@@ -198,13 +198,13 @@ export function ModalAcordos({
       return;
     }
 
-
     if (mensalidade) {
       const array = [...mensalidadeArray];
       array.push({ mensalidade: mensalidade });
       array.sort(
         (a, b) =>
-          Number(a.mensalidade.id_mensalidade_global) - Number(b.mensalidade.id_mensalidade_global)
+          Number(a.mensalidade.id_mensalidade_global) -
+          Number(b.mensalidade.id_mensalidade_global)
       );
       setValue("mensalidadeAcordo", array);
     }
@@ -223,7 +223,6 @@ export function ModalAcordos({
     acordo.id_acordo ? editarAcordo(data) : criarAcordo(data);
   };
 
-
   const hookProps = {
     id_empresa: id_empresa,
     carregarDados: carregarDados,
@@ -233,13 +232,10 @@ export function ModalAcordos({
     id_contrato: id_contrato,
     close: close,
     mensalidades: mensalidades,
-    consultores: consultores
+    consultores: consultores,
+  };
 
-  }
-
-  const { criarAcordo, editarAcordo} = useActionsAcordos(hookProps)
-
-
+  const { criarAcordo, editarAcordo } = useActionsAcordos(hookProps);
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && close()}>
@@ -422,21 +418,31 @@ export function ModalAcordos({
                 <TableBody>
                   {watch("mensalidadeAcordo")?.map((item) => (
                     <TableRow key={item.mensalidade.id_mensalidade_global}>
-                      <TableCell className="text-xs">{item.mensalidade.referencia}</TableCell>
                       <TableCell className="text-xs">
-                        {item.mensalidade.vencimento &&
-                          new Date(item.mensalidade.vencimento).toLocaleDateString("pt-BR")}
+                        {item.mensalidade.referencia}
                       </TableCell>
                       <TableCell className="text-xs">
-                        {Number(item.mensalidade.valor_principal).toLocaleString("pt-BR", {
+                        {item.mensalidade.vencimento &&
+                          new Date(
+                            item.mensalidade.vencimento
+                          ).toLocaleDateString("pt-BR")}
+                      </TableCell>
+                      <TableCell className="text-xs">
+                        {Number(
+                          item.mensalidade.valor_principal
+                        ).toLocaleString("pt-BR", {
                           style: "currency",
                           currency: "BRL",
                         })}
                       </TableCell>
-                      <TableCell className="text-xs">{item.mensalidade.status}</TableCell>
+                      <TableCell className="text-xs">
+                        {item.mensalidade.status}
+                      </TableCell>
                       <TableCell className="text-xs">
                         {item.mensalidade.data_pgto &&
-                          new Date(item.mensalidade.data_pgto).toLocaleDateString("pt-BR")}
+                          new Date(
+                            item.mensalidade.data_pgto
+                          ).toLocaleDateString("pt-BR")}
                       </TableCell>
                       <TableCell className="text-right ">
                         <Button
@@ -454,15 +460,15 @@ export function ModalAcordos({
                   ))}
                   {(!watch("mensalidadeAcordo") ||
                     watch("mensalidadeAcordo")?.length === 0) && (
-                      <TableRow>
-                        <TableCell
-                          colSpan={4}
-                          className="h-24 text-center text-muted-foreground"
-                        >
-                          Nenhuma mensalidade adicionada
-                        </TableCell>
-                      </TableRow>
-                    )}
+                    <TableRow>
+                      <TableCell
+                        colSpan={4}
+                        className="h-24 text-center text-muted-foreground"
+                      >
+                        Nenhuma mensalidade adicionada
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </div>
