@@ -15,7 +15,7 @@ import { X } from 'lucide-react';
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 import { ConvProps } from "../../_types/convalescente";
-import { ProdutosProps } from "@/app/dashboard/admcontrato/_types/produtos";
+import { ProdutosProps } from "@/types/produtos";
 import { api } from "@/lib/axios/apiClient";
 import { useSelecionarTitular } from "@/app/dashboard/servicos/_hooks/novo-registro/useSelecionarTitular";
 import { ModalBuscaConv } from "../../_components/convalescentes/modal-busca-titular";
@@ -114,7 +114,7 @@ export default function ConvalescenciaNovo() {
     });
 
     // Corrigir uso do hook: agora passa setModal e reset do formulário para reset imediato
-    const {handleSelecionarTitular} = useSelecionarTitular(carregarDados, limparDados, setModal, methods.reset);
+    const { handleSelecionarTitular } = useSelecionarTitular(carregarDados, limparDados, setModal, methods.reset);
 
 
     // Carregar dados para edição
@@ -197,12 +197,12 @@ export default function ConvalescenciaNovo() {
 
             {modal.busca && (
                 <ModalBuscaConv
-                  //  carregarDados={carregarDados}
+                    //  carregarDados={carregarDados}
                     selectEmp={infoEmpresa?.id ?? ""}
                     visible={modal.busca}
                     setVisible={() => setModal({ ...modal, busca: false })}
                     filtros={filtrosDaPagina}
-                      onSelecionar={handleSelecionarTitular}
+                    onSelecionar={handleSelecionarTitular}
                 />
             )}
 

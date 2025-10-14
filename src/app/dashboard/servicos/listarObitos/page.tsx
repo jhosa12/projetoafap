@@ -93,8 +93,8 @@ export default function ListarObitos() {
   }
 
   return (
-    <div className="px-6 mt-2 space-y-4">
-      <h1 className="text-2xl font-semibold border-b border-b-gray-300 text-gray-900">
+    <div className="flex flex-col w-full h-screen lg:p-6 gap-4">
+      <h1 className="text-2xl font-semibold border-b-gray-300 text-gray-900">
         Histórico de O.S's
       </h1>
       <DataTable

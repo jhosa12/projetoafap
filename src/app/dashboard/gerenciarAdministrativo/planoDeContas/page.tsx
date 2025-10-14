@@ -1,168 +1,94 @@
 'use client';
 
-import { GerenciarConvalescenca } from "@/app/dashboard/gerenciarAdministrativo/_components/convalescenca/convalescencia";
-import { GerenciarMetas } from "@/app/dashboard/gerenciarAdministrativo/_components/metas/metas";
-import { PlanoContas } from "@/app/dashboard/gerenciarAdministrativo/_components/planoContas/planoContas";
-import { GerenciarPlanos } from "@/app/dashboard/gerenciarAdministrativo/_components/planos/planos";
 import { AuthContext } from "@/store/AuthContext";
-import { api } from "@/lib/axios/apiClient"
-import Head from "next/head"
-import React, { useContext, useEffect, useState } from "react"
-import { BiSolidInjection } from "react-icons/bi";
-import { FaCalendarAlt } from "react-icons/fa";
-import { HiClipboardList } from "react-icons/hi";
-import { IoMdSettings } from "react-icons/io";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Veiculos } from "@/app/dashboard/gerenciarAdministrativo/_components/veiculos/veiculos";
-import { toast } from "sonner";
-import { PlanoContasProps } from "../../financeiro/_types/types";
-import { GruposProps } from "@/types/grupos";
-import { MetasProps } from "@/types/metas";
-import { PlanosProps } from "@/types/planos";
+import React, { useContext, useEffect, useMemo, useState } from "react"
+import { Button } from "@/components/ui/button";
+import { CirclePlus, MoreHorizontalIcon } from "lucide-react";
+import { ModalAdicionar } from "../_components/plano-contas/modal-adicionar-conta";
+import { Accordion } from "@/components/ui/accordion";
+import { GrupoItem } from "../_components/plano-contas/grupo-item";
+import { construirHierarquia, NodoConta } from "@/utils/listaContas";
+import { useActionsPlanoContas } from "../_hooks/plano-contas/useActionsPlanoContas";
+import { useHandleSalvarPC } from "../_hooks/plano-contas/useHandleSalvarPC";
+import { PlanoContasProps } from "../../financeiro/_types/plano-contas";
 
 
-// Já tem seu type 
-interface ConvProps {
-  id_conv: number,
-  id_produto: number,
-  descricao: string,
-  unidade: number,
-  grupo: number,
-  data: Date,
-  data_dev: Date,
-  quantidade: number,
-  valor: number,
-  desconto: number,
-  total: number,
-  cortesia: string,
-  retornavel: string,
-  status: string
-}
+export default function PlanoDeContas() {
 
+  const { usuario, signOut } = useContext(AuthContext)
+  const [modal, setModal] = useState(false)
+  const [itemEdit, setItemEdit] = useState<PlanoContasProps | null>(null);
+  const { listaPlanoContas, onSave, listarPlanoContas, deletarPlanoConta } = useActionsPlanoContas()
 
-export default function gerenciarAdministrativo() {
+  const { handleSalvar } = useHandleSalvarPC(
+    onSave,
+    setModal,
+    listarPlanoContas
 
-  const [arrayPlanoContas, setArrayPlanoContas] = useState<Array<PlanoContasProps>>([])
-  const [arraygrupos, setArrayGrupos] = useState<Array<GruposProps>>([])
-  const [arrayPlanos, setArrayPlanos] = useState<Array<PlanosProps>>([])
-  const [arrayConv, setArrayConv] = useState<Array<ConvProps>>([])
-  const [arrayMetas, setArrayMetas] = useState<Array<MetasProps>>([])
-  const { usuario, signOut, selectEmp, empresas } = useContext(AuthContext)
-
-
-
-
-  const setarDados = (planoContas: Array<PlanoContasProps>, grupos: Array<GruposProps>) => {
-    setArrayPlanoContas(planoContas)
-    setArrayGrupos(grupos)
-  }
-  const setarPlanos = (planos: Array<PlanosProps>) => {
-    setArrayPlanos(planos)
-
-  }
-  const setarConv = (conv: Array<ConvProps>) => {
-    setArrayConv(conv)
-
-  }
-  const setarMetas = (met: Array<MetasProps>) => {
-    setArrayMetas(met)
-
-  }
+  )
 
   useEffect(() => {
-    const user = !!usuario
-    if (!user) {
-      signOut()
-      return;
-    }
-
-    try {
-      carregarDados();
-    } catch (err) {
-      toast.error('Erro ao Carregar Dados')
-    }
-
+    if (!usuario) return signOut();
+    listarPlanoContas()
   }, [usuario]);
 
+  const handleEditar = (item: NodoConta) => {
 
+    const planoConta: PlanoContasProps = {
+      conta: item.id,
+      descricao: item.descricao,
+      tipo: item.tipo,
+      perm_lanc: item.perm_lanc,
+      data: new Date(),
 
+    };
+    setItemEdit(planoConta);
+    setModal(true);
+  };
 
-
-
-  async function carregarDados() {
-    const response = await api.get('/gerenciarAdministrativo')
-    setarDados(response.data.plano_contas, response.data.grupos)
-    setArrayPlanos(response.data.planos)
-    setArrayConv(response.data.convalescenca)
-    setArrayMetas(response.data.metas)
+  const handleExcluir = async (id: string) => {
+    await deletarPlanoConta(id)
+    listarPlanoContas()
   }
 
+  const hierarquiaContas = useMemo(() => {
+    return construirHierarquia(listaPlanoContas);
+  }, [listaPlanoContas]);
+
   return (
-    <>
-      <Head>
-        <title>Gerenciar setor Administrativo</title>
-      </Head>
+    <div className="flex flex-col w-full h-screen lg:p-6 gap-2">
+      <div className="flex-shrink-0 flex flex-col lg:flex-row w-full items-start lg:items-center justify-between gap-4 p-2">
+        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+          Plano de Contas
+        </h3>
 
-      <Tabs defaultValue="plano-contas" className="w-full">
-        <TabsList className="grid w-full grid-cols-5 bg-white">
-          <TabsTrigger value="plano-contas" className="flex items-center gap-2">
-            <FaCalendarAlt className="h-4 w-4" />
-            PLANO DE CONTAS
-          </TabsTrigger>
-          <TabsTrigger value="planos" className="flex items-center gap-2">
-            <HiClipboardList className="h-4 w-4" />
-            PLANOS
-          </TabsTrigger>
-          <TabsTrigger value="convalescentes" className="flex items-center gap-2">
-            <BiSolidInjection className="h-4 w-4" />
-            CONVALESCENTES
-          </TabsTrigger>
-          <TabsTrigger value="metas" className="flex items-center gap-2">
-            <IoMdSettings className="h-4 w-4" />
-            METAS CONTAS
-          </TabsTrigger>
-          <TabsTrigger value="veiculos" className="flex items-center gap-2">
-            <IoMdSettings className="h-4 w-4" />
-            VEÍCULOS
-          </TabsTrigger>
-        </TabsList>
+        <div className="inline-flex gap-2">
+          <Button size='sm' onClick={() => {
+            setItemEdit(null);
+            setModal(true);
+          }}>
+            <CirclePlus />Adicionar Conta</Button>
+        </div>
+      </div>
 
-        <TabsContent value="plano-contas" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
-          <PlanoContas
-            carregarDados={carregarDados}
-            arrayPlanoContas={arrayPlanoContas}
-            arraygrupos={arraygrupos}
-            setarDados={setarDados}
-          />
-        </TabsContent>
+      <ModalAdicionar
+        handleSalvar={handleSalvar}
+        open={modal}
+        onClose={() => {
+          setModal(false);
+          setItemEdit(null);
+        }}
+        itemEdit={itemEdit}
+      />
+      <div className="inline-flex rounded-lg gap-2 overflow-y-auto bg-white justify-between p-2 w-full max-h-[calc(100vh-120px)]  ">
+        <Accordion type="single" collapsible className="w-full px-2">
+          {hierarquiaContas?.map((item) => (
+            <GrupoItem key={item.id} item={item} onEditar={handleEditar} onExcluir={handleExcluir} />
 
+          ))}
+        </Accordion>
+      </div>
 
-        <TabsContent value="convalescentes" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
-          <GerenciarConvalescenca
-            carregarDados={carregarDados}
-            setarConv={setarConv}
-            arrayConv={arrayConv}
-          />
-        </TabsContent>
-
-        <TabsContent value="metas" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
-          <GerenciarMetas
-            planoContas={arrayPlanoContas}
-            empresas={empresas}
-            id_empresa={selectEmp}
-            setores={arraygrupos}
-          />
-        </TabsContent>
-
-        <TabsContent value="veiculos" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
-          <Veiculos
-            empresas={empresas}
-            id_empresa={selectEmp}
-          />
-        </TabsContent>
-      </Tabs>
-
-
-
-    </>)
+    </div>
+  )
 }

@@ -1,4 +1,4 @@
-export interface GruposProps {
+export interface SetoresProps {
 
   id_grupo: number,
   descricao: string

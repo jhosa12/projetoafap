@@ -57,7 +57,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ModalAtivosInativos } from "../modals/modalAtivosInativos";
 import LinkNavigate from "../Link";
 
-import { Historico } from "@/app/dashboard/vendas/_components/historico/ScreenHistorico";
+import { Historico } from "@/app/dashboard/gerenciarAdministrativo/_components/metas/historico/ScreenHistorico";
 import { CompanySelectionModal } from "@/app/dashboard/empresa/_components/modal_filial";
 import { Badge } from "../ui/badge";
 import { NotBeforeError } from "jsonwebtoken";

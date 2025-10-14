@@ -63,7 +63,7 @@ import { SelectProps } from "flowbite-react";
 import { UfProps } from "@/types/ufs";
 import { useParams, useRouter } from "next/navigation";
 import { truncate } from "fs/promises";
-import { ProdutosProps } from "@/app/dashboard/admcontrato/_types/produtos";
+import { ProdutosProps } from "@/types/produtos";
 import { Separator } from "@/components/ui/separator";
 import { useFormContext, Controller, useFieldArray } from "react-hook-form";
 import { format } from "date-fns";

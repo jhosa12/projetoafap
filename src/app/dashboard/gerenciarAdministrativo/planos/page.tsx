@@ -8,7 +8,8 @@ import { AuthContext } from "@/store/AuthContext";
 import { useHandleSalvar } from "../_hooks/planos/useHandleSalvar";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DataTablePlanos } from "../_components/planos/data-table-planos";
+import { DataTableSemSelecao } from "@/components/data-table-sem-selecao";
+
 
 export default function Planos() {
   const [open, setOpen] = useState(false);
@@ -24,11 +25,11 @@ export default function Planos() {
 
 
   return (
-    <div className="px-6 mt-4 space-y-4">
+    <div className="flex flex-col w-full h-screen lg:p-6 gap-2">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-semibold border-b-gray-300 text-gray-900">
+        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
           Planos
-        </h2>
+        </h3>
         <Button
           onClick={() => {
             setPlano(null);
@@ -42,14 +43,14 @@ export default function Planos() {
         </Button>
       </div>
 
-      <DataTablePlanos
+      <DataTableSemSelecao
         columns={columnsPlanos({
           onDelete: (plano: PlanosProps) => deletarPlano(plano.id_plano),
 
           onEdit: (plano: PlanosProps) => {
             setOpen(true)
             setPlano(plano)
-            
+
           }
         })}
         data={listaPlanos}

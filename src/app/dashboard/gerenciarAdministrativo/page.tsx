@@ -1,21 +1,17 @@
 'use client';
 
-import { GerenciarConvalescenca } from "@/app/dashboard/gerenciarAdministrativo/_components/convalescenca/convalescencia";
-import { GerenciarMetas } from "@/app/dashboard/gerenciarAdministrativo/_components/metas/metas";
-import { PlanoContas } from "@/app/dashboard/gerenciarAdministrativo/_components/planoContas/planoContas";
-import { GerenciarPlanos } from "@/app/dashboard/gerenciarAdministrativo/_components/planos/planos";
 import { AuthContext } from "@/store/AuthContext";
 import { api } from "@/lib/axios/apiClient"
 import Head from "next/head"
 import React, { useContext, useEffect, useState } from "react"
 import { BiSolidInjection } from "react-icons/bi";
 import { FaCalendarAlt } from "react-icons/fa";
-import { HiClipboardList } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Veiculos } from "@/app/dashboard/gerenciarAdministrativo/_components/veiculos/veiculos";
 import { toast } from "sonner";
-import { PlanoContasProps } from "../financeiro/_types/types";
+import { PlanoContasProps } from "../financeiro/_types/ccustos";
+import { PlanoContas } from "./_components/plano-contas/modal-adicionar-conta";
+
 
 
 interface MetasProps {
@@ -151,31 +147,6 @@ export default function gerenciarAdministrativo() {
             arrayPlanoContas={arrayPlanoContas}
             arraygrupos={arraygrupos}
             setarDados={setarDados}
-          />
-        </TabsContent>
-
-
-        <TabsContent value="convalescentes" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
-          <GerenciarConvalescenca
-            carregarDados={carregarDados}
-            setarConv={setarConv}
-            arrayConv={arrayConv}
-          />
-        </TabsContent>
-
-        <TabsContent value="metas" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
-          <GerenciarMetas
-            planoContas={arrayPlanoContas}
-            empresas={empresas}
-            id_empresa={selectEmp}
-            setores={arraygrupos}
-          />
-        </TabsContent>
-
-        <TabsContent value="veiculos" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
-          <Veiculos
-            empresas={empresas}
-            id_empresa={selectEmp}
           />
         </TabsContent>
       </Tabs>
