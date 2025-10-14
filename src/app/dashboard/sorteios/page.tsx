@@ -7,25 +7,10 @@ import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 import { Button } from 'flowbite-react';
 import { AuthContext } from '@/store/AuthContext';
-import { toast } from 'sonner';
-import { PremioProps } from './configuracoes/page';
-
-interface DadosProps {
-  id_empresa: string,
-  id_contrato_global: number,
-  id_contrato: number,
-  associado: { nome: string, endereco: string, bairro: string, numero: number | null, cidade: string },
-
-}
-
-interface GanhadoresProps {
-
-  id_contrato: number,
-  id_contrato_global: number
-  id_empresa: string,
-}
-
-
+import { useActionsSorteios } from './_hooks/sorteios/useActionsSorteios';
+import { useHandleExibir } from './_hooks/sorteios/useHandleExibir';
+import { useZerarSorteio } from './_hooks/sorteios/useZerarSorteio';
+import { useSortearNumero } from './_hooks/sorteios/useSortearNumero';
 
 
 
@@ -35,137 +20,67 @@ interface GanhadoresProps {
 export default function Sorteios() {
 
   const [sorteado, setSorteado] = useState<number>(0);
-  const [dadosSorteio, setSorteio] = useState<Array<DadosProps>>([]);
-  const [ganhadores, setGanhadores] = useState<Array<GanhadoresProps>>([]);
   const { width, height } = useWindowSize();
   const [ativarConfete, setConfetes] = useState(false)
-  const [ganhador, setGanhador] = useState<Partial<DadosProps>>({})
-  const [loading, setLoading] = useState(false)
-  const [premios, setPremios] = useState<Array<PremioProps>>([])
-  const [premioAtual, setPremioAtual] = useState<PremioProps>()
+
   const { empresas } = useContext(AuthContext);
 
+  const {
+    salvarGanhador,
+    ganhador,
+    setGanhador,
+    listarPremios,
+    listarGanhadores,
+    setSorteio,
+    premios,
+    premioAtual,
+    setPremioAtual,
+    ganhadores,
+    dadosSorteio,
+    loading,
+    setLoading
+
+  } = useActionsSorteios()
 
 
 
 
-  const ZerarSorteio = () => {
-    setConfetes(false)
-    const premioSort = premios?.find(item => item.status !== 'S')
-    premioSort ? setPremioAtual(premioSort) : setPremioAtual(undefined)
-    setSorteado(0)
+  const { zerarSorteio } = useZerarSorteio({
+    setConfetes,
+    premios,
+    setPremioAtual,
+    setSorteado
+  })
 
-  }
+  const { exibir } = useHandleExibir({
+    setConfetes,
+    setGanhador
+  })
 
-
-  async function listarPremios() {
-    toast.promise(
-      api.get('/sorteio/listarPremios'),
-      {
-        error: 'Erro ao Requisitar Dados',
-        loading: 'Listando dados.....',
-        success: (response) => {
-          setPremios(response.data)
-          return 'Dados Carregados'
-        }
-      }
-    )
-
-  }
-
-  async function salvarGanhador() {
-    if (!ganhador.id_contrato_global) {
-      toast.error('Sorteio não selecionado!')
-      return
-    }
-    try {
-      const response = await api.post('/sorteio/salvarGanhador', {
-        id_empresa: ganhador.id_empresa,
-        id_contrato_global: ganhador.id_contrato_global,
-        id_contrato: ganhador.id_contrato,
-        bairro: ganhador.associado?.bairro,
-        endereco: ganhador.associado?.endereco,
-        cidade: ganhador.associado?.cidade,
-        numero: ganhador.associado?.numero,
-        titular: ganhador.associado?.nome,
-        premio: premioAtual,
-        status: 'PENDENTE',
-        data_sorteio: new Date()
-      })
-
-      console.log(response.data)
-      setPremios(response.data.premios)
-      setGanhadores(response.data.ganhadores)
-
-    } catch (error) {
-      console.log(error)
-      toast.error('Erro ao salvar ganhador!')
-
-    }
-    setLoading(false)
-
-
-  }
-
-  async function listarGanhadores() {
-
-    try {
-      const response = await api.post('/sorteio/listarGanhadores',
-        {
-          data_sorteio: undefined
-        }
-      )
-      setGanhadores(response.data)
-      console.log(response.data)
-    } catch (error) {
-      console.log(error)
-    }
-
-
-  }
 
   useEffect(() => {
     ganhador.id_contrato_global && salvarGanhador()
   }, [ganhador.id_contrato_global])
 
-  const handleExibir = async () => {
-    const audio = new Audio('/audio/som2.mp3');
 
-    if (sorteado !== 0) {
+  const { sortearNumero } = useSortearNumero({
+    premios,
+    setLoading,
+    dadosSorteio,
+    ganhadores,
+    setSorteado,
+    setGanhador,
+    premioAtual
+  })
 
-      await audio.play();
-      setConfetes(true)
-
-    } else {
-      setGanhador({ associado: { nome: '', endereco: '', bairro: '', numero: null, cidade: '' } })
-      setConfetes(false);
-      return;
+  const props = useSpring({
+    val: sorteado,
+    from: { val: 0 },
+    config: { duration: sorteado <= 20 ? 1000 : 2000 },
+    onRest: () => {
+      exibir(sorteado)
     }
-  }
-  const sortearNumero = () => {
-
-
-    if (premios[premios?.length - 1].status === 'S') {
-      toast.info('Sorteio Encerrado!')
-      return
-    }
-    setLoading(true)
-    if (dadosSorteio && dadosSorteio.length > 0) {
-
-      let contrato = 0;
-      let vencedor: Partial<DadosProps> = {}
-      do {
-        const sorteio = dadosSorteio[Math.floor(Math.random() * dadosSorteio.length)]
-        contrato = sorteio.id_contrato
-        vencedor = sorteio
-
-      } while (ganhadores.some(item => item.id_contrato_global === vencedor.id_contrato_global) || premioAtual?.id_empresa !== vencedor.id_empresa)
-      setSorteado(contrato);
-      setGanhador(vencedor)
-    }
-
-  };
-  const props = useSpring({ val: sorteado, from: { val: 0 }, config: { duration: sorteado <= 20 ? 1000 : 2000 }, onRest: handleExibir })
+  })
 
 
   useEffect(() => {
@@ -250,7 +165,7 @@ export default function Sorteios() {
             SORTEAR
           </Button>
           <Button
-            onClick={ZerarSorteio}
+            onClick={zerarSorteio}
             className="bg-green-600 hover:bg-green-700  font-bold py-2 px-4 rounded"
           >
             ZERAR

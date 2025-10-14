@@ -4,7 +4,7 @@ import { MdDelete } from "react-icons/md";
 import { MdModeEditOutline } from "react-icons/md";
 import { FaRepeat } from "react-icons/fa6";
 import { api } from "@/lib/axios/apiClient";
-import ModalPremio from "../_components/modalPremio";
+import ModalPremio from "../_components/configuracao-parametros/modalPremio";
 import { Button } from "flowbite-react";
 import { PremioProps } from "../configuracoes/page";
 import { AuthContext } from "@/store/AuthContext";

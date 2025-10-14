@@ -1,81 +1,134 @@
 import { Button } from "@/components/ui/button"
 import { AuthContext } from "@/store/AuthContext"
-import { Modal, TextInput } from "flowbite-react"
 import { useContext, useState } from "react"
 import { TbAlertTriangle } from "react-icons/tb"
 import useActionsAssociado from "@/app/dashboard/admcontrato/_hooks/associado/useActionsAssociado"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 
 interface DataProps {
-
-  setModal: (open: boolean) => void,
+  setModal: (open: boolean) => void
   openModal: boolean
-
 }
 
 export function ModalInativar({ openModal, setModal }: DataProps) {
-  const { dadosassociado, setarDadosAssociado } = useContext(AuthContext)
+  const { dadosassociado } = useContext(AuthContext)
 
-  //const [motivoDesagrado, setMotivoDesagrado] = useState(false)
-  const [descMotivo, setDescMotivo] = useState('')
-
-  const [motivo, setMotivo] = useState<{ [key: string]: boolean }>({
-    financeiro: false,
-    nLocalizado: false,
-    desagrado: false
-  })
+  const [descricao, setDescMotivo] = useState('')
+  const [motivo, setMotivo] = useState<"Desagrado" | "Financeiro" | "Nao Localizado" | undefined>()
 
   const hookProps = {
-
     setModal: setModal
   }
 
   const { inativarAtivarContrato } = useActionsAssociado(hookProps)
 
+  const handleMotivoChange = (selectedMotivo: "Desagrado" | "Financeiro" | "Nao Localizado") => {
+    setMotivo(motivo === selectedMotivo ? undefined : selectedMotivo)
+  }
 
   return (
-
-    <Modal size="md" show={openModal} onClose={() => setModal(false)} popup>
-      <Modal.Header />
-      <Modal.Body>
-
-        <div className="space-y-4 text-center">
-          <div className="flex w-full justify-center items-center">
-            <TbAlertTriangle color="red" size={40} />
+    <Dialog open={openModal} onOpenChange={setModal}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <div className="flex justify-center mb-4">
+            <div className="rounded-full bg-red-100 p-3">
+              <TbAlertTriangle className="h-6 w-6 text-red-600" />
+            </div>
           </div>
-          <h3 className="mb-5 text-sm font-normal  ">{`Realmente deseja alterar o contrato Nº ${dadosassociado?.contrato?.id_contrato}`}?</h3>
-          {
-            dadosassociado?.contrato?.situacao === 'ATIVO' && <>
-              <div className="inline-flex gap-8 text-xs font-medium">
-                <div className="flex items-center ">
-                  <input type="checkbox" checked={motivo.financeiro} onClick={() => setMotivo({ financeiro: !motivo.financeiro })} className="w-4 h-4 text-blue-600  rounded    bg-gray-300 border-gray-400" />
-                  <label className="ms-2   whitespace-nowrap ">FINANCEIRO</label>
-                </div>
-                <div className="flex items-center ">
-                  <input type="checkbox" checked={motivo.nLocalizado} onClick={() => setMotivo({ nLocalizado: !motivo.nLocalizado })} className="w-4 h-4 text-blue-600  rounded    bg-gray-300 border-gray-400" />
-                  <label className="ms-2   whitespace-nowrap ">NÃO LOCALIZADO</label>
-                </div>
-                <div className="flex items-center ">
-                  <input type="checkbox" checked={motivo.desagrado} onClick={() => setMotivo({ desagrado: !motivo.desagrado })} className="w-4 h-4 text-blue-600  rounded    bg-gray-300 border-gray-400" />
-                  <label className="ms-2   whitespace-nowrap ">DESAGRADO</label>
-                </div>
+          <DialogTitle className="text-center">
+            Alterar Status do Contrato
+          </DialogTitle>
+          <DialogDescription className="text-center">
+            Realmente deseja alterar o contrato Nº {dadosassociado?.contrato?.id_contrato}?
+          </DialogDescription>
+        </DialogHeader>
 
+        {dadosassociado?.contrato?.situacao === 'ATIVO' && (
+          <div className="space-y-4 py-4">
+            <div className="space-y-3">
+              <Label className="text-sm font-medium">Motivo da Inativação</Label>
+              <div className="grid gap-3">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="financeiro"
+                    checked={motivo === 'Financeiro'}
+                    onCheckedChange={() => handleMotivoChange('Financeiro')}
+                  />
+                  <Label
+                    htmlFor="financeiro"
+                    className="text-sm font-normal cursor-pointer"
+                  >
+                    Financeiro
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="nao-localizado"
+                    checked={motivo === 'Nao Localizado'}
+                    onCheckedChange={() => handleMotivoChange('Nao Localizado')}
+                  />
+                  <Label
+                    htmlFor="nao-localizado"
+                    className="text-sm font-normal cursor-pointer"
+                  >
+                    Não Localizado
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="desagrado"
+                    checked={motivo === 'Desagrado'}
+                    onCheckedChange={() => handleMotivoChange('Desagrado')}
+                  />
+                  <Label
+                    htmlFor="desagrado"
+                    className="text-sm font-normal cursor-pointer"
+                  >
+                    Desagrado
+                  </Label>
+                </div>
               </div>
-              <TextInput sizing="sm" value={descMotivo} onChange={e => setDescMotivo(e.target.value)} placeholder="Informe o motivo da Inativação" autoComplete='off' type="text" required />
-            </>}
+            </div>
 
-          <div className="inline-flex  gap-4">
-            <Button size={'sm'} variant={'outline'} onClick={() => inativarAtivarContrato()} >
-
-              Sim, tenho certeza
-            </Button>
-            <Button size={'sm'} variant={'destructive'} onClick={() => setModal(false)} >Não, cancelar</Button>
+            <div className="space-y-2">
+              <Label htmlFor="descricao">Descrição</Label>
+              <Input
+                id="descricao"
+                placeholder="Informe o motivo da inativação"
+                value={descricao}
+                onChange={(e) => setDescMotivo(e.target.value)}
+                autoComplete="off"
+              />
+            </div>
           </div>
+        )}
 
-        </div>
-
-      </Modal.Body>
-
-    </Modal>
+        <DialogFooter className="sm:justify-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setModal(false)}
+          >
+            Não, cancelar
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={() => inativarAtivarContrato({ motivo, descricao })}
+          >
+            Sim, tenho certeza
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 
