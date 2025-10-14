@@ -1,14 +1,13 @@
 import { CheckListProps } from "../../admcontrato/_types/checklist"
 import { ArrayProdutoProps } from "../../admcontrato/_types/array-produtos"
-import { PlanosProps } from "@/types/planos"
-import { ContratoProps } from "../../admcontrato/_types/contrato"
+
 
 export interface ObitoProps {
   id_obitos: number,
   id_contrato_global: number,
   id_contrato: number,
   id_contrato_st: string,
-  id_associado_global: number,
+  id_global: number,
   id_titular: number,
   id_dependente_global: number,
   id_dependente: number,

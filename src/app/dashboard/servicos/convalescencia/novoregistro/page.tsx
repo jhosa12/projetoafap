@@ -6,16 +6,18 @@ import ConvalescenciaNovo from "../../_components/convalescentes/convalescente-n
 
 
 
-export default function Page(){
+
+export default function NovoRegistroConv(){
 
 
 
+return(
+
+    <Suspense fallback={<div>Carregando......</div>}>
+             <ConvalescenciaNovo/>
+    </Suspense>
+   
+)
 
 
-
-    return(
-        <Suspense fallback={<div>Carregando......</div>}>
-                <ConvalescenciaNovo/>
-        </Suspense>
-    )
 }

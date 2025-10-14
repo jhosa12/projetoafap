@@ -8,9 +8,10 @@ export function useSelecionarTitular(
   resetForm?: (values: any) => void
 ) {
   const handleSelecionarTitular = async (id: number) => {
-    const toastId = toast.loading("Carregando dados do associado...");
+   // const toastId = toast.loading("Carregando dados do associado...");
+   console.log(id)
     const dados = await carregarDados(id);
-    toast.dismiss(toastId);
+  // toast.dismiss(toastId);
 
     // Verificar se os dados foram carregados
     if (!dados) {
@@ -31,5 +32,5 @@ export function useSelecionarTitular(
     setModal((prev: any) => ({ ...prev, busca: false }));
   };
 
-  return handleSelecionarTitular;
+  return {handleSelecionarTitular};
 }

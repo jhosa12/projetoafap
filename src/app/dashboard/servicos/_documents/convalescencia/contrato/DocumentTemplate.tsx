@@ -1,4 +1,4 @@
-import { ProdutosProps } from "@/app/dashboard/admcontrato/_types/produtos";
+import { ProdutosProps } from "@/types/produtos";
 import Image from "next/image";
 
 

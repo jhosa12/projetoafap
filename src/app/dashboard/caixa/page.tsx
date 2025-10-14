@@ -26,7 +26,8 @@ import {
 } from "./_types/types";
 import useActionsCaixa from "./_hooks/useActionsCaixa";
 import { ModalMensalidade } from "../admcontrato/_components/mensalidades/modal-mensalidade";
-import { PlanoContasProps } from "../financeiro/_types/types";
+import { PlanoContasProps } from "../financeiro/_types/plano-contas";
+
 
 
 function CaixaMovimentar() {
@@ -81,14 +82,14 @@ function CaixaMovimentar() {
     }, {} as Record<string, number>);
 
     const soma = data.lista.reduce((total, item) => {
-      return item.tipo === "RECEITA" 
-        ? total + Number(item.valor) 
+      return item.tipo === "RECEITA"
+        ? total + Number(item.valor)
         : total - Number(item.valor);
     }, 0);
 
     const somadespesas = data.lista.reduce((total, item) => {
-      return item.tipo === "DESPESA" 
-        ? total + Number(item.valor) 
+      return item.tipo === "DESPESA"
+        ? total + Number(item.valor)
         : total;
     }, 0);
 
@@ -296,8 +297,8 @@ function CaixaMovimentar() {
 
       {/* Conteúdo principal */}
       <div className="flex flex-col w-full">
-        <HeaderCaixa 
-        planoContas={data?.plano_de_contas as Array<PlanoContasProps>}
+        <HeaderCaixa
+          planoContas={data?.plano_de_contas as Array<PlanoContasProps>}
           saldo={saldo}
           despesas={despesas}
           valorForma={valorForma}
@@ -313,52 +314,52 @@ function CaixaMovimentar() {
           setModal={setModal}
           setMov={setMov}
         />
-        
+
         {!!data?.fechamento ? (
           <ScreenCloseCaixa fechamento={data.fechamento} />
         ) : (
           <div className="flex flex-col w-full">
-            <TableCaixa 
-              data={filteredData} 
-              permissoes={permissoes} 
-              setModal={setModal} 
-              setMov={setMov} 
+            <TableCaixa
+              data={filteredData}
+              permissoes={permissoes}
+              setModal={setModal}
+              setMov={setMov}
             />
           </div>
         )}
 
         {openModal.fecharCaixa && (
-        <ModalFechamento
-          listar={() =>
-            listarLancamentos({
-              endDate: watch("endDate"),
-              startDate: watch("startDate"),
-              id_empresa: infoEmpresa?.id ?? "",
-              descricao: watch("descricao"),
-            })
-          }
-          dataCaixaEnd={watch("endDate")}
-          dataCaixa={watch("startDate")}
-          id_empresa={infoEmpresa?.id ?? ""}
-          lancamentos={data?.lista ?? []}
-          openModal={openModal.fecharCaixa}
-          setOpenModal={() => setModal({ fecharCaixa: false })}
-        />
-      )}
+          <ModalFechamento
+            listar={() =>
+              listarLancamentos({
+                endDate: watch("endDate"),
+                startDate: watch("startDate"),
+                id_empresa: infoEmpresa?.id ?? "",
+                descricao: watch("descricao"),
+              })
+            }
+            dataCaixaEnd={watch("endDate")}
+            dataCaixa={watch("startDate")}
+            id_empresa={infoEmpresa?.id ?? ""}
+            lancamentos={data?.lista ?? []}
+            openModal={openModal.fecharCaixa}
+            setOpenModal={() => setModal({ fecharCaixa: false })}
+          />
+        )}
 
-      {/*openModalPrint && <ModalImpressao array={data?.lista??[]} openModal={openModalPrint} setOpenModal={setPrint} startDate={watch('startDate')} endDate={watch('endDate')} usuario={usuario?.nome??''}/>*/}
+        {/*openModalPrint && <ModalImpressao array={data?.lista??[]} openModal={openModalPrint} setOpenModal={setPrint} startDate={watch('startDate')} endDate={watch('endDate')} usuario={usuario?.nome??''}/>*/}
 
-      {openModal.lancar && (
-        <ModalLancamentosCaixa
-          id_empresa={infoEmpresa?.id ?? ""}
-          handleFiltro={handleChamarFiltro}
-          mov={mov ?? {}}
-          openModal={openModal.lancar}
-          setOpenModal={() => setModal({ lancar: false })}
-          planos={data?.plano_de_contas ?? []}
-          grupo={data?.grupo ?? []}
-        />
-      )}
+        {openModal.lancar && (
+          <ModalLancamentosCaixa
+            id_empresa={infoEmpresa?.id ?? ""}
+            handleFiltro={handleChamarFiltro}
+            mov={mov ?? {}}
+            openModal={openModal.lancar}
+            setOpenModal={() => setModal({ lancar: false })}
+            planos={data?.plano_de_contas ?? []}
+            grupo={data?.grupo ?? []}
+          />
+        )}
       </div>
     </>
   );

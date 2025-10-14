@@ -4,6 +4,7 @@ export type PlanosProps = {
     descricao: string,
     limite_dep: number,
     valor: number
+    acrescimo: number,
     vl_percentual: number,
     pontuacao: number,
     vl_adesao: number,

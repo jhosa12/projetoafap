@@ -10,7 +10,8 @@ import { IoSearchSharp } from "react-icons/io5";
 import { MdOutlineLaunch } from "react-icons/md";
 import ActionsCaixa from "./ActionsCaixa";
 import { FormCaixaProps, LancamentosProps, ResponseCaixaProps } from "../_types/types";
-import { PlanoContasProps } from '../../financeiro/_types/types';
+import { PlanoContasProps } from '../../financeiro/_types/plano-contas';
+
 
 
 interface CaixaHeaderProps {
@@ -26,28 +27,28 @@ interface CaixaHeaderProps {
     setTipoFiltro: (value: string) => void;
     infoEmpresa: any;
     setFilteredData: (value: Partial<ResponseCaixaProps>) => void;
-    setModal: (props:{ [key: string]: boolean }) => void;
+    setModal: (props: { [key: string]: boolean }) => void;
     setMov: (value: Partial<LancamentosProps>) => void;
-    planoContas:Array<PlanoContasProps>
+    planoContas: Array<PlanoContasProps>
 }
 
 
-const HeaderCaixaComponent = memo(({ 
-  saldo, 
-  despesas, 
-  valorForma, 
-  data, 
-  control, 
-  handleSubmit, 
-  listarLancamentos, 
-  register, 
-  tipoFiltro, 
-  setTipoFiltro, 
-  infoEmpresa, 
-  setFilteredData, 
-  setModal, 
-  setMov, 
-  planoContas
+const HeaderCaixaComponent = memo(({
+    saldo,
+    despesas,
+    valorForma,
+    data,
+    control,
+    handleSubmit,
+    listarLancamentos,
+    register,
+    tipoFiltro,
+    setTipoFiltro,
+    infoEmpresa,
+    setFilteredData,
+    setModal,
+    setMov,
+    planoContas
 }: CaixaHeaderProps) => {
     return (
         <div>
@@ -160,11 +161,11 @@ const HeaderCaixaComponent = memo(({
                     Lançar
                 </Button>
                 <ActionsCaixa
-                planoContas={planoContas}
+                    planoContas={planoContas}
                     infoEmpresa={infoEmpresa}
                     id_empresa={infoEmpresa?.id ?? ""}
                     data={data}
-                   
+
                 />
             </form>
 

@@ -39,6 +39,7 @@ interface DataTableProps<TData> {
   maxHeight?: string
   rowSelection?: RowSelectionState
   setRowSelection?: React.Dispatch<React.SetStateAction<RowSelectionState>>
+  //rowSelect:boolean
 }
 
 export function DataTable<TData,>({
@@ -47,7 +48,8 @@ export function DataTable<TData,>({
   children,
   maxHeight,
   rowSelection,
-  setRowSelection
+  setRowSelection,
+
 }: DataTableProps<TData>) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [pagination, setPagination] = React.useState<PaginationState>({
@@ -118,14 +120,14 @@ export function DataTable<TData,>({
         </div>
       </div>
 
-      <div className={`relative w-full ${maxHeight || 'h-96'} overflow-hidden border rounded-md`}>
+      <div className={"relative w-full overflow-hidden border rounded-md"}>
         <div className="overflow-x-auto overflow-y-auto h-full w-full">
           <Table className="min-w-full relative">
-            <TableHeader className="text-xs uppercase">
+            <TableHeader className="text-xs capitalize">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <TableHead className="sticky top-0 z-10 bg-white text-black whitespace-nowrap px-2 py-2 sm:px-4 sm:py-3 border-b" key={header.id}>
+                    <TableHead className="sticky top-0 z-10 bg-white whitespace-nowrap px-2 py-2 sm:px-4 sm:py-3 border-b" key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(header.column.columnDef.header, header.getContext())}
@@ -139,8 +141,12 @@ export function DataTable<TData,>({
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                    onClick={() => row.toggleSelected()}
+                    data-state={rowSelection && row.getIsSelected() && "selected"}
+                    onClick={() => {
+
+
+                     return rowSelection? row.toggleSelected(): undefined
+                    }}
                     className="cursor-pointer"
                   >
                     {row.getVisibleCells().map((cell) => (

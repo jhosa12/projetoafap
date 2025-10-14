@@ -27,27 +27,28 @@ import { pageStyle } from "@/utils/pageStyle";
 import RelatorioMovimentacao from "../_documents/relatorioMovimentacao";
 import { LancamentosProps } from "../_types/types";
 import { SomaProps } from "../../financeiro/_components/tabs/caixa/caixa";
-import { CcustosProps, PlanoContasProps } from "../../financeiro/_types/types";
+import { CcustosProps } from "../../financeiro/_types/ccustos";
+import { PlanoContasProps } from "../../financeiro/_types/plano-contas";
 
 interface FilterCaixaProps {
-  caixa: string;
-  conta?: string;
-  start: Date;
-  end: Date;
+  caixa: string,
+  conta?: string,
+  start: Date,
+  end: Date
 }
 
 interface ModalPropsRelatorios {
-  id_empresa: string;
-  infoEmpresa: EmpresaProps | null;
-  planoContas: Array<PlanoContasProps>;
+  id_empresa: string
+  infoEmpresa: EmpresaProps | null,
+  planoContas: Array<PlanoContasProps>
 }
 
-export default function ModalSelectCaixa({
-  id_empresa,
-  infoEmpresa,
-  planoContas,
-}: ModalPropsRelatorios) {
-  const [open, setOpen] = useState(false);
+
+
+
+
+export default function ModalSelectCaixa({ id_empresa, infoEmpresa, planoContas }: ModalPropsRelatorios) {
+  const [open, setOpen] = useState(false)
   const currentPage = useRef<HTMLDivElement | null>(null);
   const [ccustos, setCcustos] = useState<Array<CcustosProps>>([]);
   const { control, handleSubmit, watch } = useForm<FilterCaixaProps>({
@@ -67,10 +68,12 @@ export default function ModalSelectCaixa({
   const ImprimirRelatorio = useReactToPrint({
     pageStyle: pageStyle,
     contentRef: currentPage,
-    onAfterPrint: () => {},
-    onBeforePrint: async () => {
-      setData([]);
+    onAfterPrint: () => { 
+       setData([]);
       setOpen(false);
+    },
+    onBeforePrint: async () => {
+     
     },
     //  removeAfterPrint:false
   });
@@ -102,6 +105,8 @@ export default function ModalSelectCaixa({
           ccusto: data.caixa,
           // id_user:usuario?.id
         });
+
+
 
         setData(response.data);
         // setLancamentos(lista)
@@ -166,8 +171,11 @@ export default function ModalSelectCaixa({
   }, [data]);
 
   useEffect(() => {
-    handleReqCcustos();
-  }, []);
+    handleReqCcustos()
+  }, [id_empresa])
+
+
+
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

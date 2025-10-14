@@ -50,7 +50,7 @@ export function TabelaCompleta<TData, TValue>({
   columns,
   data,
   rowSelection,
-  setRowSelection
+  setRowSelection,
 
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -61,7 +61,7 @@ export function TabelaCompleta<TData, TValue>({
   const [pagination, setPagination] = React.useState<PaginationState>({
 
     pageIndex: 0,
-    pageSize: 5,
+    pageSize: 7,
 
   })
 
@@ -121,7 +121,7 @@ export function TabelaCompleta<TData, TValue>({
                   table.setPageSize(Number(value))
                 }}
               >
-                {[3, 5, 10, 15, 20, 30, 50].map((pageSize) => (
+                {[3, 5, 7, 10, 15, 20, 30, 50].map((pageSize) => (
                   <DropdownMenuRadioItem
                     key={pageSize}
                     value={`${pageSize}`}
@@ -153,7 +153,9 @@ export function TabelaCompleta<TData, TValue>({
                         column.toggleVisibility(!!value)
                       }
                     >
-                      {column.id}
+                      {typeof column.columnDef.header === "string"
+                        ? column.columnDef.header
+                        : column.id}
                     </DropdownMenuCheckboxItem>
                   )
                 })}
@@ -212,8 +214,7 @@ export function TabelaCompleta<TData, TValue>({
 
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} de{" "}
-          {table.getFilteredRowModel().rows.length} linha(s) selecionadas.
+          Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
         </div>
         
           <div className="space-x-2">
