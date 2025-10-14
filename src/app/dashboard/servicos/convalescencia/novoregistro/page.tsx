@@ -196,13 +196,12 @@ export default function ConvalescenciaNovo() {
         <>
 
             {modal.busca && (
-                <ModalBuscaConv
-                    //  carregarDados={carregarDados}
+                <ModalBusca
+                    carregarDados={carregarDados}
                     selectEmp={infoEmpresa?.id ?? ""}
                     visible={modal.busca}
                     setVisible={() => setModal({ ...modal, busca: false })}
                     filtros={filtrosDaPagina}
-                    onSelecionar={handleSelecionarTitular}
                 />
             )}
 
@@ -226,7 +225,7 @@ export default function ConvalescenciaNovo() {
                             <div className="flex flex-wrap gap-2 items-center justify-start">
                                 {!isEditMode && (
                                     <>
-                                        {dadosassociado && dadosassociado.id_global && dadosassociado.contrato?.situacao === "ATIVO" ? (
+                                        {dadosassociado && dadosassociado.id_global ? (
                                             <>
                                                 <Badge variant="outline" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0">
                                                     <User className="h-4 w-4 mr-2" />
@@ -243,7 +242,9 @@ export default function ConvalescenciaNovo() {
                                                 <Badge
                                                     className={cn(
                                                         "px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0",
-                                                        "bg-green-100 text-green-800 border-green-200"
+                                                        dadosassociado.contrato?.situacao === "INATIVO" ?
+                                                            "bg-red-100 text-red-800 border-red-200" :
+                                                            "bg-green-100 text-green-800 border-green-200"
                                                     )}
                                                 >
                                                     {dadosassociado.contrato?.situacao}
