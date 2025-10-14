@@ -16,7 +16,8 @@ import { IoMdOptions } from "react-icons/io";
 import useVerifyPermission from "@/hooks/useVerifyPermission";
 import ModalSelectCaixa from "./ModalSelectCaixa";
 import { EmpresaProps } from "@/types/empresa";
-import { PlanoContasProps } from "../../financeiro/_types/ccustos";
+import { PlanoContasProps } from "../../financeiro/_types/plano-contas";
+
 
 
 

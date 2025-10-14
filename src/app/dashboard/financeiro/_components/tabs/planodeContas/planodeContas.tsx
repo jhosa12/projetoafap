@@ -15,8 +15,9 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import { EmpresaProps } from "@/types/empresa"
 import { ajustarData } from "@/utils/ajusteData"
 import { LancamentosProps } from "@/app/dashboard/caixa/_types/types"
-import { PlanoContasProps } from "../../../_types/ccustos"
-import { GruposProps } from "@/types/setores"
+import { PlanoContasProps } from "../../../_types/plano-contas"
+import { SetorProps } from "@/app/dashboard/vendas/_components/sales/FilterModal"
+
 
 
 
@@ -57,7 +58,7 @@ interface FiltroFormProps {
 export function PlanodeContas({ listaContas, setListaContas, empresas }: DataProps) {
   const [subListaLanc, setSubLista] = useState<Array<LancamentosProps>>()
   const [setorSelect, setSetor] = useState<number>(0)
-  const [gruposSelect, setGruposSelect] = useState<Array<GruposProps>>()
+  const [gruposSelect, setGruposSelect] = useState<Array<SetorProps>>()
   const [resumoConta, setResumoConta] = useState<Array<SomaValorConta>>([])
   const [loading, setLoading] = useState(false)
   const [abertos, setAbertos] = useState<{ [key: number]: boolean }>({});

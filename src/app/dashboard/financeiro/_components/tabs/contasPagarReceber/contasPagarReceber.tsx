@@ -14,7 +14,8 @@ import { ModalRecPag } from "./modalRecPag";
 import { Button } from "@/components/ui/button";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import { toast } from "sonner";
-import { PlanoContasProps } from "../../../_types/ccustos";
+import { PlanoContasProps } from "../../../_types/plano-contas";
+
 
 
 export interface ContaProps {

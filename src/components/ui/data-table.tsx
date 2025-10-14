@@ -39,6 +39,7 @@ interface DataTableProps<TData> {
   maxHeight?: string
   rowSelection?: RowSelectionState
   setRowSelection?: React.Dispatch<React.SetStateAction<RowSelectionState>>
+  //rowSelect:boolean
 }
 
 export function DataTable<TData,>({
@@ -47,7 +48,8 @@ export function DataTable<TData,>({
   children,
   maxHeight,
   rowSelection,
-  setRowSelection
+  setRowSelection,
+
 }: DataTableProps<TData>) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [pagination, setPagination] = React.useState<PaginationState>({
@@ -139,8 +141,12 @@ export function DataTable<TData,>({
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                    onClick={() => row.toggleSelected()}
+                    data-state={rowSelection && row.getIsSelected() && "selected"}
+                    onClick={() => {
+
+
+                     return rowSelection? row.toggleSelected(): undefined
+                    }}
                     className="cursor-pointer"
                   >
                     {row.getVisibleCells().map((cell) => (

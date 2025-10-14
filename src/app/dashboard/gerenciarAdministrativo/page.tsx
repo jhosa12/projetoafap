@@ -9,8 +9,8 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { PlanoContasProps } from "../financeiro/_types/ccustos";
-import { PlanoContas } from "./_components/plano-contas/modal-adicionar-conta";
+import { PlanoContasProps } from "../financeiro/_types/plano-contas";
+
 
 
 
@@ -141,14 +141,14 @@ export default function gerenciarAdministrativo() {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="plano-contas" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
+        {/* <TabsContent value="plano-contas" className="bg-white rounded-b-lg p-4 h-[calc(100vh-120px)] overflow-auto">
           <PlanoContas
             carregarDados={carregarDados}
             arrayPlanoContas={arrayPlanoContas}
             arraygrupos={arraygrupos}
             setarDados={setarDados}
           />
-        </TabsContent>
+        </TabsContent> */}
       </Tabs>
 
 

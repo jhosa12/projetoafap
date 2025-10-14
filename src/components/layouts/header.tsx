@@ -295,13 +295,13 @@ export function Header({ path }: { path?: string }) {
                   <MenubarSubContent className="ml-1">
                     <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
                       <Gift className="h-4 w-4" />
-                      <LinkNavigate href="/dashboard/sorteio">
+                      <LinkNavigate href="/dashboard/sorteios">
                         Sorteios
                       </LinkNavigate>
                     </MenubarItem>
                     <MenubarItem className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer">
                       <SettingsIcon className="h-4 w-4" />
-                      <LinkNavigate href="/dashboard/sorteio/configuracoes">
+                      <LinkNavigate href="/dashboard/sorteios/configuracoes">
                         Configurar Parâmetros
                       </LinkNavigate>
                     </MenubarItem>

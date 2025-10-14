@@ -1,6 +1,6 @@
 'use client'
 import { ProdutosProps } from "@/types/produtos";
-import { DataTableGerenciar } from "../../../../components/data-table-sem-selecao";
+
 import { columnsProdutos } from "../_components/produtosConvalescenca/columns-table-produtos";
 import useActionsProdConvalescenca from "../_hooks/produtos-convalescenca/useActionsProdConvalescenca";
 import { useContext, useState } from "react";
@@ -9,6 +9,8 @@ import { PlusCircle } from "lucide-react";
 import ModalFormProduto from "../_components/produtosConvalescenca/modal-form-produto";
 import { useHandleSalvarProduto } from "../_hooks/produtos-convalescenca/useHandleSalvarProduto";
 import { AuthContext } from "@/store/AuthContext";
+import { DataTable } from "@/components/ui/data-table";
+
 
 export default function ProdutosConvalescentes() {
 
@@ -43,7 +45,7 @@ export default function ProdutosConvalescentes() {
           Adicionar Produto
         </Button>
       </div>
-      <DataTableGerenciar
+      <DataTable
         columns={columnsProdutos({
           onEdit: (produto: ProdutosProps) => {
             setOpen(true)

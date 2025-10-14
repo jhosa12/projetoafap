@@ -20,7 +20,8 @@ import { AuthContext } from "@/store/AuthContext";
 import { removerFusoDate } from "@/utils/removerFusoDate";
 
 import { LancamentosProps } from "@/app/dashboard/caixa/_types/types";
-import { GruposProps } from "@/types/setores";
+import { SetorProps } from "../../vendas/_components/sales/FilterModal";
+
 
 
 
@@ -36,7 +37,7 @@ interface ModalProps {
   handleFiltro: () => void,
   planos: Array<PlanosProps>
   id_empresa: string
-  grupo: Array<GruposProps>
+  grupo: Array<SetorProps>
   openModal: boolean,
   setOpenModal: (open: boolean) => void
   mov: Partial<LancamentosProps>

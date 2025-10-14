@@ -7,7 +7,8 @@ import { TagsProps } from "./caixa"
 import { useReactToPrint } from "react-to-print"
 import DocumentTemplate from "@/Documents/financeiro/caixa/DocumentTemplate"
 import { endOfDay } from "date-fns"
-import { CaixaProps, CcustosProps } from "../../../_types/ccustos"
+import {  CcustosProps } from "../../../_types/ccustos"
+import { CaixaProps } from "../../../_types/caixa"
 
 
 interface DataProps {

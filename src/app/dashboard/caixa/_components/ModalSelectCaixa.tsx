@@ -19,7 +19,8 @@ import { pageStyle } from "@/utils/pageStyle";
 import RelatorioMovimentacao from "../_documents/relatorioMovimentacao";
 import { LancamentosProps } from "../_types/types";
 import { SomaProps } from "../../financeiro/_components/tabs/caixa/caixa";
-import { CcustosProps, PlanoContasProps } from "../../financeiro/_types/ccustos";
+import { CcustosProps } from "../../financeiro/_types/ccustos";
+import { PlanoContasProps } from "../../financeiro/_types/plano-contas";
 
 
 interface FilterCaixaProps {

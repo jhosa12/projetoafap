@@ -86,7 +86,7 @@ export function MultiSelects({
   return (
     <PopoverRoot  open={open} onOpenChange={setOpen}>
       <div className="relative">
-        <PopoverTrigger >
+        <PopoverTrigger asChild>
           <Button
             ref={buttonRef}
             variant="outline"
