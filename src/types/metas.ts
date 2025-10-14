@@ -1,4 +1,5 @@
-import { GruposProps } from "./setores";
+import { SetoresProps } from "./setores";
+
 
 export interface MetasProps {
 
@@ -8,6 +9,6 @@ export interface MetasProps {
   descricao: string,
   valor: number,
   date: Date,
-  grupo: GruposProps
+  grupo: SetoresProps
 
 }

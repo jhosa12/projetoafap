@@ -1,36 +1,29 @@
 'use client';
 
-import React, { Suspense, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+
 import "react-datepicker/dist/react-datepicker.css";
 import useActionsNovoResgistro from "../../_hooks/novo-registro/useActionsNovoRegistro";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, FileText, Search, Shield, User } from "lucide-react";
 import { AuthContext } from "@/store/AuthContext";
+import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import FormularioConv from "../../_components/convalescentes/formulario-conv";
-import { useSearchParams } from "next/navigation";
-import { useForm, FormProvider} from "react-hook-form";
+import { X } from 'lucide-react';
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 import { ConvProps } from "../../_types/convalescente";
+import { ProdutosProps } from "@/types/produtos";
 import { api } from "@/lib/axios/apiClient";
 import { useSelecionarTitular } from "@/app/dashboard/servicos/_hooks/novo-registro/useSelecionarTitular";
 import { ModalBuscaConv } from "../../_components/convalescentes/modal-busca-titular";
-import { ModalBusca } from "@/components/modals/modalBusca/modalBusca";
-import { HeadAssociado } from "../obitos/tabs-modal/head-associado";
-
+import { toast } from "sonner";
 
 
 export default function ConvalescenciaNovo() {
-    const {
 
-        infoEmpresa,
-        ufs,
-        dadosassociado,
-        carregarDados,
-        limparDados,
-
-
-    } = useContext(AuthContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [rowSelection, setRowSelection] = useState({});
     const searchParams = useSearchParams();
@@ -45,15 +38,17 @@ export default function ConvalescenciaNovo() {
         impressao: false,
     });
 
-    useEffect(() => {
 
-        return () => {
+    const {
 
-            limparDados()
-        }
-    }, [])
+        infoEmpresa,
+        ufs,
+        dadosassociado,
+        carregarDados,
+        limparDados,
 
-    
+
+    } = useContext(AuthContext);
 
     const {
         listarProdutos,
@@ -67,7 +62,13 @@ export default function ConvalescenciaNovo() {
         { value: "Titular", label: "Titular" },
     ];
 
-    
+    useEffect(() => {
+
+        return () => {
+
+            limparDados()
+        }
+    }, [limparDados])
 
 
 
@@ -75,7 +76,6 @@ export default function ConvalescenciaNovo() {
     const methods = useForm<ConvProps>({
         defaultValues: {
             editar: false,
-            id_conv_global:null,
             id_conv: null,
             id_empresa: infoEmpresa?.id || '',
             id_contrato_st: '',
@@ -114,7 +114,7 @@ export default function ConvalescenciaNovo() {
     });
 
     // Corrigir uso do hook: agora passa setModal e reset do formulário para reset imediato
-    const {handleSelecionarTitular} = useSelecionarTitular(carregarDados, limparDados, setModal, methods.reset);
+    const { handleSelecionarTitular } = useSelecionarTitular(carregarDados, limparDados, setModal, methods.reset);
 
 
     // Carregar dados para edição
@@ -133,7 +133,6 @@ export default function ConvalescenciaNovo() {
             // Limpa o formulário ao criar novo registro
             methods.reset({
                 editar: false,
-                id_conv_global:null,
                 id_conv: null,
                 id_empresa: infoEmpresa?.id || '',
                 id_contrato_st: '',
@@ -196,24 +195,15 @@ export default function ConvalescenciaNovo() {
     return (
         <>
 
-            {/* {modal.busca && (
-                <ModalBuscaConv
-                   // carregarDados={carregarDados}
+            {modal.busca && (
+                <ModalBusca
+                    carregarDados={carregarDados}
                     selectEmp={infoEmpresa?.id ?? ""}
                     visible={modal.busca}
                     setVisible={() => setModal({ ...modal, busca: false })}
                     filtros={filtrosDaPagina}
-                    onSelecionar={handleSelecionarTitular}
                 />
-            )} */}
-
-            <ModalBusca
-                carregarDados={carregarDados}
-                selectEmp={infoEmpresa?.id??''}
-                setVisible={() => setModal({ ...modal, busca: false })}
-                visible ={modal.busca??false}
-            
-            />
+            )}
 
 
             <div className="flex flex-col w-full min-h-screen pl-10 pr-10 pt-4 pb-6">
@@ -236,13 +226,30 @@ export default function ConvalescenciaNovo() {
                                 {!isEditMode && (
                                     <>
                                         {dadosassociado && dadosassociado.id_global ? (
-                                         <HeadAssociado
-                                         associado={dadosassociado.nome}
-                                         convalescencia={dadosassociado.contrato?.convalescencia}
-                                         id_contrato={dadosassociado.contrato?.id_contrato}
-                                         plano={dadosassociado.contrato?.plano}
-                                         situacao={dadosassociado.contrato?.situacao}
-                                         />
+                                            <>
+                                                <Badge variant="outline" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0">
+                                                    <User className="h-4 w-4 mr-2" />
+                                                    {dadosassociado.nome}
+                                                </Badge>
+                                                <Badge variant="secondary" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0">
+                                                    <FileText className="h-4 w-4 mr-2" />
+                                                    Contrato: {dadosassociado.contrato?.id_contrato}
+                                                </Badge>
+                                                <Badge variant="outline" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0 border-[#c5942b] text-[#c5942b]">
+                                                    <Shield className="h-4 w-4 mr-2" />
+                                                    {dadosassociado.contrato?.plano}
+                                                </Badge>
+                                                <Badge
+                                                    className={cn(
+                                                        "px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0",
+                                                        dadosassociado.contrato?.situacao === "INATIVO" ?
+                                                            "bg-red-100 text-red-800 border-red-200" :
+                                                            "bg-green-100 text-green-800 border-green-200"
+                                                    )}
+                                                >
+                                                    {dadosassociado.contrato?.situacao}
+                                                </Badge>
+                                            </>
                                         ) : (
                                             <Badge variant="destructive" className="px-2.5 py-1 text-sm whitespace-nowrap flex-shrink-0">
                                                 <AlertTriangle className="h-4 w-4 mr-1.5" />

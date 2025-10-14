@@ -64,10 +64,12 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa, planoContas 
   const ImprimirRelatorio = useReactToPrint({
     pageStyle: pageStyle,
     contentRef: currentPage,
-    onAfterPrint: () => { },
-    onBeforePrint: async () => {
-      setData([]);
+    onAfterPrint: () => { 
+       setData([]);
       setOpen(false);
+    },
+    onBeforePrint: async () => {
+     
     },
     //  removeAfterPrint:false
   });
