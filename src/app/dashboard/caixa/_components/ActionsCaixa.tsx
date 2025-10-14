@@ -17,6 +17,7 @@ import useVerifyPermission from "@/hooks/useVerifyPermission";
 import ModalSelectCaixa from "./ModalSelectCaixa";
 import { EmpresaProps } from "@/types/empresa";
 import { PlanoContasProps } from "../../financeiro/_types/plano-contas";
+import { ResponseCaixaProps } from "../_types/types";
 
 
 
@@ -24,7 +25,7 @@ import { PlanoContasProps } from "../../financeiro/_types/plano-contas";
 
 interface ActionsCaixaProps {
 
-  data: any;
+  data: Partial<ResponseCaixaProps>|undefined;
   id_empresa: string
   infoEmpresa: EmpresaProps | null
   planoContas: Array<PlanoContasProps>
