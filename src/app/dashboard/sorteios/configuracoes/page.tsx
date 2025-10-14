@@ -7,32 +7,6 @@ import { Tabs } from "flowbite-react"
 import { PiListBulletsFill } from "react-icons/pi"
 import { GiPodiumWinner } from "react-icons/gi"
 
-export interface PremioProps {
-  id_premio: number,
-  status: string,
-  ordem: number,
-  id_conveniados: number,
-  conveniado: string,
-  id_empresa: string,
-  descricao: string,
-  data: Date,
-  conveniados: { filename: string }
-}
-interface GanhadoresProps {
-  id_contrato: number,
-  titular: string,
-  endereco: string,
-  bairro: string,
-  numero: number,
-  premio: string,
-  data_sorteio: Date,
-  status: string
-}
-
-
-
-
-
 
 export default function ConfigSort() {
 
