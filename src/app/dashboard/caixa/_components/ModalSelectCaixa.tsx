@@ -173,7 +173,7 @@ export default function ModalSelectCaixa({ id_empresa, infoEmpresa,planoContas }
 
   useEffect(() => {
     handleReqCcustos()
-  }, [])
+  }, [id_empresa])
 
 
 

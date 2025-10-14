@@ -3,11 +3,8 @@ import { AuthContext } from "@/store/AuthContext";
 
 import {
   Controller,
-  UseFormRegister,
-  UseFormSetValue,
-  UseFormWatch,
 } from "react-hook-form";
-import { ChildrenProps } from "@/app/dashboard/admcontrato/_components/cadastro/modalCadastro";
+
 import { CepMaskInput } from "@/components/CepMaskInput";
 import { CPFInput } from "@/components/CpfMaskInput";
 import { PhoneMaskInput } from "@/components/PhoneMaskInput";
@@ -21,10 +18,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SelectBairroEmpresa } from "@/components/selectBairrosEmpresa";
+import { ChildrenProps } from "./modalCadastro";
 
 export function DadosTitular({
   register,
-  setValue,
   watch,
   control,
 }: ChildrenProps) {
@@ -113,7 +111,16 @@ export function DadosTitular({
               Bairro
             </Label>
           </div>
-          <Input id="bairro" {...register("bairro")} type="text" required />
+                  <Controller
+                    control={control}
+                    name="bairro"
+                    rules={{required:'Bairro é obrigatório'}}
+                    render={({ field }) => (
+                     <SelectBairroEmpresa value={field.value} onChange={field.onChange} />
+                    )}
+                  />
+                  {/* <Input className="text-xs" {...register('bairro',{required:'Bairro é obrigatório'})} placeholder="Bairro" /> */}
+              
         </div>
 
         <div className="col-span-2">

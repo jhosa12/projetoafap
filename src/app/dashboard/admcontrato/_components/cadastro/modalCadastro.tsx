@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "@/store/AuthContext";
-import { ResumoCadastro } from "@/app/dashboard/admcontrato/_components/cadastro/resumoCadastro";
+
 import { api } from "@/lib/axios/apiClient";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi2";
 import { HiInboxIn } from "react-icons/hi";
@@ -23,16 +23,18 @@ import {
 } from "react-hook-form";
 
 import { MultiStep } from "@/utils/multiStep";
-import { DadosCadastroProps } from "../../_types/dados-cadastro";
-import { DadosTitular } from '@/app/dashboard/admcontrato/_components/cadastro/dadosTitular';
-import { DadosPlano } from '@/app/dashboard/admcontrato/_components/cadastro/dadosPlano';
-import { DadosDependentes } from '@/app/dashboard/admcontrato/_components/cadastro/dadosDependentes';
+
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { Badge } from "@/components/ui/badge";
 import { gerarMensalidade } from "@/utils/gerarArrayMensal";
+import { DadosCadastroProps } from "../../_types/dados-cadastro";
+import { DadosTitular } from "./dadosTitular";
+import { DadosPlano } from "./dadosPlano";
+import { DadosDependentes } from "./dadosDependentes";
+import { ResumoCadastro } from "./resumoCadastro";
 
 interface ParcelaData {
   parcela_n: number;
@@ -49,15 +51,15 @@ export interface ChildrenProps {
   watch: UseFormWatch<DadosCadastroProps>
   trigger: UseFormTrigger<DadosCadastroProps>
   control: Control<DadosCadastroProps>
-
+ 
 }
 
-export default function ModalCadastro({ isEmpresa, empresa }: { isEmpresa?: boolean, empresa: string }) {
+export default function ModalCadastro({isEmpresa,empresa}:{isEmpresa?:boolean,empresa:string}) {
   const [open, setOpen] = useState(false);
 
   const { usuario, carregarDados, selectEmp } = useContext(AuthContext);
-  const { register, handleSubmit, setValue, watch, trigger, control, reset } = useForm<DadosCadastroProps>();
-  useEffect(() => {
+  const { register, handleSubmit, setValue, watch, trigger, control,reset } = useForm<DadosCadastroProps>();
+    useEffect(() => {
     reset({})
     setCurrentStepIndex(0);
   }, [open]);
@@ -143,7 +145,7 @@ export default function ModalCadastro({ isEmpresa, empresa }: { isEmpresa?: bool
           dt_carencia: data.contrato?.dt_carencia ? dataCarencia : null
         },
         dependentes: data.arraydep,
-        mensalidades: gerarMensalidade({
+          mensalidades: gerarMensalidade({
           vencimento: data.contrato?.data_vencimento,
           n_parcelas: Number(data.contrato?.n_parcelas),
           valorMensalidade: Number(data.contrato?.valor_mensalidade)
@@ -162,7 +164,7 @@ export default function ModalCadastro({ isEmpresa, empresa }: { isEmpresa?: bool
     );
   };
 
-  const { steps, currentStepIndex, step, next, back, setCurrentStepIndex } = MultiStep([
+  const { steps, currentStepIndex, step, next, back,setCurrentStepIndex } = MultiStep([
     <DadosTitular control={control} trigger={trigger} key={1} register={register} setValue={setValue} watch={watch} />,
     <DadosPlano control={control} trigger={trigger} key={2} register={register} setValue={setValue} watch={watch} />,
     <DadosDependentes control={control} key={3} trigger={trigger} register={register} setValue={setValue} watch={watch} />,
@@ -175,12 +177,12 @@ export default function ModalCadastro({ isEmpresa, empresa }: { isEmpresa?: bool
 
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button disabled={isEmpresa} variant={'outline'} size={'sm'} type="button"  >
-          <IoMdAdd size={18} />
-          Novo Associado
-        </Button>
+    <Dialog  open={open} onOpenChange={setOpen}>
+      <DialogTrigger  asChild>
+           <Button disabled={isEmpresa}  variant={'outline'} size={'sm'} type="button"  >
+                                   <IoMdAdd size={18} />
+                                   Novo Associado
+                               </Button>
       </DialogTrigger>
 
       <DialogContent onInteractOutside={(e) => e.preventDefault()} className="max-w-6xl">
@@ -194,7 +196,7 @@ export default function ModalCadastro({ isEmpresa, empresa }: { isEmpresa?: bool
           <div className="flex justify-end gap-4">
             {currentStepIndex !== 0 && (
               <Button
-
+                
                 type="button"
                 onClick={back}
               >
@@ -210,7 +212,7 @@ export default function ModalCadastro({ isEmpresa, empresa }: { isEmpresa?: bool
                 variant={'default'}
                 type="submit"
               >
-                <HiOutlineChevronRight color="white" />
+                <HiOutlineChevronRight color="white"  />
               </Button>
             )}
           </div>
