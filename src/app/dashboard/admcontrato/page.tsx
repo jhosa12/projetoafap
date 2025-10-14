@@ -468,7 +468,7 @@ export default function AdmContrato() {
             telefone={dadosassociado?.celular1 ?? ""}
             infoEmpresa={infoEmpresa}
             ref={componentRefs.contrato}
-            informacoes_plano={dadosassociado?.contrato?.informacoes_plano}
+            informacoes_plano={dadosassociado?.contrato?.planos?.informacoes_plano}
           />
         )}
 
