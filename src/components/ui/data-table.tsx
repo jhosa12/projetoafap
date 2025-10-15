@@ -92,8 +92,8 @@ export function DataTable<TData,>({
         <div className="flex gap-2 items-center w-full sm:w-auto">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="w-full sm:w-auto">
-                <span className="hidden sm:inline">Linhas: </span>{table.getState().pagination.pageSize}
+              <Button variant="outline" size="sm" className="w-full sm:w-auto text-gray-600">
+                <span className="hidden sm:inline ">Linhas: </span>{table.getState().pagination.pageSize}
                 <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -172,7 +172,7 @@ export function DataTable<TData,>({
           </Table>
         </div>
       </div>
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 py-4">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 py-4 text-gray-600">
         <div className="text-sm text-muted-foreground order-2 sm:order-1">
           Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
         </div>
