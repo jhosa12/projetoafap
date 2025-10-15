@@ -37,7 +37,7 @@ interface DataProps {
   id_empresa:string
 }
 
-interface AdesaoProps {
+export interface AdesaoProps {
   id_contrato: number,
   dt_adesao: Date,
   situacao: string,
