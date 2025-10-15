@@ -9,7 +9,7 @@ interface ExcluirProps {
 export function useHandleExcluirPlano({ deletarPlano, listar }: ExcluirProps) {
 
 
-  const handleConfirmarExclusao = async (plano: any) => {
+  const handleConfirmarExclusao = async (plano: any): Promise<void> => {
 
     try {
 
