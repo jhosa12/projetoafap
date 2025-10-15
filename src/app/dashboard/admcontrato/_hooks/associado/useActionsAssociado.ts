@@ -1,13 +1,13 @@
 import { api } from "@/lib/axios/apiClient";
 import { AuthContext } from "@/store/AuthContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext} from "react";
 import { toast } from "sonner";
 import { AssociadoProps } from "../../_types/associado";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler } from "react-hook-form";
 import { PlanosProps } from "@/types/planos";
 
 interface ActionsProps {
-  inativarAtivarContrato: () => Promise<void>;
+  inativarAtivarContrato: ({motivo,descricao}:{motivo:"Desagrado"|"Financeiro"|"Nao Localizado"|undefined,descricao:string|undefined}) => Promise<void>;
   handleAtualizarDados: SubmitHandler<AssociadoProps>;
   handleAlterarPlano: SubmitHandler<PlanosProps>;
 }
@@ -26,15 +26,11 @@ const useActionsAssociado = ({
 }: Partial<UseActionsProps>): ActionsProps => {
   const { usuario, dadosassociado, setarDadosAssociado } =
     useContext(AuthContext);
-  const [descMotivo, setDescMotivo] = useState("");
+ 
 
-  const [motivo, setMotivo] = useState<{ [key: string]: boolean }>({
-    financeiro: false,
-    nLocalizado: false,
-    desagrado: false,
-  });
+ 
 
-  async function inativarAtivarContrato() {
+  async function inativarAtivarContrato({motivo,descricao}:{motivo:"Desagrado"|"Financeiro"|"Nao Localizado"|undefined,descricao:string|undefined}) {
     if (!setModal) {
       toast.error("Dados não encontrados para esta operação.");
       return;
@@ -43,30 +39,28 @@ const useActionsAssociado = ({
     const st =
       dadosassociado?.contrato?.situacao === "ATIVO" ? "INATIVO" : "ATIVO";
 
-    let categoria_inativo = "";
-    if (st === "INATIVO") {
-      if (motivo.desagrado) {
-        categoria_inativo = "Desagrado";
-      }
-      if (motivo.financeiro) {
-        categoria_inativo = "Financeiro";
-      }
-      if (motivo.nLocalizado) {
-        categoria_inativo = "Nao Localizado";
-      }
-    }
+    // let categoria_inativo = "";
+    // if (st === "INATIVO") {
+    //   if (motivo.desagrado) {
+    //     categoria_inativo = "Desagrado";
+    //   }
+    //   if (motivo.financeiro) {
+    //     categoria_inativo = "Financeiro";
+    //   }
+    //   if (motivo.nLocalizado) {
+    //     categoria_inativo = "Nao Localizado";
+    //   }
+    // }
 
     if (
       st === "INATIVO" &&
-      !motivo.desagrado &&
-      !motivo.financeiro &&
-      !motivo.nLocalizado
+      !motivo
     ) {
       toast.warning("Selecione a categoria do motivo");
 
       return;
     }
-    if (st === "INATIVO" && !descMotivo) {
+    if (st === "INATIVO" && !descricao) {
       toast.warning("Descreva o motivo da Inativação");
       return;
     }
@@ -75,8 +69,8 @@ const useActionsAssociado = ({
       api.put("/contrato/inativar", {
         id_contrato: dadosassociado?.contrato?.id_contrato,
         id_contrato_global: dadosassociado?.contrato?.id_contrato_global,
-        motivo_inativo: st === "INATIVO" ? descMotivo : undefined,
-        categoria_inativo: st === "INATIVO" ? categoria_inativo : undefined,
+        motivo_inativo: st === "INATIVO" ? descricao : undefined,
+        categoria_inativo: st === "INATIVO" ? motivo : undefined,
         dt_cancelamento: st === "INATIVO" ? new Date() : undefined,
         situacao: st,
       }),
