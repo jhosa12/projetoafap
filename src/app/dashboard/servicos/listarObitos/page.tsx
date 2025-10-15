@@ -27,12 +27,13 @@ import { ChevronDown, Printer } from "lucide-react"
 export default function ListarObitos() {
   const [openOs, setOpenOs] = useState(false);
   const { selectEmp, limparDados } = useContext(AuthContext)
-  const { listaServicos, deletarObito, onSave, servico, setServico, listar } = useActionsObito()
+  const { listaServicos, deletarObito, onSave, servico, setServico, listar,produtos } = useActionsObito()
   const [modalImprimir, setModalImprimir] = useState(false);
   const [itemSelecionado, setItemSelecionado] = useState<ObitoProps | null>(null);
   const [documentoImprimir, setDocumentoImprimir] = useState<DocsObito | null>(null);
   const [idObitoParaImpressao, setIdObitoParaImpressao] = useState<number | null>(null);
   const [rowSelection, setRowSelection] = useState({});
+  const [excluir,setExcluir] = useState(false)
 
   const {
     iniciarImpressao,
@@ -100,7 +101,9 @@ export default function ListarObitos() {
       <DataTable
         columns={getObitoColumns({
           onDelete(obito) {
-            deletarObito(obito);
+            setItemSelecionado(obito)
+            setExcluir(true)
+            
           },
           onEdit(obito) {
             setOpenOs(true);
@@ -110,6 +113,7 @@ export default function ListarObitos() {
         data={listaServicos}
         rowSelection={rowSelection}
         setRowSelection={setRowSelection}
+        maxHeight="max-h-[calc(100vh-250px)]"
       >
         <Button onClick={() => {
           setServico(null)
@@ -162,6 +166,14 @@ export default function ListarObitos() {
         setSelectedObito={setServico}
         selectEmp={selectEmp}
         onSave={handleSalvar}
+        produtos={produtos}
+      />
+
+      <ModalConfirmar
+      handleConfirmar={()=>deletarObito(itemSelecionado!)}
+      openModal={excluir}
+      setOpenModal={()=>setExcluir(false)}
+        pergunta="Realmente deseja excluir esse registro ?"
       />
 
       <div style={{ display: "none" }}>
@@ -181,48 +193,14 @@ export default function ListarObitos() {
 
         {itemSelecionado && (
           <>
-            <div ref={componentRefs?.ordemDeServico}>
+            <div style={{display:'none'}} >
               <OrdemServico
-                nome_falecido={itemSelecionado?.nome_falecido ?? ""}
-                atendente={itemSelecionado?.atendente ?? ""}
-                contrato={itemSelecionado?.id_contrato ?? 0}
-                situacao={itemSelecionado?.situacao_contrato ?? ""}
-                falecido={itemSelecionado?.falecido ?? ""}
-                nome_dec={itemSelecionado?.rd_nome ?? ""}
-                cpf_dec={itemSelecionado?.cpf ?? ""}
-                endereco_dec={itemSelecionado?.rd_endereco ?? ""}
-                bairro_dec={itemSelecionado?.rd_bairro ?? ""}
-                numero_dec={Number(itemSelecionado?.rd_numero) || 0}
-                cidade_dec={itemSelecionado?.rd_cidade ?? ""}
-                uf_dec={itemSelecionado?.rd_uf ?? ""}
-                data_nasc_falecido={itemSelecionado?.data_nascimento}
-                naturalidade_falecido={itemSelecionado?.naturalidade ?? ""}
-                nome_pai={itemSelecionado?.nome_pai ?? ""}
-                nome_mae={itemSelecionado?.nome_mae ?? ""}
-                estado_civil={itemSelecionado?.estado_civil ?? ""}
-                religiao={itemSelecionado?.religiao ?? ""}
-                profissao={itemSelecionado?.profissao ?? ""}
-                endereco_falecido={itemSelecionado?.end_rua ?? ""}
-                numero_falecido={itemSelecionado?.end_numero ?? 0}
-                bairro_falecido={itemSelecionado?.end_bairro ?? ""}
-                cidade_falecido={itemSelecionado?.end_cidade ?? ""}
-                uf_falecido={itemSelecionado?.end_uf ?? ""}
-                data_falecimento={itemSelecionado?.end_data_falecimento}
-                hora_falecimento={itemSelecionado?.end_hora_falecimento}
-                local_falecimento={itemSelecionado?.end_local_falecimento ?? ""}
-                cemiterio={itemSelecionado?.cemiterio ?? ""}
-                laudo_medico={itemSelecionado?.dc_laudo_med ?? ""}
-                medico={itemSelecionado?.dc_nome_medico ?? ""}
-                data_sepultamento={itemSelecionado?.dt_sepultamento}
-                hora_sepultamento={itemSelecionado?.hr_sepultamento}
-                crm={itemSelecionado?.dc_crm ?? ""}
-                obito_itens={itemSelecionado?.obito_itens ?? []}
-                informacoes_plano={itemSelecionado?.contrato?.planos?.informacoes_plano}
-                descricao_plano={itemSelecionado?.contrato?.planos?.descricao}
+              ref={componentRefs?.ordemDeServico}
+                data={itemSelecionado}
               />
             </div>
 
-            <div ref={componentRefs?.tanato}>
+            <div style={{display:'none'}} >
               <AutTanato
                 nome_falecido={itemSelecionado?.nome_falecido ?? ""}
                 contrato={itemSelecionado?.id_contrato ?? 0}
@@ -241,6 +219,7 @@ export default function ListarObitos() {
                 cidade_falecido={itemSelecionado?.end_cidade ?? ""}
                 uf_falecido={itemSelecionado?.end_uf ?? ""}
                 autorizado={true}
+                ref={componentRefs?.tanato}
               />
             </div>
           </>

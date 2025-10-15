@@ -31,3 +31,5 @@ export type ContratoProps = {
     desconto: number | null,
     planos: Partial<PlanosProps>
 }
+
+export type Docs = 'carne' | 'cancelamento' | 'contrato' | 'carteira' | 'resumo' | 'carta'| undefined

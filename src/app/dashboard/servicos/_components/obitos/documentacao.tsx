@@ -80,21 +80,6 @@ export default function DocumentacaoOS({ servico }: DadosProps) {
 
                 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             </div>
 
             <div style={{ display: 'none' }}>
@@ -121,43 +106,7 @@ export default function DocumentacaoOS({ servico }: DadosProps) {
             </div>
             <div style={{ display: 'none' }}>
                 <OrdemServico
-                    atendente={servico.atendente ?? ''}
-                    bairro_dec={servico.rd_bairro ?? ''}
-                    bairro_falecido={servico.end_bairro ?? ''}
-                    cemiterio={servico.cemiterio ?? ''}
-                    cidade_dec={servico.rd_cidade ?? ''}
-                    cidade_falecido={servico.end_cidade ?? ''}
-                    contrato={Number(servico.id_contrato)}
-                    cpf_dec={servico.cpf_cnpj ?? ''}
-                    crm={servico.dc_crm ?? ''}
-                    data_falecimento={servico.end_data_falecimento}
-                    data_nasc_falecido={servico.data_nascimento}
-                    data_sepultamento={servico.dt_sepultamento}
-                    endereco_dec={servico.rd_endereco ??''}
-                    endereco_falecido={servico.end_rua??''}
-                    estado_civil={servico.estado_civil??''}
-                    falecido={servico.falecido??''}
-                    hora_falecimento={servico.end_hora_falecimento}
-                    hora_sepultamento={servico.hr_sepultamento}
-                    inumado={servico.jazigo}
-                    laudo_medico={servico.dc_laudo_med}
-                    local_falecimento={servico.end_local_falecimento}
-                    medico={servico.dc_nome_medico}
-                    naturalidade_falecido={servico.naturalidade}
-                    nome_dec={servico.rd_nome}
-                    nome_falecido={servico.nome_falecido}
-                    nome_mae={servico.nome_mae}
-                    nome_pai={servico.nome_pai}
-                    numero_dec={Number(servico.rd_numero)}
-                    numero_falecido={Number(servico.end_numero)}
-                    observacoes={servico.caracterista_corporal}
-                    plano={servico.contrato?.planos?.descricao}
-                    profissao={servico.profissao}
-                    religiao={servico.religiao}
-                    situacao={servico.situacao_contrato}
-                    tipo_atendimento={servico.tipo_atendimento}
-                    uf_dec={servico.rd_uf}
-                    uf_falecido={servico.end_uf}
+                    data={servico}
 
                     ref={componentRefOs}
                 />

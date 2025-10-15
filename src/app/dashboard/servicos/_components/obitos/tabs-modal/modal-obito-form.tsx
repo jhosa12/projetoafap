@@ -8,6 +8,7 @@ import { ModalBusca } from "@/components/modals/modalBusca/modalBusca"
 import { Dispatch, SetStateAction, useContext, useState } from "react"
 import { AuthContext } from "@/store/AuthContext"
 import { SubmitHandler } from "react-hook-form"
+import { ProdutosProps } from "@/types/produtos"
 
 interface ModalObitoFormProps {
   isFormOpen: boolean,
@@ -16,10 +17,10 @@ interface ModalObitoFormProps {
   setSelectedObito: Dispatch<SetStateAction<ObitoProps | null>>
   selectEmp: string,
   onSave: SubmitHandler<ObitoProps>
-
+  produtos:Array<ProdutosProps>
 }
 
-export const ModalObitoForm = ({ isFormOpen, selectedObito, setIsFormOpen, setSelectedObito, selectEmp, onSave }: ModalObitoFormProps) => {
+export const ModalObitoForm = ({ isFormOpen, selectedObito, setIsFormOpen, setSelectedObito, selectEmp, onSave,produtos}: ModalObitoFormProps) => {
   const [openBusca, setOpenBusca] = useState(false)
   const { dadosassociado, carregarDados } = useContext(AuthContext)
 
@@ -49,6 +50,7 @@ export const ModalObitoForm = ({ isFormOpen, selectedObito, setIsFormOpen, setSe
             setIsFormOpen(false)
             setSelectedObito(null)
           }}
+          produtos={produtos}
         />
         <ModalBusca visible={openBusca} carregarDados={carregarDados} selectEmp={selectEmp} setVisible={() => setOpenBusca(false)} />
       </DialogContent>

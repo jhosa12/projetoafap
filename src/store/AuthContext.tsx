@@ -147,7 +147,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    if (!usuario) signOut();
+   // if (!usuario) signOut();
     if (usuario) getBairros()
   }, [usuario]);
 

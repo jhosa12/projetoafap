@@ -69,8 +69,7 @@ export function HistoricoMensalidade({
     excluir: false,
     baixar: false,
     editar: false,
-    recibo: false,
-    carne: false,
+    carne:false
   });
   const {
     excluirMensalidade,
@@ -82,13 +81,12 @@ export function HistoricoMensalidade({
     toggleSelecionada,
   } = useActionsMensalidades({ mensalidade: mensalidadeSelect, setMensalidade });
 
-  const { componentRefs, handlePrint, printState, handleImpressao } =
+  const { componentRefs,  handleImpressao,doc,setDoc } =
     usePrintDocsAssociado(
       dadosassociado,
       usuario.nome ?? "",
       infoEmpresa?.id ?? "",
-      setarDadosAssociado,
-      () => setModal({ carne: false })
+      setarDadosAssociado
     );
 
   const imprimirRecibo = useReactToPrint({
@@ -197,8 +195,8 @@ export function HistoricoMensalidade({
         </div>
       )}
 
-      {printState.carne && (
-        <div style={{ display: "none" }}>
+       
+       {doc==='carne'&& <div  style={{ display: "none" }}>
           <ImpressaoCarne
             infoEmpresa={infoEmpresa}
             ref={componentRefs.carne}
@@ -220,8 +218,8 @@ export function HistoricoMensalidade({
               plano: dadosassociado?.contrato?.plano ?? "",
             }}
           />
-        </div>
-      )}
+        </div>}
+      
 
       {/*openScanner && <Scanner verficarTicket={verificarBaixa} openModal={openScanner} setModal={setOpenScanner}   />*/}
 
@@ -246,12 +244,12 @@ export function HistoricoMensalidade({
         />
       )}
 
-      {printState.carne && (
+      {openModal.carne && (
         <ModalConfirmar
           pergunta={`Realmente deseja imprimir o(a) carnê ?. Esteja ciente de que ao confirmar, os dados de data e usuario que realizou a impressão serão atualizados!`}
-          openModal={printState.carne}
-          setOpenModal={() => handlePrint("carne")}
-          handleConfirmar={handleImpressao}
+          openModal={openModal.carne}
+          setOpenModal={() => setModal({carne:false})}
+          handleConfirmar={()=>handleImpressao(doc)}
         />
       )}
 
@@ -286,7 +284,7 @@ export function HistoricoMensalidade({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => handlePrint("carne")}
+            onClick={() => setModal({carne:true})}
           >
             <IoPrint className="mr-1 h-4 w-4" /> Imprimir
           </Button>

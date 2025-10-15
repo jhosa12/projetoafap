@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react"
+import { Fragment, useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -12,21 +12,44 @@ import { Controller, useFormContext } from "react-hook-form";
 import { ObitoProps } from "@/app/dashboard/servicos/_types/obito";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import { ProdutosProps } from "@/types/produtos";
+import { Combobox } from "@/components/ui/combobox";
 
 interface ServicoItem {
-  id: string
-  descricao_item: string
-  quantidade: number
-  valor_unit: number
-  acrescimo: number
-  desconto: number
-  valor_total: number
+  id: string;
+  descricao_item: string;
+  quantidade: number;
+  valor_unit: number;
+  acrescimo: number;
+  desconto: number;
+  valor_total: number;
+  id_produto: number | null;
 }
 
-export const OSDadosFinanceiros = () => {
-  const { register, control, watch, setValue } = useFormContext<ObitoProps>()
-  const obitoItens = watch("obito_itens") || []
+interface Props {
+  produtos: Array<ProdutosProps>;
+}
+
+export const OSDadosFinanceiros = ({ produtos }: Props) => {
+  const { register, control, watch, setValue } = useFormContext<ObitoProps>();
+  const obitoItens = watch("obito_itens") || [];
   const [servicos, setServicos] = useState<ServicoItem[]>(() =>
     (obitoItens as any[]).map((item: any, idx: number) => ({
       id: item.id?.toString() || item.id_ob_itens?.toString() || String(idx),
@@ -36,12 +59,17 @@ export const OSDadosFinanceiros = () => {
       acrescimo: item.acrescimo ?? 0,
       desconto: item.desconto ?? 0,
       valor_total: item.valor_total ?? 0,
+      id_produto: produtos.find(it=>it.descricao===item.descricao_item)?.id_produto ?? null,
     }))
   );
 
+
   useEffect(() => {
-    setValue("obito_itens", servicos, { shouldValidate: true, shouldDirty: true })
-  }, [servicos, setValue])
+    setValue("obito_itens", servicos, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  }, [servicos, setValue]);
 
   const addServico = () => {
     const newServico: ServicoItem = {
@@ -52,43 +80,68 @@ export const OSDadosFinanceiros = () => {
       acrescimo: 0,
       desconto: 0,
       valor_total: 0,
-    }
-    setServicos([...servicos, newServico])
-  }
+      id_produto: null,
+    };
+    setServicos([...servicos, newServico]);
+  };
+
+  const handelSelectProduto = (id: number, index: number) => {
+    const produto = produtos.find((item) => item.id_produto === id);
+    if (!produto) return;
+    const newProd = [...servicos];
+    newProd[index] = {
+      ...newProd[index],
+      valor_unit: produto?.valor_venda,
+      descricao_item: produto?.descricao,
+      id_produto: produto.id_produto,
+      valor_total:produto.valor_venda*newProd[index].quantidade+newProd[index].acrescimo-newProd[index].desconto
+    };
+
+    setServicos(newProd);
+  };
 
   const removeServico = (id: string) => {
-    setServicos(servicos.filter((s) => s.id !== id))
-  }
+    setServicos(servicos.filter((s) => s.id !== id));
+  };
 
   const updateServico = (id: string, field: keyof ServicoItem, value: any) => {
     setServicos(
       servicos.map((s) => {
         if (s.id === id) {
-          const updated = { ...s, [field]: value }
+          const updated = { ...s, [field]: value };
           // Recalculate total when quantity, unit value, addition or discount changes
-          if (["quantidade", "valor_unit", "acrescimo", "desconto"].includes(field)) {
-            const subtotal = updated.quantidade * updated.valor_unit
-            const totalComAcrescimo = subtotal + updated.acrescimo
-            updated.valor_total = totalComAcrescimo - updated.desconto
+          if (
+            ["quantidade", "valor_unit", "acrescimo", "desconto"].includes(
+              field
+            )
+          ) {
+            const subtotal = updated.quantidade * updated.valor_unit;
+            const totalComAcrescimo = subtotal + updated.acrescimo;
+            updated.valor_total = totalComAcrescimo - updated.desconto;
           }
-          return updated
+          return updated;
         }
-        return s
-      }),
-    )
-  }
-
+        return s;
+      })
+    );
+  };
 
   return (
-    <div className="space-y-2" >
+    <div className="space-y-2">
       <Card className="bg-white border-gray-200 shadow-none ">
         <CardHeader>
           <CardTitle className="text-gray-900">Serviços Prestados</CardTitle>
-          <CardDescription className="text-gray-600">Adicione e gerencie os serviços prestados</CardDescription>
+          <CardDescription className="text-gray-600">
+            Adicione e gerencie os serviços prestados
+          </CardDescription>
         </CardHeader>
         <CardContent className="text-xs">
           <div className="space-y-4">
-            <Button type="button" onClick={addServico} className="flex items-center gap-2">
+            <Button
+              type="button"
+              onClick={addServico}
+              className="flex items-center gap-2"
+            >
               <Plus className="h-4 w-4" />
               Adicionar Serviço
             </Button>
@@ -108,14 +161,26 @@ export const OSDadosFinanceiros = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {servicos.map((servico) => (
+                    {servicos.map((servico, index) => (
                       <TableRow key={servico.id}>
                         <TableCell>
-                          <Input
+                          <Combobox
+                            onChange={(e) =>
+                              handelSelectProduto(Number(e), index)
+                            }
+                            items={produtos.map((item) => {
+                              return {
+                                value: item.id_produto.toString(),
+                                label: item.descricao,
+                              };
+                            })}
+                            value={ servico.id_produto?.toString()?? null}
+                          />
+                          {/* <Input
                             value={servico.descricao_item}
                             onChange={(e) => updateServico(servico.id, "descricao_item", e.target.value)}
                             placeholder="Descrição do serviço"
-                          />
+                          /> */}
                         </TableCell>
                         <TableCell>
                           <Input
@@ -123,18 +188,32 @@ export const OSDadosFinanceiros = () => {
                             min="1"
                             value={servico.quantidade}
                             onChange={(e) =>
-                              updateServico(servico.id, "quantidade", Number.parseInt(e.target.value) || 1)
+                              updateServico(
+                                servico.id,
+                                "quantidade",
+                                Number.parseInt(e.target.value) || 1
+                              )
                             }
                           />
                         </TableCell>
                         <TableCell>
                           <Input
+                            readOnly
                             type="number"
                             step="0.01"
-                            value={servico.valor_unit === 0 ? "" : servico.valor_unit}
+                            value={
+                              servico.valor_unit === 0 ? "" : servico.valor_unit
+                            }
                             onChange={(e) => {
-                              const value = e.target.value === "" ? 0 : Number.parseFloat(e.target.value);
-                              updateServico(servico.id, "valor_unit", isNaN(value) ? 0 : value);
+                              const value =
+                                e.target.value === ""
+                                  ? 0
+                                  : Number.parseFloat(e.target.value);
+                              updateServico(
+                                servico.id,
+                                "valor_unit",
+                                isNaN(value) ? 0 : value
+                              );
                             }}
                             placeholder="0.00"
                           />
@@ -143,10 +222,19 @@ export const OSDadosFinanceiros = () => {
                           <Input
                             type="number"
                             step="0.01"
-                            value={servico.acrescimo === 0 ? "" : servico.acrescimo}
+                            value={
+                              servico.acrescimo === 0 ? "" : servico.acrescimo
+                            }
                             onChange={(e) => {
-                              const value = e.target.value === "" ? 0 : Number.parseFloat(e.target.value);
-                              updateServico(servico.id, "acrescimo", isNaN(value) ? 0 : value);
+                              const value =
+                                e.target.value === ""
+                                  ? 0
+                                  : Number.parseFloat(e.target.value);
+                              updateServico(
+                                servico.id,
+                                "acrescimo",
+                                isNaN(value) ? 0 : value
+                              );
                             }}
                             placeholder="0.00"
                           />
@@ -155,16 +243,27 @@ export const OSDadosFinanceiros = () => {
                           <Input
                             type="number"
                             step="0.01"
-                            value={servico.desconto === 0 ? "" : servico.desconto}
+                            value={
+                              servico.desconto === 0 ? "" : servico.desconto
+                            }
                             onChange={(e) => {
-                              const value = e.target.value === "" ? 0 : Number.parseFloat(e.target.value);
-                              updateServico(servico.id, "desconto", isNaN(value) ? 0 : value);
+                              const value =
+                                e.target.value === ""
+                                  ? 0
+                                  : Number.parseFloat(e.target.value);
+                              updateServico(
+                                servico.id,
+                                "desconto",
+                                isNaN(value) ? 0 : value
+                              );
                             }}
                             placeholder="0.00"
                           />
                         </TableCell>
                         <TableCell>
-                          <div className="font-medium">R$ {Number(servico.valor_total ?? 0).toFixed(2)}</div>
+                          <div className="font-medium">
+                            R$ {Number(servico.valor_total ?? 0)?.toFixed(2)}
+                          </div>
                         </TableCell>
                         <TableCell>
                           <Button
@@ -190,7 +289,9 @@ export const OSDadosFinanceiros = () => {
       <Card className="bg-white border-gray-200 shadow-none">
         <CardHeader>
           <CardTitle className="text-gray-900">Resumo Financeiro</CardTitle>
-          <CardDescription className="text-gray-600">Valores totais e saldo</CardDescription>
+          <CardDescription className="text-gray-600">
+            Valores totais e saldo
+          </CardDescription>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div className="space-y-2">
@@ -199,7 +300,12 @@ export const OSDadosFinanceiros = () => {
               id="vl_servicos"
               type="number"
               step="0.01"
-              value={Number(servicos.reduce((total, s) => total + Number(s.valor_total ?? 0), 0)).toFixed(2)}
+              value={Number(
+                servicos?.reduce(
+                  (total, s) => total + Number(s.valor_total ?? 0),
+                  0
+                )
+              )?.toFixed(2)}
               readOnly
               className="bg-gray-50"
             />
@@ -214,9 +320,18 @@ export const OSDadosFinanceiros = () => {
                   id="vl_produtos"
                   type="number"
                   step="0.01"
-                  value={field.value === 0 || field.value === null || field.value === undefined ? "" : field.value}
+                  value={
+                    field.value === 0 ||
+                    field.value === null ||
+                    field.value === undefined
+                      ? ""
+                      : field.value
+                  }
                   onChange={(e) => {
-                    const value = e.target.value === "" ? 0 : Number.parseFloat(e.target.value);
+                    const value =
+                      e.target.value === ""
+                        ? 0
+                        : Number.parseFloat(e.target.value);
                     field.onChange(isNaN(value) ? 0 : value);
                   }}
                   placeholder="0.00"
@@ -231,8 +346,13 @@ export const OSDadosFinanceiros = () => {
               type="number"
               step="0.01"
               value={(
-                Number(servicos.reduce((total, s) => total + Number(s.valor_total ?? 0), 0)) + (watch('vl_produtos') || 0)
-              ).toFixed(2)}
+                Number(
+                  servicos?.reduce(
+                    (total, s) => total + Number(s.valor_total ?? 0),
+                    0
+                  )
+                ) ?? 0 + (watch("vl_produtos") || 0)
+              )?.toFixed(2)}
               readOnly
               className="bg-gray-50"
             />
@@ -247,9 +367,18 @@ export const OSDadosFinanceiros = () => {
                   id="saldo"
                   type="number"
                   step="0.01"
-                  value={field.value === 0 || field.value === null || field.value === undefined ? "" : field.value}
+                  value={
+                    field.value === 0 ||
+                    field.value === null ||
+                    field.value === undefined
+                      ? ""
+                      : field.value
+                  }
                   onChange={(e) => {
-                    const value = e.target.value === "" ? 0 : Number.parseFloat(e.target.value);
+                    const value =
+                      e.target.value === ""
+                        ? 0
+                        : Number.parseFloat(e.target.value);
                     field.onChange(isNaN(value) ? 0 : value);
                   }}
                   placeholder="0.00"
@@ -260,5 +389,5 @@ export const OSDadosFinanceiros = () => {
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};
