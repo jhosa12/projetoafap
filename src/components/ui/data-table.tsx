@@ -35,26 +35,29 @@ import { ChevronDown } from "lucide-react"
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
   data: TData[];
+  pageSize?:number
   children?: React.ReactNode;
   maxHeight?: string
   rowSelection?: RowSelectionState
   setRowSelection?: React.Dispatch<React.SetStateAction<RowSelectionState>>
+  onRowClick?: (row: TData) => void;
   //rowSelect:boolean
 }
 
 export function DataTable<TData,>({
   columns,
   data,
+  pageSize=10,
   children,
   maxHeight,
   rowSelection,
   setRowSelection,
-
+  onRowClick,
 }: DataTableProps<TData>) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 5,
+    pageSize: pageSize,
   })
 
   const table = useReactTable({
@@ -89,8 +92,8 @@ export function DataTable<TData,>({
         <div className="flex gap-2 items-center w-full sm:w-auto">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="w-full sm:w-auto">
-                <span className="hidden sm:inline">Linhas: </span>{table.getState().pagination.pageSize}
+              <Button variant="outline" size="sm" className="w-full sm:w-auto text-gray-600">
+                <span className="hidden sm:inline ">Linhas: </span>{table.getState().pagination.pageSize}
                 <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -121,7 +124,7 @@ export function DataTable<TData,>({
       </div>
 
       <div className={"relative w-full overflow-hidden border rounded-md"}>
-        <div className="overflow-x-auto overflow-y-auto h-full w-full">
+        <div className={`overflow-y-auto w-full ${maxHeight}`}>
           <Table className="min-w-full relative">
             <TableHeader className="text-xs capitalize">
               {table.getHeaderGroups().map((headerGroup) => (
@@ -143,9 +146,11 @@ export function DataTable<TData,>({
                     key={row.id}
                     data-state={rowSelection && row.getIsSelected() && "selected"}
                     onClick={() => {
-
-
-                     return rowSelection? row.toggleSelected(): undefined
+                      if (onRowClick) {
+                        onRowClick(row.original);
+                      } else if (rowSelection) {
+                        row.toggleSelected();
+                      }
                     }}
                     className="cursor-pointer"
                   >
@@ -167,7 +172,7 @@ export function DataTable<TData,>({
           </Table>
         </div>
       </div>
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 py-4">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 py-4 text-gray-600">
         <div className="text-sm text-muted-foreground order-2 sm:order-1">
           Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
         </div>

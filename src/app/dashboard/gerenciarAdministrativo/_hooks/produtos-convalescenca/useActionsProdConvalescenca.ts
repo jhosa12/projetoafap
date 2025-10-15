@@ -86,7 +86,7 @@ const useActionsProdConvalescenca = () => {
 
   const deletarProduto = async (id_produto: number) => {
 
-    toast.promise(api.put("/produtos/deletar", {
+    toast.promise(api.delete("/produtos/deletar", {
       data: {
         id_produto
       }

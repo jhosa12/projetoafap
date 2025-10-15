@@ -1,11 +1,16 @@
 "use client";
 
 // importe os primitives em vez do wrapper ShadCN:
+// import {
+//   Root as PopoverRoot,
+//   Trigger as PopoverTrigger,
+//   Content as PopoverContent,
+// } from "@radix-ui/react-popover";
 import {
-  Root as PopoverRoot,
-  Trigger as PopoverTrigger,
-  Content as PopoverContent,
-} from "@radix-ui/react-popover";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { Check, ChevronsUpDown } from "lucide-react";
@@ -27,7 +32,7 @@ export function Combobox({ items, value, onChange, placeholder='Selecione um ite
   const [open, setOpen] = useState(false);
   const selectedItem = items.find(item => item.value === value);
   return (
-    <PopoverRoot modal={modal}  open={open} onOpenChange={setOpen}>
+    <Popover modal={modal}  open={open} onOpenChange={setOpen}>
       <PopoverTrigger disabled={disabled} asChild className={`w-full ${classNameInput}`}>
         <Button className=" justify-between text-xs truncate border-gray-400" variant="outline" role="combobox" aria-expanded={open}>
         <span className="truncate">{selectedItem ? selectedItem?.label : placeholder}</span>
@@ -37,14 +42,15 @@ export function Combobox({ items, value, onChange, placeholder='Selecione um ite
 
       {/* Note que aqui é o Radix.Content, sem Portal */}
       <PopoverContent
-      onFocusOutside={e=>e.preventDefault()}
-        sideOffset={4}
+     // onFocusOutside={e=>e.preventDefault()}
+      //  sideOffset={4}
         //onInteractOutside={e => e.preventDefault()}
        // onOpenAutoFocus={e => e.preventDefault()}
-        onCloseAutoFocus={e => e.preventDefault()}
-        className="p-0 pt-1  z-50"
+       // onCloseAutoFocus={e => e.preventDefault()}
+      //  className="p-0 pt-1  z-50"
+      className="shadow-none p-0"
       >
-        <Command  className={`shadow-sm border border-gray-200 ${className}`}>
+        <Command  className={` border  border-gray-200 ${className}`}>
           <CommandInput   className="h-8 border-0 focus:ring-0 focus:border-0 focus:outline-none"  placeholder={searchPlaceholder} />
           <CommandList>
             <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
@@ -67,6 +73,6 @@ export function Combobox({ items, value, onChange, placeholder='Selecione um ite
           </CommandList>
         </Command>
       </PopoverContent>
-    </PopoverRoot>
+    </Popover>
   );
 }

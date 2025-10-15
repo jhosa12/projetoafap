@@ -18,7 +18,6 @@ interface FilterModalProps {
   endDate: Date;
   setStartDate: (date: Date) => void;
   setEndDate: (date: Date) => void;
-  arraySetores: SetorProps[];
   filtrar: () => void;
   loading: boolean;
 }
@@ -30,7 +29,6 @@ export const FilterModal: React.FC<FilterModalProps> = ({
   endDate,
   setStartDate,
   setEndDate,
-  arraySetores,
   filtrar,
   loading
 }) => {
@@ -46,7 +44,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
           <DialogTitle className="text-xl font-semibold">Filtros de Vendas</DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
+      
           <DatePickerWithRange
 
             dateRange={{ from: startDate, to: endDate }}
@@ -56,22 +54,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
             }}
           />
 
-          <div className="md:col-span-2">
-            <Label className="text-sm font-medium text-gray-700">Setor</Label>
-            <Select>
-              <SelectTrigger className="mt-2">
-                <SelectValue placeholder="Selecione um setor" />
-              </SelectTrigger>
-              <SelectContent>
-                {arraySetores.map((setor) => (
-                  <SelectItem key={setor.id_grupo} value={setor.id_grupo.toString()}>
-                    {setor.descricao}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
+         
 
         <div className="flex justify-end space-x-3 pt-4">
           <Button

@@ -58,24 +58,24 @@ const useActionsPlanos = () => {
 
   }
 
-  const deletarPlano = async (id_plano: number) => {
 
+  const deletarPlano = async (plano: PlanosProps) => {
+    try {
 
-    toast.promise(
-      api.delete('/plano/deletar', {
+      const response = await api.delete('/plano/deletar', {
         data: {
-          id_plano,
+          id_plano: plano.id_plano
         }
-      }),
-      {
-        error: 'Erro ao deletar plano de conta',
-        loading: 'Deletando...',
-        success: () => {
-          listar()
-          return 'Deletado com sucesso!'
-        }
-      }
-    )
+      })
+
+      listar()
+      toast.success("Plano excluído com sucesso!")
+
+    } catch (error) {
+
+      throw error
+
+    }
   }
 
   async function adicionarPlano(data: PlanosProps) {

@@ -1,11 +1,8 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
+import { Pencil, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { IoMdTrash } from "react-icons/io"
-import { HiPencil } from "react-icons/hi2"
 import { PlanosProps } from "@/types/planos"
 import { Tooltip } from "react-tooltip";
 
@@ -65,26 +62,26 @@ export function columnsPlanos({
 
         return (
           <div className="flex gap-2">
-             <Tooltip className="z-20" id="toolId" />
+            <Tooltip className="z-20" id="toolId" />
             <Button
               data-tooltip-id="toolId"
               data-tooltip-content={'Editar'}
               variant="outline"
               size="icon"
               onClick={() => onEdit?.(plano)}
-              className="h-8 w-8"
+              className="rounded-lg text-black hover:bg-black hover:text-gray-200 p-1"
             >
-              <HiPencil className="h-4 w-4" />
+              <Pencil size={18} />
             </Button>
             <Button
               data-tooltip-id="toolId"
               data-tooltip-content={'Deletar'}
-              variant="destructive"
+              variant="outline"
               size="icon"
               onClick={() => onDelete?.(plano)}
-              className="h-8 w-8"
+              className="rounded-lg text-red-600 hover:bg-red-600 hover:text-gray-200 p-1"
             >
-              <IoMdTrash className="h-4 w-4" />
+              <Trash2 size={18} />
             </Button>
           </div>
         )

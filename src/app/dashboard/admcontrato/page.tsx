@@ -58,7 +58,7 @@ export default function AdmContrato() {
   } = useContext(AuthContext);
 
 
-  const [modal, setModal] = useState<{ [key: string]: boolean }>({
+  const [modal, setModal] = useState<{ [key: string]: boolean}>({
     busca: false,
     altPlano: false,
     inativar: false,
@@ -66,18 +66,16 @@ export default function AdmContrato() {
   });
 
 
-  const {
-    chaveAtiva,
+  const { 
     handleImpressao,
-    handlePrint,
-    printState,
     componentRefs,
+    doc,setDoc
   } = usePrintDocsAssociado(
     dadosassociado,
     usuario?.nome ?? "",
     infoEmpresa?.id ?? "",
-    setarDadosAssociado,
-    () => setModal({ impressao: false })
+    setarDadosAssociado
+   // () => setModal({ impressao: false })
   );
 
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -157,10 +155,10 @@ export default function AdmContrato() {
 
       {modal.impressao && (
         <ModalConfirmar
-          pergunta={`Realmente deseja imprimir o(a) ${chaveAtiva}?. Esteja ciente de que ao confirmar, os dados de data e usuario que realizou a impressão serão atualizados!`}
-          openModal={modal.impressao}
-          setOpenModal={() => setModal({ impressao: false })}
-          handleConfirmar={handleImpressao}
+          pergunta={`Realmente deseja imprimir o ${doc} ?. Esteja ciente de que ao confirmar, os dados de data e usuario que realizou a impressão serão atualizados!`}
+          openModal={!!doc}
+          setOpenModal={() => setModal({impressao:false})}
+          handleConfirmar={()=>handleImpressao(doc)}
         />
       )}
 
@@ -243,7 +241,8 @@ export default function AdmContrato() {
               <Dropdown.Item
                 className="text-xs"
                 onClick={() => {
-                  handlePrint("carta"), setModal({ ...{}, impressao: true });
+                 setDoc('carta');
+                 setModal({impressao:true})
                 }}
               >
                 Carta
@@ -251,7 +250,8 @@ export default function AdmContrato() {
               <Dropdown.Item
                 className="text-xs"
                 onClick={() => {
-                  handlePrint("contrato"), setModal({ ...{}, impressao: true });
+                   setDoc('contrato');
+                    setModal({impressao:true})
                 }}
               >
                 Contrato
@@ -259,7 +259,8 @@ export default function AdmContrato() {
               <Dropdown.Item
                 className="text-xs"
                 onClick={() => {
-                  handlePrint("carne"), setModal({ ...{}, impressao: true });
+                   setDoc('carne');
+                    setModal({impressao:true})
                 }}
               >
                 Carnê
@@ -267,7 +268,8 @@ export default function AdmContrato() {
               <Dropdown.Item
                 className="text-xs"
                 onClick={() => {
-                  handlePrint("carteira"), setModal({ impressao: true });
+setDoc('carteira');  
+ setModal({impressao:true})                 
                 }}
               >
                 Carteiras
@@ -275,7 +277,8 @@ export default function AdmContrato() {
               <Dropdown.Item
                 className="text-xs"
                 onClick={() => {
-                  handlePrint("resumo"), setModal({ impressao: true });
+                  setDoc('resumo');
+                   setModal({impressao:true})
                 }}
               >
                 Resumo de Contrato
@@ -283,7 +286,8 @@ export default function AdmContrato() {
               <Dropdown.Item
                 className="text-xs"
                 onClick={() => {
-                  handlePrint("cancelamento"), setModal({ impressao: true });
+                   setDoc('cancelamento');
+                    setModal({impressao:true})
                 }}
               >
                 Cancelamento
@@ -451,7 +455,7 @@ export default function AdmContrato() {
       {/* Documentos */}
 
       <div style={{ display: "none" }}>
-        {printState.contrato && (
+        {doc==='contrato'&&(
           <DocumentTemplate
             adesao={new Date(dadosassociado?.contrato?.dt_adesao ?? "")}
             bairro={dadosassociado?.bairro ?? ""}
@@ -472,7 +476,7 @@ export default function AdmContrato() {
           />
         )}
 
-        {printState.carteira && (
+        {doc==='carteira'&& (
           <CarteiraAssociado
             infoEmpresa={infoEmpresa}
             adesao={dadosassociado.contrato?.dt_adesao ?? new Date()}
@@ -494,7 +498,7 @@ export default function AdmContrato() {
           />
         )}
 
-        {printState.carne && (
+        {doc==='carne'&& (
           <ImpressaoCarne
             infoEmpresa={infoEmpresa}
             ref={componentRefs.carne}
@@ -516,7 +520,7 @@ export default function AdmContrato() {
           />
         )}
 
-        {printState.resumo && (
+        {doc==='resumo'&& (
           <ContratoResumo
             infoEmpresa={infoEmpresa}
             ref={componentRefs.resumo}
@@ -524,7 +528,7 @@ export default function AdmContrato() {
           />
         )}
 
-        {printState.carta && (
+        {doc==='carta'&&(
           <CartaNovoAssociado
             infoEmpresa={infoEmpresa}
             ref={componentRefs.carta}
@@ -533,7 +537,7 @@ export default function AdmContrato() {
           />
         )}
 
-        {printState.cancelamento && (
+        {doc==='cancelamento'&& (
           <ProtocoloCancelamento
             infoEmpresa={infoEmpresa}
             ref={componentRefs.cancelamento}

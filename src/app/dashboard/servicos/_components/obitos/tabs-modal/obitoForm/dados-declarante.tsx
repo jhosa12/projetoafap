@@ -11,6 +11,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { ObitoProps } from "@/app/dashboard/servicos/_types/obito";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { parentescos } from "@/utils/arrayParentesco";
+import { Combobox } from "@/components/ui/combobox";
 
 export const OSDadosDeclarante =()=>{
 const {register,control} = useFormContext<ObitoProps>()
@@ -38,18 +39,24 @@ const {register,control} = useFormContext<ObitoProps>()
             control={control}
             name="rd_parentesco"
             render={({field:{value,onChange}})=>(
-              <Select value={value} onValueChange={onChange}>
-              <SelectTrigger  >
-                <SelectValue placeholder="Parentesco"/>
-              </SelectTrigger>
+              <Combobox
+                items={parentescos}
+                onChange={onChange}
+                value={value}
+                modal={true}
+              />
+            //   <Select value={value} onValueChange={onChange}>
+            //   <SelectTrigger  >
+            //     <SelectValue  placeholder="Parentesco"/>
+            //   </SelectTrigger>
 
-              <SelectContent>
-                {parentescos.map(item=>(
-                  <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>
-                ))}
-              </SelectContent>
+            //   <SelectContent>
+            //     {parentescos.map(item=>(
+            //       <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>
+            //     ))}
+            //   </SelectContent>
 
-            </Select>
+            // </Select>
 
             )}
             
@@ -62,6 +69,14 @@ const {register,control} = useFormContext<ObitoProps>()
               id="rd_endereco"
              {...register('rd_endereco')}
               placeholder="Endereço completo do responsável"
+            />
+          </div>
+           <div className="space-y-2">
+            <Label htmlFor="cpf_cnpj">CPF</Label>
+            <Input
+              id="rd_telefone"
+              {...register('cpf_cnpj')}
+              placeholder="000.000.000-00"
             />
           </div>
           <div className="space-y-2">

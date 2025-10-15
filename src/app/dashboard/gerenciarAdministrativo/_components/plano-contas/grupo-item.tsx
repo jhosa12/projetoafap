@@ -1,3 +1,6 @@
+'use client'
+
+
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { roboto_Mono } from "@/fonts/fonts"
 import { NodoConta } from "@/utils/listaContas"
@@ -17,7 +20,7 @@ export const GrupoItem = ({ item, onEditar, onExcluir }:
   {
     item: NodoConta,
     onEditar: (item: NodoConta) => void,
-    onExcluir: (id: string) => void
+    onExcluir: (item: NodoConta) => void
   }) => {
 
   const { deletarPlanoConta } = useActionsPlanoContas()
@@ -38,7 +41,7 @@ export const GrupoItem = ({ item, onEditar, onExcluir }:
               <DropdownMenuItem onClick={() => onEditar(item)}>
                 Editar
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onExcluir(item.id)}>
+              <DropdownMenuItem onClick={() => onExcluir(item)}>
                 Excluir
               </DropdownMenuItem>
             </DropdownMenuContent>

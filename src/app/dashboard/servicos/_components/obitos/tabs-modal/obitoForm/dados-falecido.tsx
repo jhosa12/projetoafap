@@ -12,8 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import { Controller, useFormContext } from "react-hook-form";
@@ -30,6 +28,7 @@ import { ModalSelecaoDependente } from "../../../modal-dependentes";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useConfirmarSelecaoFalecido } from "@/app/dashboard/servicos/_hooks/obitos/useConfirmarSelecaoFalecido";
+import { DatePickerInput } from "@/components/DatePickerInput";
 
 
 export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
@@ -168,31 +167,10 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
               control={control}
               name="data_nascimento"
               render={({ field }) =>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      id="date"
-                      className="lg:col-span-1 justify-between font-normal text-gray-500"
-                    >
-                      {field.value ? (
-                        format(new Date(field.value), "PPP", { locale: ptBR })
-                      ) : (
-                        <span>Selecione uma data</span>
-                      )}
-                      <ChevronDownIcon />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      captionLayout="dropdown"
-                      selected={field.value ? new Date(field.value) : undefined}
-                      onSelect={field.onChange}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+               <DatePickerInput
+               onChange={field.onChange}
+               value={field.value}
+               />
               }
             />
           </div>
@@ -207,8 +185,8 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
                     <SelectValue placeholder="Selecione o sexo" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Masculino">Masculino</SelectItem>
-                    <SelectItem value="Feminino">Feminino</SelectItem>
+                    <SelectItem value="MASCULINO">MASCULINO</SelectItem>
+                    <SelectItem value="FEMININO">FEMININO</SelectItem>
                   </SelectContent>
                 </Select>
               }

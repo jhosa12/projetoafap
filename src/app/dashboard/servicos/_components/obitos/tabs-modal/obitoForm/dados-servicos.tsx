@@ -45,27 +45,21 @@ export const OSDadosServicos = () => {
             />
             <MyErrorMessage errors={errors} name="end_data_falecimento" />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2 flex flex-col">
             <Label htmlFor="end_hora_falecimento">Hora do Falecimento</Label>
             <Controller
               control={control}
               name="end_hora_falecimento"
               render={({ field }) => (
-                <Input
-                  id="end_hora_falecimento"
-                  type="time"
-                  value={
-                    field.value ? field.value.toTimeString().slice(0, 5) : ""
-                  }
-                  onChange={(e) => {
-                    const [hours, minutes] = e.target.value.split(":");
-                    const date = new Date();
-                    date.setHours(
-                      Number.parseInt(hours),
-                      Number.parseInt(minutes)
-                    );
-                    field.onChange(date);
-                  }}
+                <DatePickerInput
+                onChange={field.onChange}
+                value={field.value?new Date(field.value):undefined}
+                showTimeSelect
+                 showTimeSelectOnly
+                 timeCaption="Time"
+                 dateFormat="h:mm"
+                 className="h-9"
+                 
                 />
               )}
             />
@@ -110,6 +104,17 @@ export const OSDadosServicos = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+
+
+          <div className="space-y-2 col-span-2">
+            <Label htmlFor="obs">Observações</Label>
+            <Textarea
+              id="obs"
+              {...register("observacoes_gerais")}
+              placeholder="Observações para a execução do serviço"
+            />
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="local_velorio">Local do Velório</Label>
             <Input
@@ -140,6 +145,14 @@ export const OSDadosServicos = () => {
               id="cemiterio"
               {...register("cemiterio")}
               placeholder="Nome do cemitério"
+            />
+          </div>
+            <div className="space-y-2">
+            <Label htmlFor="end_cemiterio">Cemitério</Label>
+            <Input
+              id="end_cemiterio"
+              {...register("endereco_cemiterio")}
+              placeholder="Endereço do cemitério"
             />
           </div>
           <div className="flex flex-col space-y-2">

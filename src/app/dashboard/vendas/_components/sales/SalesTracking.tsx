@@ -61,7 +61,6 @@ interface ResponseProps {
 
 interface SalesTrackingProps {
   empresa: string;
-  setores: SetorProps[];
   logoUrl: string;
 }
 export interface ReqLeadsProps {
@@ -78,7 +77,6 @@ export interface ReqLeadsProps {
 
 export const SalesTracking: React.FC<SalesTrackingProps> = ({
   empresa,
-  setores
 }) => {
   const [startDate, setStartDate] = useState<Date>(
     new Date(new Date().getFullYear(), new Date().getMonth(), 1)
@@ -300,7 +298,6 @@ const dadosVendas = async () => {
         endDate={endDate}
         setStartDate={setStartDate}
         setEndDate={setEndDate}
-        arraySetores={setores}
         filtrar={dadosVendas}
         loading={loading}
       />

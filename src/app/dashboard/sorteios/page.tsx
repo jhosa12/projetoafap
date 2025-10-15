@@ -5,12 +5,13 @@ import { useSpring, animated, a } from 'react-spring'
 import { api } from '@/lib/axios/apiClient';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
-import { Button } from 'flowbite-react';
+import { Button } from '@/components/ui/button';
 import { AuthContext } from '@/store/AuthContext';
-import { useActionsSorteios } from './_hooks/sorteios/useActionsSorteios';
+import { useActionsSorteios } from './_hooks/useActionsSorteios';
 import { useHandleExibir } from './_hooks/sorteios/useHandleExibir';
 import { useZerarSorteio } from './_hooks/sorteios/useZerarSorteio';
 import { useSortearNumero } from './_hooks/sorteios/useSortearNumero';
+import { Spinner } from "@/components/ui/spinner";
 
 
 
@@ -88,7 +89,7 @@ export default function Sorteios() {
     try {
       dadosContratos()
       listarPremios()
-      listarGanhadores()
+      listarGanhadores({})
 
     } catch (error) {
       console.log(error)
@@ -157,16 +158,21 @@ export default function Sorteios() {
 
         <div className='flex gap-2'>
           <Button
-            isProcessing={loading}
             disabled={ativarConfete || loading || !premioAtual?.id_premio}
             onClick={sortearNumero}
-            className="bg-blue-600 hover:bg-blue-700  font-bold py-2 px-4 rounded"
+            className="bg-blue-600 hover:bg-blue-700 font-bold py-6 px-8 rounded"
           >
-            SORTEAR
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <Spinner className="size-6" /> CARREGANDO...
+              </span>
+            ) : (
+              "SORTEAR"
+            )}
           </Button>
           <Button
             onClick={zerarSorteio}
-            className="bg-green-600 hover:bg-green-700  font-bold py-2 px-4 rounded"
+            className="bg-green-600 hover:bg-green-700  font-bold py-6 px-8 rounded"
           >
             ZERAR
           </Button>
