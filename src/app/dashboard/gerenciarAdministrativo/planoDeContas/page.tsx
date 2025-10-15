@@ -11,6 +11,7 @@ import { construirHierarquia, NodoConta } from "@/utils/listaContas";
 import { useActionsPlanoContas } from "../_hooks/plano-contas/useActionsPlanoContas";
 import { useHandleSalvarPC } from "../_hooks/plano-contas/useHandleSalvarPC";
 import { PlanoContasProps } from "../../financeiro/_types/plano-contas";
+import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 
 
 export default function PlanoDeContas() {
@@ -19,7 +20,7 @@ export default function PlanoDeContas() {
   const [modal, setModal] = useState(false)
   const [itemEdit, setItemEdit] = useState<PlanoContasProps | null>(null);
   const { listaPlanoContas, onSave, listarPlanoContas, deletarPlanoConta } = useActionsPlanoContas()
-
+  const [modalExcluir,setModalExcluir] =useState(false)
   const { handleSalvar } = useHandleSalvarPC(
     onSave,
     setModal,
@@ -83,12 +84,19 @@ export default function PlanoDeContas() {
       <div className="inline-flex rounded-lg gap-2 overflow-y-auto bg-white justify-between p-2 w-full max-h-[calc(100vh-120px)]  ">
         <Accordion type="single" collapsible className="w-full px-2">
           {hierarquiaContas?.map((item) => (
-            <GrupoItem key={item.id} item={item} onEditar={handleEditar} onExcluir={handleExcluir} />
+            <GrupoItem key={item.id} item={item} onEditar={handleEditar} onExcluir={()=>{}} />
 
           ))}
         </Accordion>
       </div>
 
+<ModalConfirmar
+  handleConfirmar={async()=>{}}
+  openModal={modalExcluir}
+  setOpenModal={()=>setModalExcluir(false)}
+  pergunta="Realmente deseja excluir esse plano de contas?"
+
+/>
     </div>
   )
 }

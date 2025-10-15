@@ -13,6 +13,7 @@ import {
 import {
   MdFilter1,
   MdPrint,
+  MdLocationOn,
 } from "react-icons/md";
 
 import { AuthContext } from "@/store/AuthContext";
@@ -25,6 +26,7 @@ import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -34,11 +36,15 @@ import { PaginationComponent } from "@/components/PaginationComponent";
 import { ModalFiltroHistorico } from "./ModalFiltroHistorico";
 import { TableHistoricoVendas } from "./TableHistorico";
 import { ModalNovoContrato } from "./ModalNovoContrato";
+import { ModalBairroIndicators } from "./ModalBairroIndicators";
+import { BairroSummary } from "./BairroSummary";
 import { LeadProps } from "@/types/vendas";
 import DocListaLeads from "@/Documents/vendas/DocLeads";
 import { upperCaseString } from "@/utils/upperCaseString";
 import { ContratoProps } from "@/app/dashboard/admcontrato/_types/contrato";
 import { DependentesProps } from "@/app/dashboard/admcontrato/_types/dependentes";
+import { Filter } from "lucide-react";
+
 
 
 
@@ -140,19 +146,12 @@ export function Historico({open,setOpen}:PropsHistorico) {
     novo: false,
     confirmaPlano: false,
     print: false,
+    bairroIndicators: false,
   });
   const componenteRef = useRef<HTMLDivElement>(null);
 
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 10;
 
-  const paginatedData = data?.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
-
-  const totalPages = data ? Math.ceil(data.length / rowsPerPage) : 1;
 
   const {
     data: associado,
@@ -277,7 +276,7 @@ export function Historico({open,setOpen}:PropsHistorico) {
         id_lead: data.id_lead,
       });
 
-      // setModal({ novo: true });
+   
 
     } catch (error) {
       console.log(error);
@@ -292,7 +291,7 @@ export function Historico({open,setOpen}:PropsHistorico) {
         usuario: lead?.usuario,
         id_lead: lead?.id_lead,
       });
-      // postData({});
+    
       reqDados(getValues());
       setModal({ confirmaCategoria: false });
     } catch (error) {
@@ -301,8 +300,7 @@ export function Historico({open,setOpen}:PropsHistorico) {
   }, [categoria, lead?.id_lead]);
 
   const reqDados: SubmitHandler<ReqLeadsProps> = useCallback(async (data) => {
-    // const start =watch('startDate')
-    //const  end = watch('endDate')
+    
 
     if (
       data.startDate &&
@@ -344,9 +342,10 @@ export function Historico({open,setOpen}:PropsHistorico) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
      
-      <DialogContent className="max-w-6xl">
+      <DialogContent className="max-w-7xl">
         <DialogHeader>
           <DialogTitle>Leads/Prospecões/Vendas</DialogTitle>
+          <DialogDescription>Historico de Leads/Vendas</DialogDescription>
         </DialogHeader>
 
         {modal.filtro && (
@@ -391,15 +390,31 @@ export function Historico({open,setOpen}:PropsHistorico) {
             onClose={() => setModal(prev => ({ ...prev, novo: false }))}
           />
         )}
+
+        {modal.bairroIndicators && (
+          <ModalBairroIndicators
+            open={modal.bairroIndicators}
+            onClose={() => setModal(prev => ({ ...prev, bairroIndicators: false }))}
+            data={data ?? []}
+          />
+        )}
         <div className="inline-flex gap-4">
-          `
+    
           <Button
             onClick={() => setModal(prev => ({ ...prev, filtro: true }))}
             size={"sm"}
             variant={"outline"}
           >
-            <MdFilter1 />
+            <Filter />
             FILTRAR
+          </Button>
+          <Button
+            onClick={() => setModal(prev => ({ ...prev, bairroIndicators: true }))}
+            size={"sm"}
+            variant={"outline"}
+          >
+            <MdLocationOn />
+            INDICADORES POR BAIRRO
           </Button>
           <Button
             onClick={() => setModal(prev => ({ ...prev, print: true }))}
@@ -414,24 +429,17 @@ export function Historico({open,setOpen}:PropsHistorico) {
         {loadingLeads ? (
           <ModalLoading show={loadingLeads} />
         ) : (
-          <div className="overflow-y-auto mt-2  max-h-[calc(100vh-185px)]   ">
-
+          <div className="overflow-y-auto mt-2   ">
+            <BairroSummary data={data ?? []} />
+            
             <TableHistoricoVendas
-              data={paginatedData ?? []}
+              data={data ?? []}
               onChangeCategoria={onChangeCategoria}
               setLead={setLead}
               setModal={setModal}
             />
 
-            {data && data.length > rowsPerPage && (
-              <div className="mt-4 flex justify-center">
-                <PaginationComponent
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  setCurrentPage={setCurrentPage}
-                />
-              </div>
-            )}
+         
 
 
           </div>

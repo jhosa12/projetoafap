@@ -7,6 +7,7 @@ import { SubmitHandler } from "react-hook-form";
 import { ConvProps } from "../../_types/convalescente";
 import { AssociadoProps } from "../../../admcontrato/_types/associado";
 import { RowSelectionState } from "@tanstack/react-table";
+import { ProdutosProps } from "@/types/produtos";
 
 interface ActionsProps {
 
@@ -40,11 +41,22 @@ const useActionsObito = () => {
   const { usuario, signOut, infoEmpresa, dadosassociado, limparDados } = useContext(AuthContext);
   const [listaServicos, setServicos] = useState<ObitoProps[]>([]);
   const [servico, setServico] = useState<ObitoProps | null>(null)
-
+  const [produtos,setProdutosObito]=useState<Array<ProdutosProps>>([])
   useEffect(() => {
     if (!usuario) return signOut();
-    listar();
+    Promise.all([
+        listar(),
+        listarProdutos()
+    ])
+    
   }, [usuario]);
+
+
+
+  const listarProdutos = async()=>{
+        const response = await api.post('/produtos/listar')
+        setProdutosObito(response.data)
+  }
 
 
   async function listar() {
@@ -131,7 +143,7 @@ const useActionsObito = () => {
 
     };
 
-    console.log("Dados mandados para a api:", payload);
+    
 
     try {
       const response = await api.post("/obitos/adicionarObito", payload);
@@ -152,7 +164,7 @@ const useActionsObito = () => {
       status: data.listacheckida?.find(item => item.status === false) || data.listacheckvolta?.find(item => item.status === false) ? 'PENDENTE' : 'FECHADO'
     }
 
-    console.log("Dados de editar para api:", payload)
+ 
 
     return toast.promise(
       api.put('/obitos/editarObito', payload),
@@ -193,6 +205,17 @@ const useActionsObito = () => {
     }
   };
 
+
+
+
+
+
+
+
+
+
+
+
   return {
 
     listaServicos,
@@ -201,6 +224,7 @@ const useActionsObito = () => {
     servico,
     setServico,
     onSave,
+    produtos
   }
 }
 

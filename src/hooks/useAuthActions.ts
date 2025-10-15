@@ -47,10 +47,10 @@ export function useAuthActions(): { signIn: (credentials: SignInProps) => Promis
         secure: process.env.NODE_ENV === 'production',
         //httpOnly: true
       });
-      api.defaults.headers['Authorization'] = `Bearer ${tokenAuth}`;
-      setUsuario({ nome: nome.toUpperCase(), cargo, dir, image: image ?? '' });
+     api.defaults.headers['Authorization'] = `Bearer ${tokenAuth}`;
+     
       router.push("/dashboard/admcontrato");
-
+ setUsuario({ nome: nome.toUpperCase(), cargo, dir, image: image ?? '' });
     } catch (error) {
       toast.error('Erro ao logar');
     }

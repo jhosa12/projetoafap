@@ -35,26 +35,29 @@ import { ChevronDown } from "lucide-react"
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
   data: TData[];
+  pageSize?:number
   children?: React.ReactNode;
   maxHeight?: string
   rowSelection?: RowSelectionState
   setRowSelection?: React.Dispatch<React.SetStateAction<RowSelectionState>>
+  onRowClick?: (row: TData) => void;
   //rowSelect:boolean
 }
 
 export function DataTable<TData,>({
   columns,
   data,
+  pageSize=10,
   children,
   maxHeight,
   rowSelection,
   setRowSelection,
-
+  onRowClick,
 }: DataTableProps<TData>) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 5,
+    pageSize: pageSize,
   })
 
   const table = useReactTable({
@@ -121,7 +124,7 @@ export function DataTable<TData,>({
       </div>
 
       <div className={"relative w-full overflow-hidden border rounded-md"}>
-        <div className="overflow-x-auto overflow-y-auto h-full w-full">
+        <div className={`overflow-y-auto w-full ${maxHeight}`}>
           <Table className="min-w-full relative">
             <TableHeader className="text-xs capitalize">
               {table.getHeaderGroups().map((headerGroup) => (
@@ -143,9 +146,11 @@ export function DataTable<TData,>({
                     key={row.id}
                     data-state={rowSelection && row.getIsSelected() && "selected"}
                     onClick={() => {
-
-
-                      return rowSelection ? row.toggleSelected() : undefined
+                      if (onRowClick) {
+                        onRowClick(row.original);
+                      } else if (rowSelection) {
+                        row.toggleSelected();
+                      }
                     }}
                     className="cursor-pointer"
                   >

@@ -15,14 +15,16 @@ import { OSDadosFinanceiros } from "./dados-financeiros";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { HeadAssociado } from "../head-associado";
+import { ProdutosProps } from "@/types/produtos";
 
 interface ObitoFormProps {
   obito?: ObitoProps | null;
   onSave: SubmitHandler<ObitoProps>;
   onCancel: () => void;
+  produtos:Array<ProdutosProps>
 }
 
-export function ObitoForm({ obito, onSave, onCancel }: ObitoFormProps) {
+export function ObitoForm({ obito, onSave, onCancel,produtos }: ObitoFormProps) {
   const form = useForm<ObitoProps>({
     defaultValues: {
       nome_falecido: '',
@@ -35,7 +37,7 @@ export function ObitoForm({ obito, onSave, onCancel }: ObitoFormProps) {
 
   useEffect(() => {
     if (obito) {
-
+     
       form.reset(obito);
       limparDados()
     }
@@ -85,7 +87,7 @@ export function ObitoForm({ obito, onSave, onCancel }: ObitoFormProps) {
           </TabsContent>
 
           <TabsContent value="financeiro" >
-            <OSDadosFinanceiros />
+            <OSDadosFinanceiros produtos={produtos} />
           </TabsContent>
         </Tabs>
 

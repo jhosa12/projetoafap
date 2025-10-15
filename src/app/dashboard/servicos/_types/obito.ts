@@ -122,6 +122,7 @@ export interface ObitoProps {
   listacheckida: Array<CheckListProps>,
   listacheckvolta: Array<CheckListProps>,
   obito_itens: Array<Partial<ArrayProdutoProps>>,
+  observacoes_gerais:string,
   contrato?: {
     planos?: {
       descricao: string,

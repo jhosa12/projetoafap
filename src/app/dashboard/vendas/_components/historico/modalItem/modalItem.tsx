@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Save, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { ErrorIndicator } from "@/components/errorIndicator";
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader } from "@/components/ui/dialog";
 import {
   Tabs,
   TabsList,
@@ -19,6 +19,7 @@ import {
   TabsContent,
 } from "@/components/ui/tabs";
 import { LeadProps } from "@/types/vendas";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 
 interface DataProps {
@@ -112,7 +113,10 @@ export function ModalItem({ onClose, open, item, handleLoadLeads, handleGerarCon
 
 
       <DialogContent className="sm:max-w-5xl ">
-        <DialogHeader />
+        <DialogHeader>
+          <DialogTitle>Administrar Cadastro</DialogTitle>
+          <DialogDescription>Altere dados ou gere um novo plano de assocciado</DialogDescription>
+        </DialogHeader>
 
         <form onSubmit={handleSubmit(handleOnSubmit)}>
           <Tabs defaultValue="dados-pessoais" className="w-full">

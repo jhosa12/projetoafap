@@ -15,7 +15,7 @@ import {
 interface DataProps{
     openModal:boolean
     setOpenModal:()=>void,
-   handleConfirmar:()=>Promise<void>
+   handleConfirmar:()=>Promise<void> | void,
    pergunta:string,
    children?:React.ReactNode
 }
