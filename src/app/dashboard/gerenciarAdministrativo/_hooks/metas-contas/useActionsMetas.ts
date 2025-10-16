@@ -111,26 +111,20 @@ export const useActionsMetas = (id_empresa: string | undefined, isEditMode?: boo
 
   async function deletarMeta(meta: MetaProps) {
 
-    if (!meta?.id_meta) {
-      toast.warning("Selecione uma meta para excluir.");
-      return;
+    try {
+
+      const response = await api.delete('/vendas/deletarMeta', {
+        data: {
+          id_meta: meta.id_meta
+        }
+      })
+
+      listarMetas()
+
+    } catch (error) {
+
+      throw error
     }
-
-    toast.promise(
-      api.delete("/vendas/deletarMeta", {
-        data: { id_meta: meta.id_meta },
-      }),
-      {
-        loading: "Excluindo registro...",
-        success: () => {
-
-          listarMetas();
-
-          return "Registro excluído com sucesso!";
-        },
-        error: "Erro ao excluir registro.",
-      }
-    );
   }
 
   const onSave: SubmitHandler<MetaProps> = async (data: MetaProps) => {

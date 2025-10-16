@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/button-group"
 import { Button } from "@/components/ui/button"
 import useApiPost from "@/hooks/useApiPost";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Funnel, CirclePlus, Pencil, Trash, Printer, Trash2 } from 'lucide-react';
 import { EmpresaProps } from "@/types/empresa";
 import { ModalMetas } from "@/app/dashboard/gerenciarAdministrativo/_components/metas/modalMetas";
@@ -21,6 +21,9 @@ import { useHandleCarregarDados } from "../_hooks/useHandleCarregarDados";
 import { useEditarMeta } from "../_hooks/metas-contas/useHandleEditarMeta";
 import { useActionsMetas } from "../_hooks/metas-contas/useActionsMetas";
 import { useHandleSalvar } from "../_hooks/metas-contas/useHandleSalvar";
+import { DataTable } from "@/components/ui/data-table";
+import { useHandleExcluirMeta } from "../_hooks/metas-contas/useHandleExcluirMeta";
+import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 
 export interface FormFiltro {
   startDate?: string | undefined,
@@ -38,6 +41,10 @@ export default function GerenciarMetas() {
   const [endDate, setEndDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0))
   const [meta, setMeta] = useState<Partial<MetaProps>>()
   const [rowSelection, setRowSelection] = useState({});
+
+  const [modalConfirmarExclusao, setModalConfirmarExclusao] = useState(false)
+  const [metaExcluir, setMetaExcluir] = useState<Partial<MetaProps | null>>(null)
+
   const { infoEmpresa, selectEmp, usuario, signOut, actions_plano_contas, limparDados } = useContext(AuthContext)
   const id_empresa = selectEmp
   const nome_empresa = infoEmpresa?.fantasia
@@ -97,6 +104,16 @@ export default function GerenciarMetas() {
 
   )
 
+  const { excluirMeta } = useHandleExcluirMeta({
+    deletarMeta,
+    listarMetas
+  })
+
+
+  const colunasMetas = useMemo(() => {
+    return columnsMetas
+  }, [])
+
   useEffect(() => {
     handleCarregarDados();
   }, []);
@@ -133,6 +150,19 @@ export default function GerenciarMetas() {
           show={modalFiltro}
         />
 
+      }
+
+      {modalConfirmarExclusao &&
+        <ModalConfirmar
+          openModal={modalConfirmarExclusao}
+          setOpenModal={() => setModalConfirmarExclusao(false)}
+          handleConfirmar={() => {
+            excluirMeta(linhaSelecionada)
+            setModalConfirmarExclusao(false)
+          }}
+          pergunta="Deseja mesmo excluir a meta da lista?"
+
+        />
       }
 
       <div className="flex-shrink-0 flex flex-col lg:flex-row w-full items-start lg:items-center justify-between gap-4 p-2">
@@ -186,7 +216,7 @@ export default function GerenciarMetas() {
                 return
               }
 
-              deletarMeta(linhaSelecionada)
+              setModalConfirmarExclusao(true)
 
             }}
             variant="outline"
@@ -207,8 +237,8 @@ export default function GerenciarMetas() {
         </ButtonGroup>
       </div>
 
-      <TabelaCompleta
-        columns={columnsMetas}
+      <DataTable
+        columns={colunasMetas}
         data={dataCompleta}
         rowSelection={rowSelection}
         setRowSelection={setRowSelection}
