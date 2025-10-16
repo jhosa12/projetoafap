@@ -83,9 +83,10 @@ export function HistoricoMensalidade({
 
   const { componentRefs,  handleImpressao,doc,setDoc } =
     usePrintDocsAssociado(
-      dadosassociado,
+      
       usuario.nome ?? "",
       infoEmpresa?.id ?? "",
+      dadosassociado,
       setarDadosAssociado
     );
 
@@ -196,7 +197,7 @@ export function HistoricoMensalidade({
       )}
 
        
-       {doc==='carne'&& <div  style={{ display: "none" }}>
+       { <div  style={{ display: "none" }}>
           <ImpressaoCarne
             infoEmpresa={infoEmpresa}
             ref={componentRefs.carne}
@@ -249,7 +250,7 @@ export function HistoricoMensalidade({
           pergunta={`Realmente deseja imprimir o(a) carnê ?. Esteja ciente de que ao confirmar, os dados de data e usuario que realizou a impressão serão atualizados!`}
           openModal={openModal.carne}
           setOpenModal={() => setModal({carne:false})}
-          handleConfirmar={()=>handleImpressao(doc)}
+          handleConfirmar={()=>handleImpressao('carne')}
         />
       )}
 

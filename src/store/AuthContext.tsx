@@ -146,8 +146,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+
+  useEffect(()=>{
+    console.log("dados Gerais",dadosassociado)
+  },[dadosassociado])
+
   useEffect(() => {
-   // if (!usuario) signOut();
+    if (!usuario) signOut();
     if (usuario) getBairros()
   }, [usuario]);
 
@@ -168,7 +173,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const carregarDados = async (id: number) => {
 
     setLoading(true);
-    limparDados();
+    if(dadosassociado.id_global) limparDados();
     try {
       const response = await api.post("/associado", {
         id_global: id,
@@ -188,31 +193,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const limparDados = useCallback(() => {
-    setDadosAssociado({
-      id_global: null,
-      acordo: [],
-      bairro: "",
-      celular1: "",
-      celular2: "",
-      cep: "",
-      cidade: "",
-      nome: undefined,
-      id_associado: undefined,
-      endereco: "",
-      mensalidade: [],
-      data_nasc: undefined,
-      cpfcnpj: undefined,
-      dependentes: [],
-      telefone: undefined,
-      uf: undefined,
-      contrato: undefined,
-      guia_rua: undefined,
-      email: undefined,
-      numero: undefined,
-      profissao: undefined,
-      rg: undefined,
-      sexo: undefined,
-    });
+    setDadosAssociado({} as AssociadoProps);
   }, []);
 
 

@@ -142,8 +142,8 @@ export function TabPlano({
                 <SelectValue placeholder="Selecione o cobrador" />
               </SelectTrigger>
               <SelectContent>
-                {cobradores?.map((cobrador) => (
-                  <SelectItem key={cobrador} value={cobrador}>
+                {cobradores?.map((cobrador,index) => (
+                  <SelectItem key={index} value={cobrador}>
                     {cobrador}
                   </SelectItem>
                 ))}
