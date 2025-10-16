@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
 import { MdCheckCircle, MdContentCopy, MdOutlineDescription } from "react-icons/md";
-import { useRouter } from "next/router";
+import { useRouter } from 'next/navigation';
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";

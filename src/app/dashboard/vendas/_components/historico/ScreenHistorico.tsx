@@ -1,3 +1,5 @@
+'use client'
+
 import useApiGet from "@/hooks/useApiGet";
 import { Dispatch, SetStateAction, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ModalItem } from "./modalItem/modalItem";
@@ -28,8 +30,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTitle
 } from "@/components/ui/dialog";
 import { pageStyleLandscape } from "@/utils/pageStyle";
 import { PaginationComponent } from "@/components/PaginationComponent";
@@ -276,8 +277,11 @@ export function Historico({open,setOpen}:PropsHistorico) {
         id_lead: data.id_lead,
       });
 
-   
-
+     reqDados({
+      statusSelected: "VENDA",
+      id_empresa:selectEmp
+    });
+    
     } catch (error) {
       console.log(error);
     }
