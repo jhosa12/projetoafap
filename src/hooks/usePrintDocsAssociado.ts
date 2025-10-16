@@ -14,163 +14,143 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "sonner";
 import { Docs } from "@/app/dashboard/admcontrato/_types/contrato";
-
-
-
-
-
-
-
-
+import { Alert } from "flowbite-react";
 
 export function usePrintDocsAssociado(
-    dadosassociado: Partial<AssociadoProps>,
-    usuario: string,
-    id_empresa: string,
-    setarDadosAssociado: Function,
-    onClose?: Function
+  usuario: string,
+  id_empresa: string,
+  dadosassociado: Partial<AssociadoProps>,
+  setarDadosAssociado: (fields: Partial<AssociadoProps>) => void,
+  onClose?: Function
 ) {
+  const [doc, setDoc] = useState<Docs>(undefined);
 
-    const [doc,setDoc]=useState<Docs>(undefined)
+  const componentRefs = {
+    contrato: useRef<HTMLDivElement>(null),
+    carteira: useRef<HTMLDivElement>(null),
+    carne: useRef<HTMLDivElement>(null),
+    resumo: useRef<HTMLDivElement>(null),
+    carta: useRef<HTMLDivElement>(null),
+    cancelamento: useRef<HTMLDivElement>(null),
+  };
 
-    const componentRefs = {
-        contrato: useRef<HTMLDivElement>(null),
-        carteira: useRef<HTMLDivElement>(null),
-        carne: useRef<HTMLDivElement>(null),
-        resumo: useRef<HTMLDivElement>(null),
-        carta: useRef<HTMLDivElement>(null),
-        cancelamento: useRef<HTMLDivElement>(null)
-    };
+  const handleRegisterImpressao = useCallback(
+    async (arquivo: Docs) => {
+      if (!arquivo) return;
+      const { newDate } = removerFusoDate(new Date());
+      const impressoes = [...(dadosassociado.contrato?.impressoes || [])];
+      const index = impressoes.findIndex((imp) => imp.arquivo === arquivo);
+     
+      if (index === -1) {
+        impressoes.push({ arquivo, date: newDate, user: usuario });
+      } else {
+        impressoes[index] = {
+          ...impressoes[index],
+          date: newDate,
+          user: usuario,
+        };
+      }
 
+      try {
+        const response = await api.put("/contrato/impressoes", {
+          id_contrato_global: dadosassociado?.contrato?.id_contrato_global,
+          impressoes,
+        });
+        // handlePrint(arquivo)
+        setarDadosAssociado({
+          contrato: {
+            ...dadosassociado?.contrato,
+            impressoes: response.data.impressoes,
+          },
+        });
+        //onClose?.()
+      } catch (error) {
+        toast.error("Erro ao registrar impressão");
+      }
+    },
+    [dadosassociado, usuario]
+  );
 
+  const imprimirCancelamento = useReactToPrint({
+    pageStyle: pageStyle,
+    documentTitle: "CANCELAMENTO",
+    contentRef: componentRefs.cancelamento,
+    onBeforePrint: async () => await handleRegisterImpressao("cancelamento"),
+  });
 
-  
+  const imprimirContrato = useReactToPrint({
+    pageStyle: pageStyle,
+    documentTitle: "CONTRATO",
+    contentRef: componentRefs.contrato,
+    onBeforePrint: async () => await handleRegisterImpressao("contrato"),
+  });
 
+  const imprimirCarteira = useReactToPrint({
+    pageStyle: pageStyle,
+    documentTitle: "CARTEIRA",
+    contentRef: componentRefs.carteira,
+    onBeforePrint: async () => await handleRegisterImpressao("carteira"),
+  });
 
-    const handleImpressao = useCallback((doc:Docs) => {
-        switch (doc) {
-            case 'contrato':
-                imprimirContrato();
-                break;
-            case 'carteira':
-                imprimirCarteira();
-                break;
-            case 'carne':
-                imprimirCarne();
-                break;
-            case 'resumo':
-                imprimirResumo();
-                break;
-            case 'carta':
-                imprimirCarta();
-                break;
-            case 'cancelamento':
-                imprimirCancelamento();
-                break;
-            default:
-                break;
-        }
-    }, [])
+  const imprimirCarne = useReactToPrint({
+    pageStyle: pageStyle,
+    documentTitle: "CARNÊ",
+    contentRef: componentRefs.carne,
+    onBeforePrint: async () => await handleRegisterImpressao("carne"),
+  });
 
-    const handleRegisterImpressao =async (arquivo: Docs) => {
-        if(!arquivo) return
-        const { newDate } = removerFusoDate(new Date());
-        const impressoes = [...(dadosassociado.contrato?.impressoes || [])];
-        const index = impressoes.findIndex((imp) => imp.arquivo === arquivo);
+  const imprimirResumo = useReactToPrint({
+    pageStyle: pageStyle,
+    documentTitle: "RESUMO",
+    contentRef: componentRefs.resumo,
+    onBeforePrint: async () => await handleRegisterImpressao("resumo"),
+  });
 
-        if (index === -1) {
-            impressoes.push({ arquivo, date: newDate, user: usuario });
-        } else {
-            impressoes[index] = { ...impressoes[index], date: newDate, user: usuario };
-        }
+  const imprimirCarta = useReactToPrint({
+    pageStyle: pageStyle,
+    documentTitle: "CARTA",
+    contentRef: componentRefs.carta,
+    onBeforePrint: async () => await handleRegisterImpressao("carta"),
+  });
 
-        try {
-            const response = await api.put("/contrato/impressoes", {
-                id_contrato_global: dadosassociado?.contrato?.id_contrato_global,
-                impressoes,
-            });
-           // handlePrint(arquivo)
-            setarDadosAssociado({ contrato: { ...dadosassociado?.contrato, impressoes: response.data.impressoes } });
-            onClose?.()
-           
-        } catch (error) {
-            toast.error("Erro ao registrar impressão");
-        }
-    }
+  const handleImpressao = useCallback(
+    (docs: Docs) => {
+       
+      switch (docs) {
+        case "contrato":
+          imprimirContrato();
 
+          break;
+        case "carteira":
+          imprimirCarteira();
+          break;
+        case "carne":
+          imprimirCarne();
 
+          break;
+        case "resumo":
+          imprimirResumo();
 
+          break;
+        case "carta":
+          imprimirCarta();
 
-    const imprimirCancelamento = useReactToPrint({
-        pageStyle: pageStyle,
-        documentTitle: "CANCELAMENTO",
-        contentRef:componentRefs.cancelamento,
-        onBeforePrint: async () => {
-            await handleRegisterImpressao('cancelamento');
-        }
-    });
+          break;
+        case "cancelamento":
+          imprimirCancelamento();
 
+          break;
+        default:
+          break;
+      }
+    },
+    [doc]
+  );
 
-
-    const imprimirContrato = useReactToPrint({
-        pageStyle: pageStyle,
-        documentTitle: "CONTRATO",
-        contentRef:componentRefs.contrato,
-        onBeforePrint: async () => {
-            await handleRegisterImpressao('contrato');
-        }
-
-    });
-
-    const imprimirCarteira = useReactToPrint({
-        pageStyle: pageStyle,
-        documentTitle: "CARTEIRA",
-        contentRef:componentRefs.carteira,
-        onBeforePrint: async () => {
-            await handleRegisterImpressao('carteira');
-        }
-    });
-
-    const imprimirCarne = useReactToPrint({
-        pageStyle: pageStyle,
-        documentTitle: "CARNÊ",
-        contentRef:componentRefs.carne,
-          onBeforePrint:async ()=>{
-             await handleRegisterImpressao('carne');
-        }
-      
-    });
-
-    const imprimirResumo = useReactToPrint({
-        pageStyle: pageStyle,
-        documentTitle: "RESUMO",
-        contentRef: componentRefs.resumo,
-        onBeforePrint: async () => {
-            await handleRegisterImpressao('resumo');
-        }
-    });
-
-
-    const imprimirCarta = useReactToPrint({
-        pageStyle: pageStyle,
-        documentTitle: "CARTA",
-        contentRef:componentRefs.carta,
-        onBeforePrint: async () => {
-            await handleRegisterImpressao('carta');
-        },
-        
-    });
-
-
-
-
-
-    return {
-        handleImpressao,
-        componentRefs,
-        doc,
-        setDoc
-
-    }
-
+  return {
+    handleImpressao,
+    componentRefs,
+    doc,
+    setDoc,
+  };
 }

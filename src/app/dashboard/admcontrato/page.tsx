@@ -69,12 +69,14 @@ export default function AdmContrato() {
   const { 
     handleImpressao,
     componentRefs,
-    doc,setDoc
+    doc,setDoc,
+
   } = usePrintDocsAssociado(
-    dadosassociado,
+  
     usuario?.nome ?? "",
     infoEmpresa?.id ?? "",
-    setarDadosAssociado
+   dadosassociado,
+   setarDadosAssociado
    // () => setModal({ impressao: false })
   );
 
@@ -243,6 +245,7 @@ export default function AdmContrato() {
                 onClick={() => {
                  setDoc('carta');
                  setModal({impressao:true})
+               
                 }}
               >
                 Carta
