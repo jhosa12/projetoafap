@@ -35,7 +35,7 @@ import { ChevronDown } from "lucide-react"
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
   data: TData[];
-  pageSize?:number
+  pageSize?: number
   children?: React.ReactNode;
   maxHeight?: string
   rowSelection?: RowSelectionState
@@ -47,7 +47,7 @@ interface DataTableProps<TData> {
 export function DataTable<TData,>({
   columns,
   data,
-  pageSize=10,
+  pageSize = 10,
   children,
   maxHeight,
   rowSelection,
@@ -125,51 +125,56 @@ export function DataTable<TData,>({
 
       <div className={"relative w-full overflow-hidden border rounded-md"}>
         <div className={`overflow-y-auto w-full ${maxHeight}`}>
-          <Table className="min-w-full relative">
-            <TableHeader className="text-xs capitalize">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead className="sticky top-0 z-10 bg-white whitespace-nowrap px-2 py-2 sm:px-4 sm:py-3 border-b" key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
+          <div className={`overflow-y-auto w-full ${maxHeight ? maxHeight : "max-h-[400px]"}`}>
+            <div
+              className={`overflow-y-auto w-full ${maxHeight ? maxHeight : "max-h-[calc(100vh-250px)]"}`}>
+              <Table className="min-w-full relative">
+                <TableHeader className="text-xs capitalize">
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => (
+                        <TableHead className="sticky top-0 z-10 bg-white whitespace-nowrap px-2 py-2 sm:px-4 sm:py-3 border-b" key={header.id}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(header.column.columnDef.header, header.getContext())}
+                        </TableHead>
+                      ))}
+                    </TableRow>
                   ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody className="text-xs">
-              {table.getRowModel().rows.length > 0 ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={rowSelection && row.getIsSelected() && "selected"}
-                    onClick={() => {
-                      if (onRowClick) {
-                        onRowClick(row.original);
-                      } else if (rowSelection) {
-                        row.toggleSelected();
-                      }
-                    }}
-                    className="cursor-pointer"
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="px-2 py-2 sm:px-4 sm:py-3 whitespace-nowrap">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableHeader>
+                <TableBody className="text-xs">
+                  {table.getRowModel().rows.length > 0 ? (
+                    table.getRowModel().rows.map((row) => (
+                      <TableRow
+                        key={row.id}
+                        data-state={rowSelection && row.getIsSelected() && "selected"}
+                        onClick={() => {
+                          if (onRowClick) {
+                            onRowClick(row.original);
+                          } else if (rowSelection) {
+                            row.toggleSelected();
+                          }
+                        }}
+                        className="cursor-pointer"
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id} className="px-2 py-2 sm:px-4 sm:py-3 whitespace-nowrap">
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={columns.length} className="text-center">
+                        Nenhum resultado encontrado.
                       </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={columns.length} className="text-center">
-                    Nenhum resultado encontrado.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
         </div>
       </div>
       <div className="flex flex-col sm:flex-row items-center justify-between gap-2 py-4 text-gray-600">
