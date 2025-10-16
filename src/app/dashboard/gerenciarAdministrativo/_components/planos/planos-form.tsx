@@ -1,19 +1,15 @@
 import { PlanosProps } from "@/types/planos";
-import { FormProvider, SubmitHandler, useForm, useFormContext } from "react-hook-form";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-  FieldLegend,
-  FieldSeparator,
-  FieldSet,
-} from "@/components/ui/field"
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { normalizarValor } from "@/utils/normalizarValor";
+import { formatarComVirgula } from "@/utils/normalizarValorEditar";
+
+
 
 interface PlanosFormProps {
   plano?: PlanosProps | null
@@ -21,29 +17,41 @@ interface PlanosFormProps {
   onCancel: () => void
 }
 
+
+type PlanosValores = Omit<PlanosProps, 'valor' | 'acrescimo'> & {
+
+  valor: string,
+  acrescimo: string
+}
+
+
 export function PlanosForm({ plano, onSave, onCancel }: PlanosFormProps) {
   const { limparDados } = useContext(AuthContext)
-  const form = useForm<PlanosProps>({
+  const form = useForm<PlanosValores>({
     defaultValues: {
       descricao: '',
       limite_dep: 0,
-      valor: 0,
-      acrescimo: 0,
+      valor: '',
+      acrescimo: '',
       informacoes_plano: ''
     }
   })
+
 
   const { register, watch, handleSubmit, reset } = form
 
   useEffect(() => {
     if (plano) {
 
+      const valor = formatarComVirgula(plano.valor)
+      const acrescimo = formatarComVirgula(plano.valor)
+
       reset({
         id_plano: plano.id_plano,
         descricao: plano.descricao,
         limite_dep: plano.limite_dep,
-        valor: plano.valor,
-        acrescimo: plano.acrescimo,
+        valor: valor,
+        acrescimo: acrescimo,
         informacoes_plano: plano.informacoes_plano
       });
       limparDados()
@@ -52,7 +60,24 @@ export function PlanosForm({ plano, onSave, onCancel }: PlanosFormProps) {
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={handleSubmit(onSave)}>
+      <form onSubmit={handleSubmit((data) => {
+
+        const stringValor = String(data.valor)
+        const valor = normalizarValor(stringValor)
+
+
+        const stringAcrescimo = String(data.acrescimo)
+        const acrescimo = normalizarValor(stringAcrescimo)
+
+        const payload = {
+          ...data,
+          valor: valor,
+          acrescimo: acrescimo
+        };
+
+        onSave(payload);
+
+      })}>
         <FieldGroup>
           <Field>
             <FieldLabel htmlFor="descricao">
@@ -86,13 +111,14 @@ export function PlanosForm({ plano, onSave, onCancel }: PlanosFormProps) {
               <FieldLabel htmlFor="valor">
                 Valor
               </FieldLabel>
+
               <Input
                 id="valor"
-                type="number"
-                {...register('valor', {
-                  valueAsNumber: true,
-                  min: 0
-                })}
+                type="text"
+                inputMode="decimal"
+                pattern="^[0-9]+([.,]?[0-9]{1,2})?$"
+                step="0.01"
+                {...register('valor')}
                 required
               />
             </Field>
@@ -102,11 +128,11 @@ export function PlanosForm({ plano, onSave, onCancel }: PlanosFormProps) {
               </FieldLabel>
               <Input
                 id="acrescimo"
-                type="number"
-                {...register('acrescimo', {
-                  valueAsNumber: true,
-                  min: 0
-                })}
+                type="text"
+                inputMode="decimal"
+                pattern="^[0-9]+([.,]?[0-9]{1,2})?$"
+                step="0.01"
+                {...register('acrescimo')}
                 required
               />
             </Field>
