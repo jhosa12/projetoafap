@@ -7,7 +7,7 @@ import {
 import { Button } from "@/components/ui/button"
 import useApiPost from "@/hooks/useApiPost";
 import React, { useContext, useEffect, useState } from "react";
-import { Funnel, CirclePlus, Pencil, Trash, Printer } from 'lucide-react';
+import { Funnel, CirclePlus, Pencil, Trash, Printer, Trash2 } from 'lucide-react';
 import { EmpresaProps } from "@/types/empresa";
 import { ModalMetas } from "@/app/dashboard/gerenciarAdministrativo/_components/metas/modalMetas";
 import { ModalFiltroMetas } from "@/app/dashboard/gerenciarAdministrativo/_components/metas/modalFiltro";
@@ -190,9 +190,10 @@ export default function GerenciarMetas() {
 
             }}
             variant="outline"
+            className="rounded-lg text-red-600 hover:bg-red-600 hover:text-gray-200 p-1"
           >
-            <span className="flex items-center text-red-600">
-              <Trash className="mr-1 h-4 w-4 text-red-600" />
+            <span className="flex items-center gap-2 p-2">
+              <Trash2 size={18} />
               Excluir
             </span>
           </Button>
