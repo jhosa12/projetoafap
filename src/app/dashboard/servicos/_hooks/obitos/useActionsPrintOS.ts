@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { ObitoProps } from './../../_types/obito';
 import { pageStyle } from '@/utils/pageStyle';
 import { useReactToPrint } from 'react-to-print';
-export type DocsObito = 'ordemDeServico' | 'tanato'
+
+export type DocsObito = 'ORDEMSERVICO' | 'TANATO' | 'INCINERACAO'
 
 type SetarListaObitoType = (item: Partial<ObitoProps>) => void
 export function useActionsPrintOS(
@@ -17,10 +18,9 @@ export function useActionsPrintOS(
   const [documentoAtivo, setDocumentoAtivo] = useState<DocsObito | null>(null) 
 
   const componentRefs = {
-
     ordemDeServico: useRef<HTMLDivElement>(null),
-    tanato: useRef<HTMLDivElement>(null)
-
+    tanato: useRef<HTMLDivElement>(null),
+    incineracao: useRef<HTMLDivElement>(null)
   }
 
 
@@ -46,13 +46,22 @@ export function useActionsPrintOS(
 
   })
 
+  const imprimirIncineração = useReactToPrint({
+    pageStyle: pageStyle,
+    documentTitle: "AUTORIZAÇÃO DE INCINERAÇÃO",
+    contentRef: componentRefs.incineracao,
+    onAfterPrint: limparEstadoPosImpressao,
+  })
+
   useEffect(() => {
     if (documentoAtivo) {
-      console.log(`useEffect do hook detectou: '${documentoAtivo}'. Acionando a impressão.`)
-      if (documentoAtivo === 'ordemDeServico') {
+    
+      if (documentoAtivo === 'ORDEMSERVICO') {
         imprimirOrdemDeServico()
-      } else if (documentoAtivo === 'tanato') {
+      } else if (documentoAtivo === 'TANATO') {
         imprimirTanato()
+      } else if (documentoAtivo === 'INCINERACAO') {
+        imprimirIncineração()
       }
     }
   }, [documentoAtivo])

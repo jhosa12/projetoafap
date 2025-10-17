@@ -1,10 +1,10 @@
-import { CartaNovoAssociado } from "@/Documents/associado/cartaNovoAssociado/cartaDocument";
-import CarteiraAssociado from "@/Documents/associado/carteiraAssociado/CarteiraAssociado";
-import DocumentTemplate from "@/Documents/associado/contratoAdesão/DocumentTemplate";
-import ContratoResumo from "@/Documents/associado/contratoResumido/ContratoResumo";
-import ImpressaoCarne from "@/Documents/associado/mensalidade/ImpressaoCarne";
-import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
-import { ProtocoloCancelamento } from "@/Documents/associado/protocoloCancelamento/ProtocoloCancelamento";
+import { CartaNovoAssociado } from "@/app/dashboard/admcontrato/_documents/cartaDocument";
+import CarteiraAssociado from "@/app/dashboard/admcontrato/_documents/CarteiraAssociado";
+import DocumentTemplate from "@/app/dashboard/admcontrato/_documents/DocumentTemplate";
+import ContratoResumo from "@/app/dashboard/admcontrato/_documents/ContratoResumo";
+import ImpressaoCarne from "@/app/dashboard/admcontrato/_documents/ImpressaoCarne";
+import { ReciboMensalidade } from "@/app/dashboard/admcontrato/_documents/Recibo";
+import { ProtocoloCancelamento } from "@/app/dashboard/admcontrato/_documents/ProtocoloCancelamento";
 import { api } from "@/lib/axios/apiClient";
 import { AuthContext } from "@/store/AuthContext";
 import { AssociadoProps } from "@/app/dashboard/admcontrato/_types/associado";

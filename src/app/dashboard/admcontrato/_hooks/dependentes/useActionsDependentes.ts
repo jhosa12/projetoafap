@@ -1,4 +1,4 @@
-import DeclaracaoExclusao from "@/Documents/dependentes/DeclaracaoExclusao";
+import DeclaracaoExclusao from "@/app/dashboard/admcontrato/_documents/DeclaracaoExclusao";
 import { pageStyle } from "@/utils/pageStyle";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";

@@ -19,7 +19,7 @@ import { ModalAcordos } from './modalAcordos';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Home, Printer } from 'lucide-react';
-import { AcordoComprovante } from '@/Documents/associado/acordo/acordoComprovante';
+import { AcordoComprovante } from '@/app/dashboard/admcontrato/_documents/acordoComprovante';
 import { useReactToPrint } from 'react-to-print';
 import { pageStyle } from '@/utils/pageStyle';
 import useActionsAcordos from '../../_hooks/acordo/useActionsAcordos';
