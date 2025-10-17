@@ -91,7 +91,7 @@ export interface ObitoProps {
   jazigo: string,
   local_velorio: string,
   dt_velorio: Date,
-  hr_velorio: string,
+  hr_velorio: Date,
   numero_velorio: string,
   bairro_velorio: string,
   complemento: string,

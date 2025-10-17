@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import { Controller, useFormContext } from "react-hook-form";
 import { ObitoProps } from "@/app/dashboard/servicos/_types/obito";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { parentescos } from "@/utils/arrayParentesco";
 import { Combobox } from "@/components/ui/combobox";
 
@@ -24,7 +23,7 @@ const {register,control} = useFormContext<ObitoProps>()
           <CardTitle className="text-gray-900">Dados do Declarante</CardTitle>
           <CardDescription className="text-gray-600">Informações do declarante</CardDescription>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
           <div className="space-y-2">
             <Label htmlFor="rd_nome">Nome do Responsável</Label>
             <Input
@@ -63,7 +62,7 @@ const {register,control} = useFormContext<ObitoProps>()
             />
            
           </div>
-          <div className="space-y-2 md:col-span-2">
+          <div className="space-y-2 ">
             <Label htmlFor="rd_endereco">Endereço</Label>
             <Input
               id="rd_endereco"
@@ -71,11 +70,55 @@ const {register,control} = useFormContext<ObitoProps>()
               placeholder="Endereço completo do responsável"
             />
           </div>
+            <div className="space-y-2 ">
+            <Label htmlFor="rd_numero">Numero</Label>
+            <Input
+              id="rd_numero"
+             {...register('rd_numero')}
+              placeholder="Endereço completo do responsável"
+            />
+          </div>
+    <div className="space-y-2 ">
+            <Label htmlFor="rd_bairro">Bairro</Label>
+            <Input
+              id="rd_bairro"
+             {...register('rd_bairro')}
+              placeholder="Bairro"
+            />
+          </div>
+              <div className="space-y-2 ">
+            <Label htmlFor="rd_cidade">Cidade</Label>
+            <Input
+              id="rd_cidade"
+             {...register('rd_cidade')}
+              placeholder="Cidade"
+            />
+          </div>
+
+            <div className="space-y-2 ">
+            <Label htmlFor="rd_complemento">Complemento</Label>
+            <Input
+              id="rd_complemento"
+             {...register('rd_complemento')}
+              placeholder="Endereço completo do responsável"
+            />
+          </div>
+
+
+
            <div className="space-y-2">
             <Label htmlFor="cpf_cnpj">CPF</Label>
             <Input
-              id="rd_telefone"
+              id="cpf_cnpj"
               {...register('cpf_cnpj')}
+              placeholder="000.000.000-00"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="rg">RG</Label>
+            <Input
+              id="rd_rg"
+              {...register('rd_rg')}
               placeholder="000.000.000-00"
             />
           </div>

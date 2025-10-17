@@ -9,13 +9,13 @@ const useActionsProdConvalescenca = () => {
 
   const { usuario, signOut } = useContext(AuthContext)
   const [listaProdutos, setListaProdutos] = useState<ProdutosProps[]>([])
-    const [produto, setProduto] = useState<ProdutosProps | null>(null)
+  const [produto, setProduto] = useState<ProdutosProps | null>(null)
 
   async function listarProdutos() {
 
     try {
 
-      const response = await api.post("/produtos/listar", {tipo: "P"})
+      const response = await api.post("/produtos/listar", { tipo: "P" })
 
       const produtos = response.data
       setListaProdutos(produtos)
@@ -84,48 +84,50 @@ const useActionsProdConvalescenca = () => {
     )
   }
 
-  const deletarProduto = async (id_produto: number) => {
 
-    toast.promise(api.delete("/produtos/deletar", {
-      data: {
-        id_produto
-      }
-    }),
-      { 
-        error: "Erro ao deletar produto",
-        loading: "Carregando produtos...",
-        success: "Deletado com sucesso!"
+  async function deletarProduto(produto: ProdutosProps) {
+
+    try {
+
+      const response = await api.delete('/produtos/deletar', {
+        data: {
+          id_produto: produto.id_produto
+        }
       })
-    
-    listarProdutos()
+
+    } catch (error) {
+
+      throw error
+    }
+
   }
 
-   const onSave: SubmitHandler<ProdutosProps> = async (data) => {
-      if (!data.descricao || !data.tipo) {
-        toast.error('Preencha todos os campos!')
-        return;
-      }
-  
-      try {
-        if (data.id_produto) {
-  
-          await editarProduto(data as ProdutosProps)
-          await listarProdutos()
-          return true
-  
-        } else {
-  
-          await adicionarProduto(data as ProdutosProps)
-          await listarProdutos()
-          return true
-  
-        }
-      } catch (error) {
-  
-        throw error
-  
-      }
+  const onSave: SubmitHandler<ProdutosProps> = async (data) => {
+    if (!data.descricao || !data.tipo) {
+      toast.error('Preencha todos os campos!')
+      return;
     }
+
+    try {
+      if (data.id_produto) {
+
+        await editarProduto(data as ProdutosProps)
+        await listarProdutos()
+        return true
+
+      } else {
+
+        await adicionarProduto(data as ProdutosProps)
+        await listarProdutos()
+        return true
+
+      }
+    } catch (error) {
+
+      throw error
+
+    }
+  }
 
   return {
 

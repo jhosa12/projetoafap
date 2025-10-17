@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import DocumentTemplate from "@/Documents/associado/carteiraAssociado/CarteiraAssociado";
+import DocumentTemplate from "@/app/dashboard/admcontrato/_documents/CarteiraAssociado";
 import { DependentesProps } from "../../_types/dependentes";
 import { EmpresaProps } from "@/types/empresa";
 import { pageStyle } from "@/utils/pageStyle";
