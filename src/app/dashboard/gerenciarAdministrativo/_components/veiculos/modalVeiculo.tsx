@@ -1,5 +1,5 @@
 import { VeiculoProps } from "@/types/veiculo"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
@@ -9,12 +9,11 @@ type DataProps = {
     openModal: boolean
     onClose: () => void,
     veiculo: VeiculoProps | null,
-    handleNovoVeiculo: (data: VeiculoProps) => Promise<void>
     handleSalvar: SubmitHandler<VeiculoProps>
 }
 
-export function ModalVeiculo({ onClose, openModal, veiculo, handleNovoVeiculo, handleSalvar }: DataProps) {
-    const { register, handleSubmit, formState: { errors } } = useForm<VeiculoProps>({
+export function ModalVeiculo({ onClose, openModal, veiculo, handleSalvar }: DataProps) {
+    const { register, handleSubmit } = useForm<VeiculoProps>({
         defaultValues: veiculo || {}
     })
 
@@ -22,36 +21,49 @@ export function ModalVeiculo({ onClose, openModal, veiculo, handleNovoVeiculo, h
         <Dialog open={openModal} onOpenChange={onClose}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>VEÍCULO</DialogTitle>
+                    <DialogTitle>{veiculo?.id_veiculo ? "Editar Veículo" : "Novo Veículo"}</DialogTitle>
+                    <DialogDescription>
+                        {veiculo?.id_veiculo ? "Altere os dados do veículo conforme necessário e clique em atualizar para salvar as mudanças."
+                            : "Preencha os dados do veículo e clique em adicionar para salvar um novo veículo na lista."}
+                    </DialogDescription>
                 </DialogHeader>
                 <form className="grid grid-cols-2 gap-4" onSubmit={handleSubmit(handleSalvar)}>
                     <Field>
-                        <FieldLabel>MODELO</FieldLabel>
-                        <Input {...register('modelo', { required: "Campo obrigatório" })} placeholder="MODELO" />
+                        <FieldLabel>Modelo</FieldLabel>
+                        <Input {...register('modelo', { required: "Campo obrigatório" })} placeholder="Ex: Gol, Uno, Corolla" />
                     </Field>
                     <Field>
-                        <FieldLabel>MARCA</FieldLabel>
-                        <Input {...register('marca', { required: "Campo obrigatório" })} placeholder="MARCA" />
+                        <FieldLabel>Marca</FieldLabel>
+                        <Input {...register('marca', { required: "Campo obrigatório" })} placeholder="Ex: Volkswagen, Fiat, Toyota" />
 
                     </Field>
                     <Field>
-                        <FieldLabel>ANO</FieldLabel>
-                        <Input {...register('ano', { required: "Campo obrigatório" })} placeholder="ANO" />
+                        <FieldLabel>Ano</FieldLabel>
+                        <Input {...register('ano', { required: "Campo obrigatório" })} placeholder="Ex: 2020" />
                     </Field>
                     <Field>
-                        <FieldLabel>COR</FieldLabel>
-                        <Input {...register('cor', { required: "Campo obrigatório" })} placeholder="COR" />
+                        <FieldLabel>Cor</FieldLabel>
+                        <Input {...register('cor', { required: "Campo obrigatório" })} placeholder="Ex: Prata" />
                     </Field>
                     <Field>
-                        <FieldLabel>PLACA</FieldLabel>
-                        <Input {...register('placa', { required: "Campo obrigatório" })} placeholder="PLACA" />
+                        <FieldLabel>Placa</FieldLabel>
+                        <Input {...register('placa', { required: "Campo obrigatório" })} placeholder="Ex: ABC1D23" />
                     </Field>
                     <Field>
-                        <FieldLabel>CHASSI</FieldLabel>
-                        <Input {...register('chassi', { required: "Campo obrigatório" })} placeholder="CHASSI" />
+                        <FieldLabel>Chassi</FieldLabel>
+                        <Input {...register('chassi', { required: "Campo obrigatório" })} placeholder="Número do chassi" />
                     </Field>
                     <DialogFooter className="col-span-2 flex justify-between">
-                        <Button type="submit" variant="default">
+                        <Button
+                            type="button"
+                            onClick={() => onClose()}
+                            variant="outline"
+                        >
+                            Cancelar
+                        </Button>
+                        <Button
+                            type="submit"
+                        >
                             {veiculo?.id_veiculo ? "Atualizar" : "Adicionar"}
                         </Button>
                     </DialogFooter>
