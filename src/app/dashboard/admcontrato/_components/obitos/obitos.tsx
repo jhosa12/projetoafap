@@ -1,6 +1,6 @@
 
 import { ObitoProps } from "@/app/dashboard/servicos/_types/obito";
-import DocumentTemplate from "@/Documents/associado/carteiraAssociado/CarteiraAssociado";
+import DocumentTemplate from "@/app/dashboard/admcontrato/_documents/CarteiraAssociado";
 import { Table } from "flowbite-react";
 import { IoPrint } from "react-icons/io5";
 import { useReactToPrint } from "react-to-print";

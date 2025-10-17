@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Avatar, Label } from "flowbite-react";
 import { AuthContext } from "@/store/AuthContext";
 import Image from "next/image";
@@ -55,7 +55,6 @@ import LinkNavigate from "../Link";
 import { Historico } from "@/app/dashboard/vendas/_components/historico/ScreenHistorico";
 import { CompanySelectionModal } from "@/app/dashboard/empresa/_components/modal_filial";
 import { Badge } from "../ui/badge";
-import { NotBeforeError } from "jsonwebtoken";
 
 export function Header({ path }: { path?: string }) {
   const {
@@ -68,7 +67,37 @@ export function Header({ path }: { path?: string }) {
     signOut,
     bairrosEmpresa,
     cidadesEmpresa,
+    getDadosFixos
   } = useContext(AuthContext);
+
+
+
+ useEffect(() => {
+    
+    getDadosFixos();
+   /* const socket = io("https://www.testeapiafap.shop", {
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+    });
+
+    if (usuario) {
+      socket.on('connect', () => {
+        socket.emit('userId', usuario?.id.toString());
+      });
+
+      socket.on('nova-tarefa', (tarefa) => {
+        if (tarefa) setCount(tarefa);
+      });
+    }
+
+    return () => {
+      socket.off('nova-tarefa');
+    };*/
+  }, [usuario]);
+
+
+
 
   const [openAtivos, setOpenAtivos] = useState(false);
   const [openFilial, setOpenFilial] = useState(true);
@@ -479,11 +508,11 @@ export function Header({ path }: { path?: string }) {
         <Historico open={openHistorico} setOpen={setOpenHistorico} />
       )}
 
-      <CompanySelectionModal
+     <CompanySelectionModal
         companies={empresasPermitidas}
         onOpenChange={() => setOpenFilial(false)}
         onSelectCompany={(emp) => setSelectEmp(emp.id)}
-        open={openFilial}
+        open={openFilial && !!usuario?.nome}
       />
     </div>
   );

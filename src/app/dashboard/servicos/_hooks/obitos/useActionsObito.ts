@@ -1,13 +1,12 @@
 import { AuthContext } from "@/store/AuthContext";
-import { useCallback, useContext, useEffect, useState } from "react";
+import {useContext, useEffect, useState } from "react";
 import { ObitoProps } from "../../_types/obito";
 import { api } from "@/lib/axios/apiClient";
 import { toast } from "sonner";
 import { SubmitHandler } from "react-hook-form";
-import { ConvProps } from "../../_types/convalescente";
 import { AssociadoProps } from "../../../admcontrato/_types/associado";
-import { RowSelectionState } from "@tanstack/react-table";
 import { ProdutosProps } from "@/types/produtos";
+import { removerFusoDate } from "@/utils/removerFusoDate";
 
 interface ActionsProps {
 
@@ -43,13 +42,12 @@ const useActionsObito = () => {
   const [servico, setServico] = useState<ObitoProps | null>(null)
   const [produtos,setProdutosObito]=useState<Array<ProdutosProps>>([])
   useEffect(() => {
-    if (!usuario) return signOut();
     Promise.all([
         listar(),
         listarProdutos()
     ])
     
-  }, [usuario]);
+  }, [usuario,infoEmpresa?.id]);
 
 
 
@@ -61,7 +59,7 @@ const useActionsObito = () => {
 
   async function listar() {
     try {
-      const { data } = await api.get<ObitoProps[]>("/obitos/listarServicos");
+      const { data } = await api.post<ObitoProps[]>("/obitos/listarServicos",{id_empresa:infoEmpresa?.id});
       console.log("Dados recebidos da API:", data)
       setServicos(data);
 
@@ -94,29 +92,20 @@ const useActionsObito = () => {
   }
   const cadastrarObito = async (data: ObitoProps) => {
 
-    let horaVelorioFormatada = null;
-    if (data.hr_velorio && typeof data.hr_velorio === 'string' && data.hr_velorio.includes(':')) {
-      const [hours, minutes] = data.hr_velorio.split(':');
-      const dataParaHora = new Date();
-      dataParaHora.setHours(parseInt(hours, 10));
-      dataParaHora.setMinutes(parseInt(minutes, 10));
-
-      if (!isNaN(dataParaHora.getTime())) {
-        horaVelorioFormatada = dataParaHora.toISOString();
-      }
-    }
+  
 
     const limparNaN = (valor: any) => {
       const num = parseFloat(valor);
       return isNaN(num) ? null : num;
     };
 
-    const formatarDataISO = (dataValor: any) => {
-      if (!dataValor || isNaN(new Date(dataValor).getTime())) {
-        return null;
-      }
-      return new Date(dataValor).toISOString();
-    }
+    const {newDate:end_data_falecimento} = removerFusoDate(data.end_data_falecimento)
+    const {newDate:data_nascimento} = removerFusoDate(data?.data_nascimento??undefined)
+    const {newDate:dt_velorio} = removerFusoDate(data.dt_velorio)
+    const {newDate:dt_sepultamento} = removerFusoDate(data.dt_sepultamento)
+    const {newDate:hr_velorio} = removerFusoDate(data.hr_velorio)
+
+    
 
     const payload = {
       ...data,
@@ -130,11 +119,11 @@ const useActionsObito = () => {
       status: data.listacheckida?.find(item => item.status === false) || data.listacheckvolta?.find(item => item.status === false) ? 'PENDENTE' : 'FECHADO',
 
       // Datas sendo formatadas para o padrão ISO
-      end_data_falecimento: formatarDataISO(data.end_data_falecimento),
-      data_nascimento: formatarDataISO(data.data_nascimento),
-      dt_sepultamento: formatarDataISO(data.dt_sepultamento),
-      dt_velorio: formatarDataISO(data.dt_velorio),
-      hr_velorio: horaVelorioFormatada,
+      end_data_falecimento,
+      data_nascimento,
+      dt_sepultamento,
+      dt_velorio,
+      hr_velorio,
 
       // Campos numéricos sendo "limpos" para não enviar NaN
       saldo: limparNaN(data.saldo),
@@ -159,8 +148,19 @@ const useActionsObito = () => {
 
   async function editarObito(data: ObitoProps) {
 
+    const {newDate:end_data_falecimento} = removerFusoDate(data.end_data_falecimento)
+    const {newDate:data_nascimento} = removerFusoDate(data?.data_nascimento??undefined)
+    const {newDate:dt_velorio} = removerFusoDate(data.dt_velorio)
+    const {newDate:dt_sepultamento} = removerFusoDate(data.dt_sepultamento)
+    const {newDate:hr_velorio} = removerFusoDate(data.hr_velorio)
+
     const payload = {
       ...data,
+      end_data_falecimento,
+      data_nascimento,
+      dt_velorio,
+      dt_sepultamento,
+      hr_velorio,
       status: data.listacheckida?.find(item => item.status === false) || data.listacheckvolta?.find(item => item.status === false) ? 'PENDENTE' : 'FECHADO'
     }
 

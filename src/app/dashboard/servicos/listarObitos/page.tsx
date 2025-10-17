@@ -23,10 +23,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ChevronDown, Printer } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export default function ListarObitos() {
   const [openOs, setOpenOs] = useState(false);
-  const { selectEmp, limparDados } = useContext(AuthContext)
+  const { limparDados,infoEmpresa } = useContext(AuthContext)
   const { listaServicos, deletarObito, onSave, servico, setServico, listar,produtos } = useActionsObito()
   const [modalImprimir, setModalImprimir] = useState(false);
   const [itemSelecionado, setItemSelecionado] = useState<ObitoProps | null>(null);
@@ -34,6 +36,7 @@ export default function ListarObitos() {
   const [idObitoParaImpressao, setIdObitoParaImpressao] = useState<number | null>(null);
   const [rowSelection, setRowSelection] = useState({});
   const [excluir,setExcluir] = useState(false)
+  const [autorizado,setAutorizado] = useState(false)
 
   const {
     iniciarImpressao,
@@ -82,16 +85,13 @@ export default function ListarObitos() {
 
     } catch (error: any) {
 
-      toast.error("Já existe um óbito para esta pessoa.");
+      toast.error(error );
 
       return;
     }
   };
 
-  const nomesDocumentos = {
-    ordemDeServico: 'Ordem de Serviço',
-    tanato: 'Tanato'
-  }
+
 
   return (
     <div className="flex flex-col w-full h-screen lg:p-6 gap-4">
@@ -136,7 +136,7 @@ export default function ListarObitos() {
                   toast.error("Por favor, selecione uma linha para Imprimir um Comprovante!");
                   return;
                 }
-                handleImprimirModal('ordemDeServico' as DocsObito);
+                handleImprimirModal('ORDEMSERVICO' as DocsObito);
               }}
             >
               Ordem de Serviço
@@ -147,7 +147,7 @@ export default function ListarObitos() {
                   toast.error("Por favor, selecione uma linha para Imprimir um Comprovante!");
                   return;
                 }
-                handleImprimirModal('tanato' as DocsObito);
+                handleImprimirModal('TANATO' as DocsObito);
               }}
             >
               Tanato
@@ -164,7 +164,7 @@ export default function ListarObitos() {
           setOpenOs(false)
         }}
         setSelectedObito={setServico}
-        selectEmp={selectEmp}
+        selectEmp={infoEmpresa?.id}
         onSave={handleSalvar}
         produtos={produtos}
       />
@@ -185,10 +185,24 @@ export default function ListarObitos() {
               setDocumentoImprimir(null);
             }}
             handleConfirmar={async () => confirmarImpressao()}
-            pergunta={`Realmente deseja imprimir
-               ${documentoImprimir === 'ordemDeServico' ?
-                nomesDocumentos.ordemDeServico : nomesDocumentos.tanato}?`}
-          />
+            pergunta={`REALMENTE DESEJA IMPRIMIR
+               ${documentoImprimir}?`}
+          >
+            {documentoImprimir==='TANATO' && (
+                <div className="flex flex-row w-full justify-center gap-4"> 
+
+                    <div className="flex items-start gap-3">
+        <Checkbox id="toggle" checked={autorizado} onCheckedChange={()=>setAutorizado(true)}  />
+        <Label htmlFor="toggle">AUTORIZADO</Label>
+      </div>
+       <div className="flex items-start gap-3">
+        <Checkbox checked={!autorizado} onCheckedChange={()=>setAutorizado(false)} id="toggle1"  />
+        <Label htmlFor="toggle1">NEGADO</Label>
+      </div>
+                   
+                </div>
+            )}
+          </ModalConfirmar>
         )}
 
         {itemSelecionado && (
@@ -197,28 +211,15 @@ export default function ListarObitos() {
               <OrdemServico
               ref={componentRefs?.ordemDeServico}
                 data={itemSelecionado}
+                empresa={infoEmpresa}
               />
             </div>
 
             <div style={{display:'none'}} >
               <AutTanato
-                nome_falecido={itemSelecionado?.nome_falecido ?? ""}
-                contrato={itemSelecionado?.id_contrato ?? 0}
-                nome_dec={itemSelecionado?.rd_nome ?? ""}
-                cpf_dec={itemSelecionado?.cpf ?? ""}
-                rg_dec={itemSelecionado?.rg ?? ""}
-                endereco_dec={itemSelecionado?.rd_endereco ?? ""}
-                bairro_dec={itemSelecionado?.rd_bairro ?? ""}
-                numero_dec={Number(itemSelecionado?.rd_numero) || 0}
-                cidade_dec={itemSelecionado?.rd_cidade ?? ""}
-                uf_dec={itemSelecionado?.rd_uf ?? ""}
-                data_nasc_falecido={itemSelecionado?.data_nascimento ? new Date(itemSelecionado.data_nascimento) : null}
-                endereco_falecido={itemSelecionado?.end_rua ?? ""}
-                numero_falecido={Number(itemSelecionado?.end_numero) || 0}
-                bairro_falecido={itemSelecionado?.end_bairro ?? ""}
-                cidade_falecido={itemSelecionado?.end_cidade ?? ""}
-                uf_falecido={itemSelecionado?.end_uf ?? ""}
-                autorizado={true}
+                empresa={infoEmpresa}
+                dados={itemSelecionado}
+                autorizado={autorizado}
                 ref={componentRefs?.tanato}
               />
             </div>

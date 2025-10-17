@@ -15,7 +15,7 @@ interface ModalObitoFormProps {
   setIsFormOpen: (open: boolean) => void
   selectedObito: ObitoProps | null
   setSelectedObito: Dispatch<SetStateAction<ObitoProps | null>>
-  selectEmp: string,
+  selectEmp: string|undefined,
   onSave: SubmitHandler<ObitoProps>
   produtos:Array<ProdutosProps>
 }
@@ -30,19 +30,19 @@ export const ModalObitoForm = ({ isFormOpen, selectedObito, setIsFormOpen, setSe
         <DialogHeader>
           <DialogTitle>{selectedObito ? "Editar Óbito" : "Novo Óbito"}</DialogTitle>
 
-          <DialogDescription asChild>
-            <div className="flex w-full justify-between ">
+          <DialogDescription >
+           
               Preencha os dados do óbito. Todos os campos marcados com * são obrigatórios.
-              {selectedObito ? (<></>) : (
-                <Button onClick={() => setOpenBusca(true)} variant={'outline'} size={'sm'} className="text-black">
+          
+
+          </DialogDescription>
+        </DialogHeader>
+         {!selectedObito && (
+                <Button onClick={() => setOpenBusca(true)} variant={'outline'} size={'sm'} className="text-black mr-auto">
                 <Search />
                 Buscar Associado
                 </Button>
               )}
-            </div>
-
-          </DialogDescription>
-        </DialogHeader>
         <ObitoForm
           obito={selectedObito}
           onSave={onSave}
@@ -52,7 +52,7 @@ export const ModalObitoForm = ({ isFormOpen, selectedObito, setIsFormOpen, setSe
           }}
           produtos={produtos}
         />
-        <ModalBusca visible={openBusca} carregarDados={carregarDados} selectEmp={selectEmp} setVisible={() => setOpenBusca(false)} />
+        <ModalBusca visible={openBusca} carregarDados={carregarDados} selectEmp={selectEmp??''} setVisible={() => setOpenBusca(false)} />
       </DialogContent>
     </Dialog>
 

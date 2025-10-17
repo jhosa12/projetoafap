@@ -1,10 +1,10 @@
-import ImpressaoCarne from "@/Documents/associado/mensalidade/ImpressaoCarne";
+import ImpressaoCarne from "@/app/dashboard/admcontrato/_documents/ImpressaoCarne";
 import { useReactToPrint } from "react-to-print";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IoPrint } from "react-icons/io5";
 import { MdDeleteForever } from "react-icons/md";
 import { RiAddCircleFill } from "react-icons/ri";
-import { ReciboMensalidade } from "@/Documents/associado/mensalidade/Recibo";
+import { ReciboMensalidade } from "@/app/dashboard/admcontrato/_documents/Recibo";
 import { Popover } from "flowbite-react";
 import { PopoverVencimento } from "./popover-vencimento";
 import { PopoverReagendamento } from "./popover-reagendamento";
