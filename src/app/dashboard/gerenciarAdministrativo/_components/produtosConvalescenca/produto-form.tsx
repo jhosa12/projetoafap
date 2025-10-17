@@ -1,20 +1,16 @@
-import { PlanosProps } from "@/types/planos";
-import { FormProvider, SubmitHandler, useForm, useFormContext } from "react-hook-form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
   Field,
-  FieldDescription,
   FieldGroup,
   FieldLabel,
-  FieldLegend,
-  FieldSeparator,
-  FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { ProdutosProps } from "@/types/produtos";
+import { formatarComVirgula } from "@/utils/normalizarValorEditar";
+import { normalizarValor } from "@/utils/normalizarValor";
 
 interface ProdutoFormProps {
   produto?: ProdutosProps | null
@@ -22,16 +18,24 @@ interface ProdutoFormProps {
   onCancel: () => void
 }
 
+type ProdConvValores = Omit<ProdutosProps, 'valor_custo' | 'valor_venda' | 'margem_lucro'> & {
+
+  valor_custo: string,
+  valor_venda: string,
+  margem_lucro: string,
+
+}
+
 export function ProdutoForm({ produto, onSave, onCancel }: ProdutoFormProps) {
   const { limparDados } = useContext(AuthContext)
-  const form = useForm<ProdutosProps>({
+  const form = useForm<ProdConvValores>({
     defaultValues: {
       descricao: '',
       unidade: '',
-      valor_custo: 0,
-      valor_venda: 0,
+      valor_custo: '',
+      valor_venda: '',
       quantidade: 0,
-      margem_lucro: 0,
+      margem_lucro: '',
       tipo: "P"
     }
   })
@@ -41,14 +45,18 @@ export function ProdutoForm({ produto, onSave, onCancel }: ProdutoFormProps) {
   useEffect(() => {
     if (produto) {
 
+      const valor_custo = formatarComVirgula(produto.valor_custo)
+      const valor_venda = formatarComVirgula(produto.valor_venda)
+      const margem_lucro = formatarComVirgula(produto.margem_lucro)
+
       reset({
         id_produto: produto.id_produto,
         descricao: produto.descricao,
         unidade: produto.unidade,
-        valor_custo: produto.valor_custo,
-        valor_aluguel: produto.valor_aluguel,
+        valor_custo: valor_custo,
+        valor_venda: valor_venda,
         quantidade: produto.quantidade,
-        margem_lucro: produto.margem_lucro,
+        margem_lucro: margem_lucro,
       });
 
       limparDados()
@@ -58,7 +66,27 @@ export function ProdutoForm({ produto, onSave, onCancel }: ProdutoFormProps) {
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={handleSubmit(onSave)}>
+      <form onSubmit={handleSubmit((data) => {
+
+        const stringValorCusto = String(data.valor_custo)
+        const valor_custo = normalizarValor(stringValorCusto)
+
+        const stringValorVenda = String(data.valor_venda)
+        const valor_venda = normalizarValor(stringValorVenda)
+
+        const stringMargemLucro = String(data.margem_lucro)
+        const margem_lucro = normalizarValor(stringMargemLucro)
+
+        const payload = {
+          ...data,
+          valor_custo: valor_custo,
+          valor_venda: valor_venda,
+          margem_lucro: margem_lucro
+        }
+
+        onSave(payload)
+
+      })}>
         <FieldGroup>
           <Field>
             <FieldLabel htmlFor="descricao">
@@ -90,11 +118,8 @@ export function ProdutoForm({ produto, onSave, onCancel }: ProdutoFormProps) {
               </FieldLabel>
               <Input
                 id="valor_custo"
-                type="number"
-                {...register('valor_custo', {
-                  valueAsNumber: true,
-                  min: 0
-                })}
+                type="text"
+                {...register('valor_custo')}
                 required
               />
             </Field>
@@ -104,11 +129,8 @@ export function ProdutoForm({ produto, onSave, onCancel }: ProdutoFormProps) {
               </FieldLabel>
               <Input
                 id="valor_venda"
-                type="number"
-                {...register('valor_venda', {
-                  valueAsNumber: true,
-                  min: 0
-                })}
+                type="text"
+                {...register('valor_venda')}
                 required
               />
             </Field>
@@ -122,9 +144,8 @@ export function ProdutoForm({ produto, onSave, onCancel }: ProdutoFormProps) {
                 id="quantidade"
                 placeholder="Digite aqui..."
                 type="number"
-                {...register('quantidade',{
+                {...register('quantidade', {
                   valueAsNumber: true,
-                  min: 0
                 })}
                 required
               />
@@ -135,11 +156,8 @@ export function ProdutoForm({ produto, onSave, onCancel }: ProdutoFormProps) {
               </FieldLabel>
               <Input
                 id="margem_lucro"
-                type="number"
-                {...register('margem_lucro', {
-                  valueAsNumber: true,
-                  min: 0
-                })}
+                type="text"
+                {...register('margem_lucro')}
                 required
               />
             </Field>
