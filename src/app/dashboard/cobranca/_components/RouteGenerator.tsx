@@ -96,6 +96,7 @@ const RouteGenerator = ({
         startDate: dataIni,
         endDate: dataFim,
         resumeBairro: true,
+        cobrador:metodos.watch("parametros.cobrador")
       });
 
       setArrayBairros(res.data.inadResumoBairro);
@@ -107,13 +108,14 @@ const RouteGenerator = ({
     metodos.watch("parametros.criterio.operator"),
     metodos.watch("parametros.statusReagendamento"),
     metodos.watch("parametros.criterio.value"),
+    metodos.watch("parametros.cobrador")
   ]);
 
   const handleGenerateRoute: SubmitHandler<RouteProps> = async (data) => {
-  
-    if (data.parametros.bairros?.length === 0) {
+
+    if ((!data.parametros.bairros||data.parametros.bairros.length<1) && !data.parametros.cobrador) {
       toast("Erro de validação", {
-        description: "Selecione pelo menos um bairro",
+        description: "Selecione pelo menos um bairro ou um Cobrador",
         //variant: "destructive",
       });
       return;
@@ -148,7 +150,9 @@ const RouteGenerator = ({
   };
 
   //const isFormValid = watch("parametros.bairros").length > 0 && watch("parametros.consultor");
-  const estimativa = metodos
+  
+
+const estimativa = (metodos.watch('parametros.cobrador') && (!metodos.watch('parametros.bairros')||metodos.watch('parametros.bairros')?.length<1)) ?arrayBairros?.reduce((acc, item) => acc+=item.totalContratos,0) : metodos
     .watch("parametros.bairros")
     ?.reduce((acc, item) => {
       return (

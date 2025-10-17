@@ -590,8 +590,73 @@ export default function FormularioConv({
               </CardTitle>
 
 
-              <div className="col-span-full justify-between">
-                <div className="grid grid-cols-2 gap-4 w-full">
+              <div className="flex flex-col col-span-full justify-between w-full  ">
+                   <div className="flex flex-row justify-between items-center w-full gap-4">
+                    <div className="flex w-full  gap-4">
+                      <div className="flex-grow ">
+                        <Label htmlFor="produto-select">Adicione o Produto</Label>
+                        <Select
+                          value={produtoSelecionado}
+                          onValueChange={setProdutoSelecionado}
+                        >
+                          <SelectTrigger id="produto-select">
+                            <SelectValue placeholder="Selecione um produto do estoque" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {listarProdutos && listarProdutos.length > 0 ? (
+                              listarProdutos.map((produto) => (
+                                <SelectItem
+                                className="text-xs"
+                                  key={produto.id_produto}
+                                  value={produto.id_produto.toString()}
+                                >
+                                  {produto.descricao}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              <SelectItem value="loading" disabled>
+                                Carregando Produtos...
+                              </SelectItem>
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="w-36 flex-shrink-0">
+                        <Label>Quant.</Label>
+                        <Input
+                          id="quantidade-produto"
+                          type="number"
+                          placeholder="Quantidade"
+                          value={quantidadeSelecionada}
+                          min={1}
+                          onChange={e => setQuantidadeSelecionada(Number(e.target.value))}
+                          disabled={!produtoSelecionado}
+                        />
+                      </div>
+                    </div>
+                  
+                      <Button
+                        className="mt-auto"
+                        type="button"
+                        onClick={() => {
+                          const produto = listarProdutos.find(p => p.id_produto.toString() === produtoSelecionado);
+                          if (produto) {
+                            const novoProduto = {
+                              ...produto,
+                              quantidade: quantidadeSelecionada,
+                              status: "ABERTO"
+                            };
+                            append(novoProduto);
+                            setProdutoSelecionado("");
+                            setQuantidadeSelecionada(1);
+                          }
+                        }}
+                        disabled={!produtoSelecionado}
+                      >
+                        Adicionar Produto
+                      </Button>
+                  
+                  </div>
                   <Table>
                     <TableCaption>Lista de Produtos Adicionados</TableCaption>
                     <TableHeader>
@@ -641,76 +706,10 @@ export default function FormularioConv({
                   </Table>
 
 
-                  <div className="flex flex-col justify-between gap-4">
-                    <div className="flex w-full items-end gap-4">
-                      <div className="flex-grow ">
-                        <Label htmlFor="produto-select">Adicione o Produto</Label>
-                        <Select
-                          value={produtoSelecionado}
-                          onValueChange={setProdutoSelecionado}
-                        >
-                          <SelectTrigger id="produto-select">
-                            <SelectValue placeholder="Selecione um produto do estoque" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {listarProdutos && listarProdutos.length > 0 ? (
-                              listarProdutos.map((produto) => (
-                                <SelectItem
-                                  key={produto.id_produto}
-                                  value={produto.id_produto.toString()}
-                                >
-                                  {produto.descricao}
-                                </SelectItem>
-                              ))
-                            ) : (
-                              <SelectItem value="loading" disabled>
-                                Carregando Produtos...
-                              </SelectItem>
-                            )}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="w-36 flex-shrink-0">
-                        <Label>Adicione a Quantidade</Label>
-                        <Input
-                          id="quantidade-produto"
-                          type="number"
-                          placeholder="Quantidade"
-                          value={quantidadeSelecionada}
-                          min={1}
-                          onChange={e => setQuantidadeSelecionada(Number(e.target.value))}
-                          disabled={!produtoSelecionado}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex gap-4 justify-end">
-                      <Button
-                        className="w-32"
-                        type="button"
-                        onClick={() => {
-                          const produto = listarProdutos.find(p => p.id_produto.toString() === produtoSelecionado);
-                          if (produto) {
-                            const novoProduto = {
-                              ...produto,
-                              quantidade: quantidadeSelecionada,
-                              status: "ABERTO"
-                            };
-                            console.log('Adicionando produto:', novoProduto);
-                            append(novoProduto);
-                            console.log('Produtos após adicionar:', watch('convalescenca_prod'));
-                            setProdutoSelecionado("");
-                            setQuantidadeSelecionada(1);
-                          }
-                        }}
-                        disabled={!produtoSelecionado}
-                      >
-                        Adicionar Produto
-                      </Button>
-                    </div>
-                  </div>
+               
 
                 </div>
-              </div>
+             
 
               {/* ------------------- Nova Seção ---------------------- */}
 
