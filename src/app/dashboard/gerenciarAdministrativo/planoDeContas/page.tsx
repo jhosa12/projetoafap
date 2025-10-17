@@ -3,7 +3,7 @@
 import { AuthContext } from "@/store/AuthContext";
 import React, { useContext, useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button";
-import { CirclePlus, MoreHorizontalIcon } from "lucide-react";
+import { CirclePlus } from "lucide-react";
 import { ModalAdicionar } from "../_components/plano-contas/modal-adicionar-conta";
 import { Accordion } from "@/components/ui/accordion";
 import { GrupoItem } from "../_components/plano-contas/grupo-item";
@@ -12,15 +12,17 @@ import { useActionsPlanoContas } from "../_hooks/plano-contas/useActionsPlanoCon
 import { useHandleSalvarPC } from "../_hooks/plano-contas/useHandleSalvarPC";
 import { PlanoContasProps } from "../../financeiro/_types/plano-contas";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
+import { useHandleExcluirPC } from "../_hooks/plano-contas/useHandleExcluirPC";
 
 
 export default function PlanoDeContas() {
 
   const { usuario, signOut } = useContext(AuthContext)
   const [modal, setModal] = useState(false)
+  const [modalConfirmarExclusao, setModalConfirmarExclusao] = useState(false)
   const [itemEdit, setItemEdit] = useState<PlanoContasProps | null>(null);
+  const [planoExcluir, setPlanoExcluir] = useState<PlanoContasProps | null>(null);
   const { listaPlanoContas, onSave, listarPlanoContas, deletarPlanoConta } = useActionsPlanoContas()
-  const [modalExcluir, setModalExcluir] = useState(false)
   const { handleSalvar } = useHandleSalvarPC(
     onSave,
     setModal,
@@ -47,10 +49,11 @@ export default function PlanoDeContas() {
     setModal(true);
   };
 
-  const handleExcluir = async (id: string) => {
-    await deletarPlanoConta(id)
-    listarPlanoContas()
-  }
+  const { handleExcluir } = useHandleExcluirPC({
+    deletarPlanoConta,
+    listarPlanoContas,
+    setPlanoExcluir
+  })
 
   const hierarquiaContas = useMemo(() => {
     return construirHierarquia(listaPlanoContas);
@@ -72,6 +75,32 @@ export default function PlanoDeContas() {
         </div>
       </div>
 
+
+      <div className="inline-flex rounded-lg gap-2 overflow-y-auto bg-white justify-between p-2 w-full max-h-[calc(100vh-120px)]  ">
+        <Accordion type="single" collapsible className="w-full px-2">
+          {hierarquiaContas?.map((item) => (
+            <GrupoItem
+              key={item.id}
+              item={item}
+              onEditar={handleEditar}
+              onExcluir={(item: NodoConta) => {
+
+                const planoConta: PlanoContasProps = {
+                  conta: item.id,
+                  descricao: item.descricao,
+                  tipo: item.tipo,
+                  perm_lanc: item.perm_lanc,
+                  data: new Date(),
+
+                };
+                setPlanoExcluir(planoConta);
+                setModalConfirmarExclusao(true);
+              }} />
+
+          ))}
+        </Accordion>
+      </div>
+
       <ModalAdicionar
         handleSalvar={handleSalvar}
         open={modal}
@@ -81,22 +110,21 @@ export default function PlanoDeContas() {
         }}
         itemEdit={itemEdit}
       />
-      <div className="inline-flex rounded-lg gap-2 overflow-y-auto bg-white justify-between p-2 w-full max-h-[calc(100vh-120px)]  ">
-        <Accordion type="single" collapsible className="w-full px-2">
-          {hierarquiaContas?.map((item) => (
-            <GrupoItem key={item.id} item={item} onEditar={handleEditar} onExcluir={() => { }} />
 
-          ))}
-        </Accordion>
-      </div>
+      {modalConfirmarExclusao &&
+        <ModalConfirmar
+          handleConfirmar={() => {
+            if (planoExcluir) {
+              handleExcluir(planoExcluir)
+            }
+          }}
+          openModal={modalConfirmarExclusao}
+          setOpenModal={() => setModalConfirmarExclusao(false)}
+          pergunta="Realmente deseja excluir esse plano de contas?"
 
-      <ModalConfirmar
-        handleConfirmar={async () => { }}
-        openModal={modalExcluir}
-        setOpenModal={() => setModalExcluir(false)}
-        pergunta="Realmente deseja excluir esse plano de contas?"
+        />}
 
-      />
+
     </div>
   )
 }

@@ -11,14 +11,9 @@ export const useActionsVeiculos = () => {
 
   async function listarVeiculos() {
 
-    // if (!id_empresa) {
-    //   toast.error("Por favor, selecione uma empresa.")
-    // }
-
     try {
 
       const { data } = await api.post<VeiculoProps[]>("/veiculos")
-      console.log("Dados recebidos da API:", data)
 
       setArrayVeiculos(data)
 
@@ -49,13 +44,10 @@ export const useActionsVeiculos = () => {
     }
 
     try {
-      const response = await api.post('/veiculos/novo', payload)
+      const response = await api.post('/veiculo/novo', payload)
       return response.data
-    } catch (error: any) {
-      if (error.response?.status === 400) {
-        throw error.response.data;
-      }
-      throw error;
+    } catch (error) {
+      throw error
     }
 
   }
@@ -73,9 +65,10 @@ export const useActionsVeiculos = () => {
       status: data.status
     }
 
+    console.log("")
     try {
 
-      const response = await api.put('/veiculos/editar', payload)
+      const response = await api.put('/veiculo/editar', payload)
       return response.data
 
     } catch (error: any) {
@@ -106,27 +99,30 @@ export const useActionsVeiculos = () => {
         error: "Erro ao excluir registro.",
       }
     )
-
-
   }
 
   const onSave: SubmitHandler<VeiculoProps> = async (data: VeiculoProps) => {
 
     try {
+
       if (data.id_veiculo) {
+
         await editarVeiculo(data)
-        toast.success("Veiculo editado com sucesso!")
+        toast.success("Veículo editado com sucesso!")
         await listarVeiculos()
-        return true
+
       } else {
+
         await adicionarVeiculo(data)
-        toast.success("Veiculo adicionado com sucesso!")
+        toast.success("Veículo adicionado com sucesso!")
         await listarVeiculos()
-        return true
+
       }
+      return true
 
     } catch (error) {
 
+      throw error
     }
   }
 

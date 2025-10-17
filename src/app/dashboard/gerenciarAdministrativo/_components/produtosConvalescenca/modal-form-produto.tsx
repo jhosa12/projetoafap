@@ -22,7 +22,7 @@ interface ModalFormPlanosProps {
 }
 
 
-export default function ModalFormProduto({isFormOpen, setIsFormOpen, selectedProduto, setSelectedProduto, onSave }: ModalFormPlanosProps) {
+export default function ModalFormProduto({ isFormOpen, setIsFormOpen, selectedProduto, setSelectedProduto, onSave }: ModalFormPlanosProps) {
 
   return (
     <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
@@ -31,11 +31,11 @@ export default function ModalFormProduto({isFormOpen, setIsFormOpen, selectedPro
         aria-describedby="modal-description"
       >
         <DialogHeader>
-          <DialogTitle>{selectedProduto ? "Editar Plano" : "Novo Plano"}</DialogTitle>
+          <DialogTitle>{selectedProduto ? "Editar Produto" : "Novo Produto"}</DialogTitle>
           <DialogDescription>
             {selectedProduto ?
-              "Altere os dados desejados e clique em salvar para atualizar o plano."
-              : "Preencha as informações abaixo para cadastrar um novo plano."}
+              "Altere os dados desejados e clique em salvar para atualizar o produto."
+              : "Preencha as informações abaixo para adicionar um novo produto."}
           </DialogDescription>
         </DialogHeader>
 

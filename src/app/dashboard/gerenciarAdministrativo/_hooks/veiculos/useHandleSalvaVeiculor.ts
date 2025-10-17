@@ -12,12 +12,15 @@ export function useHandleSalvarVeiculo(
 
   const handleSalvar: SubmitHandler<VeiculoProps> = async (data) => {
     try {
+
+
       const resultado = await onSave(data);
 
       if (resultado === true) {
         setOpen(false);
-        listarVeiculos()
         setLinhaSelecionada(false)
+        listarVeiculos()
+
 
       }
     } catch (error: any) {

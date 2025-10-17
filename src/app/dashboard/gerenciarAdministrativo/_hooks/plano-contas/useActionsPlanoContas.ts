@@ -45,6 +45,10 @@ export const useActionsPlanoContas = () => {
 
   async function deletarPlanoConta(conta: string) {
 
+    if (!conta) {
+      return toast.error("Conta indefinida!!")
+    }
+
     try {
 
       await api.delete('/planoConta/deletar', {
@@ -53,10 +57,8 @@ export const useActionsPlanoContas = () => {
         }
       })
 
-      toast.success("Conta excluída com sucesso!")
-
     } catch (error) {
-      toast.error("Erro ao excluir conta!")
+      throw error
     }
   }
 
@@ -79,10 +81,6 @@ export const useActionsPlanoContas = () => {
       error: 'Erro ao adicionar Conta'
     }
     )
-
-
-
-    // setarDados([...arrayPlanoContas,response.data],arraygrupos)
   }
 
   const onSave: SubmitHandler<PlanoContasProps> = async (data: PlanoContasProps) => {
