@@ -8,22 +8,16 @@ import { AuthContext } from "@/store/AuthContext";
 export interface FormFiltro {
   startDate?: string | undefined,
   endDate?: string | undefined,
-  id_empresa: string | undefined,
+  id_grupo?: number | undefined,
 
 }
 
-export const useActionsMetas = (id_empresa: string | undefined, isEditMode?: boolean, filtros?: FormFiltro) => {
+export const useActionsMetas = (id_empresa: string | undefined) => {
   const [arrayMetas, setArrayMetas] = useState<MetaProps[]>([]);
-  const { usuario, signOut } = useContext(AuthContext)
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    if (!usuario) return signOut();
-    listarMetas();
-  }, [usuario]);
 
-
-  async function listarMetas() {
+  async function listarMetas(filtros?: FormFiltro) {
     if (!id_empresa) {
       toast.error("Selecione uma empresa.");
       return;
@@ -32,8 +26,12 @@ export const useActionsMetas = (id_empresa: string | undefined, isEditMode?: boo
     try {
       const payload = {
         id_empresa,
-        ...filtros
+        id_grupo: filtros?.id_grupo,
+        date: filtros?.startDate,
+        dateFimMeta: filtros?.endDate
       };
+
+      console.log("Dados do filtro para a api:", payload)
 
       await toast.promise(
         api.post<MetaProps[]>("/vendas/filtroMetas", payload)

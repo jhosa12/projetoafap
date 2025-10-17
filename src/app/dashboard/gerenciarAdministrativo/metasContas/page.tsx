@@ -25,32 +25,26 @@ import { DataTable } from "@/components/ui/data-table";
 import { useHandleExcluirMeta } from "../_hooks/metas-contas/useHandleExcluirMeta";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 
-export interface FormFiltro {
-  startDate?: string | undefined,
-  endDate?: string | undefined,
-  id_empresa: string | undefined,
 
-}
 
 
 export default function GerenciarMetas() {
 
   const [modalFiltro, setModalFiltro] = useState(false)
   const [modalNovaMeta, setModalNovaMeta] = useState(false)
-  const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
-  const [endDate, setEndDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0))
+  const [startDate, setStartDate] = useState<Date | undefined>(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
+  const [endDate, setEndDate] = useState<Date | undefined>(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0))
+  const [idGrupo, setIdGrupo] = useState<number | undefined>(undefined)
   const [meta, setMeta] = useState<Partial<MetaProps>>()
   const [rowSelection, setRowSelection] = useState({});
+  const [anoSelecionado, setAnoSelecionado] = useState<number | undefined>(undefined);
+  const [mesSelecionado, setMesSelecionado] = useState<number | undefined>(undefined);
 
   const [modalConfirmarExclusao, setModalConfirmarExclusao] = useState(false)
-  const [metaExcluir, setMetaExcluir] = useState<Partial<MetaProps | null>>(null)
 
   const { infoEmpresa, selectEmp, usuario, signOut, actions_plano_contas, limparDados } = useContext(AuthContext)
   const id_empresa = selectEmp
   const nome_empresa = infoEmpresa?.fantasia
-
-
-
 
   const {
 
@@ -71,15 +65,22 @@ export default function GerenciarMetas() {
   } = useActionsMetas(id_empresa)
 
 
-  const { handleFiltro } = useFiltroMetas(listarMetas, id_empresa, startDate, endDate);
+  const { handleFiltro } = useFiltroMetas(
+    listarMetas,
+    idGrupo,
+    startDate,
+    endDate
+  );
 
 
 
-  const dataCompleta = (arrayMetas ?? []).map((item: any) => ({
-    ...item,
-    nome_empresa: nome_empresa,
-    categoria: item?.id_conta ? "gastos" : "vendas"
-  }));
+  const dataCompleta = useMemo(() => (
+    (arrayMetas ?? []).map((item: any) => ({
+      ...item,
+      nome_empresa: nome_empresa,
+      categoria: item?.id_conta ? "gastos" : "vendas"
+    }))
+  ), [arrayMetas, nome_empresa]);
 
   const linhaSelecionada: MetaProps | null = React.useMemo(() => {
     const indicesSelecionados = Object.keys(rowSelection);
@@ -109,15 +110,16 @@ export default function GerenciarMetas() {
     listarMetas
   })
 
-
   const colunasMetas = useMemo(() => {
     return columnsMetas
   }, [])
 
-  useEffect(() => {
-    handleCarregarDados();
-  }, []);
 
+  useEffect(() => {
+    if (!usuario) return signOut();
+    listarMetas();
+    handleCarregarDados();
+  }, [usuario]);
 
   return (
 
@@ -137,8 +139,8 @@ export default function GerenciarMetas() {
         />
       }
 
-      {
-        modalFiltro && <ModalFiltroMetas
+      {modalFiltro &&
+        <ModalFiltroMetas
           filtrar={handleFiltro}
           endDate={endDate}
           loading={loading}
@@ -148,6 +150,12 @@ export default function GerenciarMetas() {
           startDate={startDate}
           arraySetores={arrayGrupos}
           show={modalFiltro}
+          idGrupo={idGrupo}
+          setIdGrupo={setIdGrupo}
+          anoSelecionado={anoSelecionado}
+          setAnoSelecionado={setAnoSelecionado}
+          mesSelecionado={mesSelecionado}
+          setMesSelecionado={setMesSelecionado}
         />
 
       }
@@ -212,7 +220,7 @@ export default function GerenciarMetas() {
           <Button
             onClick={() => {
               if (!linhaSelecionada) {
-                toast.error("Por favor, selecione uma linha para excluir.")
+                toast.error("Por favor, selecione uma linha para Excluir.")
                 return
               }
 

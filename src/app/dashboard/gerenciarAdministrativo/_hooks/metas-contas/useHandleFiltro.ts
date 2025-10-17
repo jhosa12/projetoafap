@@ -1,14 +1,14 @@
-import { FormFiltro } from '@/app/dashboard/gerenciarAdministrativo/metasContas/page';
+import { FormFiltro } from "./useActionsMetas";
 import { ajustarData } from "@/utils/ajusteData";
 
-export function useFiltroMetas(postData: (payload: FormFiltro) => Promise<void>, id_empresa: string | undefined, startDate: Date, endDate: Date) {
+export function useFiltroMetas(postData: (payload: FormFiltro) => Promise<void>, id_grupo: number | undefined, startDate: Date | undefined, endDate: Date | undefined) {
   const handleFiltro = async () => {
     const { dataFim, dataIni } = ajustarData(startDate, endDate);
-    if (!id_empresa) return;
+
     const payload: FormFiltro = {
       startDate: dataIni,
       endDate: dataFim,
-      id_empresa,
+      id_grupo,
     };
     await postData(payload);
   };
