@@ -14,6 +14,7 @@ import { DocsObito, useActionsPrintOS } from "../_hooks/obitos/useActionsPrintOS
 import { toast } from "sonner";
 import OrdemServico from "../_documents/obitos/OrdemServico";
 import AutTanato from "../_documents/obitos/Tanato";
+import IncineracaoMateriais from "../_documents/obitos/IncineracaoMateriais";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import { useImprimirModal } from "../_hooks/obitos/useImprimirModalOb";
 import {
@@ -152,6 +153,17 @@ export default function ListarObitos() {
             >
               Tanato
             </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                if (!linhaSelecionada) {
+                  toast.error("Por favor, selecione uma linha para Imprimir um Comprovante!");
+                  return;
+                }
+                handleImprimirModal('INCINERACAO' as DocsObito);
+              }}
+            >
+              Autorização de Incineração
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </DataTable>
@@ -221,6 +233,11 @@ export default function ListarObitos() {
                 dados={itemSelecionado}
                 autorizado={autorizado}
                 ref={componentRefs?.tanato}
+              />
+              <IncineracaoMateriais
+                data={itemSelecionado}
+                empresa={infoEmpresa}
+                ref={componentRefs?.incineracao}
               />
             </div>
           </>
