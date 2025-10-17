@@ -20,7 +20,6 @@ const useActionsProdConvalescenca = () => {
       const produtos = response.data
       setListaProdutos(produtos)
 
-      console.log("Dados da API:", produtos)
 
     } catch (error) {
 
@@ -53,17 +52,18 @@ const useActionsProdConvalescenca = () => {
       {
         error: 'Erro ao adicionar produto',
         loading: 'Adicionando...',
-        success: 'Adicionado com sucesso!'
+        success: 'Produto adicionado com sucesso!'
 
       }
     )
 
     listarProdutos()
   }
-  const editarProduto = async (data: ProdutosProps) => {
 
+  async function editarProduto(data: ProdutosProps) {
     const payload = {
 
+      id_produto: data.id_produto,
       descricao: data.descricao,
       unidade: data.unidade,
       valor_custo: data.valor_custo,
@@ -73,17 +73,17 @@ const useActionsProdConvalescenca = () => {
       tipo: data.tipo || "P"
     }
 
-    toast.promise(
-      api.put("/produtos/editar", payload),
-      {
-        error: 'Erro ao adicionar produto',
-        loading: 'Adicionando...',
-        success: 'Adicionado com sucesso!'
 
-      }
-    )
+    try {
+
+      const response = await api.put("/produtos/editar", payload)
+
+
+    } catch (error) {
+      toast.error("Erro ao editar produto.")
+    }
+
   }
-
 
   async function deletarProduto(produto: ProdutosProps) {
 
@@ -103,25 +103,33 @@ const useActionsProdConvalescenca = () => {
   }
 
   const onSave: SubmitHandler<ProdutosProps> = async (data) => {
-    if (!data.descricao || !data.tipo) {
+
+    console.log("Dados recebidos produtos: ", data)
+
+    if (!data.descricao && !data.tipo) {
       toast.error('Preencha todos os campos!')
       return;
     }
 
+
     try {
       if (data.id_produto) {
 
-        await editarProduto(data as ProdutosProps)
+        await editarProduto(data)
+        toast.success("Produto de convalescença editado com sucesso!")
         await listarProdutos()
-        return true
+
 
       } else {
 
-        await adicionarProduto(data as ProdutosProps)
+        await adicionarProduto(data)
+        toast.success("Produto de convalescença adicionado com sucesso!")
         await listarProdutos()
-        return true
+
 
       }
+
+      return true
     } catch (error) {
 
       throw error

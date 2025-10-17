@@ -112,18 +112,18 @@ export const columns = (actions: ColumnActions): ColumnDef<ConvProps>[] => [
     },
   },
   {
-    accessorKey: "status",
+    accessorKey: "convalescenca_prod",
     header: "Status",
     cell: ({ row }) => {
-      const status = String(row.getValue("status")).toUpperCase();
+      const status = row.original.convalescenca_prod[0]?.status ??'';
 
       const getStatusColor = (status: string) => {
         switch (status) {
-          case "ENTREGUE":
+          case "FECHADO":
             return "bg-green-100 text-green-800 border-green-200";
           case "ABERTO":
             return "bg-blue-100 text-blue-800 border-blue-200";
-          case "PENDENTE":
+          case "CANCELADO":
             return "bg-red-100 text-red-800 border-red-200";
           default:
             return "bg-gray-100 text-gray-800 border-gray-200";
