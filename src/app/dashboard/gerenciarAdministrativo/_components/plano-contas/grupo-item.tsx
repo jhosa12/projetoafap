@@ -1,20 +1,18 @@
 'use client'
 
-
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { roboto_Mono } from "@/fonts/fonts"
 import { NodoConta } from "@/utils/listaContas"
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { MoreHorizontalIcon } from "lucide-react"
-import { useActionsPlanoContas } from "../../_hooks/plano-contas/useActionsPlanoContas"
+import { MoreHorizontalIcon, Pencil, Trash2 } from "lucide-react"
 
 export const GrupoItem = ({ item, onEditar, onExcluir }:
   {
@@ -23,12 +21,15 @@ export const GrupoItem = ({ item, onEditar, onExcluir }:
     onExcluir: (item: NodoConta) => void
   }) => {
 
-  const { deletarPlanoConta } = useActionsPlanoContas()
-
   return (
     <>
       <AccordionItem value={item.id} >
-        <AccordionTrigger className={`${roboto_Mono.className} flex flex-row-reverse justify-end items-center gap-2 text-[11px] uppercase`}>
+
+        <div className="flex justify-start items-center">
+
+          <AccordionTrigger className={`${roboto_Mono.className} flex flex-row-reverse justify-end items-center gap-2 text-[11px] uppercase`}>
+            {item.id}-{item.descricao}
+          </AccordionTrigger>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -38,17 +39,21 @@ export const GrupoItem = ({ item, onEditar, onExcluir }:
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>Ações</DropdownMenuLabel>
+              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => onEditar(item)}>
-                Editar
+                <Pencil /> Editar
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onExcluir(item)}>
-                Excluir
+              <DropdownMenuItem
+                onClick={() => onExcluir(item)}
+                className="text-red-600 "
+              >
+                <Trash2 /> Excluir
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {item.id}-{item.descricao}
-        </AccordionTrigger>
+        </div>
+
         <AccordionContent>
           {item.subcontas && item.subcontas.length > 0 ? (
             <Accordion type="single" collapsible className="pl-8">

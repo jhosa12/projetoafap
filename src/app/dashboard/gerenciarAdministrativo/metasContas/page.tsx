@@ -235,13 +235,6 @@ export default function GerenciarMetas() {
               Excluir
             </span>
           </Button>
-
-          <Button
-            onClick={() => window.print()}
-            variant="outline"
-          >
-            <Printer className='mr-1 h-4 w-4' /> Imprimir
-          </Button>
         </ButtonGroup>
       </div>
 
