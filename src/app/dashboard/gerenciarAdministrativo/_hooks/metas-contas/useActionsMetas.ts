@@ -1,9 +1,8 @@
 import { api } from "@/lib/axios/apiClient";
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { SubmitHandler } from "react-hook-form";
 import { MetaProps } from "../../_types/meta";
-import { AuthContext } from "@/store/AuthContext";
 
 export interface FormFiltro {
   startDate?: string | undefined,
@@ -57,6 +56,7 @@ export const useActionsMetas = (id_empresa: string | undefined) => {
       id_conta: data.id_conta || null,
       date: data.date,
       dateFimMeta: data.dateFimMeta,
+      data_lanc: data.data_lanc,
       valor: data.valor,
       descricao: data.descricao,
     }
@@ -86,15 +86,13 @@ export const useActionsMetas = (id_empresa: string | undefined) => {
       id_meta: dadosForm.id_meta,
       id_empresa: dadosForm.id_empresa,
       descricao: dadosForm.descricao,
-      id_conta: dadosForm.id_conta,
+      id_conta: dadosForm.id_conta || null,
       date: dadosForm.date,
       dateFimMeta: dadosForm.dateFimMeta,
       valor: dadosForm.valor,
       data_lanc: dadosForm.data_lanc
 
     }
-
-    console.log("Dados para editar", payload)
 
     try {
       const response = await api.put('/vendas/editarMeta', payload)

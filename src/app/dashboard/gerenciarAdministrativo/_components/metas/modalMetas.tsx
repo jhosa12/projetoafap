@@ -39,7 +39,7 @@ export interface MetaFormProps extends MetaProps {
     radio: string;
 }
 
-export function ModalMetas({ show, setModalMetas, meta, arraySetores, arrayMetas, id_empresa, handleNovaMeta, planoContas, handleSalvar }
+export function ModalMetas({ show, setModalMetas, meta, arraySetores, planoContas, handleSalvar }
     : DataProps) {
 
     const isEditMode = !!meta?.id_meta;
