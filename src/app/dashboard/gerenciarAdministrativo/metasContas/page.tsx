@@ -6,8 +6,8 @@ import {
 } from "@/components/ui/button-group"
 import { Button } from "@/components/ui/button"
 import useApiPost from "@/hooks/useApiPost";
-import React, { useContext, useEffect, useState } from "react";
-import { Funnel, CirclePlus, Pencil, Trash, Printer } from 'lucide-react';
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { Funnel, CirclePlus, Pencil, Trash, Printer, Trash2 } from 'lucide-react';
 import { EmpresaProps } from "@/types/empresa";
 import { ModalMetas } from "@/app/dashboard/gerenciarAdministrativo/_components/metas/modalMetas";
 import { ModalFiltroMetas } from "@/app/dashboard/gerenciarAdministrativo/_components/metas/modalFiltro";
@@ -21,29 +21,30 @@ import { useHandleCarregarDados } from "../_hooks/useHandleCarregarDados";
 import { useEditarMeta } from "../_hooks/metas-contas/useHandleEditarMeta";
 import { useActionsMetas } from "../_hooks/metas-contas/useActionsMetas";
 import { useHandleSalvar } from "../_hooks/metas-contas/useHandleSalvar";
+import { DataTable } from "@/components/ui/data-table";
+import { useHandleExcluirMeta } from "../_hooks/metas-contas/useHandleExcluirMeta";
+import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 
-export interface FormFiltro {
-  startDate?: string | undefined,
-  endDate?: string | undefined,
-  id_empresa: string | undefined,
 
-}
 
 
 export default function GerenciarMetas() {
 
   const [modalFiltro, setModalFiltro] = useState(false)
   const [modalNovaMeta, setModalNovaMeta] = useState(false)
-  const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
-  const [endDate, setEndDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0))
+  const [startDate, setStartDate] = useState<Date | undefined>(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
+  const [endDate, setEndDate] = useState<Date | undefined>(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0))
+  const [idGrupo, setIdGrupo] = useState<number | undefined>(undefined)
   const [meta, setMeta] = useState<Partial<MetaProps>>()
   const [rowSelection, setRowSelection] = useState({});
+  const [anoSelecionado, setAnoSelecionado] = useState<number | undefined>(undefined);
+  const [mesSelecionado, setMesSelecionado] = useState<number | undefined>(undefined);
+
+  const [modalConfirmarExclusao, setModalConfirmarExclusao] = useState(false)
+
   const { infoEmpresa, selectEmp, usuario, signOut, actions_plano_contas, limparDados } = useContext(AuthContext)
   const id_empresa = selectEmp
   const nome_empresa = infoEmpresa?.fantasia
-
-
-
 
   const {
 
@@ -64,15 +65,22 @@ export default function GerenciarMetas() {
   } = useActionsMetas(id_empresa)
 
 
-  const { handleFiltro } = useFiltroMetas(listarMetas, id_empresa, startDate, endDate);
+  const { handleFiltro } = useFiltroMetas(
+    listarMetas,
+    idGrupo,
+    startDate,
+    endDate
+  );
 
 
 
-  const dataCompleta = (arrayMetas ?? []).map((item: any) => ({
-    ...item,
-    nome_empresa: nome_empresa,
-    categoria: item?.id_conta ? "gastos" : "vendas"
-  }));
+  const dataCompleta = useMemo(() => (
+    (arrayMetas ?? []).map((item: any) => ({
+      ...item,
+      nome_empresa: nome_empresa,
+      categoria: item?.id_conta ? "gastos" : "vendas"
+    }))
+  ), [arrayMetas, nome_empresa]);
 
   const linhaSelecionada: MetaProps | null = React.useMemo(() => {
     const indicesSelecionados = Object.keys(rowSelection);
@@ -97,10 +105,21 @@ export default function GerenciarMetas() {
 
   )
 
-  useEffect(() => {
-    handleCarregarDados();
-  }, []);
+  const { excluirMeta } = useHandleExcluirMeta({
+    deletarMeta,
+    listarMetas
+  })
 
+  const colunasMetas = useMemo(() => {
+    return columnsMetas
+  }, [])
+
+
+  useEffect(() => {
+    if (!usuario) return signOut();
+    listarMetas();
+    handleCarregarDados();
+  }, [usuario]);
 
   return (
 
@@ -120,8 +139,8 @@ export default function GerenciarMetas() {
         />
       }
 
-      {
-        modalFiltro && <ModalFiltroMetas
+      {modalFiltro &&
+        <ModalFiltroMetas
           filtrar={handleFiltro}
           endDate={endDate}
           loading={loading}
@@ -131,8 +150,27 @@ export default function GerenciarMetas() {
           startDate={startDate}
           arraySetores={arrayGrupos}
           show={modalFiltro}
+          idGrupo={idGrupo}
+          setIdGrupo={setIdGrupo}
+          anoSelecionado={anoSelecionado}
+          setAnoSelecionado={setAnoSelecionado}
+          mesSelecionado={mesSelecionado}
+          setMesSelecionado={setMesSelecionado}
         />
 
+      }
+
+      {modalConfirmarExclusao &&
+        <ModalConfirmar
+          openModal={modalConfirmarExclusao}
+          setOpenModal={() => setModalConfirmarExclusao(false)}
+          handleConfirmar={() => {
+            excluirMeta(linhaSelecionada)
+            setModalConfirmarExclusao(false)
+          }}
+          pergunta="Deseja mesmo excluir a meta da lista?"
+
+        />
       }
 
       <div className="flex-shrink-0 flex flex-col lg:flex-row w-full items-start lg:items-center justify-between gap-4 p-2">
@@ -182,17 +220,18 @@ export default function GerenciarMetas() {
           <Button
             onClick={() => {
               if (!linhaSelecionada) {
-                toast.error("Por favor, selecione uma linha para excluir.")
+                toast.error("Por favor, selecione uma linha para Excluir.")
                 return
               }
 
-              deletarMeta(linhaSelecionada)
+              setModalConfirmarExclusao(true)
 
             }}
             variant="outline"
+            className="rounded-lg text-red-600 hover:bg-red-600 hover:text-gray-200 p-1"
           >
-            <span className="flex items-center text-red-600">
-              <Trash className="mr-1 h-4 w-4 text-red-600" />
+            <span className="flex items-center gap-2 p-2">
+              <Trash2 size={18} />
               Excluir
             </span>
           </Button>
@@ -206,8 +245,8 @@ export default function GerenciarMetas() {
         </ButtonGroup>
       </div>
 
-      <TabelaCompleta
-        columns={columnsMetas}
+      <DataTable
+        columns={colunasMetas}
         data={dataCompleta}
         rowSelection={rowSelection}
         setRowSelection={setRowSelection}

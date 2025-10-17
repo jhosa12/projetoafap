@@ -3,19 +3,23 @@ import { ProdutosProps } from "@/types/produtos";
 
 import { columnsProdutos } from "../_components/produtosConvalescenca/columns-table-produtos";
 import useActionsProdConvalescenca from "../_hooks/produtos-convalescenca/useActionsProdConvalescenca";
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import ModalFormProduto from "../_components/produtosConvalescenca/modal-form-produto";
 import { useHandleSalvarProduto } from "../_hooks/produtos-convalescenca/useHandleSalvarProduto";
 import { AuthContext } from "@/store/AuthContext";
 import { DataTable } from "@/components/ui/data-table";
+import { useHandleExcluirProdutoConv } from "../_hooks/produtos-convalescenca/useHandleExcluirProdutoConv";
+import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 
 
 export default function ProdutosConvalescentes() {
 
   const { limparDados } = useContext(AuthContext)
   const [open, setOpen] = useState(false)
+  const [openConfirmarExclusao, setOpenConfirmarExclusao] = useState(false)
+  const [excluirProduto, setExcluirProduto] = useState<Partial<ProdutosProps | null>>(null)
   const { produto, deletarProduto, listarProdutos, setProduto, onSave, listaProdutos } = useActionsProdConvalescenca()
 
   const handleSalvar = useHandleSalvarProduto({
@@ -26,6 +30,28 @@ export default function ProdutosConvalescentes() {
     listarProdutos
 
   })
+
+  const { confirmarExclusao } = useHandleExcluirProdutoConv({
+    deletarProduto,
+    listarProdutos
+  })
+
+
+  const colunasConv = useMemo(() => {
+
+    return columnsProdutos({
+      onEdit: (produto: ProdutosProps) => {
+        setOpen(true)
+        setProduto(produto)
+      },
+      onDelete: (produto: any) => {
+
+        setOpenConfirmarExclusao(true)
+        setExcluirProduto(produto)
+      }
+    })
+
+  }, [])
 
   return (
     <div className="flex flex-col w-full h-screen lg:p-6 gap-2">
@@ -46,13 +72,7 @@ export default function ProdutosConvalescentes() {
         </Button>
       </div>
       <DataTable
-        columns={columnsProdutos({
-          onEdit: (produto: ProdutosProps) => {
-            setOpen(true)
-            setProduto(produto)
-          },
-          onDelete: (produto: ProdutosProps) => deletarProduto(produto.id_produto)
-        })}
+        columns={colunasConv}
         data={listaProdutos}
       />
 
@@ -66,6 +86,18 @@ export default function ProdutosConvalescentes() {
         setSelectedProduto={setProduto}
         onSave={handleSalvar}
       />
+
+      {openConfirmarExclusao &&
+        <ModalConfirmar
+          openModal={openConfirmarExclusao}
+          setOpenModal={() => setOpenConfirmarExclusao(false)}
+          handleConfirmar={async () => {
+            await confirmarExclusao(excluirProduto)
+            setExcluirProduto(null)
+          }}
+          pergunta="Deseja mesmo excluir este produto?"
+        />
+      }
     </div>
   )
 }

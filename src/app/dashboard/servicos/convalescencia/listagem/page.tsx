@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react"
+import React, { useContext, useEffect, useMemo, useState } from "react"
 import { Tooltip } from 'react-tooltip';
 import Link from "next/link";
 import useActionsListagem from "../../_hooks/listagem/useActionsListagem";
@@ -8,7 +8,6 @@ import { Plus, Printer, ReceiptIcon, FileEditIcon, Trash } from 'lucide-react';
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import { useConfirmarDevolucao } from "../../_hooks/listagem/useConfirmarDevolucao";
 import { useDevolverProduto } from "@/app/dashboard/servicos/_hooks/listagem/useDevolverProduto";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
@@ -20,7 +19,6 @@ import DocumentTemplateContrato from "@/app/dashboard/servicos/_documents/conval
 import { AuthContext } from "@/store/AuthContext";
 import { useActionsPrintConvalescenca } from "../../_hooks/listagem/useActionsPrintConvalescenca";
 import DocumentTemplateComprovante from "../../_documents/convalescencia/comprovante/DocumentTemplate";
-import { TabelaCompleta } from "../../_components/convalescentes/data-table";
 import { ConvProps } from "../../_types/convalescente";
 import { columns } from "../../_components/convalescentes/colunas-listagem";
 import DocumentTemplateComprovanteGenerico from "../../_documents/convalescencia/comprovante/DocumentTemplateGenerico";
@@ -35,6 +33,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { ButtonGroup } from "@/components/ui/button-group";
+import { DataTable } from "@/components/ui/data-table";
 
 export default function Convalescente() {
     // 1. Estados
@@ -225,7 +224,7 @@ export default function Convalescente() {
                 </div>
             </div>
             <div className="flex-grow min-h-0">
-                <TabelaCompleta
+                <DataTable
                     columns={getColumns}
                     data={arrayFiltro}
                     rowSelection={rowSelection}

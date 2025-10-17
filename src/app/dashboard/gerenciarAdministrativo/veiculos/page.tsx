@@ -6,7 +6,7 @@ import { VeiculoProps } from "@/types/veiculo"
 import { columnsVeiculos } from "../_components/veiculos/columns-veiculos"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { Button } from "@/components/ui/button"
-import { Circle, CirclePlus, Pencil, Printer, Trash } from "lucide-react"
+import { Circle, CirclePlus, Pencil, Printer, Trash, Trash2 } from "lucide-react"
 import { useHandleSalvarVeiculo } from "../_hooks/veiculos/useHandleSalvaVeiculor"
 import { ModalVeiculo } from "../_components/veiculos/modalVeiculo"
 import { useHandleEditarVeiculo } from "../_hooks/veiculos/useHandleEditarVeiculo"
@@ -89,9 +89,10 @@ export default function Veiculos() {
 
               excluirVeiculo(linhaSelecionada)
             }}
+            className="rounded-lg text-red-600 hover:bg-red-600 hover:text-gray-200 p-1"
           >
-            <span className="flex items-center text-red-600">
-              <Trash className="mr-1 h-4 w-4 text-red-600" />
+            <span className="flex items-center gap-2 p-2">
+              <Trash2 size={18} />
               Excluir
             </span>
           </Button>

@@ -1,29 +1,22 @@
 import { api } from "@/lib/axios/apiClient";
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { SubmitHandler } from "react-hook-form";
 import { MetaProps } from "../../_types/meta";
-import { AuthContext } from "@/store/AuthContext";
 
 export interface FormFiltro {
   startDate?: string | undefined,
   endDate?: string | undefined,
-  id_empresa: string | undefined,
+  id_grupo?: number | undefined,
 
 }
 
-export const useActionsMetas = (id_empresa: string | undefined, isEditMode?: boolean, filtros?: FormFiltro) => {
+export const useActionsMetas = (id_empresa: string | undefined) => {
   const [arrayMetas, setArrayMetas] = useState<MetaProps[]>([]);
-  const { usuario, signOut } = useContext(AuthContext)
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    if (!usuario) return signOut();
-    listarMetas();
-  }, [usuario]);
 
-
-  async function listarMetas() {
+  async function listarMetas(filtros?: FormFiltro) {
     if (!id_empresa) {
       toast.error("Selecione uma empresa.");
       return;
@@ -32,8 +25,12 @@ export const useActionsMetas = (id_empresa: string | undefined, isEditMode?: boo
     try {
       const payload = {
         id_empresa,
-        ...filtros
+        id_grupo: filtros?.id_grupo,
+        date: filtros?.startDate,
+        dateFimMeta: filtros?.endDate
       };
+
+      console.log("Dados do filtro para a api:", payload)
 
       await toast.promise(
         api.post<MetaProps[]>("/vendas/filtroMetas", payload)
@@ -59,6 +56,7 @@ export const useActionsMetas = (id_empresa: string | undefined, isEditMode?: boo
       id_conta: data.id_conta || null,
       date: data.date,
       dateFimMeta: data.dateFimMeta,
+      data_lanc: data.data_lanc,
       valor: data.valor,
       descricao: data.descricao,
     }
@@ -88,15 +86,13 @@ export const useActionsMetas = (id_empresa: string | undefined, isEditMode?: boo
       id_meta: dadosForm.id_meta,
       id_empresa: dadosForm.id_empresa,
       descricao: dadosForm.descricao,
-      id_conta: dadosForm.id_conta,
+      id_conta: dadosForm.id_conta || null,
       date: dadosForm.date,
       dateFimMeta: dadosForm.dateFimMeta,
       valor: dadosForm.valor,
       data_lanc: dadosForm.data_lanc
 
     }
-
-    console.log("Dados para editar", payload)
 
     try {
       const response = await api.put('/vendas/editarMeta', payload)
@@ -111,26 +107,20 @@ export const useActionsMetas = (id_empresa: string | undefined, isEditMode?: boo
 
   async function deletarMeta(meta: MetaProps) {
 
-    if (!meta?.id_meta) {
-      toast.warning("Selecione uma meta para excluir.");
-      return;
+    try {
+
+      const response = await api.delete('/vendas/deletarMeta', {
+        data: {
+          id_meta: meta.id_meta
+        }
+      })
+
+      listarMetas()
+
+    } catch (error) {
+
+      throw error
     }
-
-    toast.promise(
-      api.delete("/vendas/deletarMeta", {
-        data: { id_meta: meta.id_meta },
-      }),
-      {
-        loading: "Excluindo registro...",
-        success: () => {
-
-          listarMetas();
-
-          return "Registro excluído com sucesso!";
-        },
-        error: "Erro ao excluir registro.",
-      }
-    );
   }
 
   const onSave: SubmitHandler<MetaProps> = async (data: MetaProps) => {

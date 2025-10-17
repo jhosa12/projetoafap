@@ -1,13 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { HiOutlineTrash, HiPencil } from "react-icons/hi2";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox" 
+import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge";
-import { IoMdTrash } from "react-icons/io";
 import { format, isValid, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Tooltip } from "react-tooltip";
-import { ObitoProps } from "../../../_types/obito"; const formatDate = (value: any): string => {
+import { ObitoProps } from "../../../_types/obito"; import { Pencil, Trash2 } from "lucide-react";
+const formatDate = (value: any): string => {
   if (!value) return "-";
 
   try {
@@ -44,7 +43,7 @@ export function getObitoColumns({
   onRowClick
 }: ActionsProps): ColumnDef<ObitoProps>[] {
   return [
-  
+
     {
       id: "select",
       header: () => null,
@@ -58,7 +57,7 @@ export function getObitoColumns({
       enableSorting: false,
       enableHiding: false,
     },
-  
+
     {
       accessorKey: "tipo_atendimento",
       header: "TIPO",
@@ -223,19 +222,19 @@ export function getObitoColumns({
               variant="outline"
               size="icon"
               onClick={() => onEdit?.(obito)}
-              className="h-6 w-6"
+              className="rounded-lg text-black hover:bg-black hover:text-gray-200 p-1"
             >
-              <HiPencil className="h-3 w-3" />
+              <Pencil size={18} />
             </Button>
             <Button
               data-tooltip-id="toolId"
               data-tooltip-content={'Excluir'}
-              variant="destructive"
+              variant="outline"
               size="icon"
               onClick={() => onDelete?.(obito)}
-              className="h-6 w-6"
+              className="rounded-lg text-red-600 hover:bg-red-600 hover:text-gray-200 p-1"
             >
-              <IoMdTrash className="h-3 w-3" />
+              <Trash2 size={18} />
             </Button>
           </div>
         );
