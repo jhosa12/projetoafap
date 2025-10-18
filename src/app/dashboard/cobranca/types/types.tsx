@@ -230,7 +230,8 @@ export interface InadimplenciaProps{
           operator:string,
           value:number
         },
-        consultor:string
+        consultor:string,
+        listar_por_cobranca:boolean
      } 
      status:string
      dt_charge:Date

@@ -5,9 +5,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { AlertCircle, Eye, User, Filter } from "lucide-react"
+import { AlertCircle, Eye, User, Filter, Delete } from "lucide-react"
 import { StatusBadge } from "./status-badge"
 import { RouteProps } from "../../types/types"
+import { useState } from "react"
+import { ModalConfirmar } from "@/components/modals/modalConfirmar"
 
 
 interface RoutesTableProps {
@@ -17,6 +19,7 @@ interface RoutesTableProps {
 }
 
 export function RoutesTable({ routes, onViewDetails, onOpenFilters }: RoutesTableProps) {
+  const [excluir,setExcluir] = useState(false)
   return (
     <div className="px-4 py-2 ">
       <Card>
@@ -105,10 +108,14 @@ export function RoutesTable({ routes, onViewDetails, onOpenFilters }: RoutesTabl
                       <TableCell className="text-sm text-muted-foreground">
                         { route.dt_updated ? new Date(route.dt_updated).toLocaleDateString() : "-"}
                       </TableCell>
-                      <TableCell className="text-right">
-                        <Button variant="outline" size="sm" onClick={() => onViewDetails(route)}>
+                      <TableCell className="text-right space-x-2">
+                        <Button variant="outline" size="sm" onClick={() =>onViewDetails(route)  }>
                           <Eye className="h-4 w-4 mr-1" />
                           Detalhes
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() =>setExcluir(true)}>
+                          <Delete color="red" className="h-4 w-4 mr-1" />
+                          
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -129,6 +136,13 @@ export function RoutesTable({ routes, onViewDetails, onOpenFilters }: RoutesTabl
           )}
         </CardContent>
       </Card>
+
+      <ModalConfirmar
+      handleConfirmar={()=>{}}
+      openModal={excluir}
+      pergunta="Realmente deseja excluir a rota ?"
+      setOpenModal={()=>setExcluir(false)}
+      />
     </div>
   )
 }

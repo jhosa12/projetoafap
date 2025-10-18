@@ -147,9 +147,9 @@ export  function Cobranca({arrayBairros,cidades}:ScreenProps) {
         const response = await api.post("/cobranca/lista", {
           dataInicial:dataIni,
           dataFinal:dataFim,
-          cobradores:data.cobrador,
+          cobrador:data.cobrador,
           id_empresa:infoEmpresa?.id,
-          status: data.status.split(','),
+          status: data.statusReagendamento,
           bairros: data.bairros,
           cidade:data.cidade
         })

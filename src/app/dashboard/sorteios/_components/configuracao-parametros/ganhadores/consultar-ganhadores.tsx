@@ -18,6 +18,7 @@ import { getColunasGanhadores } from "./colunas-ganhadores";
 
 
 
+
 export default function ConsultarGanhadores() {
 
   const { empresas, usuario, signOut } = useContext(AuthContext)

@@ -15,6 +15,10 @@ interface ActionsProps {
 }
 
 
+export interface SorteioGanhadorProps extends Partial<GanhadoresProps> {
+  id_sorteio: number
+}
+
 export const useActionsSorteios = (param: Partial<ActionsProps> = {}) => {
 
   const { conveniados = [] } = param
@@ -23,7 +27,7 @@ export const useActionsSorteios = (param: Partial<ActionsProps> = {}) => {
   const [ganhador, setGanhador] = useState<Partial<DadosSorteiosProps>>({})
   const [premios, setPremios] = useState<Array<Partial<PremioProps>>>([])
   const [premioAtual, setPremioAtual] = useState<PremioProps>()
-  const [ganhadores, setGanhadores] = useState<Array<GanhadoresProps>>([]);
+  const [ganhadores, setGanhadores] = useState<Array<SorteioGanhadorProps>>([]);
   const [loading, setLoading] = useState(false)
 
 
@@ -125,6 +129,7 @@ export const useActionsSorteios = (param: Partial<ActionsProps> = {}) => {
         }
       )
 
+      console.log("Dados do sorteio:", response.data)
       setGanhadores(response.data)
 
     } catch (error) {
@@ -176,12 +181,12 @@ export const useActionsSorteios = (param: Partial<ActionsProps> = {}) => {
     }
   }
 
-  async function editarStatusGanhador(data: GanhadoresProps) {
+  async function editarStatusGanhador(data: Partial<SorteioGanhadorProps>) {
 
     try {
 
       const response = await api.put("/sorteio/editarGanhador", {
-        id_contrato_global: data.id_contrato_global,
+        id_sorteio: data.id_sorteio,
         status: data.status
 
       })
@@ -190,6 +195,16 @@ export const useActionsSorteios = (param: Partial<ActionsProps> = {}) => {
 
     } catch (error) {
       toast.error("Erro ao atualizar status do ganhador.")
+    }
+  }
+
+  async function dadosContratos() {
+    try {
+      const response = await api.get('/sorteio')
+      setSorteio(response.data)
+
+    } catch (error) {
+      toast.error("Erro ao buscar dados dos contratos de sorteio.")
     }
   }
 
@@ -228,6 +243,7 @@ export const useActionsSorteios = (param: Partial<ActionsProps> = {}) => {
     editarPremio,
     deletarPremio,
     editarStatusGanhador,
+    dadosContratos,
     onSave,
 
 

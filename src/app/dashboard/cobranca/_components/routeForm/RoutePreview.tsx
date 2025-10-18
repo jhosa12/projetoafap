@@ -11,10 +11,11 @@ import { RouteProps } from "../../types/types";
 
 interface RoutePreviewProps {
   formData: RouteProps;
-  estimativa:number
+  estimativa:number,
+ handleClearParameters:()=>void
 }
 
-const RoutePreview = ({ formData,estimativa}: RoutePreviewProps) => {
+const RoutePreview = ({ formData,estimativa,handleClearParameters}: RoutePreviewProps) => {
   
 
   return (
@@ -103,6 +104,16 @@ const RoutePreview = ({ formData,estimativa}: RoutePreviewProps) => {
                   size="lg"
                 >
                   Gerar Rota
+                </Button>
+
+                  <Button
+                  type="button"
+                  className="w-full"
+                  variant="outline"
+                  onClick={handleClearParameters}
+                // disabled={loading}
+                >
+                  Limpar Parâmetros
                 </Button>
       </CardContent>
     </Card>

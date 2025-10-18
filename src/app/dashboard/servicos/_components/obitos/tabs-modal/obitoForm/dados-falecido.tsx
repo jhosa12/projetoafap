@@ -38,7 +38,11 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
   const { dadosassociado, infoEmpresa } = useContext(AuthContext)
   const prevTipoSelecionadoRef = useRef<'TITULAR' | 'DEPENDENTE' | 'PARTICULAR' | ''>('')
 
+
+
   const tipoSelecionado = watch('falecido')
+  const dependenteJaSelecionado = !!watch('id_dependente_global');
+
 
   const { handleConfirmarSelecao } = useConfirmarSelecaoFalecido({
     rowSelection,
@@ -62,12 +66,19 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
 
       })
     }
+
+    const limparDadosDoDependente = () => {
+      reset({
+        ...watch(),
+        id_dependente_global: undefined
+      })
+    }
     const prevTipo = prevTipoSelecionadoRef.current
 
     if (tipoSelecionado === 'TITULAR') {
 
       if (!dadosassociado?.id_global) {
-        toast.error("Nenhum associado selecionado para buscar os dados")
+        toast.error("Nenhum associado selecionado para buscar os dados.")
         reset({ ...watch(), falecido: '' })
         return
       }
@@ -81,23 +92,35 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
       }
 
       reset({ ...watch(), ...dadosMapeados })
+      limparDadosDoDependente()
       toast.success("Dados do titular foram preenchidos!")
 
     } else if (tipoSelecionado === "DEPENDENTE") {
 
-      setModalDependente(true)
+      if (!dadosassociado?.id_global) {
+        toast.error("Nenhum associado selecionado para buscar os dados dos dependentes.")
+        reset({ ...watch(), falecido: '' })
+        return
+      }
+
+      if (!dependenteJaSelecionado) {
+        setModalDependente(true)
+      }
 
     } else if (tipoSelecionado === "PARTICULAR") {
 
       if (!infoEmpresa?.id) {
-        toast.error("A seleção da empresa é obrigatória")
+        toast.error("A seleção da empresa é obrigatória.")
         reset({ ...watch(), falecido: '' })
         return
       }
 
       if (tipoSelecionado !== prevTipo && prevTipo) {
         limparCamposPessoais();
+        limparDadosDoDependente()
       }
+
+
 
     } else {
       if (tipoSelecionado !== prevTipo && prevTipo) {
@@ -167,10 +190,10 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
               control={control}
               name="data_nascimento"
               render={({ field }) =>
-               <DatePickerInput
-               onChange={field.onChange}
-               value={field.value}
-               />
+                <DatePickerInput
+                  onChange={field.onChange}
+                  value={field.value}
+                />
               }
             />
           </div>
