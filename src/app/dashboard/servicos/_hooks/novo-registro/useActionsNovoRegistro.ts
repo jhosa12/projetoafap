@@ -39,8 +39,8 @@ const useActionsNovoResgistro = (isEditMode?: boolean, id?: string) => {
     // Remove campos indesejados
     delete (dadosTratados as any).situacao_contrato;
     delete (dadosTratados as any).tipo_contrato;
-    delete (dadosTratados as any).id_conv;
-    delete (dadosTratados as any).id_conv_global;
+    //delete (dadosTratados as any).id_conv;
+    //delete (dadosTratados as any).id_conv_global;
     delete (dadosTratados as any).editar;
     delete (dadosTratados as any).contrato;
 
@@ -52,9 +52,6 @@ const useActionsNovoResgistro = (isEditMode?: boolean, id?: string) => {
     });
 
     const { convalescenca_prod, ...rest } = dadosTratados;
-
-    console.log('Dados recebidos no editarRegistro:', dadosTratados);
-    console.log('Produtos encontrados:', convalescenca_prod);
 
     if (!rest.nome || !rest.logradouro) {
       toast.error('Preencha os campos obrigatórios');

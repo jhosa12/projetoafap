@@ -62,22 +62,22 @@ export function RoutesTable({ routes, onViewDetails, onOpenFilters }: RoutesTabl
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
-                          {route.parametros.bairros.slice(0, 2).map((bairro, index) => (
+                          {route.parametros?.bairros?.slice(0, 2)?.map((bairro, index) => (
                             <Badge key={index} variant="outline" className="text-xs">
                               {bairro}
                             </Badge>
                           ))}
-                          {route.parametros.bairros.length > 2 && (
+                          {route.parametros?.bairros?.length > 2 && (
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger>
                                   <Badge variant="outline" className="text-xs">
-                                    +{route.parametros.bairros.length - 2}
+                                    +{route.parametros?.bairros?.length - 2}
                                   </Badge>
                                 </TooltipTrigger>
                                 <TooltipContent>
                                   <div className="space-y-1">
-                                    {route.parametros.bairros.slice(2).map((bairro, index) => (
+                                    {route.parametros?.bairros?.slice(2)?.map((bairro, index) => (
                                       <div key={index}>{bairro}</div>
                                     ))}
                                   </div>

@@ -39,6 +39,7 @@ export function InadimplenciaTab({ route }: { route: RouteProps }) {
             <TableHead>Mensalidades</TableHead>
             <TableHead>Valor</TableHead>
             <TableHead>Status</TableHead>
+             <TableHead>Cobrador</TableHead>
             <TableHead>Check-in/out</TableHead>
             <TableHead>Obs.</TableHead>
             <TableHead>Ações</TableHead>
@@ -70,6 +71,9 @@ export function InadimplenciaTab({ route }: { route: RouteProps }) {
               </TableCell>
               <TableCell>
                 {item.status_visita && <StatusBadge status={item.status_visita} />}
+              </TableCell>
+                <TableCell>
+                {item.cobrador}
               </TableCell>
               <TableCell>
                 <div className="space-y-1">

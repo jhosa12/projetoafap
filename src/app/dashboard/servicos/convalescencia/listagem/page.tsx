@@ -129,7 +129,7 @@ export default function Convalescente() {
 
     return (
 
-        <div className="flex flex-col w-full h-screen lg:p-6 gap-4">
+        <div className="flex flex-col w-full  lg:p-6 gap-4">
             <Tooltip className="z-20" id="toolId" />
 
             <div className="flex-shrink-0 flex flex-col lg:flex-row w-full items-start lg:items-center justify-between gap-4 p-2">
@@ -223,12 +223,13 @@ export default function Convalescente() {
                     </ButtonGroup>
                 </div>
             </div>
-            <div className="flex-grow min-h-0">
+            <div className="flex-grow ">
                 <DataTable
                     columns={getColumns}
                     data={arrayFiltro}
                     rowSelection={rowSelection}
                     setRowSelection={setRowSelection}
+                    maxHeight="max-h-[calc(100vh-250px)]"
                 />
             </div>
 
@@ -361,6 +362,9 @@ export default function Convalescente() {
                     <DocumentTemplateComprovanteGenerico
                         nome={itemSelecionado?.nome ?? ""}
                         ref={componentRefs.comprovanteGenerico}
+                        cpf={itemSelecionado.cpf}
+                        endereco={itemSelecionado.endereco}
+                        itens={itemSelecionado.convalescenca_prod}
                     />
                 )}
             </div>
