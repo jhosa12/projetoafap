@@ -29,15 +29,15 @@ import { Label } from "@/components/ui/label";
 
 export default function ListarObitos() {
   const [openOs, setOpenOs] = useState(false);
-  const { limparDados,infoEmpresa } = useContext(AuthContext)
-  const { listaServicos, deletarObito, onSave, servico, setServico, listar,produtos } = useActionsObito()
+  const { limparDados, infoEmpresa } = useContext(AuthContext)
+  const { listaServicos, deletarObito, onSave, servico, setServico, listar, produtos } = useActionsObito()
   const [modalImprimir, setModalImprimir] = useState(false);
   const [itemSelecionado, setItemSelecionado] = useState<ObitoProps | null>(null);
   const [documentoImprimir, setDocumentoImprimir] = useState<DocsObito | null>(null);
   const [idObitoParaImpressao, setIdObitoParaImpressao] = useState<number | null>(null);
   const [rowSelection, setRowSelection] = useState({});
-  const [excluir,setExcluir] = useState(false)
-  const [autorizado,setAutorizado] = useState(false)
+  const [excluir, setExcluir] = useState(false)
+  const [autorizado, setAutorizado] = useState(false)
 
   const {
     iniciarImpressao,
@@ -86,7 +86,7 @@ export default function ListarObitos() {
 
     } catch (error: any) {
 
-      toast.error(error );
+      toast.error(error);
 
       return;
     }
@@ -104,7 +104,7 @@ export default function ListarObitos() {
           onDelete(obito) {
             setItemSelecionado(obito)
             setExcluir(true)
-            
+
           },
           onEdit(obito) {
             setOpenOs(true);
@@ -182,9 +182,9 @@ export default function ListarObitos() {
       />
 
       <ModalConfirmar
-      handleConfirmar={()=>deletarObito(itemSelecionado!)}
-      openModal={excluir}
-      setOpenModal={()=>setExcluir(false)}
+        handleConfirmar={() => deletarObito(itemSelecionado!)}
+        openModal={excluir}
+        setOpenModal={() => setExcluir(false)}
         pergunta="Realmente deseja excluir esse registro ?"
       />
 
@@ -200,34 +200,34 @@ export default function ListarObitos() {
             pergunta={`REALMENTE DESEJA IMPRIMIR
                ${documentoImprimir}?`}
           >
-            {documentoImprimir==='TANATO' && (
-                <div className="flex flex-row w-full justify-center gap-4"> 
+            {documentoImprimir === 'TANATO' && (
+              <div className="flex flex-row w-full justify-center gap-4">
 
-                    <div className="flex items-start gap-3">
-        <Checkbox id="toggle" checked={autorizado} onCheckedChange={()=>setAutorizado(true)}  />
-        <Label htmlFor="toggle">AUTORIZADO</Label>
-      </div>
-       <div className="flex items-start gap-3">
-        <Checkbox checked={!autorizado} onCheckedChange={()=>setAutorizado(false)} id="toggle1"  />
-        <Label htmlFor="toggle1">NEGADO</Label>
-      </div>
-                   
+                <div className="flex items-start gap-3">
+                  <Checkbox id="toggle" checked={autorizado} onCheckedChange={() => setAutorizado(true)} />
+                  <Label htmlFor="toggle">AUTORIZADO</Label>
                 </div>
+                <div className="flex items-start gap-3">
+                  <Checkbox checked={!autorizado} onCheckedChange={() => setAutorizado(false)} id="toggle1" />
+                  <Label htmlFor="toggle1">NEGADO</Label>
+                </div>
+
+              </div>
             )}
           </ModalConfirmar>
         )}
 
         {itemSelecionado && (
           <>
-            <div style={{display:'none'}} >
+            <div style={{ display: 'none' }} >
               <OrdemServico
-              ref={componentRefs?.ordemDeServico}
+                ref={componentRefs?.ordemDeServico}
                 data={itemSelecionado}
                 empresa={infoEmpresa}
               />
             </div>
 
-            <div style={{display:'none'}} >
+            <div style={{ display: 'none' }} >
               <AutTanato
                 empresa={infoEmpresa}
                 dados={itemSelecionado}
