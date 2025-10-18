@@ -119,13 +119,14 @@ export function TabPlano({
         <Controller
           name="n_parcelas"
           control={control}
+          rules={{}}
           render={({ field: { onChange, value } }) => (
             <Input
               type="number"
               placeholder="Parcelas"
               className="w-full"
               value={value}
-              onChange={onChange}
+              onChange={(e)=>onChange(e.target.valueAsNumber)}
             />
           )}
         />
