@@ -62,12 +62,9 @@ export function PlanosForm({ plano, onSave, onCancel }: PlanosFormProps) {
     <FormProvider {...form}>
       <form onSubmit={handleSubmit((data) => {
 
-        const stringValor = String(data.valor)
-        const valor = normalizarValor(stringValor)
+        const valor = normalizarValor(data.valor)
 
-
-        const stringAcrescimo = String(data.acrescimo)
-        const acrescimo = normalizarValor(stringAcrescimo)
+        const acrescimo = normalizarValor(data.acrescimo)
 
         const payload = {
           ...data,

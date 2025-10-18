@@ -21,6 +21,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { formatarComVirgula } from "@/utils/normalizarValorEditar";
+import { normalizarValor } from "@/utils/normalizarValor";
 
 
 interface DataProps {
@@ -39,18 +41,23 @@ export interface MetaFormProps extends MetaProps {
     radio: string;
 }
 
+type MetaValores = Omit<MetaFormProps, 'valor'> & {
+    valor: string
+}
+
 export function ModalMetas({ show, setModalMetas, meta, arraySetores, planoContas, handleSalvar }
     : DataProps) {
 
     const isEditMode = !!meta?.id_meta;
     const radioTipo = meta?.id_conta ? "GASTOS" : "VENDAS"
 
-    const { register, control, handleSubmit, watch, setValue, reset } = useForm<MetaFormProps>({
+    const { register, control, handleSubmit, watch, setValue, reset } = useForm<MetaValores>({
         defaultValues: {
             ...meta,
             data_lanc: meta?.data_lanc ?? new Date(),
             radio: radioTipo,
-            id_conta: meta?.id_conta ?? ""
+            id_conta: meta?.id_conta ?? "",
+            valor: ''
         }
     })
 
@@ -59,11 +66,17 @@ export function ModalMetas({ show, setModalMetas, meta, arraySetores, planoConta
 
     useEffect(() => {
         if (show) {
+
+
+            const valor = formatarComVirgula(meta?.valor)
+
+
             reset({
                 ...meta,
                 data_lanc: meta?.data_lanc ?? new Date(),
                 radio: meta?.id_conta ? "GASTOS" : "VENDAS",
-                id_conta: meta?.id_conta ?? ""
+                id_conta: meta?.id_conta ?? "",
+                valor: valor
             });
         }
     }, [meta, show, reset]);
@@ -77,7 +90,21 @@ export function ModalMetas({ show, setModalMetas, meta, arraySetores, planoConta
                         {isEditMode ? "Editar Meta" : "Adicionar Meta"}
                     </DialogTitle>
                 </DialogHeader>
-                <form onSubmit={handleSubmit(handleSalvar)} className="space-y-4">
+                <form
+                    onSubmit={handleSubmit((data) => {
+
+                        const valor = normalizarValor(data.valor)
+
+                        const payload = {
+                            ...data,
+                            valor: valor
+                        }
+
+                        handleSalvar(payload)
+
+                    })}
+                    className="space-y-4">
+
                     <RadioGroup
                         value={isEditMode ? radioTipo : watch('radio')}
                         onValueChange={value => !isEditMode && setValue('radio', value)}
@@ -120,8 +147,6 @@ export function ModalMetas({ show, setModalMetas, meta, arraySetores, planoConta
                             }
                         />
                     )}
-
-
 
                     <Controller
                         control={control}
@@ -278,7 +303,7 @@ export function ModalMetas({ show, setModalMetas, meta, arraySetores, planoConta
                             <Input
                                 id="valor"
                                 {...register('valor')}
-                                type="number"
+                                type="text"
                                 placeholder="Digite o valor"
                                 required
                             />
