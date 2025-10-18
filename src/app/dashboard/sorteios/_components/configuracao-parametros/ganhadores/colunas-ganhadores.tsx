@@ -2,13 +2,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import { GanhadoresProps } from "../../../_types/ganhadores";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { useActionsSorteios } from "../../../_hooks/useActionsSorteios";
+import { SorteioGanhadorProps, useActionsSorteios } from "../../../_hooks/useActionsSorteios";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectLabel } from "@/components/ui/select";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectLabel } from "@/components/ui/select";
 import { SelectGroup } from "@radix-ui/react-select";
 
 
-export const getColunasGanhadores: ColumnDef<GanhadoresProps>[] = [
+export const getColunasGanhadores: ColumnDef<SorteioGanhadorProps>[] = [
   {
     accessorKey: "titular",
     header: "Ganhador",
@@ -62,7 +62,7 @@ export const getColunasGanhadores: ColumnDef<GanhadoresProps>[] = [
         if (statusSelecionado && statusSelecionado !== novoStatus) {
           await editarStatusGanhador({
 
-            id_contrato_global: row.original.id_contrato_global,
+            id_sorteio: row.original.id_sorteio,
             status: statusSelecionado,
 
           })
@@ -111,7 +111,7 @@ export const getColunasGanhadores: ColumnDef<GanhadoresProps>[] = [
               openModal={openModal}
               setOpenModal={() => setOpenModal(false)}
               handleConfirmar={handleConfirmar}
-              pergunta={`Deseja alterar o status para "${novoStatus}"?`}
+              pergunta={`Deseja alterar o status para "${statusSelecionado}"?`}
             />
           )}
         </div>

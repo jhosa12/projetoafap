@@ -68,14 +68,11 @@ export function ProdutoForm({ produto, onSave, onCancel }: ProdutoFormProps) {
     <FormProvider {...form}>
       <form onSubmit={handleSubmit((data) => {
 
-        const stringValorCusto = String(data.valor_custo)
-        const valor_custo = normalizarValor(stringValorCusto)
+        const valor_custo = normalizarValor(data.valor_custo)
 
-        const stringValorVenda = String(data.valor_venda)
-        const valor_venda = normalizarValor(stringValorVenda)
+        const valor_venda = normalizarValor(data.valor_venda)
 
-        const stringMargemLucro = String(data.margem_lucro)
-        const margem_lucro = normalizarValor(stringMargemLucro)
+        const margem_lucro = normalizarValor(data.margem_lucro)
 
         const payload = {
           ...data,
