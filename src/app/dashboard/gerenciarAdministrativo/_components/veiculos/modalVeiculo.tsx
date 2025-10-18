@@ -24,7 +24,7 @@ export function ModalVeiculo({ onClose, openModal, veiculo, handleSalvar }: Data
                     <DialogTitle>{veiculo?.id_veiculo ? "Editar Veículo" : "Novo Veículo"}</DialogTitle>
                     <DialogDescription>
                         {veiculo?.id_veiculo ? "Altere os dados do veículo conforme necessário e clique em atualizar para salvar as mudanças."
-                            : "Preencha os dados do veículo e clique em adicionar para salvar um novo veículo na lista."}
+                            : "Preencha os dados e clique em adicionar para salvar um novo veículo na lista."}
                     </DialogDescription>
                 </DialogHeader>
                 <form className="grid grid-cols-2 gap-4" onSubmit={handleSubmit(handleSalvar)}>

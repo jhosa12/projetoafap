@@ -1,5 +1,5 @@
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -89,6 +89,8 @@ export function ModalMetas({ show, setModalMetas, meta, arraySetores, planoConta
                     <DialogTitle className="text-lg font-semibold mb-2">
                         {isEditMode ? "Editar Meta" : "Adicionar Meta"}
                     </DialogTitle>
+                    <DialogDescription>{isEditMode ? 'Altere os dados da meta conforme necessário e clique em atualizar para salvar as mudanças.'
+                        : 'Escolha o tipo de meta, preencha os dados e clique em adicionar para salvar uma nova meta na lista.'}</DialogDescription>
                 </DialogHeader>
                 <form
                     onSubmit={handleSubmit((data) => {
