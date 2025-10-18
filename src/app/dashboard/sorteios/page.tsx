@@ -32,12 +32,12 @@ export default function Sorteios() {
     setGanhador,
     listarPremios,
     listarGanhadores,
-    setSorteio,
     premios,
     premioAtual,
     setPremioAtual,
     ganhadores,
     dadosSorteio,
+    dadosContratos,
     loading,
     setLoading
 
@@ -94,13 +94,8 @@ export default function Sorteios() {
     } catch (error) {
       console.log(error)
     }
-    async function dadosContratos() {
 
-      const response = await api.get('/sorteio')
-
-      setSorteio(response.data)
-
-    }
+    dadosContratos()
   }, [])
 
 
