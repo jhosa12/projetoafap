@@ -185,7 +185,7 @@ export default function ListarObitos() {
         handleConfirmar={() => deletarObito(itemSelecionado!)}
         openModal={excluir}
         setOpenModal={() => setExcluir(false)}
-        pergunta="Realmente deseja excluir esse registro ?"
+        pergunta="Realmente deseja excluir esse registro?"
       />
 
       <div style={{ display: "none" }}>
