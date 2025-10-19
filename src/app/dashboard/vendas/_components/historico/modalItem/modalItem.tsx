@@ -93,8 +93,8 @@ export function ModalItem({ onClose, open, item, handleLoadLeads, handleGerarCon
       api.put("/lead/editarLead", { lead: data }),
       {
         loading: "Editando Lead",
-        success: () => {
-          handleLoadLeads()
+        success: async() => {
+           await handleLoadLeads()
           onClose()
 
           return "Lead editado com sucesso"
@@ -178,7 +178,7 @@ export function ModalItem({ onClose, open, item, handleLoadLeads, handleGerarCon
                 type="button"
                 size="default"
                 variant="outline"
-                onClick={() => handleGerarContrato(getValues())}
+                onClick={() => handleGerarContrato(watch())}
               >
                 <FileText />
                 Gerar Contrato

@@ -46,8 +46,8 @@ export function TabDadosPessoais({control,register,cidades}:TabDadosPessoaisProp
             </div>
 
             <div className="w-full flex flex-col">
-                <Label className="text-xs">Complemento</Label>
-                <Input {...register('numero')} type="number" placeholder="Número" />
+                <Label className="text-xs">Numero</Label>
+                <Input {...register('numero',{valueAsNumber:true})} type="number" placeholder="Número" />
             </div>
              <div className="w-full flex flex-col">
                 <Label className="text-xs">Cidade</Label>

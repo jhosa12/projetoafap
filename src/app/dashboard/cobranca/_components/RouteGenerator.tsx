@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, Calendar, Users, FileText, Plus } from "lucide-react";
 import DistrictSelector from "./routeForm/DistrictSelector";
@@ -65,6 +64,7 @@ const RouteGenerator = ({
         criterio: { operator: ">", value: 1 },
         statusReagendamento: "A/R",
         periodo: { start: null, end: new Date() },
+        listar_por_cobranca:true
       },
     },
   });
@@ -75,6 +75,7 @@ const RouteGenerator = ({
     () => setIsGeneratorOpen(false)
   );
   const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [arrayBairros, setArrayBairros] = useState<InadimplenciaBairroProps[]>(
     []
   );
@@ -96,7 +97,8 @@ const RouteGenerator = ({
         startDate: dataIni,
         endDate: dataFim,
         resumeBairro: true,
-        cobrador:metodos.watch("parametros.cobrador")
+        cobrador:metodos.watch("parametros.cobrador"),
+        listar_por_cobranca:metodos.watch('parametros.listar_por_cobranca')
       });
 
       setArrayBairros(res.data.inadResumoBairro);
@@ -108,10 +110,29 @@ const RouteGenerator = ({
     metodos.watch("parametros.criterio.operator"),
     metodos.watch("parametros.statusReagendamento"),
     metodos.watch("parametros.criterio.value"),
-    metodos.watch("parametros.cobrador")
+    metodos.watch("parametros.cobrador"),
+    metodos.watch('parametros.listar_por_cobranca')
   ]);
 
+  const handleClearParameters = () => {
+    metodos.reset({
+      ...metodos.getValues(),
+      parametros: {
+        ...metodos.getValues().parametros,
+        cidade: "",
+        bairros: [],
+        periodo: { start: null, end: null },
+        criterio: { operator: ">", value: 1 },
+        statusReagendamento: "A/R",
+        cobrador: [],
+        listar_por_cobranca: true,
+        consultor: ""
+      }
+    });
+  };
+
   const handleGenerateRoute: SubmitHandler<RouteProps> = async (data) => {
+    setLoading(true);
 
     if ((!data.parametros.bairros||data.parametros.bairros.length<1) && !data.parametros.cobrador) {
       toast("Erro de validação", {
@@ -139,14 +160,16 @@ const RouteGenerator = ({
       
     });
 
-   await getRotas(filters);
-
-    /* toast("Rota gerada com sucesso!", {
-     description: `Rota criada para ${data.parametros.consultor} em ${data.parametros.bairros?.length} bairro(s)`,
-     //variant: "destructive",
-   });*/
-
-    //setIsGeneratorOpen(false);
+    try {
+      await getRotas(filters);
+      toast.success("Rota gerada com sucesso!");
+      setIsGeneratorOpen(false);
+    } catch (error) {
+      console.error("Erro ao gerar rota:", error);
+      toast.error("Erro ao gerar rota");
+    } finally {
+      setLoading(false);
+    }
   };
 
   //const isFormValid = watch("parametros.bairros").length > 0 && watch("parametros.consultor");
@@ -178,55 +201,55 @@ const estimativa = (metodos.watch('parametros.cobrador') && (!metodos.watch('par
             className="grid lg:grid-cols-3 gap-4"
           >
             <div className="lg:col-span-2 space-y-4">
-              <Card className="shadow-sm">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg flex items-center gap-2">
+              <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                <div className="space-y-1.5 p-6 pb-3">
+                  <h3 className="text-lg font-semibold leading-none tracking-tight flex items-center gap-2">
                     <MapPin className="h-4 w-4" />
                     Localização
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  </h3>
+                </div>
+                <div className="p-6 pt-0">
                   <DistrictSelector
                     bairros={arrayBairros}
                     cidades={cidadesEmpresa}
                   />
-                </CardContent>
-              </Card>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <Card className="shadow-sm">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      Período
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <PeriodSelector />
-                  </CardContent>
-                </Card>
-
-                <Card className="shadow-sm">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <FileText className="h-4 w-4" />
-                      Critérios
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ClientCriteriaSelector consultores={cobradores} />
-                  </CardContent>
-                </Card>
+                </div>
               </div>
 
-              <Card className="shadow-sm">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg flex items-center gap-2">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                  <div className="space-y-1.5 p-6 pb-3">
+                    <h3 className="text-lg font-semibold leading-none tracking-tight flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      Período
+                    </h3>
+                  </div>
+                  <div className="p-6 pt-0">
+                    <PeriodSelector />
+                  </div>
+                </div>
+
+                <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                  <div className="space-y-1.5 p-6 pb-3">
+                    <h3 className="text-lg font-semibold leading-none tracking-tight flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      Critérios
+                    </h3>
+                  </div>
+                  <div className="p-6 pt-0">
+                    <ClientCriteriaSelector consultores={cobradores} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                <div className="space-y-1.5 p-6 pb-3">
+                  <h3 className="text-lg font-semibold leading-none tracking-tight flex items-center gap-2">
                     <Users className="h-4 w-4" />
                     Consultor
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="z-50">
+                  </h3>
+                </div>
+                <div className="p-6 pt-0 z-50">
                   <Controller
                     name="parametros.consultor"
                     control={metodos.control}
@@ -242,15 +265,20 @@ const estimativa = (metodos.watch('parametros.cobrador') && (!metodos.watch('par
                   <span className="text-xs text-red-600">
                     {metodos.formState.errors.parametros?.consultor?.message}
                   </span>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-4">
               <RoutePreview
                 estimativa={estimativa}
                 formData={metodos.watch()}
+                handleClearParameters={handleClearParameters}
               />
+              
+            
+              
+             
               {/* 
             <Card>
               <CardHeader className="pb-3">
