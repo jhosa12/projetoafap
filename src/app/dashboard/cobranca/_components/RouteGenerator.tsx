@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MapPin, Calendar, Users, FileText, Plus } from "lucide-react";
 import DistrictSelector from "./routeForm/DistrictSelector";
@@ -49,6 +49,8 @@ interface RouteGeneratorProps {
   cobradores: ConsultoresProps[];
   filters: RotaFilterProps;
   getRotas: (data: RotaFilterProps) => Promise<void>;
+  isGeneratorOpen:boolean,
+   setIsGeneratorOpen:Dispatch<SetStateAction<boolean>>
 }
 
 const RouteGenerator = ({
@@ -57,6 +59,8 @@ const RouteGenerator = ({
   cobradores,
   filters,
   getRotas,
+  isGeneratorOpen,
+  setIsGeneratorOpen
 }: RouteGeneratorProps) => {
   const metodos = useForm<RouteProps>({
     defaultValues: {
@@ -64,7 +68,7 @@ const RouteGenerator = ({
         criterio: { operator: ">", value: 1 },
         statusReagendamento: "A/R",
         periodo: { start: null, end: new Date() },
-        listar_por_cobranca:true
+        listar_por_cobranca: true,
       },
     },
   });
@@ -74,22 +78,24 @@ const RouteGenerator = ({
     undefined,
     () => setIsGeneratorOpen(false)
   );
-  const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
+ 
   const [loading, setLoading] = useState(false);
   const [arrayBairros, setArrayBairros] = useState<InadimplenciaBairroProps[]>(
     []
   );
+   const dateStart = metodos.watch("parametros.periodo.start") ?? undefined;
+    const dateEnd = metodos.watch("parametros.periodo.end") ?? undefined;
 
   useEffect(() => {
    
     const { dataIni, dataFim } = ajustarData(
-      new Date("1900-01-01"),
-      new Date()
+      dateStart,
+      dateEnd
     );
     const getBairros = async () => {
       const res = await api.post("/cobranca/inadimplencia", {
         id_empresa: empresa.id_empresa,
-        cidade: metodos.watch("parametros.cidade") ?? "",
+        cidade: metodos.watch("parametros.cidade") ?? [],
         param: metodos.watch("parametros.criterio.operator"),
         n_parcelas: metodos.watch("parametros.criterio.value"),
         status: ["A", "R"],
@@ -97,21 +103,26 @@ const RouteGenerator = ({
         startDate: dataIni,
         endDate: dataFim,
         resumeBairro: true,
-        cobrador:metodos.watch("parametros.cobrador"),
-        listar_por_cobranca:metodos.watch('parametros.listar_por_cobranca')
+        cobrador: metodos.watch("parametros.cobrador"),
+        listar_por_cobranca: metodos.watch("parametros.listar_por_cobranca"),
       });
-
+    
       setArrayBairros(res.data.inadResumoBairro);
     };
     getBairros();
   }, [
     empresa,
+      metodos.watch("parametros"),
+    dateStart,
+    dateEnd,
+    metodos.watch("parametros.periodo.start"),
     metodos.watch("parametros.cidade"),
     metodos.watch("parametros.criterio.operator"),
     metodos.watch("parametros.statusReagendamento"),
     metodos.watch("parametros.criterio.value"),
     metodos.watch("parametros.cobrador"),
-    metodos.watch('parametros.listar_por_cobranca')
+    metodos.watch("parametros.listar_por_cobranca"),
+  
   ]);
 
   const handleClearParameters = () => {
@@ -119,22 +130,25 @@ const RouteGenerator = ({
       ...metodos.getValues(),
       parametros: {
         ...metodos.getValues().parametros,
-        cidade: "",
+        cidade: [],
         bairros: [],
         periodo: { start: null, end: null },
         criterio: { operator: ">", value: 1 },
         statusReagendamento: "A/R",
         cobrador: [],
         listar_por_cobranca: true,
-        consultor: ""
-      }
+        consultor: "",
+      },
     });
   };
 
   const handleGenerateRoute: SubmitHandler<RouteProps> = async (data) => {
     setLoading(true);
 
-    if ((!data.parametros.bairros||data.parametros.bairros.length<1) && !data.parametros.cobrador) {
+    if (
+      (!data.parametros.bairros || data.parametros.bairros.length < 1) &&
+      !data.parametros.cobrador
+    ) {
       toast("Erro de validação", {
         description: "Selecione pelo menos um bairro ou um Cobrador",
         //variant: "destructive",
@@ -150,14 +164,19 @@ const RouteGenerator = ({
       return;
     }
 
-    const {dataIni,dataFim} = ajustarData(data.parametros.periodo.start??undefined,data.parametros.periodo.end??undefined)
+    const { dataIni, dataFim } = ajustarData(
+      data.parametros.periodo.start ?? undefined,
+      data.parametros.periodo.end ?? undefined
+    );
     await postData({
       ...data,
-      
+
       id_empresa: empresa.id_empresa,
       empresa: empresa.nome,
-      parametros:{...data.parametros,periodo:{start:dataIni,end:dataFim}}
-      
+      parametros: {
+        ...data.parametros,
+        periodo: { start: dataIni, end: dataFim },
+      },
     });
 
     try {
@@ -173,24 +192,21 @@ const RouteGenerator = ({
   };
 
   //const isFormValid = watch("parametros.bairros").length > 0 && watch("parametros.consultor");
-  
 
-const estimativa = (metodos.watch('parametros.cobrador') && (!metodos.watch('parametros.bairros')||metodos.watch('parametros.bairros')?.length<1)) ?arrayBairros?.reduce((acc, item) => acc+=item.totalContratos,0) : metodos
-    .watch("parametros.bairros")
-    ?.reduce((acc, item) => {
-      return (
-        acc +
-        (arrayBairros?.find((it) => it.bairro === item)?.totalContratos ?? 0)
-      );
-    }, 0);
+  const estimativa =
+    metodos.watch("parametros.cobrador") &&
+    (!metodos.watch("parametros.bairros") ||
+      metodos.watch("parametros.bairros")?.length < 1)
+      ? arrayBairros?.reduce((acc, item) => (acc += item.totalContratos), 0)
+      : metodos.watch("parametros.bairros")?.reduce((acc, item) => {
+          return (
+            acc +
+            (arrayBairros?.find((it) => it.bairro === item)?.totalContratos ??
+              0)
+          );
+        }, 0);
   return (
     <Dialog open={isGeneratorOpen} onOpenChange={setIsGeneratorOpen}>
-      <DialogTrigger asChild>
-        <Button variant={"default"}>
-          <Plus />
-          Nova Rota
-        </Button>
-      </DialogTrigger>
       <DialogContent className="max-w-4xl  overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Gerar Nova Rota</DialogTitle>
@@ -237,7 +253,11 @@ const estimativa = (metodos.watch('parametros.cobrador') && (!metodos.watch('par
                     </h3>
                   </div>
                   <div className="p-6 pt-0">
-                    <ClientCriteriaSelector consultores={cobradores} />
+                    <ClientCriteriaSelector
+                      consultores={cobradores.filter(
+                        (item) => item.funcao === "COBRADOR (RDA)"
+                      )}
+                    />
                   </div>
                 </div>
               </div>
@@ -250,18 +270,12 @@ const estimativa = (metodos.watch('parametros.cobrador') && (!metodos.watch('par
                   </h3>
                 </div>
                 <div className="p-6 pt-0 z-50">
-                  <Controller
-                    name="parametros.consultor"
-                    control={metodos.control}
-                    rules={{ required: "Campo Obrigatorio" }}
-                    render={({ field }) => (
-                      <ConsultantSelector
-                        selected={field.value}
-                        onChange={(consultant) => field.onChange(consultant)}
-                        consultants={cobradores}
-                      />
-                    )}
+                  <ConsultantSelector
+                    // selected={field.value}
+                    //  onChange={(consultant) => field.onChange(consultant)}
+                    consultants={cobradores}
                   />
+
                   <span className="text-xs text-red-600">
                     {metodos.formState.errors.parametros?.consultor?.message}
                   </span>
@@ -275,10 +289,7 @@ const estimativa = (metodos.watch('parametros.cobrador') && (!metodos.watch('par
                 formData={metodos.watch()}
                 handleClearParameters={handleClearParameters}
               />
-              
-            
-              
-             
+
               {/* 
             <Card>
               <CardHeader className="pb-3">

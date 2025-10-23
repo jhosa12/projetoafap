@@ -1,6 +1,6 @@
 "use client";
 
-import { LeadProps } from "@/types/vendas";
+
 import {
   Dialog,
   DialogContent,
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { BairroIndicators } from "./BairroIndicators";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { LeadProps } from "../../_types/types";
 
 interface ModalBairroIndicatorsProps {
   open: boolean;

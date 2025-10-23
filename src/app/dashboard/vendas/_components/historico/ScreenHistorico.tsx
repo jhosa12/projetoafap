@@ -1,7 +1,7 @@
 'use client'
 
 import useApiGet from "@/hooks/useApiGet";
-import { Dispatch, SetStateAction, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ModalItem } from "./modalItem/modalItem";
 import { ModalConfirmar } from "@/components/modals/modalConfirmar";
 import useApiPost from "@/hooks/useApiPost";
@@ -39,12 +39,14 @@ import { TableHistoricoVendas } from "./TableHistorico";
 import { ModalNovoContrato } from "./ModalNovoContrato";
 import { ModalBairroIndicators } from "./ModalBairroIndicators";
 import { BairroSummary } from "./BairroSummary";
-import { LeadProps } from "@/types/vendas";
 import DocListaLeads from "@/Documents/vendas/DocLeads";
 import { upperCaseString } from "@/utils/upperCaseString";
 import { ContratoProps } from "@/app/dashboard/admcontrato/_types/contrato";
 import { DependentesProps } from "@/app/dashboard/admcontrato/_types/dependentes";
 import { Filter } from "lucide-react";
+import { LeadProps } from "../../_types/types";
+import { Input } from "@/components/ui/input";
+import { validateCPF } from "@/utils/validateCPF";
 
 
 
@@ -63,12 +65,11 @@ const camposObrigatorios: Partial<Record<keyof LeadProps, string>> = {
   n_parcelas: "Número de Parcelas",
   adesao: "Data de Adesão",
   cobrador: "Cobrador",
-  bairroPlano: "Bairro Plano"
+
 };
 
 export interface ReqLeadsProps {
   id?: string;
-  statusSelected?: string;
   status?: Array<string>;
   nome?: string;
   startDate?: string;
@@ -128,8 +129,10 @@ export function Historico({open,setOpen}:PropsHistorico) {
     data,
     loading: loadingLeads,
   } = useApiGet<Array<LeadProps>, ReqLeadsProps>("/lead/lista");
+
   const [lead, setLead] = useState<Partial<LeadProps>>({});
-  const [categoria, setCategoria] = useState("");
+   const [categoria, setCategoria] = useState("");
+   const [motivo_indeferido, setMotivo_indeferido] = useState("");
   const { postData: postCategoria } = useApiPost<
     LeadProps,
     {
@@ -137,6 +140,7 @@ export function Historico({open,setOpen}:PropsHistorico) {
       categoriaAtual: string;
       categoriaAnt: string | undefined;
       usuario: string | undefined;
+      motivo_indeferido: string | undefined;
     }
   >("/leads/alterarCategoria");
   const { selectEmp, carregarDados, consultores } = useContext(AuthContext);
@@ -176,14 +180,15 @@ export function Historico({open,setOpen}:PropsHistorico) {
 
   const { register, handleSubmit, control, getValues } =
     useForm<ReqLeadsProps>({
+   
       defaultValues: {
-
-        statusSelected: "VENDA",
+        
+        status: ["VENDA"],
       },
     });
 
   const onChangeCategoria = (
-    e: React.ChangeEvent<HTMLSelectElement>,
+    e: ChangeEvent<HTMLSelectElement>,
     lead: Partial<LeadProps>
   ) => {
     if (lead.status === e.target.value) {
@@ -215,6 +220,9 @@ export function Historico({open,setOpen}:PropsHistorico) {
       return;
     }
 
+
+   
+
     const camposFaltando = Object.entries(camposObrigatorios)
       .filter(([key]) => !data[key as keyof LeadProps])
       .map(([, nomeLegivel]) => nomeLegivel);
@@ -225,6 +233,13 @@ export function Historico({open,setOpen}:PropsHistorico) {
       );
       return;
     }
+
+ if(!validateCPF(data.cpfcnpj)) {
+    toast.error('CPF inválido!')
+    return
+ }
+
+
     let adesao;
     if (data.adesao) {
       adesao = new Date(data.adesao);
@@ -241,7 +256,7 @@ export function Historico({open,setOpen}:PropsHistorico) {
       await postAssociado({
         dataPlano: {
           dependentes: data.dependentes,
-          bairro: data.bairroPlano,
+          bairro: data.bairro,
           celular1: data.celular1,
           celular2: data.celular2,
           cep: data.cep,
@@ -278,7 +293,7 @@ export function Historico({open,setOpen}:PropsHistorico) {
       });
 
      reqDados({
-      statusSelected: "VENDA",
+      status: ["VENDA"],
       id_empresa:selectEmp
     });
     
@@ -288,20 +303,26 @@ export function Historico({open,setOpen}:PropsHistorico) {
   }
 
   const handleAtualizarCategoria = useCallback(async () => {
+    if (categoria === "INDEFERIDO" && !motivo_indeferido) {
+      toast.error("Motivo indeferido obrigatório!");
+      return;
+    }
     try {
       await postCategoria({
         categoriaAtual: categoria,
         categoriaAnt: lead?.status,
         usuario: lead?.usuario,
         id_lead: lead?.id_lead,
+        motivo_indeferido: motivo_indeferido
       });
     
       reqDados(getValues());
       setModal({ confirmaCategoria: false });
+      setMotivo_indeferido(""); 
     } catch (error) {
       console.log(error);
     }
-  }, [categoria, lead?.id_lead]);
+  }, [categoria, lead?.id_lead,motivo_indeferido]);
 
   const reqDados: SubmitHandler<ReqLeadsProps> = useCallback(async (data) => {
     
@@ -320,7 +341,7 @@ export function Historico({open,setOpen}:PropsHistorico) {
     try {
       await postData({
         ...data,
-        status: data.statusSelected ? data?.statusSelected?.split(",") : [],
+        status: data.status,
         startDate: dataIni,
         endDate: dataFim,
         id_empresa:selectEmp
@@ -338,20 +359,19 @@ export function Historico({open,setOpen}:PropsHistorico) {
     //  const {dataIni,dataFim} = ajustarData(start?new Date(start):undefined,
     //  end?new Date(end):undefined)
     reqDados({
-      statusSelected: "VENDA",
+      status: ["VENDA"],
       id_empresa:selectEmp
     });
   }, []);
 
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-     
       <DialogContent className="max-w-7xl">
         <DialogHeader>
           <DialogTitle>Leads/Prospecões/Vendas</DialogTitle>
           <DialogDescription>Historico de Leads/Vendas</DialogDescription>
         </DialogHeader>
-
         {modal.filtro && (
           <ModalFiltroHistorico
             consultores={consultores
@@ -376,11 +396,19 @@ export function Historico({open,setOpen}:PropsHistorico) {
           />
         )}
         <ModalConfirmar
-          pergunta={`Tem certeza que deseja alterar o(a) ${lead?.status} para um(a) ${categoria} ? Essa alteração será contabilizada na faturação!`}
+          pergunta={`Tem certeza que deseja alterar o(a) ${lead?.status} para um(a) ${categoria} ? Essa alteração será contabilizada!`}
           handleConfirmar={handleAtualizarCategoria}
           openModal={modal.confirmaCategoria}
+
           setOpenModal={() => setModal(prev => ({ ...prev, confirmaCategoria: false }))}
-        />
+
+        >
+        {categoria === "INDEFERIDO" &&  <Input
+            placeholder="Motivo"
+            value={motivo_indeferido}
+            onChange={(e) => setMotivo_indeferido(e.target.value)}
+          />}
+        </ModalConfirmar>
 
 
         {modal.novo && (
@@ -427,6 +455,12 @@ export function Historico({open,setOpen}:PropsHistorico) {
           >
             <MdPrint />
             IMPRIMIR
+          </Button>
+
+          <Button  size={"sm"}
+          onClick={() => {setModal(prev => ({ ...prev, lead: true })),setLead({})}}
+            variant={"outline"}>
+            ADICIONAR
           </Button>
         </div>
 

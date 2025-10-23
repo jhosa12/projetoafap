@@ -1,9 +1,10 @@
 "use client";
 
 import { useMemo } from "react";
-import { LeadProps } from "@/types/vendas";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { LeadProps } from "../../_types/types";
 
 interface BairroIndicatorsProps {
   data: LeadProps[];
@@ -16,6 +17,7 @@ interface BairroStats {
   prospeccao: number;
   preVenda: number;
   venda: number;
+  indeferido: number;
 }
 
 export const BairroIndicators = ({ data }: BairroIndicatorsProps) => {
@@ -33,6 +35,7 @@ export const BairroIndicators = ({ data }: BairroIndicatorsProps) => {
           prospeccao: 0,
           preVenda: 0,
           venda: 0,
+          indeferido: 0,
         });
       }
 
@@ -51,6 +54,9 @@ export const BairroIndicators = ({ data }: BairroIndicatorsProps) => {
           break;
         case "VENDA":
           stats.venda++;
+          break;
+        case "INDEFERIDO":
+          stats.indeferido++;
           break;
       }
     });
@@ -101,6 +107,12 @@ export const BairroIndicators = ({ data }: BairroIndicatorsProps) => {
                   <div className="flex items-center justify-between">
                     <span className="text-green-600">Vendas:</span>
                     <span className="font-semibold">{stats.venda}</span>
+                  </div>
+                )}
+                {stats.indeferido > 0 && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-red-600">Indiferido:</span>
+                    <span className="font-semibold">{stats.indeferido}</span>
                   </div>
                 )}
               </div>

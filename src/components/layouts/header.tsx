@@ -67,7 +67,8 @@ export function Header({ path }: { path?: string }) {
     signOut,
     bairrosEmpresa,
     cidadesEmpresa,
-    getDadosFixos
+    getDadosFixos,
+    consultores
   } = useContext(AuthContext);
 
 
@@ -502,6 +503,7 @@ export function Header({ path }: { path?: string }) {
         id_empresa={selectEmp}
         cidadesEmpresa={cidadesEmpresa}
         bairrosEmpresa={bairrosEmpresa}
+        cobradores = {consultores?.filter(item=>item.funcao='COBRADOR (RDA)')}
       />
 
       {openHistorico && (

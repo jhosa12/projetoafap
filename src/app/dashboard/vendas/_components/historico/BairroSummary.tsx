@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
-import { LeadProps } from "@/types/vendas";
 import { Badge } from "@/components/ui/badge";
+import { LeadProps } from "../../_types/types";
 
 interface BairroSummaryProps {
   data: LeadProps[];
@@ -19,6 +19,7 @@ export const BairroSummary = ({ data }: BairroSummaryProps) => {
       prospeccao: data.filter((item) => item.status === "PROSPECCAO").length,
       preVenda: data.filter((item) => item.status === "PRE VENDA").length,
       venda: data.filter((item) => item.status === "VENDA").length,
+      indeferido: data.filter((item) => item.status === "INDEFERIDO").length,
     };
 
     return {
@@ -64,6 +65,12 @@ export const BairroSummary = ({ data }: BairroSummaryProps) => {
         <div className="flex items-center gap-2">
           <span className="text-xs font-medium text-green-600">Vendas:</span>
           <Badge className="bg-green-600">{summary.venda}</Badge>
+        </div>
+      )}
+      {summary.indeferido > 0 && (
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium text-red-600">Indiferido:</span>
+          <Badge className="bg-red-600">{summary.indeferido}</Badge>
         </div>
       )}
     </div>

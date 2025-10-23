@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { LeadProps } from "@/types/vendas";
+import { LeadProps } from "../../_types/types";
 
 interface ColumnsConfig {
   onChangeCategoria: (e: React.ChangeEvent<HTMLSelectElement>, lead: Partial<LeadProps>) => void;
@@ -75,8 +75,10 @@ export const createColumns = ({
           row.original.status === "LEAD"
             ? "text-blue-600"
             : row.original.status === "PROSPECCAO"
-            ? "text-yellow-500"
-            : "text-green-500"
+            ? "text-yellow-500":
+            row.original.status === "INDEFERIDO"
+            ? "text-red-500":
+             "text-green-500"
         }`}
         onClick={(e) => e.stopPropagation()}
       >
@@ -89,6 +91,7 @@ export const createColumns = ({
           <option value="PROSPECCAO">PROSPECCAO</option>
           <option value="PRE VENDA">PRE VENDA</option>
           <option value="VENDA">VENDA</option>
+          <option value="INDEFERIDO">INDEFERIDO</option>
         </select>
       </div>
     ),
