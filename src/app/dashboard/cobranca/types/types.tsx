@@ -220,7 +220,7 @@ export interface InadimplenciaProps{
      parametros :{
       statusReagendamento:string
       cobrador:Array<string>,
-      cidade:string,
+      cidade:Array<string>,
         bairros:Array<string>,
         periodo:{
           start:Date|null,

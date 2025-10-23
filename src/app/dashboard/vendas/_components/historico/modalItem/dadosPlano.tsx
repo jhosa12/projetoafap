@@ -56,7 +56,7 @@ export function TabPlano({
                     key={plano.id_plano}
                     value={plano?.id_plano?.toString()}
                   >
-                    {plano?.descricao}
+                    {plano?.descricao ?? 'SEM NOME'}
                   </SelectItem>
                 ))}
               </SelectContent>

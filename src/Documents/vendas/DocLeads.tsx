@@ -1,9 +1,9 @@
 'use client'
 
-import { LeadProps } from '@/types/vendas';
 import React, { forwardRef } from 'react';
 import { Table } from "flowbite-react";
 import { roboto_Mono } from "@/fonts/fonts";
+import { LeadProps } from '@/app/dashboard/vendas/_types/types';
 
 interface DadosProps {
    leads:Array<LeadProps>,

@@ -33,6 +33,15 @@ interface DataProps {
     handleSubmit: UseFormHandleSubmit<ReqLeadsProps>;
     consultores: Array<{ label: string; value: string }> | [];
   }
+
+
+  const status = [
+    { label: "LEAD", value: "LEAD" },
+    { label: "PROSPECCAO", value: "PROSPECCAO" },
+    { label: "PRE VENDA", value: "PRE VENDA" },
+    { label: "VENDA", value: "VENDA" },
+    { label: "INDEFERIDO", value: "INDEFERIDO" },
+  ];
   
   export const ModalFiltroHistorico = ({
     onClose,
@@ -82,21 +91,14 @@ interface DataProps {
   
               <Controller
                 control={control}
-                name="statusSelected"
+                name="status"
                 render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="STATUS" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="LEAD">LEAD</SelectItem>
-                        <SelectItem value="PROSPECCAO">PROSPECÇÃO</SelectItem>
-                        <SelectItem value="PRE VENDA">PRE VENDA</SelectItem>
-                        <SelectItem value="VENDA">VENDA</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                <MultiSelects
+                  options={status}
+                  onChange={field.onChange}
+                  selected={field.value??[]}
+                  placeholder="STATUS"
+                />
                 )}
               />
             </div>

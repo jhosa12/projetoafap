@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react"
 import { Tooltip } from 'react-tooltip';
 import Link from "next/link";
 import useActionsListagem from "../../_hooks/listagem/useActionsListagem";
-import { Plus, Printer, ReceiptIcon, FileEditIcon, Trash } from 'lucide-react';
+import { Plus, Printer, ReceiptIcon, Trash2, Pencil } from 'lucide-react';
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -159,16 +159,16 @@ export default function Convalescente() {
                             onClick={handleEditar}
                             className="flex items-center gap-2"
                         >
-                            <FileEditIcon /> Editar
+                            <Pencil /> Editar
                         </Button>
 
                         <Button
                             variant="outline"
                             onClick={handleExcluir}
-                            className="flex items-center gap-2"
+                            className="rounded-lg text-red-600 hover:bg-red-600 hover:text-gray-200 p-1"
                         >
-                            <span className="flex items-center text-red-600">
-                                <Trash className="mr-1 h-4 w-4 text-red-600" />
+                            <span className="flex items-center gap-2 p-2">
+                                <Trash2 size={18} />
                                 Excluir
                             </span>
                         </Button>

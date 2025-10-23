@@ -3,8 +3,7 @@ import { Input } from "@/components/ui/input";
 import { maskitoTransform } from "@maskito/core";
 import { FieldValues, Path, UseFormRegister } from "react-hook-form";
 import { withMaskitoRegister } from "@/utils/with-maskito-register";
-
-
+import { validateCPF } from "@/utils/validateCPF";
 
 const options = {
   mask: [
@@ -23,34 +22,39 @@ const options = {
     /\d/,
     /\d/,
   ],
- 
-}
-export function CPFInput<T extends FieldValues,>({
- 
+};
+export function CPFInput<T extends FieldValues>({
   className,
   register,
   controlName,
-  required = false
+  required = false,
 }: {
- 
   className?: string;
-  register:UseFormRegister<T>,
-  controlName:Path<T>,
-  required?:boolean
+  register: UseFormRegister<T>;
+  controlName: Path<T>;
+  required?: boolean;
 }) {
-
- const ref = useMaskito({
+  const ref = useMaskito({
     options: options,
   });
 
-
   // Combina a classe padrão com qualquer classe passada via props
-  const combinedClassName = [ "h-9",className].filter(Boolean).join(" ");
+  const combinedClassName = ["h-9", className].filter(Boolean).join(" ");
 
   return (
     <Input
-     
-      {...withMaskitoRegister(register(controlName,required ? {required:'CPF é Obrigatório'} : {}), ref)}
+      {...withMaskitoRegister(
+        register(
+          controlName,
+          required
+            ? {
+                required: "CPF é Obrigatório",
+                validate: (value) => validateCPF(value) || "CPF inválido",
+              }
+            : {validate: (value) => validateCPF(value) || "CPF inválido"}
+        ),
+        ref
+      )}
       className={combinedClassName}
     />
   );

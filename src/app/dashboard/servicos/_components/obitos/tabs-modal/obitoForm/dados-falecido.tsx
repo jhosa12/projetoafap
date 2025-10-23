@@ -98,7 +98,7 @@ export const OSDadosFalecido = ({ isEditing }: { isEditing: boolean }) => {
     } else if (tipoSelecionado === "DEPENDENTE") {
 
       if (!dadosassociado?.id_global) {
-        toast.error("Nenhum associado selecionado para buscar os dados dos dependentes.")
+        toast.error("Nenhum associado selecionado para buscar os dados de dependentes.")
         reset({ ...watch(), falecido: '' })
         return
       }

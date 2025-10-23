@@ -3,31 +3,38 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ConsultoresProps } from "@/types/consultores";
 import { Combobox } from "@/components/ui/combobox";
+import { Controller, useFormContext } from "react-hook-form";
+import { RouteProps } from "../../types/types";
 
 interface ConsultantSelectorProps {
-  selected: string;
-  onChange: (consultant: string|null) => void;
   consultants:ConsultoresProps[]
 }
 
 
 
-const ConsultantSelector = ({ selected, onChange,consultants }: ConsultantSelectorProps) => {
-  const selectedConsultant = consultants?.find(c => c.id_consultor === Number(selected));
+const ConsultantSelector = ({ consultants }: ConsultantSelectorProps) => {
+  
+const {control,watch} =useFormContext<RouteProps>()
 
+const selectedConsultant = consultants?.find(c => c.id_consultor === Number(watch('parametros.consultor')));
   return (
     <div className="space-y-3 ">
 
-
+ <Controller
+                    name="parametros.consultor"
+                    control={control}
+                    rules={{ required: "Campo Obrigatorio" }}
+                    render={({ field }) => (
       <Combobox
    
         items={consultants.map(item=>{return{value:item.nome,label:item.nome}})??[]}
-        onChange={value=>onChange(value)}
-        value={selected}
-        className="z-auto"
+        onChange={field.onChange}
+        value={field.value}
+        //className="z-auto"
         searchPlaceholder="Selecione um consultor"
       />
-
+  )}
+ />
 
 
       {/* <Select value={selected} onValueChange={onChange}>

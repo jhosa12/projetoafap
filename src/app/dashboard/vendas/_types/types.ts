@@ -1,6 +1,12 @@
 import { DependentesProps } from "@/app/dashboard/admcontrato/_types/dependentes";
 
 
+            
+export type StatusLead = 'VENDA' | 'INDEFERIDO' | 'PRE VENDA' | 'LEAD' | 'PROSPECCAO'
+    
+
+
+
 export interface LeadProps {
   id_empresa:string,
   index: number;
@@ -18,7 +24,7 @@ export interface LeadProps {
   n_parcelas: number;
   possuiPet: string;
   planoPet: string;
-  status: string;
+  status: StatusLead;
   bairro: string;
   numero: number;
   data_nasc: Date;
@@ -43,5 +49,5 @@ export interface LeadProps {
   dataVenda: Date;
   acrescimo:number|null;
   cobrador: string;
-  bairroPlano?: string
+  motivo_indeferido : string 
 }

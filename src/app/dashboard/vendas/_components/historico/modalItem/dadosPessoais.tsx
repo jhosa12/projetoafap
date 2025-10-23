@@ -12,13 +12,34 @@ import { DatePickerInput } from "@/components/DatePickerInput";
 import { Label } from "@/components/ui/label";
 import { Combobox } from "@/components/ui/combobox";
 import { SelectBairroEmpresa } from "@/components/selectBairrosEmpresa";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 interface TabDadosPessoaisProps extends UseFormLeadProps{cidades:Array<CidadesProps>}
 
 
-export function TabDadosPessoais({control,register,cidades}:TabDadosPessoaisProps) {
+export function TabDadosPessoais({control,register,cidades,watch}:TabDadosPessoaisProps) {
 
     return(
         <div className="grid grid-cols-4 gap-3">
+           {!watch('id_lead') && <div className="col-span-4">
+                <Controller
+                name="status"
+                rules={{required:'Status é Obrigatório'}}
+                control={control}
+                render={({ field }) => (
+                   <Select value={field.value} onValueChange={field.onChange}>
+                   <SelectTrigger >
+                     <SelectValue placeholder="Status" />
+                   </SelectTrigger>
+                   <SelectContent>
+                     <SelectItem value="LEAD">LEAD</SelectItem>
+                     <SelectItem value="PRE VENDA">PRE VENDA</SelectItem>
+                     <SelectItem value="PROSPECCAO">PROSPECCAO</SelectItem>
+                     <SelectItem value="VENDA">VENDA</SelectItem>
+                   </SelectContent>
+                 </Select>
+                )}
+                />
+            </div>}
             <div className="col-span-2 w-full flex flex-col">
                 <Label className="text-xs">Nome</Label>
                 <Input  {...register('nome',{required:'Nome é Obrigatório'})} type="text" placeholder="Nome" />
@@ -27,16 +48,12 @@ export function TabDadosPessoais({control,register,cidades}:TabDadosPessoaisProp
                 <Label className="text-xs">Endereço</Label> 
                 <Input {...register('endereco',{required:'Endereço é Obrigatório'})} type="text" placeholder="Endereço" />
             </div>
-            <div className="w-full flex flex-col">
-                <Label className="text-xs">Bairro informado pelo consultor</Label>
-               
-                <Input {...register('bairro',{required:'Bairro é Obrigatório'})} type="text" placeholder="Bairro" />
-            </div>
+           
             
             <div className="w-full flex flex-col">
                 <Label className="text-xs">Bairro Plano</Label>
                 <Controller
-                name="bairroPlano"
+                name="bairro"
                 rules={{required:'Bairro Plano é Obrigatório'}}
                 control={control}
                 render={({ field }) => (

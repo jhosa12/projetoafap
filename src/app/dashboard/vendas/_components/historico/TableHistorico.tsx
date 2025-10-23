@@ -2,8 +2,8 @@
 
 import { useMemo, useCallback } from "react";
 import { DataTable } from "@/components/ui/data-table";
-import { LeadProps } from "@/types/vendas";
 import { createColumns } from "./columns";
+import { LeadProps } from "../../_types/types";
 
 interface Props {
   data: Array<LeadProps>;

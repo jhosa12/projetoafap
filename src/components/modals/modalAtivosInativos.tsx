@@ -14,6 +14,7 @@ import { Spinner } from "flowbite-react"
 import { DatePickerInput } from "../DatePickerInput"
 import { pageStyle } from "@/utils/pageStyle"
 import { MultiSelects } from "../ui/multiSelect"
+import { ConsultoresProps } from "@/types/consultores"
 
 interface ModalProps {
     open: boolean
@@ -23,6 +24,7 @@ interface ModalProps {
     usuario: string | undefined
     cidadesEmpresa: string[]
     bairrosEmpresa: Array<{ cidade: string; bairro: string }>;
+    cobradores:Array<ConsultoresProps>|undefined
 }
 
 interface FormProps {
@@ -30,7 +32,8 @@ interface FormProps {
     endDate: Date,
     tipo: string,
     cidade?: string,
-    bairros?: string[]
+    bairros?: string[],
+    cobrador?:string[]
 }
 
 
@@ -57,7 +60,7 @@ interface ResponseProps {
     }
 }
 
-export const ModalAtivosInativos = ({ open, onClose, id_empresa, logo, usuario, cidadesEmpresa, bairrosEmpresa }: ModalProps) => {
+export const ModalAtivosInativos = ({ open, onClose, id_empresa, logo, usuario, cidadesEmpresa, bairrosEmpresa,cobradores }: ModalProps) => {
     const currentRef = useRef<HTMLDivElement>(null)
     const { register, watch, setValue, handleSubmit, reset, control } = useForm<FormProps>({
         defaultValues: {
@@ -147,8 +150,10 @@ export const ModalAtivosInativos = ({ open, onClose, id_empresa, logo, usuario, 
                                       </Select>
                                     )}
                                   />
-                    
-                          <Controller
+
+
+
+                                     <Controller
                           name="bairros"
                           control={control}
                           render={({ field }) => (
@@ -161,6 +166,24 @@ export const ModalAtivosInativos = ({ open, onClose, id_empresa, logo, usuario, 
                             selected={field.value??[]}
                             onChange={field.onChange}
                             placeholder="Seleciona os bairros/distritos"
+                            className="min-h-9"
+                          />
+                          )}
+                          />
+                    
+                          <Controller
+                          name="cobrador"
+                          control={control}
+                          render={({ field }) => (
+                          <MultiSelects
+                            maxDisplayItems={3}
+                            options={cobradores?.map((cob) => ({
+                              value: cob.nome??"",
+                              label: `${cob.nome}`,
+                            }))??[]}
+                            selected={field.value??[]}
+                            onChange={field.onChange}
+                            placeholder="Selecione os cobradores"
                             className="min-h-9"
                           />
                           )}

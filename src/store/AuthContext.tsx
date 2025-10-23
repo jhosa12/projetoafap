@@ -147,10 +147,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
 
-  useEffect(()=>{
-    console.log("dados Gerais",dadosassociado)
-  },[dadosassociado])
-
   useEffect(() => {
     if (!usuario) signOut();
     if (usuario) getBairros()
@@ -221,8 +217,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signOut,
         dadosassociado,
         carregarDados,
-        bairrosEmpresa: infoEmpresa?.bairrosCidades ?? [],
-        cidadesEmpresa: [...new Set(infoEmpresa?.bairrosCidades?.map((item) => item.cidade))],
+        bairrosEmpresa: infoEmpresa?.bairros ?? [],
+        cidadesEmpresa: infoEmpresa?.cidades?.map(item=>item.cidade) ?? [],
         actions_plano_contas
       }}
     >
