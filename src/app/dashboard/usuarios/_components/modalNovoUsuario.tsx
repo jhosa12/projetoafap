@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { PerfisUser } from "./perfisUser";
 import { UsuarioProps } from "../_types/editar-usuario";
 import { ActionsFunctionsApi } from "@/types/actions";
+import { Settings } from "lucide-react";
 
 
 
@@ -26,6 +27,7 @@ interface DataProps {
 
 export function ModalNovoUsuario({ setarDadosUsuario, dadosUser, setModal, show, handlePermission, handleEditarCadastro, handleNovoCadastro }: DataProps) {
     const [modalPass, setModalPass] = useState<boolean>(false)
+    const [modalPermissoes, setModalPermissoes] = useState<boolean>(false)
 
 
 
@@ -48,20 +50,20 @@ export function ModalNovoUsuario({ setarDadosUsuario, dadosUser, setModal, show,
     return (
 
         <Dialog open={show} onOpenChange={setModal}>
-            <DialogContent className="max-w-[calc(100vw-100px)]">
+            <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>{dadosUser.id_user ? 'Editar usuário' : 'Novo usuário'}</DialogTitle>
                 </DialogHeader>
 
-                <div className="inline-flex w-full gap-2 ">
+                <div className="w-full">
 
                     <Card className="flex h-full flex-col gap-4 p-6">
                         <div className="flex w-full relative">
-                            <label className="flex w-60 h-40 justify-center cursor-pointer rounded-lg items-center border-[1px]">
+                            <label htmlFor="file" className="flex w-full h-40 justify-center cursor-pointer rounded-lg items-center border-[1px]">
                                 <span className="z-50 absolute opacity-40 transition-all hover:scale-125">
                                     <MdOutlineFileUpload size={25} />
                                 </span>
-                                <input className="hidden" onChange={handleFile} type="file" accept="image/png,image/jpeg"></input>
+                                <input id="file" className="hidden" onChange={handleFile} type="file" accept="image/png,image/jpeg"></input>
                                 {dadosUser.avatarUrl && !dadosUser.image && <img className="w-full h-full object-cover rounded-lg" src={dadosUser.avatarUrl} alt="fotoUser" width={150} height={100}></img>}
 
                                 {dadosUser.image && !dadosUser.avatarUrl && <img className="w-full h-full object-cover rounded-lg" src={`${dadosUser.image}`} alt="fotoUser" width={150} height={100}></img>}
@@ -96,11 +98,20 @@ export function ModalNovoUsuario({ setarDadosUsuario, dadosUser, setModal, show,
                             )}
 
                             <PerfisUser id={dadosUser.id!} perfis={dadosUser.consultor ?? []} id_user={dadosUser.id_user} />
+                            
+                            <div className="grid gap-1">
+                                <Button 
+                                    variant="outline" 
+                                    onClick={() => setModalPermissoes(true)}
+                                    className="flex items-center gap-2"
+                                >
+                                    <Settings className="h-4 w-4" />
+                                    Configurar Permissões
+                                </Button>
+                            </div>
                         </div>
 
                     </Card>
-
-                    <Permissoes handlePermission={handlePermission} permissions={dadosUser.permissoes ?? []} />
                 </div>
 
                 <DialogFooter className="sm:justify-end">
@@ -114,6 +125,25 @@ export function ModalNovoUsuario({ setarDadosUsuario, dadosUser, setModal, show,
             </DialogContent>
 
             <ModalPassword id_user={dadosUser.id_user ?? ''} openModal={modalPass} setOpenModal={setModalPass} />
+
+            {/* Modal de Permissões */}
+            <Dialog open={modalPermissoes} onOpenChange={setModalPermissoes}>
+                <DialogContent className="max-w-[calc(100vw-50px)] max-h-[calc(100vh-50px)]">
+                    <DialogHeader>
+                        <DialogTitle>Configurar Permissões</DialogTitle>
+                    </DialogHeader>
+                    
+                    <div className="overflow-auto">
+                        <Permissoes handlePermission={handlePermission} permissions={dadosUser.permissoes ?? []} />
+                    </div>
+                    
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setModalPermissoes(false)}>
+                            Fechar
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
         </Dialog>
 
