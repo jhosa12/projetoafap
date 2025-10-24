@@ -21,6 +21,7 @@ import { Controller } from "react-hook-form";
 export function TabContrato({ register, watch, control }: UseFormAssociadoProps) {
   const { consultores } = useContext(AuthContext)
 
+
   return (
     <div className="grid gap-2 pl-2 pr-2 w-full grid-cols-4">
 
