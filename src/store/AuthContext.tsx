@@ -110,7 +110,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await api.post("/dadosFixos");
       const cidadesData = response.data.cidades || [];
-
       setEmpresas(response.data.empresas || []);
       setCidades(cidadesData);
       setConsultores(response.data.consultores || []);

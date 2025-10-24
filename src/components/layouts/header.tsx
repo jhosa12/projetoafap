@@ -503,7 +503,7 @@ export function Header({ path }: { path?: string }) {
         id_empresa={selectEmp}
         cidadesEmpresa={cidadesEmpresa}
         bairrosEmpresa={bairrosEmpresa}
-        cobradores = {consultores?.filter(item=>item.funcao='COBRADOR (RDA)')}
+        cobradores = {consultores?.filter(item=>item.funcao==='COBRADOR (RDA)')}
       />
 
       {openHistorico && (
