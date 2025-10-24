@@ -35,6 +35,37 @@ export function TabConfiguracoes({ permissions, handlePermission }: DataProps) {
               </div>
             </CardContent>
           </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Usuarios</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="CFG1.1"
+                  checked={permissions.includes("CFG1.1")}
+                  onCheckedChange={() => handlePermission("CFG1.1")}
+                />
+                <Label htmlFor="CFG1.1" className="text-sm">Acesso</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="CFG1.1.1"
+                  checked={permissions.includes("CFG1.1.1")}
+                  onCheckedChange={() => handlePermission("CFG1.1.1")}
+                />
+                <Label htmlFor="CFG1.1.1" className="text-sm">Adicionar</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="CFG1.1.2"
+                  checked={permissions.includes("CFG1.1.2")}
+                  onCheckedChange={() => handlePermission("CFG1.1.2")}
+                />
+                <Label htmlFor="CFG1.1.2" className="text-sm">Alterar senha</Label>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </TabsContent>
     </Tabs>

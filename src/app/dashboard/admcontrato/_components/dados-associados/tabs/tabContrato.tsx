@@ -17,6 +17,8 @@ import { UseFormAssociadoProps } from "../modalEditarDados";
 import { useContext } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { Controller } from "react-hook-form";
+import { MultiSelects } from "@/components/ui/multiSelect";
+import { Combobox } from "@/components/ui/combobox";
 
 export function TabContrato({ register, watch, control }: UseFormAssociadoProps) {
   const { consultores } = useContext(AuthContext)
@@ -122,18 +124,10 @@ export function TabContrato({ register, watch, control }: UseFormAssociadoProps)
           name="contrato.cobrador"
           control={control}
           render={({ field: { onChange, value } }) => (
-            <Select value={value} onValueChange={onChange}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione" />
-              </SelectTrigger>
-              <SelectContent>
-                {consultores?.filter(item => item.funcao === 'COBRADOR (RDA)').map(item => (
-                  <SelectItem key={item.id_consultor} value={item.nome}>
-                    {item.nome}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Combobox value={value ?? ''} onChange={onChange} items={consultores?.filter(item => item.funcao === 'COBRADOR (RDA)')?.map((item) => ({
+              label: item.nome,
+              value: item.nome
+            }))??[]} />
           )}
         />
 
@@ -145,18 +139,10 @@ export function TabContrato({ register, watch, control }: UseFormAssociadoProps)
           name="contrato.consultor"
           control={control}
           render={({ field: { onChange, value } }) => (
-            <Select value={value} onValueChange={onChange}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione" />
-              </SelectTrigger>
-              <SelectContent>
-                {consultores?.filter(item => item.funcao === 'PROMOTOR(A) DE VENDAS').map((item, index) => (
-                  <SelectItem key={index} value={item.nome}>
-                    {item.nome}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Combobox value={value ?? ''} onChange={onChange} items={consultores?.filter(item => item.funcao === 'PROMOTOR(A) DE VENDAS')?.map((item) => ({
+              label: item.nome,
+              value: item.nome
+            }))??[]} />
           )}
         />
 
