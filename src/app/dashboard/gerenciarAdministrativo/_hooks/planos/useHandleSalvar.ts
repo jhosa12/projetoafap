@@ -30,7 +30,7 @@ export const useHandleSalvar = ({
 
     } catch (error: any) {
 
-      toast.error("Já existe um óbito para esta pessoa.");
+      toast.error("Erro ao salvar o plano.");
 
       return;
     }

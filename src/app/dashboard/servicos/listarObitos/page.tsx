@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { getObitoColumns } from "@/app/dashboard/servicos/_components/obitos/ordemDeServico/obitosColumns";
@@ -9,7 +9,6 @@ import { ObitoProps } from "../_types/obito";
 import { ModalObitoForm } from "../_components/obitos/tabs-modal/modal-obito-form";
 import { Pencil, PlusCircle } from "lucide-react";
 import { AuthContext } from "@/store/AuthContext";
-import { SubmitHandler } from "react-hook-form";
 import { DocsObito, useActionsPrintOS } from "../_hooks/obitos/useActionsPrintOS";
 import { toast } from "sonner";
 import OrdemServico from "../_documents/obitos/OrdemServico";
@@ -26,6 +25,7 @@ import {
 import { ChevronDown, Printer } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { useHandleSalvarObito } from "../_hooks/obitos/useHandleSalvarObito";
 
 export default function ListarObitos() {
   const [openOs, setOpenOs] = useState(false);
@@ -74,25 +74,12 @@ export default function ListarObitos() {
     setModalImprimir,
   });
 
-  const handleSalvar: SubmitHandler<ObitoProps> = async (data) => {
-    try {
-      const resultado = await onSave(data);
-
-      if (resultado === true) {
-        limparDados();
-        setOpenOs(false);
-        listar();
-      }
-
-    } catch (error: any) {
-
-      toast.error(error);
-
-      return;
-    }
-  };
-
-
+  const handleSalvar = useHandleSalvarObito({
+    onSave,
+    limparDados,
+    setOpenOs,
+    listar
+  })
 
   return (
     <div className="flex flex-col w-full h-screen lg:p-6 gap-4">

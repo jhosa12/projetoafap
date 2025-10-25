@@ -16,15 +16,15 @@ import { useContext, useEffect } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import { HeadAssociado } from "../head-associado";
 import { ProdutosProps } from "@/types/produtos";
-
+import { DadosCheckList } from "./dados-checklist";
 interface ObitoFormProps {
   obito?: ObitoProps | null;
   onSave: SubmitHandler<ObitoProps>;
   onCancel: () => void;
-  produtos:Array<ProdutosProps>
+  produtos: Array<ProdutosProps>
 }
 
-export function ObitoForm({ obito, onSave, onCancel,produtos }: ObitoFormProps) {
+export function ObitoForm({ obito, onSave, onCancel, produtos }: ObitoFormProps) {
   const form = useForm<ObitoProps>({
     defaultValues: {
       nome_falecido: '',
@@ -37,7 +37,7 @@ export function ObitoForm({ obito, onSave, onCancel,produtos }: ObitoFormProps) 
 
   useEffect(() => {
     if (obito) {
-     
+
       form.reset(obito);
       limparDados()
     }
@@ -64,6 +64,7 @@ export function ObitoForm({ obito, onSave, onCancel,produtos }: ObitoFormProps) 
             <TabsTrigger value="endereco">Endereço</TabsTrigger>
             <TabsTrigger value="servicos">Serviços</TabsTrigger>
             <TabsTrigger value="financeiro">Financeiro</TabsTrigger>
+            <TabsTrigger value="checklists">Checklists</TabsTrigger>
           </TabsList>
 
           {/* <TabsContent value="dados-gerais" className="space-y-4">
@@ -88,6 +89,10 @@ export function ObitoForm({ obito, onSave, onCancel,produtos }: ObitoFormProps) 
 
           <TabsContent value="financeiro" >
             <OSDadosFinanceiros produtos={produtos} />
+          </TabsContent>
+
+          <TabsContent value="checklists" >
+            <DadosCheckList />
           </TabsContent>
         </Tabs>
 

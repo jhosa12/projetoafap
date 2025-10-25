@@ -1,5 +1,5 @@
 import { AuthContext } from "@/store/AuthContext";
-import {useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ObitoProps } from "../../_types/obito";
 import { api } from "@/lib/axios/apiClient";
 import { toast } from "sonner";
@@ -40,26 +40,26 @@ const useActionsObito = () => {
   const { usuario, signOut, infoEmpresa, dadosassociado, limparDados } = useContext(AuthContext);
   const [listaServicos, setServicos] = useState<ObitoProps[]>([]);
   const [servico, setServico] = useState<ObitoProps | null>(null)
-  const [produtos,setProdutosObito]=useState<Array<ProdutosProps>>([])
+  const [produtos, setProdutosObito] = useState<Array<ProdutosProps>>([])
   useEffect(() => {
     Promise.all([
-        listar(),
-        listarProdutos()
+      listar(),
+      listarProdutos()
     ])
-    
-  }, [usuario,infoEmpresa?.id]);
+
+  }, [usuario, infoEmpresa?.id]);
 
 
 
-  const listarProdutos = async()=>{
-        const response = await api.post('/produtos/listar')
-        setProdutosObito(response.data)
+  const listarProdutos = async () => {
+    const response = await api.post('/produtos/listar')
+    setProdutosObito(response.data)
   }
 
 
   async function listar() {
     try {
-      const { data } = await api.post<ObitoProps[]>("/obitos/listarServicos",{id_empresa:infoEmpresa?.id});
+      const { data } = await api.post<ObitoProps[]>("/obitos/listarServicos", { id_empresa: infoEmpresa?.id });
       console.log("Dados recebidos da API:", data)
       setServicos(data);
 
@@ -92,20 +92,20 @@ const useActionsObito = () => {
   }
   const cadastrarObito = async (data: ObitoProps) => {
 
-  
+
 
     const limparNaN = (valor: any) => {
       const num = parseFloat(valor);
       return isNaN(num) ? null : num;
     };
 
-    const {newDate:end_data_falecimento} = removerFusoDate(data.end_data_falecimento)
-    const {newDate:data_nascimento} = removerFusoDate(data?.data_nascimento??undefined)
-    const {newDate:dt_velorio} = removerFusoDate(data.dt_velorio)
-    const {newDate:dt_sepultamento} = removerFusoDate(data.dt_sepultamento)
-    const {newDate:hr_velorio} = removerFusoDate(data.hr_velorio)
+    const { newDate: end_data_falecimento } = removerFusoDate(data.end_data_falecimento)
+    const { newDate: data_nascimento } = removerFusoDate(data?.data_nascimento ?? undefined)
+    const { newDate: dt_velorio } = removerFusoDate(data.dt_velorio)
+    const { newDate: dt_sepultamento } = removerFusoDate(data.dt_sepultamento)
+    const { newDate: hr_velorio } = removerFusoDate(data.hr_velorio)
 
-    
+
 
     const payload = {
       ...data,
@@ -117,6 +117,8 @@ const useActionsObito = () => {
       situacao_contrato: dadosassociado.contrato?.situacao,
       tipo_atendimento: data.tipo_atendimento ?? "ASSOCIADO",
       status: data.listacheckida?.find(item => item.status === false) || data.listacheckvolta?.find(item => item.status === false) ? 'PENDENTE' : 'FECHADO',
+      listacheckida: data.listacheckida,
+      listacheckvolta: data.listacheckvolta,
 
       // Datas sendo formatadas para o padrão ISO
       end_data_falecimento,
@@ -132,8 +134,8 @@ const useActionsObito = () => {
 
     };
 
-    
 
+    console.log("Dados enviados para o back:", payload)
     try {
       const response = await api.post("/obitos/adicionarObito", payload);
       setServicos(prev => [...prev, response.data]);
@@ -148,11 +150,11 @@ const useActionsObito = () => {
 
   async function editarObito(data: ObitoProps) {
 
-    const {newDate:end_data_falecimento} = removerFusoDate(data.end_data_falecimento)
-    const {newDate:data_nascimento} = removerFusoDate(data?.data_nascimento??undefined)
-    const {newDate:dt_velorio} = removerFusoDate(data.dt_velorio)
-    const {newDate:dt_sepultamento} = removerFusoDate(data.dt_sepultamento)
-    const {newDate:hr_velorio} = removerFusoDate(data.hr_velorio)
+    const { newDate: end_data_falecimento } = removerFusoDate(data.end_data_falecimento)
+    const { newDate: data_nascimento } = removerFusoDate(data?.data_nascimento ?? undefined)
+    const { newDate: dt_velorio } = removerFusoDate(data.dt_velorio)
+    const { newDate: dt_sepultamento } = removerFusoDate(data.dt_sepultamento)
+    const { newDate: hr_velorio } = removerFusoDate(data.hr_velorio)
 
     const payload = {
       ...data,
@@ -164,7 +166,7 @@ const useActionsObito = () => {
       status: data.listacheckida?.find(item => item.status === false) || data.listacheckvolta?.find(item => item.status === false) ? 'PENDENTE' : 'FECHADO'
     }
 
- 
+
 
     return toast.promise(
       api.put('/obitos/editarObito', payload),
@@ -187,14 +189,14 @@ const useActionsObito = () => {
       if (data.id_obitos) {
 
         const response = await editarObito(data as ObitoProps);
-        await listar(); 
+        await listar();
         return true;
 
       } else {
 
         const response = await cadastrarObito(data as ObitoProps);
         toast.success("Dados cadastrados com sucesso!")
-        await listar(); 
+        await listar();
         return true;
       }
 
